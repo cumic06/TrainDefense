@@ -84,8 +84,10 @@ namespace TrainDefense.Game
         {
             _currentExp += exp;
 
-            if (levelUpExp.Length > _currentLevel) return;
+            if (levelUpExp.Length <= _currentLevel) return;
 
+            GameEventSystem.Publish(new ExpUpEvent(_currentExp, levelUpExp[_currentLevel]));
+            
             if (_currentExp >= levelUpExp[_currentLevel])
             {
                 LevelUp();
@@ -105,7 +107,7 @@ namespace TrainDefense.Game
 
             _currentHp -= damage;
 
-            Debug.Log($"MainTrain HP: {_currentHp}");
+            GameEventSystem.Publish(new HitEvent(_currentHp, maxHp));
 
             if (_currentHp <= 0)
             {
