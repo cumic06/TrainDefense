@@ -189,8 +189,8 @@ Camera:
   m_GameObject: {fileID: 1521947153}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -417,6 +417,54 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   FollowOffset: {x: 0, y: 0, z: -10}
+--- !u!1 &1670328830
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1670328831}
+  - component: {fileID: 1670328832}
+  m_Layer: 0
+  m_Name: MonsterSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1670328831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670328830}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1670328832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670328830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3818ed084c18796458f4df01ab7ab27b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MonsterSpawner
+  monsterPrefabs:
+  - {fileID: 2390104975334823038, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
+  spawnInterval: 1
+  spawnRange: 2
 --- !u!1001 &1702064021
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -477,6 +525,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BaseTrain
       objectReference: {fileID: 0}
+    - target: {fileID: 4523707312484850496, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: maxHp
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 4736113035050595408, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       propertyPath: moveSpeed
       value: 5
@@ -503,75 +555,10 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 720900901604711655, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
   m_PrefabInstance: {fileID: 1702064021}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1731871832
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5
-      objectReference: {fileID: 0}
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2390104975334823038, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: moveSpeed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2418233220438619890, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_Name
-      value: BaseMonster
-      objectReference: {fileID: 0}
-    - target: {fileID: 2418233220438619890, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1517589542}
   - {fileID: 1702064021}
-  - {fileID: 1731871832}
+  - {fileID: 1670328831}

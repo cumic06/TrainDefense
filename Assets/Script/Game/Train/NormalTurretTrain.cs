@@ -1,4 +1,5 @@
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -63,6 +64,9 @@ namespace TrainDefense.Game
             if (targetMonster == null) return;
 
             turretModel.transform.LookAt2D(targetMonster.transform);
+            turretModel.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() => {
+                turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
+            });
 
             Projectile bullet = Instantiate(turretProjectilePrefab);
             bullet.transform.position = turretProjectileSpawnPoint.position;

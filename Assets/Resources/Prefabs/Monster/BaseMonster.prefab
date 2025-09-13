@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -137,11 +137,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0efdfaa8bdd15543bdd2616680df860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Monster
-  maxHp: 100
+  maxHp: 20
   damage: 1
   moveSpeed: 5.3
-  detectRange: 5
-  attackRange: 2
+  attackDelay: 1
+  detectRange: 20
+  attackRange: 3
 --- !u!61 &8967810716900712770
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -213,5 +214,5 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4

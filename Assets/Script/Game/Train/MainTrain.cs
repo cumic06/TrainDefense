@@ -4,9 +4,12 @@ using UnityEngine;
 
 namespace TrainDefense.Game
 {
-    public class MainTrain : MonoBehaviour
+    public class MainTrain : MonoBehaviour, IDamageable
     {
         #region Field
+        [SerializeField]
+        private int maxHp;
+
         [SerializeField]
         private float moveSpeed;
 
@@ -22,10 +25,14 @@ namespace TrainDefense.Game
         private GameObject startTrainablePrefab;
         #endregion
 
+        private int _currentHp;
+        private bool _isDead;
         private readonly List<ITrainable> _trainables = new();
 
         private void Start()
         {
+            _currentHp = maxHp;
+
             if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out ITrainable trainable))
             {
                 AddTrain(startTrainablePrefab);
@@ -34,6 +41,7 @@ namespace TrainDefense.Game
 
         private void FixedUpdate()
         {
+            if (_isDead) return;
             Move();
         }
 
@@ -58,7 +66,6 @@ namespace TrainDefense.Game
                 _trainables.Add(trainable);
                 GameObject trainObject = Instantiate(trainPrefab, transform);
                 Vector3 spawnPos = Vector3.left * trainOffset * _trainables.Count;
-                Debug.Log(spawnPos);
                 trainObject.transform.localPosition = spawnPos;
             }
             else
@@ -67,6 +74,26 @@ namespace TrainDefense.Game
                 Debug.LogError("this Prefab is not ITrainable");
 #endif
             }
+        }
+
+        public void TakeDamage(int damage)
+        {
+            if (_isDead) return;
+
+            _currentHp -= damage;
+
+            Debug.Log($"MainTrain HP: {_currentHp}");
+
+            if (_currentHp <= 0)
+            {
+                OnDead();
+            }
+        }
+
+        private void OnDead()
+        {
+            _isDead = true;
+            Destroy(gameObject);
         }
     }
 }

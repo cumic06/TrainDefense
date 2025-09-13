@@ -1,9 +1,10 @@
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace TrainDefense.Game
 {
-    public class Monster : MonoBehaviour
+    public class Monster : MonoBehaviour, IDamageable
     {
         #region Field
         [SerializeField]
@@ -13,14 +14,19 @@ namespace TrainDefense.Game
         [SerializeField]
         protected float moveSpeed;
         [SerializeField]
+        protected float attackDelay;
+        [SerializeField]
+        [BoxGroup("RangeSetting")]
         protected float detectRange;
         [SerializeField]
+        [BoxGroup("RangeSetting")]
         protected float attackRange;
         #endregion
 
         protected int _currentHp;
         protected int _currentDamage;
         protected float _currentMoveSpeed;
+        protected float _currentAttackDelay;
         protected bool _isDead;
         protected MainTrain _targetTrain;
 
@@ -34,12 +40,15 @@ namespace TrainDefense.Game
             _currentHp = maxHp;
             _currentDamage = damage;
             _currentMoveSpeed = moveSpeed;
+
+            _currentAttackDelay = attackDelay;
         }
 
         private void FixedUpdate()
         {
             DetectTrain();
             Move();
+            AttackHandler();
         }
 
         private void DetectTrain()
@@ -62,6 +71,29 @@ namespace TrainDefense.Game
 
             Vector3 direction = (_targetTrain.transform.position - transform.position).normalized;
             transform.Translate(direction * Time.deltaTime * _currentMoveSpeed);
+        }
+
+        private void AttackHandler()
+        {
+            if (_currentAttackDelay <= 0)
+            {
+                _currentAttackDelay = attackDelay;
+                Attack();
+            }
+            else
+            {
+                _currentAttackDelay -= Time.deltaTime;
+            }
+        }
+
+        private void Attack()
+        {
+            if (_targetTrain == null) return;
+
+            if (Vector3.Distance(transform.position, _targetTrain.transform.position) <= attackRange)
+            {
+                _targetTrain.TakeDamage(_currentDamage);
+            }
         }
 
         public void TakeDamage(int damage)

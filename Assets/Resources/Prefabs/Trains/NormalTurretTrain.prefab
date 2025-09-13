@@ -27,7 +27,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7631871212096712288}
@@ -207,7 +207,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4742846827080450473}
@@ -273,6 +273,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: NormalTurretTrain
       objectReference: {fileID: 0}
+    - target: {fileID: 3716768962924445455, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5579549060489529598, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Constraints
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4523707312484850496, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
     m_RemovedGameObjects: []
@@ -303,8 +311,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.NormalTurretTrain
   attackDamage: 1
-  attackDelay: 0.5
-  attackRange: 3
+  attackDelay: 0.3
+  attackRange: 5
   turretProjectilePrefab: {fileID: 1829234309482384407, guid: 73538706c0c9d074ba819960d6a42bb2, type: 3}
   turretProjectileSpawnPoint: {fileID: 7631871212096712288}
   turretModel: {fileID: 7436325860553494596}
