@@ -119,50 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &415160810
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 415160811}
-  - component: {fileID: 415160812}
-  m_Layer: 0
-  m_Name: ResourceManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &415160811
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 415160810}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &415160812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 415160810}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7cc07d9e697d4b2db0e127affb9bae9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ResourceManager
 --- !u!1 &1517589541
 GameObject:
   m_ObjectHideFlags: 0
@@ -507,7 +463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MonsterSpawner
   monsterPrefabs:
   - {fileID: 2390104975334823038, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-  spawnInterval: 0.5
+  spawnInterval: 1
   spawnRange: 2
 --- !u!1001 &1702064021
 PrefabInstance:
@@ -606,4 +562,3 @@ SceneRoots:
   - {fileID: 1517589542}
   - {fileID: 1702064021}
   - {fileID: 1670328831}
-  - {fileID: 415160811}

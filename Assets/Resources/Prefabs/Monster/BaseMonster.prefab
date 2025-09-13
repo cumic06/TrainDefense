@@ -139,9 +139,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Monster
   maxHp: 20
   damage: 1
-  moveSpeed: 5.3
+  moveSpeed: 5.7
   attackDelay: 1
-  detectRange: 20
+  detectRange: 30
   attackRange: 3
 --- !u!61 &8967810716900712770
 BoxCollider2D:

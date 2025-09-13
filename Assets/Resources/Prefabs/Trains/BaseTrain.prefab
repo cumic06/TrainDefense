@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 192150afe9ce5d647a28f984ba0a8d35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MainTrain
-  maxHp: 0
+  maxHp: 100
   moveSpeed: 5
   maxTrainCount: 5
   trainOffset: 2.2

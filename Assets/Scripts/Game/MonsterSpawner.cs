@@ -28,9 +28,6 @@ namespace TrainDefense.Game
 
             while (true)
             {
-                Monster randomMonster = monsterPrefabs[Random.Range(0, monsterPrefabs.Length)];
-                Monster spawnMonster = Instantiate(randomMonster, transform);
-
                 Camera camera = Camera.main;
 
                 Vector3 bottomLeft = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.transform.position.z));
@@ -60,7 +57,9 @@ namespace TrainDefense.Game
                         break;
                 }
 
-                spawnMonster.transform.position = spawnPos;
+                Monster randomMonster = monsterPrefabs[Random.Range(0, monsterPrefabs.Length)];
+                Monster spawnMonster = ResourceManager.Instance.Spawn(randomMonster, spawnPos, parent: transform);
+
                 yield return spawnWait;
             }
         }

@@ -45,7 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a0228f3b6521904faa99e0d29c6d059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Projectile
-  speed: 0
+  damage: 10
+  speed: 20
+  destroyDelay: 10
 --- !u!1 &5502960260318281916
 GameObject:
   m_ObjectHideFlags: 0
