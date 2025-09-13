@@ -16,6 +16,8 @@ namespace TrainDefense.Game
         [SerializeField]
         protected float attackDelay;
         [SerializeField]
+        protected int dropExp;
+        [SerializeField]
         [BoxGroup("RangeSetting")]
         protected float detectRange;
         [SerializeField]
@@ -33,6 +35,13 @@ namespace TrainDefense.Game
         private void Start()
         {
             InitStats();
+        }
+
+        private void OnEnable()
+        {
+            InitStats();
+            _isDead = false;
+            _targetTrain = null;
         }
 
         private void InitStats()
@@ -109,8 +118,9 @@ namespace TrainDefense.Game
 
         private void OnDead()
         {
+            _targetTrain.AddExp(dropExp);
             _isDead = true;
-            Destroy(gameObject);
+            ResourceManager.Instance.Destroy(gameObject);
         }
 
 #if UNITY_EDITOR

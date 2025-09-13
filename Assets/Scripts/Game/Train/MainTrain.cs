@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game
 {
@@ -19,13 +20,16 @@ namespace TrainDefense.Game
         [SerializeField]
         [BoxGroup("TrainSetting")]
         private float trainOffset;
-        [BoxGroup("TrainSetting")]
         [SerializeField]
         [BoxGroup("TrainSetting")]
         private GameObject startTrainablePrefab;
+        [SerializeField]
+        private int[] levelUpExp;
         #endregion
 
         private int _currentHp;
+        private int _currentExp;
+        private int _currentLevel;
         private bool _isDead;
         private readonly List<ITrainable> _trainables = new();
 
@@ -74,6 +78,25 @@ namespace TrainDefense.Game
                 Debug.LogError("this Prefab is not ITrainable");
 #endif
             }
+        }
+
+        public void AddExp(int exp)
+        {
+            _currentExp += exp;
+
+            if (levelUpExp.Length > _currentLevel) return;
+
+            if (_currentExp >= levelUpExp[_currentLevel])
+            {
+                LevelUp();
+            }
+        }
+
+        private void LevelUp()
+        {
+            _currentLevel++;
+            _currentExp = 0;
+            GameEventSystem.Publish(new LevelUpEvent());
         }
 
         public void TakeDamage(int damage)

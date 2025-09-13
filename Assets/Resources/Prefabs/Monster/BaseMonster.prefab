@@ -141,6 +141,7 @@ MonoBehaviour:
   damage: 1
   moveSpeed: 5.7
   attackDelay: 1
+  dropExp: 50
   detectRange: 30
   attackRange: 3
 --- !u!61 &8967810716900712770
