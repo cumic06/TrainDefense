@@ -18,10 +18,11 @@ namespace TrainDefense.Game
         protected float attackRange;
         #endregion
 
-        protected int currentHp;
-        protected int currentDamage;
-        protected float currentMoveSpeed;
-        protected Train targetTrain;
+        protected int _currentHp;
+        protected int _currentDamage;
+        protected float _currentMoveSpeed;
+        protected bool _isDead;
+        protected MainTrain _targetTrain;
 
         private void Start()
         {
@@ -30,9 +31,9 @@ namespace TrainDefense.Game
 
         private void InitStats()
         {
-            currentHp = maxHp;
-            currentDamage = damage;
-            currentMoveSpeed = moveSpeed;
+            _currentHp = maxHp;
+            _currentDamage = damage;
+            _currentMoveSpeed = moveSpeed;
         }
 
         private void FixedUpdate()
@@ -44,23 +45,40 @@ namespace TrainDefense.Game
         private void DetectTrain()
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, detectRange);
-            Train[] trains = colliders.Where(a => a.GetComponent<Train>() != null)
-            .Select(a => a.GetComponent<Train>())
+            MainTrain[] trains = colliders.Where(a => a.GetComponent<MainTrain>() != null)
+            .Select(a => a.GetComponent<MainTrain>())
             .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
             .ToArray();
 
             if (trains.Length > 0)
             {
-                targetTrain = trains.FirstOrDefault();
+                _targetTrain = trains.FirstOrDefault();
             }
         }
 
         private void Move()
         {
-            if (targetTrain == null) return;
+            if (_targetTrain == null) return;
 
-            Vector3 direction = (targetTrain.transform.position - transform.position).normalized;
-            transform.Translate(direction * Time.deltaTime * currentMoveSpeed);
+            Vector3 direction = (_targetTrain.transform.position - transform.position).normalized;
+            transform.Translate(direction * Time.deltaTime * _currentMoveSpeed);
+        }
+
+        public void TakeDamage(int damage)
+        {
+            if (_isDead) return;
+
+            _currentHp -= damage;
+            if (_currentHp <= 0)
+            {
+                OnDead();
+            }
+        }
+
+        private void OnDead()
+        {
+            _isDead = true;
+            Destroy(gameObject);
         }
 
 #if UNITY_EDITOR

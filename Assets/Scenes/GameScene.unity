@@ -465,6 +465,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1176710824882549994, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_SortingLayer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1176710824882549994, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1883601083
+      objectReference: {fileID: 0}
     - target: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       propertyPath: m_Name
       value: BaseTrain
@@ -473,6 +481,18 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4736113035050595408, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: trainOffset
+      value: 2.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4736113035050595408, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: maxTrainCount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4736113035050595408, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: startTrainablePrefab
+      value: 
+      objectReference: {fileID: 1401957205484222713, guid: 2c445e47e8c9769498d0ec34f9edac9f, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -493,7 +513,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 164818051339762677, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -533,11 +553,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2390104975334823038, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
       propertyPath: moveSpeed
-      value: 5.3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2418233220438619890, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
       propertyPath: m_Name
       value: BaseMonster
+      objectReference: {fileID: 0}
+    - target: {fileID: 2418233220438619890, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
