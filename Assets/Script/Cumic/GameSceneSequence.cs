@@ -6,11 +6,6 @@ public class GameSceneSequence : MonoBehaviour
 
     private void Start()
     {
-        if (this != null)
-        {
-            Destroy(this);
-            return;
-        }
         DontDestroyOnLoad(gameObject);
 
         _authSceneSequencer = new AuthSceneSequencer(this);
