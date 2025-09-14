@@ -71,6 +71,7 @@ namespace TrainDefense.Game
                 GameObject trainObject = Instantiate(trainPrefab, transform);
                 Vector3 spawnPos = Vector3.left * trainOffset * _trainables.Count;
                 trainObject.transform.localPosition = spawnPos;
+                GameEventSystem.Publish(new AddTrainEvent(null));//추후에 데이터로 아이콘 추가해주게 변경
             }
             else
             {
@@ -87,7 +88,7 @@ namespace TrainDefense.Game
             if (levelUpExp.Length <= _currentLevel) return;
 
             GameEventSystem.Publish(new ExpUpEvent(_currentExp, levelUpExp[_currentLevel]));
-            
+
             if (_currentExp >= levelUpExp[_currentLevel])
             {
                 LevelUp();
