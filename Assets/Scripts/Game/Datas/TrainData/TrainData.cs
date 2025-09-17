@@ -1,0 +1,27 @@
+using UnityEngine;
+
+namespace TrainDefense.Game.Data
+{
+    [CreateAssetMenu(fileName = "TrainData", menuName = "Data/TrainData/TrainData")]
+    public class TrainData : ScriptableObject
+    {
+        #region Fields
+        [SerializeField]
+        private string id;
+        [SerializeField]
+        private Sprite icon;
+        [SerializeField]
+        private string description;
+        [SerializeField]
+        private int maxHp;
+        [SerializeField]
+        private Train trainPrefab;
+        #endregion
+
+        public string Id => id;
+        public Sprite Icon => icon;
+        public string Description => description;
+        public int MaxHp => maxHp;
+        public Train TrainPrefab => trainPrefab;
+    }
+}

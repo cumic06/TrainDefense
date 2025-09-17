@@ -10,7 +10,7 @@ namespace TrainDefense.Game.UI
         private TrainInfoSlotUI trainInfoSlotUI;
         #endregion
 
-        private void Start()
+        private void Awake()
         {
             GameEventSystem.Subscribe<AddTrainEvent>(OnAddTrain);
         }
@@ -22,6 +22,7 @@ namespace TrainDefense.Game.UI
 
         private void OnAddTrain(AddTrainEvent addTrainEvent)
         {
+            Debug.Log("OnAddTrain");
             TrainInfoSlotUI spawnTrainInfoSlotUI = ResourceManager.Instance.Spawn(trainInfoSlotUI, parent: transform);
             spawnTrainInfoSlotUI.SetIcon(addTrainEvent.Icon);
         }
