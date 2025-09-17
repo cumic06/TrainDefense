@@ -1,30 +1,16 @@
 using System.Linq;
 using DG.Tweening;
-using Sirenix.OdinInspector;
+using TrainDefense.Game.Data;
 using UnityEngine;
 
 namespace TrainDefense.Game
 {
-    public class TurretTrain : MonoBehaviour, ITrainable, IDamageable
+    public class TurretTrain : Train, ITrainable
     {
         #region Field
         [SerializeField]
-        private int maxHp;
-        [SerializeField]
-        [BoxGroup("AttackSetting")]
-        private int attackDamage;
-        [SerializeField]
-        [BoxGroup("AttackSetting")]
-        private int attackCount;
-        [SerializeField]
-        [BoxGroup("AttackSetting")]
-        private float attackDelay;
-        [SerializeField]
-        [BoxGroup("AttackSetting")]
-        private float attackRange;
+        private TurretTrainData turretTrainData => trainData as TurretTrainData;
 
-        [SerializeField]
-        private Projectile turretProjectilePrefab;
         [SerializeField]
         private Transform[] turretProjectileSpawnPoints;
 
@@ -34,18 +20,16 @@ namespace TrainDefense.Game
 
         private Monster _targetMonster;
         private float _currentAttackDelay;
-        private int _currentHp;
-        private bool _dontUseable;
 
-        private void Start()
+        protected override void Start()
         {
-            _currentHp = maxHp;
-            _currentAttackDelay = attackDelay;
+            base.Start();
+            _currentAttackDelay = turretTrainData.AttackDelay;
         }
 
         private void FixedUpdate()
         {
-            if (_dontUseable) return;
+            if (_isDead) return;
 
             DetectTarget();
             AttackHandler();
@@ -53,7 +37,7 @@ namespace TrainDefense.Game
 
         private void DetectTarget()
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, attackRange);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, turretTrainData.AttackRange);
             _targetMonster = colliders.Where(a => a.GetComponent<Monster>() != null)
             .Select(a => a.GetComponent<Monster>())
             .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
@@ -64,7 +48,7 @@ namespace TrainDefense.Game
         {
             if (_currentAttackDelay <= 0)
             {
-                _currentAttackDelay = attackDelay;
+                _currentAttackDelay = turretTrainData.AttackDelay;
                 Attack();
             }
             else
@@ -83,9 +67,9 @@ namespace TrainDefense.Game
                 turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
             });
 
-            for (int i = 0; i < attackCount; i++)
+            for (int i = 0; i < turretTrainData.AttackCount; i++)
             {
-                Projectile bullet = ResourceManager.Instance.Spawn(turretProjectilePrefab);
+                Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
                 bullet.transform.position = turretProjectileSpawnPoints[i].position;
                 bullet.transform.LookAt2D(_targetMonster.transform);
             }
@@ -95,13 +79,11 @@ namespace TrainDefense.Game
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, attackRange);
+            if (turretTrainData != null)
+            {
+                Gizmos.DrawWireSphere(transform.position, turretTrainData.AttackRange);
+            }
         }
-
-        public void TakeDamage(int damage)
-        {
-            throw new System.NotImplementedException();
-        }
-#endif
     }
+#endif
 }

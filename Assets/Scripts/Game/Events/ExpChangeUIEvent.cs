@@ -1,6 +1,6 @@
 namespace TrainDefense.Game.Events
 {
-    public class ExpUpEvent 
+    public class ExpChangeUIEvent 
     {
         private int currentExp;
         private int maxExp;
@@ -9,7 +9,7 @@ namespace TrainDefense.Game.Events
         public int MaxExp => maxExp;
         public float CurrentExpRatio => currentExp / (float)maxExp;
 
-        public ExpUpEvent(int currentExp, int maxExp)
+        public ExpChangeUIEvent(int currentExp, int maxExp)
         {
             this.currentExp = currentExp;
             this.maxExp = maxExp;

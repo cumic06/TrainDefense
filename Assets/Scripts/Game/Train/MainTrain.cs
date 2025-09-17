@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using TrainDefense.Game.Events;
+using System;
+using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Game
 {
-    public class MainTrain : MonoBehaviour, IDamageable
+    public class MainTrain : Train
     {
         #region Field
-        [SerializeField]
-        private int maxHp;
 
         [SerializeField]
         private float moveSpeed;
@@ -22,20 +22,21 @@ namespace TrainDefense.Game
         private float trainOffset;
         [SerializeField]
         [BoxGroup("TrainSetting")]
-        private GameObject startTrainablePrefab;
+        private Train startTrainablePrefab;
         [SerializeField]
         private int[] levelUpExp;
         #endregion
 
-        private int _currentHp;
         private int _currentExp;
         private int _currentLevel;
-        private bool _isDead;
         private readonly List<ITrainable> _trainables = new();
 
-        private void Start()
+        protected override void Start()
         {
-            _currentHp = maxHp;
+            base.Start();
+
+            GameEventSystem.Subscribe<ExpChangeEvent>(ChangeExp);
+            GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
 
             if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out ITrainable trainable))
             {
@@ -49,13 +50,21 @@ namespace TrainDefense.Game
             Move();
         }
 
+        private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
+        {
+            if (triChoiceSelectEvent.Data is AddTrainChoiceData addTrainChoiceData)
+            {
+                AddTrain(addTrainChoiceData.TrainData.TrainPrefab);
+            }
+        }
+
         private void Move()
         {
             transform.Translate(Vector3.right * Time.deltaTime * moveSpeed);
         }
 
         [Button("AddTrain")]
-        private void AddTrain(GameObject trainPrefab)
+        private void AddTrain(Train trainPrefab)
         {
             if (_trainables.Count >= maxTrainCount)
             {
@@ -65,29 +74,20 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (trainPrefab.TryGetComponent(out ITrainable trainable))
-            {
-                _trainables.Add(trainable);
-                GameObject trainObject = Instantiate(trainPrefab, transform);
-                Vector3 spawnPos = Vector3.left * trainOffset * _trainables.Count;
-                trainObject.transform.localPosition = spawnPos;
-                GameEventSystem.Publish(new AddTrainEvent(null));//추후에 데이터로 아이콘 추가해주게 변경
-            }
-            else
-            {
-#if UNITY_EDITOR
-                Debug.LogError("this Prefab is not ITrainable");
-#endif
-            }
+            _trainables.Add(trainPrefab);
+            Train trainObject = Instantiate(trainPrefab, transform);
+            Vector3 spawnPos = Vector3.left * trainOffset * _trainables.Count;
+            trainObject.transform.localPosition = spawnPos;
+            GameEventSystem.Publish(new AddTrainEvent(trainData.Icon));//추후에 데이터로 아이콘 추가해주게 변경
         }
 
-        public void AddExp(int exp)
+        private void ChangeExp(ExpChangeEvent expChangeEvent)
         {
-            _currentExp += exp;
+            _currentExp += expChangeEvent.ChangeValue;
 
             if (levelUpExp.Length <= _currentLevel) return;
 
-            GameEventSystem.Publish(new ExpUpEvent(_currentExp, levelUpExp[_currentLevel]));
+            GameEventSystem.Publish(new ExpChangeUIEvent(_currentExp, levelUpExp[_currentLevel]));
 
             if (_currentExp >= levelUpExp[_currentLevel])
             {
@@ -100,26 +100,6 @@ namespace TrainDefense.Game
             _currentLevel++;
             _currentExp = 0;
             GameEventSystem.Publish(new LevelUpEvent());
-        }
-
-        public void TakeDamage(int damage)
-        {
-            if (_isDead) return;
-
-            _currentHp -= damage;
-
-            GameEventSystem.Publish(new HitEvent(_currentHp, maxHp));
-
-            if (_currentHp <= 0)
-            {
-                OnDead();
-            }
-        }
-
-        private void OnDead()
-        {
-            _isDead = true;
-            Destroy(gameObject);
         }
     }
 }

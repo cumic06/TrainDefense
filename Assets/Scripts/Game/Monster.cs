@@ -1,5 +1,6 @@
 using System.Linq;
 using Sirenix.OdinInspector;
+using TrainDefense.Game.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -30,7 +31,7 @@ namespace TrainDefense.Game
         protected float _currentMoveSpeed;
         protected float _currentAttackDelay;
         protected bool _isDead;
-        protected MainTrain _targetTrain;
+        protected Train _targetTrain;
 
         private void Start()
         {
@@ -63,8 +64,8 @@ namespace TrainDefense.Game
         private void DetectTrain()
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, detectRange);
-            MainTrain[] trains = colliders.Where(a => a.GetComponent<MainTrain>() != null)
-            .Select(a => a.GetComponent<MainTrain>())
+            Train[] trains = colliders.Where(a => a.GetComponent<MainTrain>() != null)
+            .Select(a => a.GetComponent<Train>())
             .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
             .ToArray();
 
@@ -118,8 +119,8 @@ namespace TrainDefense.Game
 
         private void OnDead()
         {
-            _targetTrain.AddExp(dropExp);
             _isDead = true;
+            GameEventSystem.Publish(new ExpChangeEvent(dropExp));
             ResourceManager.Instance.Destroy(gameObject);
         }
 
