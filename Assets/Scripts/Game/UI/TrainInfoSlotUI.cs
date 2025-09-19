@@ -40,9 +40,26 @@ namespace TrainDefense.Game.UI
         {
             if (_train != hitEvent.Damageable as Train) return;
 
-            backGroundImage.color = hitEvent.CurrentHpRatio > 0.5f ? Color.green : Color.red;
-
-            // backGroundImage.color = Color.Lerp(Color.green, Color.red, hitEvent.CurrentHpRatio);
+            if (hitEvent.CurrentHpRatio > 0.7f)
+            {
+                backGroundImage.color = Color.green;
+            }
+            else if (hitEvent.CurrentHpRatio <= 0.7f)
+            {
+                backGroundImage.color = Color.yellow;
+            }
+            else if (hitEvent.CurrentHpRatio <= 0.5f)
+            {
+                backGroundImage.color = Color.orange;
+            }
+            else if (hitEvent.CurrentHpRatio <= 0.3f)
+            {
+                backGroundImage.color = Color.red;
+            }
+            else
+            {
+                backGroundImage.color = Color.gray;
+            }
         }
     }
 }

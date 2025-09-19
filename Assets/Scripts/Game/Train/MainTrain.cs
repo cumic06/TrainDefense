@@ -69,7 +69,7 @@ namespace TrainDefense.Game
             if (_trainables.Count >= maxTrainCount)
             {
 #if UNITY_EDITOR
-                Debug.LogError("Train count is max");
+                Debug.LogWarning("Train count is max");
 #endif
                 return;
             }

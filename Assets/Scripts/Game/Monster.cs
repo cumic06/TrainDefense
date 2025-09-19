@@ -79,8 +79,8 @@ namespace TrainDefense.Game
         {
             if (_targetTrain == null) return;
 
-            Vector3 direction = (_targetTrain.transform.position - transform.position).normalized;
-            transform.Translate(direction * Time.deltaTime * _currentMoveSpeed);
+            Vector3 direction = _targetTrain.transform.position - transform.position;
+            transform.Translate(direction.normalized * Time.deltaTime * _currentMoveSpeed);
         }
 
         private void AttackHandler()
