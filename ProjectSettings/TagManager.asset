@@ -41,11 +41,20 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Map
+    uniqueID: 822565857
+    locked: 0
   - name: TrainBody
     uniqueID: 1842545067
     locked: 0
   - name: TurretBody
     uniqueID: 1883601083
+    locked: 0
+  - name: Unit
+    uniqueID: 2816905793
+    locked: 0
+  - name: Bullet
+    uniqueID: 731328439
     locked: 0
   m_RenderingLayers:
   - Default
