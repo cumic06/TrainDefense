@@ -22,8 +22,8 @@ namespace TrainDefense.Game.UI
 
         private void OnAddTrain(AddTrainEvent addTrainEvent)
         {
-            Debug.Log("OnAddTrain");
             TrainInfoSlotUI spawnTrainInfoSlotUI = ResourceManager.Instance.Spawn(trainInfoSlotUI, parent: transform);
+            spawnTrainInfoSlotUI.Init(addTrainEvent.Train);
             spawnTrainInfoSlotUI.SetIcon(addTrainEvent.Icon);
         }
     }

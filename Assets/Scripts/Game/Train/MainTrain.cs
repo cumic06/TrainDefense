@@ -78,14 +78,18 @@ namespace TrainDefense.Game
             Train trainObject = Instantiate(trainPrefab, transform);
             Vector3 spawnPos = Vector3.left * trainOffset * _trainables.Count;
             trainObject.transform.localPosition = spawnPos;
-            GameEventSystem.Publish(new AddTrainEvent(trainData.Icon));//추후에 데이터로 아이콘 추가해주게 변경
+            GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));//추후에 데이터로 아이콘 추가해주게 변경
         }
 
         private void ChangeExp(ExpChangeEvent expChangeEvent)
         {
-            _currentExp += expChangeEvent.ChangeValue;
+            if (levelUpExp.Length <= _currentLevel)
+            {
+                Debug.LogError("max Level");
+                return;
+            }
 
-            if (levelUpExp.Length <= _currentLevel) return;
+            _currentExp += expChangeEvent.ChangeValue;
 
             GameEventSystem.Publish(new ExpChangeUIEvent(_currentExp, levelUpExp[_currentLevel]));
 

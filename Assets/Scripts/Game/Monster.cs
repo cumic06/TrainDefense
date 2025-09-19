@@ -50,7 +50,6 @@ namespace TrainDefense.Game
             _currentHp = maxHp;
             _currentDamage = damage;
             _currentMoveSpeed = moveSpeed;
-
             _currentAttackDelay = attackDelay;
         }
 
@@ -64,8 +63,9 @@ namespace TrainDefense.Game
         private void DetectTrain()
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, detectRange);
-            Train[] trains = colliders.Where(a => a.GetComponent<MainTrain>() != null)
+            Train[] trains = colliders.Where(a => a.GetComponent<Train>() != null)
             .Select(a => a.GetComponent<Train>())
+            .Where(a => !a.IsDead)
             .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
             .ToArray();
 
