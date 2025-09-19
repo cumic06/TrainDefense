@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using TrainDefense.Game.Events;
-using System;
 using TrainDefense.Game.Datas;
+using System.Linq;
 
 namespace TrainDefense.Game
 {
@@ -37,11 +37,19 @@ namespace TrainDefense.Game
 
             GameEventSystem.Subscribe<ExpChangeEvent>(ChangeExp);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+            GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
 
             if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out ITrainable trainable))
             {
                 AddTrain(startTrainablePrefab);
             }
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<ExpChangeEvent>(ChangeExp);
+            GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+            GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);
         }
 
         private void FixedUpdate()
@@ -74,8 +82,8 @@ namespace TrainDefense.Game
                 return;
             }
 
-            _trainables.Add(trainPrefab);
             Train trainObject = Instantiate(trainPrefab, transform);
+            _trainables.Add(trainObject);
             Vector3 spawnPos = Vector3.left * trainOffset * _trainables.Count;
             trainObject.transform.localPosition = spawnPos;
             GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));//추후에 데이터로 아이콘 추가해주게 변경
@@ -85,7 +93,9 @@ namespace TrainDefense.Game
         {
             if (levelUpExp.Length <= _currentLevel)
             {
-                Debug.LogError("max Level");
+#if UNITY_EDITOR
+                Debug.LogWarning("max Level");
+#endif
                 return;
             }
 
@@ -104,6 +114,31 @@ namespace TrainDefense.Game
             _currentLevel++;
             _currentExp = 0;
             GameEventSystem.Publish(new LevelUpEvent());
+        }
+
+        private void CheckDeadTrain(TrainDeadEvent trainDeadEvent)
+        {
+
+            foreach (var train in _trainables.ToList())
+            {
+                if (trainDeadEvent.Train == train as Train)
+                {
+                    Debug.Log($"{trainDeadEvent.Train.name} {train as Train}");
+                    _trainables.Remove(train);
+
+                    if (_trainables.Count == 0)
+                    {
+                        OnDead();
+                    }
+                }
+            }
+        }
+
+        protected override void OnDead()
+        {
+            base.OnDead();
+            Debug.Log("MainTrain Dead");
+            GameEventSystem.Publish(new GameOverEvent());
         }
     }
 }

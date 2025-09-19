@@ -15,6 +15,7 @@ namespace TrainDefense.Game
         protected int _currentHp;
 
         public bool IsDead => _isDead;
+        public bool IsMainTrain => trainData.IsMainTrain;
 
         protected virtual void Start()
         {
@@ -38,6 +39,11 @@ namespace TrainDefense.Game
 
         protected virtual void OnDead()
         {
+            if (!IsMainTrain)
+            {
+                GameEventSystem.Publish(new TrainDeadEvent(this));
+            }
+            
             _isDead = true;
         }
     }

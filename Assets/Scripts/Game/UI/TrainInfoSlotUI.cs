@@ -19,11 +19,13 @@ namespace TrainDefense.Game.UI
         {
             backGroundImage.color = Color.green;
             GameEventSystem.Subscribe<HitEvent>(SetHp);
+            GameEventSystem.Subscribe<TrainDeadEvent>(SetDead);
         }
 
         private void OnDestroy()
         {
             GameEventSystem.Unsubscribe<HitEvent>(SetHp);
+            GameEventSystem.Unsubscribe<TrainDeadEvent>(SetDead);
         }
 
         public void Init(Train train)
@@ -60,6 +62,13 @@ namespace TrainDefense.Game.UI
             {
                 backGroundImage.color = Color.gray;
             }
+        }
+
+        public void SetDead(TrainDeadEvent trainDeadEvent)
+        {
+            if (_train != trainDeadEvent.Train) return;
+
+            backGroundImage.color = Color.gray;
         }
     }
 }

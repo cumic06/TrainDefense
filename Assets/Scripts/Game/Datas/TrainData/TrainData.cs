@@ -16,6 +16,8 @@ namespace TrainDefense.Game.Data
         private int maxHp;
         [SerializeField]
         private Train trainPrefab;
+        [SerializeField]
+        private bool isMainTrain;
         #endregion
 
         public string Id => id;
@@ -23,5 +25,6 @@ namespace TrainDefense.Game.Data
         public string Description => description;
         public int MaxHp => maxHp;
         public Train TrainPrefab => trainPrefab;
+        public bool IsMainTrain => isMainTrain;
     }
 }

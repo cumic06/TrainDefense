@@ -139,7 +139,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Monster
   maxHp: 50
   damage: 1
-  moveSpeed: 1
+  moveSpeed: 2
   attackDelay: 1
   dropExp: 50
   detectRange: 30

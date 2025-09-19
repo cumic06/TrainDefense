@@ -65,7 +65,7 @@ namespace TrainDefense.Game
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, detectRange);
             Train[] trains = colliders.Where(a => a.GetComponent<Train>() != null)
             .Select(a => a.GetComponent<Train>())
-            .Where(a => !a.IsDead)
+            .Where(a => !a.IsDead && !a.IsMainTrain)
             .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
             .ToArray();
 

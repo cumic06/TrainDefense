@@ -17,3 +17,4 @@ MonoBehaviour:
   description: 
   maxHp: 100
   trainPrefab: {fileID: -6865814404541872816, guid: a544662bcec77a141b5326512a51ff41, type: 3}
+  isMainTrain: 1
