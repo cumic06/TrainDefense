@@ -25,7 +25,6 @@ namespace TrainDefense.Game.UI
 
         private void Start()
         {
-            GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnChoiceSelected);
 
             if (choiceSelectUIs.Length == 0)
@@ -36,14 +35,7 @@ namespace TrainDefense.Game.UI
 
         private void OnDestroy()
         {
-            GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnChoiceSelected);
-        }
-
-        private void OnLevelUp(LevelUpEvent eventData)
-        {
-            TimeManager.Instance.Pause();
-            OnChoiceUIPopup().Forget();
         }
 
         private async UniTask OnChoiceUIPopup()

@@ -121,7 +121,6 @@ namespace TrainDefense.Game
         private void OnDead()
         {
             _isDead = true;
-            GameEventSystem.Publish(new ExpChangeEvent(dropExp));
             ResourceManager.Instance.Destroy(gameObject);
         }
 

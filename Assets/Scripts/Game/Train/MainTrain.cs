@@ -25,19 +25,14 @@ namespace TrainDefense.Game
         [SerializeField]
         [BoxGroup("TrainSetting")]
         private Train startTrainablePrefab;
-        [SerializeField]
-        private int[] levelUpExp;
         #endregion
 
-        private int _currentExp;
-        private int _currentLevel;
         private readonly List<ITrainable> _trainables = new();
 
         protected override void Start()
         {
             base.Start();
 
-            GameEventSystem.Subscribe<ExpChangeEvent>(ChangeExp);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
             GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
 
@@ -49,7 +44,6 @@ namespace TrainDefense.Game
 
         private void OnDestroy()
         {
-            GameEventSystem.Unsubscribe<ExpChangeEvent>(ChangeExp);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
             GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);
         }
@@ -91,33 +85,6 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));//추후에 데이터로 아이콘 추가해주게 변경
         }
 
-        private void ChangeExp(ExpChangeEvent expChangeEvent)
-        {
-            if (levelUpExp.Length <= _currentLevel)
-            {
-#if UNITY_EDITOR
-                Debug.LogWarning("max Level");
-#endif
-                return;
-            }
-
-            _currentExp += expChangeEvent.ChangeValue;
-
-            GameEventSystem.Publish(new ExpChangeUIEvent(_currentExp, levelUpExp[_currentLevel]));
-
-            if (_currentExp >= levelUpExp[_currentLevel])
-            {
-                LevelUp();
-            }
-        }
-
-        private void LevelUp()
-        {
-            _currentLevel++;
-            _currentExp = 0;
-            GameEventSystem.Publish(new LevelUpEvent());
-        }
-
         private void CheckDeadTrain(TrainDeadEvent trainDeadEvent)
         {
 
@@ -139,7 +106,6 @@ namespace TrainDefense.Game
         protected override void OnDead()
         {
             base.OnDead();
-            Debug.Log("MainTrain Dead");
             GameEventSystem.Publish(new GameEndEvent());
         }
     }
