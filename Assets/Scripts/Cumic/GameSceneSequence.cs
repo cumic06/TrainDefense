@@ -1,23 +1,27 @@
+using Cumic.UI;
 using UnityEngine;
 
-public class GameSceneSequence : MonoBehaviour
+namespace Cumic
 {
-    private ISceneSequencer _authSceneSequencer;
-
-    private void Start()
+    public class GameSceneSequence : MonoBehaviour
     {
-        DontDestroyOnLoad(gameObject);
+        private ISceneSequencer _authSceneSequencer;
 
-        _authSceneSequencer = new AuthSceneSequencer(this);
-    }
-
-    public void PopupUI(string uiName)
-    {
-        if (UIManager.Instance == null)
+        private void Start()
         {
-            Canvas canvas = FindFirstObjectByType<Canvas>();
-            canvas.gameObject.AddComponent<UIManager>();
+            DontDestroyOnLoad(gameObject);
+
+            _authSceneSequencer = new AuthSceneSequencer(this);
         }
-        UIManager.Instance.ShowPopup(uiName);
+
+        public void PopupUI(string uiName)
+        {
+            if (UIManager.Instance == null)
+            {
+                Canvas canvas = FindFirstObjectByType<Canvas>();
+                canvas.gameObject.AddComponent<UIManager>();
+            }
+            UIManager.Instance.ShowPopup(uiName);
+        }
     }
 }

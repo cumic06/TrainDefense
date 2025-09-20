@@ -1,22 +1,25 @@
 using UnityEngine;
 
-public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+namespace Cumic
 {
-    public static T Instance;
-    
-    [SerializeField]
-    private bool dontDestroyOnLoad;
-
-    protected virtual void Awake()
+    public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        if (Instance == null)
-        {
-            Instance = this as T;
-        }
+        public static T Instance;
 
-        if (dontDestroyOnLoad)
+        [SerializeField]
+        private bool dontDestroyOnLoad;
+
+        protected virtual void Awake()
         {
-            DontDestroyOnLoad(gameObject);
+            if (Instance == null)
+            {
+                Instance = this as T;
+            }
+
+            if (dontDestroyOnLoad)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
         }
     }
 }

@@ -1,4 +1,7 @@
-public class GameEndEvent
+namespace Cumic.Events
 {
-    
+    public class GameEndEvent
+    {
+
+    }
 }

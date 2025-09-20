@@ -1,4 +1,7 @@
-public interface IVersionable
+namespace Cumic
 {
-    bool CheckVersion();
+    public interface IVersionable
+    {
+        bool CheckVersion();
+    }
 }

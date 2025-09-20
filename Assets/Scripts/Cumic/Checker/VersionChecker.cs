@@ -1,7 +1,10 @@
-public class VersionChecker : IVersionable
+namespace Cumic
 {
-    public bool CheckVersion()
+    public class VersionChecker : IVersionable
     {
-        return true;
+        public bool CheckVersion()
+        {
+            return true;
+        }
     }
 }

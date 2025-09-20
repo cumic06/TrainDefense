@@ -1,10 +1,13 @@
 using UnityEngine;
 
-public class UIManager : Singleton<UIManager>
+namespace Cumic.UI
 {
-    public void ShowPopup(string uiName)
+    public class UIManager : Singleton<UIManager>
     {
-        GameObject popup = Resources.Load<GameObject>(uiName);
-        Instantiate(popup, transform);
+        public void ShowPopup(string uiName)
+        {
+            GameObject popup = Resources.Load<GameObject>(uiName);
+            Instantiate(popup, transform);
+        }
     }
 }

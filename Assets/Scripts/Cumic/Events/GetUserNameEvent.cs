@@ -1,6 +1,7 @@
-using UnityEngine;
-
-public class GetUserNameEvent
+namespace Cumic.Events
 {
-    
+    public class GetUserNameEvent
+    {
+
+    }
 }

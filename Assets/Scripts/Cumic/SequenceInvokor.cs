@@ -1,29 +1,33 @@
+using Cumic.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class SequenceInvokor : MonoBehaviour
+namespace Cumic
 {
-    [Button("Engage Ready")]
-    private void EngageReady()
+    public class SequenceInvokor : MonoBehaviour
     {
-        GameEventSystem.Publish(new EngageReadyEvent());
-    }
+        [Button("Engage Ready")]
+        private void EngageReady()
+        {
+            GameEventSystem.Publish(new EngageReadyEvent());
+        }
 
-    [Button("Engage Start")]
-    private void EngageStart()
-    {
-        GameEventSystem.Publish(new EngageStartEvent());
-    }
+        [Button("Engage Start")]
+        private void EngageStart()
+        {
+            GameEventSystem.Publish(new EngageStartEvent());
+        }
 
-    [Button("Stage End")]
-    private void StageEnd()
-    {
-        GameEventSystem.Publish(new StageEndEvent());
-    }
+        [Button("Stage End")]
+        private void StageEnd()
+        {
+            GameEventSystem.Publish(new StageEndEvent());
+        }
 
-    [Button("Game End")]
-    private void GameEnd()
-    {
-        GameEventSystem.Publish(new GameEndEvent());
+        [Button("Game End")]
+        private void GameEnd()
+        {
+            GameEventSystem.Publish(new GameEndEvent());
+        }
     }
 }

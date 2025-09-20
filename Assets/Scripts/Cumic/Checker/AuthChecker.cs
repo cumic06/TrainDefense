@@ -1,17 +1,20 @@
-public class AuthChecker : IAuthable
+namespace Cumic
 {
-    public bool TryLogin()
+    public class AuthChecker : IAuthable
     {
-        return true;
-    }
+        public bool TryLogin()
+        {
+            return true;
+        }
 
-    public bool TryLogout()
-    {
-        throw new System.NotImplementedException();
-    }
+        public bool TryLogout()
+        {
+            throw new System.NotImplementedException();
+        }
 
-    public bool IsLoggedIn()
-    {
-        throw new System.NotImplementedException();
+        public bool IsLoggedIn()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
 using System.Linq;
+using Cumic;
+using Cumic.Events;
 
 namespace TrainDefense.Game
 {
@@ -138,7 +140,7 @@ namespace TrainDefense.Game
         {
             base.OnDead();
             Debug.Log("MainTrain Dead");
-            GameEventSystem.Publish(new GameOverEvent());
+            GameEventSystem.Publish(new GameEndEvent());
         }
     }
 }

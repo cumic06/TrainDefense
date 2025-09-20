@@ -1,6 +1,7 @@
-using UnityEngine;
-
-public class EngageReadyEvent
+namespace Cumic.Events
 {
-    
+    public class EngageReadyEvent
+    {
+
+    }
 }

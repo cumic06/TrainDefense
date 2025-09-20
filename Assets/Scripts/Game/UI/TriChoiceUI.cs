@@ -1,3 +1,6 @@
+using Cumic;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
@@ -11,6 +14,9 @@ namespace TrainDefense.Game.UI
         #region Fields
         [SerializeField]
         private TriChoiceSelectUI[] choiceSelectUIs;
+
+        [SerializeField]
+        private float uiActiveDelay;
 
         [SerializeField]
         [FolderPath]
@@ -37,13 +43,21 @@ namespace TrainDefense.Game.UI
         private void OnLevelUp(LevelUpEvent eventData)
         {
             TimeManager.Instance.Pause();
+            OnChoiceUIPopup().Forget();
+        }
 
+        private async UniTask OnChoiceUIPopup()
+        {
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
                 var triChoiceData = RandomChoice();
                 if (triChoiceData == null) continue;
+
                 choiceSelectUI.SetData(triChoiceData);
-                choiceSelectUI.gameObject.SetActive(true);
+
+                choiceSelectUI.transform.localScale = Vector3.zero;
+
+                await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).SetUpdate(true);
             }
         }
 
@@ -53,7 +67,7 @@ namespace TrainDefense.Game.UI
 
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
-                choiceSelectUI.gameObject.SetActive(false);
+                choiceSelectUI.transform.DOScale(0, uiActiveDelay).SetEase(Ease.InBack).SetUpdate(true);
             }
         }
 

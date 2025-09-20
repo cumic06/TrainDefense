@@ -1,63 +1,66 @@
 using UnityEngine;
 
-public class AuthSceneSequencer : ISceneSequencer
+namespace Cumic
 {
-    private IAuthable _authChecker;
-    private IVersionable _versionChecker;
-
-    private bool _isVersionMatched = false;
-
-    private GameSceneSequence _gameSceneSequence;
-
-    public AuthSceneSequencer(GameSceneSequence gameSceneSequence)
+    public class AuthSceneSequencer : ISceneSequencer
     {
-        _gameSceneSequence = gameSceneSequence;
-        
-        if (_versionChecker == null)
+        private IAuthable _authChecker;
+        private IVersionable _versionChecker;
+
+        private bool _isVersionMatched = false;
+
+        private GameSceneSequence _gameSceneSequence;
+
+        public AuthSceneSequencer(GameSceneSequence gameSceneSequence)
         {
-            _versionChecker = new VersionChecker();
-            VersionCheck();
+            _gameSceneSequence = gameSceneSequence;
+
+            if (_versionChecker == null)
+            {
+                _versionChecker = new VersionChecker();
+                VersionCheck();
+            }
+
+            if (!_isVersionMatched) return;
+
+            if (_authChecker == null)
+            {
+                _authChecker = new AuthChecker();
+                AuthCheck();
+            }
         }
 
-        if (!_isVersionMatched) return;
-
-        if (_authChecker == null)
+        private void VersionCheck()
         {
-            _authChecker = new AuthChecker();
-            AuthCheck();
+            if (!_versionChecker.CheckVersion())
+            {
+                _isVersionMatched = false;
+
+                _gameSceneSequence.PopupUI("Popup_VersionCheckFailed");
+
+            }
+            else
+            {
+                Debug.Log("Version Matched");
+                _isVersionMatched = true;
+            }
         }
-    }
 
-    private void VersionCheck()
-    {
-        if (!_versionChecker.CheckVersion())
+        private void AuthCheck()
         {
-            _isVersionMatched = false;
+            bool isLogined = _authChecker.TryLogin();
+            //로그인 팝업UI 표시
 
-            _gameSceneSequence.PopupUI("Popup_VersionCheckFailed");
-
-        }
-        else
-        {
-            Debug.Log("Version Matched");
-            _isVersionMatched = true;
-        }
-    }
-
-    private void AuthCheck()
-    {
-        bool isLogined = _authChecker.TryLogin();
-        //로그인 팝업UI 표시
-
-        if (isLogined)
-        {
-            Debug.Log("Login Success");
-            SceneController.NextScene();
-        }
-        else
-        {
-            //로그인 실패 팝업UI 표시
-            _gameSceneSequence.PopupUI("Popup_LoginFailed");
+            if (isLogined)
+            {
+                Debug.Log("Login Success");
+                SceneController.NextScene();
+            }
+            else
+            {
+                //로그인 실패 팝업UI 표시
+                _gameSceneSequence.PopupUI("Popup_LoginFailed");
+            }
         }
     }
 }

@@ -1,11 +1,14 @@
 using UnityEngine;
 
-public static class UnityExtension
+namespace Cumic
 {
-    public static void LookAt2D(this Transform transform, Transform target)
+    public static class UnityExtension
     {
-        Vector3 direction = target.position - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        public static void LookAt2D(this Transform transform, Transform target)
+        {
+            Vector3 direction = target.position - transform.position;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
     }
 }

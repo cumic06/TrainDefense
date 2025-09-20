@@ -1,4 +1,7 @@
-public class StageEndEvent
+namespace Cumic.Events
 {
-    
+    public class StageEndEvent
+    {
+
+    }
 }

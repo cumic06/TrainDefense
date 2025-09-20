@@ -1,3 +1,5 @@
+using Cumic;
+using Cumic.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -7,6 +9,17 @@ namespace TrainDefense.Game
         private void Start()
         {
             Resume();
+            GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
+        }
+
+        private void OnGameEnd(GameEndEvent gameEndEvent)
+        {
+            Pause();
         }
 
         public void Pause()

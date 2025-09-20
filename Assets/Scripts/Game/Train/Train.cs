@@ -1,3 +1,4 @@
+using Cumic;
 using TrainDefense.Game.Data;
 using TrainDefense.Game.Events;
 using UnityEngine;
@@ -43,7 +44,7 @@ namespace TrainDefense.Game
             {
                 GameEventSystem.Publish(new TrainDeadEvent(this));
             }
-            
+
             _isDead = true;
         }
     }
