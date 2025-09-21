@@ -10,16 +10,30 @@ namespace TrainDefense.Game
         {
             Resume();
             GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
+            GameEventSystem.Subscribe<EngageReadyEvent>(OnEngageReady);
+            GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
         }
 
         private void OnDestroy()
         {
             GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
+            GameEventSystem.Unsubscribe<EngageReadyEvent>(OnEngageReady);
+            GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
         }
 
         private void OnGameEnd(GameEndEvent gameEndEvent)
         {
             Pause();
+        }
+
+        private void OnEngageReady(EngageReadyEvent engageReadyEvent)
+        {
+            Pause();
+        }
+
+        private void OnEngageStart(EngageStartEvent engageStartEvent)
+        {
+            Resume();
         }
 
         public void Pause()

@@ -1,4 +1,5 @@
 using Cumic;
+using Cumic.Events;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -25,6 +26,7 @@ namespace TrainDefense.Game.UI
 
         private void Start()
         {
+            GameEventSystem.Subscribe<EngageReadyEvent>(OnInspectionEnter);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnChoiceSelected);
 
             if (choiceSelectUIs.Length == 0)
@@ -35,7 +37,13 @@ namespace TrainDefense.Game.UI
 
         private void OnDestroy()
         {
+            GameEventSystem.Unsubscribe<EngageReadyEvent>(OnInspectionEnter);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnChoiceSelected);
+        }
+
+        private void OnInspectionEnter(EngageReadyEvent eventData)
+        {
+            OnChoiceUIPopup().Forget();
         }
 
         private async UniTask OnChoiceUIPopup()

@@ -1,4 +1,5 @@
 using Cumic;
+using Cumic.Events;
 using TMPro;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
@@ -45,6 +46,7 @@ namespace TrainDefense.Game.UI
         private void OnSelectButtonClick()
         {
             GameEventSystem.Publish(new TriChoiceSelectEvent(_data));
+            GameEventSystem.Publish(new EngageStartEvent());
         }
     }
 }

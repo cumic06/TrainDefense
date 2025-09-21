@@ -1,5 +1,8 @@
 using System.Collections;
+using Cumic;
+using Cumic.Events;
 using Sirenix.OdinInspector;
+using TrainDefense.Game.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -17,9 +20,31 @@ namespace TrainDefense.Game
         private float spawnRange;
         #endregion
 
+        private bool _stopSpawnMonster;
+
         private void Start()
         {
+            GameEventSystem.Subscribe<EngageReadyEvent>(StopSpawnMonster);
+            GameEventSystem.Subscribe<EngageStartEvent>(StartSpawnMonster);
+
+            _stopSpawnMonster = false;
             StartCoroutine(SpawnMonster());
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<EngageReadyEvent>(StopSpawnMonster);
+            GameEventSystem.Unsubscribe<EngageStartEvent>(StartSpawnMonster);
+        }
+
+        private void StopSpawnMonster(EngageReadyEvent engageReadyEvent)
+        {
+            _stopSpawnMonster = true;
+        }
+
+        private void StartSpawnMonster(EngageStartEvent engageStartEvent)
+        {
+            _stopSpawnMonster = false;
         }
 
         private IEnumerator SpawnMonster()
@@ -28,6 +53,11 @@ namespace TrainDefense.Game
 
             while (true)
             {
+                if (_stopSpawnMonster)
+                {
+                    yield break;
+                }
+
                 Camera camera = Camera.main;
 
                 Vector3 bottomLeft = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.transform.position.z));
