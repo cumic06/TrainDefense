@@ -54,6 +54,11 @@ public class StageManager : MonoBehaviour
 
     private float GetCurrentStageInspectionTime()
     {
+        if (_currentStageInspectionTimeIndex >= GetCurrentStageData().StageInspectionTime.Length)
+        {
+            return GetCurrentStageData().StageInspectionTime[^1];
+        }
+
         return GetCurrentStageData().StageInspectionTime[_currentStageInspectionTimeIndex];
     }
 
