@@ -46,7 +46,7 @@ namespace TrainDefense.Game.UI
 
         private void OnStageEnd(StageEndEvent stageEndEvent)
         {
-            
+
         }
 
         private void OnInspectionEnter(EngageReadyEvent eventData)
@@ -81,8 +81,40 @@ namespace TrainDefense.Game.UI
 
         private TriChoiceData RandomChoice()
         {
-            var triChoiceDatas = Resources.LoadAll<TriChoiceData>(triChoiceDataFolderPath);
-            return triChoiceDatas[Random.Range(0, triChoiceDatas.Length)];
+            var triChoiceDB = Resources.Load<TriChoiceDB>(triChoiceDataFolderPath);
+
+            if (triChoiceDB.TriChoiceDBDatas.Length == 0)
+                return null;
+
+            // 전체 가중치 합계 계산
+            float totalWeight = 0f;
+            foreach (var data in triChoiceDB.TriChoiceDBDatas)
+            {
+                totalWeight += data.Weight;
+            }
+
+            // 가중치가 모두 0이면 균등 확률로 선택
+            if (totalWeight <= 0f)
+            {
+                return triChoiceDB.TriChoiceDBDatas[Random.Range(0, triChoiceDB.TriChoiceDBDatas.Length)].TriChoiceData;
+            }
+
+            // 0부터 totalWeight까지의 랜덤 값 생성
+            float randomValue = Random.Range(0f, totalWeight);
+
+            // 누적 가중치를 계산하면서 해당 구간의 아이템 찾기
+            float currentWeight = 0f;
+            foreach (var data in triChoiceDB.TriChoiceDBDatas)
+            {
+                currentWeight += data.Weight;
+                if (randomValue <= currentWeight)
+                {
+                    return data.TriChoiceData;
+                }
+            }
+
+            // 혹시나 하는 fallback (일반적으로 실행되지 않음)
+            return triChoiceDB.TriChoiceDBDatas[^1].TriChoiceData;
         }
     }
 }
