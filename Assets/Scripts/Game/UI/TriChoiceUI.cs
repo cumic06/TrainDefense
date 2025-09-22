@@ -27,6 +27,7 @@ namespace TrainDefense.Game.UI
         private void Start()
         {
             GameEventSystem.Subscribe<EngageReadyEvent>(OnInspectionEnter);
+            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnChoiceSelected);
 
             if (choiceSelectUIs.Length == 0)
@@ -35,10 +36,17 @@ namespace TrainDefense.Game.UI
             }
         }
 
+
         private void OnDestroy()
         {
             GameEventSystem.Unsubscribe<EngageReadyEvent>(OnInspectionEnter);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnChoiceSelected);
+            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
+        }
+
+        private void OnStageEnd(StageEndEvent stageEndEvent)
+        {
+            
         }
 
         private void OnInspectionEnter(EngageReadyEvent eventData)

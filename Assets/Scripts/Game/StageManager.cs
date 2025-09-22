@@ -40,10 +40,14 @@ public class StageManager : MonoBehaviour
         _currentStageTime += Time.deltaTime;
         GameEventSystem.Publish(new ChangeStageTimeEvent(_currentStageTime));
 
-        if (_currentStageTime >= GetCurrentStageInspectionTime())
+        if (_currentStageTime >= GetCurrentStageInspectionTime() && !IsLastStageInspectionTime())
         {
             _currentStageInspectionTimeIndex++;
             GameEventSystem.Publish(new EngageReadyEvent());
+        }
+        else if (IsLastStageInspectionTime())
+        {
+            GameEventSystem.Publish(new StageEndEvent());
         }
     }
 
@@ -65,5 +69,10 @@ public class StageManager : MonoBehaviour
     private float OnGetLastStageInspectionTime(GetLastStageInspectionTimeEvent _)
     {
         return GetCurrentStageData().StageInspectionTime[^1];
+    }
+
+    private bool IsLastStageInspectionTime()
+    {
+        return _currentStageInspectionTimeIndex >= GetCurrentStageData().StageInspectionTime.Length;
     }
 }
