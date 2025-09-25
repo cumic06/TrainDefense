@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TrainDefense.Game.Datas
@@ -8,10 +9,10 @@ namespace TrainDefense.Game.Datas
     {
         #region Fields
         [SerializeField]
-        private TriChoiceDBData[] triChoiceDBDatas;
+        private List<TriChoiceDBData> triChoiceDBDatas = new();
         #endregion
 
-        public TriChoiceDBData[] TriChoiceDBDatas => triChoiceDBDatas;
+        public IReadOnlyList<TriChoiceDBData> TriChoiceDBDatas => triChoiceDBDatas;
     }
 
     [Serializable]

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Cumic;
 using Cumic.Events;
 using Cysharp.Threading.Tasks;
@@ -20,8 +21,7 @@ namespace TrainDefense.Game.UI
         private float uiActiveDelay;
 
         [SerializeField]
-        [FolderPath]
-        private string triChoiceDataFolderPath = "Datas/TriChoiceDatas";
+        private string triChoiceDBPath = "DB/TriChoiceDB";
         #endregion
 
         private void Start()
@@ -81,14 +81,25 @@ namespace TrainDefense.Game.UI
 
         private TriChoiceData RandomChoice()
         {
-            var triChoiceDB = Resources.Load<TriChoiceDB>(triChoiceDataFolderPath);
+            TriChoiceDB triChoiceDB = Resources.Load<TriChoiceDB>(triChoiceDBPath);
 
-            if (triChoiceDB.TriChoiceDBDatas.Length == 0)
+            if (triChoiceDB == null)
+            {
+                Debug.LogError("TriChoiceDB not found");
                 return null;
+            }
+
+            IReadOnlyList<TriChoiceDBData> triChoiceDBDatas = triChoiceDB.TriChoiceDBDatas;
+
+            if (triChoiceDBDatas.Count == 0)
+            {
+                Debug.LogError("TriChoiceDBDatas Count is 0");
+                return null;
+            }
 
             // 전체 가중치 합계 계산
             float totalWeight = 0f;
-            foreach (var data in triChoiceDB.TriChoiceDBDatas)
+            foreach (var data in triChoiceDBDatas)
             {
                 totalWeight += data.Weight;
             }
@@ -96,7 +107,7 @@ namespace TrainDefense.Game.UI
             // 가중치가 모두 0이면 균등 확률로 선택
             if (totalWeight <= 0f)
             {
-                return triChoiceDB.TriChoiceDBDatas[Random.Range(0, triChoiceDB.TriChoiceDBDatas.Length)].TriChoiceData;
+                return triChoiceDBDatas[Random.Range(0, triChoiceDBDatas.Count)].TriChoiceData;
             }
 
             // 0부터 totalWeight까지의 랜덤 값 생성
@@ -104,7 +115,7 @@ namespace TrainDefense.Game.UI
 
             // 누적 가중치를 계산하면서 해당 구간의 아이템 찾기
             float currentWeight = 0f;
-            foreach (var data in triChoiceDB.TriChoiceDBDatas)
+            foreach (var data in triChoiceDBDatas)
             {
                 currentWeight += data.Weight;
                 if (randomValue <= currentWeight)
@@ -114,7 +125,7 @@ namespace TrainDefense.Game.UI
             }
 
             // 혹시나 하는 fallback (일반적으로 실행되지 않음)
-            return triChoiceDB.TriChoiceDBDatas[^1].TriChoiceData;
+            return triChoiceDBDatas[^1].TriChoiceData;
         }
     }
 }

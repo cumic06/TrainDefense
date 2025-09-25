@@ -1249,7 +1249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.TriChoiceUI
   choiceSelectUIs: []
   uiActiveDelay: 0.125
-  triChoiceDataFolderPath: Datas/TriChoiceDatas
+  triChoiceDBPath: DB/TriChoiceDB
 --- !u!114 &1451208237
 MonoBehaviour:
   m_ObjectHideFlags: 0
