@@ -26,12 +26,12 @@ public class StageInspectionTimeUI : MonoBehaviour
 
     private void SetMaxValue()
     {
-        float lastStageInspectionTime = GameEventSystem.Query<GetLastStageInspectionTimeEvent, float>(new GetLastStageInspectionTimeEvent());
-        _slider.maxValue = lastStageInspectionTime;
+        float stageEndTime = GameEventSystem.Query<GetStageEndTimeEvent, float>(new GetStageEndTimeEvent());
+        _slider.maxValue = stageEndTime;
     }
 
     private void OnChangeStageTime(ChangeStageTimeEvent changeStageTimeEvent)
     {
-        _slider.value = changeStageTimeEvent.StageInspectionTime;
+        _slider.value = changeStageTimeEvent.StageTime;
     }
 }

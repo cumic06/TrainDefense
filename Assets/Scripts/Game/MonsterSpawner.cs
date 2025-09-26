@@ -24,28 +24,20 @@ namespace TrainDefense.Game
 
         private void Start()
         {
-            GameEventSystem.Subscribe<EngageReadyEvent>(StopSpawnMonster);
-            GameEventSystem.Subscribe<EngageStartEvent>(StartSpawnMonster);
-
             _stopSpawnMonster = false;
             StartCoroutine(SpawnMonster());
         }
 
-        private void OnDestroy()
+        public void StartSpawnMonster()
         {
-            GameEventSystem.Unsubscribe<EngageReadyEvent>(StopSpawnMonster);
-            GameEventSystem.Unsubscribe<EngageStartEvent>(StartSpawnMonster);
+            _stopSpawnMonster = false;
         }
-
-        private void StopSpawnMonster(EngageReadyEvent engageReadyEvent)
+        
+        public void StopSpawnMonster()
         {
             _stopSpawnMonster = true;
         }
 
-        private void StartSpawnMonster(EngageStartEvent engageStartEvent)
-        {
-            _stopSpawnMonster = false;
-        }
 
         private IEnumerator SpawnMonster()
         {

@@ -1,15 +1,13 @@
-using UnityEngine;
-
 namespace TrainDefense.Game.Events
 {
     public class ChangeStageTimeEvent
     {
-        private float _stageInspectionTime;
-        public float StageInspectionTime => _stageInspectionTime;
+        private float _stageTime;
+        public float StageTime => _stageTime;
 
-        public ChangeStageTimeEvent(float stageInspectionTime)
+        public ChangeStageTimeEvent(float stageTime)
         {
-            _stageInspectionTime = stageInspectionTime;
+            _stageTime = stageTime;
         }
     }
 }

@@ -1,4 +1,7 @@
 using Cumic.Events;
+using Sirenix.OdinInspector;
+using TrainDefense.Game;
+using TrainDefense.Game.UI;
 using UnityEngine;
 
 namespace Cumic
@@ -7,16 +10,26 @@ namespace Cumic
     {
         #region Fields
         [SerializeField]
-        private GameObject _engageReadyUI;
+        [BoxGroup("Engage Ready")]
+        private TriChoiceUI engageReadyUI;
 
         [SerializeField]
-        private GameObject _engageStartUI;
+        [BoxGroup("Engage Start")]
+        private GameObject engageStartUI;
+        [SerializeField]
+        [BoxGroup("Engage Start")]
+        private MonsterSpawner monsterSpawner;
+        [SerializeField]
+        [BoxGroup("Engage Start")]
+        private TimeManager timeManager;
 
         [SerializeField]
-        private GameObject _stageEndUI;
+        [BoxGroup("Stage End")]
+        private StageResultUI stageResultUI;
 
         [SerializeField]
-        private GameObject _gameEndUI;
+        [BoxGroup("Game End")]
+        private GameObject gameEndUI;
         #endregion
 
         private void Start()
@@ -25,9 +38,6 @@ namespace Cumic
             GameEventSystem.Subscribe<EngageStartEvent>(EngageStart);
             GameEventSystem.Subscribe<StageEndEvent>(StageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(GameEnd);
-
-            string userNameEvent = GameEventSystem.Query<GetUserNameEvent, string>(new GetUserNameEvent());
-            Debug.Log($"userNameEvent: {userNameEvent}");
         }
 
         private void OnDestroy()
@@ -40,38 +50,74 @@ namespace Cumic
 
         private void EngageReady(EngageReadyEvent engageReadyEvent)
         {
-            Debug.Log("Engage Ready");
-            _engageReadyUI.SetActive(true);
-            _engageStartUI.SetActive(false);
-            _stageEndUI.SetActive(false);
-            _gameEndUI.SetActive(false);
+            timeManager?.Pause();
+            monsterSpawner?.StopSpawnMonster();
+            engageReadyUI?.OnInspectionEnter();
+
+            if (engageStartUI != null)
+            {
+                engageStartUI.SetActive(false);
+            }
+            if (stageResultUI != null)
+            {
+                stageResultUI.gameObject.SetActive(false);
+            }
+            if (gameEndUI != null)
+            {
+                gameEndUI.SetActive(false);
+            }
         }
 
         private void EngageStart(EngageStartEvent engageStartEvent)
         {
-            Debug.Log("Engage Start");
-            _engageStartUI.SetActive(true);
-            _engageReadyUI.SetActive(false);
-            _stageEndUI.SetActive(false);
-            _gameEndUI.SetActive(false);
+            timeManager?.Resume();
+            monsterSpawner?.StartSpawnMonster();
+
+            if (engageStartUI != null)
+            {
+                engageStartUI.SetActive(true);
+            }
+            if (stageResultUI != null)
+            {
+                stageResultUI.gameObject.SetActive(false);
+            }
+            if (gameEndUI != null)
+            {
+                gameEndUI.SetActive(false);
+            }
         }
 
         private void StageEnd(StageEndEvent stageEndEvent)
         {
-            Debug.Log("Stage End");
-            _stageEndUI.SetActive(true);
-            _engageReadyUI.SetActive(false);
-            _engageStartUI.SetActive(false);
-            _gameEndUI.SetActive(false);
+            if (stageResultUI != null)
+            {
+                stageResultUI.gameObject.SetActive(true);
+                stageResultUI.ShowResult(stageEndEvent.IsClear);
+            }
+            if (engageStartUI != null)
+            {
+                engageStartUI.SetActive(false);
+            }
+            if (gameEndUI != null)
+            {
+                gameEndUI.SetActive(false);
+            }
         }
 
         private void GameEnd(GameEndEvent gameEndEvent)
         {
-            Debug.Log("Game End");
-            _gameEndUI.SetActive(true);
-            _engageReadyUI.SetActive(false);
-            _engageStartUI.SetActive(false);
-            _stageEndUI.SetActive(false);
+            if (gameEndUI != null)
+            {
+                gameEndUI.SetActive(true);
+            }
+            if (engageStartUI != null)
+            {
+                engageStartUI.SetActive(false);
+            }
+            if (stageResultUI != null)
+            {
+                stageResultUI.gameObject.SetActive(false);
+            }
         }
     }
 }

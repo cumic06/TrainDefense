@@ -15,12 +15,12 @@ public class StageManager : MonoBehaviour
     {
         LoadStageDatas();
         ResetCurrentStageInfo();
-        GameEventSystem.Subscribe<GetLastStageInspectionTimeEvent, float>(OnGetLastStageInspectionTime);
+        GameEventSystem.Subscribe<GetStageEndTimeEvent, float>(GetCurrentStageEndTime);
     }
 
     private void OnDestroy()
     {
-        GameEventSystem.Unsubscribe<GetLastStageInspectionTimeEvent, float>(OnGetLastStageInspectionTime);
+        GameEventSystem.Unsubscribe<GetStageEndTimeEvent, float>(GetCurrentStageEndTime);
     }
 
     private void ResetCurrentStageInfo()
@@ -40,14 +40,14 @@ public class StageManager : MonoBehaviour
         _currentStageTime += Time.deltaTime;
         GameEventSystem.Publish(new ChangeStageTimeEvent(_currentStageTime));
 
-        if (_currentStageTime >= GetCurrentStageInspectionTime() && !IsLastStageInspectionTime())
+        if (_currentStageTime >= GetCurrentStageInspectionTime() && _currentStageInspectionTimeIndex < GetCurrentStageData().StageInspectionTime.Length)
         {
             _currentStageInspectionTimeIndex++;
             GameEventSystem.Publish(new EngageReadyEvent());
         }
-        else if (IsLastStageInspectionTime())
+        else if (_currentStageTime >= GetCurrentStageData().StageEndTime)
         {
-            GameEventSystem.Publish(new StageEndEvent());
+            GameEventSystem.Publish(new StageEndEvent(true));
         }
     }
 
@@ -66,13 +66,8 @@ public class StageManager : MonoBehaviour
         return GetCurrentStageData().StageInspectionTime[_currentStageInspectionTimeIndex];
     }
 
-    private float OnGetLastStageInspectionTime(GetLastStageInspectionTimeEvent _)
+    private float GetCurrentStageEndTime(GetStageEndTimeEvent getLastStageInspectionTimeEvent)
     {
-        return GetCurrentStageData().StageInspectionTime[^1];
-    }
-
-    private bool IsLastStageInspectionTime()
-    {
-        return _currentStageInspectionTimeIndex >= GetCurrentStageData().StageInspectionTime.Length;
+        return GetCurrentStageData().StageEndTime;
     }
 }

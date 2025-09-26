@@ -21,7 +21,7 @@ namespace Cumic
         [Button("Stage End")]
         private void StageEnd()
         {
-            GameEventSystem.Publish(new StageEndEvent());
+            GameEventSystem.Publish(new StageEndEvent(true));
         }
 
         [Button("Game End")]
