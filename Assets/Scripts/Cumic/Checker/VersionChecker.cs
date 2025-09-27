@@ -1,10 +1,12 @@
-namespace Cumic
+using Cysharp.Threading.Tasks;
+
+namespace Cumic.Checker
 {
     public class VersionChecker : IVersionable
     {
-        public bool CheckVersion()
+        public UniTask<bool> CheckVersion()
         {
-            return true;
+            return UniTask.FromResult(true);
         }
     }
 }

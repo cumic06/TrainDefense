@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cumic
+namespace Cumic.Events
 {
     public static class GameEventSystem
     {
@@ -97,7 +97,8 @@ namespace Cumic
 
             if (queryHandlers.Count > 0)
             {
-                return queryHandlers[0] is Func<TRequest, TResponse> handler ? handler.Invoke(requestData) : default;
+                Func<TRequest, TResponse> handler = queryHandlers[0] as Func<TRequest, TResponse>;
+                return handler != null ? handler.Invoke(requestData) : default;
             }
 
             return default;

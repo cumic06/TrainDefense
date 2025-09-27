@@ -1,13 +1,17 @@
+using Cumic;
 using UnityEngine;
 
-namespace Cumic.UI
+public class UIManager : Singleton<UIManager>
 {
-    public class UIManager : Singleton<UIManager>
+    public void ShowPopup(string uiName)
     {
-        public void ShowPopup(string uiName)
+        GameObject popup = Resources.Load<GameObject>(uiName);
+        if (popup == null)
         {
-            GameObject popup = Resources.Load<GameObject>(uiName);
-            Instantiate(popup, transform);
+            Debug.LogError($"Popup {uiName} not found");
+            return;
         }
+
+        Instantiate(popup, transform);
     }
 }

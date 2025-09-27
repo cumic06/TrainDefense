@@ -1,18 +1,20 @@
-namespace Cumic
+using Cysharp.Threading.Tasks;
+
+namespace Cumic.Checker
 {
     public class AuthChecker : IAuthable
     {
-        public bool TryLogin()
+        public async UniTask<bool> TryLogin()
         {
             return true;
         }
 
-        public bool TryLogout()
+        public async UniTask<bool> TryLogout()
         {
             throw new System.NotImplementedException();
         }
 
-        public bool IsLoggedIn()
+        public async UniTask<bool> IsLoggedIn()
         {
             throw new System.NotImplementedException();
         }

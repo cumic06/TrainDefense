@@ -1,9 +1,11 @@
-namespace Cumic
+using Cysharp.Threading.Tasks;
+
+namespace Cumic.Checker
 {
     public interface IAuthable
     {
-        bool TryLogin();//로그인
-        bool TryLogout();//로그아웃
-        bool IsLoggedIn();//로그인 상태
+        UniTask<bool> TryLogin();//로그인
+        UniTask<bool> TryLogout();//로그아웃
+        UniTask<bool> IsLoggedIn();//로그인 상태
     }
 }

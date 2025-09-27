@@ -6,6 +6,8 @@ namespace TrainDefense.Game.Datas
     {
         #region Fields
         [SerializeField]
+        private string id;
+        [SerializeField]
         private Sprite icon;
         [SerializeField]
         private string choiceName;
@@ -13,6 +15,7 @@ namespace TrainDefense.Game.Datas
         private string description;
         #endregion
 
+        public string Id => id;
         public Sprite Icon => icon;
         public string ChoiceName => choiceName;
         public string Description => description;

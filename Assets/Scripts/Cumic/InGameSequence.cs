@@ -1,35 +1,28 @@
 using Cumic.Events;
 using Sirenix.OdinInspector;
-using TrainDefense.Game;
 using TrainDefense.Game.UI;
 using UnityEngine;
 
-namespace Cumic
+namespace Cumic.Sequence
 {
     public class InGameSequence : MonoBehaviour
     {
         #region Fields
         [SerializeField]
         [BoxGroup("Engage Ready")]
-        private TriChoiceUI engageReadyUI;
+        private TriChoiceUI triChoiceUI;
 
         [SerializeField]
         [BoxGroup("Engage Start")]
-        private GameObject engageStartUI;
-        [SerializeField]
-        [BoxGroup("Engage Start")]
-        private MonsterSpawner monsterSpawner;
-        [SerializeField]
-        [BoxGroup("Engage Start")]
-        private TimeManager timeManager;
+        private GameObject _engageStartUI;
 
         [SerializeField]
         [BoxGroup("Stage End")]
-        private StageResultUI stageResultUI;
+        private StageResultUI _stageResultUI;
 
         [SerializeField]
         [BoxGroup("Game End")]
-        private GameObject gameEndUI;
+        private GameObject _gameEndUI;
         #endregion
 
         private void Start()
@@ -50,73 +43,83 @@ namespace Cumic
 
         private void EngageReady(EngageReadyEvent engageReadyEvent)
         {
-            timeManager?.Pause();
-            monsterSpawner?.StopSpawnMonster();
-            engageReadyUI?.OnInspectionEnter();
-
-            if (engageStartUI != null)
+            if (triChoiceUI != null)
             {
-                engageStartUI.SetActive(false);
+                triChoiceUI.gameObject.SetActive(true);
+                triChoiceUI.OnInspectionEnter();
             }
-            if (stageResultUI != null)
+            if (_engageStartUI != null)
             {
-                stageResultUI.gameObject.SetActive(false);
+                _engageStartUI.SetActive(false);
             }
-            if (gameEndUI != null)
+            if (_stageResultUI != null)
             {
-                gameEndUI.SetActive(false);
+                _stageResultUI.gameObject.SetActive(false);
+            }
+            if (_gameEndUI != null)
+            {
+                _gameEndUI.SetActive(false);
             }
         }
 
         private void EngageStart(EngageStartEvent engageStartEvent)
         {
-            timeManager?.Resume();
-            monsterSpawner?.StartSpawnMonster();
-
-            if (engageStartUI != null)
+            if (_engageStartUI != null)
             {
-                engageStartUI.SetActive(true);
+                _engageStartUI.SetActive(true);
             }
-            if (stageResultUI != null)
+            if (triChoiceUI != null)
             {
-                stageResultUI.gameObject.SetActive(false);
+                triChoiceUI.gameObject.SetActive(false);
             }
-            if (gameEndUI != null)
+            if (_stageResultUI != null)
             {
-                gameEndUI.SetActive(false);
+                _stageResultUI.gameObject.SetActive(false);
+            }
+            if (_gameEndUI != null)
+            {
+                _gameEndUI.SetActive(false);
             }
         }
 
         private void StageEnd(StageEndEvent stageEndEvent)
         {
-            if (stageResultUI != null)
+            if (_stageResultUI != null)
             {
-                stageResultUI.gameObject.SetActive(true);
-                stageResultUI.ShowResult(stageEndEvent.IsClear);
+                _stageResultUI.gameObject.SetActive(true);
+                _stageResultUI.ShowResult(stageEndEvent.IsClear);
             }
-            if (engageStartUI != null)
+            if (triChoiceUI != null)
             {
-                engageStartUI.SetActive(false);
+                triChoiceUI.gameObject.SetActive(false);
             }
-            if (gameEndUI != null)
+            if (_engageStartUI != null)
             {
-                gameEndUI.SetActive(false);
+                _engageStartUI.SetActive(false);
+            }
+            if (_gameEndUI != null)
+            {
+                _gameEndUI.SetActive(false);
             }
         }
 
         private void GameEnd(GameEndEvent gameEndEvent)
         {
-            if (gameEndUI != null)
+            if (_gameEndUI != null)
             {
-                gameEndUI.SetActive(true);
+                _gameEndUI.SetActive(true);
             }
-            if (engageStartUI != null)
+            if (triChoiceUI != null)
             {
-                engageStartUI.SetActive(false);
+                triChoiceUI.gameObject.SetActive(false);
             }
-            if (stageResultUI != null)
+            if (_engageStartUI != null)
             {
-                stageResultUI.gameObject.SetActive(false);
+                _engageStartUI.SetActive(false);
+            }
+            if (_stageResultUI != null)
+            {
+                _stageResultUI.gameObject.SetActive(false);
             }
         }
     }

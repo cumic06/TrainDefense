@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10545e2fd81eab245830ac4c7cb65022, type: 3}
   m_Name: AddDoubleTurrretTrainChoiceData
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.AddTrainChoiceData
+  id: choice02
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   choiceName: 'Add Double Turret Train '
   description: Double Turret Train + 1

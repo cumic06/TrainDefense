@@ -1,66 +1,76 @@
+using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Cumic.Checker;
 
-namespace Cumic
+namespace Cumic.Sequence
 {
     public class AuthSceneSequencer : ISceneSequencer
     {
-        private IAuthable _authChecker;
-        private IVersionable _versionChecker;
+        private readonly IAuthable _authChecker;
+        private readonly IVersionable _versionChecker;
 
         private bool _isVersionMatched = false;
+        private bool _isLoggedIn = false;
 
-        private GameSceneSequence _gameSceneSequence;
+        private readonly GameSceneSequence _gameSceneSequence;
 
-        public AuthSceneSequencer(GameSceneSequence gameSceneSequence)
+        public event Action<bool> OnCompleted;
+
+        public AuthSceneSequencer(GameSceneSequence gameSceneSequence, IVersionable versionChecker, IAuthable authChecker)
         {
             _gameSceneSequence = gameSceneSequence;
+            _versionChecker = versionChecker;
+            _authChecker = authChecker;
+        }
 
-            if (_versionChecker == null)
-            {
-                _versionChecker = new VersionChecker();
-                VersionCheck();
-            }
+        public async UniTask Run()
+        {
+            _isVersionMatched = await VersionCheck();
 
             if (!_isVersionMatched) return;
 
-            if (_authChecker == null)
-            {
-                _authChecker = new AuthChecker();
-                AuthCheck();
-            }
+            _isLoggedIn = await AuthCheck();
+
+            OnCompleted?.Invoke(_isLoggedIn);
         }
 
-        private void VersionCheck()
+        private async UniTask<bool> VersionCheck()
         {
-            if (!_versionChecker.CheckVersion())
+            bool isChecked = await _versionChecker.CheckVersion();
+            if (!isChecked)
             {
-                _isVersionMatched = false;
-
                 _gameSceneSequence.PopupUI("Popup_VersionCheckFailed");
-
+                return false;
             }
             else
             {
                 Debug.Log("Version Matched");
-                _isVersionMatched = true;
+                return true;
             }
         }
 
-        private void AuthCheck()
+        private async UniTask<bool> AuthCheck()
         {
-            bool isLogined = _authChecker.TryLogin();
+            bool isLogined = await _authChecker.TryLogin();
             //로그인 팝업UI 표시
 
             if (isLogined)
             {
                 Debug.Log("Login Success");
-                SceneController.NextScene();
+                return true;
             }
             else
             {
                 //로그인 실패 팝업UI 표시
                 _gameSceneSequence.PopupUI("Popup_LoginFailed");
+                return false;
             }
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

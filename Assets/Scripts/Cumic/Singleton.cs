@@ -18,6 +18,12 @@ namespace Cumic
 
             if (dontDestroyOnLoad)
             {
+                if (Instance != this)
+                {
+                    Destroy(gameObject);
+                    return;
+                }
+
                 DontDestroyOnLoad(gameObject);
             }
         }

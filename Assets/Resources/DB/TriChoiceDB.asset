@@ -15,5 +15,3 @@ MonoBehaviour:
   triChoiceDBDatas:
   - TriChoiceData: {fileID: 11400000, guid: a107a7d34b9c7954fafd9c047a68f854, type: 2}
     Weight: 100
-  - TriChoiceData: {fileID: 11400000, guid: 528ba0efd1ea72349b65246d78fbc3c1, type: 2}
-    Weight: 50
