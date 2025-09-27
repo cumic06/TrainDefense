@@ -1,5 +1,6 @@
 using Cumic.Events;
 using Sirenix.OdinInspector;
+using TrainDefense.Game;
 using TrainDefense.Game.UI;
 using UnityEngine;
 
@@ -45,7 +46,6 @@ namespace Cumic.Sequence
         {
             if (triChoiceUI != null)
             {
-                triChoiceUI.gameObject.SetActive(true);
                 triChoiceUI.OnInspectionEnter();
             }
             if (_engageStartUI != null)
@@ -64,13 +64,11 @@ namespace Cumic.Sequence
 
         private void EngageStart(EngageStartEvent engageStartEvent)
         {
+            TimeManager.Instance.Resume();
+            
             if (_engageStartUI != null)
             {
                 _engageStartUI.SetActive(true);
-            }
-            if (triChoiceUI != null)
-            {
-                triChoiceUI.gameObject.SetActive(false);
             }
             if (_stageResultUI != null)
             {
@@ -89,10 +87,6 @@ namespace Cumic.Sequence
                 _stageResultUI.gameObject.SetActive(true);
                 _stageResultUI.ShowResult(stageEndEvent.IsClear);
             }
-            if (triChoiceUI != null)
-            {
-                triChoiceUI.gameObject.SetActive(false);
-            }
             if (_engageStartUI != null)
             {
                 _engageStartUI.SetActive(false);
@@ -108,10 +102,6 @@ namespace Cumic.Sequence
             if (_gameEndUI != null)
             {
                 _gameEndUI.SetActive(true);
-            }
-            if (triChoiceUI != null)
-            {
-                triChoiceUI.gameObject.SetActive(false);
             }
             if (_engageStartUI != null)
             {

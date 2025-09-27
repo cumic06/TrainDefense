@@ -61,10 +61,9 @@ namespace TrainDefense.Game.UI
 
         private void OnChoiceSelected(TriChoiceSelectEvent eventData)
         {
-            TimeManager.Instance.Resume();
-
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
+                choiceSelectUI.transform.localScale = Vector3.one;
                 choiceSelectUI.transform.DOScale(0, uiActiveDelay).SetEase(Ease.InBack).SetUpdate(true);
             }
         }
