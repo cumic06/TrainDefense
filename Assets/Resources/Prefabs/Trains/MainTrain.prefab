@@ -48,9 +48,65 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1176710824882549994, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Size.x
+      value: 0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1176710824882549994, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Size.y
+      value: 0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 1176710824882549994, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c3ef6d6f67c39fa4a9de84802fae6733, type: 3}
+    - target: {fileID: 1176710824882549994, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       propertyPath: m_Name
       value: MainTrain
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716768962924445455, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Size.x
+      value: 2.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3716768962924445455, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Size.y
+      value: 1.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922685043335397944, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922685043335397944, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922685043335397944, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922685043335397944, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922685043335397944, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922685043335397944, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922685043335397944, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 6922685043335397944, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -82,4 +138,3 @@ MonoBehaviour:
   maxTrainCount: 5
   trainOffset: 2.2
   startTrainablePrefab: {fileID: 6472199296939909711, guid: 2c445e47e8c9769498d0ec34f9edac9f, type: 3}
-  levelUpExp: 64000000c8000000
