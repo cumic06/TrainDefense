@@ -1,8 +1,10 @@
+using System.Collections;
 using Cumic.Events;
 using Sirenix.OdinInspector;
 using TrainDefense.Game;
 using TrainDefense.Game.UI;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Cumic.Sequence
 {
@@ -28,18 +30,37 @@ namespace Cumic.Sequence
 
         private void Start()
         {
+            GameEventSystem.Subscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(EngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(EngageStart);
             GameEventSystem.Subscribe<StageEndEvent>(StageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(GameEnd);
+
+            StartCoroutine(GameEnterCoroutine());
+        }
+
+        private IEnumerator GameEnterCoroutine()
+        {
+            yield return null;
+            GameEventSystem.Publish(new GameEnterEvent());
         }
 
         private void OnDestroy()
         {
+            GameEventSystem.Unsubscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Unsubscribe<EngageReadyEvent>(EngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(EngageStart);
             GameEventSystem.Unsubscribe<StageEndEvent>(StageEnd);
             GameEventSystem.Unsubscribe<GameEndEvent>(GameEnd);
+        }
+
+        private void GameEnter(GameEnterEvent gameEnterEvent)
+        {
+            if (triChoiceUI != null)
+            {
+                triChoiceUI.OnInspectionEnter();
+                Debug.Log("UIGameEnter");
+            }
         }
 
         private void EngageReady(EngageReadyEvent engageReadyEvent)
@@ -65,7 +86,7 @@ namespace Cumic.Sequence
         private void EngageStart(EngageStartEvent engageStartEvent)
         {
             TimeManager.Instance.Resume();
-            
+
             if (_engageStartUI != null)
             {
                 _engageStartUI.SetActive(true);

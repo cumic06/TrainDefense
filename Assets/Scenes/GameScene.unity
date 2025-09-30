@@ -554,6 +554,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -6865814404541872816, guid: a544662bcec77a141b5326512a51ff41, type: 3}
+      propertyPath: startTrainablePrefab
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: -6865814404541872816, guid: a544662bcec77a141b5326512a51ff41, type: 3}
       propertyPath: levelUpExp.Array.size
       value: 4
       objectReference: {fileID: 0}

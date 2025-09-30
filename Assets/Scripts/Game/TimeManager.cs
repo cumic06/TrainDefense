@@ -9,18 +9,26 @@ namespace TrainDefense.Game
         private void Start()
         {
             Resume();
-            GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
-            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
+            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
         }
 
         private void OnDestroy()
         {
-            GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
-            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
             GameEventSystem.Unsubscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
+            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
+        }
+
+        private void OnGameEnter(GameEnterEvent gameEnterEvent)
+        {
+            Pause();
+            Debug.Log("GameEnter");
         }
 
         private void OnStageEnd(StageEndEvent stageEndEvent)

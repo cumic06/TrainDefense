@@ -24,14 +24,17 @@ namespace TrainDefense.Game.UI
         private string triChoiceDBPath = "DB/TriChoiceDB";
         #endregion
 
-        private void Start()
+        private void Awake()
         {
-            GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnChoiceSelected);
-
             if (choiceSelectUIs.Length == 0)
             {
                 choiceSelectUIs = GetComponentsInChildren<TriChoiceSelectUI>(true);
             }
+        }
+
+        private void Start()
+        {
+            GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnChoiceSelected);
         }
 
         private void OnDestroy()
