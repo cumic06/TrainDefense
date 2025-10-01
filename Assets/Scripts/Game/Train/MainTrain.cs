@@ -96,7 +96,7 @@ namespace TrainDefense.Game
 
             if (upgradeTrain != null)
             {
-                upgradeTrain.Upgrade();
+                // upgradeTrain.Upgrade();
             }
         }
 

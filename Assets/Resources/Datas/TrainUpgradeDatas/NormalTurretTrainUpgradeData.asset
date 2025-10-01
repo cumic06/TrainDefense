@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d09b9f2ebdbadb4db2e308166a23904, type: 3}
   m_Name: NormalTurretTrainUpgradeData
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Data.TurretTrainUpgradeData
-  id: 
+  id: train_01
   trainStatusData:
     MaxHp: 0
   turretTrainStatusData:

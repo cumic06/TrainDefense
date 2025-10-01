@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 namespace TrainDefense.Game.Data
 {
     [CreateAssetMenu(fileName = "TurretTrainUpgradeData", menuName = "Data/TrainUpgradeData/TurretTrainUpgradeData")]

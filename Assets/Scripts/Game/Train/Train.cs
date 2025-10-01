@@ -52,9 +52,10 @@ namespace TrainDefense.Game
             _isDead = true;
         }
 
-        public virtual void Upgrade()
+        public virtual void Upgrade(TrainUpgradeData trainUpgradeData)
         {
             _currentLevel++;
+            _currentHp += trainUpgradeData.TrainStatusData.MaxHp;
         }
     }
 }
