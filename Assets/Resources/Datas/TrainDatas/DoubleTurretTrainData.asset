@@ -15,10 +15,13 @@ MonoBehaviour:
   id: train_02
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   description: 
-  maxHp: 100
+  trainStatusData:
+    MaxHp: 100
   trainPrefab: {fileID: 8797714124587697100, guid: 39ef0c811bcec7c4ba9f0e6f5655b998, type: 3}
-  attackDamage: 5
-  attackCount: 2
-  attackDelay: 0.3
-  attackRange: 5
+  isMainTrain: 0
+  turretTrainStatus:
+    AttackDamage: 10
+    AttackCount: 2
+    AttackDelay: 0.25
+    AttackRange: 5
   turretProjectilePrefab: {fileID: 1829234309482384407, guid: 73538706c0c9d074ba819960d6a42bb2, type: 3}

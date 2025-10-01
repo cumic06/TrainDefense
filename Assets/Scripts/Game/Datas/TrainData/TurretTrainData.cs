@@ -1,4 +1,4 @@
-using Sirenix.OdinInspector;
+using System;
 using UnityEngine;
 
 namespace TrainDefense.Game.Data
@@ -8,25 +8,21 @@ namespace TrainDefense.Game.Data
     {
         #region Fields
         [SerializeField]
-        [BoxGroup("AttackSetting")]
-        private int attackDamage;
-        [SerializeField]
-        [BoxGroup("AttackSetting")]
-        private int attackCount;
-        [SerializeField]
-        [BoxGroup("AttackSetting")]
-        private float attackDelay;
-        [SerializeField]
-        [BoxGroup("AttackSetting")]
-        private float attackRange;
+        private TurretTrainStatus turretTrainStatus;
         [SerializeField]
         private Projectile turretProjectilePrefab;
         #endregion
 
-        public int AttackDamage => attackDamage;
-        public int AttackCount => attackCount;
-        public float AttackDelay => attackDelay;
-        public float AttackRange => attackRange;
+        public TurretTrainStatus TurretTrainStatus => turretTrainStatus;
         public Projectile TurretProjectilePrefab => turretProjectilePrefab;
+    }
+
+    [Serializable]
+    public struct TurretTrainStatus
+    {
+        public int AttackDamage;
+        public int AttackCount;
+        public float AttackDelay;
+        public float AttackRange;
     }
 }

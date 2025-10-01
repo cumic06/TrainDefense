@@ -23,12 +23,12 @@ namespace TrainDefense.Game
         [BoxGroup("TrainSetting")]
         private float trainOffset;
         [SerializeField]
+        [Header("테스트용")]
         [BoxGroup("TrainSetting")]
         private Train startTrainablePrefab;
         #endregion
 
-        private readonly List<ITrainable> _currentTrainables = new();
-        private Dictionary<string, int> _currentTrainDataCount = new();//이걸로 나중에 기차 업그레이드 해야 함.
+        private readonly List<Train> _currentTrains = new();
 
         protected override void Start()
         {
@@ -37,7 +37,7 @@ namespace TrainDefense.Game
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
             GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
 
-            if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out ITrainable trainable))
+            if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
             {
                 SpawnTrain(startTrainablePrefab);
             }
@@ -62,7 +62,7 @@ namespace TrainDefense.Game
             {
                 TrainData choiceTrainData = addTrainChoiceData.TrainData;
 
-                AddTrainData(choiceTrainData);
+                UpgradeTrain(choiceTrainData);
                 SpawnTrain(choiceTrainData.TrainPrefab);
             }
         }
@@ -75,7 +75,7 @@ namespace TrainDefense.Game
         [Button("SpawnTrain")]
         private void SpawnTrain(Train trainPrefab)
         {
-            if (_currentTrainables.Count >= maxTrainCount)
+            if (_currentTrains.Count >= maxTrainCount)
             {
 #if UNITY_EDITOR
                 Debug.LogWarning("Train count is max");
@@ -84,35 +84,33 @@ namespace TrainDefense.Game
             }
 
             Train trainObject = Instantiate(trainPrefab, transform);
-            _currentTrainables.Add(trainObject);
-            Vector3 spawnPos = Vector3.left * trainOffset * _currentTrainables.Count;
+            _currentTrains.Add(trainObject);
+            Vector3 spawnPos = Vector3.left * trainOffset * _currentTrains.Count;
             trainObject.transform.localPosition = spawnPos;
             GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
         }
 
-        private void AddTrainData(TrainData choiceTrainData)//이걸로 나중에 기차 업그레이드 해야함.
+        private void UpgradeTrain(TrainData choiceTrainData)
         {
-            if (_currentTrainDataCount.ContainsKey(choiceTrainData.Id))
+            Train upgradeTrain = _currentTrains.FirstOrDefault(train => train.TrainData.Id == choiceTrainData.Id);
+
+            if (upgradeTrain != null)
             {
-                _currentTrainDataCount[choiceTrainData.Id]++;
-            }
-            else
-            {
-                _currentTrainDataCount.Add(choiceTrainData.Id, 1);
+                upgradeTrain.Upgrade();
             }
         }
 
         private void CheckDeadTrain(TrainDeadEvent trainDeadEvent)
         {
 
-            foreach (var train in _currentTrainables.ToList())
+            foreach (var train in _currentTrains.ToList())
             {
                 if (trainDeadEvent.Train == train as Train)
                 {
                     Debug.Log($"{trainDeadEvent.Train.name} {train as Train}");
-                    _currentTrainables.Remove(train);
+                    _currentTrains.Remove(train);
 
-                    if (_currentTrainables.Count == 0)
+                    if (_currentTrains.Count == 0)
                     {
                         OnDead();
                     }

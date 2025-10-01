@@ -59,7 +59,6 @@ namespace Cumic.Sequence
             if (triChoiceUI != null)
             {
                 triChoiceUI.OnInspectionEnter();
-                Debug.Log("UIGameEnter");
             }
         }
 

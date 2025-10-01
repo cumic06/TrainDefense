@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace TrainDefense.Game.Data
@@ -13,7 +14,7 @@ namespace TrainDefense.Game.Data
         [SerializeField]
         private string description;
         [SerializeField]
-        private int maxHp;
+        private TrainStatusData trainStatusData;
         [SerializeField]
         private Train trainPrefab;
         [SerializeField]
@@ -23,8 +24,14 @@ namespace TrainDefense.Game.Data
         public string Id => id;
         public Sprite Icon => icon;
         public string Description => description;
-        public int MaxHp => maxHp;
+        public TrainStatusData TrainStatusData => trainStatusData;
         public Train TrainPrefab => trainPrefab;
         public bool IsMainTrain => isMainTrain;
+    }
+
+    [Serializable]
+    public struct TrainStatusData
+    {
+        public int MaxHp;
     }
 }

@@ -14,14 +14,18 @@ namespace TrainDefense.Game
 
         protected bool _isDead;
         protected int _currentHp;
+        protected int _currentLevel;
 
         public bool IsDead => _isDead;
         public bool IsMainTrain => trainData.IsMainTrain;
+        public int CurrentLevel => _currentLevel;
+        public TrainData TrainData => trainData;
 
         protected virtual void Start()
         {
             _isDead = false;
-            _currentHp = trainData.MaxHp;
+            _currentHp = trainData.TrainStatusData.MaxHp;
+            _currentLevel = 1;
         }
 
         public virtual void TakeDamage(int damage)
@@ -30,7 +34,7 @@ namespace TrainDefense.Game
 
             _currentHp -= damage;
 
-            GameEventSystem.Publish(new HitEvent(_currentHp, trainData.MaxHp, this));
+            GameEventSystem.Publish(new HitEvent(_currentHp, trainData.TrainStatusData.MaxHp, this));
 
             if (_currentHp <= 0)
             {
@@ -46,6 +50,11 @@ namespace TrainDefense.Game
             }
 
             _isDead = true;
+        }
+
+        public virtual void Upgrade()
+        {
+            _currentLevel++;
         }
     }
 }

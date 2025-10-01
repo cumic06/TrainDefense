@@ -15,6 +15,7 @@ MonoBehaviour:
   id: train_00
   icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
   description: 
-  maxHp: 100
+  trainStatusData:
+    MaxHp: 100
   trainPrefab: {fileID: -6865814404541872816, guid: a544662bcec77a141b5326512a51ff41, type: 3}
   isMainTrain: 1
