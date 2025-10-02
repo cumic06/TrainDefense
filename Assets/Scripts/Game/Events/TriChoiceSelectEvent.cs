@@ -4,13 +4,13 @@ namespace TrainDefense.Game.Events
 {
     public class TriChoiceSelectEvent
     {
-        private TriChoiceData _data;
+        private ChoiceOption _choiceOption;
 
-        public TriChoiceData Data => _data;
+        public ChoiceOption ChoiceOption => _choiceOption;
 
-        public TriChoiceSelectEvent(TriChoiceData data)
+        public TriChoiceSelectEvent(ChoiceOption choiceOption)
         {
-            _data = data;
+            _choiceOption = choiceOption;
         }
     }
 }

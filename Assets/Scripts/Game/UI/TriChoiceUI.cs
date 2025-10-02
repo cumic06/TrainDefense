@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using Cumic;
 using Cumic.Events;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Sirenix.OdinInspector;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using UnityEngine;
@@ -51,10 +49,11 @@ namespace TrainDefense.Game.UI
         {
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
-                var triChoiceData = RandomChoice();
-                if (triChoiceData == null) continue;
+                var choiceOption = RandomChoice();
+                
+                if (choiceOption == null) continue;
 
-                choiceSelectUI.SetData(triChoiceData);
+                choiceSelectUI.SetData(choiceOption);
 
                 choiceSelectUI.transform.localScale = Vector3.zero;
 
@@ -71,7 +70,7 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        private TriChoiceData RandomChoice()
+        private ChoiceOption RandomChoice()
         {
             TriChoiceDB triChoiceDB = Resources.Load<TriChoiceDB>(triChoiceDBPath);
 
@@ -81,43 +80,75 @@ namespace TrainDefense.Game.UI
                 return null;
             }
 
-            IReadOnlyList<TriChoiceDBData> triChoiceDBDatas = triChoiceDB.TriChoiceDBDatas;
+            // 각 카테고리에서 유효한 선택지만 필터링
+            List<ChoiceEntry> validAddTrain = GetValidChoices(triChoiceDB.AddTrainChoices);
+            List<ChoiceEntry> validUpgradeTrain = GetValidChoices(triChoiceDB.UpgradeTrainChoices);
 
-            if (triChoiceDBDatas.Count == 0)
+            // 유효한 카테고리 수집
+            List<List<ChoiceEntry>> validCategories = new();
+            if (validAddTrain.Count > 0) validCategories.Add(validAddTrain);
+            if (validUpgradeTrain.Count > 0) validCategories.Add(validUpgradeTrain);
+
+            if (validCategories.Count == 0)
             {
-                Debug.LogError("TriChoiceDBDatas Count is 0");
+                Debug.LogWarning("No valid choices available");
                 return null;
             }
 
-            // 전체 가중치 합계 계산
-            float totalWeight = 0f;
-            foreach (var data in triChoiceDBDatas)
-            {
-                totalWeight += data.Weight;
-            }
+            // 카테고리 중 하나를 균등 확률로 선택
+            List<ChoiceEntry> selectedCategory = validCategories[Random.Range(0, validCategories.Count)];
 
-            // 가중치가 모두 0이면 균등 확률로 선택
-            if (totalWeight <= 0f)
-            {
-                return triChoiceDBDatas[Random.Range(0, triChoiceDBDatas.Count)].TriChoiceData;
-            }
+            // 선택된 카테고리 내에서 가중치 기반 선택
+            return SelectFromChoices(selectedCategory);
+        }
 
-            // 0부터 totalWeight까지의 랜덤 값 생성
-            float randomValue = Random.Range(0f, totalWeight);
+        private List<ChoiceEntry> GetValidChoices(IReadOnlyList<ChoiceEntry> entries)
+        {
+            List<ChoiceEntry> validChoices = new();
 
-            // 누적 가중치를 계산하면서 해당 구간의 아이템 찾기
-            float currentWeight = 0f;
-            foreach (var data in triChoiceDBDatas)
+            foreach (var entry in entries)
             {
-                currentWeight += data.Weight;
-                if (randomValue <= currentWeight)
+                if (entry.Option != null && entry.Option.IsValid())
                 {
-                    return data.TriChoiceData;
+                    validChoices.Add(entry);
                 }
             }
 
-            // 혹시나 하는 fallback (일반적으로 실행되지 않음)
-            return triChoiceDBDatas[^1].TriChoiceData;
+            return validChoices;
+        }
+
+        private ChoiceOption SelectFromChoices(List<ChoiceEntry> choices)
+        {
+            if (choices.Count == 0) return null;
+            if (choices.Count == 1) return choices[0].Option;
+
+            int totalWeight = 0;
+            foreach (var entry in choices)
+            {
+                totalWeight += entry.Weight;
+            }
+
+            // 가중치가 모두 0이면 균등 확률로 선택
+            if (totalWeight <= 0)
+            {
+                return choices[Random.Range(0, choices.Count)].Option;
+            }
+
+            // 가중치 기반 랜덤 선택
+            int randomValue = Random.Range(0, totalWeight);
+            int currentWeight = 0;
+
+            foreach (var entry in choices)
+            {
+                currentWeight += entry.Weight;
+
+                if (randomValue < currentWeight)
+                {
+                    return entry.Option;
+                }
+            }
+
+            return choices[^1].Option;
         }
     }
 }

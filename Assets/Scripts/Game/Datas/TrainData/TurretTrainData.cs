@@ -25,4 +25,16 @@ namespace TrainDefense.Game.Data
         public float AttackDelay;
         public float AttackRange;
     }
+
+    /// <summary>
+    /// TurretTrain의 추가 업그레이드 데이터
+    /// </summary>
+    [Serializable]
+    public class TurretTrainUpgradeExtension : TrainUpgradeExtension
+    {
+        [SerializeField]
+        private TurretTrainStatus turretStatusUpgrade;
+
+        public TurretTrainStatus TurretStatusUpgrade => turretStatusUpgrade;
+    }
 }
