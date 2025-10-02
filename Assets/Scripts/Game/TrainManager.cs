@@ -6,8 +6,12 @@ namespace TrainDefense.Game
 {
     public class TrainManager : Singleton<TrainManager>
     {
+        #region Field
         [SerializeField]
         private MainTrain mainTrain;
+        #endregion
+
+        public MainTrain MainTrain => mainTrain;
 
         public bool CheckHasTrain(TrainData trainData)
         {

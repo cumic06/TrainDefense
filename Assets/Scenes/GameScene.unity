@@ -1196,7 +1196,6 @@ MonoBehaviour:
   triChoiceUI: {fileID: 1451208236}
   _engageStartUI: {fileID: 0}
   _stageResultUI: {fileID: 1904741919}
-  _gameEndUI: {fileID: 0}
 --- !u!4 &1035467650
 Transform:
   m_ObjectHideFlags: 0

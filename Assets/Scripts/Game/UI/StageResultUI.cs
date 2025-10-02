@@ -28,7 +28,6 @@ namespace TrainDefense.Game.UI
             {
                 if (failResultUI != null)
                 {
-                    Debug.Log($"ShowResult {isClear}");
                     failResultUI.SetActive(true);
                 }
                 if (clearResultUI != null)

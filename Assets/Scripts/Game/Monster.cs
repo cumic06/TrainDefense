@@ -1,5 +1,7 @@
 using System.Linq;
+using Cumic.Events;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -100,6 +102,9 @@ namespace TrainDefense.Game
         private void OnDead()
         {
             _isDead = true;
+            int dropMoney = Random.Range(_currentMonsterStatus.DropMoneyMin, _currentMonsterStatus.DropMoneyMax);
+            ResourceManager.Instance.Spawn(Resources.Load<GameObject>("Prefabs/Money"), transform.position);
+            GameEventSystem.Publish(new MonsterDeadEvent(dropMoney));
             ResourceManager.Instance.Destroy(gameObject);
         }
 

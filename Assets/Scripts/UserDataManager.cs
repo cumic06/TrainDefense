@@ -6,12 +6,20 @@ using Cumic.Events;
 public class UserDataManager : MonoBehaviour
 {
     private Dictionary<string, int> _triChoiceData = new();
+    private int _money;
 
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
 
         GameEventSystem.Subscribe<TriChoiceSelectEvent>(AddTriChoiceData);
+        GameEventSystem.Subscribe<MonsterDeadEvent>(AddMoney);
+        _money = 0;
+    }
+
+    private void AddMoney(MonsterDeadEvent monsterDeadEvent)
+    {
+        _money += monsterDeadEvent.Money;
     }
 
     public void AddTriChoiceData(TriChoiceSelectEvent triChoiceSelectEvent)
