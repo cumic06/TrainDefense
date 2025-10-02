@@ -1,6 +1,7 @@
 using System.Linq;
 using DG.Tweening;
 using TrainDefense.Game.Data;
+using TrainDefense.Game.Datas;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -33,13 +34,13 @@ namespace TrainDefense.Game
             if (_isDead) return;
 
             DetectTarget();
-            
+
             if (_targetMonster == null)
             {
                 _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
                 return;
             }
-            
+
             AttackHandler();
         }
 
@@ -84,6 +85,19 @@ namespace TrainDefense.Game
             }
         }
 
+        public override void Upgrade(TrainUpgradeInfo upgradeInfo)
+        {
+            base.Upgrade(upgradeInfo);
+            
+            // TurretTrain 전용 업그레이드 데이터가 있다면 적용
+            if (upgradeInfo.ExtensionData is TurretTrainUpgradeExtension turretUpgrade)
+            {
+                _currentTurretTrainStatus.AttackDamage += turretUpgrade.TurretStatusUpgrade.AttackDamage;
+                _currentTurretTrainStatus.AttackRange += turretUpgrade.TurretStatusUpgrade.AttackRange;
+                _currentTurretTrainStatus.AttackCount += turretUpgrade.TurretStatusUpgrade.AttackCount;
+                _currentTurretTrainStatus.AttackDelay += turretUpgrade.TurretStatusUpgrade.AttackDelay;
+            }
+        }
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b2b7f62ab104f542b39deb0c9b764d5, type: 3}
   m_Name: TriChoiceDB
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.TriChoiceDB
-  triChoiceDBDatas:
-  - TriChoiceData: {fileID: 11400000, guid: a107a7d34b9c7954fafd9c047a68f854, type: 2}
+  addTrainChoices:
+  - Option: {fileID: 11400000, guid: 815181ec7f9bff64ea77b5301a01e1e4, type: 2}
+    Weight: 100
+  upgradeTrainChoices:
+  - Option: {fileID: 11400000, guid: b27758bbb8397754eada81882baf7e76, type: 2}
     Weight: 100

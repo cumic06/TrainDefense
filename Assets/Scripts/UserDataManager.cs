@@ -16,19 +16,19 @@ public class UserDataManager : MonoBehaviour
 
     public void AddTriChoiceData(TriChoiceSelectEvent triChoiceSelectEvent)
     {
-        var triChoiceData = triChoiceSelectEvent.Data;
+        var choiceOption = triChoiceSelectEvent.ChoiceOption;
 
-        if (triChoiceData == null) return;
+        if (choiceOption == null) return;
 
-        if (_triChoiceData.ContainsKey(triChoiceData.Id))
+        if (_triChoiceData.ContainsKey(choiceOption.Id))
         {
-            _triChoiceData[triChoiceData.Id]++;
-            Debug.Log($"{triChoiceData.Id} : {_triChoiceData[triChoiceData.Id]}");
+            _triChoiceData[choiceOption.Id]++;
+            Debug.Log($"{choiceOption.Id} : {_triChoiceData[choiceOption.Id]}");
         }
         else
         {
-            _triChoiceData.Add(triChoiceData.Id, 1);
-            Debug.Log($"{triChoiceData.Id} : {_triChoiceData[triChoiceData.Id]}");
+            _triChoiceData.Add(choiceOption.Id, 1);
+            Debug.Log($"{choiceOption.Id} : {_triChoiceData[choiceOption.Id]}");
         }
     }
 }

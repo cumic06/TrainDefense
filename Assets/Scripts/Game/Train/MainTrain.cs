@@ -29,6 +29,7 @@ namespace TrainDefense.Game
         #endregion
 
         private readonly List<Train> _currentTrains = new();
+        public List<Train> CurrentTrains => _currentTrains;
 
         protected override void Start()
         {
@@ -58,12 +59,19 @@ namespace TrainDefense.Game
 
         private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
         {
-            if (triChoiceSelectEvent.Data is AddTrainChoiceData addTrainChoiceData)
-            {
-                TrainData choiceTrainData = addTrainChoiceData.TrainData;
+            ChoiceOption choice = triChoiceSelectEvent.ChoiceOption;
+            if (choice == null || choice.TrainData == null) return;
 
-                UpgradeTrain(choiceTrainData);
-                SpawnTrain(choiceTrainData.TrainPrefab);
+            switch (choice.ChoiceType)
+            {
+                case ChoiceType.AddTrain:
+                    SpawnTrain(choice.TrainData.TrainPrefab);
+                    break;
+
+                case ChoiceType.UpgradeTrain:
+                    TrainUpgradeInfo upgradeInfo = choice.TrainData.GetUpgrade(choice.UpgradeLevel);
+                    UpgradeTrain(choice.TrainData, upgradeInfo);
+                    break;
             }
         }
 
@@ -90,13 +98,13 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
         }
 
-        private void UpgradeTrain(TrainData choiceTrainData)
+        private void UpgradeTrain(TrainData choiceTrainData, TrainUpgradeInfo upgradeInfo)
         {
             Train upgradeTrain = _currentTrains.FirstOrDefault(train => train.TrainData.Id == choiceTrainData.Id);
 
             if (upgradeTrain != null)
             {
-                // upgradeTrain.Upgrade();
+                upgradeTrain.Upgrade(upgradeInfo);
             }
         }
 
@@ -116,6 +124,11 @@ namespace TrainDefense.Game
                     }
                 }
             }
+        }
+
+        public bool CheckHasTrain(TrainData trainData)
+        {
+            return _currentTrains.Any(train => train.TrainData.Id == trainData.Id);
         }
 
         protected override void OnDead()
