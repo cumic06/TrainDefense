@@ -53,6 +53,7 @@ namespace TrainDefense.Game
         public void Pause()
         {
             Time.timeScale = 0;
+            Debug.Log($"Pause");
         }
 
         public void Resume()

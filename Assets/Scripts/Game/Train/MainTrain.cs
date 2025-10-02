@@ -115,12 +115,11 @@ namespace TrainDefense.Game
 
         private void CheckDeadTrain(TrainDeadEvent trainDeadEvent)
         {
-
             foreach (var train in _currentTrains.ToList())
             {
-                if (trainDeadEvent.Train == train as Train)
+                if (trainDeadEvent.Train == train)
                 {
-                    Debug.Log($"{trainDeadEvent.Train.name} {train as Train}");
+                    Debug.Log($"{trainDeadEvent.Train.name}");
                     _currentTrains.Remove(train);
 
                     if (_currentTrains.Count == 0)
@@ -144,7 +143,7 @@ namespace TrainDefense.Game
         protected override void OnDead()
         {
             base.OnDead();
-            GameEventSystem.Publish(new GameEndEvent());
+            GameEventSystem.Publish(new GameEndEvent(false));
         }
     }
 }

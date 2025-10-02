@@ -4,10 +4,12 @@ namespace TrainDefense.Game.UI
 {
     public class StageResultUI : MonoBehaviour
     {
+        #region Fields
         [SerializeField]
         private GameObject clearResultUI;
         [SerializeField]
         private GameObject failResultUI;
+        #endregion
 
         public void ShowResult(bool isClear)
         {
@@ -26,6 +28,7 @@ namespace TrainDefense.Game.UI
             {
                 if (failResultUI != null)
                 {
+                    Debug.Log($"ShowResult {isClear}");
                     failResultUI.SetActive(true);
                 }
                 if (clearResultUI != null)
