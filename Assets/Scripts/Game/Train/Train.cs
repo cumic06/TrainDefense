@@ -1,5 +1,4 @@
 using Cumic.Events;
-using TrainDefense.Game.Data;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using UnityEngine;
@@ -53,10 +52,12 @@ namespace TrainDefense.Game
             _isDead = true;
         }
 
-        public virtual void Upgrade(TrainUpgradeInfo upgradeInfo)
+        public virtual void Upgrade(TrainUpgradeData upgradeData)
         {
+            if (upgradeData == null) return;
+
             _currentLevel++;
-            _currentHp += upgradeInfo.StatusUpgrade.MaxHp;
+            _currentHp += upgradeData.StatusUpgrade.MaxHp;
         }
     }
 }

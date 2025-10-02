@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TrainDefense.Game.Data
+namespace TrainDefense.Game.Datas
 {
     [CreateAssetMenu(fileName = "TurretTrainData", menuName = "Data/TrainData/TurretTrainData")]
     public class TurretTrainData : TrainData
@@ -32,9 +32,6 @@ namespace TrainDefense.Game.Data
     [Serializable]
     public class TurretTrainUpgradeExtension : TrainUpgradeExtension
     {
-        [SerializeField]
-        private TurretTrainStatus turretStatusUpgrade;
-
-        public TurretTrainStatus TurretStatusUpgrade => turretStatusUpgrade;
+        public TurretTrainStatus TurretStatusUpgrade;
     }
 }

@@ -99,7 +99,15 @@ namespace TrainDefense.Game.UI
             List<ChoiceEntry> selectedCategory = validCategories[Random.Range(0, validCategories.Count)];
 
             // 선택된 카테고리 내에서 가중치 기반 선택
-            return SelectFromChoices(selectedCategory);
+            ChoiceOption selectedOption = SelectFromChoices(selectedCategory);
+            
+            // 선택지 초기화 (업그레이드 가중치 랜덤 선택)
+            if (selectedOption != null)
+            {
+                selectedOption.Initialize();
+            }
+            
+            return selectedOption;
         }
 
         private List<ChoiceEntry> GetValidChoices(IReadOnlyList<ChoiceEntry> entries)

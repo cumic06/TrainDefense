@@ -5,7 +5,6 @@ using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
-using TrainDefense.Game.Data;
 
 namespace TrainDefense.Game
 {
@@ -60,17 +59,23 @@ namespace TrainDefense.Game
         private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
         {
             ChoiceOption choice = triChoiceSelectEvent.ChoiceOption;
-            if (choice == null || choice.TrainData == null) return;
+            if (choice == null) return;
 
             switch (choice.ChoiceType)
             {
                 case ChoiceType.AddTrain:
-                    SpawnTrain(choice.TrainData.TrainPrefab);
+                    if (choice.TrainData != null)
+                    {
+                        SpawnTrain(choice.TrainData.TrainPrefab);
+                    }
                     break;
 
                 case ChoiceType.UpgradeTrain:
-                    TrainUpgradeInfo upgradeInfo = choice.TrainData.GetUpgrade(choice.UpgradeLevel);
-                    UpgradeTrain(choice.TrainData, upgradeInfo);
+                    TrainUpgradeData selectedUpgrade = choice.GetSelectedUpgradeData();
+                    if (selectedUpgrade != null)
+                    {
+                        UpgradeTrain(choice.TargetTrainId, selectedUpgrade);
+                    }
                     break;
             }
         }
@@ -98,13 +103,13 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
         }
 
-        private void UpgradeTrain(TrainData choiceTrainData, TrainUpgradeInfo upgradeInfo)
+        private void UpgradeTrain(string targetTrainId, TrainUpgradeData upgradeData)
         {
-            Train upgradeTrain = _currentTrains.FirstOrDefault(train => train.TrainData.Id == choiceTrainData.Id);
+            Train upgradeTrain = _currentTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
 
             if (upgradeTrain != null)
             {
-                upgradeTrain.Upgrade(upgradeInfo);
+                upgradeTrain.Upgrade(upgradeData);
             }
         }
 
@@ -129,6 +134,11 @@ namespace TrainDefense.Game
         public bool CheckHasTrain(TrainData trainData)
         {
             return _currentTrains.Any(train => train.TrainData.Id == trainData.Id);
+        }
+
+        public bool CheckHasTrainById(string trainId)
+        {
+            return _currentTrains.Any(train => train.TrainData.Id == trainId);
         }
 
         protected override void OnDead()

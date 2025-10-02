@@ -1,6 +1,5 @@
 using System.Linq;
 using DG.Tweening;
-using TrainDefense.Game.Data;
 using TrainDefense.Game.Datas;
 using UnityEngine;
 
@@ -85,12 +84,14 @@ namespace TrainDefense.Game
             }
         }
 
-        public override void Upgrade(TrainUpgradeInfo upgradeInfo)
+        public override void Upgrade(TrainUpgradeData upgradeData)
         {
-            base.Upgrade(upgradeInfo);
+            base.Upgrade(upgradeData);
             
+            if (upgradeData == null) return;
+
             // TurretTrain 전용 업그레이드 데이터가 있다면 적용
-            if (upgradeInfo.ExtensionData is TurretTrainUpgradeExtension turretUpgrade)
+            if (upgradeData.ExtensionData is TurretTrainUpgradeExtension turretUpgrade)
             {
                 _currentTurretTrainStatus.AttackDamage += turretUpgrade.TurretStatusUpgrade.AttackDamage;
                 _currentTurretTrainStatus.AttackRange += turretUpgrade.TurretStatusUpgrade.AttackRange;

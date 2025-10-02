@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TrainDefense.Game.Data
+namespace TrainDefense.Game.Datas
 {
     [CreateAssetMenu(fileName = "TrainData", menuName = "Data/TrainData/TrainData")]
     public class TrainData : ScriptableObject
@@ -26,7 +26,7 @@ namespace TrainDefense.Game.Data
 
         [Header("Upgrade Settings")]
         [SerializeField]
-        private List<TrainUpgradeInfo> upgrades = new();
+        private List<TrainUpgradeData> upgrades = new();
         #endregion
 
         public string Id => id;
@@ -36,14 +36,14 @@ namespace TrainDefense.Game.Data
         public TrainStatusData TrainStatusData => trainStatusData;
         public Train TrainPrefab => trainPrefab;
         public bool IsMainTrain => isMainTrain;
-        public IReadOnlyList<TrainUpgradeInfo> Upgrades => upgrades;
+        public IReadOnlyList<TrainUpgradeData> Upgrades => upgrades;
 
-        public TrainUpgradeInfo GetUpgrade(int level)
+        public TrainUpgradeData GetUpgrade(int level)
         {
             if (level < 0 || level >= upgrades.Count)
             {
                 Debug.LogWarning($"Upgrade level {level} not found for {id}");
-                return default;
+                return null;
             }
             return upgrades[level];
         }
@@ -55,25 +55,8 @@ namespace TrainDefense.Game.Data
         public int MaxHp;
     }
 
-    [Serializable]
-    public struct TrainUpgradeInfo
-    {
-        [Header("UI Info")]
-        public Sprite Icon;
-        public string UpgradeName;
-        [TextArea(2, 4)]
-        public string Description;
-
-        [Header("Upgrade Stats")]
-        public TrainStatusData StatusUpgrade;
-
-        [Header("Extended Upgrade Data (Optional)")]
-        [Tooltip("TurretTrain 등 추가 업그레이드 데이터가 필요한 경우 사용")]
-        public TrainUpgradeExtension ExtensionData;
-    }
-
     /// <summary>
-    /// Train 타입별 추가 업그레이드 데이터를 담는 ScriptableObject
+    /// Train 타입별 추가 업그레이드 데이터
     /// </summary>
     [Serializable]
     public abstract class TrainUpgradeExtension

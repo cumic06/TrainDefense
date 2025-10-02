@@ -1,5 +1,5 @@
 using Cumic;
-using TrainDefense.Game.Data;
+using TrainDefense.Game.Datas;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -12,6 +12,11 @@ namespace TrainDefense.Game
         public bool CheckHasTrain(TrainData trainData)
         {
             return mainTrain.CheckHasTrain(trainData);
+        }
+
+        public bool CheckHasTrainById(string trainId)
+        {
+            return mainTrain.CheckHasTrainById(trainId);
         }
     }
 }

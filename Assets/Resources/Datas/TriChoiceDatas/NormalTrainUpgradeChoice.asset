@@ -14,5 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.ChoiceOption
   id: choice2
   choiceType: 1
-  trainData: {fileID: 11400000, guid: b25680ebd43df82438b8e87cd5c7f6aa, type: 2}
-  upgradeLevel: 0
+  trainData: {fileID: 0}
+  weightedUpgrades:
+  - upgradeData: {fileID: 11400000, guid: 0dc96a5b91d930743a755145966fffa4, type: 2}
+    weight: 50
+  - upgradeData: {fileID: 11400000, guid: 97a3b74cbfbfd3b4fad8f5b05b2e7971, type: 2}
+    weight: 50
+  targetTrainId: train_01

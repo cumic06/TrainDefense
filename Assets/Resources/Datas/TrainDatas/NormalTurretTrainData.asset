@@ -20,12 +20,7 @@ MonoBehaviour:
     MaxHp: 100
   trainPrefab: {fileID: 6472199296939909711, guid: 2c445e47e8c9769498d0ec34f9edac9f, type: 3}
   isMainTrain: 0
-  upgrades:
-  - Icon: {fileID: 21300000, guid: e476f6513ea4c994a9ef3f55d63b6cf6, type: 3}
-    UpgradeName: Max Health Up
-    Description: Max Health + 10
-    StatusUpgrade:
-      MaxHp: 10
+  upgrades: []
   turretTrainStatus:
     AttackDamage: 10
     AttackCount: 1
