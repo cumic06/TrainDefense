@@ -1,7 +1,5 @@
 using System.Linq;
-using Cumic;
-using Sirenix.OdinInspector;
-using TrainDefense.Game.Events;
+using TrainDefense.Game.Datas;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -10,27 +8,11 @@ namespace TrainDefense.Game
     {
         #region Field
         [SerializeField]
-        protected int maxHp;
-        [SerializeField]
-        protected int damage;
-        [SerializeField]
-        protected float moveSpeed;
-        [SerializeField]
-        protected float attackDelay;
-        [SerializeField]
-        protected int dropExp;
-        [SerializeField]
-        [BoxGroup("RangeSetting")]
-        protected float detectRange;
-        [SerializeField]
-        [BoxGroup("RangeSetting")]
-        protected float attackRange;
+        protected MonsterData monsterData;
         #endregion
 
-        protected int _currentHp;
-        protected int _currentDamage;
-        protected float _currentMoveSpeed;
-        protected float _currentAttackDelay;
+        protected MonsterStatusInfo _currentMonsterStatus;
+
         protected bool _isDead;
         protected Train _targetTrain;
 
@@ -48,10 +30,7 @@ namespace TrainDefense.Game
 
         private void InitStats()
         {
-            _currentHp = maxHp;
-            _currentDamage = damage;
-            _currentMoveSpeed = moveSpeed;
-            _currentAttackDelay = attackDelay;
+            _currentMonsterStatus = monsterData.MonsterStatusData;
         }
 
         private void FixedUpdate()
@@ -63,7 +42,7 @@ namespace TrainDefense.Game
 
         private void DetectTrain()
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, detectRange);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _currentMonsterStatus.DetectRange);
             Train[] trains = colliders.Where(a => a.GetComponent<Train>() != null)
             .Select(a => a.GetComponent<Train>())
             .Where(a => !a.IsDead && !a.IsMainTrain)
@@ -81,19 +60,19 @@ namespace TrainDefense.Game
             if (_targetTrain == null) return;
 
             Vector3 direction = _targetTrain.transform.position - transform.position;
-            transform.Translate(direction.normalized * Time.deltaTime * _currentMoveSpeed);
+            transform.Translate(direction.normalized * Time.deltaTime * _currentMonsterStatus.MoveSpeed);
         }
 
         private void AttackHandler()
         {
-            if (_currentAttackDelay <= 0)
+            if (_currentMonsterStatus.AttackDelay <= 0)
             {
-                _currentAttackDelay = attackDelay;
+                _currentMonsterStatus.AttackDelay = monsterData.MonsterStatusData.AttackDelay;
                 Attack();
             }
             else
             {
-                _currentAttackDelay -= Time.deltaTime;
+                _currentMonsterStatus.AttackDelay -= Time.deltaTime;
             }
         }
 
@@ -101,9 +80,9 @@ namespace TrainDefense.Game
         {
             if (_targetTrain == null) return;
 
-            if (Vector3.Distance(transform.position, _targetTrain.transform.position) <= attackRange)
+            if (Vector3.Distance(transform.position, _targetTrain.transform.position) <= _currentMonsterStatus.AttackRange)
             {
-                _targetTrain.TakeDamage(_currentDamage);
+                _targetTrain.TakeDamage(_currentMonsterStatus.Damage);
             }
         }
 
@@ -111,8 +90,8 @@ namespace TrainDefense.Game
         {
             if (_isDead) return;
 
-            _currentHp -= damage;
-            if (_currentHp <= 0)
+            _currentMonsterStatus.MaxHp -= damage;
+            if (_currentMonsterStatus.MaxHp <= 0)
             {
                 OnDead();
             }
@@ -128,10 +107,10 @@ namespace TrainDefense.Game
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, detectRange);
+            Gizmos.DrawWireSphere(transform.position, _currentMonsterStatus.DetectRange);
 
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, attackRange);
+            Gizmos.DrawWireSphere(transform.position, _currentMonsterStatus.AttackRange);
         }
 #endif
     }

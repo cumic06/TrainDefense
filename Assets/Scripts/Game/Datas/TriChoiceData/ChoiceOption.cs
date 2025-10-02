@@ -110,7 +110,7 @@ namespace TrainDefense.Game.Datas
                         Debug.LogError($"ChoiceOption [{id}]: SelectedUpgradeData is null. Did you call Initialize()?");
                         return default;
                     }
-                    
+
                     return new ChoiceUIInfo
                     {
                         Icon = _selectedUpgradeData.Icon,
@@ -136,7 +136,7 @@ namespace TrainDefense.Game.Datas
                     return !TrainManager.Instance.CheckHasTrain(trainData);
 
                 case ChoiceType.UpgradeTrain:
-                    if (weightedUpgrades == null || weightedUpgrades.Length == 0 || string.IsNullOrEmpty(targetTrainId)) 
+                    if (weightedUpgrades == null || weightedUpgrades.Length == 0 || string.IsNullOrEmpty(targetTrainId))
                         return false;
                     // 대상 Train이 있을 때만 유효
                     return TrainManager.Instance.CheckHasTrainById(targetTrainId);
@@ -194,7 +194,7 @@ namespace TrainDefense.Game.Datas
             }
 
             // fallback (이론상 도달하지 않음)
-            return weightedUpgrades[weightedUpgrades.Length - 1]?.UpgradeData;
+            return weightedUpgrades[^1]?.UpgradeData;
         }
     }
 

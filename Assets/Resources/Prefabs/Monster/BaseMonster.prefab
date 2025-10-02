@@ -137,13 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0efdfaa8bdd15543bdd2616680df860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Monster
-  maxHp: 50
-  damage: 1
-  moveSpeed: 2
-  attackDelay: 1
-  dropExp: 50
-  detectRange: 30
-  attackRange: 3
+  monsterData: {fileID: 11400000, guid: a35f379efce8d9c47a332812dcfb81ee, type: 2}
 --- !u!61 &8967810716900712770
 BoxCollider2D:
   m_ObjectHideFlags: 0

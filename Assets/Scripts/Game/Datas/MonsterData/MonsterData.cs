@@ -1,0 +1,42 @@
+using System;
+using UnityEngine;
+
+namespace TrainDefense.Game.Datas
+{
+    [CreateAssetMenu(fileName = "MonsterData", menuName = "Data/MonsterData")]
+    public class MonsterData : ScriptableObject
+    {
+        #region Fields
+        [SerializeField]
+        private string id;
+        [SerializeField]
+        private string monsterName;
+        [SerializeField]
+        private Sprite icon;
+        [SerializeField]
+        [TextArea(2, 4)]
+        private string description;
+        [SerializeField]
+        private MonsterStatusInfo monsterStatusData;
+        #endregion
+
+        public string Id => id;
+        public string MonsterName => monsterName;
+        public Sprite Icon => icon;
+        public string Description => description;
+        public MonsterStatusInfo MonsterStatusData => monsterStatusData;
+    }
+}
+
+[Serializable]
+public struct MonsterStatusInfo
+{
+    public int MaxHp;
+    public int Damage;
+    public float MoveSpeed;
+    public float AttackDelay;
+    public int DropMoneyMin;
+    public int DropMoneyMax;
+    public float DetectRange;
+    public float AttackRange;
+}
