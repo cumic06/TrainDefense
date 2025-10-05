@@ -25,6 +25,6 @@ public class SequenceInvokor : MonoBehaviour
     [Button("Game End")]
     private void GameEnd()
     {
-        GameEventSystem.Publish(new GameEndEvent());
+        GameEventSystem.Publish(new GameEndEvent(true));
     }
 }

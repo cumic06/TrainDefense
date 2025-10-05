@@ -20,7 +20,7 @@ namespace TrainDefense.Game.UI
         #endregion
 
         private Button _selectButton;
-        private TriChoiceData _data;
+        private ChoiceOption _choiceOption;
 
         private void Awake()
         {
@@ -32,20 +32,21 @@ namespace TrainDefense.Game.UI
             _selectButton.onClick.AddListener(OnSelectButtonClick);
         }
 
-        public void SetData(TriChoiceData data)
+        public void SetData(ChoiceOption choiceOption)
         {
-            if (data == null) return;
+            if (choiceOption == null) return;
 
-            _data = data;
+            _choiceOption = choiceOption;
 
-            iconImage.sprite = data.Icon;
-            nameText.text = data.ChoiceName;
-            descriptionText.text = data.Description;
+            var uiInfo = choiceOption.GetUIInfo();
+            iconImage.sprite = uiInfo.Icon;
+            nameText.text = uiInfo.Name;
+            descriptionText.text = uiInfo.Description;
         }
 
         private void OnSelectButtonClick()
         {
-            GameEventSystem.Publish(new TriChoiceSelectEvent(_data));
+            GameEventSystem.Publish(new TriChoiceSelectEvent(_choiceOption));
             GameEventSystem.Publish(new EngageStartEvent());
         }
     }

@@ -8,17 +8,23 @@ namespace TrainDefense.Game.Datas
     public class TriChoiceDB : ScriptableObject
     {
         #region Fields
+        [Header("Train 추가 선택지")]
         [SerializeField]
-        private List<TriChoiceDBData> triChoiceDBDatas = new();
+        private List<ChoiceEntry> addTrainChoices = new();
+
+        [Header("Train 업그레이드 선택지")]
+        [SerializeField]
+        private List<ChoiceEntry> upgradeTrainChoices = new();
         #endregion
 
-        public IReadOnlyList<TriChoiceDBData> TriChoiceDBDatas => triChoiceDBDatas;
+        public IReadOnlyList<ChoiceEntry> AddTrainChoices => addTrainChoices;
+        public IReadOnlyList<ChoiceEntry> UpgradeTrainChoices => upgradeTrainChoices;
     }
 
     [Serializable]
-    public class TriChoiceDBData
+    public class ChoiceEntry
     {
-        public TriChoiceData TriChoiceData;
-        public float Weight;
+        public ChoiceOption Option;
+        public int Weight;
     }
 }

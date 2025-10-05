@@ -1,7 +1,6 @@
 using System.Linq;
-using Cumic;
 using DG.Tweening;
-using TrainDefense.Game.Data;
+using TrainDefense.Game.Datas;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -20,12 +19,13 @@ namespace TrainDefense.Game
         #endregion
 
         private Monster _targetMonster;
-        private float _currentAttackDelay;
+
+        private TurretTrainStatus _currentTurretTrainStatus;
 
         protected override void Start()
         {
             base.Start();
-            _currentAttackDelay = turretTrainData.AttackDelay;
+            _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
         }
 
         private void FixedUpdate()
@@ -33,12 +33,19 @@ namespace TrainDefense.Game
             if (_isDead) return;
 
             DetectTarget();
+
+            if (_targetMonster == null)
+            {
+                _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
+                return;
+            }
+
             AttackHandler();
         }
 
         private void DetectTarget()
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, turretTrainData.AttackRange);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _currentTurretTrainStatus.AttackRange);
             _targetMonster = colliders.Where(a => a.GetComponent<Monster>() != null)
             .Select(a => a.GetComponent<Monster>())
             .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
@@ -47,14 +54,14 @@ namespace TrainDefense.Game
 
         private void AttackHandler()
         {
-            if (_currentAttackDelay <= 0)
+            if (_currentTurretTrainStatus.AttackDelay <= 0)
             {
-                _currentAttackDelay = turretTrainData.AttackDelay;
+                _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
                 Attack();
             }
             else
             {
-                _currentAttackDelay -= Time.deltaTime;
+                _currentTurretTrainStatus.AttackDelay -= Time.deltaTime;
             }
         }
 
@@ -68,21 +75,37 @@ namespace TrainDefense.Game
                 turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
             });
 
-            for (int i = 0; i < turretTrainData.AttackCount; i++)
+            for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
             {
                 Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
                 bullet.transform.position = turretProjectileSpawnPoints[i].position;
+                bullet.Init(_currentTurretTrainStatus.AttackDamage);
                 bullet.transform.LookAt2D(_targetMonster.transform);
             }
         }
 
+        public override void Upgrade(TrainUpgradeData upgradeData)
+        {
+            base.Upgrade(upgradeData);
+            
+            if (upgradeData == null) return;
+
+            // TurretTrain 전용 업그레이드 데이터가 있다면 적용
+            if (upgradeData.ExtensionData is TurretTrainUpgradeExtension turretUpgrade)
+            {
+                _currentTurretTrainStatus.AttackDamage += turretUpgrade.TurretStatusUpgrade.AttackDamage;
+                _currentTurretTrainStatus.AttackRange += turretUpgrade.TurretStatusUpgrade.AttackRange;
+                _currentTurretTrainStatus.AttackCount += turretUpgrade.TurretStatusUpgrade.AttackCount;
+                _currentTurretTrainStatus.AttackDelay += turretUpgrade.TurretStatusUpgrade.AttackDelay;
+            }
+        }
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
             if (turretTrainData != null)
             {
-                Gizmos.DrawWireSphere(transform.position, turretTrainData.AttackRange);
+                Gizmos.DrawWireSphere(transform.position, _currentTurretTrainStatus.AttackRange);
             }
         }
     }

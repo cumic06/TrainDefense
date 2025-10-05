@@ -22,10 +22,6 @@ namespace Cumic.Sequence
         [SerializeField]
         [BoxGroup("Stage End")]
         private StageResultUI _stageResultUI;
-
-        [SerializeField]
-        [BoxGroup("Game End")]
-        private GameObject _gameEndUI;
         #endregion
 
         private void Start()
@@ -59,7 +55,6 @@ namespace Cumic.Sequence
             if (triChoiceUI != null)
             {
                 triChoiceUI.OnInspectionEnter();
-                Debug.Log("UIGameEnter");
             }
         }
 
@@ -77,10 +72,6 @@ namespace Cumic.Sequence
             {
                 _stageResultUI.gameObject.SetActive(false);
             }
-            if (_gameEndUI != null)
-            {
-                _gameEndUI.SetActive(false);
-            }
         }
 
         private void EngageStart(EngageStartEvent engageStartEvent)
@@ -95,10 +86,6 @@ namespace Cumic.Sequence
             {
                 _stageResultUI.gameObject.SetActive(false);
             }
-            if (_gameEndUI != null)
-            {
-                _gameEndUI.SetActive(false);
-            }
         }
 
         private void StageEnd(StageEndEvent stageEndEvent)
@@ -112,25 +99,18 @@ namespace Cumic.Sequence
             {
                 _engageStartUI.SetActive(false);
             }
-            if (_gameEndUI != null)
-            {
-                _gameEndUI.SetActive(false);
-            }
         }
 
         private void GameEnd(GameEndEvent gameEndEvent)
         {
-            if (_gameEndUI != null)
+            if (_stageResultUI != null)
             {
-                _gameEndUI.SetActive(true);
+                _stageResultUI.gameObject.SetActive(true);
+                _stageResultUI.ShowResult(gameEndEvent.IsClear);
             }
             if (_engageStartUI != null)
             {
                 _engageStartUI.SetActive(false);
-            }
-            if (_stageResultUI != null)
-            {
-                _stageResultUI.gameObject.SetActive(false);
             }
         }
     }

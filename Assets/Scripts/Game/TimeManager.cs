@@ -28,7 +28,6 @@ namespace TrainDefense.Game
         private void OnGameEnter(GameEnterEvent gameEnterEvent)
         {
             Pause();
-            Debug.Log("GameEnter");
         }
 
         private void OnStageEnd(StageEndEvent stageEndEvent)

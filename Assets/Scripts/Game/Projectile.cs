@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -8,24 +7,28 @@ namespace TrainDefense.Game
     {
         #region Field
         [SerializeField]
-        private int damage = 10;
-        [SerializeField]
         private float speed;
         [SerializeField]
         private float destroyDelay;
         #endregion
 
+        private int _damage;
         private Coroutine _destroyCoroutine;
 
         private void OnEnable()
         {
             if (destroyDelay <= 0) return;
-            
+
             if (_destroyCoroutine != null)
             {
                 StopCoroutine(_destroyCoroutine);
             }
             _destroyCoroutine = StartCoroutine(DestroyCoroutine());
+        }
+
+        public void Init(int damage)
+        {
+            _damage = damage;
         }
 
         private void FixedUpdate()
@@ -42,7 +45,7 @@ namespace TrainDefense.Game
         {
             if (other.TryGetComponent(out Monster monster))
             {
-                monster.TakeDamage(damage);
+                monster.TakeDamage(_damage);
                 ResourceManager.Instance.Destroy(gameObject);
             }
         }
