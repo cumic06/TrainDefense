@@ -1448,7 +1448,7 @@ MonoBehaviour:
   shopImage: {fileID: 968793908}
   shopMoveXStartPos: 1850
   shopMoveXEndPos: 0
-  shopMoveInterval: 1
+  shopMoveInterval: 0.4
 --- !u!1001 &579376079
 PrefabInstance:
   m_ObjectHideFlags: 0

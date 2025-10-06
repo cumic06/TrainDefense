@@ -34,12 +34,10 @@ public class UserDataManager : Singleton<UserDataManager>
         if (_triChoiceData.ContainsKey(choiceOption.Id))
         {
             _triChoiceData[choiceOption.Id]++;
-            Debug.Log($"{choiceOption.Id} : {_triChoiceData[choiceOption.Id]}");
         }
         else
         {
             _triChoiceData.Add(choiceOption.Id, 1);
-            Debug.Log($"{choiceOption.Id} : {_triChoiceData[choiceOption.Id]}");
         }
     }
 }
