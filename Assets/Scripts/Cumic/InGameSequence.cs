@@ -90,6 +90,7 @@ namespace Cumic.Sequence
             if (shopButtonUI != null)
             {
                 shopButtonUI.gameObject.SetActive(true);
+                shopButtonUI.OnShopOpen();
             }
         }
 

@@ -1,42 +1,35 @@
-using Cumic.Events;
-using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShopButtonUI : MonoBehaviour
+namespace TrainDefense.Game.UI
 {
-    #region Fields
-    [SerializeField]
-    private Button shopButton;
-    [SerializeField]
-    private Image shopImage;
-    [SerializeField]
-    private float shopMoveXStartPos = -100;
-    [SerializeField]
-    private float shopMoveXEndPos;
-    [SerializeField]
-    private float shopMoveInterval = 1f;
-    #endregion
-
-    private bool isShopOpen = false;
-
-    private void Start()
+    public class ShopButtonUI : MonoBehaviour
     {
-        shopButton.onClick.AddListener(OnShopButtonClick);
-    }
+        #region Fields
+        [SerializeField]
+        private Button shopButton;
+        [SerializeField]
+        private ShopUI shopUI;
+        #endregion
 
-    private async void OnShopButtonClick()
-    {
-        if (isShopOpen)
+        private void Start()
         {
-            isShopOpen = false;
-            await shopImage.rectTransform.DOAnchorPosX(shopMoveXStartPos, shopMoveInterval).SetUpdate(true);
-            GameEventSystem.Publish(new EngageStartEvent());
-            return;
+            shopButton.onClick.AddListener(OnShopButtonClick);
         }
 
-        await shopImage.rectTransform.DOAnchorPosX(shopMoveXEndPos, shopMoveInterval).SetUpdate(true);
-        isShopOpen = true;
+        private void OnShopButtonClick()
+        {
+            if (shopUI.IsShopOpen)
+            {
+                shopUI.CloseShop();
+                return;
+            }
+            shopUI.OpenShop();
+        }
+
+        public void OnShopOpen()
+        {
+            shopUI.OpenShop();
+        }
     }
 }

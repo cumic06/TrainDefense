@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: TrainUpgradeData
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.TrainUpgradeData
   icon: {fileID: 21300000, guid: 53b32f179b810cb44af399d5af870ea9, type: 3}
-  upgradeName: Normal Train Attack Power Up
-  description: Normal Train Attack Power + 10
+  upgradeName: Normal Train Uprade
+  description: Normal Train Uprade + 1
   statusUpgrade:
-    MaxHp: 0
+    MaxHp: 10
   extensionData:
     rid: 2066869703699071097
   references:
