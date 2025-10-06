@@ -2,12 +2,12 @@ namespace TrainDefense.Game.Events
 {
     public class MonsterDeadEvent
     {
-        private int _money;
-        public int Money => _money;
+        private int _coin;
+        public int Coin => _coin;
 
-        public MonsterDeadEvent(int money)
+        public MonsterDeadEvent(int coin)
         {
-            _money = money;
+            _coin = coin;
         }
     }
 }

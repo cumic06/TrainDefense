@@ -2,11 +2,14 @@ using System.Collections.Generic;
 using TrainDefense.Game.Events;
 using UnityEngine;
 using Cumic.Events;
+using Cumic;
 
-public class UserDataManager : MonoBehaviour
+public class UserDataManager : Singleton<UserDataManager>
 {
     private Dictionary<string, int> _triChoiceData = new();
     private int _money;
+
+    public int Money => _money;
 
     private void Start()
     {
@@ -19,7 +22,7 @@ public class UserDataManager : MonoBehaviour
 
     private void AddMoney(MonsterDeadEvent monsterDeadEvent)
     {
-        _money += monsterDeadEvent.Money;
+        _money += monsterDeadEvent.Coin;
     }
 
     public void AddTriChoiceData(TriChoiceSelectEvent triChoiceSelectEvent)

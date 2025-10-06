@@ -4,7 +4,6 @@ using Sirenix.OdinInspector;
 using TrainDefense.Game;
 using TrainDefense.Game.UI;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace Cumic.Sequence
 {
@@ -26,6 +25,8 @@ namespace Cumic.Sequence
 
         private void Start()
         {
+            TimeManager.Instance.Pause();
+            
             GameEventSystem.Subscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(EngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(EngageStart);
