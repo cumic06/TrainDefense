@@ -14,7 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageData
   id: 1
   stageInspectionTime:
-  - 5
   - 10
-  - 15
-  stageEndTime: 30
+  - 20
+  - 30
+  - 40
+  - 50
+  - 60
+  - 70
+  - 80
+  - 90
+  - 100
+  stageEndTime: 9999999

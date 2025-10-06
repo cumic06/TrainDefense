@@ -17,7 +17,7 @@ MonoBehaviour:
   icon: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   description: Simple Normal Monster
   monsterStatusData:
-    MaxHp: 50
+    MaxHp: 20
     Damage: 2
     MoveSpeed: 5
     AttackDelay: 1

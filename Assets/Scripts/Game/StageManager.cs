@@ -6,7 +6,6 @@ public class StageManager : MonoBehaviour
 {
     private StageData[] _stageDatas;
     private int _currentStageIndex;
-
     private float _currentStageTime;
     private int _currentStageInspectionTimeIndex;
 
@@ -14,12 +13,12 @@ public class StageManager : MonoBehaviour
     {
         LoadStageDatas();
         ResetCurrentStageInfo();
-        GameEventSystem.Subscribe<GetStageEndTimeEvent, float>(GetCurrentStageEndTime);
+        GameEventSystem.Subscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
     }
 
     private void OnDestroy()
     {
-        GameEventSystem.Unsubscribe<GetStageEndTimeEvent, float>(GetCurrentStageEndTime);
+        GameEventSystem.Unsubscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
     }
 
     private void ResetCurrentStageInfo()
@@ -36,8 +35,7 @@ public class StageManager : MonoBehaviour
 
     private void Update()
     {
-        _currentStageTime += Time.deltaTime;
-        GameEventSystem.Publish(new ChangeStageTimeEvent(_currentStageTime));
+        CurrentStageTimeUp();
 
         if (_currentStageTime >= GetCurrentStageInspectionTime() && _currentStageInspectionTimeIndex < GetCurrentStageData().StageInspectionTime.Length)
         {
@@ -48,6 +46,14 @@ public class StageManager : MonoBehaviour
         {
             GameEventSystem.Publish(new StageEndEvent(true));
         }
+    }
+
+    private void CurrentStageTimeUp()
+    {
+        _currentStageTime += Time.deltaTime;
+
+        float nextInspectionRemainingtime = GetCurrentStageInspectionTime() - _currentStageTime;
+        GameEventSystem.Publish(new ChangeStageTimeEvent(nextInspectionRemainingtime));
     }
 
     private StageData GetCurrentStageData()
@@ -65,8 +71,8 @@ public class StageManager : MonoBehaviour
         return GetCurrentStageData().StageInspectionTime[_currentStageInspectionTimeIndex];
     }
 
-    private float GetCurrentStageEndTime(GetStageEndTimeEvent getLastStageInspectionTimeEvent)
+    private float GetNextInspectionRemainingTime(GetNextInspectionRemainingTimeEvent getNextInspectionRemainingTimeEvent)
     {
-        return GetCurrentStageData().StageEndTime;
+        return GetCurrentStageData().StageInspectionTime[_currentStageInspectionTimeIndex] - _currentStageTime;
     }
 }

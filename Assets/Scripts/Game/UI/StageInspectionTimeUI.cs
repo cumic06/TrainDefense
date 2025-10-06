@@ -1,4 +1,5 @@
 using Cumic.Events;
+using TMPro;
 using TrainDefense.Game.Events;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,17 +7,20 @@ using UnityEngine.UI;
 public class StageInspectionTimeUI : MonoBehaviour
 {
     private Slider _slider;
+    private TextMeshProUGUI _nextInspectionTimeText;
 
     private void Awake()
     {
         _slider = GetComponent<Slider>();
+        _nextInspectionTimeText = GetComponentInChildren<TextMeshProUGUI>();
     }
 
     private void Start()
     {
         GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
+        GameEventSystem.Subscribe<EngageReadyEvent>(SetMaxValue);
         ResetSliderValue();
-        SetMaxValue();
+        SetMaxValue(null);
     }
 
     private void ResetSliderValue()
@@ -24,14 +28,16 @@ public class StageInspectionTimeUI : MonoBehaviour
         _slider.value = 0;
     }
 
-    private void SetMaxValue()
+    private void SetMaxValue(EngageReadyEvent engageReadyEvent)
     {
-        float stageEndTime = GameEventSystem.Query<GetStageEndTimeEvent, float>(new GetStageEndTimeEvent());
-        _slider.maxValue = stageEndTime;
+        ResetSliderValue();
+        float nextInspectionTime = GameEventSystem.Query<GetNextInspectionRemainingTimeEvent, float>(new GetNextInspectionRemainingTimeEvent());
+        _slider.maxValue = nextInspectionTime;
     }
 
     private void OnChangeStageTime(ChangeStageTimeEvent changeStageTimeEvent)
     {
+        _nextInspectionTimeText.text = $"Next Inspection Time : {changeStageTimeEvent.StageTime:F1}";
         _slider.value = changeStageTimeEvent.StageTime;
     }
 }

@@ -1,6 +1,6 @@
 namespace TrainDefense.Game.Events
 {
-    public class GetStageEndTimeEvent
+    public class GetNextInspectionRemainingTimeEvent
     {
         
     }
