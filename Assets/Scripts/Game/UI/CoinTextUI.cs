@@ -15,7 +15,15 @@ namespace TrainDefense.Game.UI
         private void Start()
         {
             GameEventSystem.Subscribe<MonsterDeadEvent>(OnAddCoin);
-            coinText.text = $"Coin : {UserDataManager.Instance.Money}";
+
+            if (UserDataManager.Instance != null)
+            {
+                coinText.text = $"Coin : {UserDataManager.Instance.Money}";
+            }
+            else
+            {
+                coinText.text = $"Coin : 0";
+            }
         }
 
         private void OnDestroy()
@@ -25,6 +33,8 @@ namespace TrainDefense.Game.UI
 
         private void OnAddCoin(MonsterDeadEvent monsterDeadEvent)
         {
+            if (UserDataManager.Instance == null) return;
+            
             coinText.text = $"Coin : {UserDataManager.Instance.Money}";
         }
     }

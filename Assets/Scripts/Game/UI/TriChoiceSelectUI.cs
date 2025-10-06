@@ -47,7 +47,6 @@ namespace TrainDefense.Game.UI
         private void OnSelectButtonClick()
         {
             GameEventSystem.Publish(new TriChoiceSelectEvent(_choiceOption));
-            GameEventSystem.Publish(new EngageStartEvent());
         }
     }
 }

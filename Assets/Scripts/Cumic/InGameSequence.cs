@@ -2,6 +2,7 @@ using System.Collections;
 using Cumic.Events;
 using Sirenix.OdinInspector;
 using TrainDefense.Game;
+using TrainDefense.Game.Events;
 using TrainDefense.Game.UI;
 using UnityEngine;
 
@@ -13,6 +14,9 @@ namespace Cumic.Sequence
         [SerializeField]
         [BoxGroup("Engage Ready")]
         private TriChoiceUI triChoiceUI;
+        [SerializeField]
+        [BoxGroup("Engage Ready")]
+        private ShopButtonUI shopButtonUI;
 
         [SerializeField]
         [BoxGroup("Engage Start")]
@@ -23,13 +27,19 @@ namespace Cumic.Sequence
         private StageResultUI _stageResultUI;
         #endregion
 
+        private void Awake()
+        {
+            if (TimeManager.Instance == null) return;
+
+            TimeManager.Instance.Pause();
+        }
+
         private void Start()
         {
-            TimeManager.Instance.Pause();
-            
             GameEventSystem.Subscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(EngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(EngageStart);
+            GameEventSystem.Subscribe<TriChoiceSelectEvent>(TriChoiceSelect);
             GameEventSystem.Subscribe<StageEndEvent>(StageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(GameEnd);
 
@@ -75,6 +85,14 @@ namespace Cumic.Sequence
             }
         }
 
+        private void TriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
+        {
+            if (shopButtonUI != null)
+            {
+                shopButtonUI.gameObject.SetActive(true);
+            }
+        }
+
         private void EngageStart(EngageStartEvent engageStartEvent)
         {
             TimeManager.Instance.Resume();
@@ -82,6 +100,10 @@ namespace Cumic.Sequence
             if (_engageStartUI != null)
             {
                 _engageStartUI.SetActive(true);
+            }
+            if (shopButtonUI != null)
+            {
+                shopButtonUI.gameObject.SetActive(false);
             }
             if (_stageResultUI != null)
             {
@@ -100,6 +122,10 @@ namespace Cumic.Sequence
             {
                 _engageStartUI.SetActive(false);
             }
+            if (shopButtonUI != null)
+            {
+                shopButtonUI.gameObject.SetActive(false);
+            }
         }
 
         private void GameEnd(GameEndEvent gameEndEvent)
@@ -112,6 +138,10 @@ namespace Cumic.Sequence
             if (_engageStartUI != null)
             {
                 _engageStartUI.SetActive(false);
+            }
+            if (shopButtonUI != null)
+            {
+                shopButtonUI.gameObject.SetActive(false);
             }
         }
     }
