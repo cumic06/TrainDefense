@@ -31,7 +31,7 @@ namespace TrainDefense.Game.UI
 
         public async void OpenShop()
         {
-            int money = UserDataManager.Instance.Money;
+            int money = UserDataManager.Instance.Coin;
 
             foreach (var shopItemUI in _shopItemUIs)
             {

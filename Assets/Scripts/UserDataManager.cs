@@ -2,26 +2,51 @@ using System.Collections.Generic;
 using TrainDefense.Game.Events;
 using Cumic.Events;
 using Cumic;
+using UnityEngine;
 
 public class UserDataManager : Singleton<UserDataManager>
 {
     private Dictionary<string, int> _triChoiceData = new();
-    private int _money;
-
-    public int Money => _money;
+    private int _coin;
+    private int _currentExp;
+    private int _currentLevel = 1;
+    public int Coin => _coin;
+    public float ExpPercent => _currentExp / GetNextLevelUpExp();
+    public int CurrentLevel => _currentLevel;
 
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
 
+        GameEventSystem.Subscribe<AddExpEvent>(AddExp);
         GameEventSystem.Subscribe<TriChoiceSelectEvent>(AddTriChoiceData);
-        GameEventSystem.Subscribe<MonsterDeadEvent>(AddMoney);
-        _money = 0;
+        GameEventSystem.Subscribe<AddCoinEvent>(AddMoney);
+        _coin = 0;
     }
 
-    private void AddMoney(MonsterDeadEvent monsterDeadEvent)
+    private void AddExp(AddExpEvent addExpEvent)
     {
-        _money += monsterDeadEvent.Coin;
+        _currentExp += addExpEvent.Exp;
+
+        var requiredExpInt = Mathf.CeilToInt(GetNextLevelUpExp());
+        while (requiredExpInt > 0 && _currentExp >= requiredExpInt)
+        {
+            _currentExp -= requiredExpInt;
+            _currentLevel++;
+            requiredExpInt = Mathf.CeilToInt(GetNextLevelUpExp());
+            GameEventSystem.Publish(new LevelUpEvent(_currentLevel));
+        }
+    }
+
+    private void LevelUp()
+    {
+        _currentLevel++;
+        _currentExp = 0;
+    }
+
+    private void AddMoney(AddCoinEvent addCoinEvent)
+    {
+        _coin += addCoinEvent.Coin;
     }
 
     public void AddTriChoiceData(TriChoiceSelectEvent triChoiceSelectEvent)
@@ -38,5 +63,14 @@ public class UserDataManager : Singleton<UserDataManager>
         {
             _triChoiceData.Add(choiceOption.Id, 1);
         }
+    }
+
+    private const float baseExp = 10f;
+    private const float powFactor = 1.8f;
+    private const float expMultiplier = 1.05f;
+
+    public float GetNextLevelUpExp()
+    {
+        return baseExp * Mathf.Pow(_currentLevel, powFactor) * Mathf.Pow(expMultiplier, _currentLevel);
     }
 }

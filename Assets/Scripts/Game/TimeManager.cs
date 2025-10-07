@@ -1,5 +1,6 @@
 using Cumic;
 using Cumic.Events;
+using TrainDefense.Game.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -12,6 +13,7 @@ namespace TrainDefense.Game
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
+            GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
         }
@@ -21,6 +23,7 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
             GameEventSystem.Unsubscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
+            GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
         }
@@ -48,6 +51,11 @@ namespace TrainDefense.Game
         private void OnEngageStart(EngageStartEvent engageStartEvent)
         {
             Resume();
+        }
+
+        private void OnLevelUp(LevelUpEvent levelUpEvent)
+        {
+            Pause();
         }
 
         public void Pause()

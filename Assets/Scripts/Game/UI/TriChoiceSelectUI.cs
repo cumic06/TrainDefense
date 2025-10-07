@@ -21,6 +21,7 @@ namespace TrainDefense.Game.UI
 
         private Button _selectButton;
         private ChoiceOption _choiceOption;
+        private int _choiceLeftCount;
 
         private void Awake()
         {
@@ -32,11 +33,12 @@ namespace TrainDefense.Game.UI
             _selectButton.onClick.AddListener(OnSelectButtonClick);
         }
 
-        public void SetData(ChoiceOption choiceOption)
+        public void SetData(ChoiceOption choiceOption, int choiceLeftCount)
         {
             if (choiceOption == null) return;
 
             _choiceOption = choiceOption;
+            _choiceLeftCount = choiceLeftCount;
 
             var uiInfo = choiceOption.GetUIInfo();
             iconImage.sprite = uiInfo.Icon;
@@ -46,7 +48,12 @@ namespace TrainDefense.Game.UI
 
         private void OnSelectButtonClick()
         {
-            GameEventSystem.Publish(new TriChoiceSelectEvent(_choiceOption));
+            _choiceLeftCount--;
+
+            Debug.Log($"_choiceLeftCount: {_choiceLeftCount}");
+
+            TriChoiceSelectEvent eventData = new(_choiceOption, _choiceLeftCount);
+            GameEventSystem.Publish(eventData);
         }
     }
 }

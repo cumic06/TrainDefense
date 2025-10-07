@@ -21,6 +21,8 @@ MonoBehaviour:
     Damage: 2
     MoveSpeed: 5
     AttackDelay: 1
+    DropExpMin: 1
+    DropExpMax: 10
     DropMoneyMin: 5
     DropMoneyMax: 7
     DetectRange: 50

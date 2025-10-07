@@ -22,6 +22,8 @@ namespace TrainDefense.Game.UI
         private string triChoiceDBPath = "DB/TriChoiceDB";
         #endregion
 
+        private int _choiceLeftCount;
+
         private void Awake()
         {
             if (choiceSelectUIs.Length == 0)
@@ -40,20 +42,21 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnChoiceSelected);
         }
 
-        public void OnInspectionEnter()
+        public void OnInspectionEnter(int count)
         {
-            OnChoiceUIPopup().Forget();
+            OnChoiceUIPopup(count).Forget();
         }
 
-        private async UniTask OnChoiceUIPopup()
+        private async UniTask OnChoiceUIPopup(int count)
         {
+            _choiceLeftCount = count;
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
                 var choiceOption = RandomChoice();
-                
+
                 if (choiceOption == null) continue;
 
-                choiceSelectUI.SetData(choiceOption);
+                choiceSelectUI.SetData(choiceOption, _choiceLeftCount);
 
                 choiceSelectUI.transform.localScale = Vector3.zero;
 
@@ -63,10 +66,19 @@ namespace TrainDefense.Game.UI
 
         private void OnChoiceSelected(TriChoiceSelectEvent eventData)
         {
+            // Sync remaining count from event
+            _choiceLeftCount = eventData.ChoiceLeftCount;
+
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
                 choiceSelectUI.transform.localScale = Vector3.one;
                 choiceSelectUI.transform.DOScale(0, uiActiveDelay).SetEase(Ease.InBack).SetUpdate(true);
+            }
+
+            if (_choiceLeftCount > 0)
+            {
+                OnInspectionEnter(_choiceLeftCount);
+                return;
             }
         }
 
@@ -100,13 +112,13 @@ namespace TrainDefense.Game.UI
 
             // 선택된 카테고리 내에서 가중치 기반 선택
             ChoiceOption selectedOption = SelectFromChoices(selectedCategory);
-            
+
             // 선택지 초기화 (업그레이드 가중치 랜덤 선택)
             if (selectedOption != null)
             {
                 selectedOption.Initialize();
             }
-            
+
             return selectedOption;
         }
 

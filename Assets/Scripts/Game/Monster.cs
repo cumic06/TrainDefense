@@ -102,10 +102,25 @@ namespace TrainDefense.Game
         private void OnDead()
         {
             _isDead = true;
+
+            DropExp();
+            DropMoney();
+            
+            GameEventSystem.Publish(new MonsterDeadEvent());
+            ResourceManager.Instance.Destroy(gameObject);
+        }
+
+        private void DropExp()
+        {
+            int dropExp = Random.Range(_currentMonsterStatus.DropExpMin, _currentMonsterStatus.DropExpMax);
+            GameEventSystem.Publish(new AddExpEvent(dropExp));
+        }
+
+        private void DropMoney()
+        {
             int dropMoney = Random.Range(_currentMonsterStatus.DropMoneyMin, _currentMonsterStatus.DropMoneyMax);
             ResourceManager.Instance.Spawn(Resources.Load<GameObject>("Prefabs/Money"), transform.position);
-            GameEventSystem.Publish(new MonsterDeadEvent(dropMoney));
-            ResourceManager.Instance.Destroy(gameObject);
+            GameEventSystem.Publish(new AddCoinEvent(dropMoney));
         }
 
 #if UNITY_EDITOR

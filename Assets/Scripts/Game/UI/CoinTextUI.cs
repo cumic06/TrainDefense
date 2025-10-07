@@ -18,7 +18,7 @@ namespace TrainDefense.Game.UI
 
             if (UserDataManager.Instance != null)
             {
-                coinText.text = $"Coin : {UserDataManager.Instance.Money}";
+                coinText.text = $"Coin : {UserDataManager.Instance.Coin}";
             }
             else
             {
@@ -35,7 +35,7 @@ namespace TrainDefense.Game.UI
         {
             if (UserDataManager.Instance == null) return;
             
-            coinText.text = $"Coin : {UserDataManager.Instance.Money}";
+            coinText.text = $"Coin : {UserDataManager.Instance.Coin}";
         }
     }
 }
