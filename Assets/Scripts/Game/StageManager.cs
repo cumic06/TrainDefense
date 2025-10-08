@@ -40,7 +40,7 @@ public class StageManager : MonoBehaviour
         if (_currentStageTime >= GetCurrentStageInspectionTime() && _currentStageInspectionTimeIndex < GetCurrentStageData().StageInspectionTime.Length)
         {
             _currentStageInspectionTimeIndex++;
-            GameEventSystem.Publish(new EngageReadyEvent());
+            GameEventSystem.Publish(new InspectionEvent());
         }
         else if (_currentStageTime >= GetCurrentStageData().StageEndTime)
         {

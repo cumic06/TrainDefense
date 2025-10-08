@@ -39,6 +39,7 @@ namespace Cumic.Sequence
             GameEventSystem.Subscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(EngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(EngageStart);
+            GameEventSystem.Subscribe<InspectionEvent>(Inspection);
             GameEventSystem.Subscribe<LevelUpEvent>(LevelUp);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(TriChoiceSelect);
             GameEventSystem.Subscribe<StageEndEvent>(StageEnd);
@@ -58,6 +59,9 @@ namespace Cumic.Sequence
             GameEventSystem.Unsubscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Unsubscribe<EngageReadyEvent>(EngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(EngageStart);
+            GameEventSystem.Unsubscribe<InspectionEvent>(Inspection);
+            GameEventSystem.Unsubscribe<LevelUpEvent>(LevelUp);
+            GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(TriChoiceSelect);
             GameEventSystem.Unsubscribe<StageEndEvent>(StageEnd);
             GameEventSystem.Unsubscribe<GameEndEvent>(GameEnd);
         }
@@ -90,14 +94,20 @@ namespace Cumic.Sequence
             }
         }
 
-        private void TriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
+        private void Inspection(InspectionEvent inspectionEvent)
         {
             if (shopButtonUI != null)
             {
-                if (triChoiceSelectEvent.ChoiceLeftCount > 0) return;
-
                 shopButtonUI.gameObject.SetActive(true);
                 shopButtonUI.OnShopOpen();
+            }
+        }
+
+        private void TriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
+        {
+            if (triChoiceSelectEvent.ChoiceLeftCount == 0)
+            {
+                GameEventSystem.Publish(new EngageStartEvent());
             }
         }
 

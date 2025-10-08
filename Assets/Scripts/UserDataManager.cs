@@ -29,19 +29,20 @@ public class UserDataManager : Singleton<UserDataManager>
         _currentExp += addExpEvent.Exp;
 
         var requiredExpInt = Mathf.CeilToInt(GetNextLevelUpExp());
+        int levelUpCount = 0;
         while (requiredExpInt > 0 && _currentExp >= requiredExpInt)
         {
             _currentExp -= requiredExpInt;
-            _currentLevel++;
+            levelUpCount++;
+            LevelUp();
             requiredExpInt = Mathf.CeilToInt(GetNextLevelUpExp());
-            GameEventSystem.Publish(new LevelUpEvent(_currentLevel));
+            GameEventSystem.Publish(new LevelUpEvent(levelUpCount));
         }
     }
 
     private void LevelUp()
     {
         _currentLevel++;
-        _currentExp = 0;
     }
 
     private void AddMoney(AddCoinEvent addCoinEvent)
