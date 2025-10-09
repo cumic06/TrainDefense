@@ -50,6 +50,11 @@ namespace TrainDefense.Game
             }
         }
 
+        private void OStay2D(Collider2D collision)
+        {
+
+        }
+
         private IEnumerator DestroyCoroutine()
         {
             yield return new WaitForSeconds(destroyDelay);
