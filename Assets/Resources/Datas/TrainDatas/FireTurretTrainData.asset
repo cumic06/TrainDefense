@@ -26,4 +26,4 @@ MonoBehaviour:
     AttackCount: 1
     AttackDelay: 0.25
     AttackRange: 5
-  turretProjectilePrefab: {fileID: 7746886956471559235, guid: fb590fbeb4c23d64397c945118d7691c, type: 3}
+  turretProjectilePrefab: {fileID: 6527682644533503636, guid: 04478cdcea19cb04d93c477de6348030, type: 3}

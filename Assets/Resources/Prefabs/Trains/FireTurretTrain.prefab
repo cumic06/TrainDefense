@@ -404,6 +404,7 @@ MonoBehaviour:
   trainData: {fileID: 11400000, guid: 8ddb26e686701594fb19b45d62580e65, type: 2}
   turretProjectileSpawnPoints:
   - {fileID: 3529707877163048822}
+  isParticleProjectile: 1
   turretModel: {fileID: 7436325860553494596}
 --- !u!4 &3802654949415311762 stripped
 Transform:

@@ -13,6 +13,8 @@ namespace TrainDefense.Game
 
         [SerializeField]
         private Transform[] turretProjectileSpawnPoints;
+        [SerializeField]
+        private bool isParticleProjectile;
 
         [SerializeField]
         private GameObject turretModel;
@@ -21,6 +23,7 @@ namespace TrainDefense.Game
         private Monster _targetMonster;
 
         private TurretTrainStatus _currentTurretTrainStatus;
+        private Projectile _particleProjectilePrefab;
 
         protected override void Start()
         {
@@ -36,7 +39,16 @@ namespace TrainDefense.Game
 
             if (_targetMonster == null)
             {
+                Debug.Log($"Target Null");
                 _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
+
+                if (isParticleProjectile)
+                {
+                    if (_particleProjectilePrefab != null)
+                    {
+                        _particleProjectilePrefab.gameObject.SetActive(false);
+                    }
+                }
                 return;
             }
 
@@ -65,6 +77,7 @@ namespace TrainDefense.Game
             }
         }
 
+        private bool particleAttack;
         private void Attack()
         {
             if (_targetMonster == null) return;
@@ -75,19 +88,38 @@ namespace TrainDefense.Game
                 turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
             });
 
-            for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
+            if (!isParticleProjectile)
             {
-                Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
-                bullet.transform.position = turretProjectileSpawnPoints[i].position;
-                bullet.Init(_currentTurretTrainStatus.AttackDamage);
-                bullet.transform.LookAt2D(_targetMonster.transform);
+                for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
+                {
+                    Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
+                    bullet.transform.position = turretProjectileSpawnPoints[i].position;
+                    bullet.Init(_currentTurretTrainStatus.AttackDamage);
+                    bullet.transform.LookAt2D(_targetMonster.transform);
+                }
+            }
+            else
+            {
+                if (particleAttack) return;
+                particleAttack = true;
+
+                if (_particleProjectilePrefab == null)
+                {
+                    _particleProjectilePrefab = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
+                    _particleProjectilePrefab.transform.SetParent(turretProjectileSpawnPoints[0]);
+                    _particleProjectilePrefab.transform.localScale = Vector3.one;
+                    _particleProjectilePrefab.transform.localPosition = Vector3.zero;
+                    _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
+                }
+                _particleProjectilePrefab.gameObject.SetActive(true);
+                _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
             }
         }
 
         public override void Upgrade(TrainUpgradeData upgradeData)
         {
             base.Upgrade(upgradeData);
-            
+
             if (upgradeData == null) return;
 
             // TurretTrain 전용 업그레이드 데이터가 있다면 적용
@@ -99,6 +131,16 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackDelay += turretUpgrade.TurretStatusUpgrade.AttackDelay;
             }
         }
+
+        protected override void OnDead()
+        {
+            if (_particleProjectilePrefab != null)
+            {
+                _particleProjectilePrefab.gameObject.SetActive(false);
+            }
+            base.OnDead();
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

@@ -119,7 +119,6 @@ namespace TrainDefense.Game
             {
                 if (trainDeadEvent.Train == train)
                 {
-                    Debug.Log($"{trainDeadEvent.Train.name}");
                     _currentTrains.Remove(train);
 
                     if (_currentTrains.Count == 0)
