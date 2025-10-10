@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 53ba97b3d6dc6ca478c9587b44b13642, type: 3}
-  m_Name: RangeTrainData
+  m_Name: ColdAirTrainData
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.RangeTrainData
   id: train_03
-  trainName: RangeTrain
+  trainName: ColdAirTrain
   icon: {fileID: 21300000, guid: 1f087dcaba154eb46994958e36db2cfc, type: 3}
-  description: Add Range Train
+  description: Add ColdAir Train
   trainStatusData:
     MaxHp: 100
   trainPrefab: {fileID: 4451720466536624296, guid: 429a477900ceff14697bc444b52404ba, type: 3}
