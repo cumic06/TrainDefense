@@ -25,6 +25,13 @@ namespace TrainDefense.Game
         [SerializeField]
         [BoxGroup("SlowProjectile")]
         private float slowValue = 0.5f;
+
+        [SerializeField]
+        [BoxGroup("ShoveProjectile")]
+        private bool isShoveProjectile;
+        [SerializeField]
+        [BoxGroup("ShoveProjectile")]
+        private float shoveValue = 1f;
         #endregion
 
         private int _damage;
@@ -67,7 +74,9 @@ namespace TrainDefense.Game
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.TryGetComponent(out Monster monster))
+            bool isMonster = other.TryGetComponent(out Monster monster);
+
+            if (isMonster)
             {
                 if (isTickProjectile)
                 {
@@ -79,6 +88,11 @@ namespace TrainDefense.Game
                     monster.TakeDamage(_damage);
                     ResourceManager.Instance.Destroy(gameObject);
                 }
+            }
+
+            if (isShoveProjectile && isMonster)
+            {
+                // monster.Shove(shoveValue);
             }
         }
 
