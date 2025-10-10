@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Linq;
 using Cumic.Events;
+using Cysharp.Threading.Tasks;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using UnityEngine;
@@ -28,6 +30,14 @@ namespace TrainDefense.Game
             InitStats();
             _isDead = false;
             _targetTrain = null;
+        }
+
+        private void OnDisable()
+        {
+            if (_slowCoroutine != null)
+            {
+                StopCoroutine(_slowCoroutine);
+            }
         }
 
         private void InitStats()
@@ -64,6 +74,65 @@ namespace TrainDefense.Game
             Vector3 direction = _targetTrain.transform.position - transform.position;
             transform.Translate(direction.normalized * Time.deltaTime * _currentMonsterStatus.MoveSpeed);
         }
+
+        #region Slow N Reset Move Speed
+        private Coroutine _slowCoroutine;
+
+        private IEnumerator SlowCoroutine(float slowValue)
+        {
+            var slowSpeed = _currentMonsterStatus.MoveSpeed * slowValue;
+            var startSpeed = _currentMonsterStatus.MoveSpeed;
+            float elapsedTime = 0f;
+            float duration = 1f;
+
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsedTime / duration);
+                _currentMonsterStatus.MoveSpeed = Mathf.Lerp(startSpeed, slowSpeed, t);
+                yield return null;
+            }
+
+            _currentMonsterStatus.MoveSpeed = slowSpeed;
+        }
+
+        public void Slow(float slowValue)
+        {
+            if (_slowCoroutine != null)
+            {
+                StopCoroutine(_slowCoroutine);
+            }
+            _slowCoroutine = StartCoroutine(SlowCoroutine(slowValue));
+        }
+
+        private Coroutine _resetMoveSpeedCoroutine;
+        private IEnumerator ResetMoveSpeedCoroutine()
+        {
+            var targetSpeed = monsterData.MonsterStatusData.MoveSpeed;
+            var startSpeed = _currentMonsterStatus.MoveSpeed;
+            float elapsedTime = 0f;
+            float duration = 1f;
+
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsedTime / duration);
+                _currentMonsterStatus.MoveSpeed = Mathf.Lerp(startSpeed, targetSpeed, t);
+                yield return null;
+            }
+
+            _currentMonsterStatus.MoveSpeed = targetSpeed;
+        }
+
+        public void ResetMoveSpeed()
+        {
+            if (_resetMoveSpeedCoroutine != null)
+            {
+                StopCoroutine(_resetMoveSpeedCoroutine);
+            }
+            _resetMoveSpeedCoroutine = StartCoroutine(ResetMoveSpeedCoroutine());
+        }
+        #endregion
 
         private void AttackHandler()
         {
@@ -105,7 +174,7 @@ namespace TrainDefense.Game
 
             DropExp();
             DropMoney();
-            
+
             GameEventSystem.Publish(new MonsterDeadEvent());
             ResourceManager.Instance.Destroy(gameObject);
         }

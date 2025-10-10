@@ -11,13 +11,20 @@ namespace TrainDefense.Game
         private float speed;
         [SerializeField]
         private float destroyDelay;
-        
+
         [SerializeField]
         [BoxGroup("TickProjectile")]
         private bool isTickProjectile;
         [SerializeField]
         [BoxGroup("TickProjectile")]
         private float tickDamageInterval = 0.1f;
+
+        [SerializeField]
+        [BoxGroup("SlowProjectile")]
+        private bool isSlowProjectile;
+        [SerializeField]
+        [BoxGroup("SlowProjectile")]
+        private float slowValue = 0.5f;
         #endregion
 
         private int _damage;
@@ -77,7 +84,9 @@ namespace TrainDefense.Game
 
         private void OnTriggerStay2D(Collider2D other)
         {
-            if (isTickProjectile && other.TryGetComponent(out Monster monster))
+            bool isMonster = other.TryGetComponent(out Monster monster);
+
+            if (isTickProjectile && isMonster)
             {
                 if (isTickProjectile && _isInTrigger)
                 {
@@ -86,18 +95,35 @@ namespace TrainDefense.Game
 
                 if (_tickCooldown <= 0f)
                 {
+                    if (monster == null || !monster.gameObject.activeInHierarchy) return;
+
                     monster.TakeDamage(_damage);
                     _tickCooldown = tickDamageInterval;
                 }
+            }
+
+            if (isSlowProjectile && isMonster)
+            {
+                if (monster == null || !monster.gameObject.activeInHierarchy) return;
+
+                monster.Slow(slowValue);
             }
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (isTickProjectile && other.TryGetComponent(out Monster monster))
+            bool isMonster = other.TryGetComponent(out Monster monster);
+
+            if (isTickProjectile && isMonster)
             {
                 _isInTrigger = false;
                 _tickCooldown = 0f;
+            }
+
+            if (isSlowProjectile && isMonster)
+            {
+                if (monster == null || !monster.gameObject.activeInHierarchy) return;
+                monster.ResetMoveSpeed();
             }
         }
 

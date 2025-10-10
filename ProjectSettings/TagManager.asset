@@ -44,6 +44,9 @@ TagManager:
   - name: Map
     uniqueID: 822565857
     locked: 0
+  - name: Range
+    uniqueID: 1426885971
+    locked: 0
   - name: TrainBody
     uniqueID: 1842545067
     locked: 0

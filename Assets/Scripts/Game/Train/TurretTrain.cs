@@ -39,7 +39,6 @@ namespace TrainDefense.Game
 
             if (_targetMonster == null)
             {
-                Debug.Log($"Target Null");
                 _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
 
                 if (isParticleProjectile)
@@ -49,6 +48,7 @@ namespace TrainDefense.Game
                         _particleProjectilePrefab.gameObject.SetActive(false);
                     }
                 }
+                
                 return;
             }
 
