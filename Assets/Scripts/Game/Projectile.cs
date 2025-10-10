@@ -31,7 +31,10 @@ namespace TrainDefense.Game
         private bool isShoveProjectile;
         [SerializeField]
         [BoxGroup("ShoveProjectile")]
-        private float shoveValue = 1f;
+        private float shovePower = 1f;
+        [SerializeField]
+        [BoxGroup("ShoveProjectile")]
+        private float shoveDuration = 0.5f;
         #endregion
 
         private int _damage;
@@ -88,11 +91,11 @@ namespace TrainDefense.Game
                     monster.TakeDamage(_damage);
                     ResourceManager.Instance.Destroy(gameObject);
                 }
-            }
 
-            if (isShoveProjectile && isMonster)
-            {
-                // monster.Shove(shoveValue);
+                if (isShoveProjectile && !monster.IsShoved)
+                {
+                    monster.Shove(shovePower, shoveDuration);
+                }
             }
         }
 
@@ -100,27 +103,35 @@ namespace TrainDefense.Game
         {
             bool isMonster = other.TryGetComponent(out Monster monster);
 
-            if (isTickProjectile && isMonster)
+            if (isMonster)
             {
-                if (isTickProjectile && _isInTrigger)
+                if (isTickProjectile)
                 {
-                    _tickCooldown -= Time.deltaTime;
+                    if (_isInTrigger)
+                    {
+                        _tickCooldown -= Time.deltaTime;
+                    }
+
+                    if (_tickCooldown <= 0f)
+                    {
+                        if (monster == null || !monster.gameObject.activeInHierarchy) return;
+
+                        monster.TakeDamage(_damage);
+                        _tickCooldown = tickDamageInterval;
+                    }
                 }
 
-                if (_tickCooldown <= 0f)
+                if (isSlowProjectile)
                 {
                     if (monster == null || !monster.gameObject.activeInHierarchy) return;
 
-                    monster.TakeDamage(_damage);
-                    _tickCooldown = tickDamageInterval;
+                    monster.Slow(slowValue);
                 }
-            }
 
-            if (isSlowProjectile && isMonster)
-            {
-                if (monster == null || !monster.gameObject.activeInHierarchy) return;
-
-                monster.Slow(slowValue);
+                if (isShoveProjectile && !monster.IsShoved)
+                {
+                    monster.Shove(shovePower, shoveDuration);
+                }
             }
         }
 
@@ -128,16 +139,20 @@ namespace TrainDefense.Game
         {
             bool isMonster = other.TryGetComponent(out Monster monster);
 
-            if (isTickProjectile && isMonster)
+            if (isMonster)
             {
-                _isInTrigger = false;
-                _tickCooldown = 0f;
-            }
+                if (isTickProjectile)
+                {
+                    _isInTrigger = false;
+                    _tickCooldown = 0f;
+                }
 
-            if (isSlowProjectile && isMonster)
-            {
-                if (monster == null || !monster.gameObject.activeInHierarchy) return;
-                monster.ResetMoveSpeed();
+                if (isSlowProjectile)
+                {
+                    if (monster == null || !monster.gameObject.activeInHierarchy) return;
+
+                    monster.ResetMoveSpeed();
+                }
             }
         }
 

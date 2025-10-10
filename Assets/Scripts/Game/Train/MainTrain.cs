@@ -30,6 +30,8 @@ namespace TrainDefense.Game
         private readonly List<Train> _currentTrains = new();
         public List<Train> CurrentTrains => _currentTrains;
 
+        private int _currentTrainCount;
+
         protected override void Start()
         {
             base.Start();
@@ -41,6 +43,8 @@ namespace TrainDefense.Game
             {
                 SpawnTrain(startTrainablePrefab);
             }
+            
+            _currentTrainCount = 0;
         }
 
         private void OnDestroy()
@@ -98,7 +102,8 @@ namespace TrainDefense.Game
 
             Train trainObject = Instantiate(trainPrefab, transform);
             _currentTrains.Add(trainObject);
-            Vector3 spawnPos = Vector3.left * trainOffset * _currentTrains.Count;
+            _currentTrainCount++;
+            Vector3 spawnPos = Vector3.left * trainOffset * _currentTrainCount;
             trainObject.transform.localPosition = spawnPos;
             GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
         }

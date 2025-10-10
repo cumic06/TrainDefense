@@ -20,6 +20,13 @@ namespace TrainDefense.Game
         protected bool _isDead;
         protected Train _targetTrain;
 
+        private Rigidbody2D _rigidbody2D;
+
+        private void Awake()
+        {
+            _rigidbody2D = GetComponent<Rigidbody2D>();
+        }
+
         private void Start()
         {
             InitStats();
@@ -69,10 +76,14 @@ namespace TrainDefense.Game
 
         private void Move()
         {
-            if (_targetTrain == null) return;
+            transform.Translate(MoveDirection().normalized * Time.deltaTime * _currentMonsterStatus.MoveSpeed);
+        }
 
-            Vector3 direction = _targetTrain.transform.position - transform.position;
-            transform.Translate(direction.normalized * Time.deltaTime * _currentMonsterStatus.MoveSpeed);
+        private Vector3 MoveDirection()
+        {
+            if (_targetTrain == null) return Vector3.zero;
+
+            return _targetTrain.transform.position - transform.position;
         }
 
         #region Slow N Reset Move Speed
@@ -133,6 +144,35 @@ namespace TrainDefense.Game
             _resetMoveSpeedCoroutine = StartCoroutine(ResetMoveSpeedCoroutine());
         }
         #endregion
+
+        private bool _isShoved;
+        public bool IsShoved => _isShoved;
+        private Coroutine _shoveCoroutine;
+
+        public void Shove(float shovePower, float shoveDuration)
+        {
+            if (_targetTrain != null)
+            {
+                Debug.Log("Shove");
+                _isShoved = true;
+                _rigidbody2D.AddForce(-MoveDirection().normalized * shovePower, ForceMode2D.Impulse);
+
+                if (_shoveCoroutine != null)
+                {
+                    StopCoroutine(_shoveCoroutine);
+                    _rigidbody2D.linearVelocity = Vector2.zero;
+                }
+                _shoveCoroutine = StartCoroutine(ShoveCoroutine(shovePower, shoveDuration));
+            }
+        }
+
+        private IEnumerator ShoveCoroutine(float shovePower, float shoveDuration)
+        {
+            yield return new WaitForSeconds(shoveDuration);
+
+            _isShoved = false;
+            _rigidbody2D.linearVelocity = Vector2.zero;
+        }
 
         private void AttackHandler()
         {

@@ -52,6 +52,9 @@ MonoBehaviour:
   tickDamageInterval: 0.3
   isSlowProjectile: 0
   slowValue: 0.1
+  isShoveProjectile: 1
+  shovePower: 1.5
+  shoveDuration: 1.5
 --- !u!58 &-652766451336997734
 CircleCollider2D:
   m_ObjectHideFlags: 0
