@@ -179,6 +179,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 75bb79263b6bdb045ae71c41fa2fb9b8, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -263,6 +271,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -589,7 +605,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Shop
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: aeb2e28600e7b1f468fb42905bba25c4, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -655,7 +671,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &376424029
@@ -1051,6 +1067,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 982357d8af327eb41b0a8095e5d9e99a, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1135,6 +1159,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -1161,6 +1193,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 982357d8af327eb41b0a8095e5d9e99a, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1245,6 +1285,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -1444,7 +1492,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: StageClear
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: aeb2e28600e7b1f468fb42905bba25c4, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1510,7 +1558,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &820509291
@@ -2168,6 +2216,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 2fe40060998602d49a3987375039e47c, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2252,6 +2308,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -2278,6 +2342,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 2fe40060998602d49a3987375039e47c, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2362,6 +2434,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -2388,6 +2468,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 982357d8af327eb41b0a8095e5d9e99a, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2472,6 +2560,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -2498,6 +2594,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 75bb79263b6bdb045ae71c41fa2fb9b8, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2582,6 +2686,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -3056,8 +3168,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Next Inspection Time : '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 34e4437151ad7ee48931a175758497c5, type: 2}
+  m_sharedMaterial: {fileID: 4416156702025040175, guid: 34e4437151ad7ee48931a175758497c5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3145,6 +3257,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 6cd21b741d0a31f43a1d3248025f4445, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3229,6 +3349,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -3553,6 +3681,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 6cd21b741d0a31f43a1d3248025f4445, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3637,6 +3773,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -3836,7 +3980,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MonsterSpawner
   monsterPrefabs:
   - {fileID: 2390104975334823038, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-  spawnInterval: 0.001
+  spawnInterval: 0.7
   spawnRange: 2
 --- !u!1 &1735321058
 GameObject:
@@ -3898,8 +4042,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Coin : 0'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 34e4437151ad7ee48931a175758497c5, type: 2}
+  m_sharedMaterial: {fileID: 4416156702025040175, guid: 34e4437151ad7ee48931a175758497c5, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4214,6 +4358,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 6cd21b741d0a31f43a1d3248025f4445, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -4298,6 +4450,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -12148,6 +12308,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 2fe40060998602d49a3987375039e47c, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -12232,6 +12400,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -12305,7 +12481,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: GameOver
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: aeb2e28600e7b1f468fb42905bba25c4, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -12371,7 +12547,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &2015666316
@@ -12394,6 +12570,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 6cd21b741d0a31f43a1d3248025f4445, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -12478,6 +12662,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -12607,6 +12799,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 2fe40060998602d49a3987375039e47c, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -12691,6 +12891,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -12717,6 +12925,14 @@ PrefabInstance:
       propertyPath: shopItemData
       value: 
       objectReference: {fileID: 11400000, guid: 6cd21b741d0a31f43a1d3248025f4445, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -12801,6 +13017,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 7083687277069500475, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 80
@@ -12823,6 +13047,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 968793907}
     m_Modifications:
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 194019013546866761, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     - target: {fileID: 635322759354036517, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -12907,6 +13139,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItemButton
       objectReference: {fileID: 0}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4617223773666497518, guid: 70f45f8c8ec7734428b4b43118cfb16e, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

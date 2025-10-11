@@ -15,7 +15,7 @@ MonoBehaviour:
   id: train_03
   trainName: ColdAirTrain
   icon: {fileID: 21300000, guid: 1f087dcaba154eb46994958e36db2cfc, type: 3}
-  description: Add ColdAir Train
+  description: "\uB0C9\uAE30 \uAE30\uCC28 \uCD94\uAC00"
   trainStatusData:
     MaxHp: 100
   trainPrefab: {fileID: 4451720466536624296, guid: 429a477900ceff14697bc444b52404ba, type: 3}

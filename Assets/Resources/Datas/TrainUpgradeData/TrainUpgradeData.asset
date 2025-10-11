@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.TrainUpgradeData
   icon: {fileID: 21300000, guid: 53b32f179b810cb44af399d5af870ea9, type: 3}
   upgradeName: Normal Train Uprade
-  description: Normal Train Uprade + 1
+  description: "\uB178\uB9D0 \uAE30\uCC28 \uC5C5\uADF8\uB808\uC774\uB4DC"
   statusUpgrade:
     MaxHp: 10
   extensionData:

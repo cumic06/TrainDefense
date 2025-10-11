@@ -15,7 +15,7 @@ MonoBehaviour:
   id: train_01
   trainName: Normal Train
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  description: Add NormalTrain
+  description: "\uB178\uB9D0 \uAE30\uCC28 \uCD94\uAC00"
   trainStatusData:
     MaxHp: 100
   trainPrefab: {fileID: 6472199296939909711, guid: 90b9ebc777a7d2d40becde5521a265eb, type: 3}

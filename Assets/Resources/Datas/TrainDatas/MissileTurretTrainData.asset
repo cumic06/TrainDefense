@@ -15,7 +15,7 @@ MonoBehaviour:
   id: train_05
   trainName: Missile Train
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  description: Add Missile Train
+  description: "\uBBF8\uC0AC\uC77C \uAE30\uCC28 \uCD94\uAC00"
   trainStatusData:
     MaxHp: 100
   trainPrefab: {fileID: 6472199296939909711, guid: 2c445e47e8c9769498d0ec34f9edac9f, type: 3}
