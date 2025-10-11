@@ -43,7 +43,7 @@ namespace TrainDefense.Game.UI
         {
             if (UserDataManager.Instance == null) return;
 
-            _slider.DOValue(UserDataManager.Instance.ExpPercent, tweenDuration);
+            _slider.DOValue(UserDataManager.Instance.ExpPercent, tweenDuration).SetUpdate(true);
         }
     }
 }

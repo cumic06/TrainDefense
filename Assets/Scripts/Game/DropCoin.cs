@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace TrainDefense.Game
 {
-    public class Money : MonoBehaviour
+    public class DropCoin : MonoBehaviour
     {
         #region Field
         [SerializeField]
-        private float speed = 10f;
+        private float speed = 20f;
 
         [SerializeField]
         private float bounceBackDuration = 0.2f;

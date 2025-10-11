@@ -1,14 +1,15 @@
-using Cumic;
 using Cumic.Events;
+using DG.Tweening;
 using TMPro;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace TrainDefense.Game.UI
 {
-    public class TriChoiceSelectUI : MonoBehaviour
+    public class TriChoiceSelectUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         #region Fields
         [SerializeField]
@@ -44,6 +45,8 @@ namespace TrainDefense.Game.UI
             iconImage.sprite = uiInfo.Icon;
             nameText.text = uiInfo.Name;
             descriptionText.text = uiInfo.Description;
+
+            _isSelected = false;
         }
 
         private void OnSelectButtonClick()
@@ -54,6 +57,21 @@ namespace TrainDefense.Game.UI
 
             TriChoiceSelectEvent eventData = new(_choiceOption, _choiceLeftCount);
             GameEventSystem.Publish(eventData);
+            _isSelected = true;
+        }
+
+        private bool _isSelected = false;
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (_isSelected) return;
+            transform.DOScale(1.1f, 0.1f).SetEase(Ease.OutBack).SetUpdate(true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (_isSelected) return;
+            transform.DOScale(1f, 0.1f).SetEase(Ease.InBack).SetUpdate(true);
         }
     }
 }
