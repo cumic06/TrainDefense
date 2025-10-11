@@ -14,7 +14,6 @@ namespace TrainDefense.Game
 
         public MainTrain MainTrain => mainTrain;
 
-
         public bool CheckHasTrain(TrainData trainData)
         {
             return mainTrain.CheckHasTrain(trainData);
@@ -27,10 +26,26 @@ namespace TrainDefense.Game
 
         public Train GetNearTrain(Vector3 position)
         {
-            IOrderedEnumerable<Train> nearTrains = mainTrain.CurrentTrains.OrderBy(x => Vector3.Distance(position, x.transform.position));
-            if (nearTrains.Count() == 0) return null;
-            
-            return nearTrains.FirstOrDefault();
+            var trains = mainTrain.CurrentTrains;
+            if (trains.Count == 0) return null;
+
+            Train closest = null;
+            float minSqrDistance = float.MaxValue;
+
+            foreach (var train in trains)
+            {
+                if (train.IsDead || train.IsMainTrain || train == null || !train.gameObject.activeInHierarchy) continue;
+
+                float sqrDistance = position.SqrDistance(train.transform.position);
+                
+                if (sqrDistance < minSqrDistance)
+                {
+                    minSqrDistance = sqrDistance;
+                    closest = train;
+                }
+            }
+
+            return closest;
         }
 
         public Train[] GetTrains()

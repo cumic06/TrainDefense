@@ -16,6 +16,8 @@ namespace TrainDefense.Game
         protected int _currentHp;
         protected int _currentLevel;
 
+        public bool IsUnDead;
+
         public bool IsDead => _isDead;
         public bool IsMainTrain => trainData.IsMainTrain;
         public int CurrentLevel => _currentLevel;
@@ -44,6 +46,8 @@ namespace TrainDefense.Game
 
         protected virtual void OnDead()
         {
+            if (IsUnDead) return;
+
             if (!IsMainTrain)
             {
                 GameEventSystem.Publish(new TrainDeadEvent(this));

@@ -25,6 +25,9 @@ namespace TrainDefense.Game
         [Header("테스트용")]
         [BoxGroup("TrainSetting")]
         private Train startTrainablePrefab;
+        [SerializeField]
+        [BoxGroup("TrainSetting")]
+        private bool isUnDead = false;
         #endregion
 
         private readonly List<Train> _currentTrains = new();
@@ -43,7 +46,7 @@ namespace TrainDefense.Game
             {
                 SpawnTrain(startTrainablePrefab);
             }
-            
+
             _currentTrainCount = 0;
         }
 
@@ -101,6 +104,7 @@ namespace TrainDefense.Game
             }
 
             Train trainObject = Instantiate(trainPrefab, transform);
+            trainObject.IsUnDead = isUnDead;
             _currentTrains.Add(trainObject);
             _currentTrainCount++;
             Vector3 spawnPos = Vector3.left * trainOffset * _currentTrainCount;
@@ -120,6 +124,8 @@ namespace TrainDefense.Game
 
         private void CheckDeadTrain(TrainDeadEvent trainDeadEvent)
         {
+            if (isUnDead) return;
+
             foreach (var train in _currentTrains.ToList())
             {
                 if (trainDeadEvent.Train == train)
@@ -146,6 +152,8 @@ namespace TrainDefense.Game
 
         protected override void OnDead()
         {
+            if (isUnDead) return;
+
             base.OnDead();
             GameEventSystem.Publish(new GameEndEvent(false));
         }

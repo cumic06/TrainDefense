@@ -62,7 +62,7 @@ namespace TrainDefense.Game
             Move();
             AttackHandler();
         }
-        
+
         private void DetectTrain()
         {
             if (TrainManager.Instance == null) return;
@@ -231,10 +231,7 @@ namespace TrainDefense.Game
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, _currentMonsterStatus.DetectRange);
-
+        {   
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, _currentMonsterStatus.AttackRange);
         }

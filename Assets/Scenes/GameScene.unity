@@ -1268,6 +1268,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -6865814404541872816, guid: a544662bcec77a141b5326512a51ff41, type: 3}
+      propertyPath: isUnDead
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6865814404541872816, guid: a544662bcec77a141b5326512a51ff41, type: 3}
       propertyPath: moveSpeed
       value: 2
       objectReference: {fileID: 0}
@@ -3832,7 +3836,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MonsterSpawner
   monsterPrefabs:
   - {fileID: 2390104975334823038, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
-  spawnInterval: 0.7
+  spawnInterval: 0.001
   spawnRange: 2
 --- !u!1 &1735321058
 GameObject:

@@ -4,6 +4,11 @@ using UnityEngine;
 
 public static class UnityExtension
 {
+    public static float SqrDistance(this Vector3 vector, Vector3 target)
+    {
+        return (vector - target).sqrMagnitude;
+    }
+
     public static void LookAt2D(this Transform transform, Transform target)
     {
         Vector3 direction = target.position - transform.position;

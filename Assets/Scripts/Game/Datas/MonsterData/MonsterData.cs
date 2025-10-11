@@ -39,6 +39,5 @@ public struct MonsterStatusInfo
     public int DropExpMax;
     public int DropMoneyMin;
     public int DropMoneyMax;
-    public float DetectRange;
     public float AttackRange;
 }
