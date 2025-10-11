@@ -92,7 +92,7 @@ namespace TrainDefense.Game
                     ResourceManager.Instance.Destroy(gameObject);
                 }
 
-                if (isShoveProjectile && !monster.IsShoved)
+                if (isShoveProjectile)
                 {
                     monster.Shove(shovePower, shoveDuration);
                 }
@@ -128,7 +128,7 @@ namespace TrainDefense.Game
                     monster.Slow(slowValue);
                 }
 
-                if (isShoveProjectile && !monster.IsShoved)
+                if (isShoveProjectile)
                 {
                     monster.Shove(shovePower, shoveDuration);
                 }

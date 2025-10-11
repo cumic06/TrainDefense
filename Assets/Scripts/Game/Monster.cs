@@ -55,6 +55,8 @@ namespace TrainDefense.Game
         private void FixedUpdate()
         {
             DetectTrain();
+
+            if (_isShoved) return;
             Move();
             AttackHandler();
         }
@@ -146,21 +148,15 @@ namespace TrainDefense.Game
         #endregion
 
         private bool _isShoved;
-        public bool IsShoved => _isShoved;
         private Coroutine _shoveCoroutine;
 
         public void Shove(float shovePower, float shoveDuration)
         {
             if (_targetTrain != null)
             {
-                Debug.Log("Shove");
-                _isShoved = true;
-                _rigidbody2D.AddForce(-MoveDirection().normalized * shovePower, ForceMode2D.Impulse);
-
                 if (_shoveCoroutine != null)
                 {
                     StopCoroutine(_shoveCoroutine);
-                    _rigidbody2D.linearVelocity = Vector2.zero;
                 }
                 _shoveCoroutine = StartCoroutine(ShoveCoroutine(shovePower, shoveDuration));
             }
@@ -168,8 +164,9 @@ namespace TrainDefense.Game
 
         private IEnumerator ShoveCoroutine(float shovePower, float shoveDuration)
         {
+            _isShoved = true;
+            _rigidbody2D.AddForce(-MoveDirection().normalized * shovePower, ForceMode2D.Impulse);
             yield return new WaitForSeconds(shoveDuration);
-
             _isShoved = false;
             _rigidbody2D.linearVelocity = Vector2.zero;
         }
