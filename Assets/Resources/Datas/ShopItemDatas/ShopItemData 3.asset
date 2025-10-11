@@ -16,4 +16,4 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 9c50c7eaf401e5640820e11aa8455df8, type: 3}
   itemName: DummyItem4
   description: 
-  needMoney: 30
+  needMoney: 300

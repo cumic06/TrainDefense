@@ -41,6 +41,8 @@ namespace TrainDefense.Game.UI
 
         private void OnAddExp(AddExpEvent addExpEvent)
         {
+            if (UserDataManager.Instance == null) return;
+
             _slider.DOValue(UserDataManager.Instance.ExpPercent, tweenDuration);
         }
     }

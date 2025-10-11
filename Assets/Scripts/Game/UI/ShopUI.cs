@@ -4,6 +4,7 @@ using Cumic.Events;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TrainDefense.Game.UI
 {
@@ -16,6 +17,8 @@ namespace TrainDefense.Game.UI
         private float shopMoveXEndPos;
         [SerializeField]
         private float shopMoveInterval = 1f;
+        [SerializeField]
+        private Image backgroundImage;
         #endregion
 
         private RectTransform _rectTransform;
@@ -41,6 +44,7 @@ namespace TrainDefense.Game.UI
             }
 
             await _rectTransform.DOAnchorPosX(shopMoveXEndPos, shopMoveInterval).SetUpdate(true);
+            backgroundImage.gameObject.SetActive(true);
             isShopOpen = true;
         }
 
@@ -48,6 +52,7 @@ namespace TrainDefense.Game.UI
         {
             await _rectTransform.DOAnchorPosX(shopMoveXStartPos, shopMoveInterval).SetUpdate(true);
             isShopOpen = false;
+            backgroundImage.gameObject.SetActive(false);
             GameEventSystem.Publish(new EngageStartEvent());
         }
     }

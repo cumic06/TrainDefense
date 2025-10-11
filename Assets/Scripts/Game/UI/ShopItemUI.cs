@@ -12,12 +12,19 @@ public class ShopItemUI : MonoBehaviour
     private Button buyButton;
     [SerializeField]
     private TextMeshProUGUI itemNameText;
+    [SerializeField]
+    private TextMeshProUGUI needMoneyText;
     #endregion
 
     private void Start()
     {
         buyButton.onClick.AddListener(OnBuyButtonClick);
-        itemNameText.text = shopItemData.ItemName;
+
+        if (shopItemData != null)
+        {
+            itemNameText.text = shopItemData.ItemName;
+            needMoneyText.text = $"{shopItemData.NeedMoney}$";
+        }
     }
 
     public void SetVaild(int currentMoney)
