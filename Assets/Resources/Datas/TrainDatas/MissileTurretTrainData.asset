@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af5c87eedf02a38489ebc6c0d1773a1b, type: 3}
-  m_Name: NormalTurretTrainData
+  m_Name: MissileTurretTrainData
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Data.TurretTrainData
-  id: train_01
-  trainName: Normal Train
+  id: train_05
+  trainName: Missile Train
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  description: Add NormalTrain
+  description: Add Missile Train
   trainStatusData:
     MaxHp: 100
-  trainPrefab: {fileID: 6472199296939909711, guid: 90b9ebc777a7d2d40becde5521a265eb, type: 3}
+  trainPrefab: {fileID: 6472199296939909711, guid: 2c445e47e8c9769498d0ec34f9edac9f, type: 3}
   isMainTrain: 0
   upgrades: []
   turretTrainStatus:
-    AttackDamage: 10
+    AttackDamage: 30
     AttackCount: 1
-    AttackDelay: 0.25
-    AttackRange: 5
+    AttackDelay: 0.7
+    AttackRange: 8
   turretProjectilePrefab: {fileID: 1829234309482384407, guid: 73538706c0c9d074ba819960d6a42bb2, type: 3}

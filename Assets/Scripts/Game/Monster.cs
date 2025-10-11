@@ -111,6 +111,8 @@ namespace TrainDefense.Game
 
         public void Slow(float slowValue)
         {
+            if (!gameObject.activeInHierarchy) return;
+
             if (_slowCoroutine != null)
             {
                 StopCoroutine(_slowCoroutine);
@@ -139,6 +141,8 @@ namespace TrainDefense.Game
 
         public void ResetMoveSpeed()
         {
+            if (!gameObject.activeInHierarchy) return;
+            
             if (_resetMoveSpeedCoroutine != null)
             {
                 StopCoroutine(_resetMoveSpeedCoroutine);
@@ -152,6 +156,8 @@ namespace TrainDefense.Game
 
         public void Shove(float shovePower, float shoveDuration)
         {
+            if (!gameObject.activeInHierarchy) return;
+
             if (_targetTrain != null)
             {
                 if (_shoveCoroutine != null)

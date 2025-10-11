@@ -94,6 +94,8 @@ namespace TrainDefense.Game
 
                 if (isShoveProjectile)
                 {
+                    if (monster == null) return;
+
                     monster.Shove(shovePower, shoveDuration);
                 }
             }
@@ -114,7 +116,7 @@ namespace TrainDefense.Game
 
                     if (_tickCooldown <= 0f)
                     {
-                        if (monster == null || !monster.gameObject.activeInHierarchy) return;
+                        if (monster == null) return;
 
                         monster.TakeDamage(_damage);
                         _tickCooldown = tickDamageInterval;
@@ -123,7 +125,7 @@ namespace TrainDefense.Game
 
                 if (isSlowProjectile)
                 {
-                    if (monster == null || !monster.gameObject.activeInHierarchy) return;
+                    if (monster == null) return;
 
                     monster.Slow(slowValue);
                 }
