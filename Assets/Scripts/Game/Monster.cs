@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using Cumic.Events;
 using Cysharp.Threading.Tasks;
+using Sirenix.OdinInspector;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using UnityEngine;
@@ -55,25 +58,16 @@ namespace TrainDefense.Game
         private void FixedUpdate()
         {
             DetectTrain();
-
             if (_isShoved) return;
             Move();
             AttackHandler();
         }
-
+        
         private void DetectTrain()
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _currentMonsterStatus.DetectRange);
-            Train[] trains = colliders.Where(a => a.GetComponent<Train>() != null)
-            .Select(a => a.GetComponent<Train>())
-            .Where(a => !a.IsDead && !a.IsMainTrain)
-            .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
-            .ToArray();
+            if (TrainManager.Instance == null) return;
 
-            if (trains.Length > 0)
-            {
-                _targetTrain = trains.FirstOrDefault();
-            }
+            _targetTrain = TrainManager.Instance.GetNearTrain(transform.position);
         }
 
         private void Move()
@@ -142,7 +136,7 @@ namespace TrainDefense.Game
         public void ResetMoveSpeed()
         {
             if (!gameObject.activeInHierarchy) return;
-            
+
             if (_resetMoveSpeedCoroutine != null)
             {
                 StopCoroutine(_resetMoveSpeedCoroutine);
@@ -224,13 +218,13 @@ namespace TrainDefense.Game
 
         private void DropExp()
         {
-            int dropExp = Random.Range(_currentMonsterStatus.DropExpMin, _currentMonsterStatus.DropExpMax);
+            int dropExp = UnityEngine.Random.Range(_currentMonsterStatus.DropExpMin, _currentMonsterStatus.DropExpMax);
             GameEventSystem.Publish(new AddExpEvent(dropExp));
         }
 
         private void DropMoney()
         {
-            int dropMoney = Random.Range(_currentMonsterStatus.DropMoneyMin, _currentMonsterStatus.DropMoneyMax);
+            int dropMoney = UnityEngine.Random.Range(_currentMonsterStatus.DropMoneyMin, _currentMonsterStatus.DropMoneyMax);
             ResourceManager.Instance.Spawn(Resources.Load<GameObject>("Prefabs/Money"), transform.position);
             GameEventSystem.Publish(new AddCoinEvent(dropMoney));
         }
