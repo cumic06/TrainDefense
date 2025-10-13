@@ -43,6 +43,7 @@ namespace TrainDefense.Game
         private float _tickCooldown;
         private bool _isInTrigger;
 
+        #region Enable/Disable
         private void OnEnable()
         {
             if (destroyDelay <= 0) return;
@@ -59,6 +60,7 @@ namespace TrainDefense.Game
             _isInTrigger = false;
             _tickCooldown = 0f;
         }
+        #endregion
 
         public void Init(int damage)
         {
@@ -77,9 +79,7 @@ namespace TrainDefense.Game
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            bool isMonster = other.TryGetComponent(out Monster monster);
-
-            if (isMonster)
+            if (IsMonster(other, out Monster monster))
             {
                 if (isTickProjectile)
                 {
@@ -103,9 +103,7 @@ namespace TrainDefense.Game
 
         private void OnTriggerStay2D(Collider2D other)
         {
-            bool isMonster = other.TryGetComponent(out Monster monster);
-
-            if (isMonster)
+            if (IsMonster(other, out Monster monster))
             {
                 if (isTickProjectile)
                 {
@@ -139,9 +137,7 @@ namespace TrainDefense.Game
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            bool isMonster = other.TryGetComponent(out Monster monster);
-
-            if (isMonster)
+            if (IsMonster(other, out Monster monster))
             {
                 if (isTickProjectile)
                 {
@@ -156,6 +152,11 @@ namespace TrainDefense.Game
                     monster.ResetMoveSpeed();
                 }
             }
+        }
+
+        private bool IsMonster(Collider2D other, out Monster monster)
+        {
+            return other.TryGetComponent(out monster);
         }
 
         private IEnumerator DestroyCoroutine()

@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Cumic.Checker;
+using TrainDefense;
 
 namespace Cumic.Sequence
 {
@@ -36,7 +37,7 @@ namespace Cumic.Sequence
                 SceneController.NextScene();
 
                 LobbySceneSequence();
-                
+
                 if (_userDataManager == null)
                 {
                     UserDataManager userDataManager = new GameObject("UserDataManager").AddComponent<UserDataManager>();

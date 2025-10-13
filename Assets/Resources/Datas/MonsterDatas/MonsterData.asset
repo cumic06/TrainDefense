@@ -25,5 +25,5 @@ MonoBehaviour:
     DropExpMax: 15
     DropMoneyMin: 5
     DropMoneyMax: 7
-    DetectRange: 50
     AttackRange: 5
+  monsterPrefab: {fileID: 2390104975334823038, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}

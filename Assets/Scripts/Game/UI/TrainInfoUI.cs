@@ -1,6 +1,6 @@
+using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Events;
-using UnityEngine;
 
 namespace TrainDefense.Game.UI
 {

@@ -20,12 +20,6 @@ namespace TrainDefense.Game
         {
             _elapsedTime = 0f;
             _isInitialized = false;
-        }
-
-        private void FixedUpdate()
-        {
-            if (TrainManager.Instance.MainTrain == null)
-                return;
 
             if (!_isInitialized)
             {
@@ -33,11 +27,21 @@ namespace TrainDefense.Game
                 _initialDirection = -directionToPlayer;
                 _isInitialized = true;
             }
+        }
+
+        private void FixedUpdate()
+        {
+            if (TrainManager.Instance.MainTrain == null)
+                return;
 
             _elapsedTime += Time.deltaTime;
 
-            Vector3 moveDirection;
+            Move();
+        }
 
+        private void Move()
+        {
+            Vector3 moveDirection;
 
             if (_elapsedTime < bounceBackDuration)
             {

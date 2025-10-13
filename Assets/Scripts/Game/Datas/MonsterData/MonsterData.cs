@@ -18,6 +18,8 @@ namespace TrainDefense.Game.Datas
         private string description;
         [SerializeField]
         private MonsterStatusInfo monsterStatusData;
+        [SerializeField]
+        private Monster monsterPrefab;
         #endregion
 
         public string Id => id;
@@ -25,6 +27,7 @@ namespace TrainDefense.Game.Datas
         public Sprite Icon => icon;
         public string Description => description;
         public MonsterStatusInfo MonsterStatusData => monsterStatusData;
+        public Monster MonsterPrefab => monsterPrefab;
     }
 }
 

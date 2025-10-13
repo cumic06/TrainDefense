@@ -1,11 +1,9 @@
-using Cumic.Events;
-using DG.Tweening;
-using TMPro;
-using TrainDefense.Game.Datas;
-using TrainDefense.Game.Events;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
+using DG.Tweening;
+using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Game.UI
 {
@@ -22,7 +20,9 @@ namespace TrainDefense.Game.UI
 
         private Button _selectButton;
         private ChoiceOption _choiceOption;
-        private int _choiceLeftCount;
+        private TriChoiceUI _triChoiceUI;
+
+        private bool _isSelected = false;
 
         private void Awake()
         {
@@ -34,34 +34,32 @@ namespace TrainDefense.Game.UI
             _selectButton.onClick.AddListener(OnSelectButtonClick);
         }
 
-        public void SetData(ChoiceOption choiceOption, int choiceLeftCount)
+        public void SetData(ChoiceOption choiceOption, TriChoiceUI triChoiceUI)
         {
             if (choiceOption == null) return;
 
             _choiceOption = choiceOption;
-            _choiceLeftCount = choiceLeftCount;
-
-            var uiInfo = choiceOption.GetUIInfo();
-            iconImage.sprite = uiInfo.Icon;
-            nameText.text = uiInfo.Name;
-            descriptionText.text = uiInfo.Description;
+            _triChoiceUI = triChoiceUI;
+            SetUI(choiceOption);
 
             _isSelected = false;
         }
 
+        private void SetUI(ChoiceOption choiceOption)
+        {
+            var uiInfo = choiceOption.GetUIInfo();
+            iconImage.sprite = uiInfo.Icon;
+            nameText.text = uiInfo.Name;
+            descriptionText.text = uiInfo.Description;
+        }
+
         private void OnSelectButtonClick()
         {
-            _choiceLeftCount--;
-
-            Debug.Log($"_choiceLeftCount: {_choiceLeftCount}");
-
-            TriChoiceSelectEvent eventData = new(_choiceOption, _choiceLeftCount);
-            GameEventSystem.Publish(eventData);
+            _triChoiceUI.OnChoiceSelected(_choiceOption);
             _isSelected = true;
         }
 
-        private bool _isSelected = false;
-
+        #region Pointer Events
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (_isSelected) return;
@@ -73,5 +71,6 @@ namespace TrainDefense.Game.UI
             if (_isSelected) return;
             transform.DOScale(1f, 0.1f).SetEase(Ease.InBack).SetUpdate(true);
         }
+        #endregion
     }
 }

@@ -10,11 +10,11 @@
       "hash": "38fecf55e4fd94ccfe58a92ed8ad1a529ba1694e"
     },
     "com.cumic06.core": {
-      "version": "https://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@github.com/cumic06/UnityPackage.git?path=CorePackage",
+      "version": "git@github.com:cumic06/UnityPackage.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "9f1371a48167275593879cfe1fcfcaad236ba9b0"
+      "hash": "6fa71574d9e49f69a6eec224c5ea86228c9706ba"
     },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",

@@ -1,7 +1,7 @@
-using Cumic.Events;
-using TrainDefense.Game.Events;
 using UnityEngine;
 using UnityEngine.UI;
+using Cumic.Events;
+using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
 {
@@ -18,9 +18,10 @@ namespace TrainDefense.Game.UI
 
         private void Start()
         {
-            backGroundImage.color = Color.green;
             GameEventSystem.Subscribe<HitEvent>(SetHp);
             GameEventSystem.Subscribe<TrainDeadEvent>(SetDead);
+            
+            backGroundImage.color = Color.green;
         }
 
         private void OnDestroy()
