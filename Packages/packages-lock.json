@@ -9,19 +9,19 @@
       },
       "hash": "38fecf55e4fd94ccfe58a92ed8ad1a529ba1694e"
     },
-    "com.cumic06.core": {
-      "version": "git@github.com:cumic06/UnityPackage.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "6fa71574d9e49f69a6eec224c5ea86228c9706ba"
-    },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "98538ef7c7a22f4ec22101e72f7eec4ed831c724"
+    },
+    "com.redeyestemplate.core": {
+      "version": "https://github.com/RedEyesHQ/UnityTemplate.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "ca3ddd6f27c61fb6d7cffbe4f053c837fa12b584"
     },
     "com.unity.2d.animation": {
       "version": "12.0.2",
