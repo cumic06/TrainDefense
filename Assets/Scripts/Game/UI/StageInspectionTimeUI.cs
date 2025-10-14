@@ -1,8 +1,8 @@
-using Cumic.Events;
-using TMPro;
-using TrainDefense.Game.Events;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using Cumic.Events;
+using TrainDefense.Game.Events;
 
 public class StageInspectionTimeUI : MonoBehaviour
 {
@@ -19,13 +19,19 @@ public class StageInspectionTimeUI : MonoBehaviour
     {
         GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
         GameEventSystem.Subscribe<EngageReadyEvent>(SetMaxValue);
+
         ResetSliderValue();
-        SetMaxValue(null);
+        ResetMaxValue();
     }
 
     private void ResetSliderValue()
     {
         _slider.value = 0;
+    }
+
+    private void ResetMaxValue()
+    {
+        _slider.maxValue = 0;
     }
 
     private void SetMaxValue(EngageReadyEvent engageReadyEvent)
