@@ -14,7 +14,7 @@ namespace TrainDefense.Game
         [SerializeField]
         private Transform[] turretProjectileSpawnPoints;
         [SerializeField]
-        private bool isParticleProjectile;
+        private bool useParticleProjectile;
 
         [SerializeField]
         private GameObject turretModel;
@@ -25,9 +25,11 @@ namespace TrainDefense.Game
         private TurretTrainStatus _currentTurretTrainStatus;
         private Projectile _particleProjectilePrefab;
 
-        protected override void Start()
+        private bool particleAttack;
+
+        protected override void Setup()
         {
-            base.Start();
+            base.Setup();
             _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
         }
 
@@ -36,21 +38,6 @@ namespace TrainDefense.Game
             if (_isDead) return;
 
             DetectTarget();
-
-            if (_targetMonster == null)
-            {
-                _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
-
-                if (isParticleProjectile)
-                {
-                    if (_particleProjectilePrefab != null)
-                    {
-                        _particleProjectilePrefab.gameObject.SetActive(false);
-                    }
-                }
-                
-                return;
-            }
 
             AttackHandler();
         }
@@ -66,6 +53,13 @@ namespace TrainDefense.Game
 
         private void AttackHandler()
         {
+            if (_targetMonster == null)
+            {
+                ResetTarget();
+
+                return;
+            }
+
             if (_currentTurretTrainStatus.AttackDelay <= 0)
             {
                 _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
@@ -77,43 +71,63 @@ namespace TrainDefense.Game
             }
         }
 
-        private bool particleAttack;
+        private void ResetTarget()
+        {
+            _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
+
+            if (useParticleProjectile)
+            {
+                if (_particleProjectilePrefab != null)
+                {
+                    _particleProjectilePrefab.gameObject.SetActive(false);
+                }
+            }
+        }
+
         private void Attack()
         {
-            if (_targetMonster == null) return;
-
             turretModel.transform.LookAt2D(_targetMonster.transform);
             turretModel.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
             {
                 turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
             });
 
-            if (!isParticleProjectile)
+            if (!useParticleProjectile)
             {
-                for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
-                {
-                    Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
-                    bullet.transform.position = turretProjectileSpawnPoints[i].position;
-                    bullet.Init(_currentTurretTrainStatus.AttackDamage);
-                    bullet.transform.LookAt2D(_targetMonster.transform);
-                }
+                NormalAttack();
             }
             else
             {
-                if (particleAttack) return;
-                particleAttack = true;
-
-                if (_particleProjectilePrefab == null)
-                {
-                    _particleProjectilePrefab = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
-                    _particleProjectilePrefab.transform.SetParent(turretProjectileSpawnPoints[0]);
-                    _particleProjectilePrefab.transform.localScale = Vector3.one;
-                    _particleProjectilePrefab.transform.localPosition = Vector3.zero;
-                    _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
-                }
-                _particleProjectilePrefab.gameObject.SetActive(true);
-                _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
+                ParticleAttack();
             }
+        }
+
+        private void NormalAttack()
+        {
+            for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
+            {
+                Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
+                bullet.transform.position = turretProjectileSpawnPoints[i].position;
+                bullet.Init(_currentTurretTrainStatus.AttackDamage);
+                bullet.transform.LookAt2D(_targetMonster.transform);
+            }
+        }
+
+        private void ParticleAttack()
+        {
+            if (particleAttack) return;
+            particleAttack = true;
+
+            if (_particleProjectilePrefab == null)
+            {
+                _particleProjectilePrefab = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
+                _particleProjectilePrefab.transform.SetParent(turretProjectileSpawnPoints[0]);
+                _particleProjectilePrefab.transform.localScale = Vector3.one;
+                _particleProjectilePrefab.transform.localPosition = Vector3.zero;
+                _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
+            }
+            _particleProjectilePrefab.gameObject.SetActive(true);
+            _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
         }
 
         public override void Upgrade(TrainUpgradeData upgradeData)

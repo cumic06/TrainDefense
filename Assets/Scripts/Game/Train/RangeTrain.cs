@@ -1,5 +1,5 @@
-using TrainDefense.Game.Datas;
 using UnityEngine;
+using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Game
 {
@@ -10,15 +10,20 @@ namespace TrainDefense.Game
         private RangeTrainData rangeTrainData => trainData as RangeTrainData;
         #endregion
 
-        private Monster _targetMonster;
         private RangeAttackTrainStatus _currentRangeTrainStatus;
         private Projectile _rangeProjectilePrefab;
 
-        protected override void Start()
+        protected override void Setup()
         {
-            base.Start();
-            _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
+            base.Setup();
 
+            _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
+            
+            RangeProjectile();
+        }
+
+        private void RangeProjectile()
+        {
             if (rangeTrainData.RangeProjectilePrefab != null)
             {
                 _rangeProjectilePrefab = ResourceManager.Instance.Spawn(rangeTrainData.RangeProjectilePrefab);

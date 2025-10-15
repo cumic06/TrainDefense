@@ -1,7 +1,7 @@
+using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
-using UnityEngine;
 
 namespace TrainDefense.Game
 {
@@ -18,23 +18,31 @@ namespace TrainDefense.Game
 
         public bool IsUnDead;
 
-        public bool IsDead => _isDead;
-        public bool IsMainTrain => trainData.IsMainTrain;
-        public int CurrentLevel => _currentLevel;
         public TrainData TrainData => trainData;
+        public bool IsMainTrain => trainData.IsMainTrain;
+
+        public bool IsDead => _isDead;
+        public int CurrentLevel => _currentLevel;
 
         protected virtual void Start()
+        {
+            Setup();
+        }
+
+        protected virtual void Setup()
         {
             _isDead = false;
             _currentHp = trainData.TrainStatusData.MaxHp;
             _currentLevel = 1;
         }
 
+
         public virtual void TakeDamage(int damage)
         {
             if (_isDead) return;
 
             _currentHp -= damage;
+            _currentHp = Mathf.Clamp(_currentHp, 0, trainData.TrainStatusData.MaxHp);
 
             GameEventSystem.Publish(new HitEvent(_currentHp, trainData.TrainStatusData.MaxHp, this));
 
