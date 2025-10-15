@@ -3978,8 +3978,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3818ed084c18796458f4df01ab7ab27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MonsterSpawner
-  monsterPrefabs:
-  - {fileID: 2390104975334823038, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
+  monsterDatas:
+  - {fileID: 11400000, guid: a35f379efce8d9c47a332812dcfb81ee, type: 2}
   spawnInterval: 0.7
   spawnRange: 2
 --- !u!1 &1735321058
