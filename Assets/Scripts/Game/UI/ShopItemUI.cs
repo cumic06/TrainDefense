@@ -1,45 +1,52 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
-public class ShopItemUI : MonoBehaviour
+namespace TrainDefense.Game.UI
 {
-    #region Fields
-    [SerializeField]
-    private ShopItemData shopItemData;
-    [SerializeField]
-    private Button buyButton;
-    [SerializeField]
-    private TextMeshProUGUI itemNameText;
-    [SerializeField]
-    private TextMeshProUGUI needMoneyText;
-    #endregion
-
-    private void Start()
+    public class ShopItemUI : MonoBehaviour
     {
-        buyButton.onClick.AddListener(OnBuyButtonClick);
+        #region Fields
+        [SerializeField]
+        private ShopItemData shopItemData;
+        [SerializeField]
+        private Button buyButton;
+        [SerializeField]
+        private TextMeshProUGUI itemNameText;
+        [SerializeField]
+        private TextMeshProUGUI needMoneyText;
+        #endregion
 
-        if (shopItemData != null)
+        private void Start()
         {
-            itemNameText.text = shopItemData.ItemName;
-            needMoneyText.text = $"{shopItemData.NeedMoney}$";
+            buyButton.onClick.AddListener(OnBuyButtonClick);
+            SetUp();
         }
-    }
 
-    public void SetVaild(int currentMoney)
-    {
-        if (currentMoney >= shopItemData.NeedMoney)
+        private void SetUp()
         {
-            buyButton.interactable = true;
+            if (shopItemData != null)
+            {
+                itemNameText.text = shopItemData.ItemName;
+                needMoneyText.text = $"{shopItemData.NeedMoney}$";
+            }
         }
-        else
-        {
-            buyButton.interactable = false;
-        }
-    }
 
-    private void OnBuyButtonClick()
-    {
-        // GameEventSystem.Publish(new BuyShopItemEvent(shopItemData.NeedMoney));
+        public void SetVaild(int currentMoney)
+        {
+            if (currentMoney >= shopItemData.NeedMoney)
+            {
+                buyButton.interactable = true;
+            }
+            else
+            {
+                buyButton.interactable = false;
+            }
+        }
+
+        private void OnBuyButtonClick()
+        {
+            // GameEventSystem.Publish(new BuyShopItemEvent(shopItemData.NeedMoney));
+        }
     }
 }

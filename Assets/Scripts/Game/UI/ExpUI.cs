@@ -1,8 +1,8 @@
-using Cumic.Events;
-using DG.Tweening;
-using TrainDefense.Game.Events;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using Cumic.Events;
+using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
 {
@@ -23,7 +23,12 @@ namespace TrainDefense.Game.UI
         private void Start()
         {
             GameEventSystem.Subscribe<AddExpEvent>(OnAddExp);
+            
+            Setup();
+        }
 
+        private void Setup()
+        {
             if (UserDataManager.Instance != null)
             {
                 _slider.value = UserDataManager.Instance.ExpPercent;

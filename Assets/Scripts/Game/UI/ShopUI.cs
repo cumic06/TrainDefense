@@ -22,7 +22,9 @@ namespace TrainDefense.Game.UI
         #endregion
 
         private RectTransform _rectTransform;
+
         private List<ShopItemUI> _shopItemUIs = new();
+
         private bool isShopOpen = false;
         public bool IsShopOpen => isShopOpen;
 
@@ -45,14 +47,17 @@ namespace TrainDefense.Game.UI
 
             await _rectTransform.DOAnchorPosX(shopMoveXEndPos, shopMoveInterval).SetUpdate(true);
             backgroundImage.gameObject.SetActive(true);
+
             isShopOpen = true;
         }
 
         public async void CloseShop()
         {
             await _rectTransform.DOAnchorPosX(shopMoveXStartPos, shopMoveInterval).SetUpdate(true);
-            isShopOpen = false;
             backgroundImage.gameObject.SetActive(false);
+
+            isShopOpen = false;
+            
             GameEventSystem.Publish(new EngageStartEvent());
         }
     }
