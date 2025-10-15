@@ -1,6 +1,6 @@
+using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Events;
-using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
@@ -13,12 +13,18 @@ public class StageManager : MonoBehaviour
     {
         LoadStageDatas();
         ResetCurrentStageInfo();
+
         GameEventSystem.Subscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
     }
 
     private void OnDestroy()
     {
         GameEventSystem.Unsubscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
+    }
+
+    private void LoadStageDatas()
+    {
+        _stageDatas = Resources.LoadAll<StageData>("Datas/StageDatas");
     }
 
     private void ResetCurrentStageInfo()
@@ -28,24 +34,34 @@ public class StageManager : MonoBehaviour
         _currentStageInspectionTimeIndex = 0;
     }
 
-    private void LoadStageDatas()
-    {
-        _stageDatas = Resources.LoadAll<StageData>("Datas/StageDatas");
-    }
-
     private void Update()
     {
         CurrentStageTimeUp();
 
+        StageHandler();
+    }
+
+    private void StageHandler()
+    {
         if (_currentStageTime >= GetCurrentStageInspectionTime() && _currentStageInspectionTimeIndex < GetCurrentStageData().StageInspectionTime.Length)
         {
-            _currentStageInspectionTimeIndex++;
-            GameEventSystem.Publish(new InspectionEvent());
+            CurrentStageInpectionUp();
         }
         else if (_currentStageTime >= GetCurrentStageData().StageEndTime)
         {
-            GameEventSystem.Publish(new StageEndEvent(true));
+            StageEnd();
         }
+    }
+
+    private void StageEnd()
+    {
+        GameEventSystem.Publish(new StageEndEvent(true));
+    }
+
+    private void CurrentStageInpectionUp()
+    {
+        _currentStageInspectionTimeIndex++;
+        GameEventSystem.Publish(new InspectionEvent());
     }
 
     private void CurrentStageTimeUp()

@@ -1,7 +1,7 @@
-using Cumic.Events;
-using TMPro;
-using TrainDefense.Game.Events;
 using UnityEngine;
+using TMPro;
+using Cumic.Events;
+using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
 {
@@ -15,7 +15,16 @@ namespace TrainDefense.Game.UI
         private void Start()
         {
             GameEventSystem.Subscribe<MonsterDeadEvent>(OnAddCoin);
+            Setup();
+        }
 
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<MonsterDeadEvent>(OnAddCoin);
+        }
+
+        private void Setup()
+        {
             if (UserDataManager.Instance != null)
             {
                 coinText.text = $"Coin : {UserDataManager.Instance.Coin}";
@@ -26,15 +35,10 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        private void OnDestroy()
-        {
-            GameEventSystem.Unsubscribe<MonsterDeadEvent>(OnAddCoin);
-        }
-
         private void OnAddCoin(MonsterDeadEvent monsterDeadEvent)
         {
             if (UserDataManager.Instance == null) return;
-            
+
             coinText.text = $"Coin : {UserDataManager.Instance.Coin}";
         }
     }

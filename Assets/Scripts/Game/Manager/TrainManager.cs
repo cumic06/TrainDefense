@@ -1,7 +1,6 @@
-using System.Linq;
+using UnityEngine;
 using Cumic;
 using TrainDefense.Game.Datas;
-using UnityEngine;
 
 namespace TrainDefense.Game
 {
