@@ -25,8 +25,6 @@ namespace TrainDefense.Game
         private TurretTrainStatus _currentTurretTrainStatus;
         private Projectile _particleProjectilePrefab;
 
-        private bool particleAttack;
-
         protected override void Setup()
         {
             base.Setup();
@@ -115,13 +113,9 @@ namespace TrainDefense.Game
 
         private void ParticleAttack()
         {
-            if (particleAttack) return;
-            particleAttack = true;
-
             if (_particleProjectilePrefab == null)
             {
-                _particleProjectilePrefab = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
-                _particleProjectilePrefab.transform.SetParent(turretProjectileSpawnPoints[0]);
+                _particleProjectilePrefab = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab, parent: turretProjectileSpawnPoints[0]);
                 _particleProjectilePrefab.transform.localScale = Vector3.one;
                 _particleProjectilePrefab.transform.localPosition = Vector3.zero;
                 _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
