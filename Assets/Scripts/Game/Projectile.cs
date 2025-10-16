@@ -74,6 +74,8 @@ namespace TrainDefense.Game
 
         protected virtual void Move()
         {
+            if (speed <= 0) return;
+            
             transform.Translate(Vector3.right * Time.deltaTime * speed);
         }
 

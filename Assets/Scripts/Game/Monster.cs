@@ -14,6 +14,7 @@ namespace TrainDefense.Game
         #endregion
 
         protected MonsterStatusInfo _currentMonsterStatus;
+        protected int _currentHp;
 
         protected bool _isShoved;
         protected bool _isDead;
@@ -56,6 +57,7 @@ namespace TrainDefense.Game
         private void InitStats()
         {
             _currentMonsterStatus = monsterData.MonsterStatusData;
+            _currentHp = _currentMonsterStatus.MaxHp;
         }
 
         private void FixedUpdate()
@@ -200,9 +202,10 @@ namespace TrainDefense.Game
         {
             if (_isDead) return;
 
-            _currentMonsterStatus.MaxHp -= damage;
-            
-            if (_currentMonsterStatus.MaxHp <= 0)
+            _currentHp -= damage;
+            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMonsterStatus.MaxHp, this, transform.position, damage));
+
+            if (_currentHp <= 0)
             {
                 OnDead();
             }

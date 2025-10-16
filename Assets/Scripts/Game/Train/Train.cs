@@ -44,7 +44,7 @@ namespace TrainDefense.Game
             _currentHp -= damage;
             _currentHp = Mathf.Clamp(_currentHp, 0, trainData.TrainStatusData.MaxHp);
 
-            GameEventSystem.Publish(new HitEvent(_currentHp, trainData.TrainStatusData.MaxHp, this));
+            GameEventSystem.Publish(new HitEvent(_currentHp, trainData.TrainStatusData.MaxHp, this, transform.position, damage));
 
             if (_currentHp <= 0)
             {
