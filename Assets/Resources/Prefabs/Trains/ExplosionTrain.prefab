@@ -90,3 +90,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.RangeTrain
   trainData: {fileID: 11400000, guid: 8fe3d26d7ce81aa44b3608fc3477744e, type: 2}
+  IsUnDead: 0
+  isExplosionProjectile: 1

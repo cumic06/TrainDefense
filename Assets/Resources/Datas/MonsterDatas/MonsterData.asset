@@ -19,7 +19,7 @@ MonoBehaviour:
   monsterStatusData:
     MaxHp: 20
     Damage: 2
-    MoveSpeed: 5
+    MoveSpeed: 6
     AttackDelay: 1
     DropExpMin: 10
     DropExpMax: 15

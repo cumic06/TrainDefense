@@ -15,7 +15,7 @@ MonoBehaviour:
   id: train_02
   trainName: Fire Train
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
-  description: "\uD654\uC5FC \uAE30\uCC28 \uCD94\uAC00"
+  description: "\uD654\uC5FC \uD3EC\uD0D1 \uCD94\uAC00"
   trainStatusData:
     MaxHp: 100
   trainPrefab: {fileID: 6472199296939909711, guid: 17d01a34592b950428865cb6a375e889, type: 3}

@@ -1,5 +1,6 @@
 using UnityEngine;
 using TrainDefense.Game.Datas;
+using System.Collections;
 
 namespace TrainDefense.Game
 {
@@ -8,21 +9,76 @@ namespace TrainDefense.Game
         #region Fields
         [SerializeField]
         private RangeTrainData rangeTrainData => trainData as RangeTrainData;
+        [SerializeField]
+        private bool isExplosionProjectile;
         #endregion
 
         private RangeAttackTrainStatus _currentRangeTrainStatus;
         private Projectile _rangeProjectilePrefab;
+        private Coroutine _rangeAttackCoroutine;
 
         protected override void Setup()
         {
             base.Setup();
 
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
-            
-            RangeProjectile();
+            _currentRangeTrainStatus.AttackInterval = rangeTrainData.RangeTrainStatus.AttackInterval;
+
+            if (isExplosionProjectile) return;
+            SpawnRangeProjectile();
         }
 
-        private void RangeProjectile()
+        private void Update()
+        {
+            if (_isDead) return;
+            RangeAttackHandler();
+        }
+
+        private void RangeAttackHandler()
+        {
+            if (_currentRangeTrainStatus.AttackInterval <= 0)
+            {
+                if (rangeTrainData.RangeProjectilePrefab != null)
+                {
+                    if (_rangeProjectilePrefab != null)
+                    {
+                        _rangeProjectilePrefab.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        SpawnRangeProjectile();
+                    }
+
+                    _currentRangeTrainStatus.AttackInterval = rangeTrainData.RangeTrainStatus.AttackInterval;
+
+                    if (isExplosionProjectile)
+                    {
+                        if (_rangeAttackCoroutine != null)
+                        {
+                            StopCoroutine(_rangeAttackCoroutine);
+                        }
+                        _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine());
+                    }
+                }
+            }
+            else
+            {
+                _currentRangeTrainStatus.AttackInterval -= Time.deltaTime;
+
+            }
+        }
+
+        private IEnumerator RangeProjectileCoroutine()
+        {
+            yield return new WaitForSeconds(rangeTrainData.RangeTrainStatus.AttackInterval / rangeTrainData.RangeTrainStatus.AttackInterval);
+
+            if (_rangeProjectilePrefab != null)
+            {
+                _rangeProjectilePrefab.gameObject.SetActive(false);
+            }
+        }
+
+        private void SpawnRangeProjectile()
         {
             if (rangeTrainData.RangeProjectilePrefab != null)
             {

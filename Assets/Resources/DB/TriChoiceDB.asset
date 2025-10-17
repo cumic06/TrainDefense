@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.TriChoiceDB
   addTrainChoices:
   - Option: {fileID: 11400000, guid: 815181ec7f9bff64ea77b5301a01e1e4, type: 2}
-    Weight: 0
+    Weight: 100
   - Option: {fileID: 11400000, guid: 908bdd57ae61c6d4d8d5011d05c017f7, type: 2}
     Weight: 0
   - Option: {fileID: 11400000, guid: e667054d841187940a86c855f0facef7, type: 2}
@@ -22,7 +22,7 @@ MonoBehaviour:
   - Option: {fileID: 11400000, guid: b316615c623a4fd4ba86672fda5acc70, type: 2}
     Weight: 0
   - Option: {fileID: 11400000, guid: 32eb238ef25bda8429d11348500873b8, type: 2}
-    Weight: 100
+    Weight: 0
   upgradeTrainChoices:
   - Option: {fileID: 11400000, guid: b27758bbb8397754eada81882baf7e76, type: 2}
     Weight: 100
