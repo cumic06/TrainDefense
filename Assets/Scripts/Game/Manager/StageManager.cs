@@ -89,6 +89,10 @@ public class StageManager : MonoBehaviour
 
     private float GetNextInspectionRemainingTime(GetNextInspectionRemainingTimeEvent getNextInspectionRemainingTimeEvent)
     {
+        if (_currentStageInspectionTimeIndex >= GetCurrentStageData().StageInspectionTime.Length)
+        {
+            return GetCurrentStageData().StageInspectionTime[^1] - _currentStageTime;
+        }
         return GetCurrentStageData().StageInspectionTime[_currentStageInspectionTimeIndex] - _currentStageTime;
     }
 }

@@ -28,5 +28,5 @@ MonoBehaviour:
         TurretStatusUpgrade:
           AttackDamage: 10
           AttackCount: 0
-          AttackDelay: 0
+          AttackDelay: -0.1
           AttackRange: 0
