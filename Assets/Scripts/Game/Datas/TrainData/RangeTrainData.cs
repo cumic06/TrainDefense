@@ -16,6 +16,12 @@ namespace TrainDefense.Game.Datas
         public RangeAttackTrainStatus RangeTrainStatus => rangeTrainStatus;
         public Projectile RangeProjectilePrefab => rangeProjectilePrefab;
     }
+    
+    [Serializable]
+    public class RangeTrainUpgradeExtension : TrainUpgradeExtension
+    {
+        public RangeAttackTrainStatus RangeStatusUpgrade;
+    }
 
     [Serializable]
     public struct RangeAttackTrainStatus

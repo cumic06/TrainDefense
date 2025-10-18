@@ -91,6 +91,26 @@ namespace TrainDefense.Game
             }
         }
 
+        public override void Upgrade(TrainUpgradeData upgradeData)
+        {
+            base.Upgrade(upgradeData);
+
+            if (upgradeData == null) return;
+
+            // TurretTrain 전용 업그레이드 데이터가 있다면 적용
+            if (upgradeData.ExtensionData is RangeTrainUpgradeExtension rangeUpgrade)
+            {
+                _currentRangeTrainStatus.AttackRange += rangeUpgrade.RangeStatusUpgrade.AttackRange;
+                _currentRangeTrainStatus.AttackDamage += rangeUpgrade.RangeStatusUpgrade.AttackDamage;
+                _currentRangeTrainStatus.AttackCount += rangeUpgrade.RangeStatusUpgrade.AttackCount;
+                _currentRangeTrainStatus.AttackInterval += rangeUpgrade.RangeStatusUpgrade.AttackInterval;
+                
+                if (_rangeProjectilePrefab != null)
+                {
+                    _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
+                }
+            }
+        }
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
