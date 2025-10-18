@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShopItemData
   id: shopItem00
   icon: {fileID: 21300000, guid: 4b347c70a1925af4e9e135a05cfcf922, type: 3}
-  itemName: DummyItem
-  description: 
+  upgradeName: Attack Damage UP
+  description: "\uD3EC\uD0D1\uB4E4\uC758 \uACF5\uACA9\uB825\uC774 \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
   needMoney: 50
+  upgradeValue: 0
+  maxUpgradeCount: 0

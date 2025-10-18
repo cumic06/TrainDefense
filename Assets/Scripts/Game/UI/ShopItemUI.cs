@@ -8,11 +8,13 @@ namespace TrainDefense.Game.UI
     {
         #region Fields
         [SerializeField]
-        private ShopItemData shopItemData;
+        private UpgradeData shopItemData;
         [SerializeField]
         private Button buyButton;
         [SerializeField]
         private TextMeshProUGUI itemNameText;
+        [SerializeField]
+        private TextMeshProUGUI itemDescriptionText;
         [SerializeField]
         private TextMeshProUGUI needMoneyText;
         #endregion
@@ -27,7 +29,8 @@ namespace TrainDefense.Game.UI
         {
             if (shopItemData != null)
             {
-                itemNameText.text = shopItemData.ItemName;
+                itemNameText.text = shopItemData.UpgradeName;
+                itemDescriptionText.text = shopItemData.Description;
                 needMoneyText.text = $"{shopItemData.NeedMoney}$";
             }
         }

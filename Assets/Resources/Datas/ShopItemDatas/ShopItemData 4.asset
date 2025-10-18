@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7cf3ac03057fb34aaa8629a7c6776e2, type: 3}
-  m_Name: ShopItemData 1
+  m_Name: ShopItemData 4
   m_EditorClassIdentifier: Assembly-CSharp::ShopItemData
-  id: shopItem01
-  icon: {fileID: 21300000, guid: f4b19f5f1bdd6794eaa85c7daf327484, type: 3}
-  upgradeName: Attack Speed Up
-  description: "\uD3EC\uD0D1\uB4E4\uC758 \uACF5\uACA9\uC18D\uB3C4\uAC00 \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
-  needMoney: 100
+  id: shopItem05
+  icon: {fileID: 21300000, guid: 9c50c7eaf401e5640820e11aa8455df8, type: 3}
+  upgradeName: Exp UP
+  description: "\uD68D\uB4DD\uD558\uB294 \uACBD\uD5D8\uCE58\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  needMoney: 400
   upgradeValue: 0
   maxUpgradeCount: 0

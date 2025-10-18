@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ShopItemData", menuName = "Data/ShopItemData")]
-public class ShopItemData : ScriptableObject
+[CreateAssetMenu(fileName = "UpgradeData", menuName = "Data/UpgradeData")]
+public class UpgradeData : ScriptableObject
 {
     #region Fields
     [SerializeField]
@@ -9,16 +9,22 @@ public class ShopItemData : ScriptableObject
     [SerializeField]
     private Sprite icon;
     [SerializeField]
-    private string itemName;
+    private string upgradeName;
     [SerializeField]
     private string description;
     [SerializeField]
     private int needMoney;
+    [SerializeField]
+    private float upgradeValue;
+    [SerializeField]
+    private int maxUpgradeCount;
     #endregion
 
     public string Id => id;
     public Sprite Icon => icon;
     public int NeedMoney => needMoney;
-    public string ItemName => itemName;
+    public string UpgradeName => upgradeName;
     public string Description => description;
+    public float UpgradeValue => upgradeValue;
+    public int MaxUpgradeCount => maxUpgradeCount;
 }
