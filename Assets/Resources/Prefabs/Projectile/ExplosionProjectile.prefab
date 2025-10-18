@@ -48,8 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Projectile
   speed: 0
   destroyDelay: 0
-  isTickProjectile: 1
-  tickDamageInterval: 3
+  isTickProjectile: 0
+  tickDamageInterval: 0
   isSlowProjectile: 0
   slowValue: 0.1
   isShoveProjectile: 1
