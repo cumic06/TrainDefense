@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace TrainDefense.Game.Datas
 {
-    [CreateAssetMenu(fileName = "TrainData", menuName = "Data/TrainData/TrainData")]
-    public class TrainData : ScriptableObject
+    [System.Serializable]
+    public class TrainData
     {
         #region Fields
         [SerializeField]
@@ -58,7 +58,7 @@ namespace TrainDefense.Game.Datas
     /// <summary>
     /// Train 타입별 추가 업그레이드 데이터
     /// </summary>
-    [Serializable]
+    [System.Serializable]
     public abstract class TrainUpgradeExtension
     {
 

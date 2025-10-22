@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using Sirenix.OdinInspector;
 using TrainDefense.Game.Datas;
 using UnityEngine;
@@ -8,7 +9,6 @@ namespace TrainDefense.Game
     public class MonsterSpawner : MonoBehaviour
     {
         #region Field
-        [SerializeField]
         private MonsterData[] monsterDatas;
         [SerializeField]
         [BoxGroup("SpawnSetting")]
@@ -22,8 +22,23 @@ namespace TrainDefense.Game
 
         private void Start()
         {
+            LoadMonsterDatas();
             _stopSpawnMonster = false;
             StartCoroutine(SpawnMonster());
+        }
+
+        private void LoadMonsterDatas()
+        {
+            var db = Resources.Load<DB>("DB/DB");
+            if (db != null)
+            {
+                monsterDatas = db.MonsterDataList.ToArray();
+            }
+            else
+            {
+                Debug.LogError("DB not found in Resources/DB/DB");
+                monsterDatas = new MonsterData[0];
+            }
         }
 
         public void StartSpawnMonster()

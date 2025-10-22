@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 000156a95358746449551d88c8be5b3e, type: 3}
+  m_Name: DB
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.DB
+  monsterDataList:
+  - id: 
+    monsterName: 
+    icon: {fileID: 0}
+    description: 
+    monsterStatusData:
+      MaxHp: 0
+      Damage: 0
+      MoveSpeed: 0
+      AttackDelay: 0
+      DropExpMin: 0
+      DropExpMax: 0
+      DropMoneyMin: 0
+      DropMoneyMax: 0
+      AttackRange: 0
+    monsterPrefab: {fileID: 0}
+  trainDataList:
+  - id: 
+    trainName: 
+    icon: {fileID: 0}
+    description: 
+    trainStatusData:
+      MaxHp: 0
+    trainPrefab: {fileID: 0}
+    isMainTrain: 0
+    upgrades: []
+  trainUpgradeDataList: []
+  stageDataList:
+  - id: 
+    stageInspectionTime: []
+    stageEndTime: 0
+  upgradeDataList:
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
+  choiceOptionList: []
+  triChoiceDB: {fileID: 11400000, guid: c1d9811110024814a8cc4cba4c8a7a4f, type: 2}
+  references:
+    version: 2
+    RefIds: []

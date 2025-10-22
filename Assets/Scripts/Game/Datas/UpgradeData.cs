@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "UpgradeData", menuName = "Data/UpgradeData")]
-public class UpgradeData : ScriptableObject
+[System.Serializable]
+public class UpgradeData
 {
     #region Fields
     [SerializeField]

@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "StageData", menuName = "Data/StageData")]
-public class StageData : ScriptableObject
+[System.Serializable]
+public class StageData
 {
     #region Fields
     [SerializeField]

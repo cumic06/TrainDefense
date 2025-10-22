@@ -25,8 +25,8 @@ namespace TrainDefense.Game.Datas
     /// <summary>
     /// 3지선다 선택지 데이터 (단순화된 구조)
     /// </summary>
-    [CreateAssetMenu(fileName = "ChoiceOption", menuName = "Data/ChoiceOption")]
-    public class ChoiceOption : ScriptableObject
+    [System.Serializable]
+    public class ChoiceOption
     {
         #region Fields
         [Header("Choice Settings")]
@@ -54,7 +54,9 @@ namespace TrainDefense.Game.Datas
         #region Runtime Fields
         /// <summary>
         /// 런타임에 선택된 업그레이드 데이터 (캐싱용)
+        /// Note: This field is not serializable, so it will be reset on each load
         /// </summary>
+        [System.NonSerialized]
         private TrainUpgradeData _selectedUpgradeData;
         #endregion
 

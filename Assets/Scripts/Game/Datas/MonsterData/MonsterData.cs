@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace TrainDefense.Game.Datas
 {
-    [CreateAssetMenu(fileName = "MonsterData", menuName = "Data/MonsterData")]
-    public class MonsterData : ScriptableObject
+    [System.Serializable]
+    public class MonsterData
     {
         #region Fields
         [SerializeField]

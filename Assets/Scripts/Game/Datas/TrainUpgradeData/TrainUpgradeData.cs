@@ -3,10 +3,10 @@ using UnityEngine;
 namespace TrainDefense.Game.Datas
 {
     /// <summary>
-    /// Train 업그레이드 데이터 (독립적인 ScriptableObject)
+    /// Train 업그레이드 데이터 (독립적인 클래스)
     /// </summary>
-    [CreateAssetMenu(fileName = "TrainUpgradeData", menuName = "Data/TrainUpgradeData/TrainUpgradeData")]
-    public class TrainUpgradeData : ScriptableObject
+    [System.Serializable]
+    public class TrainUpgradeData
     {
         #region Fields
         [Header("UI Info")]

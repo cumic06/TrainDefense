@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TrainDefense.Game.Datas
 {
-    [CreateAssetMenu(fileName = "TurretTrainData", menuName = "Data/TrainData/TurretTrainData")]
+    [System.Serializable]
     public class TurretTrainData : TrainData
     {
         #region Fields
