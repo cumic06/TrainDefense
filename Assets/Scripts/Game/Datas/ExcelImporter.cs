@@ -31,7 +31,7 @@ namespace TrainDefense.Game.Datas
                              "monster_01,Goblin,작은 고블린,100,20,2.0,1.5,10,15,5,8,1.5\n" +
                              "monster_02,Orc,강한 오크,200,35,1.5,2.0,20,30,10,15,2.0";
             
-            File.WriteAllText(Path.Combine(folderPath, "MonsterData_Template.csv"), template);
+            File.WriteAllText(Path.Combine(folderPath, "MonsterData_Template.csv"), template, System.Text.Encoding.UTF8);
         }
         
         public static void CreateTrainDataTemplate(string folderPath)
@@ -39,21 +39,21 @@ namespace TrainDefense.Game.Datas
             string template = "ID,Name,Description,MaxHp,IsMainTrain\n" +
                              "train_01,Basic Train,기본 기차,500,true";
             
-            File.WriteAllText(Path.Combine(folderPath, "TrainData_Template.csv"), template);
+            File.WriteAllText(Path.Combine(folderPath, "TrainData_Template.csv"), template, System.Text.Encoding.UTF8);
         }
         
         public static void CreateRangeTrainDataTemplate(string folderPath)
         {
-            string template = "ID,Name,Description,MaxHp,IsMainTrain,AttackRange,AttackDamage,AttackCount,AttackInterval\n" +
-                             "range_01,Range Train,원거리 기차,300,false,5.0,50,3,1.5";
+            string template = "ID,Name,Description,MaxHp,AttackRange,AttackDamage,AttackCount,AttackInterval\n" +
+                             "range_01,Range Train,원거리 기차,300,5.0,50,3,1.5";
             
             File.WriteAllText(Path.Combine(folderPath, "RangeTrainData_Template.csv"), template);
         }
         
         public static void CreateTurretTrainDataTemplate(string folderPath)
         {
-            string template = "ID,Name,Description,MaxHp,IsMainTrain,AttackDamage,AttackCount,AttackDelay,AttackRange\n" +
-                             "turret_01,Turret Train,터렛 기차,400,false,75,2,2.0,3.0";
+            string template = "ID,Name,Description,MaxHp,AttackRange,AttackDamage,AttackCount,AttackDelay\n" +
+                             "turret_01,Turret Train,터렛 기차,400,3.0,75,2,2.0";
             
             File.WriteAllText(Path.Combine(folderPath, "TurretTrainData_Template.csv"), template);
         }
@@ -80,6 +80,8 @@ namespace TrainDefense.Game.Datas
                 
                 ExportMonsterData(Path.Combine(folderPath, "MonsterData.csv"), db);
                 ExportTrainData(Path.Combine(folderPath, "TrainData.csv"), db);
+                ExportRangeTrainData(Path.Combine(folderPath, "RangeTrainData.csv"), db);
+                ExportTurretTrainData(Path.Combine(folderPath, "TurretTrainData.csv"), db);
                 ExportStageData(Path.Combine(folderPath, "StageData.csv"), db);
                 
                 Debug.Log($"Successfully exported all data to {folderPath}");
@@ -138,25 +140,98 @@ namespace TrainDefense.Game.Datas
             {
                 List<string> lines = new List<string>();
                 
-                // 헤더
-                lines.Add("ID,Name,Description,MaxHp,IsMainTrain,TrainType");
+                // 헤더 (새로운 컬럼 구조에 맞게)
+                lines.Add("ID,Name,Description,MaxHp,TrainType");
                 
-                // 데이터
-                foreach (var train in db.trainDataList)
+                // 모든 TrainData 타입의 데이터 내보내기
+                var allTrainData = db.GetAllTrainData();
+                foreach (var train in allTrainData)
                 {
                     var status = train.TrainStatusData;
                     string trainType = train.GetType().Name.Replace("TrainData", "");
                     string line = $"{train.Id},{train.TrainName},{train.Description}," +
-                                 $"{status.MaxHp},{train.IsMainTrain},{trainType}";
+                                 $"{status.MaxHp},{trainType}";
                     lines.Add(line);
                 }
                 
                 File.WriteAllLines(filePath, lines);
-                Debug.Log($"Successfully exported {db.trainDataList.Count} train data entries to {filePath}");
+                Debug.Log($"Successfully exported {allTrainData.Count} train data entries to {filePath}");
             }
             catch (System.Exception e)
             {
                 Debug.LogError($"Failed to export train data: {e.Message}");
+            }
+        }
+        
+        public static void ExportRangeTrainData(string filePath)
+        {
+            DB db = FindDBInstance();
+            if (db == null) return;
+            ExportRangeTrainData(filePath, db);
+        }
+        
+        private static void ExportRangeTrainData(string filePath, DB db)
+        {
+            try
+            {
+                List<string> lines = new List<string>();
+                
+                // 헤더 (새로운 컬럼 구조에 맞게)
+                lines.Add("ID,Name,Description,MaxHp,AttackRange,AttackDamage,AttackCount,AttackInterval");
+                
+                // RangeTrainData 내보내기
+                foreach (var train in db.rangeTrainDataList)
+                {
+                    var status = train.TrainStatusData;
+                    var rangeStatus = train.RangeTrainStatus;
+                    string line = $"{train.Id},{train.TrainName},{train.Description}," +
+                                 $"{status.MaxHp},{rangeStatus.AttackRange},{rangeStatus.AttackDamage}," +
+                                 $"{rangeStatus.AttackCount},{rangeStatus.AttackInterval}";
+                    lines.Add(line);
+                }
+                
+                File.WriteAllLines(filePath, lines);
+                Debug.Log($"Successfully exported {db.rangeTrainDataList.Count} range train data entries to {filePath}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to export range train data: {e.Message}");
+            }
+        }
+        
+        public static void ExportTurretTrainData(string filePath)
+        {
+            DB db = FindDBInstance();
+            if (db == null) return;
+            ExportTurretTrainData(filePath, db);
+        }
+        
+        private static void ExportTurretTrainData(string filePath, DB db)
+        {
+            try
+            {
+                List<string> lines = new List<string>();
+                
+                // 헤더 (새로운 컬럼 구조에 맞게)
+                lines.Add("ID,Name,Description,MaxHp,AttackRange,AttackDamage,AttackCount,AttackDelay");
+                
+                // TurretTrainData 내보내기
+                foreach (var train in db.turretTrainDataList)
+                {
+                    var status = train.TrainStatusData;
+                    var turretStatus = train.TurretTrainStatus;
+                    string line = $"{train.Id},{train.TrainName},{train.Description}," +
+                                 $"{status.MaxHp},{turretStatus.AttackRange},{turretStatus.AttackDamage}," +
+                                 $"{turretStatus.AttackCount},{turretStatus.AttackDelay}";
+                    lines.Add(line);
+                }
+                
+                File.WriteAllLines(filePath, lines);
+                Debug.Log($"Successfully exported {db.turretTrainDataList.Count} turret train data entries to {filePath}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Failed to export turret train data: {e.Message}");
             }
         }
         
@@ -198,9 +273,34 @@ namespace TrainDefense.Game.Datas
         #region Train Data Type Detection
         
         /// <summary>
+        /// 시트명을 기반으로 TrainData 타입을 결정
+        /// </summary>
+        public static Type GetTrainDataTypeFromSheetName(string sheetName)
+        {
+            string lowerSheetName = sheetName.ToLower();
+            
+            if (lowerSheetName.Contains("rangetrain") || lowerSheetName.Contains("range_train"))
+            {
+                return typeof(RangeTrainData);
+            }
+            else if (lowerSheetName.Contains("turrettrain") || lowerSheetName.Contains("turret_train"))
+            {
+                return typeof(TurretTrainData);
+            }
+            else if (lowerSheetName.Contains("train"))
+            {
+                return typeof(TrainData);
+            }
+            else
+            {
+                return typeof(TrainData); // 기본값
+            }
+        }
+        
+        /// <summary>
         /// 파일명을 기반으로 TrainData 타입을 결정
         /// </summary>
-        private static Type GetTrainDataTypeFromFileName(string fileName)
+        public static Type GetTrainDataTypeFromFileName(string fileName)
         {
             string lowerFileName = fileName.ToLower();
             
@@ -235,7 +335,9 @@ namespace TrainDefense.Game.Datas
             if (idField != null) idField.SetValue(trainData, values[0]);
             if (nameField != null) nameField.SetValue(trainData, values[1]);
             if (descField != null) descField.SetValue(trainData, values[2]);
-            if (isMainField != null) isMainField.SetValue(trainData, bool.Parse(values[4]));
+            
+            // IsMainTrain은 기본값으로 false 설정 (새로운 컬럼 구조에는 없음)
+            if (isMainField != null) isMainField.SetValue(trainData, false);
             
             // TrainStatusData 설정
             TrainStatusData statusData = new TrainStatusData();
@@ -250,7 +352,7 @@ namespace TrainDefense.Game.Datas
         /// </summary>
         private static void SetRangeTrainDataFields(RangeTrainData rangeTrainData, string[] values)
         {
-            if (values.Length < 9) return; // 최소 컬럼 수 확인
+            if (values.Length < 8) return; // 최소 컬럼 수 확인 (ID, Name, Description, MaxHp, AttackRange, AttackDamage, AttackCount, AttackInterval)
             
             var statusField = typeof(RangeTrainData).GetField("rangeTrainStatus", BindingFlags.NonPublic | BindingFlags.Instance);
             
@@ -258,10 +360,11 @@ namespace TrainDefense.Game.Datas
             {
                 RangeAttackTrainStatus rangeStatus = new RangeAttackTrainStatus();
                 
-                if (float.TryParse(values[5], out float attackRange)) rangeStatus.AttackRange = attackRange;
-                if (int.TryParse(values[6], out int attackDamage)) rangeStatus.AttackDamage = attackDamage;
-                if (int.TryParse(values[7], out int attackCount)) rangeStatus.AttackCount = attackCount;
-                if (float.TryParse(values[8], out float attackInterval)) rangeStatus.AttackInterval = attackInterval;
+                // 새로운 컬럼 순서: ID, Name, Description, MaxHp, AttackRange, AttackDamage, AttackCount, AttackInterval
+                if (float.TryParse(values[4], out float attackRange)) rangeStatus.AttackRange = attackRange;
+                if (int.TryParse(values[5], out int attackDamage)) rangeStatus.AttackDamage = attackDamage;
+                if (int.TryParse(values[6], out int attackCount)) rangeStatus.AttackCount = attackCount;
+                if (float.TryParse(values[7], out float attackInterval)) rangeStatus.AttackInterval = attackInterval;
                 
                 statusField.SetValue(rangeTrainData, rangeStatus);
             }
@@ -272,7 +375,7 @@ namespace TrainDefense.Game.Datas
         /// </summary>
         private static void SetTurretTrainDataFields(TurretTrainData turretTrainData, string[] values)
         {
-            if (values.Length < 9) return; // 최소 컬럼 수 확인
+            if (values.Length < 8) return; // 최소 컬럼 수 확인 (ID, Name, Description, MaxHp, AttackRange, AttackDamage, AttackCount, AttackDelay)
             
             var statusField = typeof(TurretTrainData).GetField("turretTrainStatus", BindingFlags.NonPublic | BindingFlags.Instance);
             
@@ -280,10 +383,11 @@ namespace TrainDefense.Game.Datas
             {
                 TurretTrainStatus turretStatus = new TurretTrainStatus();
                 
+                // 새로운 컬럼 순서: ID, Name, Description, MaxHp, AttackRange, AttackDamage, AttackCount, AttackDelay
+                if (float.TryParse(values[4], out float attackRange)) turretStatus.AttackRange = attackRange;
                 if (int.TryParse(values[5], out int attackDamage)) turretStatus.AttackDamage = attackDamage;
                 if (int.TryParse(values[6], out int attackCount)) turretStatus.AttackCount = attackCount;
                 if (float.TryParse(values[7], out float attackDelay)) turretStatus.AttackDelay = attackDelay;
-                if (float.TryParse(values[8], out float attackRange)) turretStatus.AttackRange = attackRange;
                 
                 statusField.SetValue(turretTrainData, turretStatus);
             }
@@ -318,7 +422,7 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
 
-                string[] lines = File.ReadAllLines(filePath);
+                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
                 if (lines.Length < 2)
                 {
                     Debug.LogError("Excel file must have at least a header row and one data row");
@@ -378,6 +482,7 @@ namespace TrainDefense.Game.Datas
                 EditorUtility.SetDirty(db);
                 AssetDatabase.SaveAssets();
                 Debug.Log($"Successfully imported {lines.Length - 1} monster data entries from Excel");
+                Debug.Log($"DB now contains {db.monsterDataList.Count} monster data entries");
             }
             catch (System.Exception e)
             {
@@ -410,7 +515,7 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
 
-                string[] lines = File.ReadAllLines(filePath);
+                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
                 if (lines.Length < 2)
                 {
                     Debug.LogError("Excel file must have at least a header row and one data row");
@@ -426,12 +531,24 @@ namespace TrainDefense.Game.Datas
                 
                 Debug.Log($"Detected train data type: {trainDataType.Name} from file: {fileName}");
                 
-                db.trainDataList.Clear();
+                // 타입별 리스트 클리어
+                if (trainDataType == typeof(RangeTrainData))
+                {
+                    db.rangeTrainDataList.Clear();
+                }
+                else if (trainDataType == typeof(TurretTrainData))
+                {
+                    db.turretTrainDataList.Clear();
+                }
+                else
+                {
+                    db.trainDataList.Clear();
+                }
                 
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length >= 5) // 최소 ID, Name, Description, MaxHp, IsMainTrain
+                    if (values.Length >= 4) // 최소 ID, Name, Description, MaxHp
                     {
                         // 적절한 TrainData 타입으로 객체 생성
                         TrainData trainData = CreateTrainDataInstance(trainDataType, values);
@@ -440,14 +557,17 @@ namespace TrainDefense.Game.Datas
                         if (trainData is RangeTrainData rangeTrainData)
                         {
                             SetRangeTrainDataFields(rangeTrainData, values);
+                            db.rangeTrainDataList.Add(rangeTrainData);
                         }
                         else if (trainData is TurretTrainData turretTrainData)
                         {
                             SetTurretTrainDataFields(turretTrainData, values);
+                            db.turretTrainDataList.Add(turretTrainData);
                         }
-                        
-                        // DB에 추가
-                        db.trainDataList.Add(trainData);
+                        else
+                        {
+                            db.trainDataList.Add(trainData);
+                        }
                         
                         Debug.Log($"Imported {trainDataType.Name}: {values[0]} - {values[1]}");
                     }
@@ -456,6 +576,7 @@ namespace TrainDefense.Game.Datas
                 EditorUtility.SetDirty(db);
                 AssetDatabase.SaveAssets();
                 Debug.Log($"Successfully imported {lines.Length - 1} {trainDataType.Name} entries from Excel");
+                Debug.Log($"DB now contains - Basic: {db.trainDataList.Count}, Range: {db.rangeTrainDataList.Count}, Turret: {db.turretTrainDataList.Count}");
             }
             catch (System.Exception e)
             {
@@ -488,7 +609,7 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
 
-                string[] lines = File.ReadAllLines(filePath);
+                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
                 if (lines.Length < 2)
                 {
                     Debug.LogError("Excel file must have at least a header row and one data row");
@@ -565,15 +686,23 @@ namespace TrainDefense.Game.Datas
                     
                     if (fileName.Contains("monster"))
                     {
-                        ImportMonsterData(file);
+                        ImportMonsterDataToDB(file, db, true);
                     }
-                    else if (fileName.Contains("train") || fileName.Contains("rangetrain") || fileName.Contains("turrettrain"))
+                    else if (fileName.Contains("rangetrain") || fileName.Contains("range_train"))
                     {
-                        ImportTrainData(file);
+                        ImportTrainDataToDB(file, db, true);
+                    }
+                    else if (fileName.Contains("turrettrain") || fileName.Contains("turret_train"))
+                    {
+                        ImportTrainDataToDB(file, db, true);
+                    }
+                    else if (fileName.Contains("train"))
+                    {
+                        ImportTrainDataToDB(file, db, true);
                     }
                     else if (fileName.Contains("stage"))
                     {
-                        ImportStageData(file);
+                        ImportStageDataToDB(file, db, true);
                     }
                     else if (fileName.Contains("upgrade"))
                     {
@@ -644,6 +773,11 @@ namespace TrainDefense.Game.Datas
             if (db == null)
             {
                 Debug.LogError("DB asset not found. Please create a DB asset first.");
+                Debug.LogError("You can create a DB asset by: Right-click in Project -> Create -> Data -> DB");
+            }
+            else
+            {
+                Debug.Log($"Found DB asset: {AssetDatabase.GetAssetPath(db)}");
             }
             
             return db;
@@ -678,7 +812,7 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
 
-                string[] lines = File.ReadAllLines(filePath);
+                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
                 if (lines.Length < 2)
                 {
                     Debug.LogError("Excel file must have at least a header row and one data row");
@@ -736,6 +870,15 @@ namespace TrainDefense.Game.Datas
         
         public static void ImportTrainDataToDB(string filePath, DB targetDB, bool clearExisting)
         {
+            // 파일명에서 TrainData 타입 결정
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            Type trainDataType = GetTrainDataTypeFromFileName(fileName);
+            
+            ImportTrainDataToDBWithType(filePath, targetDB, clearExisting, trainDataType);
+        }
+        
+        public static void ImportTrainDataToDBWithType(string filePath, DB targetDB, bool clearExisting, Type trainDataType)
+        {
             try
             {
                 // 파일 접근 가능 여부 확인
@@ -759,47 +902,64 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
 
-                string[] lines = File.ReadAllLines(filePath);
+                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
                 if (lines.Length < 2)
                 {
                     Debug.LogError("Excel file must have at least a header row and one data row");
                     return;
                 }
                 
+                Debug.Log($"Importing train data with specified type: {trainDataType.Name}");
+                
+                // 타입별 리스트 클리어
                 if (clearExisting)
                 {
-                    targetDB.trainDataList.Clear();
+                    if (trainDataType == typeof(RangeTrainData))
+                    {
+                        targetDB.rangeTrainDataList.Clear();
+                    }
+                    else if (trainDataType == typeof(TurretTrainData))
+                    {
+                        targetDB.turretTrainDataList.Clear();
+                    }
+                    else
+                    {
+                        targetDB.trainDataList.Clear();
+                    }
                 }
                 
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length >= 6)
+                    if (values.Length >= 4) // 최소 ID, Name, Description, MaxHp
                     {
-                        TrainData trainData = new TrainData();
+                        // 적절한 TrainData 타입으로 객체 생성
+                        TrainData trainData = CreateTrainDataInstance(trainDataType, values);
                         
-                        var idField = typeof(TrainData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var nameField = typeof(TrainData).GetField("trainName", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var descField = typeof(TrainData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var statusField = typeof(TrainData).GetField("trainStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var isMainField = typeof(TrainData).GetField("isMainTrain", BindingFlags.NonPublic | BindingFlags.Instance);
+                        // 타입별 추가 필드 설정
+                        if (trainData is RangeTrainData rangeTrainData)
+                        {
+                            SetRangeTrainDataFields(rangeTrainData, values);
+                            targetDB.rangeTrainDataList.Add(rangeTrainData);
+                        }
+                        else if (trainData is TurretTrainData turretTrainData)
+                        {
+                            SetTurretTrainDataFields(turretTrainData, values);
+                            targetDB.turretTrainDataList.Add(turretTrainData);
+                        }
+                        else
+                        {
+                            targetDB.trainDataList.Add(trainData);
+                        }
                         
-                        if (idField != null) idField.SetValue(trainData, values[0]);
-                        if (nameField != null) nameField.SetValue(trainData, values[1]);
-                        if (descField != null) descField.SetValue(trainData, values[2]);
-                        if (isMainField != null) isMainField.SetValue(trainData, bool.Parse(values[4]));
-                        
-                        TrainStatusData statusData = new();
-                        if (int.TryParse(values[3], out int maxHp)) statusData.MaxHp = maxHp;
-                        if (statusField != null) statusField.SetValue(trainData, statusData);
-                        
-                        targetDB.trainDataList.Add(trainData);
+                        Debug.Log($"Imported {trainDataType.Name}: {values[0]} - {values[1]}");
                     }
                 }
                 
                 EditorUtility.SetDirty(targetDB);
                 AssetDatabase.SaveAssets();
-                Debug.Log($"Successfully imported {lines.Length - 1} train data entries to selected DB");
+                Debug.Log($"Successfully imported {lines.Length - 1} {trainDataType.Name} entries to selected DB");
+                Debug.Log($"Target DB now contains - Basic: {targetDB.trainDataList.Count}, Range: {targetDB.rangeTrainDataList.Count}, Turret: {targetDB.turretTrainDataList.Count}");
             }
             catch (System.Exception e)
             {
@@ -833,7 +993,7 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
 
-                string[] lines = File.ReadAllLines(filePath);
+                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
                 if (lines.Length < 2)
                 {
                     Debug.LogError("Excel file must have at least a header row and one data row");
@@ -1017,7 +1177,7 @@ namespace TrainDefense.Game.Datas
         try
         {
             // CSV 파일의 경우 첫 번째 줄을 헤더로 사용
-            string[] lines = File.ReadAllLines(excelFilePath);
+            string[] lines = File.ReadAllLines(excelFilePath, System.Text.Encoding.UTF8);
             if (lines.Length > 0)
             {
                 availableSheets = new string[] { "Main Sheet" };
@@ -1037,7 +1197,7 @@ namespace TrainDefense.Game.Datas
         
         try
         {
-            string[] lines = File.ReadAllLines(excelFilePath);
+            string[] lines = File.ReadAllLines(excelFilePath, System.Text.Encoding.UTF8);
             int previewLines = Mathf.Min(5, lines.Length);
             
             for (int i = 0; i < previewLines; i++)
@@ -1082,16 +1242,23 @@ namespace TrainDefense.Game.Datas
         
         try
         {
+            // 시트명을 기반으로 TrainData 타입 결정
+            string sheetName = availableSheets.Length > selectedSheetIndex ? availableSheets[selectedSheetIndex] : "Main Sheet";
+            Type trainDataType = ExcelImporter.GetTrainDataTypeFromSheetName(sheetName);
+            
+            Debug.Log($"Importing from sheet: {sheetName}, detected type: {trainDataType.Name}");
+            
             switch (selectedDataType)
             {
                 case DataType.MonsterData:
-                    ImportMonsterDataToDB(excelFilePath, targetDB, clearExistingData);
+                    ExcelImporter.ImportMonsterDataToDB(excelFilePath, targetDB, clearExistingData);
                     break;
                 case DataType.TrainData:
-                    ImportTrainDataToDB(excelFilePath, targetDB, clearExistingData);
+                    // 시트명 기반으로 올바른 타입으로 Import
+                    ExcelImporter.ImportTrainDataToDBWithType(excelFilePath, targetDB, clearExistingData, trainDataType);
                     break;
                 case DataType.StageData:
-                    ImportStageDataToDB(excelFilePath, targetDB, clearExistingData);
+                    ExcelImporter.ImportStageDataToDB(excelFilePath, targetDB, clearExistingData);
                     break;
                 case DataType.UpgradeData:
                     EditorUtility.DisplayDialog("Info", "UpgradeData import not implemented yet", "OK");
@@ -1138,179 +1305,6 @@ namespace TrainDefense.Game.Datas
         return result.ToArray();
     }
     
-    // 새로운 Import 메서드들 (특정 DB에 가져오기)
-    public static void ImportMonsterDataToDB(string filePath, DB targetDB, bool clearExisting)
-    {
-        try
-        {
-            string[] lines = File.ReadAllLines(filePath);
-            if (lines.Length < 2)
-            {
-                Debug.LogError("Excel file must have at least a header row and one data row");
-                return;
-            }
-            
-            if (clearExisting)
-            {
-                targetDB.monsterDataList.Clear();
-            }
-            
-            for (int i = 1; i < lines.Length; i++)
-            {
-                string[] values = ParseCSVLine(lines[i]);
-                if (values.Length >= 12)
-                {
-                    MonsterData monsterData = new MonsterData();
-                    
-                    var idField = typeof(MonsterData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var nameField = typeof(MonsterData).GetField("monsterName", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var descField = typeof(MonsterData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var statusField = typeof(MonsterData).GetField("monsterStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
-                    
-                    if (idField != null) idField.SetValue(monsterData, values[0]);
-                    if (nameField != null) nameField.SetValue(monsterData, values[1]);
-                    if (descField != null) descField.SetValue(monsterData, values[2]);
-                    
-                    MonsterStatusInfo statusInfo = new MonsterStatusInfo();
-                    if (int.TryParse(values[3], out int maxHp)) statusInfo.MaxHp = maxHp;
-                    if (int.TryParse(values[4], out int damage)) statusInfo.Damage = damage;
-                    if (float.TryParse(values[5], out float moveSpeed)) statusInfo.MoveSpeed = moveSpeed;
-                    if (float.TryParse(values[6], out float attackDelay)) statusInfo.AttackDelay = attackDelay;
-                    if (int.TryParse(values[7], out int dropExpMin)) statusInfo.DropExpMin = dropExpMin;
-                    if (int.TryParse(values[8], out int dropExpMax)) statusInfo.DropExpMax = dropExpMax;
-                    if (int.TryParse(values[9], out int dropMoneyMin)) statusInfo.DropMoneyMin = dropMoneyMin;
-                    if (int.TryParse(values[10], out int dropMoneyMax)) statusInfo.DropMoneyMax = dropMoneyMax;
-                    if (float.TryParse(values[11], out float attackRange)) statusInfo.AttackRange = attackRange;
-                    
-                    if (statusField != null) statusField.SetValue(monsterData, statusInfo);
-                    
-                    targetDB.monsterDataList.Add(monsterData);
-                }
-            }
-            
-            EditorUtility.SetDirty(targetDB);
-            AssetDatabase.SaveAssets();
-            Debug.Log($"Successfully imported {lines.Length - 1} monster data entries to selected DB");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Failed to import monster data: {e.Message}");
-            throw;
-        }
-    }
-    
-    public static void ImportTrainDataToDB(string filePath, DB targetDB, bool clearExisting)
-    {
-        try
-        {
-            string[] lines = File.ReadAllLines(filePath);
-            if (lines.Length < 2)
-            {
-                Debug.LogError("Excel file must have at least a header row and one data row");
-                return;
-            }
-            
-            if (clearExisting)
-            {
-                targetDB.trainDataList.Clear();
-            }
-            
-            for (int i = 1; i < lines.Length; i++)
-            {
-                string[] values = ParseCSVLine(lines[i]);
-                if (values.Length >= 6)
-                {
-                    TrainData trainData = new TrainData();
-                    
-                    var idField = typeof(TrainData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var nameField = typeof(TrainData).GetField("trainName", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var descField = typeof(TrainData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var statusField = typeof(TrainData).GetField("trainStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var isMainField = typeof(TrainData).GetField("isMainTrain", BindingFlags.NonPublic | BindingFlags.Instance);
-                    
-                    if (idField != null) idField.SetValue(trainData, values[0]);
-                    if (nameField != null) nameField.SetValue(trainData, values[1]);
-                    if (descField != null) descField.SetValue(trainData, values[2]);
-                    if (isMainField != null) isMainField.SetValue(trainData, bool.Parse(values[4]));
-                    
-                    TrainStatusData statusData = new TrainStatusData();
-                    if (int.TryParse(values[3], out int maxHp)) statusData.MaxHp = maxHp;
-                    if (statusField != null) statusField.SetValue(trainData, statusData);
-                    
-                    targetDB.trainDataList.Add(trainData);
-                }
-            }
-            
-            EditorUtility.SetDirty(targetDB);
-            AssetDatabase.SaveAssets();
-            Debug.Log($"Successfully imported {lines.Length - 1} train data entries to selected DB");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Failed to import train data: {e.Message}");
-            throw;
-        }
-    }
-    
-    public static void ImportStageDataToDB(string filePath, DB targetDB, bool clearExisting)
-    {
-        try
-        {
-            string[] lines = File.ReadAllLines(filePath);
-            if (lines.Length < 2)
-            {
-                Debug.LogError("Excel file must have at least a header row and one data row");
-                return;
-            }
-            
-            if (clearExisting)
-            {
-                targetDB.stageDataList.Clear();
-            }
-            
-            for (int i = 1; i < lines.Length; i++)
-            {
-                string[] values = ParseCSVLine(lines[i]);
-                if (values.Length >= 3)
-                {
-                    StageData stageData = new StageData();
-                    
-                    var idField = typeof(StageData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var endTimeField = typeof(StageData).GetField("stageEndTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var inspectionTimeField = typeof(StageData).GetField("stageInspectionTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                    
-                    if (idField != null) idField.SetValue(stageData, values[0]);
-                    if (endTimeField != null && float.TryParse(values[1], out float endTime)) 
-                        endTimeField.SetValue(stageData, endTime);
-                    
-                    if (inspectionTimeField != null && values.Length > 2)
-                    {
-                        string[] inspectionTimes = values[2].Split(';');
-                        float[] times = new float[inspectionTimes.Length];
-                        for (int j = 0; j < inspectionTimes.Length; j++)
-                        {
-                            if (float.TryParse(inspectionTimes[j].Trim(), out float time))
-                            {
-                                times[j] = time;
-                            }
-                        }
-                        inspectionTimeField.SetValue(stageData, times);
-                    }
-                    
-                    targetDB.stageDataList.Add(stageData);
-                }
-            }
-            
-            EditorUtility.SetDirty(targetDB);
-            AssetDatabase.SaveAssets();
-            Debug.Log($"Successfully imported {lines.Length - 1} stage data entries to selected DB");
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Failed to import stage data: {e.Message}");
-            throw;
-        }
-    }
 }
 
 namespace TrainDefense.Game.Datas
@@ -1588,7 +1582,10 @@ public class ExcelImportView : EditorWindow
             
             if (importTrainData)
             {
-                ExcelImporter.ImportTrainDataToDB(targetExcelFile, targetDB, true);
+                // 파일명에 따라 적절한 TrainData 타입으로 Import
+                string fileName = Path.GetFileNameWithoutExtension(targetExcelFile).ToLower();
+                Type trainDataType = ExcelImporter.GetTrainDataTypeFromFileName(fileName);
+                ExcelImporter.ImportTrainDataToDBWithType(targetExcelFile, targetDB, true, trainDataType);
             }
             
             if (importStageData)
@@ -1673,6 +1670,8 @@ public class ExcelImportView : EditorWindow
             if (exportTrainData)
             {
                 ExcelImporter.ExportTrainData(Path.Combine(exportPath, "TrainData.csv"));
+                ExcelImporter.ExportRangeTrainData(Path.Combine(exportPath, "RangeTrainData.csv"));
+                ExcelImporter.ExportTurretTrainData(Path.Combine(exportPath, "TurretTrainData.csv"));
             }
             
             if (exportStageData)
