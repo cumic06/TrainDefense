@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -393,6 +392,75 @@ namespace TrainDefense.Game.Datas
             }
         }
         
+        /// <summary>
+        /// TrainData 객체를 생성하고 기본 필드 설정 (헤더 기반)
+        /// </summary>
+        private static TrainData CreateTrainDataInstanceWithHeaders(Type trainDataType, string[] values, Dictionary<string, int> columnIndexMap)
+        {
+            TrainData trainData = (TrainData)Activator.CreateInstance(trainDataType);
+            
+            // 기본 TrainData 필드 설정
+            var idField = typeof(TrainData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
+            var nameField = typeof(TrainData).GetField("trainName", BindingFlags.NonPublic | BindingFlags.Instance);
+            var descField = typeof(TrainData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
+            var statusField = typeof(TrainData).GetField("trainStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
+            var isMainField = typeof(TrainData).GetField("isMainTrain", BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            if (idField != null) idField.SetValue(trainData, GetValue(values, columnIndexMap, "ID"));
+            if (nameField != null) nameField.SetValue(trainData, GetValue(values, columnIndexMap, "NAME"));
+            if (descField != null) descField.SetValue(trainData, GetValue(values, columnIndexMap, "DESCRIPTION"));
+            
+            // IsMainTrain은 기본값으로 false 설정 (새로운 컬럼 구조에는 없음)
+            if (isMainField != null) isMainField.SetValue(trainData, false);
+            
+            // TrainStatusData 설정
+            TrainStatusData statusData = new TrainStatusData();
+            if (int.TryParse(GetValue(values, columnIndexMap, "MAXHP"), out int maxHp)) statusData.MaxHp = maxHp;
+            if (statusField != null) statusField.SetValue(trainData, statusData);
+            
+            return trainData;
+        }
+        
+        /// <summary>
+        /// RangeTrainData의 추가 필드 설정 (헤더 기반)
+        /// </summary>
+        private static void SetRangeTrainDataFieldsWithHeaders(RangeTrainData rangeTrainData, string[] values, Dictionary<string, int> columnIndexMap)
+        {
+            var statusField = typeof(RangeTrainData).GetField("rangeTrainStatus", BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            if (statusField != null)
+            {
+                RangeAttackTrainStatus rangeStatus = new RangeAttackTrainStatus();
+                
+                if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKRANGE"), out float attackRange)) rangeStatus.AttackRange = attackRange;
+                if (int.TryParse(GetValue(values, columnIndexMap, "ATTACKDAMAGE"), out int attackDamage)) rangeStatus.AttackDamage = attackDamage;
+                if (int.TryParse(GetValue(values, columnIndexMap, "ATTACKCOUNT"), out int attackCount)) rangeStatus.AttackCount = attackCount;
+                if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKINTERVAL"), out float attackInterval)) rangeStatus.AttackInterval = attackInterval;
+                
+                statusField.SetValue(rangeTrainData, rangeStatus);
+            }
+        }
+        
+        /// <summary>
+        /// TurretTrainData의 추가 필드 설정 (헤더 기반)
+        /// </summary>
+        private static void SetTurretTrainDataFieldsWithHeaders(TurretTrainData turretTrainData, string[] values, Dictionary<string, int> columnIndexMap)
+        {
+            var statusField = typeof(TurretTrainData).GetField("turretTrainStatus", BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            if (statusField != null)
+            {
+                TurretTrainStatus turretStatus = new TurretTrainStatus();
+                
+                if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKRANGE"), out float attackRange)) turretStatus.AttackRange = attackRange;
+                if (int.TryParse(GetValue(values, columnIndexMap, "ATTACKDAMAGE"), out int attackDamage)) turretStatus.AttackDamage = attackDamage;
+                if (int.TryParse(GetValue(values, columnIndexMap, "ATTACKCOUNT"), out int attackCount)) turretStatus.AttackCount = attackCount;
+                if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKDELAY"), out float attackDelay)) turretStatus.AttackDelay = attackDelay;
+                
+                statusField.SetValue(turretTrainData, turretStatus);
+            }
+        }
+        
         #endregion
 
         #region Data Import
@@ -429,8 +497,18 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
                 
-                // 헤더 파싱 (예상 구조: ID, Name, Description, MaxHp, Damage, MoveSpeed, AttackDelay, DropExpMin, DropExpMax, DropMoneyMin, DropMoneyMax, AttackRange)
-                string[] headers = lines[0].Split(',');
+                // 헤더 파싱
+                string[] headers = ParseCSVLine(lines[0]);
+                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
+                
+                Debug.Log($"Headers found: {string.Join(", ", headers)}");
+                
+                // 필수 컬럼 확인
+                if (!ValidateMonsterHeaders(columnIndexMap))
+                {
+                    Debug.LogError("Missing required headers in the CSV file");
+                    return;
+                }
                 
                 // DB 인스턴스 찾기
                 DB db = FindDBInstance();
@@ -443,40 +521,43 @@ namespace TrainDefense.Game.Datas
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length >= 12) // 최소 필요한 컬럼 수
+                    if (values.Length < columnIndexMap.Count)
                     {
-                        // MonsterData 클래스 생성
-                        MonsterData monsterData = new MonsterData();
-                        
-                        // 리플렉션을 사용하여 private 필드 설정
-                        var idField = typeof(MonsterData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var nameField = typeof(MonsterData).GetField("monsterName", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var descField = typeof(MonsterData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var statusField = typeof(MonsterData).GetField("monsterStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
-                        
-                        if (idField != null) idField.SetValue(monsterData, values[0]);
-                        if (nameField != null) nameField.SetValue(monsterData, values[1]);
-                        if (descField != null) descField.SetValue(monsterData, values[2]);
-                        
-                        // MonsterStatusInfo 구조체 설정
-                        MonsterStatusInfo statusInfo = new MonsterStatusInfo();
-                        if (int.TryParse(values[3], out int maxHp)) statusInfo.MaxHp = maxHp;
-                        if (int.TryParse(values[4], out int damage)) statusInfo.Damage = damage;
-                        if (float.TryParse(values[5], out float moveSpeed)) statusInfo.MoveSpeed = moveSpeed;
-                        if (float.TryParse(values[6], out float attackDelay)) statusInfo.AttackDelay = attackDelay;
-                        if (int.TryParse(values[7], out int dropExpMin)) statusInfo.DropExpMin = dropExpMin;
-                        if (int.TryParse(values[8], out int dropExpMax)) statusInfo.DropExpMax = dropExpMax;
-                        if (int.TryParse(values[9], out int dropMoneyMin)) statusInfo.DropMoneyMin = dropMoneyMin;
-                        if (int.TryParse(values[10], out int dropMoneyMax)) statusInfo.DropMoneyMax = dropMoneyMax;
-                        if (float.TryParse(values[11], out float attackRange)) statusInfo.AttackRange = attackRange;
-                        
-                        if (statusField != null) statusField.SetValue(monsterData, statusInfo);
-                        
-                        // DB에 추가
-                        db.monsterDataList.Add(monsterData);
-                        
-                        Debug.Log($"Imported monster data: {values[0]} - {values[1]}");
+                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
+                        continue;
                     }
+                    
+                    // MonsterData 클래스 생성
+                    MonsterData monsterData = new MonsterData();
+                    
+                    // 리플렉션을 사용하여 private 필드 설정
+                    var idField = typeof(MonsterData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var nameField = typeof(MonsterData).GetField("monsterName", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var descField = typeof(MonsterData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var statusField = typeof(MonsterData).GetField("monsterStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
+                    
+                    if (idField != null) idField.SetValue(monsterData, GetValue(values, columnIndexMap, "ID"));
+                    if (nameField != null) nameField.SetValue(monsterData, GetValue(values, columnIndexMap, "NAME"));
+                    if (descField != null) descField.SetValue(monsterData, GetValue(values, columnIndexMap, "DESCRIPTION"));
+                    
+                    // MonsterStatusInfo 구조체 설정
+                    MonsterStatusInfo statusInfo = new MonsterStatusInfo();
+                    if (int.TryParse(GetValue(values, columnIndexMap, "MAXHP"), out int maxHp)) statusInfo.MaxHp = maxHp;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DAMAGE"), out int damage)) statusInfo.Damage = damage;
+                    if (float.TryParse(GetValue(values, columnIndexMap, "MOVESPEED"), out float moveSpeed)) statusInfo.MoveSpeed = moveSpeed;
+                    if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKDELAY"), out float attackDelay)) statusInfo.AttackDelay = attackDelay;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPEXPMIN"), out int dropExpMin)) statusInfo.DropExpMin = dropExpMin;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPEXPMAX"), out int dropExpMax)) statusInfo.DropExpMax = dropExpMax;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPMONEYMIN"), out int dropMoneyMin)) statusInfo.DropMoneyMin = dropMoneyMin;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPMONEYMAX"), out int dropMoneyMax)) statusInfo.DropMoneyMax = dropMoneyMax;
+                    if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKRANGE"), out float attackRange)) statusInfo.AttackRange = attackRange;
+                    
+                    if (statusField != null) statusField.SetValue(monsterData, statusInfo);
+                    
+                    // DB에 추가
+                    db.monsterDataList.Add(monsterData);
+                    
+                    Debug.Log($"Imported monster data: {GetValue(values, columnIndexMap, "ID")} - {GetValue(values, columnIndexMap, "NAME")}");
                 }
                 
                 EditorUtility.SetDirty(db);
@@ -522,6 +603,12 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
                 
+                // 헤더 파싱
+                string[] headers = ParseCSVLine(lines[0]);
+                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
+                
+                Debug.Log($"Headers found: {string.Join(", ", headers)}");
+                
                 DB db = FindDBInstance();
                 if (db == null) return;
                 
@@ -535,42 +622,60 @@ namespace TrainDefense.Game.Datas
                 if (trainDataType == typeof(RangeTrainData))
                 {
                     db.rangeTrainDataList.Clear();
+                    if (!ValidateRangeTrainHeaders(columnIndexMap))
+                    {
+                        Debug.LogError("Missing required headers for RangeTrainData");
+                        return;
+                    }
                 }
                 else if (trainDataType == typeof(TurretTrainData))
                 {
                     db.turretTrainDataList.Clear();
+                    if (!ValidateTurretTrainHeaders(columnIndexMap))
+                    {
+                        Debug.LogError("Missing required headers for TurretTrainData");
+                        return;
+                    }
                 }
                 else
                 {
                     db.trainDataList.Clear();
+                    if (!ValidateTrainHeaders(columnIndexMap))
+                    {
+                        Debug.LogError("Missing required headers for TrainData");
+                        return;
+                    }
                 }
                 
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length >= 4) // 최소 ID, Name, Description, MaxHp
+                    if (values.Length < columnIndexMap.Count)
                     {
-                        // 적절한 TrainData 타입으로 객체 생성
-                        TrainData trainData = CreateTrainDataInstance(trainDataType, values);
-                        
-                        // 타입별 추가 필드 설정
-                        if (trainData is RangeTrainData rangeTrainData)
-                        {
-                            SetRangeTrainDataFields(rangeTrainData, values);
-                            db.rangeTrainDataList.Add(rangeTrainData);
-                        }
-                        else if (trainData is TurretTrainData turretTrainData)
-                        {
-                            SetTurretTrainDataFields(turretTrainData, values);
-                            db.turretTrainDataList.Add(turretTrainData);
-                        }
-                        else
-                        {
-                            db.trainDataList.Add(trainData);
-                        }
-                        
-                        Debug.Log($"Imported {trainDataType.Name}: {values[0]} - {values[1]}");
+                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
+                        continue;
                     }
+                    
+                    // 적절한 TrainData 타입으로 객체 생성
+                    TrainData trainData = CreateTrainDataInstanceWithHeaders(trainDataType, values, columnIndexMap);
+                    
+                    // 타입별 추가 필드 설정
+                    if (trainData is RangeTrainData rangeTrainData)
+                    {
+                        SetRangeTrainDataFieldsWithHeaders(rangeTrainData, values, columnIndexMap);
+                        db.rangeTrainDataList.Add(rangeTrainData);
+                    }
+                    else if (trainData is TurretTrainData turretTrainData)
+                    {
+                        SetTurretTrainDataFieldsWithHeaders(turretTrainData, values, columnIndexMap);
+                        db.turretTrainDataList.Add(turretTrainData);
+                    }
+                    else
+                    {
+                        db.trainDataList.Add(trainData);
+                    }
+                    
+                    Debug.Log($"Imported {trainDataType.Name}: {GetValue(values, columnIndexMap, "ID")} - {GetValue(values, columnIndexMap, "NAME")}");
                 }
                 
                 EditorUtility.SetDirty(db);
@@ -616,6 +721,19 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
                 
+                // 헤더 파싱
+                string[] headers = ParseCSVLine(lines[0]);
+                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
+                
+                Debug.Log($"Headers found: {string.Join(", ", headers)}");
+                
+                // 필수 컬럼 확인
+                if (!ValidateStageHeaders(columnIndexMap))
+                {
+                    Debug.LogError("Missing required headers in the CSV file");
+                    return;
+                }
+                
                 DB db = FindDBInstance();
                 if (db == null) return;
                 
@@ -624,24 +742,31 @@ namespace TrainDefense.Game.Datas
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length >= 3) // ID, StageEndTime, InspectionTimes (comma separated)
+                    if (values.Length < columnIndexMap.Count)
                     {
-                        // StageData 클래스 생성
-                        StageData stageData = new StageData();
-                        
-                        // 리플렉션을 사용하여 private 필드 설정
-                        var idField = typeof(StageData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var endTimeField = typeof(StageData).GetField("stageEndTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var inspectionTimeField = typeof(StageData).GetField("stageInspectionTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                        
-                        if (idField != null) idField.SetValue(stageData, values[0]);
-                        if (endTimeField != null && float.TryParse(values[1], out float endTime)) 
-                            endTimeField.SetValue(stageData, endTime);
-                        
-                        // Inspection Times 파싱 (세미콜론으로 구분된 값들)
-                        if (inspectionTimeField != null && values.Length > 2)
+                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
+                        continue;
+                    }
+                    
+                    // StageData 클래스 생성
+                    StageData stageData = new StageData();
+                    
+                    // 리플렉션을 사용하여 private 필드 설정
+                    var idField = typeof(StageData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var endTimeField = typeof(StageData).GetField("stageEndTime", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var inspectionTimeField = typeof(StageData).GetField("stageInspectionTime", BindingFlags.NonPublic | BindingFlags.Instance);
+                    
+                    if (idField != null) idField.SetValue(stageData, GetValue(values, columnIndexMap, "ID"));
+                    if (endTimeField != null && float.TryParse(GetValue(values, columnIndexMap, "STAGEENDTIME"), out float endTime)) 
+                        endTimeField.SetValue(stageData, endTime);
+                    
+                    // Inspection Times 파싱 (세미콜론으로 구분된 값들)
+                    if (inspectionTimeField != null)
+                    {
+                        string inspectionTimesValue = GetValue(values, columnIndexMap, "INSPECTIONTIMES");
+                        if (!string.IsNullOrEmpty(inspectionTimesValue))
                         {
-                            string[] inspectionTimes = values[2].Split(';');
+                            string[] inspectionTimes = inspectionTimesValue.Split(';');
                             float[] times = new float[inspectionTimes.Length];
                             for (int j = 0; j < inspectionTimes.Length; j++)
                             {
@@ -652,12 +777,12 @@ namespace TrainDefense.Game.Datas
                             }
                             inspectionTimeField.SetValue(stageData, times);
                         }
-                        
-                        // DB에 추가
-                        db.stageDataList.Add(stageData);
-                        
-                        Debug.Log($"Imported stage data: {values[0]}");
                     }
+                    
+                    // DB에 추가
+                    db.stageDataList.Add(stageData);
+                    
+                    Debug.Log($"Imported stage data: {GetValue(values, columnIndexMap, "ID")}");
                 }
                 
                 EditorUtility.SetDirty(db);
@@ -725,6 +850,141 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         #region Utility Methods
+        
+        /// <summary>
+        /// 헤더를 정규화 (대소문자 구별 없이, 언더바 제거)
+        /// </summary>
+        private static string NormalizeHeader(string header)
+        {
+            return header.Trim().Replace("_", "").Replace("-", "").ToUpper();
+        }
+        
+        /// <summary>
+        /// 헤더 배열로부터 컬럼 인덱스 맵 생성
+        /// </summary>
+        private static Dictionary<string, int> CreateColumnIndexMap(string[] headers)
+        {
+            Dictionary<string, int> map = new Dictionary<string, int>();
+            for (int i = 0; i < headers.Length; i++)
+            {
+                string normalizedHeader = NormalizeHeader(headers[i]);
+                map[normalizedHeader] = i;
+            }
+            return map;
+        }
+        
+        /// <summary>
+        /// 컬럼 인덱스 맵에서 값을 가져오기
+        /// </summary>
+        private static string GetValue(string[] values, Dictionary<string, int> columnIndexMap, string columnName)
+        {
+            string normalizedColumnName = NormalizeHeader(columnName);
+            if (columnIndexMap.ContainsKey(normalizedColumnName))
+            {
+                int index = columnIndexMap[normalizedColumnName];
+                if (index >= 0 && index < values.Length)
+                {
+                    return values[index];
+                }
+            }
+            return "";
+        }
+        
+        /// <summary>
+        /// MonsterData 헤더 검증
+        /// </summary>
+        private static bool ValidateMonsterHeaders(Dictionary<string, int> columnIndexMap)
+        {
+            string[] requiredHeaders = { "ID", "NAME", "DESCRIPTION", "MAXHP", "DAMAGE", "MOVESPEED", "ATTACKDELAY", 
+                                         "DROPEXPMIN", "DROPEXPMAX", "DROPMONEYMIN", "DROPMONEYMAX", "ATTACKRANGE" };
+            
+            foreach (string header in requiredHeaders)
+            {
+                string normalizedHeader = NormalizeHeader(header);
+                if (!columnIndexMap.ContainsKey(normalizedHeader))
+                {
+                    Debug.LogError($"Missing required header: {header}");
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// TrainData 헤더 검증
+        /// </summary>
+        private static bool ValidateTrainHeaders(Dictionary<string, int> columnIndexMap)
+        {
+            string[] requiredHeaders = { "ID", "NAME", "DESCRIPTION", "MAXHP" };
+            
+            foreach (string header in requiredHeaders)
+            {
+                string normalizedHeader = NormalizeHeader(header);
+                if (!columnIndexMap.ContainsKey(normalizedHeader))
+                {
+                    Debug.LogError($"Missing required header: {header}");
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// RangeTrainData 헤더 검증
+        /// </summary>
+        private static bool ValidateRangeTrainHeaders(Dictionary<string, int> columnIndexMap)
+        {
+            string[] requiredHeaders = { "ID", "NAME", "DESCRIPTION", "MAXHP", "ATTACKRANGE", "ATTACKDAMAGE", "ATTACKCOUNT", "ATTACKINTERVAL" };
+            
+            foreach (string header in requiredHeaders)
+            {
+                string normalizedHeader = NormalizeHeader(header);
+                if (!columnIndexMap.ContainsKey(normalizedHeader))
+                {
+                    Debug.LogError($"Missing required header: {header}");
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// TurretTrainData 헤더 검증
+        /// </summary>
+        private static bool ValidateTurretTrainHeaders(Dictionary<string, int> columnIndexMap)
+        {
+            string[] requiredHeaders = { "ID", "NAME", "DESCRIPTION", "MAXHP", "ATTACKRANGE", "ATTACKDAMAGE", "ATTACKCOUNT", "ATTACKDELAY" };
+            
+            foreach (string header in requiredHeaders)
+            {
+                string normalizedHeader = NormalizeHeader(header);
+                if (!columnIndexMap.ContainsKey(normalizedHeader))
+                {
+                    Debug.LogError($"Missing required header: {header}");
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        /// <summary>
+        /// StageData 헤더 검증
+        /// </summary>
+        private static bool ValidateStageHeaders(Dictionary<string, int> columnIndexMap)
+        {
+            string[] requiredHeaders = { "ID", "STAGEENDTIME", "INSPECTIONTIMES" };
+            
+            foreach (string header in requiredHeaders)
+            {
+                string normalizedHeader = NormalizeHeader(header);
+                if (!columnIndexMap.ContainsKey(normalizedHeader))
+                {
+                    Debug.LogError($"Missing required header: {header}");
+                    return false;
+                }
+            }
+            return true;
+        }
         
         private static string[] ParseCSVLine(string line)
         {
@@ -819,6 +1079,19 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
                 
+                // 헤더 파싱
+                string[] headers = ParseCSVLine(lines[0]);
+                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
+                
+                Debug.Log($"Headers found: {string.Join(", ", headers)}");
+                
+                // 필수 컬럼 확인
+                if (!ValidateMonsterHeaders(columnIndexMap))
+                {
+                    Debug.LogError("Missing required headers in the CSV file");
+                    return;
+                }
+                
                 if (clearExisting)
                 {
                     targetDB.monsterDataList.Clear();
@@ -827,34 +1100,37 @@ namespace TrainDefense.Game.Datas
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length >= 12)
+                    if (values.Length < columnIndexMap.Count)
                     {
-                        MonsterData monsterData = new MonsterData();
-                        
-                        var idField = typeof(MonsterData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var nameField = typeof(MonsterData).GetField("monsterName", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var descField = typeof(MonsterData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var statusField = typeof(MonsterData).GetField("monsterStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
-                        
-                        if (idField != null) idField.SetValue(monsterData, values[0]);
-                        if (nameField != null) nameField.SetValue(monsterData, values[1]);
-                        if (descField != null) descField.SetValue(monsterData, values[2]);
-                        
-                        MonsterStatusInfo statusInfo = new MonsterStatusInfo();
-                        if (int.TryParse(values[3], out int maxHp)) statusInfo.MaxHp = maxHp;
-                        if (int.TryParse(values[4], out int damage)) statusInfo.Damage = damage;
-                        if (float.TryParse(values[5], out float moveSpeed)) statusInfo.MoveSpeed = moveSpeed;
-                        if (float.TryParse(values[6], out float attackDelay)) statusInfo.AttackDelay = attackDelay;
-                        if (int.TryParse(values[7], out int dropExpMin)) statusInfo.DropExpMin = dropExpMin;
-                        if (int.TryParse(values[8], out int dropExpMax)) statusInfo.DropExpMax = dropExpMax;
-                        if (int.TryParse(values[9], out int dropMoneyMin)) statusInfo.DropMoneyMin = dropMoneyMin;
-                        if (int.TryParse(values[10], out int dropMoneyMax)) statusInfo.DropMoneyMax = dropMoneyMax;
-                        if (float.TryParse(values[11], out float attackRange)) statusInfo.AttackRange = attackRange;
-                        
-                        if (statusField != null) statusField.SetValue(monsterData, statusInfo);
-                        
-                        targetDB.monsterDataList.Add(monsterData);
+                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
+                        continue;
                     }
+                    
+                    MonsterData monsterData = new MonsterData();
+                    
+                    var idField = typeof(MonsterData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var nameField = typeof(MonsterData).GetField("monsterName", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var descField = typeof(MonsterData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var statusField = typeof(MonsterData).GetField("monsterStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
+                    
+                    if (idField != null) idField.SetValue(monsterData, GetValue(values, columnIndexMap, "ID"));
+                    if (nameField != null) nameField.SetValue(monsterData, GetValue(values, columnIndexMap, "NAME"));
+                    if (descField != null) descField.SetValue(monsterData, GetValue(values, columnIndexMap, "DESCRIPTION"));
+                    
+                    MonsterStatusInfo statusInfo = new MonsterStatusInfo();
+                    if (int.TryParse(GetValue(values, columnIndexMap, "MAXHP"), out int maxHp)) statusInfo.MaxHp = maxHp;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DAMAGE"), out int damage)) statusInfo.Damage = damage;
+                    if (float.TryParse(GetValue(values, columnIndexMap, "MOVESPEED"), out float moveSpeed)) statusInfo.MoveSpeed = moveSpeed;
+                    if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKDELAY"), out float attackDelay)) statusInfo.AttackDelay = attackDelay;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPEXPMIN"), out int dropExpMin)) statusInfo.DropExpMin = dropExpMin;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPEXPMAX"), out int dropExpMax)) statusInfo.DropExpMax = dropExpMax;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPMONEYMIN"), out int dropMoneyMin)) statusInfo.DropMoneyMin = dropMoneyMin;
+                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPMONEYMAX"), out int dropMoneyMax)) statusInfo.DropMoneyMax = dropMoneyMax;
+                    if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKRANGE"), out float attackRange)) statusInfo.AttackRange = attackRange;
+                    
+                    if (statusField != null) statusField.SetValue(monsterData, statusInfo);
+                    
+                    targetDB.monsterDataList.Add(monsterData);
                 }
                 
                 EditorUtility.SetDirty(targetDB);
@@ -909,51 +1185,74 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
                 
+                // 헤더 파싱
+                string[] headers = ParseCSVLine(lines[0]);
+                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
+                
+                Debug.Log($"Headers found: {string.Join(", ", headers)}");
                 Debug.Log($"Importing train data with specified type: {trainDataType.Name}");
                 
-                // 타입별 리스트 클리어
+                // 타입별 리스트 클리어 및 헤더 검증
                 if (clearExisting)
                 {
                     if (trainDataType == typeof(RangeTrainData))
                     {
                         targetDB.rangeTrainDataList.Clear();
+                        if (!ValidateRangeTrainHeaders(columnIndexMap))
+                        {
+                            Debug.LogError("Missing required headers for RangeTrainData");
+                            return;
+                        }
                     }
                     else if (trainDataType == typeof(TurretTrainData))
                     {
                         targetDB.turretTrainDataList.Clear();
+                        if (!ValidateTurretTrainHeaders(columnIndexMap))
+                        {
+                            Debug.LogError("Missing required headers for TurretTrainData");
+                            return;
+                        }
                     }
                     else
                     {
                         targetDB.trainDataList.Clear();
+                        if (!ValidateTrainHeaders(columnIndexMap))
+                        {
+                            Debug.LogError("Missing required headers for TrainData");
+                            return;
+                        }
                     }
                 }
                 
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length >= 4) // 최소 ID, Name, Description, MaxHp
+                    if (values.Length < columnIndexMap.Count)
                     {
-                        // 적절한 TrainData 타입으로 객체 생성
-                        TrainData trainData = CreateTrainDataInstance(trainDataType, values);
-                        
-                        // 타입별 추가 필드 설정
-                        if (trainData is RangeTrainData rangeTrainData)
-                        {
-                            SetRangeTrainDataFields(rangeTrainData, values);
-                            targetDB.rangeTrainDataList.Add(rangeTrainData);
-                        }
-                        else if (trainData is TurretTrainData turretTrainData)
-                        {
-                            SetTurretTrainDataFields(turretTrainData, values);
-                            targetDB.turretTrainDataList.Add(turretTrainData);
-                        }
-                        else
-                        {
-                            targetDB.trainDataList.Add(trainData);
-                        }
-                        
-                        Debug.Log($"Imported {trainDataType.Name}: {values[0]} - {values[1]}");
+                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
+                        continue;
                     }
+                    
+                    // 적절한 TrainData 타입으로 객체 생성
+                    TrainData trainData = CreateTrainDataInstanceWithHeaders(trainDataType, values, columnIndexMap);
+                    
+                    // 타입별 추가 필드 설정
+                    if (trainData is RangeTrainData rangeTrainData)
+                    {
+                        SetRangeTrainDataFieldsWithHeaders(rangeTrainData, values, columnIndexMap);
+                        targetDB.rangeTrainDataList.Add(rangeTrainData);
+                    }
+                    else if (trainData is TurretTrainData turretTrainData)
+                    {
+                        SetTurretTrainDataFieldsWithHeaders(turretTrainData, values, columnIndexMap);
+                        targetDB.turretTrainDataList.Add(turretTrainData);
+                    }
+                    else
+                    {
+                        targetDB.trainDataList.Add(trainData);
+                    }
+                    
+                    Debug.Log($"Imported {trainDataType.Name}: {GetValue(values, columnIndexMap, "ID")} - {GetValue(values, columnIndexMap, "NAME")}");
                 }
                 
                 EditorUtility.SetDirty(targetDB);
@@ -1000,6 +1299,19 @@ namespace TrainDefense.Game.Datas
                     return;
                 }
                 
+                // 헤더 파싱
+                string[] headers = ParseCSVLine(lines[0]);
+                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
+                
+                Debug.Log($"Headers found: {string.Join(", ", headers)}");
+                
+                // 필수 컬럼 확인
+                if (!ValidateStageHeaders(columnIndexMap))
+                {
+                    Debug.LogError("Missing required headers in the CSV file");
+                    return;
+                }
+                
                 if (clearExisting)
                 {
                     targetDB.stageDataList.Clear();
@@ -1008,21 +1320,28 @@ namespace TrainDefense.Game.Datas
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length >= 3)
+                    if (values.Length < columnIndexMap.Count)
                     {
-                        StageData stageData = new StageData();
-                        
-                        var idField = typeof(StageData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var endTimeField = typeof(StageData).GetField("stageEndTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                        var inspectionTimeField = typeof(StageData).GetField("stageInspectionTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                        
-                        if (idField != null) idField.SetValue(stageData, values[0]);
-                        if (endTimeField != null && float.TryParse(values[1], out float endTime)) 
-                            endTimeField.SetValue(stageData, endTime);
-                        
-                        if (inspectionTimeField != null && values.Length > 2)
+                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
+                        continue;
+                    }
+                    
+                    StageData stageData = new StageData();
+                    
+                    var idField = typeof(StageData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var endTimeField = typeof(StageData).GetField("stageEndTime", BindingFlags.NonPublic | BindingFlags.Instance);
+                    var inspectionTimeField = typeof(StageData).GetField("stageInspectionTime", BindingFlags.NonPublic | BindingFlags.Instance);
+                    
+                    if (idField != null) idField.SetValue(stageData, GetValue(values, columnIndexMap, "ID"));
+                    if (endTimeField != null && float.TryParse(GetValue(values, columnIndexMap, "STAGEENDTIME"), out float endTime)) 
+                        endTimeField.SetValue(stageData, endTime);
+                    
+                    if (inspectionTimeField != null)
+                    {
+                        string inspectionTimesValue = GetValue(values, columnIndexMap, "INSPECTIONTIMES");
+                        if (!string.IsNullOrEmpty(inspectionTimesValue))
                         {
-                            string[] inspectionTimes = values[2].Split(';');
+                            string[] inspectionTimes = inspectionTimesValue.Split(';');
                             float[] times = new float[inspectionTimes.Length];
                             for (int j = 0; j < inspectionTimes.Length; j++)
                             {
@@ -1033,9 +1352,9 @@ namespace TrainDefense.Game.Datas
                             }
                             inspectionTimeField.SetValue(stageData, times);
                         }
-                        
-                        targetDB.stageDataList.Add(stageData);
                     }
+                    
+                    targetDB.stageDataList.Add(stageData);
                 }
                 
                 EditorUtility.SetDirty(targetDB);
