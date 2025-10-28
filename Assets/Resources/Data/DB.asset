@@ -1,0 +1,128 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 000156a95358746449551d88c8be5b3e, type: 3}
+  m_Name: DB
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.DB
+  monsterDataList:
+  - id: slime_01
+    monsterName: Slime
+    icon: {fileID: 0}
+    description: basic
+    monsterStatusData:
+      MaxHp: 0
+      Damage: 0
+      MoveSpeed: 0
+      AttackDelay: 0
+      DropExpMin: 0
+      DropExpMax: 0
+      DropMoneyMin: 0
+      DropMoneyMax: 0
+      AttackRange: 0
+    monsterPrefab: {fileID: 0}
+  trainDataList:
+  - id: train_basic
+    trainName: Basic
+    icon: {fileID: 0}
+    description: desc
+    trainStatusData:
+      MaxHp: 0
+    trainPrefab: {fileID: 0}
+    isMainTrain: 0
+    upgrades: []
+  turretTrainDataList:
+  - id: turret_basic
+    trainName: Turret
+    icon: {fileID: 0}
+    description: desc
+    trainStatusData:
+      MaxHp: 0
+    trainPrefab: {fileID: 0}
+    isMainTrain: 0
+    upgrades: []
+    turretTrainStatus:
+      AttackRange: 0
+      AttackDamage: 0
+      AttackCount: 0
+      AttackDelay: 0
+    turretProjectilePrefab: {fileID: 0}
+  - id: 30002
+    trainName: "\uD654\uC5FC \uD3EC\uD0D1"
+    icon: {fileID: 0}
+    description: "\uD654\uC5FC\uC73C\uB85C \uC9C0\uC18D\uC801\uC778 \uD53C\uD574\uB97C
+      \uC900\uB2E4."
+    trainStatusData:
+      MaxHp: 0
+    trainPrefab: {fileID: 0}
+    isMainTrain: 0
+    upgrades: []
+    turretTrainStatus:
+      AttackRange: 0
+      AttackDamage: 0
+      AttackCount: 0
+      AttackDelay: 0
+    turretProjectilePrefab: {fileID: 0}
+  - id: 30003
+    trainName: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
+    icon: {fileID: 0}
+    description: "\uBBF8\uC0AC\uC77C\uB85C \uAC15\uD55C \uD53C\uD574\uB97C \uC900\uB2E4.
+      \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
+    trainStatusData:
+      MaxHp: 0
+    trainPrefab: {fileID: 0}
+    isMainTrain: 0
+    upgrades: []
+    turretTrainStatus:
+      AttackRange: 0
+      AttackDamage: 0
+      AttackCount: 0
+      AttackDelay: 0
+    turretProjectilePrefab: {fileID: 0}
+  rangeTrainDataList:
+  - id: range_basic
+    trainName: Range
+    icon: {fileID: 0}
+    description: desc
+    trainStatusData:
+      MaxHp: 0
+    trainPrefab: {fileID: 0}
+    isMainTrain: 0
+    upgrades: []
+    rangeTrainStatus:
+      AttackRange: 0
+      AttackDamage: 0
+      AttackCount: 0
+      AttackInterval: 0
+    rangeProjectilePrefab: {fileID: 0}
+  - id: 40002
+    trainName: "\uCDA9\uACA9 \uD3EC\uD0D1"
+    icon: {fileID: 0}
+    description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC744 \uBC00\uCE58\uACE0
+      \uD53C\uD574\uB97C \uC900\uB2E4."
+    trainStatusData:
+      MaxHp: 0
+    trainPrefab: {fileID: 0}
+    isMainTrain: 0
+    upgrades: []
+    rangeTrainStatus:
+      AttackRange: 0
+      AttackDamage: 0
+      AttackCount: 0
+      AttackInterval: 0
+    rangeProjectilePrefab: {fileID: 0}
+  trainUpgradeDataList: []
+  stageDataList: []
+  upgradeDataList: []
+  choiceOptionList: []
+  triChoiceDB: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
