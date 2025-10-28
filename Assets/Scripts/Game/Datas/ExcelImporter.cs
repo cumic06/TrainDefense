@@ -1,14 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace TrainDefense.Game.Datas
 {
     /// <summary>
     /// Excel/CSV 파일에서 게임 데이터를 가져오는 도구
+    /// 시트 이름 기반 자동 타입 감지 및 동적 파싱 지원
     /// </summary>
     public static class ExcelImporter
     {
@@ -17,569 +21,65 @@ namespace TrainDefense.Game.Datas
         [MenuItem("Tools/ExcelImporter/Open Excel Manager")]
         private static void OpenExcelManager()
         {
-            TrainDefense.Game.Datas.ExcelImportView.ShowWindow();
-        }
-        
-        #endregion
-
-        #region Template Creation
-        
-        public static void CreateMonsterDataTemplate(string folderPath)
-        {
-            string template = "ID,Name,Description,MaxHp,Damage,MoveSpeed,AttackDelay,DropExpMin,DropExpMax,DropMoneyMin,DropMoneyMax,AttackRange\n" +
-                             "monster_01,Goblin,작은 고블린,100,20,2.0,1.5,10,15,5,8,1.5\n" +
-                             "monster_02,Orc,강한 오크,200,35,1.5,2.0,20,30,10,15,2.0";
-            
-            File.WriteAllText(Path.Combine(folderPath, "MonsterData_Template.csv"), template, System.Text.Encoding.UTF8);
-        }
-        
-        public static void CreateTrainDataTemplate(string folderPath)
-        {
-            string template = "ID,Name,Description,MaxHp,IsMainTrain\n" +
-                             "train_01,Basic Train,기본 기차,500,true";
-            
-            File.WriteAllText(Path.Combine(folderPath, "TrainData_Template.csv"), template, System.Text.Encoding.UTF8);
-        }
-        
-        public static void CreateRangeTrainDataTemplate(string folderPath)
-        {
-            string template = "ID,Name,Description,MaxHp,AttackRange,AttackDamage,AttackCount,AttackInterval\n" +
-                             "range_01,Range Train,원거리 기차,300,5.0,50,3,1.5";
-            
-            File.WriteAllText(Path.Combine(folderPath, "RangeTrainData_Template.csv"), template);
-        }
-        
-        public static void CreateTurretTrainDataTemplate(string folderPath)
-        {
-            string template = "ID,Name,Description,MaxHp,AttackRange,AttackDamage,AttackCount,AttackDelay\n" +
-                             "turret_01,Turret Train,터렛 기차,400,3.0,75,2,2.0";
-            
-            File.WriteAllText(Path.Combine(folderPath, "TurretTrainData_Template.csv"), template);
-        }
-        
-        public static void CreateStageDataTemplate(string folderPath)
-        {
-            string template = "ID,StageEndTime,InspectionTimes\n" +
-                             "stage_01,300.0,60.0;120.0;180.0;240.0\n" +
-                             "stage_02,600.0,120.0;240.0;360.0;480.0";
-            
-            File.WriteAllText(Path.Combine(folderPath, "StageData_Template.csv"), template);
-        }
-        
-        #endregion
-
-        #region Data Export
-        
-        private static void ExportAllDataToExcel(string folderPath)
-        {
-            try
-            {
-                DB db = FindDBInstance();
-                if (db == null) return;
-                
-                ExportMonsterData(Path.Combine(folderPath, "MonsterData.csv"), db);
-                ExportTrainData(Path.Combine(folderPath, "TrainData.csv"), db);
-                ExportRangeTrainData(Path.Combine(folderPath, "RangeTrainData.csv"), db);
-                ExportTurretTrainData(Path.Combine(folderPath, "TurretTrainData.csv"), db);
-                ExportStageData(Path.Combine(folderPath, "StageData.csv"), db);
-                
-                Debug.Log($"Successfully exported all data to {folderPath}");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to export all data: {e.Message}");
-            }
-        }
-        
-        public static void ExportMonsterData(string filePath)
-        {
-            DB db = FindDBInstance();
-            if (db == null) return;
-            ExportMonsterData(filePath, db);
-        }
-        
-        private static void ExportMonsterData(string filePath, DB db)
-        {
-            try
-            {
-                List<string> lines = new List<string>();
-                
-                // 헤더
-                lines.Add("ID,Name,Description,MaxHp,Damage,MoveSpeed,AttackDelay,DropExpMin,DropExpMax,DropMoneyMin,DropMoneyMax,AttackRange");
-                
-                // 데이터
-                foreach (var monster in db.monsterDataList)
-                {
-                    var status = monster.MonsterStatusData;
-                    string line = $"{monster.Id},{monster.MonsterName},{monster.Description}," +
-                                 $"{status.MaxHp},{status.Damage},{status.MoveSpeed},{status.AttackDelay}," +
-                                 $"{status.DropExpMin},{status.DropExpMax},{status.DropMoneyMin},{status.DropMoneyMax},{status.AttackRange}";
-                    lines.Add(line);
-                }
-                
-                File.WriteAllLines(filePath, lines);
-                Debug.Log($"Successfully exported {db.monsterDataList.Count} monster data entries to {filePath}");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to export monster data: {e.Message}");
-            }
-        }
-        
-        public static void ExportTrainData(string filePath)
-        {
-            DB db = FindDBInstance();
-            if (db == null) return;
-            ExportTrainData(filePath, db);
-        }
-        
-        private static void ExportTrainData(string filePath, DB db)
-        {
-            try
-            {
-                List<string> lines = new List<string>();
-                
-                // 헤더 (새로운 컬럼 구조에 맞게)
-                lines.Add("ID,Name,Description,MaxHp,TrainType");
-                
-                // 모든 TrainData 타입의 데이터 내보내기
-                var allTrainData = db.GetAllTrainData();
-                foreach (var train in allTrainData)
-                {
-                    var status = train.TrainStatusData;
-                    string trainType = train.GetType().Name.Replace("TrainData", "");
-                    string line = $"{train.Id},{train.TrainName},{train.Description}," +
-                                 $"{status.MaxHp},{trainType}";
-                    lines.Add(line);
-                }
-                
-                File.WriteAllLines(filePath, lines);
-                Debug.Log($"Successfully exported {allTrainData.Count} train data entries to {filePath}");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to export train data: {e.Message}");
-            }
-        }
-        
-        public static void ExportRangeTrainData(string filePath)
-        {
-            DB db = FindDBInstance();
-            if (db == null) return;
-            ExportRangeTrainData(filePath, db);
-        }
-        
-        private static void ExportRangeTrainData(string filePath, DB db)
-        {
-            try
-            {
-                List<string> lines = new List<string>();
-                
-                // 헤더 (새로운 컬럼 구조에 맞게)
-                lines.Add("ID,Name,Description,MaxHp,AttackRange,AttackDamage,AttackCount,AttackInterval");
-                
-                // RangeTrainData 내보내기
-                foreach (var train in db.rangeTrainDataList)
-                {
-                    var status = train.TrainStatusData;
-                    var rangeStatus = train.RangeTrainStatus;
-                    string line = $"{train.Id},{train.TrainName},{train.Description}," +
-                                 $"{status.MaxHp},{rangeStatus.AttackRange},{rangeStatus.AttackDamage}," +
-                                 $"{rangeStatus.AttackCount},{rangeStatus.AttackInterval}";
-                    lines.Add(line);
-                }
-                
-                File.WriteAllLines(filePath, lines);
-                Debug.Log($"Successfully exported {db.rangeTrainDataList.Count} range train data entries to {filePath}");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to export range train data: {e.Message}");
-            }
-        }
-        
-        public static void ExportTurretTrainData(string filePath)
-        {
-            DB db = FindDBInstance();
-            if (db == null) return;
-            ExportTurretTrainData(filePath, db);
-        }
-        
-        private static void ExportTurretTrainData(string filePath, DB db)
-        {
-            try
-            {
-                List<string> lines = new List<string>();
-                
-                // 헤더 (새로운 컬럼 구조에 맞게)
-                lines.Add("ID,Name,Description,MaxHp,AttackRange,AttackDamage,AttackCount,AttackDelay");
-                
-                // TurretTrainData 내보내기
-                foreach (var train in db.turretTrainDataList)
-                {
-                    var status = train.TrainStatusData;
-                    var turretStatus = train.TurretTrainStatus;
-                    string line = $"{train.Id},{train.TrainName},{train.Description}," +
-                                 $"{status.MaxHp},{turretStatus.AttackRange},{turretStatus.AttackDamage}," +
-                                 $"{turretStatus.AttackCount},{turretStatus.AttackDelay}";
-                    lines.Add(line);
-                }
-                
-                File.WriteAllLines(filePath, lines);
-                Debug.Log($"Successfully exported {db.turretTrainDataList.Count} turret train data entries to {filePath}");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to export turret train data: {e.Message}");
-            }
-        }
-        
-        public static void ExportStageData(string filePath)
-        {
-            DB db = FindDBInstance();
-            if (db == null) return;
-            ExportStageData(filePath, db);
-        }
-        
-        private static void ExportStageData(string filePath, DB db)
-        {
-            try
-            {
-                List<string> lines = new List<string>();
-                
-                // 헤더
-                lines.Add("ID,StageEndTime,InspectionTimes");
-                
-                // 데이터
-                foreach (var stage in db.stageDataList)
-                {
-                    string inspectionTimes = string.Join(";", stage.StageInspectionTime);
-                    string line = $"{stage.Id},{stage.StageEndTime},{inspectionTimes}";
-                    lines.Add(line);
-                }
-                
-                File.WriteAllLines(filePath, lines);
-                Debug.Log($"Successfully exported {db.stageDataList.Count} stage data entries to {filePath}");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to export stage data: {e.Message}");
-            }
-        }
-        
-        #endregion
-
-        #region Train Data Type Detection
-        
-        /// <summary>
-        /// 시트명을 기반으로 TrainData 타입을 결정
-        /// </summary>
-        public static Type GetTrainDataTypeFromSheetName(string sheetName)
-        {
-            string lowerSheetName = sheetName.ToLower();
-            
-            if (lowerSheetName.Contains("rangetrain") || lowerSheetName.Contains("range_train"))
-            {
-                return typeof(RangeTrainData);
-            }
-            else if (lowerSheetName.Contains("turrettrain") || lowerSheetName.Contains("turret_train"))
-            {
-                return typeof(TurretTrainData);
-            }
-            else if (lowerSheetName.Contains("train"))
-            {
-                return typeof(TrainData);
-            }
-            else
-            {
-                return typeof(TrainData); // 기본값
-            }
-        }
-        
-        /// <summary>
-        /// 파일명을 기반으로 TrainData 타입을 결정
-        /// </summary>
-        public static Type GetTrainDataTypeFromFileName(string fileName)
-        {
-            string lowerFileName = fileName.ToLower();
-            
-            if (lowerFileName.Contains("rangetrain") || lowerFileName.Contains("range_train"))
-            {
-                return typeof(RangeTrainData);
-            }
-            else if (lowerFileName.Contains("turrettrain") || lowerFileName.Contains("turret_train"))
-            {
-                return typeof(TurretTrainData);
-            }
-            else
-            {
-                return typeof(TrainData);
-            }
-        }
-        
-        /// <summary>
-        /// TrainData 객체를 생성하고 기본 필드 설정
-        /// </summary>
-        private static TrainData CreateTrainDataInstance(Type trainDataType, string[] values)
-        {
-            TrainData trainData = (TrainData)Activator.CreateInstance(trainDataType);
-            
-            // 기본 TrainData 필드 설정
-            var idField = typeof(TrainData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-            var nameField = typeof(TrainData).GetField("trainName", BindingFlags.NonPublic | BindingFlags.Instance);
-            var descField = typeof(TrainData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
-            var statusField = typeof(TrainData).GetField("trainStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
-            var isMainField = typeof(TrainData).GetField("isMainTrain", BindingFlags.NonPublic | BindingFlags.Instance);
-            
-            if (idField != null) idField.SetValue(trainData, values[0]);
-            if (nameField != null) nameField.SetValue(trainData, values[1]);
-            if (descField != null) descField.SetValue(trainData, values[2]);
-            
-            // IsMainTrain은 기본값으로 false 설정 (새로운 컬럼 구조에는 없음)
-            if (isMainField != null) isMainField.SetValue(trainData, false);
-            
-            // TrainStatusData 설정
-            TrainStatusData statusData = new TrainStatusData();
-            if (int.TryParse(values[3], out int maxHp)) statusData.MaxHp = maxHp;
-            if (statusField != null) statusField.SetValue(trainData, statusData);
-            
-            return trainData;
-        }
-        
-        /// <summary>
-        /// RangeTrainData의 추가 필드 설정
-        /// </summary>
-        private static void SetRangeTrainDataFields(RangeTrainData rangeTrainData, string[] values)
-        {
-            if (values.Length < 8) return; // 최소 컬럼 수 확인 (ID, Name, Description, MaxHp, AttackRange, AttackDamage, AttackCount, AttackInterval)
-            
-            var statusField = typeof(RangeTrainData).GetField("rangeTrainStatus", BindingFlags.NonPublic | BindingFlags.Instance);
-            
-            if (statusField != null)
-            {
-                RangeAttackTrainStatus rangeStatus = new RangeAttackTrainStatus();
-                
-                // 새로운 컬럼 순서: ID, Name, Description, MaxHp, AttackRange, AttackDamage, AttackCount, AttackInterval
-                if (float.TryParse(values[4], out float attackRange)) rangeStatus.AttackRange = attackRange;
-                if (int.TryParse(values[5], out int attackDamage)) rangeStatus.AttackDamage = attackDamage;
-                if (int.TryParse(values[6], out int attackCount)) rangeStatus.AttackCount = attackCount;
-                if (float.TryParse(values[7], out float attackInterval)) rangeStatus.AttackInterval = attackInterval;
-                
-                statusField.SetValue(rangeTrainData, rangeStatus);
-            }
-        }
-        
-        /// <summary>
-        /// TurretTrainData의 추가 필드 설정
-        /// </summary>
-        private static void SetTurretTrainDataFields(TurretTrainData turretTrainData, string[] values)
-        {
-            if (values.Length < 8) return; // 최소 컬럼 수 확인 (ID, Name, Description, MaxHp, AttackRange, AttackDamage, AttackCount, AttackDelay)
-            
-            var statusField = typeof(TurretTrainData).GetField("turretTrainStatus", BindingFlags.NonPublic | BindingFlags.Instance);
-            
-            if (statusField != null)
-            {
-                TurretTrainStatus turretStatus = new TurretTrainStatus();
-                
-                // 새로운 컬럼 순서: ID, Name, Description, MaxHp, AttackRange, AttackDamage, AttackCount, AttackDelay
-                if (float.TryParse(values[4], out float attackRange)) turretStatus.AttackRange = attackRange;
-                if (int.TryParse(values[5], out int attackDamage)) turretStatus.AttackDamage = attackDamage;
-                if (int.TryParse(values[6], out int attackCount)) turretStatus.AttackCount = attackCount;
-                if (float.TryParse(values[7], out float attackDelay)) turretStatus.AttackDelay = attackDelay;
-                
-                statusField.SetValue(turretTrainData, turretStatus);
-            }
-        }
-        
-        /// <summary>
-        /// TrainData 객체를 생성하고 기본 필드 설정 (헤더 기반)
-        /// </summary>
-        private static TrainData CreateTrainDataInstanceWithHeaders(Type trainDataType, string[] values, Dictionary<string, int> columnIndexMap)
-        {
-            TrainData trainData = (TrainData)Activator.CreateInstance(trainDataType);
-            
-            // 기본 TrainData 필드 설정
-            var idField = typeof(TrainData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-            var nameField = typeof(TrainData).GetField("trainName", BindingFlags.NonPublic | BindingFlags.Instance);
-            var descField = typeof(TrainData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
-            var statusField = typeof(TrainData).GetField("trainStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
-            var isMainField = typeof(TrainData).GetField("isMainTrain", BindingFlags.NonPublic | BindingFlags.Instance);
-            
-            if (idField != null) idField.SetValue(trainData, GetValue(values, columnIndexMap, "ID"));
-            if (nameField != null) nameField.SetValue(trainData, GetValue(values, columnIndexMap, "NAME"));
-            if (descField != null) descField.SetValue(trainData, GetValue(values, columnIndexMap, "DESCRIPTION"));
-            
-            // IsMainTrain은 기본값으로 false 설정 (새로운 컬럼 구조에는 없음)
-            if (isMainField != null) isMainField.SetValue(trainData, false);
-            
-            // TrainStatusData 설정
-            TrainStatusData statusData = new TrainStatusData();
-            if (int.TryParse(GetValue(values, columnIndexMap, "MAXHP"), out int maxHp)) statusData.MaxHp = maxHp;
-            if (statusField != null) statusField.SetValue(trainData, statusData);
-            
-            return trainData;
-        }
-        
-        /// <summary>
-        /// RangeTrainData의 추가 필드 설정 (헤더 기반)
-        /// </summary>
-        private static void SetRangeTrainDataFieldsWithHeaders(RangeTrainData rangeTrainData, string[] values, Dictionary<string, int> columnIndexMap)
-        {
-            var statusField = typeof(RangeTrainData).GetField("rangeTrainStatus", BindingFlags.NonPublic | BindingFlags.Instance);
-            
-            if (statusField != null)
-            {
-                RangeAttackTrainStatus rangeStatus = new RangeAttackTrainStatus();
-                
-                if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKRANGE"), out float attackRange)) rangeStatus.AttackRange = attackRange;
-                if (int.TryParse(GetValue(values, columnIndexMap, "ATTACKDAMAGE"), out int attackDamage)) rangeStatus.AttackDamage = attackDamage;
-                if (int.TryParse(GetValue(values, columnIndexMap, "ATTACKCOUNT"), out int attackCount)) rangeStatus.AttackCount = attackCount;
-                if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKINTERVAL"), out float attackInterval)) rangeStatus.AttackInterval = attackInterval;
-                
-                statusField.SetValue(rangeTrainData, rangeStatus);
-            }
-        }
-        
-        /// <summary>
-        /// TurretTrainData의 추가 필드 설정 (헤더 기반)
-        /// </summary>
-        private static void SetTurretTrainDataFieldsWithHeaders(TurretTrainData turretTrainData, string[] values, Dictionary<string, int> columnIndexMap)
-        {
-            var statusField = typeof(TurretTrainData).GetField("turretTrainStatus", BindingFlags.NonPublic | BindingFlags.Instance);
-            
-            if (statusField != null)
-            {
-                TurretTrainStatus turretStatus = new TurretTrainStatus();
-                
-                if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKRANGE"), out float attackRange)) turretStatus.AttackRange = attackRange;
-                if (int.TryParse(GetValue(values, columnIndexMap, "ATTACKDAMAGE"), out int attackDamage)) turretStatus.AttackDamage = attackDamage;
-                if (int.TryParse(GetValue(values, columnIndexMap, "ATTACKCOUNT"), out int attackCount)) turretStatus.AttackCount = attackCount;
-                if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKDELAY"), out float attackDelay)) turretStatus.AttackDelay = attackDelay;
-                
-                statusField.SetValue(turretTrainData, turretStatus);
-            }
+            ExcelImportView.ShowWindow();
         }
         
         #endregion
 
         #region Data Import
-        
-        public static void ImportMonsterData(string filePath)
+
+        /// <summary>
+        /// 엑셀 파일에서 시트별로 데이터를 자동 감지하여 불러오기
+        /// 불러온 데이터 개수를 반환
+        /// </summary>
+        public static int ImportAllDataFromExcel(string filePath, DB targetDB)
         {
             try
             {
-                // 파일 접근 가능 여부 확인
-                if (!File.Exists(filePath))
+                string ext = Path.GetExtension(filePath).ToLower();
+                
+                if (ext == ".csv")
                 {
-                    Debug.LogError($"File not found: {filePath}");
-                    return;
+                    return ImportFromCSV(filePath, targetDB);
                 }
-
-                // 파일이 다른 프로그램에서 사용 중인지 확인
-                try
+                else if (ext == ".xlsx" || ext == ".xlsm")
                 {
-                    using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        // 파일 접근 가능
-                    }
+                    return ImportFromExcel(filePath, targetDB);
                 }
-                catch (System.IO.IOException ex)
+                else
                 {
-                    Debug.LogError($"File is being used by another program. Please close Excel or any other program that might be using the file: {filePath}\nError: {ex.Message}");
-                    return;
+                    Debug.LogWarning($"지원하지 않는 파일 형식입니다: {ext}");
+                    return 0;
                 }
-
-                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
-                if (lines.Length < 2)
-                {
-                    Debug.LogError("Excel file must have at least a header row and one data row");
-                    return;
-                }
-                
-                // 헤더 파싱
-                string[] headers = ParseCSVLine(lines[0]);
-                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
-                
-                Debug.Log($"Headers found: {string.Join(", ", headers)}");
-                
-                // 필수 컬럼 확인
-                if (!ValidateMonsterHeaders(columnIndexMap))
-                {
-                    Debug.LogError("Missing required headers in the CSV file");
-                    return;
-                }
-                
-                // DB 인스턴스 찾기
-                DB db = FindDBInstance();
-                if (db == null) return;
-                
-                // 기존 데이터 클리어
-                db.monsterDataList.Clear();
-                
-                // 데이터 파싱
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length < columnIndexMap.Count)
-                    {
-                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
-                        continue;
-                    }
-                    
-                    // MonsterData 클래스 생성
-                    MonsterData monsterData = new MonsterData();
-                    
-                    // 리플렉션을 사용하여 private 필드 설정
-                    var idField = typeof(MonsterData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var nameField = typeof(MonsterData).GetField("monsterName", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var descField = typeof(MonsterData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var statusField = typeof(MonsterData).GetField("monsterStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
-                    
-                    if (idField != null) idField.SetValue(monsterData, GetValue(values, columnIndexMap, "ID"));
-                    if (nameField != null) nameField.SetValue(monsterData, GetValue(values, columnIndexMap, "NAME"));
-                    if (descField != null) descField.SetValue(monsterData, GetValue(values, columnIndexMap, "DESCRIPTION"));
-                    
-                    // MonsterStatusInfo 구조체 설정
-                    MonsterStatusInfo statusInfo = new MonsterStatusInfo();
-                    if (int.TryParse(GetValue(values, columnIndexMap, "MAXHP"), out int maxHp)) statusInfo.MaxHp = maxHp;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DAMAGE"), out int damage)) statusInfo.Damage = damage;
-                    if (float.TryParse(GetValue(values, columnIndexMap, "MOVESPEED"), out float moveSpeed)) statusInfo.MoveSpeed = moveSpeed;
-                    if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKDELAY"), out float attackDelay)) statusInfo.AttackDelay = attackDelay;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPEXPMIN"), out int dropExpMin)) statusInfo.DropExpMin = dropExpMin;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPEXPMAX"), out int dropExpMax)) statusInfo.DropExpMax = dropExpMax;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPMONEYMIN"), out int dropMoneyMin)) statusInfo.DropMoneyMin = dropMoneyMin;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPMONEYMAX"), out int dropMoneyMax)) statusInfo.DropMoneyMax = dropMoneyMax;
-                    if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKRANGE"), out float attackRange)) statusInfo.AttackRange = attackRange;
-                    
-                    if (statusField != null) statusField.SetValue(monsterData, statusInfo);
-                    
-                    // DB에 추가
-                    db.monsterDataList.Add(monsterData);
-                    
-                    Debug.Log($"Imported monster data: {GetValue(values, columnIndexMap, "ID")} - {GetValue(values, columnIndexMap, "NAME")}");
-                }
-                
-                EditorUtility.SetDirty(db);
-                AssetDatabase.SaveAssets();
-                Debug.Log($"Successfully imported {lines.Length - 1} monster data entries from Excel");
-                Debug.Log($"DB now contains {db.monsterDataList.Count} monster data entries");
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"Failed to import monster data: {e.Message}");
+                Debug.LogError($"엑셀에서 데이터 불러오기 실패: {e.Message}");
+                return 0;
             }
         }
-        
-        public static void ImportTrainData(string filePath)
+
+        /// <summary>
+        /// CSV 파일에서 데이터 불러오기
+        /// </summary>
+        private static int ImportFromCSV(string filePath, DB targetDB)
         {
+            return ImportSingleSheet(filePath, targetDB);
+        }
+
+        /// <summary>
+        /// Excel 파일에서 데이터 불러오기
+        /// </summary>
+        private static int ImportFromExcel(string filePath, DB targetDB)
+        {
+            string tempDir = null;
             try
             {
                 // 파일 접근 가능 여부 확인
                 if (!File.Exists(filePath))
                 {
-                    Debug.LogError($"File not found: {filePath}");
-                    return;
+                    Debug.LogError($"파일을 찾을 수 없습니다: {filePath}");
+                    return 0;
                 }
 
                 // 파일이 다른 프로그램에서 사용 중인지 확인
@@ -592,410 +92,845 @@ namespace TrainDefense.Game.Datas
                 }
                 catch (System.IO.IOException ex)
                 {
-                    Debug.LogError($"File is being used by another program. Please close Excel or any other program that might be using the file: {filePath}\nError: {ex.Message}");
-                    return;
+                    Debug.LogError($"파일이 다른 프로그램에서 사용 중입니다. Excel 파일을 닫고 다시 시도해주세요: {ex.Message}");
+                    return 0;
                 }
 
-                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
-                if (lines.Length < 2)
+                tempDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                Directory.CreateDirectory(tempDir);
+
+                Debug.Log($"Excel 파일 압축 해제 시작: {filePath}");
+                // Excel 파일을 ZIP으로 압축 해제
+                ZipFile.ExtractToDirectory(filePath, tempDir);
+                Debug.Log($"압축 해제 완료: {tempDir}");
+
+                // workbook.xml에서 시트 정보 가져오기
+                string workbookPath = Path.Combine(tempDir, "xl", "workbook.xml");
+                if (!File.Exists(workbookPath))
                 {
-                    Debug.LogError("Excel file must have at least a header row and one data row");
-                    return;
-                }
-                
-                // 헤더 파싱
-                string[] headers = ParseCSVLine(lines[0]);
-                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
-                
-                Debug.Log($"Headers found: {string.Join(", ", headers)}");
-                
-                DB db = FindDBInstance();
-                if (db == null) return;
-                
-                // 파일명에서 TrainData 타입 결정
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-                Type trainDataType = GetTrainDataTypeFromFileName(fileName);
-                
-                Debug.Log($"Detected train data type: {trainDataType.Name} from file: {fileName}");
-                
-                // 타입별 리스트 클리어
-                if (trainDataType == typeof(RangeTrainData))
-                {
-                    db.rangeTrainDataList.Clear();
-                    if (!ValidateRangeTrainHeaders(columnIndexMap))
+                    Debug.LogError($"workbook.xml을 찾을 수 없습니다: {workbookPath}");
+                    if (Directory.Exists(tempDir))
                     {
-                        Debug.LogError("Missing required headers for RangeTrainData");
-                        return;
+                        Directory.Delete(tempDir, true);
+                    }
+                    return 0;
+                }
+
+                Debug.Log($"workbook.xml 로드 시작");
+                XDocument workbook = XDocument.Load(workbookPath);
+                XNamespace ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+                var sheets = workbook.Descendants(ns + "sheet").ToList();
+
+                if (sheets.Count == 0)
+                {
+                    Debug.LogWarning("시트를 찾을 수 없습니다.");
+                }
+                else
+                {
+                    Debug.Log($"발견된 시트 개수: {sheets.Count}");
+                }
+
+                int totalImported = 0;
+
+                // 각 시트 처리
+                foreach (var sheet in sheets)
+                {
+                    string sheetId = sheet.Attribute(XName.Get("sheetId"))?.Value;
+                    string sheetName = sheet.Attribute(XName.Get("name"))?.Value;
+
+                    if (string.IsNullOrEmpty(sheetName))
+                    {
+                        Debug.LogWarning("시트명이 비어있습니다.");
+                        continue;
+                    }
+
+                    Debug.Log($"시트 처리 중: '{sheetName}' (ID: {sheetId})");
+
+                    // 시트 파일 경로
+                    string sheetPath = Path.Combine(tempDir, "xl", "worksheets", $"sheet{sheetId}.xml");
+                    if (!File.Exists(sheetPath))
+                    {
+                        Debug.LogWarning($"시트 파일을 찾을 수 없습니다: {sheetPath}");
+                        continue;
+                    }
+
+                    Debug.Log($"시트 파일 읽기: {sheetPath}");
+                    // 시트 데이터 읽기
+                    var dataList = ReadExcelSheetData(sheetPath, tempDir);
+                    Debug.Log($"읽은 데이터 개수: {dataList.Count}");
+
+                    if (dataList.Count > 0)
+                    {
+                        // 파일명을 시트명으로 사용하여 타입 감지
+                        Type dataType = GetDataTypeFromSheetName(sheetName);
+
+                        if (dataType != null)
+                        {
+                            Debug.Log($"데이터 타입 감지됨: {dataType.Name}");
+                            AddDataToDB(dataType, dataList, targetDB);
+                            totalImported += dataList.Count;
+                            Debug.Log($"✅ 성공적으로 불러옴: {dataList.Count}개의 {dataType.Name} 데이터");
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"시트명 '{sheetName}'에서 데이터 타입을 감지할 수 없습니다.");
+                        }
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"시트 '{sheetName}'에 데이터가 없습니다.");
                     }
                 }
-                else if (trainDataType == typeof(TurretTrainData))
+
+                EditorUtility.SetDirty(targetDB);
+                AssetDatabase.SaveAssets();
+
+                Debug.Log($"총 {totalImported}개의 데이터를 불러왔습니다.");
+                return totalImported;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Excel 파일 읽기 실패: {e.Message}\n스택 트레이스: {e.StackTrace}");
+                return 0;
+            }
+            finally
+            {
+                // 임시 디렉토리 정리
+                if (tempDir != null && Directory.Exists(tempDir))
                 {
-                    db.turretTrainDataList.Clear();
-                    if (!ValidateTurretTrainHeaders(columnIndexMap))
+                    try
                     {
-                        Debug.LogError("Missing required headers for TurretTrainData");
-                        return;
+                        Directory.Delete(tempDir, true);
+                        Debug.Log($"임시 디렉토리 삭제 완료: {tempDir}");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        Debug.LogWarning($"임시 디렉토리 삭제 실패: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Excel 시트 데이터 읽기
+        /// </summary>
+        private static List<Dictionary<string, string>> ReadExcelSheetData(string sheetPath, string tempDir)
+        {
+            List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
+
+            try
+            {
+                XDocument sheetDoc = XDocument.Load(sheetPath);
+                XNamespace ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+
+                // sharedStrings.xml 읽기
+                string sharedStringsPath = Path.Combine(tempDir, "xl", "sharedStrings.xml");
+                Dictionary<int, string> sharedStrings = new Dictionary<int, string>();
+                if (File.Exists(sharedStringsPath))
+                {
+                    XDocument sharedStringsDoc = XDocument.Load(sharedStringsPath);
+                    var stringElements = sharedStringsDoc.Descendants(ns + "t").ToList();
+                    for (int i = 0; i < stringElements.Count; i++)
+                    {
+                        sharedStrings[i] = stringElements[i].Value;
+                    }
+                }
+
+                // 모든 row 찾기
+                var rows = sheetDoc.Descendants(ns + "row").ToList();
+
+                if (rows.Count == 0) return result;
+
+                // 첫 번째 행: 필드명
+                var firstRow = rows[0];
+                var firstRowCells = firstRow.Descendants(ns + "c").ToList();
+                List<string> fieldNames = new List<string>();
+
+                foreach (var cell in firstRowCells)
+                {
+                    string cellRef = cell.Attribute(XName.Get("r"))?.Value;
+                    string cellType = cell.Attribute(XName.Get("t"))?.Value;
+                    var valueElement = cell.Descendants(ns + "v").FirstOrDefault();
+
+                    string value = "";
+                    if (valueElement != null)
+                    {
+                        if (cellType == "s" && int.TryParse(valueElement.Value, out int sharedStringIndex))
+                        {
+                            value = sharedStrings.ContainsKey(sharedStringIndex) ? sharedStrings[sharedStringIndex] : "";
+                        }
+                        else
+                        {
+                            value = valueElement.Value;
+                        }
+                    }
+
+                    fieldNames.Add(value);
+                }
+
+                Debug.Log($"필드 발견: {string.Join(", ", fieldNames)}");
+
+                // 두 번째 행부터: 데이터
+                for (int i = 1; i < rows.Count; i++)
+                {
+                    var row = rows[i];
+                    var cells = row.Descendants(ns + "c").ToList();
+
+                    Dictionary<string, string> dataRow = new Dictionary<string, string>();
+
+                    for (int j = 0; j < fieldNames.Count && j < cells.Count; j++)
+                    {
+                        string fieldName = NormalizeFieldName(fieldNames[j]);
+                        var cell = cells[j];
+
+                        string cellType = cell.Attribute(XName.Get("t"))?.Value;
+                        var valueElement = cell.Descendants(ns + "v").FirstOrDefault();
+
+                        string value = "";
+                        if (valueElement != null)
+                        {
+                            if (cellType == "s" && int.TryParse(valueElement.Value, out int sharedStringIndex))
+                            {
+                                value = sharedStrings.ContainsKey(sharedStringIndex) ? sharedStrings[sharedStringIndex] : "";
+                            }
+                            else
+                            {
+                                value = valueElement.Value;
+                            }
+                        }
+
+                        dataRow[fieldName] = value;
+                    }
+
+                    result.Add(dataRow);
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"Excel 시트 읽기 실패: {e.Message}");
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 단일 CSV 파일(시트)에서 데이터 불러오기
+        /// 불러온 데이터 개수를 반환
+        /// </summary>
+        private static int ImportSingleSheet(string filePath, DB targetDB)
+        {
+            // 파일명에서 데이터 타입 감지
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            Type dataType = GetDataTypeFromSheetName(fileName);
+            
+            if (dataType == null)
+            {
+                Debug.LogError($"파일명에서 데이터 타입을 감지할 수 없습니다: {fileName}");
+                return 0;
+            }
+
+            Debug.Log($"데이터 타입 감지됨: {dataType.Name}, 파일명: {fileName}");
+
+            // CSV 파싱
+            var dataList = ParseCSVData(filePath);
+            
+            if (dataList.Count == 0)
+            {
+                Debug.LogWarning("파일에 데이터가 없습니다");
+                return 0;
+            }
+
+            // DB에 데이터 추가
+            AddDataToDB(dataType, dataList, targetDB);
+
+            EditorUtility.SetDirty(targetDB);
+            AssetDatabase.SaveAssets();
+            
+            Debug.Log($"성공적으로 불러옴: {dataList.Count}개의 {dataType.Name} 데이터");
+            return dataList.Count;
+        }
+
+        /// <summary>
+        /// CSV 파일에서 데이터를 파싱하여 리스트로 반환
+        /// 첫 번째 행: 필드명
+        /// 두 번째 행부터: 데이터 값들
+        /// </summary>
+        private static List<Dictionary<string, string>> ParseCSVData(string filePath)
+        {
+            List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
+
+            // 파일 접근 가능 여부 확인
+            if (!File.Exists(filePath))
+            {
+                Debug.LogError($"파일을 찾을 수 없습니다: {filePath}");
+                return result;
+            }
+
+            // 파일이 다른 프로그램에서 사용 중인지 확인
+            try
+            {
+                using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    // 파일 접근 가능
+                }
+            }
+            catch (System.IO.IOException ex)
+            {
+                Debug.LogError($"파일이 다른 프로그램에서 사용 중입니다: {ex.Message}");
+                return result;
+            }
+
+                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
+            
+            if (lines.Length < 2)
+            {
+                Debug.LogError("CSV 파일은 최소 필드 행과 한 개의 데이터 행이 필요합니다");
+                return result;
+            }
+
+            // 첫 번째 행: 필드명 파싱
+            string[] fieldNames = ParseCSVLine(lines[0]);
+            Debug.Log($"필드 발견: {string.Join(", ", fieldNames)}");
+
+            // 두 번째 행부터: 데이터 값 파싱
+            for (int i = 1; i < lines.Length; i++)
+            {
+                string[] values = ParseCSVLine(lines[i]);
+                
+                if (values.Length != fieldNames.Length)
+                {
+                    Debug.LogWarning($"행 {i}의 컬럼 수가 {values.Length}개입니다. 예상: {fieldNames.Length}개. 건너뜁니다.");
+                    continue;
+                }
+
+                Dictionary<string, string> dataRow = new Dictionary<string, string>();
+                for (int j = 0; j < fieldNames.Length; j++)
+                {
+                    string fieldName = NormalizeFieldName(fieldNames[j]);
+                    dataRow[fieldName] = values[j];
+                }
+                
+                result.Add(dataRow);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 시트 이름으로 데이터 타입 감지
+        /// 언더스코어 형식의 시트명을 PascalCase 클래스명으로 변환
+        /// ex) train_data -> TrainData, monster_data -> MonsterData
+        /// </summary>
+        private static Type GetDataTypeFromSheetName(string sheetName)
+        {
+            string normalizedName = sheetName.Replace("_", "").Replace("-", "");
+            
+            // Assembly에서 모든 데이터 타입 검색
+            Assembly assembly = Assembly.GetAssembly(typeof(TrainData));
+            Type[] types = assembly.GetTypes();
+            
+            foreach (Type type in types)
+            {
+                if (type.Name.Equals(normalizedName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return type;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 필드명 정규화 (camelCase/PascalCase로 변환)
+        /// </summary>
+        private static string NormalizeFieldName(string fieldName)
+        {
+            // 언더스코어 제거하고 camelCase로 변환
+            string[] parts = fieldName.Split(new char[] { '_', '-' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            if (parts.Length == 0)
+                return fieldName;
+
+            string result = parts[0].ToLower(); // 첫 글자는 소문자
+            
+            for (int i = 1; i < parts.Length; i++)
+            {
+                if (parts[i].Length > 0)
+                {
+                    result += char.ToUpper(parts[i][0]) + parts[i].Substring(1).ToLower();
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 파싱된 데이터를 해당 타입의 객체로 변환하여 DB에 추가
+        /// ID가 이미 존재하는 경우 덮어쓰기
+        /// </summary>
+        private static void AddDataToDB(Type dataType, List<Dictionary<string, string>> dataList, DB targetDB)
+        {
+            // DB에서 해당 타입의 리스트 찾기
+            object dataListContainer = GetDataListFromDB(dataType, targetDB);
+            
+            if (dataListContainer == null)
+            {
+                Debug.LogError($"DB에서 {dataType.Name} 타입의 데이터 리스트를 찾을 수 없습니다");
+                return;
+            }
+
+            // 리플렉션으로 리스트 메서드 가져오기
+            Type listType = dataListContainer.GetType();
+            MethodInfo addMethod = listType.GetMethod("Add");
+            MethodInfo getItemMethod = listType.GetProperty("Item")?.GetGetMethod();
+            MethodInfo countMethod = listType.GetProperty("Count")?.GetGetMethod();
+            
+            if (addMethod == null || countMethod == null)
+            {
+                Debug.LogError($"데이터 리스트의 메서드를 찾을 수 없습니다");
+                return;
+            }
+
+            // ID 필드 가져오기
+            FieldInfo idField = dataType.GetField("id", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+            // 각 데이터 행을 객체로 변환
+            foreach (var dataRow in dataList)
+            {
+                if (dataRow.Count == 0) continue;
+
+                object dataObject = CreateDataObjectFromRow(dataType, dataRow);
+                
+                if (dataObject == null) continue;
+
+                // ID로 기존 데이터 찾기
+                string newId = "";
+                if (idField != null)
+                {
+                    newId = idField.GetValue(dataObject)?.ToString() ?? "";
+                }
+
+                if (!string.IsNullOrEmpty(newId))
+                {
+                    int count = (int)countMethod.Invoke(dataListContainer, null);
+                    bool found = false;
+
+                    // 기존 데이터 찾기
+                    for (int i = 0; i < count; i++)
+                    {
+                        object existingItem = getItemMethod.Invoke(dataListContainer, new object[] { i });
+                        if (existingItem != null && idField != null)
+                        {
+                            string existingId = idField.GetValue(existingItem)?.ToString() ?? "";
+                            if (existingId == newId)
+                            {
+                                // 기존 데이터 덮어쓰기
+                                CopyDataToExistingObject(existingItem, dataObject, dataType);
+                                found = true;
+                                Debug.Log($"데이터 업데이트: {existingId}");
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        // 새 데이터 추가
+                        addMethod.Invoke(dataListContainer, new object[] { dataObject });
+                        Debug.Log($"새 데이터 추가: {newId}");
                     }
                 }
                 else
                 {
-                    db.trainDataList.Clear();
-                    if (!ValidateTrainHeaders(columnIndexMap))
+                    // ID가 없으면 그냥 추가
+                    addMethod.Invoke(dataListContainer, new object[] { dataObject });
+                    Debug.Log("ID가 없는 데이터 추가");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 기존 객체에 새 데이터 복사 (중첩된 구조체 포함)
+        /// </summary>
+        private static void CopyDataToExistingObject(object existingObj, object newObj, Type objectType)
+        {
+            // 모든 필드 복사
+            FieldInfo[] fields = objectType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+            
+            foreach (var field in fields)
+            {
+                try
+                {
+                    object newValue = field.GetValue(newObj);
+                    
+                    // 값 타입인 경우
+                    if (field.FieldType.IsValueType)
                     {
-                        Debug.LogError("Missing required headers for TrainData");
-                        return;
+                        field.SetValue(existingObj, newValue);
+                    }
+                    // 참조 타입인 경우
+                    else
+                    {
+                        // 구조체나 값 타입인 nested field의 경우 별도 처리
+                        if (newValue != null)
+                        {
+                            // 중첩된 값 타입(구조체) 처리
+                            if (field.FieldType.IsValueType && !field.FieldType.IsPrimitive && !field.FieldType.IsEnum)
+                            {
+                                // 구조체의 모든 필드를 복사
+                                CopyNestedStructValue(existingObj, newValue, field, field.FieldType);
+                            }
+                            else
+                            {
+                                field.SetValue(existingObj, newValue);
+                            }
+                        }
                     }
                 }
-                
-                for (int i = 1; i < lines.Length; i++)
+                catch (System.Exception e)
                 {
-                    string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length < columnIndexMap.Count)
-                    {
-                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
-                        continue;
-                    }
+                    Debug.LogWarning($"필드 {field.Name} 복사 실패: {e.Message}");
+                }
+            }
+
+            // 부모 타입의 필드도 복사
+            Type baseType = objectType.BaseType;
+            if (baseType != null && baseType != typeof(object))
+            {
+                CopyDataToExistingObject(existingObj, newObj, baseType);
+            }
+        }
+
+        /// <summary>
+        /// 중첩된 구조체 값 복사
+        /// </summary>
+        private static void CopyNestedStructValue(object targetObj, object structValue, FieldInfo field, Type structType)
+        {
+            if (structValue == null) return;
+
+            // 기존 구조체 값 가져오기
+            object existingStruct = field.GetValue(targetObj);
+            
+            // 구조체의 모든 필드 복사
+            FieldInfo[] structFields = structType.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
+            
+            foreach (var structField in structFields)
+            {
+                try
+                {
+                    object newFieldValue = structField.GetValue(structValue);
+                    structField.SetValue(existingStruct, newFieldValue);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogWarning($"구조체 필드 {structField.Name} 복사 실패: {e.Message}");
+                }
+            }
+            
+            // 변경된 구조체를 다시 설정
+            field.SetValue(targetObj, existingStruct);
+        }
+
+        /// <summary>
+        /// DB에서 해당 타입의 데이터 리스트 가져오기
+        /// </summary>
+        private static object GetDataListFromDB(Type dataType, DB db)
+        {
+            Type dbType = typeof(DB);
+            FieldInfo[] fields = dbType.GetFields(BindingFlags.Public | BindingFlags.Instance);
+            
+            foreach (FieldInfo field in fields)
+            {
+                // List<> 타입인지 확인
+                if (field.FieldType.IsGenericType && field.FieldType.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    Type listElementType = field.FieldType.GetGenericArguments()[0];
                     
-                    // 적절한 TrainData 타입으로 객체 생성
-                    TrainData trainData = CreateTrainDataInstanceWithHeaders(trainDataType, values, columnIndexMap);
-                    
-                    // 타입별 추가 필드 설정
-                    if (trainData is RangeTrainData rangeTrainData)
+                    // 타입 매칭
+                    if (listElementType == dataType || dataType.IsSubclassOf(listElementType))
                     {
-                        SetRangeTrainDataFieldsWithHeaders(rangeTrainData, values, columnIndexMap);
-                        db.rangeTrainDataList.Add(rangeTrainData);
+                        return field.GetValue(db);
                     }
-                    else if (trainData is TurretTrainData turretTrainData)
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 데이터 행을 이용하여 객체 생성
+        /// </summary>
+        private static object CreateDataObjectFromRow(Type objectType, Dictionary<string, string> dataRow)
+        {
+            try
+            {
+                object instance = Activator.CreateInstance(objectType);
+
+                // 모든 필드에 대해 데이터 설정
+                foreach (var kvp in dataRow)
+                {
+                    SetFieldValue(instance, kvp.Key, kvp.Value, objectType);
+                }
+
+                return instance;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"행에서 객체 생성 실패: {e.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 객체의 필드에 값 설정 (리플렉션 사용)
+        /// 중첩된 구조체 필드도 지원 (예: MonsterStatusData.maxHp)
+        /// </summary>
+        private static void SetFieldValue(object instance, string fieldName, string value, Type objectType)
+        {
+            // 중첩 필드 체크 (예: "monsterStatusData.maxHp")
+            if (fieldName.Contains("."))
+            {
+                SetNestedFieldValue(instance, fieldName, value, objectType);
+                return;
+            }
+
+            // 현재 타입과 부모 타입을 모두 확인
+            Type currentType = objectType;
+            
+            while (currentType != null)
+            {
+                FieldInfo field = currentType.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                
+                if (field != null)
+                {
+                    try
                     {
-                        SetTurretTrainDataFieldsWithHeaders(turretTrainData, values, columnIndexMap);
-                        db.turretTrainDataList.Add(turretTrainData);
+                        object convertedValue = ConvertValueToType(value, field.FieldType);
+                        field.SetValue(instance, convertedValue);
+                        return;
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogWarning($"필드 {fieldName}에 값 {value} 설정 실패: {e.Message}");
+                    }
+                    return;
+                }
+
+                currentType = currentType.BaseType;
+            }
+
+            Debug.LogWarning($"필드를 찾을 수 없습니다: {fieldName} (타입: {objectType.Name})");
+        }
+
+        /// <summary>
+        /// 중첩된 구조체 필드에 값 설정
+        /// </summary>
+        private static void SetNestedFieldValue(object instance, string fieldPath, string value, Type objectType)
+        {
+            string[] parts = fieldPath.Split('.');
+            if (parts.Length < 2)
+            {
+                Debug.LogWarning($"잘못된 중첩 필드 경로: {fieldPath}");
+                return;
+            }
+
+            try
+            {
+                // 현재 타입과 부모 타입에서 첫 번째 필드 찾기
+                Type currentType = objectType;
+                FieldInfo parentField = null;
+                
+                while (currentType != null && parentField == null)
+                {
+                    parentField = currentType.GetField(parts[0], BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+                    if (parentField != null) break;
+                    currentType = currentType.BaseType;
+                }
+
+                if (parentField == null)
+                {
+                    Debug.LogWarning($"부모 필드를 찾을 수 없습니다: {parts[0]}");
+                    return;
+                }
+
+                // 부모 필드의 값 가져오기 (구조체이므로 boxing/unboxing 필요)
+                object parentValue = parentField.GetValue(instance);
+                
+                if (parentValue == null)
+                {
+                    // 구조체인 경우 새 인스턴스 생성
+                    if (parentField.FieldType.IsValueType)
+                    {
+                        parentValue = Activator.CreateInstance(parentField.FieldType);
+                        parentField.SetValue(instance, parentValue);
                     }
                     else
                     {
-                        db.trainDataList.Add(trainData);
+                        Debug.LogWarning($"부모 필드가 null입니다: {parts[0]}");
+                        return;
                     }
-                    
-                    Debug.Log($"Imported {trainDataType.Name}: {GetValue(values, columnIndexMap, "ID")} - {GetValue(values, columnIndexMap, "NAME")}");
                 }
-                
-                EditorUtility.SetDirty(db);
-                AssetDatabase.SaveAssets();
-                Debug.Log($"Successfully imported {lines.Length - 1} {trainDataType.Name} entries from Excel");
-                Debug.Log($"DB now contains - Basic: {db.trainDataList.Count}, Range: {db.rangeTrainDataList.Count}, Turret: {db.turretTrainDataList.Count}");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to import train data: {e.Message}");
-            }
-        }
-        
-        public static void ImportStageData(string filePath)
-        {
-            try
-            {
-                // 파일 접근 가능 여부 확인
-                if (!File.Exists(filePath))
+
+                // 중첩된 필드 찾기
+                Type nestedType = parentField.FieldType;
+                FieldInfo nestedField = nestedType.GetField(parts[1], BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
+
+                if (nestedField == null)
                 {
-                    Debug.LogError($"File not found: {filePath}");
+                    Debug.LogWarning($"중첩 필드를 찾을 수 없습니다: {parts[1]} in {nestedType.Name}");
                     return;
                 }
 
-                // 파일이 다른 프로그램에서 사용 중인지 확인
-                try
-                {
-                    using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        // 파일 접근 가능
-                    }
-                }
-                catch (System.IO.IOException ex)
-                {
-                    Debug.LogError($"File is being used by another program. Please close Excel or any other program that might be using the file: {filePath}\nError: {ex.Message}");
-                    return;
-                }
+                // 값 변환 및 설정
+                object convertedValue = ConvertValueToType(value, nestedField.FieldType);
+                nestedField.SetValue(parentValue, convertedValue);
 
-                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
-                if (lines.Length < 2)
+                // 변경된 구조체를 다시 설정 (구조체는 값 복사이므로)
+                if (parentField.FieldType.IsValueType)
                 {
-                    Debug.LogError("Excel file must have at least a header row and one data row");
-                    return;
+                    parentField.SetValue(instance, parentValue);
                 }
-                
-                // 헤더 파싱
-                string[] headers = ParseCSVLine(lines[0]);
-                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
-                
-                Debug.Log($"Headers found: {string.Join(", ", headers)}");
-                
-                // 필수 컬럼 확인
-                if (!ValidateStageHeaders(columnIndexMap))
-                {
-                    Debug.LogError("Missing required headers in the CSV file");
-                    return;
-                }
-                
-                DB db = FindDBInstance();
-                if (db == null) return;
-                
-                db.stageDataList.Clear();
-                
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length < columnIndexMap.Count)
-                    {
-                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
-                        continue;
-                    }
-                    
-                    // StageData 클래스 생성
-                    StageData stageData = new StageData();
-                    
-                    // 리플렉션을 사용하여 private 필드 설정
-                    var idField = typeof(StageData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var endTimeField = typeof(StageData).GetField("stageEndTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var inspectionTimeField = typeof(StageData).GetField("stageInspectionTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                    
-                    if (idField != null) idField.SetValue(stageData, GetValue(values, columnIndexMap, "ID"));
-                    if (endTimeField != null && float.TryParse(GetValue(values, columnIndexMap, "STAGEENDTIME"), out float endTime)) 
-                        endTimeField.SetValue(stageData, endTime);
-                    
-                    // Inspection Times 파싱 (세미콜론으로 구분된 값들)
-                    if (inspectionTimeField != null)
-                    {
-                        string inspectionTimesValue = GetValue(values, columnIndexMap, "INSPECTIONTIMES");
-                        if (!string.IsNullOrEmpty(inspectionTimesValue))
-                        {
-                            string[] inspectionTimes = inspectionTimesValue.Split(';');
-                            float[] times = new float[inspectionTimes.Length];
-                            for (int j = 0; j < inspectionTimes.Length; j++)
-                            {
-                                if (float.TryParse(inspectionTimes[j].Trim(), out float time))
-                                {
-                                    times[j] = time;
-                                }
-                            }
-                            inspectionTimeField.SetValue(stageData, times);
-                        }
-                    }
-                    
-                    // DB에 추가
-                    db.stageDataList.Add(stageData);
-                    
-                    Debug.Log($"Imported stage data: {GetValue(values, columnIndexMap, "ID")}");
-                }
-                
-                EditorUtility.SetDirty(db);
-                AssetDatabase.SaveAssets();
-                Debug.Log($"Successfully imported {lines.Length - 1} stage data entries from Excel");
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"Failed to import stage data: {e.Message}");
+                Debug.LogWarning($"중첩 필드 설정 실패: {fieldPath} = {value}, 오류: {e.Message}");
             }
         }
-        
-        public static void ImportAllData(string folderPath, DB targetDB = null)
+
+        /// <summary>
+        /// 문자열 값을 적절한 타입으로 변환
+        /// </summary>
+        private static object ConvertValueToType(string value, Type targetType)
         {
-            try
+            if (string.IsNullOrEmpty(value))
             {
-                DB db = targetDB ?? FindDBInstance();
-                if (db == null) return;
-                
-                // 폴더 내 모든 CSV 파일 찾기
-                string[] csvFiles = Directory.GetFiles(folderPath, "*.csv");
-                
-                foreach (string file in csvFiles)
+                if (targetType.IsValueType)
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(file).ToLower();
-                    
-                    if (fileName.Contains("monster"))
-                    {
-                        ImportMonsterDataToDB(file, db, true);
-                    }
-                    else if (fileName.Contains("rangetrain") || fileName.Contains("range_train"))
-                    {
-                        ImportTrainDataToDB(file, db, true);
-                    }
-                    else if (fileName.Contains("turrettrain") || fileName.Contains("turret_train"))
-                    {
-                        ImportTrainDataToDB(file, db, true);
-                    }
-                    else if (fileName.Contains("train"))
-                    {
-                        ImportTrainDataToDB(file, db, true);
-                    }
-                    else if (fileName.Contains("stage"))
-                    {
-                        ImportStageDataToDB(file, db, true);
-                    }
-                    else if (fileName.Contains("upgrade"))
-                    {
-                        // ImportUpgradeData(file);
-                    }
-                    else if (fileName.Contains("choice"))
-                    {
-                        // ImportChoiceData(file);
-                    }
+                    return Activator.CreateInstance(targetType);
                 }
-                
-                Debug.Log($"Successfully imported all data from {csvFiles.Length} Excel files");
+                return null;
             }
-            catch (System.Exception e)
+
+            // Nullable 타입 처리
+            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
-                Debug.LogError($"Failed to import all data: {e.Message}");
+                targetType = Nullable.GetUnderlyingType(targetType);
+            }
+
+            // 타입별 변환
+            if (targetType == typeof(string))
+            {
+                return value;
+            }
+            else if (targetType == typeof(int))
+            {
+                if (int.TryParse(value, out int result))
+                    return result;
+            }
+            else if (targetType == typeof(float))
+            {
+                if (float.TryParse(value, out float result))
+                    return result;
+            }
+            else if (targetType == typeof(double))
+            {
+                if (double.TryParse(value, out double result))
+                    return result;
+            }
+            else if (targetType == typeof(bool))
+            {
+                return bool.Parse(value.ToLower());
+            }
+            else if (targetType.IsEnum)
+            {
+                return Enum.Parse(targetType, value, true);
+            }
+            else if (targetType == typeof(Vector2))
+            {
+                string[] parts = value.Split(',');
+                if (parts.Length == 2 && float.TryParse(parts[0].Trim(), out float x) && float.TryParse(parts[1].Trim(), out float y))
+                {
+                    return new Vector2(x, y);
+                }
+            }
+            else if (targetType == typeof(Vector3))
+            {
+                string[] parts = value.Split(',');
+                if (parts.Length == 3 && float.TryParse(parts[0].Trim(), out float x) && float.TryParse(parts[1].Trim(), out float y) && float.TryParse(parts[2].Trim(), out float z))
+                {
+                    return new Vector3(x, y, z);
+                }
+            }
+            else if (targetType == typeof(int[]) || targetType == typeof(float[]) || targetType == typeof(string[]))
+            {
+                string[] parts = value.Split(',');
+                if (targetType == typeof(int[]))
+                {
+                    int[] array = new int[parts.Length];
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        int.TryParse(parts[i].Trim(), out array[i]);
+                    }
+                    return array;
+                }
+                else if (targetType == typeof(float[]))
+                {
+                    float[] array = new float[parts.Length];
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        float.TryParse(parts[i].Trim(), out array[i]);
+                    }
+                    return array;
+                }
+                else if (targetType == typeof(string[]))
+                {
+                    string[] array = new string[parts.Length];
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        array[i] = parts[i].Trim();
+                    }
+                    return array;
+                }
+            }
+            else if (targetType.IsValueType) // 구조체 처리
+            {
+                return Activator.CreateInstance(targetType);
+            }
+
+            return Activator.CreateInstance(targetType);
+        }
+
+        /// <summary>
+        /// 데이터 리스트에 객체 추가
+        /// </summary>
+        private static void AddToDataList(object listContainer, object dataObject)
+        {
+            Type listType = listContainer.GetType();
+            MethodInfo addMethod = listType.GetMethod("Add");
+            
+            if (addMethod != null)
+            {
+                addMethod.Invoke(listContainer, new object[] { dataObject });
             }
         }
-        
+
         #endregion
 
         #region Utility Methods
-        
+
         /// <summary>
-        /// 헤더를 정규화 (대소문자 구별 없이, 언더바 제거)
+        /// CSV 라인 파싱 (따옴표 처리 포함)
         /// </summary>
-        private static string NormalizeHeader(string header)
-        {
-            return header.Trim().Replace("_", "").Replace("-", "").ToUpper();
-        }
-        
-        /// <summary>
-        /// 헤더 배열로부터 컬럼 인덱스 맵 생성
-        /// </summary>
-        private static Dictionary<string, int> CreateColumnIndexMap(string[] headers)
-        {
-            Dictionary<string, int> map = new Dictionary<string, int>();
-            for (int i = 0; i < headers.Length; i++)
-            {
-                string normalizedHeader = NormalizeHeader(headers[i]);
-                map[normalizedHeader] = i;
-            }
-            return map;
-        }
-        
-        /// <summary>
-        /// 컬럼 인덱스 맵에서 값을 가져오기
-        /// </summary>
-        private static string GetValue(string[] values, Dictionary<string, int> columnIndexMap, string columnName)
-        {
-            string normalizedColumnName = NormalizeHeader(columnName);
-            if (columnIndexMap.ContainsKey(normalizedColumnName))
-            {
-                int index = columnIndexMap[normalizedColumnName];
-                if (index >= 0 && index < values.Length)
-                {
-                    return values[index];
-                }
-            }
-            return "";
-        }
-        
-        /// <summary>
-        /// MonsterData 헤더 검증
-        /// </summary>
-        private static bool ValidateMonsterHeaders(Dictionary<string, int> columnIndexMap)
-        {
-            string[] requiredHeaders = { "ID", "NAME", "DESCRIPTION", "MAXHP", "DAMAGE", "MOVESPEED", "ATTACKDELAY", 
-                                         "DROPEXPMIN", "DROPEXPMAX", "DROPMONEYMIN", "DROPMONEYMAX", "ATTACKRANGE" };
-            
-            foreach (string header in requiredHeaders)
-            {
-                string normalizedHeader = NormalizeHeader(header);
-                if (!columnIndexMap.ContainsKey(normalizedHeader))
-                {
-                    Debug.LogError($"Missing required header: {header}");
-                    return false;
-                }
-            }
-            return true;
-        }
-        
-        /// <summary>
-        /// TrainData 헤더 검증
-        /// </summary>
-        private static bool ValidateTrainHeaders(Dictionary<string, int> columnIndexMap)
-        {
-            string[] requiredHeaders = { "ID", "NAME", "DESCRIPTION", "MAXHP" };
-            
-            foreach (string header in requiredHeaders)
-            {
-                string normalizedHeader = NormalizeHeader(header);
-                if (!columnIndexMap.ContainsKey(normalizedHeader))
-                {
-                    Debug.LogError($"Missing required header: {header}");
-                    return false;
-                }
-            }
-            return true;
-        }
-        
-        /// <summary>
-        /// RangeTrainData 헤더 검증
-        /// </summary>
-        private static bool ValidateRangeTrainHeaders(Dictionary<string, int> columnIndexMap)
-        {
-            string[] requiredHeaders = { "ID", "NAME", "DESCRIPTION", "MAXHP", "ATTACKRANGE", "ATTACKDAMAGE", "ATTACKCOUNT", "ATTACKINTERVAL" };
-            
-            foreach (string header in requiredHeaders)
-            {
-                string normalizedHeader = NormalizeHeader(header);
-                if (!columnIndexMap.ContainsKey(normalizedHeader))
-                {
-                    Debug.LogError($"Missing required header: {header}");
-                    return false;
-                }
-            }
-            return true;
-        }
-        
-        /// <summary>
-        /// TurretTrainData 헤더 검증
-        /// </summary>
-        private static bool ValidateTurretTrainHeaders(Dictionary<string, int> columnIndexMap)
-        {
-            string[] requiredHeaders = { "ID", "NAME", "DESCRIPTION", "MAXHP", "ATTACKRANGE", "ATTACKDAMAGE", "ATTACKCOUNT", "ATTACKDELAY" };
-            
-            foreach (string header in requiredHeaders)
-            {
-                string normalizedHeader = NormalizeHeader(header);
-                if (!columnIndexMap.ContainsKey(normalizedHeader))
-                {
-                    Debug.LogError($"Missing required header: {header}");
-                    return false;
-                }
-            }
-            return true;
-        }
-        
-        /// <summary>
-        /// StageData 헤더 검증
-        /// </summary>
-        private static bool ValidateStageHeaders(Dictionary<string, int> columnIndexMap)
-        {
-            string[] requiredHeaders = { "ID", "STAGEENDTIME", "INSPECTIONTIMES" };
-            
-            foreach (string header in requiredHeaders)
-            {
-                string normalizedHeader = NormalizeHeader(header);
-                if (!columnIndexMap.ContainsKey(normalizedHeader))
-                {
-                    Debug.LogError($"Missing required header: {header}");
-                    return false;
-                }
-            }
-            return true;
-        }
-        
         private static string[] ParseCSVLine(string line)
         {
             List<string> result = new List<string>();
             bool inQuotes = false;
             string currentField = "";
-            
+
             for (int i = 0; i < line.Length; i++)
             {
                 char c = line[i];
-                
+
                 if (c == '"')
                 {
                     inQuotes = !inQuotes;
@@ -1010,18 +945,19 @@ namespace TrainDefense.Game.Datas
                     currentField += c;
                 }
             }
-            
+
             result.Add(currentField.Trim());
             return result.ToArray();
         }
-        
+
+        /// <summary>
+        /// DB 인스턴스 찾기
+        /// </summary>
         private static DB FindDBInstance()
         {
-            // Resources 폴더에서 DB 찾기
             DB db = Resources.Load<DB>("DB");
             if (db == null)
             {
-                // Assets 폴더에서 DB 찾기
                 string[] guids = AssetDatabase.FindAssets("t:DB");
                 if (guids.Length > 0)
                 {
@@ -1029,345 +965,15 @@ namespace TrainDefense.Game.Datas
                     db = AssetDatabase.LoadAssetAtPath<DB>(path);
                 }
             }
-            
+
             if (db == null)
             {
                 Debug.LogError("DB asset not found. Please create a DB asset first.");
-                Debug.LogError("You can create a DB asset by: Right-click in Project -> Create -> Data -> DB");
             }
-            else
-            {
-                Debug.Log($"Found DB asset: {AssetDatabase.GetAssetPath(db)}");
-            }
-            
+
             return db;
         }
-        
-        #endregion
-        
-        #region Import to Specific DB
-        
-        public static void ImportMonsterDataToDB(string filePath, DB targetDB, bool clearExisting)
-        {
-            try
-            {
-                // 파일 접근 가능 여부 확인
-                if (!File.Exists(filePath))
-                {
-                    Debug.LogError($"File not found: {filePath}");
-                    return;
-                }
 
-                // 파일이 다른 프로그램에서 사용 중인지 확인
-                try
-                {
-                    using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        // 파일 접근 가능
-                    }
-                }
-                catch (System.IO.IOException ex)
-                {
-                    Debug.LogError($"File is being used by another program. Please close Excel or any other program that might be using the file: {filePath}\nError: {ex.Message}");
-                    return;
-                }
-
-                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
-                if (lines.Length < 2)
-                {
-                    Debug.LogError("Excel file must have at least a header row and one data row");
-                    return;
-                }
-                
-                // 헤더 파싱
-                string[] headers = ParseCSVLine(lines[0]);
-                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
-                
-                Debug.Log($"Headers found: {string.Join(", ", headers)}");
-                
-                // 필수 컬럼 확인
-                if (!ValidateMonsterHeaders(columnIndexMap))
-                {
-                    Debug.LogError("Missing required headers in the CSV file");
-                    return;
-                }
-                
-                if (clearExisting)
-                {
-                    targetDB.monsterDataList.Clear();
-                }
-                
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length < columnIndexMap.Count)
-                    {
-                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
-                        continue;
-                    }
-                    
-                    MonsterData monsterData = new MonsterData();
-                    
-                    var idField = typeof(MonsterData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var nameField = typeof(MonsterData).GetField("monsterName", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var descField = typeof(MonsterData).GetField("description", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var statusField = typeof(MonsterData).GetField("monsterStatusData", BindingFlags.NonPublic | BindingFlags.Instance);
-                    
-                    if (idField != null) idField.SetValue(monsterData, GetValue(values, columnIndexMap, "ID"));
-                    if (nameField != null) nameField.SetValue(monsterData, GetValue(values, columnIndexMap, "NAME"));
-                    if (descField != null) descField.SetValue(monsterData, GetValue(values, columnIndexMap, "DESCRIPTION"));
-                    
-                    MonsterStatusInfo statusInfo = new MonsterStatusInfo();
-                    if (int.TryParse(GetValue(values, columnIndexMap, "MAXHP"), out int maxHp)) statusInfo.MaxHp = maxHp;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DAMAGE"), out int damage)) statusInfo.Damage = damage;
-                    if (float.TryParse(GetValue(values, columnIndexMap, "MOVESPEED"), out float moveSpeed)) statusInfo.MoveSpeed = moveSpeed;
-                    if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKDELAY"), out float attackDelay)) statusInfo.AttackDelay = attackDelay;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPEXPMIN"), out int dropExpMin)) statusInfo.DropExpMin = dropExpMin;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPEXPMAX"), out int dropExpMax)) statusInfo.DropExpMax = dropExpMax;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPMONEYMIN"), out int dropMoneyMin)) statusInfo.DropMoneyMin = dropMoneyMin;
-                    if (int.TryParse(GetValue(values, columnIndexMap, "DROPMONEYMAX"), out int dropMoneyMax)) statusInfo.DropMoneyMax = dropMoneyMax;
-                    if (float.TryParse(GetValue(values, columnIndexMap, "ATTACKRANGE"), out float attackRange)) statusInfo.AttackRange = attackRange;
-                    
-                    if (statusField != null) statusField.SetValue(monsterData, statusInfo);
-                    
-                    targetDB.monsterDataList.Add(monsterData);
-                }
-                
-                EditorUtility.SetDirty(targetDB);
-                AssetDatabase.SaveAssets();
-                Debug.Log($"Successfully imported {lines.Length - 1} monster data entries to selected DB");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to import monster data: {e.Message}");
-                throw;
-            }
-        }
-        
-        public static void ImportTrainDataToDB(string filePath, DB targetDB, bool clearExisting)
-        {
-            // 파일명에서 TrainData 타입 결정
-            string fileName = Path.GetFileNameWithoutExtension(filePath);
-            Type trainDataType = GetTrainDataTypeFromFileName(fileName);
-            
-            ImportTrainDataToDBWithType(filePath, targetDB, clearExisting, trainDataType);
-        }
-        
-        public static void ImportTrainDataToDBWithType(string filePath, DB targetDB, bool clearExisting, Type trainDataType)
-        {
-            try
-            {
-                // 파일 접근 가능 여부 확인
-                if (!File.Exists(filePath))
-                {
-                    Debug.LogError($"File not found: {filePath}");
-                    return;
-                }
-
-                // 파일이 다른 프로그램에서 사용 중인지 확인
-                try
-                {
-                    using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        // 파일 접근 가능
-                    }
-                }
-                catch (System.IO.IOException ex)
-                {
-                    Debug.LogError($"File is being used by another program. Please close Excel or any other program that might be using the file: {filePath}\nError: {ex.Message}");
-                    return;
-                }
-
-                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
-                if (lines.Length < 2)
-                {
-                    Debug.LogError("Excel file must have at least a header row and one data row");
-                    return;
-                }
-                
-                // 헤더 파싱
-                string[] headers = ParseCSVLine(lines[0]);
-                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
-                
-                Debug.Log($"Headers found: {string.Join(", ", headers)}");
-                Debug.Log($"Importing train data with specified type: {trainDataType.Name}");
-                
-                // 타입별 리스트 클리어 및 헤더 검증
-                if (clearExisting)
-                {
-                    if (trainDataType == typeof(RangeTrainData))
-                    {
-                        targetDB.rangeTrainDataList.Clear();
-                        if (!ValidateRangeTrainHeaders(columnIndexMap))
-                        {
-                            Debug.LogError("Missing required headers for RangeTrainData");
-                            return;
-                        }
-                    }
-                    else if (trainDataType == typeof(TurretTrainData))
-                    {
-                        targetDB.turretTrainDataList.Clear();
-                        if (!ValidateTurretTrainHeaders(columnIndexMap))
-                        {
-                            Debug.LogError("Missing required headers for TurretTrainData");
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        targetDB.trainDataList.Clear();
-                        if (!ValidateTrainHeaders(columnIndexMap))
-                        {
-                            Debug.LogError("Missing required headers for TrainData");
-                            return;
-                        }
-                    }
-                }
-                
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length < columnIndexMap.Count)
-                    {
-                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
-                        continue;
-                    }
-                    
-                    // 적절한 TrainData 타입으로 객체 생성
-                    TrainData trainData = CreateTrainDataInstanceWithHeaders(trainDataType, values, columnIndexMap);
-                    
-                    // 타입별 추가 필드 설정
-                    if (trainData is RangeTrainData rangeTrainData)
-                    {
-                        SetRangeTrainDataFieldsWithHeaders(rangeTrainData, values, columnIndexMap);
-                        targetDB.rangeTrainDataList.Add(rangeTrainData);
-                    }
-                    else if (trainData is TurretTrainData turretTrainData)
-                    {
-                        SetTurretTrainDataFieldsWithHeaders(turretTrainData, values, columnIndexMap);
-                        targetDB.turretTrainDataList.Add(turretTrainData);
-                    }
-                    else
-                    {
-                        targetDB.trainDataList.Add(trainData);
-                    }
-                    
-                    Debug.Log($"Imported {trainDataType.Name}: {GetValue(values, columnIndexMap, "ID")} - {GetValue(values, columnIndexMap, "NAME")}");
-                }
-                
-                EditorUtility.SetDirty(targetDB);
-                AssetDatabase.SaveAssets();
-                Debug.Log($"Successfully imported {lines.Length - 1} {trainDataType.Name} entries to selected DB");
-                Debug.Log($"Target DB now contains - Basic: {targetDB.trainDataList.Count}, Range: {targetDB.rangeTrainDataList.Count}, Turret: {targetDB.turretTrainDataList.Count}");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to import train data: {e.Message}");
-                throw;
-            }
-        }
-        
-        public static void ImportStageDataToDB(string filePath, DB targetDB, bool clearExisting)
-        {
-            try
-            {
-                // 파일 접근 가능 여부 확인
-                if (!File.Exists(filePath))
-                {
-                    Debug.LogError($"File not found: {filePath}");
-                    return;
-                }
-
-                // 파일이 다른 프로그램에서 사용 중인지 확인
-                try
-                {
-                    using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    {
-                        // 파일 접근 가능
-                    }
-                }
-                catch (System.IO.IOException ex)
-                {
-                    Debug.LogError($"File is being used by another program. Please close Excel or any other program that might be using the file: {filePath}\nError: {ex.Message}");
-                    return;
-                }
-
-                string[] lines = File.ReadAllLines(filePath, System.Text.Encoding.UTF8);
-                if (lines.Length < 2)
-                {
-                    Debug.LogError("Excel file must have at least a header row and one data row");
-                    return;
-                }
-                
-                // 헤더 파싱
-                string[] headers = ParseCSVLine(lines[0]);
-                Dictionary<string, int> columnIndexMap = CreateColumnIndexMap(headers);
-                
-                Debug.Log($"Headers found: {string.Join(", ", headers)}");
-                
-                // 필수 컬럼 확인
-                if (!ValidateStageHeaders(columnIndexMap))
-                {
-                    Debug.LogError("Missing required headers in the CSV file");
-                    return;
-                }
-                
-                if (clearExisting)
-                {
-                    targetDB.stageDataList.Clear();
-                }
-                
-                for (int i = 1; i < lines.Length; i++)
-                {
-                    string[] values = ParseCSVLine(lines[i]);
-                    if (values.Length < columnIndexMap.Count)
-                    {
-                        Debug.LogWarning($"Row {i} has fewer columns than expected. Skipping.");
-                        continue;
-                    }
-                    
-                    StageData stageData = new StageData();
-                    
-                    var idField = typeof(StageData).GetField("id", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var endTimeField = typeof(StageData).GetField("stageEndTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                    var inspectionTimeField = typeof(StageData).GetField("stageInspectionTime", BindingFlags.NonPublic | BindingFlags.Instance);
-                    
-                    if (idField != null) idField.SetValue(stageData, GetValue(values, columnIndexMap, "ID"));
-                    if (endTimeField != null && float.TryParse(GetValue(values, columnIndexMap, "STAGEENDTIME"), out float endTime)) 
-                        endTimeField.SetValue(stageData, endTime);
-                    
-                    if (inspectionTimeField != null)
-                    {
-                        string inspectionTimesValue = GetValue(values, columnIndexMap, "INSPECTIONTIMES");
-                        if (!string.IsNullOrEmpty(inspectionTimesValue))
-                        {
-                            string[] inspectionTimes = inspectionTimesValue.Split(';');
-                            float[] times = new float[inspectionTimes.Length];
-                            for (int j = 0; j < inspectionTimes.Length; j++)
-                            {
-                                if (float.TryParse(inspectionTimes[j].Trim(), out float time))
-                                {
-                                    times[j] = time;
-                                }
-                            }
-                            inspectionTimeField.SetValue(stageData, times);
-                        }
-                    }
-                    
-                    targetDB.stageDataList.Add(stageData);
-                }
-                
-                EditorUtility.SetDirty(targetDB);
-                AssetDatabase.SaveAssets();
-                Debug.Log($"Successfully imported {lines.Length - 1} stage data entries to selected DB");
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Failed to import stage data: {e.Message}");
-                throw;
-            }
-        }
-        
         #endregion
     }
 }
@@ -1375,694 +981,146 @@ namespace TrainDefense.Game.Datas
 namespace TrainDefense.Game.Datas
 {
     /// <summary>
-    /// Excel 가져오기 고급 창
+    /// Excel Import View - Excel 데이터 가져오기 전용 창
     /// </summary>
-    public class ExcelImportWindow : EditorWindow
-{
-    private string excelFilePath = "";
-    private string[] availableSheets = new string[0];
-    private int selectedSheetIndex = 0;
-    private DataType selectedDataType = DataType.MonsterData;
-    private Vector2 scrollPosition;
-    private DB targetDB;
-    private bool clearExistingData = true;
-    
-    private enum DataType
+    public class ExcelImportView : EditorWindow
     {
-        MonsterData,
-        TrainData,
-        StageData,
-        UpgradeData,
-        ChoiceData
-    }
-    
-    
-    private void OnGUI()
-    {
-        GUILayout.Label("Excel Data Import", EditorStyles.boldLabel);
-        GUILayout.Space(10);
+        private string targetExcelFile = "";
+        private DB targetDB;
         
-        // DB 선택
-        GUILayout.Label("Target DB:", EditorStyles.label);
-        targetDB = (DB)EditorGUILayout.ObjectField(targetDB, typeof(DB), false);
-        
-        if (targetDB == null)
+        public static void ShowWindow()
         {
-            EditorGUILayout.HelpBox("Please select a DB asset to import data into.", MessageType.Warning);
+            ExcelImportView window = GetWindow<ExcelImportView>("Excel 데이터 가져오기");
+            window.minSize = new Vector2(600, 400);
+        }
+        
+        private void OnGUI()
+        {
+            GUILayout.Label("Excel 데이터 관리", EditorStyles.boldLabel);
             GUILayout.Space(10);
-        }
-        
-        // Excel 파일 선택
-        GUILayout.Label("Excel File:", EditorStyles.label);
-        EditorGUILayout.BeginHorizontal();
-        excelFilePath = EditorGUILayout.TextField(excelFilePath);
-		if (GUILayout.Button("Browse", GUILayout.Width(60)))
-		{
-			string path = EditorUtility.OpenFilePanelWithFilters(
-				"Select Excel File",
-				"",
-				new string[] { "Excel/CSV files", "xlsx,csv", "All files", "*" }
-			);
-			if (!string.IsNullOrEmpty(path))
-			{
-				excelFilePath = path;
-				LoadSheets();
-			}
-		}
-        EditorGUILayout.EndHorizontal();
-        
-        GUILayout.Space(10);
-        
-        // 시트 선택
-        if (availableSheets.Length > 0)
-        {
-            GUILayout.Label("Available Sheets:", EditorStyles.label);
-            selectedSheetIndex = EditorGUILayout.Popup(selectedSheetIndex, availableSheets);
-        }
-        
-        GUILayout.Space(10);
-        
-        // 데이터 타입 선택
-        GUILayout.Label("Target Data Type:", EditorStyles.label);
-        selectedDataType = (DataType)EditorGUILayout.EnumPopup(selectedDataType);
-        
-        GUILayout.Space(10);
-        
-        // 옵션
-        GUILayout.Label("Import Options:", EditorStyles.label);
-        clearExistingData = EditorGUILayout.Toggle("Clear Existing Data", clearExistingData);
-        
-        GUILayout.Space(10);
-        
-        // 미리보기
-        if (!string.IsNullOrEmpty(excelFilePath) && File.Exists(excelFilePath))
-        {
-            GUILayout.Label("Preview:", EditorStyles.label);
-            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.Height(200));
-            ShowPreview();
-            EditorGUILayout.EndScrollView();
-        }
-        
-        GUILayout.Space(20);
-        
-        // 가져오기 버튼
-        EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(excelFilePath) || !File.Exists(excelFilePath) || targetDB == null);
-        if (GUILayout.Button("Import Data", GUILayout.Height(30)))
-        {
-            ImportSelectedData();
-        }
-        EditorGUI.EndDisabledGroup();
-        
-        GUILayout.Space(10);
-        
-        // 도움말
-        EditorGUILayout.HelpBox(
-            "1. DB 에셋을 선택하세요\n" +
-            "2. Excel 파일을 CSV로 저장하세요\n" +
-            "3. 파일을 선택하면 시트 목록이 표시됩니다\n" +
-            "4. 가져올 데이터 타입을 선택하세요\n" +
-            "5. 미리보기를 확인하고 Import Data를 클릭하세요",
-            MessageType.Info);
-    }
-    
-    private void LoadSheets()
-    {
-        if (string.IsNullOrEmpty(excelFilePath) || !File.Exists(excelFilePath))
-        {
-            availableSheets = new string[0];
-            return;
-        }
-        
-        try
-        {
-            // CSV 파일의 경우 첫 번째 줄을 헤더로 사용
-            string[] lines = File.ReadAllLines(excelFilePath, System.Text.Encoding.UTF8);
-            if (lines.Length > 0)
-            {
-                availableSheets = new string[] { "Main Sheet" };
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"Failed to load sheets: {e.Message}");
-            availableSheets = new string[0];
-        }
-    }
-    
-    private void ShowPreview()
-    {
-        if (string.IsNullOrEmpty(excelFilePath) || !File.Exists(excelFilePath))
-            return;
-        
-        try
-        {
-            string[] lines = File.ReadAllLines(excelFilePath, System.Text.Encoding.UTF8);
-            int previewLines = Mathf.Min(5, lines.Length);
             
-            for (int i = 0; i < previewLines; i++)
+            DrawImportTab();
+        }
+        
+        private void DrawImportTab()
+        {
+            GUILayout.Label("엑셀/CSV 파일에서 데이터 불러오기", EditorStyles.boldLabel);
+            GUILayout.Space(10);
+            
+            // 1. 파일 선택 영역
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            GUILayout.Label("1. 파일 선택", EditorStyles.boldLabel);
+            GUILayout.Label("엑셀 파일:", EditorStyles.label);
+            EditorGUILayout.BeginHorizontal();
+            targetExcelFile = EditorGUILayout.TextField(targetExcelFile);
+            if (GUILayout.Button("파일 찾기", GUILayout.Width(80)))
             {
-                string[] values = ParseCSVLine(lines[i]);
-                string previewText = string.Join(" | ", values);
-                
-                if (i == 0)
+                string filePath = EditorUtility.OpenFilePanelWithFilters(
+                    "엑셀 파일 선택",
+                    "",
+                    new string[] { "Excel 파일", "xlsx,xlsm", "모든 파일", "*" }
+                );
+                if (!string.IsNullOrEmpty(filePath))
                 {
-                    EditorGUILayout.LabelField($"Header: {previewText}", EditorStyles.boldLabel);
-                }
-                else
-                {
-                    EditorGUILayout.LabelField($"Row {i}: {previewText}");
+                    targetExcelFile = filePath;
                 }
             }
+            EditorGUILayout.EndHorizontal();
             
-            if (lines.Length > previewLines)
+            if (!string.IsNullOrEmpty(targetExcelFile))
             {
-                EditorGUILayout.LabelField($"... and {lines.Length - previewLines} more rows");
+                EditorGUILayout.HelpBox("선택된 파일: " + Path.GetFileName(targetExcelFile), MessageType.Info);
             }
-        }
-        catch (System.Exception e)
-        {
-            EditorGUILayout.LabelField($"Error reading file: {e.Message}");
-        }
-    }
-    
-    private void ImportSelectedData()
-    {
-        if (string.IsNullOrEmpty(excelFilePath) || !File.Exists(excelFilePath))
-        {
-            EditorUtility.DisplayDialog("Error", "Please select a valid Excel file", "OK");
-            return;
-        }
-        
-        if (targetDB == null)
-        {
-            EditorUtility.DisplayDialog("Error", "Please select a target DB", "OK");
-            return;
-        }
-        
-        try
-        {
-            // 시트명을 기반으로 TrainData 타입 결정
-            string sheetName = availableSheets.Length > selectedSheetIndex ? availableSheets[selectedSheetIndex] : "Main Sheet";
-            Type trainDataType = ExcelImporter.GetTrainDataTypeFromSheetName(sheetName);
+            GUILayout.EndVertical();
             
-            Debug.Log($"Importing from sheet: {sheetName}, detected type: {trainDataType.Name}");
+            GUILayout.Space(10);
             
-            switch (selectedDataType)
+            // 2. DB 선택 영역
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            GUILayout.Label("2. DB 선택", EditorStyles.boldLabel);
+            targetDB = (DB)EditorGUILayout.ObjectField("대상 DB:", targetDB, typeof(DB), false);
+            
+            if (targetDB == null)
             {
-                case DataType.MonsterData:
-                    ExcelImporter.ImportMonsterDataToDB(excelFilePath, targetDB, clearExistingData);
-                    break;
-                case DataType.TrainData:
-                    // 시트명 기반으로 올바른 타입으로 Import
-                    ExcelImporter.ImportTrainDataToDBWithType(excelFilePath, targetDB, clearExistingData, trainDataType);
-                    break;
-                case DataType.StageData:
-                    ExcelImporter.ImportStageDataToDB(excelFilePath, targetDB, clearExistingData);
-                    break;
-                case DataType.UpgradeData:
-                    EditorUtility.DisplayDialog("Info", "UpgradeData import not implemented yet", "OK");
-                    break;
-                case DataType.ChoiceData:
-                    EditorUtility.DisplayDialog("Info", "ChoiceData import not implemented yet", "OK");
-                    break;
-            }
-            
-            EditorUtility.DisplayDialog("Success", $"Successfully imported {selectedDataType} from Excel", "OK");
-        }
-        catch (System.Exception e)
-        {
-            EditorUtility.DisplayDialog("Error", $"Failed to import data: {e.Message}", "OK");
-        }
-    }
-    
-    private static string[] ParseCSVLine(string line)
-    {
-        List<string> result = new List<string>();
-        bool inQuotes = false;
-        string currentField = "";
-        
-        for (int i = 0; i < line.Length; i++)
-        {
-            char c = line[i];
-            
-            if (c == '"')
-            {
-                inQuotes = !inQuotes;
-            }
-            else if (c == ',' && !inQuotes)
-            {
-                result.Add(currentField.Trim());
-                currentField = "";
+                EditorGUILayout.HelpBox("데이터를 불러올 DB를 선택해주세요.", MessageType.Warning);
             }
             else
             {
-                currentField += c;
+                EditorGUILayout.HelpBox($"DB 연결됨: {AssetDatabase.GetAssetPath(targetDB)}", MessageType.Info);
             }
-        }
-        
-        result.Add(currentField.Trim());
-        return result.ToArray();
-    }
-    
-}
-
-namespace TrainDefense.Game.Datas
-{
-/// <summary>
-/// Excel Import View - Excel 데이터 가져오기 전용 창
-/// </summary>
-public class ExcelImportView : EditorWindow
-{
-    private int selectedTab = 0;
-    private string[] tabNames = { "Import", "Export", "Templates" };
-    
-    // Import 탭 변수들
-    private bool importMonsterData = true;
-    private bool importTrainData = true;
-    private bool importStageData = true;
-    private bool importUpgradeData = false;
-    private bool importChoiceData = false;
-    private string targetExcelFile = "";
-    private DB targetDB;
-    
-    // Export 탭 변수들
-    private DB sourceDB;
-    private bool exportMonsterData = true;
-    private bool exportTrainData = true;
-    private bool exportStageData = true;
-    private bool exportUpgradeData = false;
-    private bool exportChoiceData = false;
-    private string exportPath = "";
-    
-        // Template 탭 변수들
-        private bool createMonsterTemplate = true;
-        private bool createTrainTemplate = true;
-        private bool createRangeTrainTemplate = true;
-        private bool createTurretTrainTemplate = true;
-        private bool createStageTemplate = true;
-        private string templatePath = "";
-    
-    public static void ShowWindow()
-    {
-        ExcelImportView window = GetWindow<ExcelImportView>("Excel Import View");
-        window.minSize = new Vector2(500, 400);
-    }
-    
-    private void OnGUI()
-    {
-        GUILayout.Label("Excel Data Manager", EditorStyles.boldLabel);
-        GUILayout.Space(10);
-        
-        // 탭 선택
-        selectedTab = GUILayout.Toolbar(selectedTab, tabNames);
-        GUILayout.Space(20);
-        
-        switch (selectedTab)
-        {
-            case 0:
-                DrawImportTab();
-                break;
-            case 1:
-                DrawExportTab();
-                break;
-            case 2:
-                DrawTemplateTab();
-                break;
-        }
-    }
-    
-    private void DrawImportTab()
-    {
-        GUILayout.Label("Import Data from Excel", EditorStyles.boldLabel);
-        GUILayout.Space(10);
-        
-        // Target Excel File 선택
-        GUILayout.Label("Target Excel File:", EditorStyles.label);
-        EditorGUILayout.BeginHorizontal();
-        targetExcelFile = EditorGUILayout.TextField(targetExcelFile);
-		if (GUILayout.Button("Browse", GUILayout.Width(60)))
-		{
-			string filePath = EditorUtility.OpenFilePanelWithFilters(
-				"Select Excel File",
-				"",
-				new string[] { "Excel/CSV files", "xlsx,csv", "All files", "*" }
-			);
-			if (!string.IsNullOrEmpty(filePath))
-			{
-				targetExcelFile = filePath;
-			}
-		}
-        EditorGUILayout.EndHorizontal();
-        
-        GUILayout.Space(10);
-        
-        // Target DB 선택
-        GUILayout.Label("Target DB:", EditorStyles.label);
-        targetDB = (DB)EditorGUILayout.ObjectField(targetDB, typeof(DB), false);
-        
-        if (targetDB == null)
-        {
-            EditorGUILayout.HelpBox("Please select a target DB to import data to.", MessageType.Warning);
+            GUILayout.EndVertical();
+            
+            GUILayout.Space(20);
+            
+            // 3. 불러오기 버튼
+            EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(targetExcelFile) || targetDB == null);
+            
+            // 큰 불러오기 버튼
+            if (GUILayout.Button("데이터 불러오기", GUILayout.Height(40)))
+            {
+                ImportData();
+            }
+            
+            EditorGUI.EndDisabledGroup();
+            
             GUILayout.Space(10);
-        }
-        
-        GUILayout.Space(10);
-        
-        // 데이터 타입 선택
-        GUILayout.Label("Select Data Types to Import:", EditorStyles.label);
-        importMonsterData = EditorGUILayout.Toggle("Monster Data", importMonsterData);
-        importTrainData = EditorGUILayout.Toggle("Train Data", importTrainData);
-        importStageData = EditorGUILayout.Toggle("Stage Data", importStageData);
-        importUpgradeData = EditorGUILayout.Toggle("Upgrade Data", importUpgradeData);
-        importChoiceData = EditorGUILayout.Toggle("Choice Data", importChoiceData);
-        
-        GUILayout.Space(20);
-        
-        // Import 버튼들
-        EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(targetExcelFile) || targetDB == null || 
-                                   (!importMonsterData && !importTrainData && !importStageData && !importUpgradeData && !importChoiceData));
-        
-        EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Import Data", GUILayout.Height(30)))
-        {
-            ImportSelectedData();
-        }
-        if (GUILayout.Button("Import All Data", GUILayout.Height(30)))
-        {
-            ImportAllSelectedData();
-        }
-        EditorGUILayout.EndHorizontal();
-        EditorGUI.EndDisabledGroup();
-        
-        GUILayout.Space(10);
-        
-        // 도움말
-        EditorGUILayout.HelpBox(
-            "1. Target Excel File을 선택하세요\n" +
-            "2. Target DB를 선택하세요\n" +
-            "3. 가져올 데이터 타입을 선택하세요\n" +
-            "4. Import Data (단일 파일) 또는 Import All Data (폴더 전체)를 클릭하세요",
-            MessageType.Info);
-    }
-    
-    private void DrawExportTab()
-    {
-        GUILayout.Label("Export Data to Excel", EditorStyles.boldLabel);
-        GUILayout.Space(10);
-        
-        // 소스 DB 선택
-        GUILayout.Label("Source DB:", EditorStyles.label);
-        sourceDB = (DB)EditorGUILayout.ObjectField(sourceDB, typeof(DB), false);
-        
-        if (sourceDB == null)
-        {
-            EditorGUILayout.HelpBox("Please select a source DB to export data from.", MessageType.Warning);
-            GUILayout.Space(10);
-        }
-        
-        GUILayout.Space(10);
-        
-        // 내보낼 데이터 타입 선택
-        GUILayout.Label("Select Data Types to Export:", EditorStyles.label);
-        exportMonsterData = EditorGUILayout.Toggle("Monster Data", exportMonsterData);
-        exportTrainData = EditorGUILayout.Toggle("Train Data", exportTrainData);
-        exportStageData = EditorGUILayout.Toggle("Stage Data", exportStageData);
-        exportUpgradeData = EditorGUILayout.Toggle("Upgrade Data", exportUpgradeData);
-        exportChoiceData = EditorGUILayout.Toggle("Choice Data", exportChoiceData);
-        
-        GUILayout.Space(10);
-        
-        // 내보내기 경로
-        GUILayout.Label("Export Path:", EditorStyles.label);
-        EditorGUILayout.BeginHorizontal();
-        exportPath = EditorGUILayout.TextField(exportPath);
-        if (GUILayout.Button("Browse", GUILayout.Width(60)))
-        {
-            string path = EditorUtility.OpenFolderPanel("Select Export Location", "", "");
-            if (!string.IsNullOrEmpty(path))
-            {
-                exportPath = path;
-            }
-        }
-        EditorGUILayout.EndHorizontal();
-        
-        GUILayout.Space(20);
-        
-        // 내보내기 버튼
-        EditorGUI.BeginDisabledGroup(sourceDB == null || string.IsNullOrEmpty(exportPath) || 
-                                   (!exportMonsterData && !exportTrainData && !exportStageData && !exportUpgradeData && !exportChoiceData));
-        if (GUILayout.Button("Export Selected Data", GUILayout.Height(30)))
-        {
-            ExportSelectedData();
-        }
-        EditorGUI.EndDisabledGroup();
-        
-        GUILayout.Space(10);
-        
-        // 도움말
-        EditorGUILayout.HelpBox(
-            "1. 소스 DB를 선택하세요\n" +
-            "2. 내보낼 데이터 타입을 선택하세요\n" +
-            "3. 내보내기 경로를 선택하세요\n" +
-            "4. Export Selected Data를 클릭하세요",
-            MessageType.Info);
-    }
-    
-    private void DrawTemplateTab()
-    {
-        GUILayout.Label("Create Excel Templates", EditorStyles.boldLabel);
-        GUILayout.Space(10);
-        
-        // 템플릿 타입 선택
-        GUILayout.Label("Select Template Types to Create:", EditorStyles.label);
-        createMonsterTemplate = EditorGUILayout.Toggle("Monster Data Template", createMonsterTemplate);
-        createTrainTemplate = EditorGUILayout.Toggle("Basic Train Data Template", createTrainTemplate);
-        createRangeTrainTemplate = EditorGUILayout.Toggle("Range Train Data Template", createRangeTrainTemplate);
-        createTurretTrainTemplate = EditorGUILayout.Toggle("Turret Train Data Template", createTurretTrainTemplate);
-        createStageTemplate = EditorGUILayout.Toggle("Stage Data Template", createStageTemplate);
-        
-        GUILayout.Space(10);
-        
-        // 템플릿 저장 경로
-        GUILayout.Label("Template Save Path:", EditorStyles.label);
-        EditorGUILayout.BeginHorizontal();
-        templatePath = EditorGUILayout.TextField(templatePath);
-        if (GUILayout.Button("Browse", GUILayout.Width(60)))
-        {
-            string path = EditorUtility.OpenFolderPanel("Select Template Save Location", "", "");
-            if (!string.IsNullOrEmpty(path))
-            {
-                templatePath = path;
-            }
-        }
-        EditorGUILayout.EndHorizontal();
-        
-        GUILayout.Space(20);
-        
-        // 템플릿 생성 버튼
-        EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(templatePath) || 
-                                   (!createMonsterTemplate && !createTrainTemplate && !createRangeTrainTemplate && !createTurretTrainTemplate && !createStageTemplate));
-        if (GUILayout.Button("Create Selected Templates", GUILayout.Height(30)))
-        {
-            CreateSelectedTemplates();
-        }
-        EditorGUI.EndDisabledGroup();
-        
-        GUILayout.Space(10);
-        
-        // 도움말
-        EditorGUILayout.HelpBox(
-            "1. 생성할 템플릿 타입을 선택하세요\n" +
-            "2. 템플릿 저장 경로를 선택하세요\n" +
-            "3. Create Selected Templates를 클릭하세요",
-            MessageType.Info);
-    }
-    
-    private void ImportSelectedData()
-    {
-        if (string.IsNullOrEmpty(targetExcelFile))
-        {
-            EditorUtility.DisplayDialog("Error", "Please select a target Excel file", "OK");
-            return;
-        }
-        
-        if (targetDB == null)
-        {
-            EditorUtility.DisplayDialog("Error", "Please select a target DB", "OK");
-            return;
-        }
-        
-        try
-        {
-            if (importMonsterData)
-            {
-                ExcelImporter.ImportMonsterDataToDB(targetExcelFile, targetDB, true);
-            }
             
-            if (importTrainData)
-            {
-                // 파일명에 따라 적절한 TrainData 타입으로 Import
-                string fileName = Path.GetFileNameWithoutExtension(targetExcelFile).ToLower();
-                Type trainDataType = ExcelImporter.GetTrainDataTypeFromFileName(fileName);
-                ExcelImporter.ImportTrainDataToDBWithType(targetExcelFile, targetDB, true, trainDataType);
-            }
-            
-            if (importStageData)
-            {
-                ExcelImporter.ImportStageDataToDB(targetExcelFile, targetDB, true);
-            }
-            
-            if (importUpgradeData)
-            {
-                EditorUtility.DisplayDialog("Info", "UpgradeData import not implemented yet", "OK");
-            }
-            
-            if (importChoiceData)
-            {
-                EditorUtility.DisplayDialog("Info", "ChoiceData import not implemented yet", "OK");
-            }
-            
-            EditorUtility.DisplayDialog("Success", "Data imported successfully!", "OK");
-        }
-        catch (System.Exception e)
-        {
-            EditorUtility.DisplayDialog("Error", $"Failed to import data: {e.Message}", "OK");
-        }
-    }
-    
-    private void ImportAllSelectedData()
-    {
-        if (string.IsNullOrEmpty(targetExcelFile))
-        {
-            EditorUtility.DisplayDialog("Error", "Please select a target Excel file", "OK");
-            return;
+            // 4. 도움말
+            GUILayout.BeginVertical(EditorStyles.helpBox);
+            GUILayout.Label("사용 방법", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox(
+                "📋 Excel 파일 형식 가이드:\n\n" +
+                "1️⃣ 첫 번째 행: 필드명 (예: id, trainName, maxHp)\n" +
+                "2️⃣ 두 번째 행부터: 데이터 값들\n" +
+                "3️⃣ 시트명 형식: 클래스명_언더스코어 (예: train_data → TrainData)\n" +
+                "4️⃣ 필드명은 언더스코어 지원 (예: train_name → trainName)\n\n" +
+                "💡 팁: 여러 시트를 포함하여 모든 데이터를 한 번에 불러올 수 있습니다.",
+                MessageType.Info);
+            GUILayout.EndVertical();
         }
         
-        if (targetDB == null)
+        private void ImportData()
         {
-            EditorUtility.DisplayDialog("Error", "Please select a target DB", "OK");
-            return;
-        }
-        
-        try
-        {
-            // 폴더 경로인지 확인
-            if (Directory.Exists(targetExcelFile))
+            if (string.IsNullOrEmpty(targetExcelFile))
             {
-                ExcelImporter.ImportAllData(targetExcelFile, targetDB);
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Error", "Please select a folder for Import All Data", "OK");
+                EditorUtility.DisplayDialog("오류", "엑셀 파일을 선택해주세요.", "확인");
                 return;
             }
             
-            EditorUtility.DisplayDialog("Success", "All data imported successfully!", "OK");
-        }
-        catch (System.Exception e)
-        {
-            EditorUtility.DisplayDialog("Error", $"Failed to import all data: {e.Message}", "OK");
-        }
-    }
-    
-    private void ExportSelectedData()
-    {
-        if (sourceDB == null)
-        {
-            EditorUtility.DisplayDialog("Error", "Please select a source DB", "OK");
-            return;
-        }
-        
-        if (string.IsNullOrEmpty(exportPath))
-        {
-            EditorUtility.DisplayDialog("Error", "Please select an export path", "OK");
-            return;
-        }
-        
-        try
-        {
-            if (exportMonsterData)
+            if (targetDB == null)
             {
-                ExcelImporter.ExportMonsterData(Path.Combine(exportPath, "MonsterData.csv"));
+                EditorUtility.DisplayDialog("오류", "대상 DB를 선택해주세요.", "확인");
+                return;
             }
             
-            if (exportTrainData)
+            try
             {
-                ExcelImporter.ExportTrainData(Path.Combine(exportPath, "TrainData.csv"));
-                ExcelImporter.ExportRangeTrainData(Path.Combine(exportPath, "RangeTrainData.csv"));
-                ExcelImporter.ExportTurretTrainData(Path.Combine(exportPath, "TurretTrainData.csv"));
+                // 데이터 불러오기
+                int importedCount = ExcelImporter.ImportAllDataFromExcel(targetExcelFile, targetDB);
+                
+                if (importedCount > 0)
+                {
+                    string fileName = Path.GetFileName(targetExcelFile);
+                    string dataType = Path.GetFileNameWithoutExtension(targetExcelFile);
+                    
+                    EditorUtility.DisplayDialog(
+                        "불러오기 완료", 
+                        $"데이터 불러오기가 완료되었습니다!\n\n" +
+                        $"파일: {fileName}\n" +
+                        $"데이터 타입: {dataType}\n" +
+                        $"불러온 개수: {importedCount}개",
+                        "확인");
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("오류", "데이터를 불러올 수 없습니다. 파일 형식과 데이터를 확인해주세요.", "확인");
+                }
             }
-            
-            if (exportStageData)
+            catch (System.Exception e)
             {
-                ExcelImporter.ExportStageData(Path.Combine(exportPath, "StageData.csv"));
+                EditorUtility.DisplayDialog("오류", $"데이터 불러오기 실패: {e.Message}", "확인");
+                Debug.LogError(e);
             }
-            
-            if (exportUpgradeData)
-            {
-                EditorUtility.DisplayDialog("Info", "UpgradeData export not implemented yet", "OK");
-            }
-            
-            if (exportChoiceData)
-            {
-                EditorUtility.DisplayDialog("Info", "ChoiceData export not implemented yet", "OK");
-            }
-            
-            EditorUtility.DisplayDialog("Success", "Data exported successfully!", "OK");
-        }
-        catch (System.Exception e)
-        {
-            EditorUtility.DisplayDialog("Error", $"Failed to export data: {e.Message}", "OK");
         }
     }
-    
-    private void CreateSelectedTemplates()
-    {
-        if (string.IsNullOrEmpty(templatePath))
-        {
-            EditorUtility.DisplayDialog("Error", "Please select a template save path", "OK");
-            return;
-        }
-        
-        try
-        {
-            if (createMonsterTemplate)
-            {
-                ExcelImporter.CreateMonsterDataTemplate(templatePath);
-                Debug.Log("Created MonsterData_Template.csv");
-            }
-            
-            if (createTrainTemplate)
-            {
-                ExcelImporter.CreateTrainDataTemplate(templatePath);
-                Debug.Log("Created TrainData_Template.csv");
-            }
-            
-            if (createRangeTrainTemplate)
-            {
-                ExcelImporter.CreateRangeTrainDataTemplate(templatePath);
-                Debug.Log("Created RangeTrainData_Template.csv");
-            }
-            
-            if (createTurretTrainTemplate)
-            {
-                ExcelImporter.CreateTurretTrainDataTemplate(templatePath);
-                Debug.Log("Created TurretTrainData_Template.csv");
-            }
-            
-            if (createStageTemplate)
-            {
-                ExcelImporter.CreateStageDataTemplate(templatePath);
-                Debug.Log("Created StageData_Template.csv");
-            }
-            
-            EditorUtility.DisplayDialog("Success", "Templates created successfully!", "OK");
-        }
-        catch (System.Exception e)
-        {
-            EditorUtility.DisplayDialog("Error", $"Failed to create templates: {e.Message}", "OK");
-        }
-    }
-}
-}
 }

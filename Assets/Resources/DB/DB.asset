@@ -12,60 +12,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 000156a95358746449551d88c8be5b3e, type: 3}
   m_Name: DB
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.DB
-  monsterDataList: []
+  monsterDataList:
+  - id: 10001
+    monsterName: 
+    icon: {fileID: 0}
+    description: Simple Normal Monster
+    monsterStatusData:
+      MaxHp: 0
+      Damage: 0
+      MoveSpeed: 0
+      AttackDelay: 0
+      DropExpMin: 0
+      DropExpMax: 0
+      DropMoneyMin: 0
+      DropMoneyMax: 0
+      AttackRange: 0
+    monsterPrefab: {fileID: 0}
   trainDataList:
-  - id: "\uFFFD"
+  - id: 20001
     trainName: 
     icon: {fileID: 0}
-    description: "\uFFFD\uFFFD~\uFFFD0\uFFFDk\uFFFD\uFFFDk!\uFFFD\a\uFFFD\uFFFD\x16h\uFFFD\uFFFD6\x0F\x02\uFFFD\uFFFDB1\uFFFD\uFFFDh\uFFFDN\uFFFD\uFFFDb\x0EN\uFFFD*\uFFFD[#X\u0649T\x1D\uFFFD0L\x02\uFFFDd\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFDU%\uFFFD\uFFFDi\uFFFDS\uFFFDqG\uFFFD\x115s\uFFFD\x7F\uFFFD\uFFFD[\uFFFD\uFFFD\x14\uFFFD\x05\uFFFD\uFFFD\uFFFD\uFFFD#\uFFFD\uFFFD\x16\x10KYK\uFFFD\uFFFDA\uFFFD\uFFFDx\uFFFD\uFFFDj\uFFFDa\uFFFD\x1A\uFFFD>\uFFFDq\uFFFD`\uFFFD
-      \uFFFDz\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\uFFFDh\uFFFD+\uFFFD\x0398\uFFFD\uFFFD:\uFFFD"
+    description: "\uBA54\uC778 \uAE30\uCC28\uB294 \uBAA8\uB4E0 \uAE30\uCC28\uC5D0
+      \uAE30\uBCF8\uC774 \uB418\uB294 \uAE30\uCC28\uC774\uB2E4."
     trainStatusData:
       MaxHp: 0
     trainPrefab: {fileID: 0}
     isMainTrain: 0
     upgrades: []
-  - id: "\uFFFDn\uFFFD\uFFFDK\uFFFD\uFFFDi\uFFFD!b\uFFFD*\b\\\uFFFD\uFFFD"
-    trainName: "\uFFFD\uFFFDg\uFFFD\uFFFD"
-    icon: {fileID: 0}
-    description: "63\uFFFD\uFFFD\x1FcW\uFFFD1\uFFFD\uFFFD\uFFFDX\x02\uFFFD\uFFFD"
-    trainStatusData:
-      MaxHp: 0
-    trainPrefab: {fileID: 0}
-    isMainTrain: 0
-    upgrades: []
-  - id: "\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\x14&gVt\uFFFD=|\x10\uFFFD\uFFFDa\uFFFDr\uFFFDl-\uFFFD\x1C\uFFFD\uFFFD\uFFFD\uFFFDr\uFFFD\uFFFD\uFFFD\uFFFD\\\x16#/\x1E\x05\uFFFD\uFFFD<\uFFFD\uFFFD^<O\uFFFD\uFFFD\uFFFD"
+  - id: 40001
     trainName: 
     icon: {fileID: 0}
-    description: "\uFFFDY\uFFFD\eO'\uFFFD\uFFFD\x1D\uFFFDB\uFFFD\uFFFD9\uFFFD\uFFFD\uFFFDk\uFFFD\uFFFDt2\uFFFD\uFFFD\uFFFD[{\uFFFDG\uFFFD\x1D\x17Z\uFFFD\uFFFD\uFFFD7\b\x13"
+    description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC744 \uB290\uB9AC\uAC8C
+      \uD558\uACE0 \uC9C0\uC18D \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 0
     trainPrefab: {fileID: 0}
     isMainTrain: 0
     upgrades: []
-  - id: "\uFFFD\uFFFDQ\uFFFDu\uFFFDL\uFFFD9\u07D7\uFFFD\uFFFD\uFFFDPv!\uFFFD\uFFFD\uFFFD\x10\u018F\uFFFD\uFFFD[\uFFFDo\uFFFD\x15\x15|"
-    trainName: "%?\uFFFD\uFFFD\uFFFD+"
+  - id: 40002
+    trainName: 
     icon: {fileID: 0}
-    description: "\uFFFD"
-    trainStatusData:
-      MaxHp: 0
-    trainPrefab: {fileID: 0}
-    isMainTrain: 0
-    upgrades: []
-  - id: "JU\uFFFD\uFFFD>\uFFFD\uFFFD\uFFFD#\uFFFD\uFFFD02\uFFFD\uFFFD]`\uFFFDX\eR\uFFFDxb\uFFFD\uFFFDL\uFFFD\uFFFD\uFFFD\uFFFD7
-      \uFFFD\x7F\uFFFD\uFFFD\uFFFD\uFFFDO\uFFFD\x0F~>\uFFFD\uFFFD\uFFFD\uFFFD\a\uFFFDgskU\uFFFD\uFFFD6J\uFFFD\uFFFD\uFFFD\uFFFDG\uFFFD\uFFFD\uFFFD\uFFFD\a\uFFFD\x1F?~\uFFFD\uFFFD\uFFFD\x17\uFFFD\uFFFDg\uFFFD\uFFFD\uFFFD?\uFFFD\uFFFD'\uFFFD\uFFFD\uFFFDO\uFFFDa\u0179+\x1E\x7F\uFFFD\xD3\uFFFD~x\uFFFD\uFFFDg\uFFFD\x7F\uFFFD\u0421\uFFFD\uFFFD\u0441\t\x1F\uFFFD\x18\vo\x0F\uFFFDx\uFFFDY\f\vt\u060F\x0F\uFFFD\uFFFDI\f#D"
-    trainName: "\x14\uFFFDn\uFFFD\uAF8C"
-    icon: {fileID: 0}
-    description: "\uFFFD\uFFFD\x02Q\x17\uFFFD\uFFFDm\x17\uFFFD\uFFFD\uFFFD2.\uFFFD\uFFFD\uFFFD\uFFFDe\uFFFD~\uFFFD\uFFFD8f\uFFFD\x11\uFFFD\x16p\uFFFD1\uFFFDa\uFFFD\uFFFD\ej.\uFFFD\uFFFD\uFFFDy2uO\uFFFD\uFFFD&\uFFFD6B\u01EE\uFFFD\uFFFD(\uFFFD\x02\u071F\u03C0^\uFFFDKe7\x96\uFFFD\uFFFD(J$\uFFFD\uFFFD\x04KO\uFFFD\u018E0v\uFFFD\uFFFD=B"
-    trainStatusData:
-      MaxHp: 0
-    trainPrefab: {fileID: 0}
-    isMainTrain: 0
-    upgrades: []
-  - id: "\uFFFD\uFFFD\uFFFDb\uFFFD\uFFFD\uFFFD\uFFFDv\uFFFD\uFFFD\x02\x13(9\e\uFFFDq\f\uFFFDx\uFFFD\x16W\uFFFD\x01\u0253\x01\uFFFD\u07EF\uFFFD\u0664@V\uFFFD\uFFFD\uFFFDJ\uFFFDb5^\x03\u067F\uFFFD\uFFFD\uFFFD6\uFFFD\a\uFFFD\uFFFDt\u01E4\uFFFD\x06J\uFFFD]\uFFFD\x1E\uFFFD\uFFFDt\uFFFD\x1E\x7F4\uFFFDq=\uFFFD\uFFFD1P\uFFFD?\uFFFD\u04DE\uFFFD2\x02j\uFFFDJ\uFFFD{
-      Y\uFFFDL\uFFFD3\uFFFD\x0EG\uFFFDl\uFFFDX\x1D\uFFFD\uFFFDxS\x02\uFFFD\uFFFD\uFFFD@\uFFFD\uFFFD\a\uFFFDF\uFFFD\\\uFFFD\u059F\v\uFFFDA:\u0624\xF5\uFFFD\uFFFD"
-    trainName: "\uFFFD\uFFFD\uFFFD\x7F\e\x14^\x17#\u0222t\u0497_\uFFFD\u01BD\uFFFD\uFFFD\uA814`\uFFFD\uFFFD5\u02E3`\uFFFD\uFFFD\uFFFD@\uFFFDz@\x1E\uFFFD\uFFFD\uFFFDP\uFFFD\uFFFDd[\uFFFDm\uFFFDg\uFFFD"
-    icon: {fileID: 0}
-    description: "r[\uFFFD\uFFFD\uFFFDN\uFFFDE\uFFFD\uFFFD"
+    description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC744 \uBC00\uCE58\uACE0
+      \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 0
     trainPrefab: {fileID: 0}
@@ -82,60 +70,23 @@ MonoBehaviour:
     extensionData:
       rid: -2
   stageDataList:
-  - id: "?\uFFFD9L\uFFFD\u0499\x15\uFFFDsbg\u066E|\uFFFDl!\uFFFD\uFFFD\x1AUSh9i\uFFFDb\uFFFDr:y_dl\uFFFD\uFFFDD\uFFFD\uFFFD\x13\uFFFD|-N\uFFFD\uFFFDR4\x12\uFFFD2\uFFFDG\uFFFD%\uFFFD\uFFFD\x7FZ\uFFFD4\uFFFD\u02DDy\uFFFD7\t\xEB\uFFFD\uFFFD\u0242\uFFFD\x1F\uFFFD\uFFFD\x01"
-    stageInspectionTime:
-    - 0
+  - id: 30001
+    stageInspectionTime: []
     stageEndTime: 0
-  - id: "\uFFFD"
-    stageInspectionTime:
-    - 0
+  - id: 30002
+    stageInspectionTime: []
     stageEndTime: 0
-  - id: "\uFFFDn\uFFFD\uFFFDK\uFFFD\uFFFDi\uFFFD!b\uFFFD*\b\\\uFFFD\uFFFD"
-    stageInspectionTime:
-    - 0
+  - id: 30003
+    stageInspectionTime: []
     stageEndTime: 0
-  - id: "7V\uFFFD6\u01E1\x1F`\uFFFD[\uFFFD+\uFFFD.s\uFFFD\uFFFDk\uFFFD0\uFFFD\uFFFD\uFFFD\x15\uFFFD\uFFFD\uFFFD9\uFFFDs\uFFFD\uFFFD\uFFFD\uFFFD?M\uFFFD\u06ACl\xF9C@hm\uFFFD\e\u7E8C\x10\uFFFD\x1A\uFFFD\uFFFD\uFFFDu\uFFFD[\uFFFD\uFFFD\uFFFDQ\uFFFD\uFFFD\uFFFDY\x12\uFFFD\x19N\uFFFDA\uFFFD$\uFFFD\uFFFD
-      %\uFFFD\uFFFD\x16\x1F\b\uFFFD\uFFFD\uFFFD\uFFFD\uFFFDZ0^h\uFFFDV\uFFFDu\a\uFFFD\uFFFD:\uFFFD\uFFFD6\uFFFD\uFFFD'\uFFFDb\uFFFD\uFFFD\x145\uFFFDu\uFFFD1\uFFFD:@"
-    stageInspectionTime:
-    - 0
+  - id: 30001
+    stageInspectionTime: []
     stageEndTime: 0
-  - id: "\uFFFD\uFFFD\uFFFD\uFFFD\uFFFD\x14&gVt\uFFFD=|\x10\uFFFD\uFFFDa\uFFFDr\uFFFDl-\uFFFD\x1C\uFFFD\uFFFD\uFFFD\uFFFDr\uFFFD\uFFFD\uFFFD\uFFFD\\\x16#/\x1E\x05\uFFFD\uFFFD<\uFFFD\uFFFD^<O\uFFFD\uFFFD\uFFFD"
-    stageInspectionTime:
-    - 0
+  - id: 30002
+    stageInspectionTime: []
     stageEndTime: 0
-  - id: "\uFFFD\uFFFDQ\uFFFDu\uFFFDL\uFFFD9\u07D7\uFFFD\uFFFD\uFFFDPv!\uFFFD\uFFFD\uFFFD\x10\u018F\uFFFD\uFFFD[\uFFFDo\uFFFD\x15\x15|"
-    stageInspectionTime:
-    - 0
-    stageEndTime: 0
-  - id: "JU\uFFFD\uFFFD>\uFFFD\uFFFD\uFFFD#\uFFFD\uFFFD02\uFFFD\uFFFD]`\uFFFDX\eR\uFFFDxb\uFFFD\uFFFDL\uFFFD\uFFFD\uFFFD\uFFFD7
-      \uFFFD\x7F\uFFFD\uFFFD\uFFFD\uFFFDO\uFFFD\x0F~>\uFFFD\uFFFD\uFFFD\uFFFD\a\uFFFDgskU\uFFFD\uFFFD6J\uFFFD\uFFFD\uFFFD\uFFFDG\uFFFD\uFFFD\uFFFD\uFFFD\a\uFFFD\x1F?~\uFFFD\uFFFD\uFFFD\x17\uFFFD\uFFFDg\uFFFD\uFFFD\uFFFD?\uFFFD\uFFFD'\uFFFD\uFFFD\uFFFDO\uFFFDa\u0179+\x1E\x7F\uFFFD\xD3\uFFFD~x\uFFFD\uFFFDg\uFFFD\x7F\uFFFD\u0421\uFFFD\uFFFD\u0441\t\x1F\uFFFD\x18\vo\x0F\uFFFDx\uFFFDY\f\vt\u060F\x0F\uFFFD\uFFFDI\f#D"
-    stageInspectionTime:
-    - 0
-    stageEndTime: 0
-  - id: "\x12\uFFFD\uFFFD\uFFFDH\uFFFD\x15n\x11&2\uFFFD\e\x10I\uFFFD\uFFFDz\uFFFD\uFFFDZ\uFFFD\uFFFD\uFFFDs.\uFFFD\uFFFD4X\x18\uFFFD|r\uFFFDP\uFFFD\u0439"
-    stageInspectionTime:
-    - 0
-    - 0
-    stageEndTime: 0
-  - id: "o\uFFFDT \uFFFD\uFFFDe\uFFFDO\uFFFDU\uFFFD\uFFFD\u0643[w!\uFFFD\x02Q\x0F\x05\uFFFD\uFFFD*\uFFFD`\x0E\uFFFD\uFFFD\uFFFD7l\uFFFD\x05\u0435\uFFFDWaC\uFFFD\uFFFDeq\uFFFD\uFFFD\t\uFFFD;"
-    stageInspectionTime:
-    - 0
-    - 0
-    stageEndTime: 0
-  - id: "\uFFFD\uFFFD\uFFFDb\uFFFD\uFFFD\uFFFD\uFFFDv\uFFFD\uFFFD\x02\x13(9\e\uFFFDq\f\uFFFDx\uFFFD\x16W\uFFFD\x01\u0253\x01\uFFFD\u07EF\uFFFD\u0664@V\uFFFD\uFFFD\uFFFDJ\uFFFDb5^\x03\u067F\uFFFD\uFFFD\uFFFD6\uFFFD\a\uFFFD\uFFFDt\u01E4\uFFFD\x06J\uFFFD]\uFFFD\x1E\uFFFD\uFFFDt\uFFFD\x1E\x7F4\uFFFDq=\uFFFD\uFFFD1P\uFFFD?\uFFFD\u04DE\uFFFD2\x02j\uFFFDJ\uFFFD{
-      Y\uFFFDL\uFFFD3\uFFFD\x0EG\uFFFDl\uFFFDX\x1D\uFFFD\uFFFDxS\x02\uFFFD\uFFFD\uFFFD@\uFFFD\uFFFD\a\uFFFDF\uFFFD\\\uFFFD\u059F\v\uFFFDA:\u0624\xF5\uFFFD\uFFFD"
-    stageInspectionTime:
-    - 0
-    - 0
-    - 0
-    stageEndTime: 0
-  - id: "~I\uFFFD\x16\uFFFD\uFFFD\u043B\uFFFDK\uFFFD\uFFFD\uFFFD\uFFFDZ\uFFFD9fV\uFFFDBla\x16\uFFFDo\uFFFDp\uFFFDq\uFFFD\uFFFDSF\uFFFDdLe\uFFFDRc\uFFFDL\uFFFD\uFFFD\uFFFDOhvM\uFFFD7\uFFFD\x03\u071DS\x1D\x06\v\uFFFD0\uFFFD\uFFFDN\uFFFD\\\uFFFD\uFFFD\uFFFD\uFFFD8\u0180\uFFFD)\uFFFD\uFFFDH\uFFFD\u03C4\uFFFD%\uFFFD`9\uFFFDH=\uFFFDU\uFFFD\u02C4bA\uFFFDG\uFFFD\uFFFDw\uFFFD\x1C\t\uFFFD\uFFFD\uFFFD\uFFFDsw\x03"
-    stageInspectionTime:
-    - 0
-    stageEndTime: 0
-  - id: 
-    stageInspectionTime:
-    - 0
+  - id: 30003
+    stageInspectionTime: []
     stageEndTime: 0
   upgradeDataList:
   - id: 
