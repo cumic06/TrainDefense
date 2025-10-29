@@ -18,15 +18,15 @@ MonoBehaviour:
     icon: {fileID: 0}
     description: basic
     monsterStatusData:
-      MaxHp: 0
-      Damage: 0
-      MoveSpeed: 0
-      AttackDelay: 0
-      DropExpMin: 0
-      DropExpMax: 0
-      DropMoneyMin: 0
-      DropMoneyMax: 0
-      AttackRange: 0
+      MaxHp: 100
+      Damage: 10
+      MoveSpeed: 10
+      AttackDelay: 1
+      DropExpMin: 10
+      DropExpMax: 20
+      DropMoneyMin: 10
+      DropMoneyMax: 20
+      AttackRange: 1.5
     monsterPrefab: {fileID: 0}
   trainDataList:
   - id: train_basic
@@ -34,7 +34,7 @@ MonoBehaviour:
     icon: {fileID: 0}
     description: desc
     trainStatusData:
-      MaxHp: 0
+      MaxHp: 100
     trainPrefab: {fileID: 0}
     isMainTrain: 0
     upgrades: []
@@ -44,15 +44,15 @@ MonoBehaviour:
     icon: {fileID: 0}
     description: desc
     trainStatusData:
-      MaxHp: 0
+      MaxHp: 100
     trainPrefab: {fileID: 0}
     isMainTrain: 0
     upgrades: []
     turretTrainStatus:
-      AttackRange: 0
-      AttackDamage: 0
-      AttackCount: 0
-      AttackDelay: 0
+      AttackRange: 5
+      AttackDamage: 10
+      AttackCount: 1
+      AttackDelay: 2
     turretProjectilePrefab: {fileID: 0}
   - id: 30002
     trainName: "\uD654\uC5FC \uD3EC\uD0D1"
@@ -60,15 +60,15 @@ MonoBehaviour:
     description: "\uD654\uC5FC\uC73C\uB85C \uC9C0\uC18D\uC801\uC778 \uD53C\uD574\uB97C
       \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 0
+      MaxHp: 100
     trainPrefab: {fileID: 0}
     isMainTrain: 0
     upgrades: []
     turretTrainStatus:
-      AttackRange: 0
-      AttackDamage: 0
-      AttackCount: 0
-      AttackDelay: 0
+      AttackRange: 5
+      AttackDamage: 1
+      AttackCount: 1
+      AttackDelay: 0.2
     turretProjectilePrefab: {fileID: 0}
   - id: 30003
     trainName: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
@@ -76,15 +76,15 @@ MonoBehaviour:
     description: "\uBBF8\uC0AC\uC77C\uB85C \uAC15\uD55C \uD53C\uD574\uB97C \uC900\uB2E4.
       \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
     trainStatusData:
-      MaxHp: 0
+      MaxHp: 100
     trainPrefab: {fileID: 0}
     isMainTrain: 0
     upgrades: []
     turretTrainStatus:
-      AttackRange: 0
-      AttackDamage: 0
-      AttackCount: 0
-      AttackDelay: 0
+      AttackRange: 10
+      AttackDamage: 5
+      AttackCount: 1
+      AttackDelay: 1
     turretProjectilePrefab: {fileID: 0}
   rangeTrainDataList:
   - id: range_basic
@@ -92,15 +92,15 @@ MonoBehaviour:
     icon: {fileID: 0}
     description: desc
     trainStatusData:
-      MaxHp: 0
+      MaxHp: 100
     trainPrefab: {fileID: 0}
     isMainTrain: 0
     upgrades: []
     rangeTrainStatus:
-      AttackRange: 0
-      AttackDamage: 0
-      AttackCount: 0
-      AttackInterval: 0
+      AttackRange: 5
+      AttackDamage: 10
+      AttackCount: 1
+      AttackInterval: 2
     rangeProjectilePrefab: {fileID: 0}
   - id: 40002
     trainName: "\uCDA9\uACA9 \uD3EC\uD0D1"
@@ -108,21 +108,83 @@ MonoBehaviour:
     description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC744 \uBC00\uCE58\uACE0
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 0
+      MaxHp: 100
     trainPrefab: {fileID: 0}
     isMainTrain: 0
     upgrades: []
     rangeTrainStatus:
-      AttackRange: 0
-      AttackDamage: 0
-      AttackCount: 0
-      AttackInterval: 0
+      AttackRange: 5
+      AttackDamage: 1
+      AttackCount: 1
+      AttackInterval: 5
     rangeProjectilePrefab: {fileID: 0}
-  trainUpgradeDataList: []
-  stageDataList: []
-  upgradeDataList: []
+  trainUpgradeDataList:
+  - icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    statusUpgrade:
+      MaxHp: 0
+    extensionData:
+      rid: -2
+  stageDataList:
+  - id: 30001
+    stageInspectionTime: []
+    stageEndTime: 0
+  - id: 30002
+    stageInspectionTime: []
+    stageEndTime: 0
+  - id: 30003
+    stageInspectionTime: []
+    stageEndTime: 0
+  - id: 30001
+    stageInspectionTime: []
+    stageEndTime: 0
+  - id: 30002
+    stageInspectionTime: []
+    stageEndTime: 0
+  - id: 30003
+    stageInspectionTime: []
+    stageEndTime: 0
+  upgradeDataList:
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
+  - id: 
+    icon: {fileID: 0}
+    upgradeName: 
+    description: 
+    needMoney: 0
+    upgradeValue: 0
+    maxUpgradeCount: 0
   choiceOptionList: []
-  triChoiceDB: {fileID: 0}
+  triChoiceDB: {fileID: 11400000, guid: c1d9811110024814a8cc4cba4c8a7a4f, type: 2}
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

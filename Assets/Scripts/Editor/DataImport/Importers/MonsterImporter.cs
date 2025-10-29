@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using System.Collections.Generic;
 using TrainDefense.Game.Datas;
 using TrainDefense.Editor.DataImport.Importers.Rows;
 using TrainDefense.Editor.DataImport.Importers.Reflectors;
@@ -10,8 +9,8 @@ namespace TrainDefense.Editor.DataImport.Importers
 	{
 		public string SheetName => "monster_data";
 		public string ButtonLabel => "Monster 데이터 가져오기";
-		public string[] Headers => new[] { "id", "monster_name", "description" };
-		public IExcelRow[] ExampleRows => new IExcelRow[] { new MonsterRow { id = "slime_01", monsterName = "Slime", description = "basic" } };
+		public string[] Headers => new[] { "id", "monster_name", "description", "max_hp", "damage", "move_speed", "attack_delay", "drop_exp_min", "drop_exp_max", "drop_money_min", "drop_money_max", "attack_range" };
+		public IExcelRow[] ExampleRows => new IExcelRow[] { new MonsterRow { id = "slime_01", monsterName = "Slime", description = "basic", maxHp = 100, damage = 10, moveSpeed = 10, attackDelay = 1, dropExpMin = 10, dropExpMax = 20, dropMoneyMin = 10, dropMoneyMax = 20, attackRange = 1.5f } };
 
 		public int Import(DB db, string excelPath)
 		{

@@ -19,6 +19,18 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(t, target, "id", r.id);
 			SetPrivateField(t, target, "monsterName", r.monsterName);
 			SetPrivateField(t, target, "description", r.description);
+			SetPrivateField(t, target, "monsterStatusData", new MonsterStatusInfo
+			{
+				MaxHp = r.maxHp,
+				Damage = r.damage,
+				MoveSpeed = r.moveSpeed,
+				AttackDelay = r.attackDelay,
+				DropExpMin = r.dropExpMin,
+				DropExpMax = r.dropExpMax,
+				DropMoneyMin = r.dropMoneyMin,
+				DropMoneyMax = r.dropMoneyMax,
+				AttackRange = r.attackRange,
+			});
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

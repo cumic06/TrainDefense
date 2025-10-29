@@ -9,17 +9,17 @@ namespace TrainDefense.Editor.DataImport.Importers
 	{
 		public string SheetName => "range_train_data";
 		public string ButtonLabel => "RangeTrain 데이터 가져오기";
-		public string[] Headers => new[] { "id", "train_name", "description", "is_main_train" };
-		public IExcelRow[] ExampleRows => new IExcelRow[] { new TrainRow { id = "range_basic", trainName = "Range", description = "desc", isMainTrain = false } };
+		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "attack_range", "attack_damage", "attack_count", "attack_interval" };
+		public IExcelRow[] ExampleRows => new IExcelRow[] { new RangeTrainRow { id = "range_basic", trainName = "Range", description = "desc", maxHp = 100, isMainTrain = false, attackRange = 5f, attackDamage = 10, attackCount = 1, attackInterval = 2f } };
 
 		public int Import(DB db, string excelPath)
 		{
 			var rows = ExcelReadUtil.ReadRows(excelPath, SheetName);
 			int imported = 0;
-			var refl = new TrainDefense.Editor.DataImport.Importers.Reflectors.RangeTrainDataReflector();
+			var refl = new RangeTrainDataReflector();
 			foreach (var row in rows)
 			{
-				var r = new TrainRow();
+				var r = new RangeTrainRow();
 				r.FromExcelRow(row);
 				if (string.IsNullOrEmpty(r.id)) continue;
 				var existing = db.rangeTrainDataList.Find(t => t.Id == r.id);
@@ -39,5 +39,3 @@ namespace TrainDefense.Editor.DataImport.Importers
 	}
 }
 #endif
-
-

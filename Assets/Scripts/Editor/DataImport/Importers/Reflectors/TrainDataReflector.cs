@@ -20,6 +20,9 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(t, target, "trainName", r.trainName);
 			SetPrivateField(t, target, "description", r.description);
 			SetPrivateField(t, target, "isMainTrain", r.isMainTrain);
+			
+			var trainStatusData = new TrainStatusData { MaxHp = r.maxHp };
+			SetPrivateField(t, target, "trainStatusData", trainStatusData);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)
@@ -30,5 +33,3 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 	}
 }
 #endif
-
-
