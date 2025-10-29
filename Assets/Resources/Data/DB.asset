@@ -127,24 +127,12 @@ MonoBehaviour:
     extensionData:
       rid: -2
   stageDataList:
-  - id: 30001
-    stageInspectionTime: []
-    stageEndTime: 0
-  - id: 30002
-    stageInspectionTime: []
-    stageEndTime: 0
-  - id: 30003
-    stageInspectionTime: []
-    stageEndTime: 0
-  - id: 30001
-    stageInspectionTime: []
-    stageEndTime: 0
-  - id: 30002
-    stageInspectionTime: []
-    stageEndTime: 0
-  - id: 30003
-    stageInspectionTime: []
-    stageEndTime: 0
+  - id: 50001
+    stageInspectionTime:
+    - 10
+    - 20
+    - 30
+    stageEndTime: 180
   upgradeDataList:
   - id: 
     icon: {fileID: 0}

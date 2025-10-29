@@ -50,16 +50,10 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         public List<UpgradeData> upgradeDataList = new();
 
-        [TabGroup("Choice Data")]
-        [InfoBox("선택지 데이터 관리")]
-        [SerializeField]
-        public List<ChoiceOption> choiceOptionList = new();
-
         [TabGroup("TriChoice Database")]
-        [InfoBox("3지선다 데이터베이스")]
+        [InfoBox("3지선다 데이터베이스 (선택지 관리)")]
         [SerializeField]
-        [Required("TriChoiceDB는 필수입니다. TriChoiceDB 에셋을 할당해주세요.")]
-        private TriChoiceDB triChoiceDB;
+        private TriChoiceDB triChoiceDB = new TriChoiceDB();
 
         #endregion
 
@@ -72,25 +66,7 @@ namespace TrainDefense.Game.Datas
         public IReadOnlyList<TrainUpgradeData> TrainUpgradeDataList => trainUpgradeDataList;
         public IReadOnlyList<StageData> StageDataList => stageDataList;
         public IReadOnlyList<UpgradeData> UpgradeDataList => upgradeDataList;
-        public IReadOnlyList<ChoiceOption> ChoiceOptionList => choiceOptionList;
         public TriChoiceDB TriChoiceDB => triChoiceDB;
-
-        /// <summary>
-        /// TriChoiceDB가 설정되었는지 확인
-        /// </summary>
-        public bool HasTriChoiceDB => triChoiceDB != null;
-
-        /// <summary>
-        /// TriChoiceDB 검색 (에러 처리 포함)
-        /// </summary>
-        public TriChoiceDB GetTriChoiceDB()
-        {
-            if (triChoiceDB == null)
-            {
-                Debug.LogWarning("TriChoiceDB is not assigned. Please assign a TriChoiceDB asset.");
-            }
-            return triChoiceDB;
-        }
 
         #endregion
 
@@ -192,24 +168,6 @@ namespace TrainDefense.Game.Datas
             return result;
         }
 
-        /// <summary>
-        /// ID로 선택지 데이터 검색
-        /// </summary>
-        public ChoiceOption GetChoiceOption(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                Debug.LogWarning("Choice ID is null or empty");
-                return null;
-            }
-
-            var result = choiceOptionList.FirstOrDefault(c => c.Id == id);
-            if (result == null)
-            {
-                Debug.LogWarning($"Choice option with ID '{id}' not found");
-            }
-            return result;
-        }
 
         /// <summary>
         /// 메인 기차 데이터 검색 (모든 타입에서 검색)
@@ -253,7 +211,7 @@ namespace TrainDefense.Game.Datas
         {
             return monsterDataList.Count > 0 || GetAllTrainData().Count > 0 ||
                    trainUpgradeDataList.Count > 0 || stageDataList.Count > 0 ||
-                   upgradeDataList.Count > 0 || choiceOptionList.Count > 0;
+                   upgradeDataList.Count > 0;
         }
 
         /// <summary>
@@ -268,8 +226,21 @@ namespace TrainDefense.Game.Datas
             if (typeof(T) == typeof(TrainUpgradeData)) return trainUpgradeDataList.Count;
             if (typeof(T) == typeof(StageData)) return stageDataList.Count;
             if (typeof(T) == typeof(UpgradeData)) return upgradeDataList.Count;
-            if (typeof(T) == typeof(ChoiceOption)) return choiceOptionList.Count;
             return 0;
+        }
+
+        /// <summary>
+        /// TriChoiceDB에서 랜덤 선택지 가져오기
+        /// </summary>
+        public ChoiceOption GetRandomChoice()
+        {
+            if (triChoiceDB == null)
+            {
+                Debug.LogError("TriChoiceDB is not initialized");
+                return null;
+            }
+
+            return triChoiceDB.RandomChoice();
         }
 
         #endregion

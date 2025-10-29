@@ -6,7 +6,6 @@ namespace TrainDefense.Editor.DataImport
 		string SheetName { get; }
 		string ButtonLabel { get; }
 		string[] Headers { get; }
-		IExcelRow[] ExampleRows { get; }
 		int Import(TrainDefense.Game.Datas.DB db, string excelPath);
 	}
 }

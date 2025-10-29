@@ -17,7 +17,7 @@ namespace TrainDefense.Game.UI
         private float uiActiveDelay;
 
         [SerializeField]
-        private string triChoiceDBPath = "DB/TriChoiceDB";
+        private string dbPath = "DB/DB";
         #endregion
 
         private int _choiceLeftCount;
@@ -38,17 +38,17 @@ namespace TrainDefense.Game.UI
         private async UniTask OnChoiceUIPopup(int count)
         {
             _choiceLeftCount = count;
-            var triChoiceDB = Resources.Load<TriChoiceDB>(triChoiceDBPath);
+            var db = Resources.Load<DB>(dbPath);
 
-            if (triChoiceDB == null)
+            if (db == null)
             {
-                Debug.LogError("TriChoiceDB not found");
+                Debug.LogError("DB not found");
                 return;
             }
 
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
-                var choiceOption = triChoiceDB.RandomChoice();
+                var choiceOption = db.GetRandomChoice();
 
                 if (choiceOption == null) continue;
 

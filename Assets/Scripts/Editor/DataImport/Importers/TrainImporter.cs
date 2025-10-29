@@ -10,7 +10,6 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string SheetName => "train_data";
 		public string ButtonLabel => "Train 데이터 가져오기";
 		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train" };
-		public IExcelRow[] ExampleRows => new IExcelRow[] { new TrainRow { id = "train_basic", trainName = "Basic", description = "desc", maxHp = 100, isMainTrain = false } };
 
 		public int Import(DB db, string excelPath)
 		{

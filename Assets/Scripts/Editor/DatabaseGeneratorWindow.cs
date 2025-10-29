@@ -101,7 +101,6 @@ namespace TrainDefense.Editor
 					using (new EditorGUILayout.HorizontalScope())
 					{
 						if (GUILayout.Button("upgrade_data 덮어쓰기", GUILayout.Height(24))) WriteUpgradeSheetFromDb();
-						if (GUILayout.Button("choice_option 덮어쓰기", GUILayout.Height(24))) WriteChoiceSheetFromDb();
 					}
 				}
 			}
@@ -114,7 +113,7 @@ namespace TrainDefense.Editor
 				EnsureFolderForAsset(_databaseAssetPath);
 
 				bool existed = ExcelTemplate.SheetExists(_excelPath, importer.SheetName);
-				ExcelTemplate.EnsureSheetWithHeaders(_excelPath, importer.SheetName, importer.Headers, importer.ExampleRows);
+				ExcelTemplate.EnsureSheetWithHeaders(_excelPath, importer.SheetName, importer.Headers, null);
 				bool hasData = ExcelTemplate.SheetHasData(_excelPath, importer.SheetName);
 
 				if (!existed || !hasData)
@@ -323,23 +322,6 @@ namespace TrainDefense.Editor
 			EditorUtility.DisplayDialog("완료", "upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
-		private void WriteChoiceSheetFromDb()
-		{
-			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
-			if (db == null)
-			{
-				EditorUtility.DisplayDialog("오류", "Database가 없습니다.", "확인");
-				return;
-			}
-			var rows = new System.Collections.Generic.List<ChoiceRow>(db.choiceOptionList.Count);
-			foreach (var c in db.choiceOptionList)
-			{
-				rows.Add(new ChoiceRow { id = c.Id, choiceType = c.ChoiceType.ToString(), targetTrainId = c.TargetTrainId });
-			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "choice_option", new[] { "id", "choice_type", "target_train_id" });
-			ExcelWriter.WriteToSheet(_excelPath, "choice_option", rows);
-			EditorUtility.DisplayDialog("완료", "choice_option 시트를 현재 데이터로 덮어썼습니다.", "확인");
-		}
 
 		// ---------- Write-back row adapters ----------
 		private class MonsterRow : IExcelRow
@@ -375,13 +357,6 @@ namespace TrainDefense.Editor
 			public string id; public string stageInspectionTime; public float stageEndTime;
 			public void FromExcelRow(NPOI.SS.UserModel.IRow row) { }
 			public void ToExcelRow(NPOI.SS.UserModel.IRow row) { Set(row, 0, id); Set(row, 1, stageInspectionTime); Set(row, 2, stageEndTime); }
-		}
-
-		private class ChoiceRow : IExcelRow
-		{
-			public string id; public string choiceType; public string targetTrainId;
-			public void FromExcelRow(NPOI.SS.UserModel.IRow row) { }
-			public void ToExcelRow(NPOI.SS.UserModel.IRow row) { Set(row, 0, id); Set(row, 1, choiceType); Set(row, 2, targetTrainId); }
 		}
 
 		private static void Set(NPOI.SS.UserModel.IRow row, int idx, object value)

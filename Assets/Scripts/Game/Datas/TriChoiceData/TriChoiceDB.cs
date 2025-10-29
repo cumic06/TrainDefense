@@ -5,8 +5,8 @@ using Random = UnityEngine.Random;
 
 namespace TrainDefense.Game.Datas
 {
-    [CreateAssetMenu(fileName = "TriChoiceDB", menuName = "Data/TriChoiceDB")]
-    public class TriChoiceDB : ScriptableObject
+    [Serializable]
+    public class TriChoiceDB
     {
         #region Fields
         [Header("Train 추가 선택지")]

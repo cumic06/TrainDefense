@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using UnityEngine;
 using TrainDefense.Game.Datas;
 using TrainDefense.Editor.DataImport.Importers.Rows;
 
@@ -9,32 +10,13 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string SheetName => "choice_option";
 		public string ButtonLabel => "Choice 데이터 가져오기";
 		public string[] Headers => new[] { "id", "choice_type", "target_train_id" };
-		public IExcelRow[] ExampleRows => new IExcelRow[] { new ChoiceRow { id = "ch_add_basic", choiceType = "AddTrain", targetTrainId = "train_basic" } };
 
 		public int Import(DB db, string excelPath)
 		{
-			var rows = ExcelReadUtil.ReadRows(excelPath, SheetName);
-			int imported = 0;
-			foreach (var row in rows)
-			{
-				var r = new ChoiceRow();
-				r.FromExcelRow(row);
-				if (string.IsNullOrEmpty(r.id)) continue;
-				var list = db.choiceOptionList;
-				var existing = list.Find(c => c.Id == r.id);
-				if (existing == null)
-				{
-					var obj = (ChoiceOption)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(ChoiceOption));
-					Copy(r, obj);
-					list.Add(obj);
-				}
-				else
-				{
-					Copy(r, existing);
-				}
-				imported++;
-			}
-			return imported;
+			// Choice 데이터는 더 이상 엑셀에서 가져오지 않음
+			// TriChoiceDB에서 직접 관리하도록 변경됨
+			Debug.LogWarning("Choice 데이터 가져오기는 더 이상 지원되지 않습니다. TriChoiceDB에서 직접 관리하세요.");
+			return 0;
 		}
 
 		private static void Copy(ChoiceRow r, ChoiceOption target)

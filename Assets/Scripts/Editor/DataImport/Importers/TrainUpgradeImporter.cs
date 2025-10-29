@@ -9,7 +9,6 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string SheetName => "train_upgrade_data";
 		public string ButtonLabel => "TrainUpgrade 데이터 가져오기";
 		public string[] Headers => new[] { "upgrade_name", "description" };
-		public IExcelRow[] ExampleRows => new IExcelRow[] { new TrainUpgradeRow { upgradeName = "HP Lv1", description = "+10 HP" } };
 
 		public int Import(DB db, string excelPath)
 		{
