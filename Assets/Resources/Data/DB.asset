@@ -169,8 +169,41 @@ MonoBehaviour:
     needMoney: 0
     upgradeValue: 0
     maxUpgradeCount: 0
-  choiceOptionList: []
-  triChoiceDB: {fileID: 11400000, guid: c1d9811110024814a8cc4cba4c8a7a4f, type: 2}
+  triChoiceDB:
+    addTrainChoices:
+    - Option:
+        id: 
+        choiceType: 0
+        trainData:
+          id: 
+          trainName: 
+          icon: {fileID: 0}
+          description: 
+          trainStatusData:
+            MaxHp: 0
+          trainPrefab: {fileID: 0}
+          isMainTrain: 0
+          upgrades: []
+        weightedUpgrades: []
+        targetTrainId: 
+      Weight: 0
+    upgradeTrainChoices:
+    - Option:
+        id: 
+        choiceType: 1
+        trainData:
+          id: 
+          trainName: 
+          icon: {fileID: 0}
+          description: 
+          trainStatusData:
+            MaxHp: 0
+          trainPrefab: {fileID: 0}
+          isMainTrain: 0
+          upgrades: []
+        weightedUpgrades: []
+        targetTrainId: 
+      Weight: 0
   references:
     version: 2
     RefIds:
