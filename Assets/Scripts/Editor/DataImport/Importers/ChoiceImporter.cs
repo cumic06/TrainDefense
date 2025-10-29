@@ -19,15 +19,9 @@ namespace TrainDefense.Editor.DataImport.Importers
 			return 0;
 		}
 
-		private static void Copy(ChoiceRow r, ChoiceOption target)
-		{
-			var t = typeof(ChoiceOption);
-			SetPrivateField(t, target, "id", r.id);
-			// choiceType and references are runtime; we only set targetTrainId for now
-			SetPrivateField(t, target, "targetTrainId", r.targetTrainId);
-		}
+        // ChoiceOption 타입은 인터페이스로 대체되어 복사 기능은 더 이상 제공하지 않습니다.
 
-		private static void SetPrivateField(System.Type type, object instance, string field, object value)
+        private static void SetPrivateField(System.Type type, object instance, string field, object value)
 		{
 			var fi = type.GetField(field, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 			if (fi != null) fi.SetValue(instance, value);

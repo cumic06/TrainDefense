@@ -60,7 +60,7 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        public void OnChoiceSelected(ChoiceOption choiceOption)
+        public void OnChoiceSelected(IChoiceOption choiceOption)
         {
             _choiceLeftCount--;
 

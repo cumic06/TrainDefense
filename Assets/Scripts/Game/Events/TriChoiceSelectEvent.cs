@@ -4,13 +4,13 @@ namespace TrainDefense.Game.Events
 {
     public class TriChoiceSelectEvent
     {
-        private ChoiceOption _choiceOption;
+        private TrainDefense.Game.Datas.IChoiceOption _choiceOption;
         private int _choiceLeftCount;
 
-        public ChoiceOption ChoiceOption => _choiceOption;
+        public TrainDefense.Game.Datas.IChoiceOption ChoiceOption => _choiceOption;
         public int ChoiceLeftCount => _choiceLeftCount;
 
-        public TriChoiceSelectEvent(ChoiceOption choiceOption, int choiceLeftCount)
+        public TriChoiceSelectEvent(TrainDefense.Game.Datas.IChoiceOption choiceOption, int choiceLeftCount)
         {
             _choiceOption = choiceOption;
             _choiceLeftCount = choiceLeftCount;

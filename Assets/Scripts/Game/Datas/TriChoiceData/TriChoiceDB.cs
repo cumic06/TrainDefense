@@ -21,7 +21,7 @@ namespace TrainDefense.Game.Datas
         public IReadOnlyList<ChoiceEntry> AddTrainChoices => addTrainChoices;
         public IReadOnlyList<ChoiceEntry> UpgradeTrainChoices => upgradeTrainChoices;
 
-        public ChoiceOption RandomChoice()
+        public IChoiceOption RandomChoice()
         {
             if (this == null)
             {
@@ -48,12 +48,13 @@ namespace TrainDefense.Game.Datas
             List<ChoiceEntry> selectedCategory = validCategories[Random.Range(0, validCategories.Count)];
 
             // 선택된 카테고리 내에서 가중치 기반 선택
-            ChoiceOption selectedOption = SelectFromChoices(selectedCategory);
+            IChoiceOption selectedOption = SelectFromChoices(selectedCategory);
 
             // 선택지 초기화 (업그레이드 가중치 랜덤 선택)
             if (selectedOption != null)
             {
-                selectedOption.Initialize();
+                var db = Resources.Load<DB>("Data/DB");
+                selectedOption.Initialize(db);
             }
 
             return selectedOption;
@@ -74,7 +75,7 @@ namespace TrainDefense.Game.Datas
             return validChoices;
         }
 
-        private ChoiceOption SelectFromChoices(List<ChoiceEntry> choices)
+        private IChoiceOption SelectFromChoices(List<ChoiceEntry> choices)
         {
             if (choices.Count == 0) return null;
             if (choices.Count == 1) return choices[0].Option;
@@ -112,7 +113,8 @@ namespace TrainDefense.Game.Datas
     [Serializable]
     public class ChoiceEntry
     {
-        public ChoiceOption Option;
+        [SerializeReference]
+        public IChoiceOption Option;
         public int Weight;
     }
 }

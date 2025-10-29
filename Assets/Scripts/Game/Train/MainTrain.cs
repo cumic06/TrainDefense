@@ -65,26 +65,9 @@ namespace TrainDefense.Game
 
         private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
         {
-            ChoiceOption choice = triChoiceSelectEvent.ChoiceOption;
+            var choice = triChoiceSelectEvent.ChoiceOption;
             if (choice == null) return;
-
-            switch (choice.ChoiceType)
-            {
-                case ChoiceType.AddTrain:
-                    if (choice.TrainData != null)
-                    {
-                        SpawnTrain(choice.TrainData.TrainPrefab);
-                    }
-                    break;
-
-                case ChoiceType.UpgradeTrain:
-                    TrainUpgradeData selectedUpgrade = choice.GetSelectedUpgradeData();
-                    if (selectedUpgrade != null)
-                    {
-                        UpgradeTrain(choice.TargetTrainId, selectedUpgrade);
-                    }
-                    break;
-            }
+            choice.Execute();
         }
 
         private void Move()
@@ -93,7 +76,7 @@ namespace TrainDefense.Game
         }
 
         [Button("SpawnTrain")]
-        private void SpawnTrain(Train trainPrefab)
+        public void SpawnTrain(Train trainPrefab)
         {
             if (_currentTrains.Count >= maxTrainCount)
             {
@@ -112,7 +95,7 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
         }
 
-        private void UpgradeTrain(string targetTrainId, TrainUpgradeData upgradeData)
+        public void UpgradeTrain(string targetTrainId, TrainUpgradeData upgradeData)
         {
             Train upgradeTrain = _currentTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
 

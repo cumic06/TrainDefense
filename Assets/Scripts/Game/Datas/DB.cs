@@ -53,7 +53,7 @@ namespace TrainDefense.Game.Datas
         [TabGroup("TriChoice Database")]
         [InfoBox("3지선다 데이터베이스 (선택지 관리)")]
         [SerializeField]
-        private TriChoiceDB triChoiceDB = new TriChoiceDB();
+        private TriChoiceDB triChoiceDB = new();
 
         #endregion
 
@@ -232,7 +232,7 @@ namespace TrainDefense.Game.Datas
         /// <summary>
         /// TriChoiceDB에서 랜덤 선택지 가져오기
         /// </summary>
-        public ChoiceOption GetRandomChoice()
+        public IChoiceOption GetRandomChoice()
         {
             if (triChoiceDB == null)
             {

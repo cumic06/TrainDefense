@@ -174,16 +174,7 @@ MonoBehaviour:
     - Option:
         id: 
         choiceType: 0
-        trainData:
-          id: 
-          trainName: 
-          icon: {fileID: 0}
-          description: 
-          trainStatusData:
-            MaxHp: 0
-          trainPrefab: {fileID: 0}
-          isMainTrain: 0
-          upgrades: []
+        trainDataId: 
         weightedUpgrades: []
         targetTrainId: 
       Weight: 0
@@ -191,17 +182,10 @@ MonoBehaviour:
     - Option:
         id: 
         choiceType: 1
-        trainData:
-          id: 
-          trainName: 
-          icon: {fileID: 0}
-          description: 
-          trainStatusData:
-            MaxHp: 0
-          trainPrefab: {fileID: 0}
-          isMainTrain: 0
-          upgrades: []
-        weightedUpgrades: []
+        trainDataId: 
+        weightedUpgrades:
+        - upgradeDataId: 
+          upgradeDataWeight: 1
         targetTrainId: 
       Weight: 0
   references:

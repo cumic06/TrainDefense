@@ -19,7 +19,7 @@ namespace TrainDefense.Game.UI
         #endregion
 
         private Button _selectButton;
-        private ChoiceOption _choiceOption;
+        private IChoiceOption _choiceOption;
         private TriChoiceUI _triChoiceUI;
 
         private bool _isSelected = false;
@@ -34,7 +34,7 @@ namespace TrainDefense.Game.UI
             _selectButton.onClick.AddListener(OnSelectButtonClick);
         }
 
-        public void SetData(ChoiceOption choiceOption, TriChoiceUI triChoiceUI)
+        public void SetData(IChoiceOption choiceOption, TriChoiceUI triChoiceUI)
         {
             if (choiceOption == null) return;
 
@@ -45,7 +45,7 @@ namespace TrainDefense.Game.UI
             _isSelected = false;
         }
 
-        private void SetUI(ChoiceOption choiceOption)
+        private void SetUI(IChoiceOption choiceOption)
         {
             var uiInfo = choiceOption.GetUIInfo();
             iconImage.sprite = uiInfo.Icon;
