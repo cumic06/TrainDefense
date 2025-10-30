@@ -124,19 +124,19 @@ namespace TrainDefense.Game
             _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
         }
 
-        public override void Upgrade(TrainUpgradeData upgradeData)
+        public override void Upgrade(ITrainUpgradeData upgradeData)
         {
             base.Upgrade(upgradeData);
 
             if (upgradeData == null) return;
 
             // TurretTrain 전용 업그레이드 데이터가 있다면 적용
-            if (upgradeData.ExtensionData is TurretTrainUpgradeExtension turretUpgrade)
+            if (upgradeData is TurretTrainUpgradeData turretUpgradeData)
             {
-                _currentTurretTrainStatus.AttackDamage += turretUpgrade.TurretStatusUpgrade.AttackDamage;
-                _currentTurretTrainStatus.AttackRange += turretUpgrade.TurretStatusUpgrade.AttackRange;
-                _currentTurretTrainStatus.AttackCount += turretUpgrade.TurretStatusUpgrade.AttackCount;
-                _currentTurretTrainStatus.AttackDelay += turretUpgrade.TurretStatusUpgrade.AttackDelay;
+                _currentTurretTrainStatus.AttackDamage += turretUpgradeData.TurretStatusUpgrade.AttackDamage;
+                _currentTurretTrainStatus.AttackRange += turretUpgradeData.TurretStatusUpgrade.AttackRange;
+                _currentTurretTrainStatus.AttackCount += turretUpgradeData.TurretStatusUpgrade.AttackCount;
+                _currentTurretTrainStatus.AttackDelay += turretUpgradeData.TurretStatusUpgrade.AttackDelay;
             }
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace TrainDefense.Game.Datas
@@ -36,9 +37,9 @@ namespace TrainDefense.Game.Datas
         public TrainStatusData TrainStatusData => trainStatusData;
         public Train TrainPrefab => trainPrefab;
         public bool IsMainTrain => isMainTrain;
-        public IReadOnlyList<TrainUpgradeData> Upgrades => upgrades;
+        public IReadOnlyList<ITrainUpgradeData> Upgrades => upgrades.Cast<ITrainUpgradeData>().ToList();
 
-        public TrainUpgradeData GetUpgrade(int level)
+        public ITrainUpgradeData GetUpgrade(int level)
         {
             if (level < 0 || level >= upgrades.Count)
             {

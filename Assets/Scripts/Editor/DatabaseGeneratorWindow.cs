@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
-using System.Collections.Generic;
 using System.IO;
 using TrainDefense.Editor.DataImport;
 using TrainDefense.Game.Datas;

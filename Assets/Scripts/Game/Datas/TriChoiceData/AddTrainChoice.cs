@@ -6,14 +6,15 @@ namespace TrainDefense.Game.Datas
     [Serializable]
     public class AddTrainChoice : IChoiceOption
     {
+        #region Fields
         [SerializeField]
         private string id;
 
         [SerializeField]
         [Tooltip("소환할 Train 데이터 ID")]
         private string trainDataId;
+        #endregion
 
-        [NonSerialized]
         private TrainData _trainData;
 
         public string Id => id;
@@ -72,7 +73,6 @@ namespace TrainDefense.Game.Datas
                 return;
             }
 
-            // Spawn via MainTrain API (made public in refactor)
             main.SpawnTrain(_trainData.TrainPrefab);
         }
     }

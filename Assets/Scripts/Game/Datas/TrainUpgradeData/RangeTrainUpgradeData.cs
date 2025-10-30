@@ -4,10 +4,10 @@ using System;
 namespace TrainDefense.Game.Datas
 {
     /// <summary>
-    /// Train 업그레이드 데이터 (기본 Train 및 MainTrain용)
+    /// RangeTrain 전용 업그레이드 데이터
     /// </summary>
     [Serializable]
-    public class TrainUpgradeData : ITrainUpgradeData
+    public class RangeTrainUpgradeData : ITrainUpgradeData
     {
         #region Fields
         [SerializeField]
@@ -26,6 +26,10 @@ namespace TrainDefense.Game.Datas
         [Header("Upgrade Stats")]
         [SerializeField]
         private TrainStatusData statusUpgrade;
+
+        [Header("Range Train Specific Upgrade")]
+        [SerializeField]
+        private RangeAttackTrainStatus rangeStatusUpgrade;
         #endregion
 
         public string Id => id;
@@ -33,5 +37,7 @@ namespace TrainDefense.Game.Datas
         public string UpgradeName => upgradeName;
         public string Description => description;
         public TrainStatusData StatusUpgrade => statusUpgrade;
+        public RangeAttackTrainStatus RangeStatusUpgrade => rangeStatusUpgrade;
     }
 }
+

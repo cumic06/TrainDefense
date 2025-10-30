@@ -3,33 +3,34 @@ using NPOI.SS.UserModel;
 
 namespace TrainDefense.Editor.DataImport.Importers.Rows
 {
-	public class ChoiceRow : IExcelRow
+	public class AddTrainChoiceRow : IExcelRow
 	{
 		public string id;
-		public string choiceType;
-		public string targetTrainId;
+		public string trainDataId;
+		public int weight;
 
 		public void FromExcelRow(IRow row)
 		{
 			id = row.GetCell(0)?.ToString();
-			choiceType = row.GetCell(1)?.ToString();
-			targetTrainId = row.GetCell(2)?.ToString();
+			trainDataId = row.GetCell(1)?.ToString();
+			int.TryParse(row.GetCell(2)?.ToString(), out weight);
 		}
 
 		public void ToExcelRow(IRow row)
 		{
 			Set(row, 0, id);
-			Set(row, 1, choiceType);
-			Set(row, 2, targetTrainId);
+			Set(row, 1, trainDataId);
+			Set(row, 2, weight);
 		}
 
 		private static void Set(IRow row, int idx, object value)
 		{
 			var cell = row.GetCell(idx) ?? row.CreateCell(idx);
-			cell.SetCellValue(value?.ToString() ?? string.Empty);
+			if (value is null) cell.SetCellValue(string.Empty);
+			else if (value is int i) cell.SetCellValue(i);
+			else cell.SetCellValue(value.ToString());
 		}
 	}
 }
 #endif
-
 

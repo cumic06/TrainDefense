@@ -7,6 +7,7 @@ namespace TrainDefense.Game.Datas
     [Serializable]
     public class UpgradeTrainChoice : IChoiceOption
     {
+        #region Fields
         [SerializeField]
         private string id;
 
@@ -17,9 +18,9 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         [Tooltip("업그레이드 데이터 목록 (가중치 기반)")]
         private WeightedUpgradeData[] weightedUpgrades;
+        #endregion
 
-        [NonSerialized]
-        private TrainUpgradeData _selectedUpgrade;
+        private ITrainUpgradeData _selectedUpgrade;
 
         public string Id => id;
 
@@ -71,7 +72,7 @@ namespace TrainDefense.Game.Datas
                 return;
             }
 
-            var main = TrainDefense.Game.TrainManager.Instance.MainTrain;
+            var main = TrainManager.Instance.MainTrain;
             if (main == null)
             {
                 Debug.LogError("UpgradeTrainChoice: MainTrain is null");
@@ -81,7 +82,7 @@ namespace TrainDefense.Game.Datas
             main.UpgradeTrain(targetTrainId, _selectedUpgrade);
         }
 
-        private TrainUpgradeData SelectRandomUpgrade(DB db)
+        private ITrainUpgradeData SelectRandomUpgrade(DB db)
         {
             if (db == null) return null;
             if (weightedUpgrades == null || weightedUpgrades.Length == 0) return null;

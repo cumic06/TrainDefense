@@ -95,7 +95,7 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
         }
 
-        public void UpgradeTrain(string targetTrainId, TrainUpgradeData upgradeData)
+        public void UpgradeTrain(string targetTrainId, ITrainUpgradeData upgradeData)
         {
             Train upgradeTrain = _currentTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
 

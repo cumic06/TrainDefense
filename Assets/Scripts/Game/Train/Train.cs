@@ -64,7 +64,7 @@ namespace TrainDefense.Game
             _isDead = true;
         }
 
-        public virtual void Upgrade(TrainUpgradeData upgradeData)
+        public virtual void Upgrade(ITrainUpgradeData upgradeData)
         {
             if (upgradeData == null) return;
 

@@ -91,19 +91,19 @@ namespace TrainDefense.Game
             }
         }
 
-        public override void Upgrade(TrainUpgradeData upgradeData)
+        public override void Upgrade(ITrainUpgradeData upgradeData)
         {
             base.Upgrade(upgradeData);
 
             if (upgradeData == null) return;
 
-            // TurretTrain 전용 업그레이드 데이터가 있다면 적용
-            if (upgradeData.ExtensionData is RangeTrainUpgradeExtension rangeUpgrade)
+            // RangeTrain 전용 업그레이드 데이터가 있다면 적용
+            if (upgradeData is RangeTrainUpgradeData rangeUpgradeData)
             {
-                _currentRangeTrainStatus.AttackRange += rangeUpgrade.RangeStatusUpgrade.AttackRange;
-                _currentRangeTrainStatus.AttackDamage += rangeUpgrade.RangeStatusUpgrade.AttackDamage;
-                _currentRangeTrainStatus.AttackCount += rangeUpgrade.RangeStatusUpgrade.AttackCount;
-                _currentRangeTrainStatus.AttackInterval += rangeUpgrade.RangeStatusUpgrade.AttackInterval;
+                _currentRangeTrainStatus.AttackRange += rangeUpgradeData.RangeStatusUpgrade.AttackRange;
+                _currentRangeTrainStatus.AttackDamage += rangeUpgradeData.RangeStatusUpgrade.AttackDamage;
+                _currentRangeTrainStatus.AttackCount += rangeUpgradeData.RangeStatusUpgrade.AttackCount;
+                _currentRangeTrainStatus.AttackInterval += rangeUpgradeData.RangeStatusUpgrade.AttackInterval;
                 
                 if (_rangeProjectilePrefab != null)
                 {
