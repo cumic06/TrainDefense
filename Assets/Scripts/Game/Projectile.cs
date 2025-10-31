@@ -49,6 +49,14 @@ namespace TrainDefense.Game
         private Dictionary<Monster, float> _particleTriggerCooldowns = new();
 
         #region Enable/Disable
+        private void Awake()
+        {
+            if (isParticleProjectile)
+            {
+                SetupParticleTrigger();
+            }
+        }
+
         private void OnEnable()
         {
             if (destroyDelay <= 0) return;
@@ -66,6 +74,22 @@ namespace TrainDefense.Game
             _tickCooldown = 0f;
             _particleTriggerCooldowns.Clear();
         }
+
+        private void SetupParticleTrigger()
+        {
+            ParticleSystem ps = GetComponent<ParticleSystem>();
+            if (ps == null) return;
+
+            ParticleSystem.TriggerModule triggerModule = ps.trigger;
+            if (!triggerModule.enabled)
+            {
+                triggerModule.enabled = true;
+            }
+
+            // Trigger 모듈의 이벤트 타입을 Callback으로 설정해야 OnParticleTrigger가 호출됨
+            // Unity API로는 직접 설정이 불가능하므로 Inspector에서 수동 설정 필요
+            // 여기서는 설정이 올바른지 확인만 함
+        }
         #endregion
 
         public void Init(int damage)
@@ -76,10 +100,10 @@ namespace TrainDefense.Game
         private void FixedUpdate()
         {
             Move();
-            
+
             if (isParticleProjectile)
             {
-                UpdateParticleTriggerCooldowns();
+                CleanupInvalidMonsters();
             }
         }
 
@@ -181,30 +205,42 @@ namespace TrainDefense.Game
 
         private void OnParticleTrigger()
         {
-            if (!isParticleProjectile) return;
+            if (!isParticleProjectile)
+            {
+                Debug.LogWarning("isParticleProjectile is false");
+                return;
+            }
 
             ParticleSystem ps = GetComponent<ParticleSystem>();
-            if (ps == null) return;
+
+            if (ps == null)
+            {
+                Debug.LogWarning("ParticleSystem is null");
+                return;
+            }
 
             List<ParticleSystem.Particle> enter = new();
             List<ParticleSystem.Particle> inside = new();
+            List<ParticleSystem.Particle> exit = new();
 
             int numEnter = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
             int numInside = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Inside, inside);
+            int numExit = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Exit, exit);
 
-            if (numEnter > 0 || numInside > 0)
+            // Enter, Inside, Exit 중 하나라도 발생하면 처리
+            if (numEnter > 0 || numInside > 0 || numExit > 0)
             {
-                ProcessParticleTrigger(enter, inside);
+                ProcessParticleTrigger(ps, enter, inside, exit);
             }
         }
 
-        private void ProcessParticleTrigger(List<ParticleSystem.Particle> enter, List<ParticleSystem.Particle> inside)
+        private void ProcessParticleTrigger(ParticleSystem ps, List<ParticleSystem.Particle> enter, List<ParticleSystem.Particle> inside, List<ParticleSystem.Particle> exit)
         {
-            ParticleSystem ps = GetComponent<ParticleSystem>();
-            if (ps == null) return;
-
             ParticleSystem.TriggerModule triggerModule = ps.trigger;
+            if (!triggerModule.enabled) return;
+
             int colliderCount = triggerModule.colliderCount;
+            if (colliderCount == 0) return;
 
             for (int i = 0; i < colliderCount; i++)
             {
@@ -213,8 +249,10 @@ namespace TrainDefense.Game
 
                 if (collider.TryGetComponent(out Monster monster))
                 {
-                    if (enter.Count > 0 || inside.Count > 0)
+                    // Enter, Inside, Exit 중 하나라도 발생했으면 데미지 적용
+                    if (enter.Count > 0 || inside.Count > 0 || exit.Count > 0)
                     {
+                        Debug.Log("ApplyParticleDamage: " + monster.name);
                         ApplyParticleDamage(monster);
                     }
                 }
@@ -227,8 +265,10 @@ namespace TrainDefense.Game
 
             if (!_particleTriggerCooldowns.ContainsKey(monster))
             {
-                _particleTriggerCooldowns[monster] = 0f;
+                _particleTriggerCooldowns[monster] = tickDamageInterval;
             }
+
+            _particleTriggerCooldowns[monster] -= tickDamageInterval;
 
             if (_particleTriggerCooldowns[monster] <= 0f)
             {
@@ -247,7 +287,7 @@ namespace TrainDefense.Game
             }
         }
 
-        private void UpdateParticleTriggerCooldowns()
+        private void CleanupInvalidMonsters()
         {
             List<Monster> monstersToRemove = new();
 
@@ -256,10 +296,7 @@ namespace TrainDefense.Game
                 if (kvp.Key == null || !kvp.Key.gameObject.activeInHierarchy)
                 {
                     monstersToRemove.Add(kvp.Key);
-                    continue;
                 }
-
-                _particleTriggerCooldowns[kvp.Key] -= Time.deltaTime;
             }
 
             foreach (var monster in monstersToRemove)

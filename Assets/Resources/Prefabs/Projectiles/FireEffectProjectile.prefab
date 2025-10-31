@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Projectile
   speed: 0
   destroyDelay: 0
+  isParticleProjectile: 1
   isTickProjectile: 1
   tickDamageInterval: 0.1
   isSlowProjectile: 0
@@ -3824,10 +3825,10 @@ ParticleSystem:
   TriggerModule:
     enabled: 1
     serializedVersion: 2
-    inside: 0
+    inside: 2
     outside: 0
-    enter: 0
-    exit: 0
+    enter: 2
+    exit: 2
     colliderQueryMode: 0
     radiusScale: 1
     primitives: []
