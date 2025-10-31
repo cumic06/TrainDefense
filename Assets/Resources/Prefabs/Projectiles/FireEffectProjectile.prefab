@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 421703311666076318}
   - component: {fileID: 6527682644533503636}
-  - component: {fileID: 6021784533055403490}
   - component: {fileID: 7808667237599030221}
   - component: {fileID: 6222618104979467469}
   m_Layer: 0
@@ -51,56 +50,11 @@ MonoBehaviour:
   destroyDelay: 0
   isTickProjectile: 1
   tickDamageInterval: 0.1
---- !u!60 &6021784533055403490
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1468344385475303967}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 5.5, y: 1.6}
-      - {x: 0, y: 0}
-      - {x: 5.5, y: -1.6}
-  m_UseDelaunayMesh: 0
+  isSlowProjectile: 0
+  slowValue: 0.5
+  isShoveProjectile: 0
+  shovePower: 1
+  shoveDuration: 0.5
 --- !u!198 &7808667237599030221
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -3868,7 +3822,7 @@ ParticleSystem:
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 2
     inside: 0
     outside: 0
@@ -4870,7 +4824,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 731328439
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0

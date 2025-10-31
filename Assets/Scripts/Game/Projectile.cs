@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace TrainDefense.Game
         private float speed;
         [SerializeField]
         private float destroyDelay;
+        [SerializeField]
+        private bool isParticleProjectile;
 
         [SerializeField]
         [BoxGroup("TickProjectile")]
@@ -43,6 +46,8 @@ namespace TrainDefense.Game
         private float _tickCooldown;
         private bool _isInTrigger;
 
+        private Dictionary<Monster, float> _particleTriggerCooldowns = new();
+
         #region Enable/Disable
         private void OnEnable()
         {
@@ -59,6 +64,7 @@ namespace TrainDefense.Game
         {
             _isInTrigger = false;
             _tickCooldown = 0f;
+            _particleTriggerCooldowns.Clear();
         }
         #endregion
 
@@ -70,17 +76,25 @@ namespace TrainDefense.Game
         private void FixedUpdate()
         {
             Move();
+            
+            if (isParticleProjectile)
+            {
+                UpdateParticleTriggerCooldowns();
+            }
         }
 
         protected virtual void Move()
         {
             if (speed <= 0) return;
-            
+
             transform.Translate(Vector3.right * Time.deltaTime * speed);
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (isParticleProjectile) return;
+
+
             if (IsMonster(other, out Monster monster))
             {
                 if (isTickProjectile)
@@ -105,6 +119,8 @@ namespace TrainDefense.Game
 
         private void OnTriggerStay2D(Collider2D other)
         {
+            if (isParticleProjectile) return;
+
             if (IsMonster(other, out Monster monster))
             {
                 if (isTickProjectile)
@@ -139,6 +155,8 @@ namespace TrainDefense.Game
 
         private void OnTriggerExit2D(Collider2D other)
         {
+            if (isParticleProjectile) return;
+
             if (IsMonster(other, out Monster monster))
             {
                 if (isTickProjectile)
@@ -159,6 +177,95 @@ namespace TrainDefense.Game
         private bool IsMonster(Collider2D other, out Monster monster)
         {
             return other.TryGetComponent(out monster);
+        }
+
+        private void OnParticleTrigger()
+        {
+            if (!isParticleProjectile) return;
+
+            ParticleSystem ps = GetComponent<ParticleSystem>();
+            if (ps == null) return;
+
+            List<ParticleSystem.Particle> enter = new();
+            List<ParticleSystem.Particle> inside = new();
+
+            int numEnter = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
+            int numInside = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Inside, inside);
+
+            if (numEnter > 0 || numInside > 0)
+            {
+                ProcessParticleTrigger(enter, inside);
+            }
+        }
+
+        private void ProcessParticleTrigger(List<ParticleSystem.Particle> enter, List<ParticleSystem.Particle> inside)
+        {
+            ParticleSystem ps = GetComponent<ParticleSystem>();
+            if (ps == null) return;
+
+            ParticleSystem.TriggerModule triggerModule = ps.trigger;
+            int colliderCount = triggerModule.colliderCount;
+
+            for (int i = 0; i < colliderCount; i++)
+            {
+                Component collider = triggerModule.GetCollider(i);
+                if (collider == null) continue;
+
+                if (collider.TryGetComponent(out Monster monster))
+                {
+                    if (enter.Count > 0 || inside.Count > 0)
+                    {
+                        ApplyParticleDamage(monster);
+                    }
+                }
+            }
+        }
+
+        private void ApplyParticleDamage(Monster monster)
+        {
+            if (monster == null) return;
+
+            if (!_particleTriggerCooldowns.ContainsKey(monster))
+            {
+                _particleTriggerCooldowns[monster] = 0f;
+            }
+
+            if (_particleTriggerCooldowns[monster] <= 0f)
+            {
+                monster.TakeDamage(_damage);
+                _particleTriggerCooldowns[monster] = tickDamageInterval;
+
+                if (isShoveProjectile)
+                {
+                    monster.Shove(shovePower, shoveDuration);
+                }
+
+                if (isSlowProjectile)
+                {
+                    monster.Slow(slowValue);
+                }
+            }
+        }
+
+        private void UpdateParticleTriggerCooldowns()
+        {
+            List<Monster> monstersToRemove = new();
+
+            foreach (var kvp in _particleTriggerCooldowns)
+            {
+                if (kvp.Key == null || !kvp.Key.gameObject.activeInHierarchy)
+                {
+                    monstersToRemove.Add(kvp.Key);
+                    continue;
+                }
+
+                _particleTriggerCooldowns[kvp.Key] -= Time.deltaTime;
+            }
+
+            foreach (var monster in monstersToRemove)
+            {
+                _particleTriggerCooldowns.Remove(monster);
+            }
         }
 
         private IEnumerator DestroyCoroutine()
