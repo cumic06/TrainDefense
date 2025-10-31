@@ -23,7 +23,7 @@ namespace TrainDefense.Game
         private Monster _targetMonster;
 
         private TurretTrainStatus _currentTurretTrainStatus;
-        private Projectile _particleProjectilePrefab;
+        private ParticleProjectile _particleProjectilePrefab;
 
         protected override void Setup()
         {
@@ -115,13 +115,26 @@ namespace TrainDefense.Game
         {
             if (_particleProjectilePrefab == null)
             {
-                _particleProjectilePrefab = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>(), parent: turretProjectileSpawnPoints[0]);
-                _particleProjectilePrefab.transform.localScale = Vector3.one;
-                _particleProjectilePrefab.transform.localPosition = Vector3.zero;
-                _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
+                Projectile projectile = turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
+                if (projectile != null)
+                {
+                    ParticleProjectile particleProjectile = projectile.GetComponent<ParticleProjectile>();
+                    if (particleProjectile == null)
+                    {
+                        Debug.LogWarning($"TurretTrain: ParticleProjectile requires ParticleProjectile component on {turretTrainData.TurretProjectilePrefab.name}");
+                        return;
+                    }
+                    _particleProjectilePrefab = ResourceManager.Instance.Spawn(particleProjectile, parent: turretProjectileSpawnPoints[0]);
+                    _particleProjectilePrefab.transform.localScale = Vector3.one;
+                    _particleProjectilePrefab.transform.localPosition = Vector3.zero;
+                    _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
+                }
             }
-            _particleProjectilePrefab.gameObject.SetActive(true);
-            _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
+            if (_particleProjectilePrefab != null)
+            {
+                _particleProjectilePrefab.gameObject.SetActive(true);
+                _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
+            }
         }
 
         public override void Upgrade(ITrainUpgradeData upgradeData)

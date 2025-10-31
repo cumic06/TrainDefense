@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 421703311666076318}
-  - component: {fileID: 6527682644533503636}
+  - component: {fileID: 1872857419387422248}
   - component: {fileID: 7808667237599030221}
   - component: {fileID: 6222618104979467469}
   - component: {fileID: 5810659541799213190}
@@ -35,7 +35,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6527682644533503636
+--- !u!114 &1872857419387422248
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,12 +44,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1468344385475303967}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a0228f3b6521904faa99e0d29c6d059, type: 3}
+  m_Script: {fileID: 11500000, guid: 42ec66f1f54ac3e41910ce2a359a12dc, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Projectile
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ParticleProjectile
   speed: 0
   destroyDelay: 0
-  isParticleProjectile: 1
   isTickProjectile: 1
   tickDamageInterval: 0.1
   isSlowProjectile: 0
@@ -57,7 +56,6 @@ MonoBehaviour:
   isShoveProjectile: 0
   shovePower: 1
   shoveDuration: 0.5
-  useParticleCollider: 1
   colliderUpdateInterval: 0.1
   particleRadius: 0.5
 --- !u!198 &7808667237599030221
