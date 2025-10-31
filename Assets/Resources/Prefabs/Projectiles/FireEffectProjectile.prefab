@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6527682644533503636}
   - component: {fileID: 7808667237599030221}
   - component: {fileID: 6222618104979467469}
+  - component: {fileID: 5810659541799213190}
   m_Layer: 0
   m_Name: FireEffectProjectile
   m_TagString: Untagged
@@ -56,6 +57,9 @@ MonoBehaviour:
   isShoveProjectile: 0
   shovePower: 1
   shoveDuration: 0.5
+  useParticleCollider: 1
+  colliderUpdateInterval: 0.1
+  particleRadius: 0.5
 --- !u!198 &7808667237599030221
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -3823,12 +3827,12 @@ ParticleSystem:
     collidesWithDynamic: 1
     interiorCollisions: 0
   TriggerModule:
-    enabled: 1
+    enabled: 0
     serializedVersion: 2
     inside: 2
     outside: 0
     enter: 2
-    exit: 2
+    exit: 0
     colliderQueryMode: 0
     radiusScale: 1
     primitives: []
@@ -4859,3 +4863,53 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!60 &5810659541799213190
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1468344385475303967}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 5.173805, y: 1.3368366}
+      - {x: -0.23696333, y: 0.10691482}
+      - {x: 5.1249566, y: -1.6578443}
+  m_UseDelaunayMesh: 0

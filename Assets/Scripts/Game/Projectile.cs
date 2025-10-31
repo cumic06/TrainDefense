@@ -38,22 +38,31 @@ namespace TrainDefense.Game
         [SerializeField]
         [BoxGroup("ShoveProjectile")]
         private float shoveDuration = 0.5f;
+
+        [SerializeField]
+        [BoxGroup("ParticleCollider")]
+        private float colliderUpdateInterval = 0.1f;
+        [SerializeField]
+        [BoxGroup("ParticleCollider")]
+        private float particleRadius = 0.5f;
         #endregion
 
         private int _damage;
         private Coroutine _destroyCoroutine;
 
-        private float _tickCooldown;
-        private bool _isInTrigger;
+        private Dictionary<Monster, float> _monsterDamageTimers = new();
 
-        private Dictionary<Monster, float> _particleTriggerCooldowns = new();
+        private PolygonCollider2D _polygonCollider;
+        private ParticleSystem _particleSystem;
+        private ParticleSystem.Particle[] _particles;
+        private float _colliderUpdateTimer;
 
         #region Enable/Disable
         private void Awake()
         {
             if (isParticleProjectile)
             {
-                SetupParticleTrigger();
+                SetupParticleCollider();
             }
         }
 
@@ -70,25 +79,26 @@ namespace TrainDefense.Game
 
         private void OnDisable()
         {
-            _isInTrigger = false;
-            _tickCooldown = 0f;
-            _particleTriggerCooldowns.Clear();
+            _monsterDamageTimers.Clear();
         }
 
-        private void SetupParticleTrigger()
+        private void SetupParticleCollider()
         {
-            ParticleSystem ps = GetComponent<ParticleSystem>();
-            if (ps == null) return;
+            _particleSystem = GetComponent<ParticleSystem>();
+            if (_particleSystem == null) return;
 
-            ParticleSystem.TriggerModule triggerModule = ps.trigger;
-            if (!triggerModule.enabled)
+            _polygonCollider = GetComponent<PolygonCollider2D>();
+            if (_polygonCollider == null)
             {
-                triggerModule.enabled = true;
+                _polygonCollider = gameObject.AddComponent<PolygonCollider2D>();
             }
 
-            // Trigger 모듈의 이벤트 타입을 Callback으로 설정해야 OnParticleTrigger가 호출됨
-            // Unity API로는 직접 설정이 불가능하므로 Inspector에서 수동 설정 필요
-            // 여기서는 설정이 올바른지 확인만 함
+            _polygonCollider.isTrigger = true;
+            
+            // 파티클 배열 초기화 (최대 파티클 수만큼)
+            int maxParticles = _particleSystem.main.maxParticles;
+            if (maxParticles <= 0) maxParticles = 1000; // 기본값
+            _particles = new ParticleSystem.Particle[maxParticles];
         }
         #endregion
 
@@ -103,8 +113,115 @@ namespace TrainDefense.Game
 
             if (isParticleProjectile)
             {
-                CleanupInvalidMonsters();
+                UpdateParticleCollider();
             }
+        }
+
+        private void UpdateParticleCollider()
+        {
+            if (_particleSystem == null || _polygonCollider == null) return;
+
+            _colliderUpdateTimer -= Time.fixedDeltaTime;
+            if (_colliderUpdateTimer > 0f) return;
+
+            _colliderUpdateTimer = colliderUpdateInterval;
+
+            // 활성 파티클 수 가져오기
+            int particleCount = _particleSystem.GetParticles(_particles);
+            if (particleCount == 0)
+            {
+                // 파티클이 없으면 Collider 비활성화
+                _polygonCollider.pathCount = 0;
+                return;
+            }
+
+            // World Space 파티클 위치 수집
+            List<Vector2> particlePositions = new List<Vector2>(particleCount);
+            for (int i = 0; i < particleCount; i++)
+            {
+                Vector3 worldPos = _particles[i].position;
+                // World Space에서 Local Space로 변환 (PolygonCollider는 Local Space 사용)
+                Vector3 localPos = transform.InverseTransformPoint(worldPos);
+                particlePositions.Add(new Vector2(localPos.x, localPos.y));
+            }
+
+            // 파티클의 가장 끝부분 3개 점 찾기
+            List<Vector2> trianglePoints = GetBoundaryPoints(particlePositions);
+            
+            if (trianglePoints.Count == 3)
+            {
+                // 삼각형을 시계방향으로 정렬 (PolygonCollider는 시계방향으로 정렬된 점 필요)
+                trianglePoints = SortTriangleClockwise(trianglePoints);
+                _polygonCollider.pathCount = 1;
+                _polygonCollider.SetPath(0, trianglePoints);
+            }
+        }
+
+        private List<Vector2> GetBoundaryPoints(List<Vector2> points)
+        {
+            if (points.Count == 0)
+            {
+                return new List<Vector2>();
+            }
+
+            if (points.Count == 1)
+            {
+                // 점이 1개면 삼각형을 만들 수 없음
+                return new List<Vector2>();
+            }
+
+            if (points.Count == 2)
+            {
+                // 점이 2개면 세 번째 점을 추가 (위쪽으로 약간 오프셋)
+                Vector2 midPoint = (points[0] + points[1]) * 0.5f;
+                Vector2 dir = (points[1] - points[0]).normalized;
+                Vector2 perp = new Vector2(-dir.y, dir.x); // 수직 방향
+                Vector2 thirdPoint = midPoint + perp * particleRadius;
+                return new List<Vector2> { points[0], points[1], thirdPoint };
+            }
+
+            // 가장 왼쪽, 오른쪽, 위쪽 점 찾기
+            Vector2 leftmost = points[0];
+            Vector2 rightmost = points[0];
+            Vector2 topmost = points[0];
+
+            for (int i = 1; i < points.Count; i++)
+            {
+                if (points[i].x < leftmost.x)
+                {
+                    leftmost = points[i];
+                }
+                if (points[i].x > rightmost.x)
+                {
+                    rightmost = points[i];
+                }
+                if (points[i].y > topmost.y)
+                {
+                    topmost = points[i];
+                }
+            }
+
+            // 3개 점 반환 (왼쪽, 오른쪽, 위쪽)
+            return new List<Vector2> { leftmost, rightmost, topmost };
+        }
+
+        private List<Vector2> SortTriangleClockwise(List<Vector2> points)
+        {
+            if (points.Count != 3) return points;
+
+            // 중심점 계산
+            Vector2 center = (points[0] + points[1] + points[2]) / 3f;
+
+            // 중심점 기준으로 각도 순으로 정렬
+            List<Vector2> sorted = new List<Vector2>(points);
+            sorted.Sort((a, b) =>
+            {
+                float angleA = Mathf.Atan2(a.y - center.y, a.x - center.x);
+                float angleB = Mathf.Atan2(b.y - center.y, b.x - center.x);
+                return angleA.CompareTo(angleB);
+            });
+
+            return sorted;
         }
 
         protected virtual void Move()
@@ -116,84 +233,137 @@ namespace TrainDefense.Game
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (isParticleProjectile) return;
-
-
             if (IsMonster(other, out Monster monster))
             {
-                if (isTickProjectile)
+                if (isParticleProjectile)
                 {
-                    _isInTrigger = true;
-                    _tickCooldown = 0f;
+                    // 처음 들어올 때는 즉시 데미지 적용
+                    if (!_monsterDamageTimers.ContainsKey(monster))
+                    {
+                        _monsterDamageTimers[monster] = Time.time;
+                        monster.TakeDamage(_damage);
+                    }
+
+                    if (isShoveProjectile)
+                    {
+                        if (monster == null) return;
+                        monster.Shove(shovePower, shoveDuration);
+                    }
                 }
                 else
                 {
-                    monster.TakeDamage(_damage);
-                    ResourceManager.Instance.Destroy(gameObject);
-                }
+                    if (isTickProjectile)
+                    {
+                        // 처음 들어올 때는 즉시 데미지 적용
+                        if (!_monsterDamageTimers.ContainsKey(monster))
+                        {
+                            _monsterDamageTimers[monster] = Time.time;
+                            monster.TakeDamage(_damage);
+                        }
+                    }
+                    else
+                    {
+                        monster.TakeDamage(_damage);
+                        ResourceManager.Instance.Destroy(gameObject);
+                    }
 
-                if (isShoveProjectile)
-                {
-                    if (monster == null) return;
-
-                    monster.Shove(shovePower, shoveDuration);
+                    if (isShoveProjectile)
+                    {
+                        if (monster == null) return;
+                        monster.Shove(shovePower, shoveDuration);
+                    }
                 }
             }
         }
 
         private void OnTriggerStay2D(Collider2D other)
         {
-            if (isParticleProjectile) return;
-
             if (IsMonster(other, out Monster monster))
             {
-                if (isTickProjectile)
+                if (isParticleProjectile)
                 {
-                    if (_isInTrigger)
+                    // Monster가 Dictionary에 있는지 확인하고, tickDamageInterval 시간이 지났으면 데미지 적용
+                    if (_monsterDamageTimers.ContainsKey(monster))
                     {
-                        _tickCooldown -= Time.deltaTime;
+                        float lastDamageTime = _monsterDamageTimers[monster];
+                        if (Time.time - lastDamageTime >= tickDamageInterval)
+                        {
+                            if (monster == null) return;
+                            monster.TakeDamage(_damage);
+                            _monsterDamageTimers[monster] = Time.time;
+                        }
                     }
 
-                    if (_tickCooldown <= 0f)
+                    if (isSlowProjectile)
                     {
                         if (monster == null) return;
+                        monster.Slow(slowValue);
+                    }
 
-                        monster.TakeDamage(_damage);
-                        _tickCooldown = tickDamageInterval;
+                    if (isShoveProjectile)
+                    {
+                        monster.Shove(shovePower, shoveDuration);
                     }
                 }
-
-                if (isSlowProjectile)
+                else
                 {
-                    if (monster == null) return;
+                    if (isTickProjectile)
+                    {
+                        // Monster가 Dictionary에 있는지 확인하고, tickDamageInterval 시간이 지났으면 데미지 적용
+                        if (_monsterDamageTimers.ContainsKey(monster))
+                        {
+                            float lastDamageTime = _monsterDamageTimers[monster];
+                            if (Time.time - lastDamageTime >= tickDamageInterval)
+                            {
+                                if (monster == null) return;
+                                monster.TakeDamage(_damage);
+                                _monsterDamageTimers[monster] = Time.time;
+                            }
+                        }
+                    }
 
-                    monster.Slow(slowValue);
-                }
+                    if (isSlowProjectile)
+                    {
+                        if (monster == null) return;
+                        monster.Slow(slowValue);
+                    }
 
-                if (isShoveProjectile)
-                {
-                    monster.Shove(shovePower, shoveDuration);
+                    if (isShoveProjectile)
+                    {
+                        monster.Shove(shovePower, shoveDuration);
+                    }
                 }
             }
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (isParticleProjectile) return;
-
             if (IsMonster(other, out Monster monster))
             {
-                if (isTickProjectile)
+                if (isParticleProjectile)
                 {
-                    _isInTrigger = false;
-                    _tickCooldown = 0f;
+                    // Dictionary에서 제거
+                    _monsterDamageTimers.Remove(monster);
+
+                    if (isSlowProjectile)
+                    {
+                        if (monster == null || !monster.gameObject.activeInHierarchy) return;
+                        monster.ResetMoveSpeed();
+                    }
                 }
-
-                if (isSlowProjectile)
+                else
                 {
-                    if (monster == null || !monster.gameObject.activeInHierarchy) return;
+                    if (isTickProjectile)
+                    {
+                        // Dictionary에서 제거
+                        _monsterDamageTimers.Remove(monster);
+                    }
 
-                    monster.ResetMoveSpeed();
+                    if (isSlowProjectile)
+                    {
+                        if (monster == null || !monster.gameObject.activeInHierarchy) return;
+                        monster.ResetMoveSpeed();
+                    }
                 }
             }
         }
@@ -201,108 +371,6 @@ namespace TrainDefense.Game
         private bool IsMonster(Collider2D other, out Monster monster)
         {
             return other.TryGetComponent(out monster);
-        }
-
-        private void OnParticleTrigger()
-        {
-            if (!isParticleProjectile)
-            {
-                Debug.LogWarning("isParticleProjectile is false");
-                return;
-            }
-
-            ParticleSystem ps = GetComponent<ParticleSystem>();
-
-            if (ps == null)
-            {
-                Debug.LogWarning("ParticleSystem is null");
-                return;
-            }
-
-            List<ParticleSystem.Particle> enter = new();
-            List<ParticleSystem.Particle> inside = new();
-            List<ParticleSystem.Particle> exit = new();
-
-            int numEnter = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Enter, enter);
-            int numInside = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Inside, inside);
-            int numExit = ps.GetTriggerParticles(ParticleSystemTriggerEventType.Exit, exit);
-
-            // Enter, Inside, Exit 중 하나라도 발생하면 처리
-            if (numEnter > 0 || numInside > 0 || numExit > 0)
-            {
-                ProcessParticleTrigger(ps, enter, inside, exit);
-            }
-        }
-
-        private void ProcessParticleTrigger(ParticleSystem ps, List<ParticleSystem.Particle> enter, List<ParticleSystem.Particle> inside, List<ParticleSystem.Particle> exit)
-        {
-            ParticleSystem.TriggerModule triggerModule = ps.trigger;
-            if (!triggerModule.enabled) return;
-
-            int colliderCount = triggerModule.colliderCount;
-            if (colliderCount == 0) return;
-
-            for (int i = 0; i < colliderCount; i++)
-            {
-                Component collider = triggerModule.GetCollider(i);
-                if (collider == null) continue;
-
-                if (collider.TryGetComponent(out Monster monster))
-                {
-                    // Enter, Inside, Exit 중 하나라도 발생했으면 데미지 적용
-                    if (enter.Count > 0 || inside.Count > 0 || exit.Count > 0)
-                    {
-                        Debug.Log("ApplyParticleDamage: " + monster.name);
-                        ApplyParticleDamage(monster);
-                    }
-                }
-            }
-        }
-
-        private void ApplyParticleDamage(Monster monster)
-        {
-            if (monster == null) return;
-
-            if (!_particleTriggerCooldowns.ContainsKey(monster))
-            {
-                _particleTriggerCooldowns[monster] = tickDamageInterval;
-            }
-
-            _particleTriggerCooldowns[monster] -= tickDamageInterval;
-
-            if (_particleTriggerCooldowns[monster] <= 0f)
-            {
-                monster.TakeDamage(_damage);
-                _particleTriggerCooldowns[monster] = tickDamageInterval;
-
-                if (isShoveProjectile)
-                {
-                    monster.Shove(shovePower, shoveDuration);
-                }
-
-                if (isSlowProjectile)
-                {
-                    monster.Slow(slowValue);
-                }
-            }
-        }
-
-        private void CleanupInvalidMonsters()
-        {
-            List<Monster> monstersToRemove = new();
-
-            foreach (var kvp in _particleTriggerCooldowns)
-            {
-                if (kvp.Key == null || !kvp.Key.gameObject.activeInHierarchy)
-                {
-                    monstersToRemove.Add(kvp.Key);
-                }
-            }
-
-            foreach (var monster in monstersToRemove)
-            {
-                _particleTriggerCooldowns.Remove(monster);
-            }
         }
 
         private IEnumerator DestroyCoroutine()
