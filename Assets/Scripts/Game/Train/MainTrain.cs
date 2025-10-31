@@ -87,12 +87,13 @@ namespace TrainDefense.Game
             }
 
             Train trainObject = Instantiate(trainPrefab, transform);
+            trainObject.Initialize(DataBaseManager.Instance.GetDB().GetTrainData(trainPrefab.Id));
             trainObject.IsUnDead = isUnDead;
             _currentTrains.Add(trainObject);
             _currentTrainCount++;
             Vector3 spawnPos = Vector3.left * trainOffset * _currentTrainCount;
             trainObject.transform.localPosition = spawnPos;
-            GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
+            GameEventSystem.Publish(new AddTrainEvent(_trainData.Icon, trainObject));
         }
 
         public void UpgradeTrain(string targetTrainId, ITrainUpgradeData upgradeData)

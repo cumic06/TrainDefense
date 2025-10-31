@@ -9,7 +9,7 @@ namespace TrainDefense.Game
     {
         #region Field
         [SerializeField]
-        private TurretTrainData turretTrainData => trainData as TurretTrainData;
+        private TurretTrainData turretTrainData => _trainData as TurretTrainData;
 
         [SerializeField]
         private Transform[] turretProjectileSpawnPoints;
@@ -104,7 +104,7 @@ namespace TrainDefense.Game
         {
             for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
             {
-                Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab);
+                Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
                 bullet.transform.position = turretProjectileSpawnPoints[i].position;
                 bullet.Init(_currentTurretTrainStatus.AttackDamage);
                 bullet.transform.LookAt2D(_targetMonster.transform);
@@ -115,7 +115,7 @@ namespace TrainDefense.Game
         {
             if (_particleProjectilePrefab == null)
             {
-                _particleProjectilePrefab = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab, parent: turretProjectileSpawnPoints[0]);
+                _particleProjectilePrefab = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>(), parent: turretProjectileSpawnPoints[0]);
                 _particleProjectilePrefab.transform.localScale = Vector3.one;
                 _particleProjectilePrefab.transform.localPosition = Vector3.zero;
                 _particleProjectilePrefab.transform.localRotation = Quaternion.identity;

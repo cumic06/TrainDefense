@@ -8,7 +8,7 @@ namespace TrainDefense.Game
     {
         #region Fields
         [SerializeField]
-        private RangeTrainData rangeTrainData => trainData as RangeTrainData;
+        private RangeTrainData rangeTrainData => _trainData as RangeTrainData;
         [SerializeField]
         private bool isExplosionProjectile;
         #endregion
@@ -82,7 +82,7 @@ namespace TrainDefense.Game
         {
             if (rangeTrainData.RangeProjectilePrefab != null)
             {
-                _rangeProjectilePrefab = ResourceManager.Instance.Spawn(rangeTrainData.RangeProjectilePrefab);
+                _rangeProjectilePrefab = ResourceManager.Instance.Spawn(rangeTrainData.RangeProjectilePrefab?.GetComponent<Projectile>());
                 _rangeProjectilePrefab.transform.SetParent(transform);
                 _rangeProjectilePrefab.transform.localScale = new Vector3(rangeTrainData.RangeTrainStatus.AttackRange, rangeTrainData.RangeTrainStatus.AttackRange, 1);
                 _rangeProjectilePrefab.transform.localPosition = Vector3.zero;

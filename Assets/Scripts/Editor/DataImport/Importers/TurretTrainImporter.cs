@@ -9,7 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 	{
 		public string SheetName => "turret_train_data";
 		public string ButtonLabel => "TurretTrain 데이터 가져오기";
-		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "attack_range", "attack_damage", "attack_count", "attack_delay" };
+		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "prefab_id", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_delay", "projectile_prefab_id" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -38,5 +38,3 @@ namespace TrainDefense.Editor.DataImport.Importers
 	}
 }
 #endif
-
-

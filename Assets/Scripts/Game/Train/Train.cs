@@ -2,6 +2,7 @@ using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game
 {
@@ -9,17 +10,20 @@ namespace TrainDefense.Game
     {
         #region Field
         [SerializeField]
-        protected TrainData trainData;
+        protected string id;
         #endregion
 
+        [ShowInInspector, ReadOnly]
+        protected TrainData _trainData;
         protected bool _isDead;
         protected int _currentHp;
         protected int _currentLevel;
 
         public bool IsUnDead;
 
-        public TrainData TrainData => trainData;
-        public bool IsMainTrain => trainData.IsMainTrain;
+        public string Id => id;
+        public TrainData TrainData => _trainData;
+        public bool IsMainTrain => _trainData.IsMainTrain;
 
         public bool IsDead => _isDead;
         public int CurrentLevel => _currentLevel;
@@ -29,10 +33,16 @@ namespace TrainDefense.Game
             Setup();
         }
 
+        public virtual void Initialize(TrainData trainData)
+        {
+            _trainData = trainData;
+            Setup();
+        }
+
         protected virtual void Setup()
         {
             _isDead = false;
-            _currentHp = trainData.TrainStatusData.MaxHp;
+            _currentHp = _trainData.TrainStatusData.MaxHp;
             _currentLevel = 1;
         }
 
@@ -42,9 +52,9 @@ namespace TrainDefense.Game
             if (_isDead) return;
 
             _currentHp -= damage;
-            _currentHp = Mathf.Clamp(_currentHp, 0, trainData.TrainStatusData.MaxHp);
+            _currentHp = Mathf.Clamp(_currentHp, 0, _trainData.TrainStatusData.MaxHp);
 
-            GameEventSystem.Publish(new HitEvent(_currentHp, trainData.TrainStatusData.MaxHp, this, transform.position, damage));
+            GameEventSystem.Publish(new HitEvent(_currentHp, _trainData.TrainStatusData.MaxHp, this, transform.position, damage));
 
             if (_currentHp <= 0)
             {

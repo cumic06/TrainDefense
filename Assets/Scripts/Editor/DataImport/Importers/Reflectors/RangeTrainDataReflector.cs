@@ -16,9 +16,11 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 		{
 			var t = typeof(TrainData);
 			SetPrivateField(t, target, "id", r.id);
-			SetPrivateField(t, target, "trainName", r.trainName);
+			SetPrivateField(t, target, "name", r.name);
 			SetPrivateField(t, target, "description", r.description);
 			SetPrivateField(t, target, "isMainTrain", r.isMainTrain);
+			SetPrivateField(t, target, "prefabId", r.prefabId);
+			SetPrivateField(t, target, "iconId", r.iconId);
 			
 			var trainStatusData = new TrainStatusData { MaxHp = r.maxHp };
 			SetPrivateField(t, target, "trainStatusData", trainStatusData);
@@ -32,6 +34,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 				AttackInterval = r.attackInterval
 			};
 			SetPrivateField(rangeTrainType, target, "rangeTrainStatus", rangeTrainStatus);
+			SetPrivateField(rangeTrainType, target, "rangeProjectilePrefabId", r.rangeProjectilePrefabId);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

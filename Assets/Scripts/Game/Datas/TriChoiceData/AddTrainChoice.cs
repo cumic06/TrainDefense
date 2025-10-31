@@ -41,7 +41,7 @@ namespace TrainDefense.Game.Datas
             return new ChoiceUIInfo
             {
                 Icon = _trainData.Icon,
-                Name = _trainData.TrainName,
+                Name = _trainData.Name,
                 Description = _trainData.Description
             };
         }
@@ -60,7 +60,7 @@ namespace TrainDefense.Game.Datas
                 _trainData = db?.GetTrainData(trainDataId);
             }
 
-            if (_trainData == null || _trainData.TrainPrefab == null)
+            if (_trainData == null || _trainData.Prefab == null)
             {
                 Debug.LogError($"AddTrainChoice [{id}]: Invalid TrainData");
                 return;
@@ -73,7 +73,7 @@ namespace TrainDefense.Game.Datas
                 return;
             }
 
-            main.SpawnTrain(_trainData.TrainPrefab);
+            main.SpawnTrain(_trainData.Prefab.GetComponent<Train>());
         }
     }
 }

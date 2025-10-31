@@ -135,7 +135,7 @@ namespace TrainDefense.Game.Datas
             }
 
             var allUpgradeData = GetAllTrainUpgradeData();
-            var result = allUpgradeData.FirstOrDefault(u => u.UpgradeName == id);
+            var result = allUpgradeData.FirstOrDefault(u => u.Id == id);
             if (result == null)
             {
                 Debug.LogWarning($"Train upgrade data with ID '{id}' not found");
@@ -154,7 +154,7 @@ namespace TrainDefense.Game.Datas
                 return null;
             }
 
-            var result = turretTrainUpgradeDataList.FirstOrDefault(u => u.UpgradeName == id);
+            var result = turretTrainUpgradeDataList.FirstOrDefault(u => u.Id == id);
             if (result == null)
             {
                 Debug.LogWarning($"Turret train upgrade data with ID '{id}' not found");
@@ -173,7 +173,7 @@ namespace TrainDefense.Game.Datas
                 return null;
             }
 
-            var result = rangeTrainUpgradeDataList.FirstOrDefault(u => u.UpgradeName == id);
+            var result = rangeTrainUpgradeDataList.FirstOrDefault(u => u.Id == id);
             if (result == null)
             {
                 Debug.LogWarning($"Range train upgrade data with ID '{id}' not found");

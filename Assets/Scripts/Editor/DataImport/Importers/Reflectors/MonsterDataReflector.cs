@@ -17,8 +17,9 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 		{
 			var t = typeof(MonsterData);
 			SetPrivateField(t, target, "id", r.id);
-			SetPrivateField(t, target, "monsterName", r.monsterName);
+			SetPrivateField(t, target, "name", r.name);
 			SetPrivateField(t, target, "description", r.description);
+			SetPrivateField(t, target, "prefabId", r.prefabId);
 			SetPrivateField(t, target, "monsterStatusData", new MonsterStatusInfo
 			{
 				MaxHp = r.maxHp,

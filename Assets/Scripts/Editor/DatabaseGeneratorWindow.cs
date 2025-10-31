@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using TrainDefense.Editor.DataImport;
+using TrainDefense.Editor.DataImport.Importers.Rows;
 using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Editor
@@ -64,6 +65,18 @@ namespace TrainDefense.Editor
 			bool disabled = string.IsNullOrEmpty(_excelPath) || string.IsNullOrEmpty(_databaseAssetPath);
 			using (new EditorGUI.DisabledScope(disabled))
 			{
+				// 모든 데이터 불러오기 버튼
+				var originalColor = GUI.backgroundColor;
+				GUI.backgroundColor = new Color(0.4f, 0.8f, 0.4f);
+				if (GUILayout.Button("모든 데이터 불러오기", GUILayout.Height(32)))
+				{
+					RunAllImports();
+				}
+				GUI.backgroundColor = originalColor;
+				EditorGUILayout.Space(8);
+				EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+				// 개별 데이터 불러오기 버튼들
 				foreach (var importer in ExcelImporterRegistry.Importers)
 				{
 					if (GUILayout.Button(importer.ButtonLabel, GUILayout.Height(28)))
@@ -99,10 +112,87 @@ namespace TrainDefense.Editor
 					}
 					using (new EditorGUILayout.HorizontalScope())
 					{
+						if (GUILayout.Button("turret_train_upgrade_data 덮어쓰기", GUILayout.Height(24))) WriteTurretTrainUpgradeSheetFromDb();
+						if (GUILayout.Button("range_train_upgrade_data 덮어쓰기", GUILayout.Height(24))) WriteRangeTrainUpgradeSheetFromDb();
+					}
+					using (new EditorGUILayout.HorizontalScope())
+					{
 						if (GUILayout.Button("upgrade_data 덮어쓰기", GUILayout.Height(24))) WriteUpgradeSheetFromDb();
 					}
 				}
 			}
+		}
+
+		private void RunAllImports()
+		{
+			bool proceed = EditorUtility.DisplayDialog("확인 필요",
+				$"모든 데이터를 불러오시겠습니까?\n\n총 {ExcelImporterRegistry.Importers.Count}개의 시트를 불러옵니다.",
+				"불러오기", "취소");
+			if (!proceed) return;
+
+			EnsureFolderForAsset(_databaseAssetPath);
+
+			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
+			if (db == null)
+			{
+				db = ScriptableObject.CreateInstance<DB>();
+				AssetDatabase.CreateAsset(db, _databaseAssetPath);
+				EditorUtility.SetDirty(db);
+				AssetDatabase.SaveAssets();
+				AssetDatabase.Refresh();
+			}
+
+			int successCount = 0;
+			int failCount = 0;
+			int totalRows = 0;
+			var failedSheets = new System.Collections.Generic.List<string>();
+
+			foreach (var importer in ExcelImporterRegistry.Importers)
+			{
+				try
+				{
+					bool existed = ExcelTemplate.SheetExists(_excelPath, importer.SheetName);
+					ExcelTemplate.EnsureSheetWithHeaders(_excelPath, importer.SheetName, importer.Headers, null);
+					bool hasData = ExcelTemplate.SheetHasData(_excelPath, importer.SheetName);
+
+					if (!existed || !hasData)
+					{
+						// 전체 불러오기 모드에서는 빈 시트를 건너뛰거나 자동으로 처리
+						Debug.LogWarning($"[DatabaseGeneratorWindow] '{importer.SheetName}' 시트가 비어있거나 없습니다. 건너뜁니다.");
+						continue;
+					}
+
+					int count = importer.Import(db, _excelPath);
+					totalRows += count;
+					successCount++;
+					Debug.Log($"[DatabaseGeneratorWindow] {importer.SheetName} 불러오기 완료 ({count}개 행)");
+				}
+				catch (System.Exception ex)
+				{
+					failCount++;
+					failedSheets.Add(importer.SheetName);
+					Debug.LogError($"[DatabaseGeneratorWindow] {importer.SheetName} 데이터 생성 실패: {ex.Message}\n{ex.StackTrace}");
+				}
+			}
+
+			// Persist DB changes
+			EditorUtility.SetDirty(db);
+			AssetDatabase.SaveAssets();
+			AssetDatabase.ImportAsset(_databaseAssetPath);
+			AssetDatabase.Refresh();
+
+			// 결과 메시지 표시
+			string resultMsg = $"모든 데이터 불러오기 완료\n\n";
+			resultMsg += $"성공: {successCount}개 시트\n";
+			resultMsg += $"실패: {failCount}개 시트\n";
+			resultMsg += $"총 행 수: {totalRows}개\n";
+			if (failedSheets.Count > 0)
+			{
+				resultMsg += $"\n실패한 시트:\n{string.Join("\n", failedSheets)}";
+			}
+			resultMsg += $"\n저장 경로: {_databaseAssetPath}";
+
+			EditorUtility.DisplayDialog("완료", resultMsg, "확인");
 		}
 
 		private void RunImport(IExcelSheetImporter importer)
@@ -216,7 +306,7 @@ namespace TrainDefense.Editor
 			var rows = new System.Collections.Generic.List<MonsterRow>(db.monsterDataList.Count);
 			foreach (var m in db.monsterDataList)
 			{
-				rows.Add(new MonsterRow { id = m.Id, monsterName = m.MonsterName, description = m.Description });
+				rows.Add(new MonsterRow { id = m.Id, name = m.Name, description = m.Description });
 			}
 			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "monster_data", new[] { "id", "monster_name", "description" });
 			ExcelWriter.WriteToSheet(_excelPath, "monster_data", rows);
@@ -234,7 +324,7 @@ namespace TrainDefense.Editor
 			var rows = new System.Collections.Generic.List<TrainRow>(db.trainDataList.Count);
 			foreach (var t in db.trainDataList)
 			{
-				rows.Add(new TrainRow { id = t.Id, trainName = t.TrainName, description = t.Description, isMainTrain = t.IsMainTrain });
+				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
 			}
 			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "train_data", new[] { "id", "train_name", "description", "is_main_train" });
 			ExcelWriter.WriteToSheet(_excelPath, "train_data", rows);
@@ -252,7 +342,7 @@ namespace TrainDefense.Editor
 			var rows = new System.Collections.Generic.List<TrainRow>(db.rangeTrainDataList.Count);
 			foreach (var t in db.rangeTrainDataList)
 			{
-				rows.Add(new TrainRow { id = t.Id, trainName = t.TrainName, description = t.Description, isMainTrain = t.IsMainTrain });
+				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
 			}
 			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "range_train_data", new[] { "id", "train_name", "description", "is_main_train" });
 			ExcelWriter.WriteToSheet(_excelPath, "range_train_data", rows);
@@ -270,7 +360,7 @@ namespace TrainDefense.Editor
 			var rows = new System.Collections.Generic.List<TrainRow>(db.turretTrainDataList.Count);
 			foreach (var t in db.turretTrainDataList)
 			{
-				rows.Add(new TrainRow { id = t.Id, trainName = t.TrainName, description = t.Description, isMainTrain = t.IsMainTrain });
+				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
 			}
 			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "turret_train_data", new[] { "id", "train_name", "description", "is_main_train" });
 			ExcelWriter.WriteToSheet(_excelPath, "turret_train_data", rows);
@@ -288,7 +378,7 @@ namespace TrainDefense.Editor
 			var rows = new System.Collections.Generic.List<TrainUpgradeRow>(db.trainUpgradeDataList.Count);
 			foreach (var u in db.trainUpgradeDataList)
 			{
-				rows.Add(new TrainUpgradeRow { upgradeName = u.UpgradeName, description = u.Description });
+				rows.Add(new TrainUpgradeRow { id = u.Id, name = u.Name, description = u.Description, maxHp = u.StatusUpgrade.MaxHp });
 			}
 			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "train_upgrade_data", new[] { "upgrade_name", "description" });
 			ExcelWriter.WriteToSheet(_excelPath, "train_upgrade_data", rows);
@@ -309,7 +399,7 @@ namespace TrainDefense.Editor
 				rows.Add(new UpgradeRow
 				{
 					id = u.Id,
-					upgradeName = u.UpgradeName,
+					name = u.Name,
 					description = u.Description,
 					needMoney = u.NeedMoney,
 					upgradeValue = u.UpgradeValue,
@@ -321,58 +411,61 @@ namespace TrainDefense.Editor
 			EditorUtility.DisplayDialog("완료", "upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
-
-		// ---------- Write-back row adapters ----------
-		private class MonsterRow : IExcelRow
+		private void WriteTurretTrainUpgradeSheetFromDb()
 		{
-			public string id; public string monsterName; public string description;
-			public void FromExcelRow(NPOI.SS.UserModel.IRow row) { }
-			public void ToExcelRow(NPOI.SS.UserModel.IRow row) { Set(row, 0, id); Set(row, 1, monsterName); Set(row, 2, description); }
-		}
-
-		private class TrainRow : IExcelRow
-		{
-			public string id; public string trainName; public string description; public bool isMainTrain;
-			public void FromExcelRow(NPOI.SS.UserModel.IRow row) { }
-			public void ToExcelRow(NPOI.SS.UserModel.IRow row) { Set(row, 0, id); Set(row, 1, trainName); Set(row, 2, description); Set(row, 3, isMainTrain); }
-		}
-
-		private class TrainUpgradeRow : IExcelRow
-		{
-			public string upgradeName; public string description;
-			public void FromExcelRow(NPOI.SS.UserModel.IRow row) { }
-			public void ToExcelRow(NPOI.SS.UserModel.IRow row) { Set(row, 0, upgradeName); Set(row, 1, description); }
-		}
-
-		private class UpgradeRow : IExcelRow
-		{
-			public string id; public string upgradeName; public string description; public int needMoney; public float upgradeValue; public int maxUpgradeCount;
-			public void FromExcelRow(NPOI.SS.UserModel.IRow row) { }
-			public void ToExcelRow(NPOI.SS.UserModel.IRow row) { Set(row, 0, id); Set(row, 1, upgradeName); Set(row, 2, description); Set(row, 3, needMoney); Set(row, 4, upgradeValue); Set(row, 5, maxUpgradeCount); }
-		}
-
-		private class StageRow : IExcelRow
-		{
-			public string id; public string stageInspectionTime; public float stageEndTime;
-			public void FromExcelRow(NPOI.SS.UserModel.IRow row) { }
-			public void ToExcelRow(NPOI.SS.UserModel.IRow row) { Set(row, 0, id); Set(row, 1, stageInspectionTime); Set(row, 2, stageEndTime); }
-		}
-
-		private static void Set(NPOI.SS.UserModel.IRow row, int idx, object value)
-		{
-			var cell = row.GetCell(idx) ?? row.CreateCell(idx);
-			if (value == null) { cell.SetCellValue(string.Empty); return; }
-			switch (value)
+			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
+			if (db == null || db.turretTrainUpgradeDataList == null)
 			{
-				case int i: cell.SetCellValue(i); break;
-				case float f: cell.SetCellValue(f); break;
-				case double d: cell.SetCellValue(d); break;
-				case bool b: cell.SetCellValue(b); break;
-				default: cell.SetCellValue(value.ToString()); break;
+				EditorUtility.DisplayDialog("오류", "Database 또는 TurretTrainUpgrade 데이터가 없습니다.", "확인");
+				return;
 			}
+			var rows = new System.Collections.Generic.List<TurretTrainUpgradeRow>(db.turretTrainUpgradeDataList.Count);
+			foreach (var u in db.turretTrainUpgradeDataList)
+			{
+				rows.Add(new TurretTrainUpgradeRow
+				{
+					id = u.Id,
+					name = u.Name,
+					description = u.Description,
+					maxHp = u.StatusUpgrade.MaxHp,
+					attackRange = u.TurretStatusUpgrade.AttackRange,
+					attackDamage = u.TurretStatusUpgrade.AttackDamage,
+					attackCount = u.TurretStatusUpgrade.AttackCount,
+					attackDelay = u.TurretStatusUpgrade.AttackDelay
+				});
+			}
+			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "attack_range", "attack_damage", "attack_count", "attack_delay" });
+			ExcelWriter.WriteToSheet(_excelPath, "turret_train_upgrade_data", rows);
+			EditorUtility.DisplayDialog("완료", "turret_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
+		}
+
+		private void WriteRangeTrainUpgradeSheetFromDb()
+		{
+			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
+			if (db == null || db.rangeTrainUpgradeDataList == null)
+			{
+				EditorUtility.DisplayDialog("오류", "Database 또는 RangeTrainUpgrade 데이터가 없습니다.", "확인");
+				return;
+			}
+			var rows = new System.Collections.Generic.List<RangeTrainUpgradeRow>(db.rangeTrainUpgradeDataList.Count);
+			foreach (var u in db.rangeTrainUpgradeDataList)
+			{
+				rows.Add(new RangeTrainUpgradeRow
+				{
+					id = u.Id,
+					name = u.Name,
+					description = u.Description,
+					maxHp = u.StatusUpgrade.MaxHp,
+					attackRange = u.RangeStatusUpgrade.AttackRange,
+					attackDamage = u.RangeStatusUpgrade.AttackDamage,
+					attackCount = u.RangeStatusUpgrade.AttackCount,
+					attackInterval = u.RangeStatusUpgrade.AttackInterval
+				});
+			}
+			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "range_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "attack_range", "attack_damage", "attack_count", "attack_interval" });
+			ExcelWriter.WriteToSheet(_excelPath, "range_train_upgrade_data", rows);
+			EditorUtility.DisplayDialog("완료", "range_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 	}
 }
 #endif
-
-

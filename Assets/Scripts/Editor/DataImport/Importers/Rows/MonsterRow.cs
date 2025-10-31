@@ -6,7 +6,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 	public class MonsterRow : IExcelRow
 	{
 		public string id;
-		public string monsterName;
+		public string name;
 		public string description;
 		public int maxHp;
 		public int damage;
@@ -17,11 +17,12 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public int dropMoneyMin;
 		public int dropMoneyMax;
 		public float attackRange;
+		public string prefabId;
 
 		public void FromExcelRow(IRow row)
 		{
 			id = row.GetCell(0)?.ToString();
-			monsterName = row.GetCell(1)?.ToString();
+			name = row.GetCell(1)?.ToString();
 			description = row.GetCell(2)?.ToString();
 			int.TryParse(row.GetCell(3)?.ToString(), out maxHp);
 			int.TryParse(row.GetCell(4)?.ToString(), out damage);
@@ -32,12 +33,13 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			int.TryParse(row.GetCell(9)?.ToString(), out dropMoneyMin);
 			int.TryParse(row.GetCell(10)?.ToString(), out dropMoneyMax);
 			float.TryParse(row.GetCell(11)?.ToString(), out attackRange);
+			prefabId = row.GetCell(12)?.ToString();
 		}
 
 		public void ToExcelRow(IRow row)
 		{
 			Set(row, 0, id);
-			Set(row, 1, monsterName);
+			Set(row, 1, name);
 			Set(row, 2, description);
 			Set(row, 3, maxHp);
 			Set(row, 4, damage);
@@ -48,6 +50,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			Set(row, 9, dropMoneyMin);
 			Set(row, 10, dropMoneyMax);
 			Set(row, 11, attackRange);
+			Set(row, 12, prefabId);
 		}
 
 		private static void Set(IRow row, int idx, object value)

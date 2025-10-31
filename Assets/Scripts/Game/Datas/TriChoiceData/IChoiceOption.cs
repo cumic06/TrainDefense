@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace TrainDefense.Game.Datas
 {
     public interface IChoiceOption
@@ -11,5 +9,3 @@ namespace TrainDefense.Game.Datas
         void Execute();
     }
 }
-
-

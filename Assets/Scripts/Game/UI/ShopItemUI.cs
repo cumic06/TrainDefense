@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Game.UI
 {
@@ -8,7 +9,7 @@ namespace TrainDefense.Game.UI
     {
         #region Fields
         [SerializeField]
-        private UpgradeData shopItemData;
+        private string shopItemDataId;
         [SerializeField]
         private Button buyButton;
         [SerializeField]
@@ -27,17 +28,22 @@ namespace TrainDefense.Game.UI
 
         private void SetUp()
         {
-            if (shopItemData != null)
+            UpgradeData upgradeData = DataBaseManager.Instance.GetDB().GetUpgradeData(shopItemDataId);
+
+            if (upgradeData != null)
             {
-                itemNameText.text = shopItemData.UpgradeName;
-                itemDescriptionText.text = shopItemData.Description;
-                needMoneyText.text = $"{shopItemData.NeedMoney}$";
+                itemNameText.text = upgradeData.Name;
+                string description = string.Format(upgradeData.Description, upgradeData.UpgradeValue);
+                itemDescriptionText.text = description;
+                needMoneyText.text = $"{upgradeData.NeedMoney}$";
             }
         }
 
         public void SetVaild(int currentMoney)
         {
-            if (currentMoney >= shopItemData.NeedMoney)
+            UpgradeData upgradeData = DataBaseManager.Instance.GetDB().GetUpgradeData(shopItemDataId);
+            
+            if (currentMoney >= upgradeData.NeedMoney)
             {
                 buyButton.interactable = true;
             }

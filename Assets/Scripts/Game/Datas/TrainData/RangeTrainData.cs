@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game.Datas
 {
@@ -10,11 +11,31 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private RangeAttackTrainStatus rangeTrainStatus;
         [SerializeField]
-        private Projectile rangeProjectilePrefab;
+        private string rangeProjectilePrefabId;
+        private GameObject rangeProjectilePrefab;
         #endregion
 
         public RangeAttackTrainStatus RangeTrainStatus => rangeTrainStatus;
-        public Projectile RangeProjectilePrefab => rangeProjectilePrefab;
+        
+        [ShowInInspector, ReadOnly]
+        public GameObject RangeProjectilePrefab
+        {
+            get
+            {
+                if (rangeProjectilePrefab == null && !string.IsNullOrEmpty(rangeProjectilePrefabId))
+                {
+                    rangeProjectilePrefab = Resources.Load<GameObject>($"Prefabs/Projectiles/{rangeProjectilePrefabId}");
+                    if (rangeProjectilePrefab == null)
+                    {
+                        Debug.LogWarning($"RangeTrainData [{Id}]: Projectile Prefab not found at 'Prefabs/{rangeProjectilePrefabId}'");
+                    }
+                }
+                return rangeProjectilePrefab;
+            }
+        }
+        
+        [Obsolete("Use RangeProjectilePrefab property instead")]
+        public Projectile RangeProjectilePrefabComponent => RangeProjectilePrefab?.GetComponent<Projectile>();
     }
     
     [Serializable]

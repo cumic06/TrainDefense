@@ -8,7 +8,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 	{
 		public string SheetName => "range_train_upgrade_data";
 		public string ButtonLabel => "RangeTrainUpgrade 데이터 가져오기";
-		public string[] Headers => new[] { "upgrade_name", "description", "attack_range", "attack_damage", "attack_count", "attack_interval" };
+		public string[] Headers => new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_interval" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -18,9 +18,17 @@ namespace TrainDefense.Editor.DataImport.Importers
 			{
 				var r = new RangeTrainUpgradeRow();
 				r.FromExcelRow(row);
-				if (string.IsNullOrEmpty(r.upgradeName)) continue;
-				var list = db.rangeTrainUpgradeDataList;
-				var existing = list.Find(u => u.UpgradeName == r.upgradeName);
+			if (string.IsNullOrEmpty(r.id) && string.IsNullOrEmpty(r.name)) continue;
+			var list = db.rangeTrainUpgradeDataList;
+			RangeTrainUpgradeData existing = null;
+			if (!string.IsNullOrEmpty(r.id))
+			{
+				existing = list.Find(u => u.Id == r.id);
+			}
+			if (existing == null && !string.IsNullOrEmpty(r.name))
+			{
+				existing = list.Find(u => u.Name == r.name);
+			}
 				if (existing == null)
 				{
 					var obj = (RangeTrainUpgradeData)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(RangeTrainUpgradeData));
@@ -39,8 +47,13 @@ namespace TrainDefense.Editor.DataImport.Importers
 		private static void Copy(RangeTrainUpgradeRow r, RangeTrainUpgradeData target)
 		{
 			var t = typeof(RangeTrainUpgradeData);
-			SetPrivateField(t, target, "upgradeName", r.upgradeName);
+			SetPrivateField(t, target, "id", r.id);
+			SetPrivateField(t, target, "name", r.name);
 			SetPrivateField(t, target, "description", r.description);
+			SetPrivateField(t, target, "iconId", r.iconId);
+			
+			var statusUpgrade = new TrainStatusData { MaxHp = r.maxHp };
+			SetPrivateField(t, target, "statusUpgrade", statusUpgrade);
 			
 			var rangeStatus = new RangeAttackTrainStatus
 			{

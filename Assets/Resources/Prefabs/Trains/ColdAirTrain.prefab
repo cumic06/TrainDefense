@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       propertyPath: m_Name
-      value: RangeTrain
+      value: ColdAirTrain
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -89,4 +89,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebb76fd958f50604298b091d72f4b3a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.RangeTrain
-  trainData: {fileID: 11400000, guid: 7b49e0ac37ab51940ad59cb1e0302c0d, type: 2}
+  id: 40002
+  IsUnDead: 0
+  isExplosionProjectile: 0

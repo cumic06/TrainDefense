@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game.Datas
 {
@@ -7,17 +8,18 @@ namespace TrainDefense.Game.Datas
     /// RangeTrain 전용 업그레이드 데이터
     /// </summary>
     [Serializable]
-    public class RangeTrainUpgradeData : ITrainUpgradeData
+    public class RangeTrainUpgradeData : ITrainUpgradeData, IDescribableData, IIconData
     {
         #region Fields
         [SerializeField]
         private string id;
-        [Header("UI Info")]
         [SerializeField]
+        private string iconId;
+        [Header("UI Info")]
         private Sprite icon;
 
         [SerializeField]
-        private string upgradeName;
+        private string name;
 
         [SerializeField]
         [TextArea(2, 4)]
@@ -32,12 +34,40 @@ namespace TrainDefense.Game.Datas
         private RangeAttackTrainStatus rangeStatusUpgrade;
         #endregion
 
+        #region IData
         public string Id => id;
-        public Sprite Icon => icon;
-        public string UpgradeName => upgradeName;
+        #endregion
+
+        #region IDescribableData
+        public string Name => name;
         public string Description => description;
+        #endregion
+
+        #region IIconData
+        public string IconId => iconId;
+        [ShowInInspector, ReadOnly]
+        public Sprite Icon
+        {
+            get
+            {
+                if (icon == null && !string.IsNullOrEmpty(iconId))
+                {
+                    icon = Resources.Load<Sprite>($"Sprite/{iconId}");
+                    if (icon == null)
+                    {
+                        Debug.LogWarning($"RangeTrainUpgradeData [{id}]: Icon not found at 'Sprite/{iconId}'");
+                    }
+                }
+                return icon;
+            }
+        }
+        #endregion
+
+        #region ITrainUpgradeData
+        public string UpgradeName => name;
         public TrainStatusData StatusUpgrade => statusUpgrade;
+        #endregion
+
         public RangeAttackTrainStatus RangeStatusUpgrade => rangeStatusUpgrade;
     }
 }
-

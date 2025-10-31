@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Linq;
 using Sirenix.OdinInspector;
 using TrainDefense.Game.Datas;
 using UnityEngine;
@@ -9,7 +8,6 @@ namespace TrainDefense.Game
     public class MonsterSpawner : MonoBehaviour
     {
         #region Field
-        private MonsterData[] monsterDatas;
         [SerializeField]
         [BoxGroup("SpawnSetting")]
         private float spawnInterval;
@@ -18,6 +16,7 @@ namespace TrainDefense.Game
         private float spawnRange;
         #endregion
 
+        private MonsterData[] _monsterDatas;
         private bool _stopSpawnMonster;
 
         private void Start()
@@ -29,16 +28,7 @@ namespace TrainDefense.Game
 
         private void LoadMonsterDatas()
         {
-            var db = Resources.Load<DB>("DB/DB");
-            if (db != null)
-            {
-                monsterDatas = db.MonsterDataList.ToArray();
-            }
-            else
-            {
-                Debug.LogError("DB not found in Resources/DB/DB");
-                monsterDatas = new MonsterData[0];
-            }
+            _monsterDatas = DataBaseManager.Instance.GetMonsterDatas();
         }
 
         public void StartSpawnMonster()
@@ -64,9 +54,9 @@ namespace TrainDefense.Game
 
                 Vector3 spawnPos = RandomSpawnPos();
 
-                MonsterData randomMonster = monsterDatas[Random.Range(0, monsterDatas.Length)];
-                Monster spawnMonster = ResourceManager.Instance.Spawn(randomMonster.MonsterPrefab, spawnPos, parent: transform);
-
+                MonsterData randomMonsterData = _monsterDatas[Random.Range(0, _monsterDatas.Length)];
+                Monster spawnMonster = ResourceManager.Instance.Spawn(randomMonsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
+                spawnMonster.Initialize(randomMonsterData);
                 yield return spawnWait;
             }
         }

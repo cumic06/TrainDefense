@@ -1,18 +1,25 @@
+using System;
 using UnityEngine;
 
-[System.Serializable]
-public class StageData
+namespace TrainDefense.Game.Datas
 {
-    #region Fields
-    [SerializeField]
-    private string id;
-    [SerializeField]
-    private float[] stageInspectionTime;
-    [SerializeField]
-    private float stageEndTime;
-    #endregion
+    [Serializable]
+    public class StageData : IData
+    {
+        #region Fields
+        [SerializeField]
+        private string id;
+        [SerializeField]
+        private float[] stageInspectionTime;
+        [SerializeField]
+        private float stageEndTime;
+        #endregion
 
-    public string Id => id;
-    public float[] StageInspectionTime => stageInspectionTime;
-    public float StageEndTime => stageEndTime;
+        #region IData
+        public string Id => id;
+        #endregion
+
+        public float[] StageInspectionTime => stageInspectionTime;
+        public float StageEndTime => stageEndTime;
+    }
 }

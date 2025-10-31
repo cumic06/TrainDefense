@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7808667237599030221}
   - component: {fileID: 6222618104979467469}
   m_Layer: 0
-  m_Name: FireEffect
+  m_Name: FireEffectProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

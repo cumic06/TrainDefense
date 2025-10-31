@@ -1,7 +1,7 @@
 using UnityEngine;
-using System.Linq;
 using Cumic.Events;
 using TrainDefense.Game.Events;
+using TrainDefense.Game;
 using TrainDefense.Game.Datas;
 
 public class StageManager : MonoBehaviour
@@ -26,16 +26,7 @@ public class StageManager : MonoBehaviour
 
     private void LoadStageDatas()
     {
-        var db = Resources.Load<DB>("DB/DB");
-        if (db != null)
-        {
-            _stageDatas = db.StageDataList.ToArray();
-        }
-        else
-        {
-            Debug.LogError("DB not found in Resources/DB/DB");
-            _stageDatas = new StageData[0];
-        }
+        _stageDatas = DataBaseManager.Instance.GetStageDatas();
     }
 
     private void ResetCurrentStageInfo()

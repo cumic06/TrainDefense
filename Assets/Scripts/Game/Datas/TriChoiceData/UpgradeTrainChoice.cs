@@ -46,7 +46,7 @@ namespace TrainDefense.Game.Datas
             return new ChoiceUIInfo
             {
                 Icon = _selectedUpgrade.Icon,
-                Name = _selectedUpgrade.UpgradeName,
+                Name = _selectedUpgrade.Name,
                 Description = _selectedUpgrade.Description
             };
         }

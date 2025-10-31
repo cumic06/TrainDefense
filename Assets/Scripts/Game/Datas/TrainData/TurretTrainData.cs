@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game.Datas
 {
@@ -10,11 +11,31 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private TurretTrainStatus turretTrainStatus;
         [SerializeField]
-        private Projectile turretProjectilePrefab;
+        private string turretProjectilePrefabId;
+        private GameObject turretProjectilePrefab;
         #endregion
 
         public TurretTrainStatus TurretTrainStatus => turretTrainStatus;
-        public Projectile TurretProjectilePrefab => turretProjectilePrefab;
+        
+        [ShowInInspector, ReadOnly]
+        public GameObject TurretProjectilePrefab
+        {
+            get
+            {
+                if (turretProjectilePrefab == null && !string.IsNullOrEmpty(turretProjectilePrefabId))
+                {
+                    turretProjectilePrefab = Resources.Load<GameObject>($"Prefabs/Projectiles/{turretProjectilePrefabId}");
+                    if (turretProjectilePrefab == null)
+                    {
+                        Debug.LogWarning($"TurretTrainData [{Id}]: Projectile Prefab not found at 'Prefabs/{turretProjectilePrefabId}'");
+                    }
+                }
+                return turretProjectilePrefab;
+            }
+        }
+        
+        [Obsolete("Use TurretProjectilePrefab property instead")]
+        public Projectile TurretProjectilePrefabComponent => TurretProjectilePrefab?.GetComponent<Projectile>();
     }
 
     [Serializable]

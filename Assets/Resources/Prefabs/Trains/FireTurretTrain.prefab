@@ -401,7 +401,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f7756381f5114e9b8c4a258a20912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.TurretTrain
-  trainData: {fileID: 11400000, guid: 8ddb26e686701594fb19b45d62580e65, type: 2}
+  id: 30002
   IsUnDead: 0
   turretProjectileSpawnPoints:
   - {fileID: 3529707877163048822}

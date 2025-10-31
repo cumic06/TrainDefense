@@ -3,6 +3,7 @@ using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game
 {
@@ -10,9 +11,11 @@ namespace TrainDefense.Game
     {
         #region Field
         [SerializeField]
-        protected MonsterData monsterData;
+        private string id;
         #endregion
 
+        [ShowInInspector, ReadOnly]
+        protected MonsterData _monsterData;
         protected MonsterStatusInfo _currentMonsterStatus;
         protected int _currentHp;
 
@@ -27,20 +30,22 @@ namespace TrainDefense.Game
         protected Coroutine _resetMoveSpeedCoroutine;
         protected Coroutine _shoveCoroutine;
 
+        public string Id => id;
+
         private void Awake()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
         }
 
-        private void Start()
+        public void Initialize(MonsterData monsterData)
         {
+            _monsterData = monsterData;
             InitStats();
         }
 
         #region Enable/Disable
         private void OnEnable()
         {
-            InitStats();
             _isDead = false;
             _targetTrain = null;
         }
@@ -56,7 +61,7 @@ namespace TrainDefense.Game
 
         private void InitStats()
         {
-            _currentMonsterStatus = monsterData.MonsterStatusData;
+            _currentMonsterStatus = _monsterData.MonsterStatusData;
             _currentHp = _currentMonsterStatus.MaxHp;
         }
 
@@ -92,7 +97,7 @@ namespace TrainDefense.Game
         {
             if (_currentMonsterStatus.AttackDelay <= 0)
             {
-                _currentMonsterStatus.AttackDelay = monsterData.MonsterStatusData.AttackDelay;
+                _currentMonsterStatus.AttackDelay = _monsterData.MonsterStatusData.AttackDelay;
                 Attack();
             }
             else
@@ -154,7 +159,7 @@ namespace TrainDefense.Game
 
         private IEnumerator ResetMoveSpeedCoroutine()
         {
-            var targetSpeed = monsterData.MonsterStatusData.MoveSpeed;
+            var targetSpeed = _monsterData.MonsterStatusData.MoveSpeed;
             var startSpeed = _currentMonsterStatus.MoveSpeed;
             float elapsedTime = 0f;
             float duration = 1f;

@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using TrainDefense.Editor.DataImport.Importers.Rows;
+using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Editor.DataImport.Importers
 {
@@ -9,7 +10,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string ButtonLabel => "Stage 데이터 가져오기";
 		public string[] Headers => new[] { "id", "stage_inspection_time", "stage_end_time" };
 
-		public int Import(Game.Datas.DB db, string excelPath)
+		public int Import(DB db, string excelPath)
 		{
 			var rows = ExcelReadUtil.ReadRows(excelPath, SheetName);
 			int imported = 0;
@@ -63,5 +64,3 @@ namespace TrainDefense.Editor.DataImport.Importers
 	}
 }
 #endif
-
-

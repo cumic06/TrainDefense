@@ -1,6 +1,8 @@
 using UnityEngine;
 using Cumic;
 using TrainDefense.Game.Datas;
+using Cumic.Events;
+using Unity.Cinemachine;
 
 namespace TrainDefense.Game
 {
@@ -9,9 +11,33 @@ namespace TrainDefense.Game
         #region Field
         [SerializeField]
         private MainTrain mainTrain;
+        [SerializeField]
+        private CinemachineCamera cinemachineCamera;
         #endregion
 
         public MainTrain MainTrain => mainTrain;
+
+        private void Start()
+        {
+            GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
+        }
+
+        private void OnGameEnter(GameEnterEvent gameEnterEvent)
+        {
+            if (mainTrain != null)
+            {
+                var trainData = DataBaseManager.Instance.GetDB().GetTrainData(mainTrain.Id);
+                var trainObject = ResourceManager.Instance.Spawn(trainData.Prefab).GetComponent<MainTrain>();
+                mainTrain = trainObject;
+                mainTrain.Initialize(trainData);
+                cinemachineCamera.Target.TrackingTarget = mainTrain.transform;
+            }
+        }
 
         public bool CheckHasTrain(TrainData trainData)
         {
@@ -36,7 +62,7 @@ namespace TrainDefense.Game
                 if (train.IsDead || train.IsMainTrain || train == null || !train.gameObject.activeInHierarchy) continue;
 
                 float sqrDistance = position.SqrDistance(train.transform.position);
-                
+
                 if (sqrDistance < minSqrDistance)
                 {
                     minSqrDistance = sqrDistance;

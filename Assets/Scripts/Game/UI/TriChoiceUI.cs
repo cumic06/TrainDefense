@@ -38,7 +38,8 @@ namespace TrainDefense.Game.UI
         private async UniTask OnChoiceUIPopup(int count)
         {
             _choiceLeftCount = count;
-            var db = Resources.Load<DB>(dbPath);
+
+            var db = DataBaseManager.Instance.GetDB();
 
             if (db == null)
             {
@@ -48,7 +49,7 @@ namespace TrainDefense.Game.UI
 
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
-                var choiceOption = db.GetRandomChoice();
+                var choiceOption = db.TriChoiceDB.RandomChoice();
 
                 if (choiceOption == null) continue;
 
