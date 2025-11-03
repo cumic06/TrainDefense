@@ -92,11 +92,14 @@ namespace TrainDefense.Game
 
         private void Attack()
         {
-            turretModel.transform.LookAt2D(_targetMonster.transform);
-            turretModel.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
+            if (turretModel != null)
             {
-                turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
-            });
+                turretModel.transform.LookAt2D(_targetMonster.transform);
+                turretModel.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
+                {
+                    turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
+                });
+            }
 
             if (!useParticleProjectile)
             {
