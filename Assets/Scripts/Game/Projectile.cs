@@ -13,6 +13,8 @@ namespace TrainDefense.Game
         [SerializeField]
         private float destroyDelay;
         [SerializeField]
+        private bool destroyOnTriggerEnter = true;
+        [SerializeField]
         [BoxGroup("TickProjectile")]
         protected bool isTickProjectile;
         [SerializeField]
@@ -95,7 +97,11 @@ namespace TrainDefense.Game
                 else
                 {
                     monster.TakeDamage(_damage);
-                    ResourceManager.Instance.Destroy(gameObject);
+                    
+                    if (destroyOnTriggerEnter)
+                    {
+                        ResourceManager.Instance.Destroy(gameObject);
+                    }
                 }
 
                 if (isShoveProjectile)

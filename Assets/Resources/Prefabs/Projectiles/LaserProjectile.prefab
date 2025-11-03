@@ -66,7 +66,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7647787386087136604, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: destroyDelay
-      value: 5
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7647787386087136604, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: destroyOnTriggerEnter
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_Sprite

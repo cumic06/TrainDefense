@@ -113,7 +113,10 @@ namespace TrainDefense.Game
             for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
             {
                 Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
-                bullet.transform.position = turretProjectileSpawnPoints[i].position;
+                bullet.transform.localScale = Vector3.one;
+                bullet.transform.SetParent(turretProjectileSpawnPoints[i]);
+                bullet.transform.localPosition = Vector3.zero;
+
                 bullet.Init(_currentTurretTrainStatus.AttackDamage);
                 bullet.transform.LookAt2D(_targetMonster.transform);
             }
