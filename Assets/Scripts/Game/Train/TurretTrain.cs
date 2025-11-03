@@ -37,7 +37,10 @@ namespace TrainDefense.Game
 
             DetectTarget();
 
-            AttackHandler();
+            if (IsAttackDelayZero())
+            {
+                AttackHandler();
+            }
         }
 
         private void DetectTarget()
@@ -49,24 +52,29 @@ namespace TrainDefense.Game
             .FirstOrDefault();
         }
 
+        private bool IsAttackDelayZero()
+        {
+            if (_currentTurretTrainStatus.AttackDelay <= 0)
+            {
+                _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
+                return true;
+            }
+            else
+            {
+                _currentTurretTrainStatus.AttackDelay -= Time.deltaTime;
+                return false;
+            }
+        }
+
         private void AttackHandler()
         {
             if (_targetMonster == null)
             {
                 ResetTarget();
-
                 return;
             }
 
-            if (_currentTurretTrainStatus.AttackDelay <= 0)
-            {
-                _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
-                Attack();
-            }
-            else
-            {
-                _currentTurretTrainStatus.AttackDelay -= Time.deltaTime;
-            }
+            Attack();
         }
 
         private void ResetTarget()
@@ -111,31 +119,38 @@ namespace TrainDefense.Game
             }
         }
 
+        #region ParticleAttack
         private void ParticleAttack()
         {
             if (_particleProjectilePrefab == null)
             {
-                Projectile projectile = turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
-                if (projectile != null)
-                {
-                    ParticleProjectile particleProjectile = projectile.GetComponent<ParticleProjectile>();
-                    if (particleProjectile == null)
-                    {
-                        Debug.LogWarning($"TurretTrain: ParticleProjectile requires ParticleProjectile component on {turretTrainData.TurretProjectilePrefab.name}");
-                        return;
-                    }
-                    _particleProjectilePrefab = ResourceManager.Instance.Spawn(particleProjectile, parent: turretProjectileSpawnPoints[0]);
-                    _particleProjectilePrefab.transform.localScale = Vector3.one;
-                    _particleProjectilePrefab.transform.localPosition = Vector3.zero;
-                    _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
-                }
+                ParticleProjectileSpawn();
             }
-            if (_particleProjectilePrefab != null)
+            else
             {
                 _particleProjectilePrefab.gameObject.SetActive(true);
                 _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
             }
         }
+
+        private void ParticleProjectileSpawn()
+        {
+            Projectile projectile = turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
+            if (projectile != null)
+            {
+                ParticleProjectile particleProjectile = projectile.GetComponent<ParticleProjectile>();
+                if (particleProjectile == null)
+                {
+                    Debug.LogWarning($"TurretTrain: ParticleProjectile requires ParticleProjectile component on {turretTrainData.TurretProjectilePrefab.name}");
+                    return;
+                }
+                _particleProjectilePrefab = ResourceManager.Instance.Spawn(particleProjectile, parent: turretProjectileSpawnPoints[0]);
+                _particleProjectilePrefab.transform.localScale = Vector3.one;
+                _particleProjectilePrefab.transform.localPosition = Vector3.zero;
+                _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
+            }
+        }
+        #endregion
 
         public override void Upgrade(ITrainUpgradeData upgradeData)
         {
@@ -155,7 +170,7 @@ namespace TrainDefense.Game
 
         protected override void OnDead()
         {
-            if (_particleProjectilePrefab != null)
+            if (useParticleProjectile && _particleProjectilePrefab != null)
             {
                 _particleProjectilePrefab.gameObject.SetActive(false);
             }
