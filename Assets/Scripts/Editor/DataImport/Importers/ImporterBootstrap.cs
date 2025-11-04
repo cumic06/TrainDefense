@@ -20,7 +20,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 			ExcelImporterRegistry.Register(new TurretTrainUpgradeImporter());
 			ExcelImporterRegistry.Register(new RangeTrainUpgradeImporter());
 			ExcelImporterRegistry.Register(new StageImporter());
-			ExcelImporterRegistry.Register(new UpgradeImporter());
+			ExcelImporterRegistry.Register(new UpgradeDataImporter());
 			ExcelImporterRegistry.Register(new AddTrainChoiceImporter());
 			ExcelImporterRegistry.Register(new UpgradeTrainChoiceImporter());
 		}

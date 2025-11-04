@@ -9,6 +9,7 @@ namespace TrainDefense
     public class UserDataManager : Singleton<UserDataManager>
     {
         private Dictionary<string, int> _triChoiceData = new();
+        private Dictionary<string, int> _upgradeLevels = new();
         private int _coin;
         private int _currentExp;
         private int _currentLevel = 1;
@@ -65,6 +66,23 @@ namespace TrainDefense
             else
             {
                 _triChoiceData.Add(choiceOption.Id, 1);
+            }
+        }
+
+        public int GetUpgradeLevel(string upgradeId)
+        {
+            return _upgradeLevels.ContainsKey(upgradeId) ? _upgradeLevels[upgradeId] : 0;
+        }
+
+        public void UpgradeLevel(string upgradeId)
+        {
+            if (_upgradeLevels.ContainsKey(upgradeId))
+            {
+                _upgradeLevels[upgradeId]++;
+            }
+            else
+            {
+                _upgradeLevels.Add(upgradeId, 1);
             }
         }
 

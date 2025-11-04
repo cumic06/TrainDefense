@@ -4,7 +4,7 @@ using TrainDefense.Editor.DataImport.Importers.Rows;
 
 namespace TrainDefense.Editor.DataImport.Importers
 {
-	public class UpgradeImporter : IExcelSheetImporter
+	public class UpgradeDataImporter : IExcelSheetImporter
 	{
 		public string SheetName => "upgrade_data";
 		public string ButtonLabel => "Upgrade 데이터 가져오기";
@@ -65,5 +65,3 @@ namespace TrainDefense.Editor.DataImport.Importers
 	}
 }
 #endif
-
-

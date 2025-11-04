@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using TrainDefense.Game.Datas;
+using TrainDefense;
 
 namespace TrainDefense.Game.UI
 {
@@ -33,16 +34,36 @@ namespace TrainDefense.Game.UI
             if (upgradeData != null)
             {
                 itemNameText.text = upgradeData.Name;
-                string description = string.Format(upgradeData.Description, upgradeData.UpgradeValue);
+                string description = GetLevelDescription(upgradeData);
+
                 itemDescriptionText.text = description;
                 needMoneyText.text = $"{upgradeData.NeedMoney}$";
             }
         }
 
+        private string GetLevelDescription(UpgradeData upgradeData)
+        {
+            int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
+            float nextTotalValue = (currentLevel + 1) * upgradeData.UpgradeValue;
+            float increaseAmount = upgradeData.UpgradeValue;
+            string increaseAmountText = "";
+            if (increaseAmount > 0)
+            {
+                increaseAmountText = $"+{increaseAmount}";
+            }
+            else if (increaseAmount < 0)
+            {
+                increaseAmountText = $"-{increaseAmount}";
+            }
+
+            string description = string.Format(upgradeData.Description, nextTotalValue, increaseAmountText);
+            return description;
+        }
+
         public void SetVaild(int currentMoney)
         {
             UpgradeData upgradeData = DataBaseManager.Instance.GetDB().GetUpgradeData(shopItemDataId);
-            
+
             if (currentMoney >= upgradeData.NeedMoney)
             {
                 buyButton.interactable = true;
