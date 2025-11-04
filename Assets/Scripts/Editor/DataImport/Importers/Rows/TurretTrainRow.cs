@@ -9,6 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public int attackDamage;
 		public int attackCount;
 		public float attackDelay;
+		public int targetCount;
 		public string turretProjectilePrefabId;
 
 	public override void FromExcelRow(IRow row)
@@ -18,7 +19,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		int.TryParse(row.GetCell(8)?.ToString(), out attackDamage);
 		int.TryParse(row.GetCell(9)?.ToString(), out attackCount);
 		float.TryParse(row.GetCell(10)?.ToString(), out attackDelay);
-		turretProjectilePrefabId = row.GetCell(11)?.ToString();
+		int.TryParse(row.GetCell(11)?.ToString(), out targetCount);
+		turretProjectilePrefabId = row.GetCell(12)?.ToString();
 	}
 
 	public override void ToExcelRow(IRow row)
@@ -28,7 +30,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		Set(row, 8, attackDamage);
 		Set(row, 9, attackCount);
 		Set(row, 10, attackDelay);
-		Set(row, 11, turretProjectilePrefabId);
+		Set(row, 11, targetCount);
+		Set(row, 12, turretProjectilePrefabId);
 	}
 	}
 }

@@ -31,7 +31,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 				AttackRange = r.attackRange,
 				AttackDamage = r.attackDamage,
 				AttackCount = r.attackCount,
-				AttackDelay = r.attackDelay
+				AttackDelay = r.attackDelay,
+				TargetCount = r.targetCount
 			};
 			SetPrivateField(turretTrainType, target, "turretTrainStatus", turretTrainStatus);
 			SetPrivateField(turretTrainType, target, "turretProjectilePrefabId", r.turretProjectilePrefabId);

@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game.Datas
 {
-    [System.Serializable]
+    [Serializable]
     public class TurretTrainData : TrainData
     {
         #region Fields
@@ -16,7 +16,7 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         public TurretTrainStatus TurretTrainStatus => turretTrainStatus;
-        
+
         [ShowInInspector, ReadOnly]
         public GameObject TurretProjectilePrefab
         {
@@ -33,7 +33,7 @@ namespace TrainDefense.Game.Datas
                 return turretProjectilePrefab;
             }
         }
-        
+
         [Obsolete("Use TurretProjectilePrefab property instead")]
         public Projectile TurretProjectilePrefabComponent => TurretProjectilePrefab?.GetComponent<Projectile>();
     }
@@ -45,6 +45,7 @@ namespace TrainDefense.Game.Datas
         public int AttackDamage;
         public int AttackCount;
         public float AttackDelay;
+        public int TargetCount;
     }
 
     /// <summary>

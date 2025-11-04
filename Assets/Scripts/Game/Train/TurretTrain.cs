@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using TrainDefense.Game.Datas;
@@ -15,12 +16,14 @@ namespace TrainDefense.Game
         private Transform[] turretProjectileSpawnPoints;
         [SerializeField]
         private bool useParticleProjectile;
+        [SerializeField]
+        private bool isTargeting = false;
 
         [SerializeField]
         private GameObject turretModel;
         #endregion
 
-        private Monster _targetMonster;
+        private List<Monster> _targetMonsters = new();
 
         private TurretTrainStatus _currentTurretTrainStatus;
         private ParticleProjectile _particleProjectilePrefab;
@@ -46,10 +49,17 @@ namespace TrainDefense.Game
         private void DetectTarget()
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _currentTurretTrainStatus.AttackRange);
-            _targetMonster = colliders.Where(a => a.GetComponent<Monster>() != null)
+            _targetMonsters = colliders.Where(a => a.GetComponent<Monster>() != null)
             .Select(a => a.GetComponent<Monster>())
             .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
-            .FirstOrDefault();
+            .ToList();
+        }
+
+        private Monster GetNearTargetMonster()
+        {
+            if (_targetMonsters.Count == 0) return null;
+
+            return _targetMonsters.FirstOrDefault();
         }
 
         private bool IsAttackDelayZero()
@@ -68,7 +78,7 @@ namespace TrainDefense.Game
 
         private void AttackHandler()
         {
-            if (_targetMonster == null)
+            if (_targetMonsters.Count == 0)
             {
                 ResetTarget();
                 return;
@@ -79,6 +89,7 @@ namespace TrainDefense.Game
 
         private void ResetTarget()
         {
+            _targetMonsters.Clear();
             _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
 
             if (useParticleProjectile)
@@ -94,14 +105,18 @@ namespace TrainDefense.Game
         {
             if (turretModel != null)
             {
-                turretModel.transform.LookAt2D(_targetMonster.transform);
+                turretModel.transform.LookAt2D(GetNearTargetMonster().transform);
                 turretModel.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
                 {
                     turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
                 });
             }
 
-            if (!useParticleProjectile)
+            if (isTargeting)
+            {
+                TargetedAttack();
+            }
+            else if (!useParticleProjectile)
             {
                 NormalAttack();
             }
@@ -115,13 +130,54 @@ namespace TrainDefense.Game
         {
             for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
             {
+                if (i >= _targetMonsters.Count) break;
+
                 Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
                 bullet.transform.localScale = Vector3.one;
-                bullet.transform.SetParent(turretProjectileSpawnPoints[i]);
+
+                if (i < turretProjectileSpawnPoints.Length)
+                {
+                    bullet.transform.SetParent(turretProjectileSpawnPoints[i]);
+                }
+                else
+                {
+                    bullet.transform.SetParent(turretProjectileSpawnPoints[0]);
+                }
+
                 bullet.transform.localPosition = Vector3.zero;
 
-                bullet.Init(_currentTurretTrainStatus.AttackDamage);
-                bullet.transform.LookAt2D(_targetMonster.transform);
+                bullet.Init(_currentTurretTrainStatus.AttackDamage, GetNearTargetMonster());
+                bullet.transform.LookAt2D(GetNearTargetMonster().transform);
+            }
+        }
+
+        private void TargetedAttack()
+        {
+            for (int i = 0; i < _currentTurretTrainStatus.TargetCount; i++)
+            {
+                if (i >= _targetMonsters.Count) break;
+
+                Debug.Log($"TargetedCount : {_targetMonsters.Count} realCount : {i}");
+
+                Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
+                bullet.transform.localScale = Vector3.one;
+
+                if (i < turretProjectileSpawnPoints.Length)
+                {
+                    bullet.transform.SetParent(turretProjectileSpawnPoints[i]);
+                }
+                else
+                {
+                    bullet.transform.SetParent(turretProjectileSpawnPoints[0]);
+                }
+
+                bullet.transform.localPosition = Vector3.zero;
+
+                if (_targetMonsters[i] != null)
+                {
+                    bullet.Init(_currentTurretTrainStatus.AttackDamage, _targetMonsters[i]);
+                    bullet.transform.LookAt2D(_targetMonsters[i].transform);
+                }
             }
         }
 

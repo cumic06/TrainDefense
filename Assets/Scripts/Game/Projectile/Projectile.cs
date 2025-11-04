@@ -14,6 +14,10 @@ namespace TrainDefense.Game
         private float destroyDelay;
         [SerializeField]
         private bool destroyOnTriggerEnter = true;
+
+        [SerializeField]
+        private bool isTargeting = false;
+
         [SerializeField]
         [BoxGroup("TickProjectile")]
         protected bool isTickProjectile;
@@ -37,12 +41,19 @@ namespace TrainDefense.Game
         [SerializeField]
         [BoxGroup("ShoveProjectile")]
         protected float shoveDuration = 0.5f;
+        [SerializeField]
+        [BoxGroup("StunProjectile")]
+        protected bool isStunProjectile;
+        [SerializeField]
+        [BoxGroup("StunProjectile")]
+        protected float stunDuration = 0.5f;
         #endregion
 
         protected int _damage;
         private Coroutine _destroyCoroutine;
 
         protected Dictionary<Monster, float> _monsterDamageTimers = new();
+        protected Monster targetMonster;
 
         #region Enable/Disable
 
@@ -64,9 +75,11 @@ namespace TrainDefense.Game
 
         #endregion
 
-        public void Init(int damage)
+        public void Init(int damage, Monster targetMonster = null)
         {
             _damage = damage;
+
+            this.targetMonster = targetMonster;
         }
 
         protected virtual void FixedUpdate()
@@ -85,6 +98,14 @@ namespace TrainDefense.Game
         {
             if (IsMonster(other, out Monster monster))
             {
+                if (isTargeting)
+                {
+                    if (monster == targetMonster)
+                    {
+                        monster.TakeDamage(_damage);
+                    }
+                }
+
                 if (isTickProjectile)
                 {
                     // 처음 들어올 때는 즉시 데미지 적용
@@ -97,7 +118,7 @@ namespace TrainDefense.Game
                 else
                 {
                     monster.TakeDamage(_damage);
-                    
+
                     if (destroyOnTriggerEnter)
                     {
                         ResourceManager.Instance.Destroy(gameObject);
