@@ -287,7 +287,7 @@ MonoBehaviour:
     addTrainChoices:
     - Option:
         rid: 2066870334413602903
-      Weight: 100
+      Weight: 0
     - Option:
         rid: 2066870334413602905
       Weight: 0
@@ -302,9 +302,12 @@ MonoBehaviour:
       Weight: 0
     - Option:
         rid: 2066870365229940814
-      Weight: 0
+      Weight: 100
     - Option:
         rid: 439507874151399537
+      Weight: 0
+    - Option:
+        rid: 439507899332690073
       Weight: 0
     upgradeTrainChoices:
     - Option:
@@ -329,6 +332,11 @@ MonoBehaviour:
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60007
+        trainDataId: 40001
+    - rid: 439507899332690073
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 60008
         trainDataId: 40002
     - rid: 2066870334413602903
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
@@ -389,4 +397,4 @@ MonoBehaviour:
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60006
-        trainDataId: 40001
+        trainDataId: 30006

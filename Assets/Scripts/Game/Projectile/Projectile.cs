@@ -98,45 +98,23 @@ namespace TrainDefense.Game
 
         protected virtual void FixedUpdate()
         {
-            if (config != null && _movementStrategy != null)
-            {
-                float deltaTime = Time.fixedDeltaTime;
-                _age += deltaTime;
+            if (config == null || _movementStrategy == null) return;
 
-                _movementStrategy.UpdateMovement(this, deltaTime);
+            float deltaTime = Time.fixedDeltaTime;
+            _age += deltaTime;
 
-                // 지연 낙하 타입의 경우 충돌 없이 타겟 위치에 도달했을 때 처리
-                if (_movementStrategy.ShouldImpact(this))
-                {
-                    ProcessDelayedDropImpact();
-                }
-            }
-            else
+            _movementStrategy.UpdateMovement(this, deltaTime);
+
+            // 지연 낙하 타입의 경우 충돌 없이 타겟 위치에 도달했을 때 처리
+            if (_movementStrategy.ShouldImpact(this))
             {
-                // 기존 호환성 유지
-                MoveLegacy();
+                ProcessDelayedDropImpact();
             }
         }
 
-        private void MoveLegacy()
-        {
-            if (config != null && config.Speed <= 0) return;
-            transform.Translate(Vector3.right * Time.deltaTime * config.Speed);
-        }
 
-        private void ProcessDelayedDropImpact()
-        {
-            // 지연 낙하가 타겟 위치에 도달했을 때 범위 내 모든 몬스터에 데미지
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
-            foreach (var col in colliders)
-            {
-                if (col.TryGetComponent<IProjectileTarget>(out var target))
-                {
-                    ProcessEnter(target);
-                }
-            }
-        }
 
+        #region Trigger Events
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.TryGetComponent<IProjectileTarget>(out var target))
@@ -166,7 +144,9 @@ namespace TrainDefense.Game
 
             ProcessExit(target);
         }
+        #endregion
 
+        #region Process
         internal void ProcessEnter(IProjectileTarget target)
         {
             if (target == null || !target.IsActive)
@@ -184,43 +164,33 @@ namespace TrainDefense.Game
             }
 
             // 데미지 처리
-            if (config != null)
+            if (config == null) return;
+
+            if (config.DamageType == DamageType.Tick)
             {
-                if (config.DamageType == DamageType.Tick)
+                // 틱 데미지: 처음 진입 시 즉시 데미지
+                if (!_damageTimers.ContainsKey(target))
                 {
-                    // 틱 데미지: 처음 진입 시 즉시 데미지
-                    if (!_damageTimers.ContainsKey(target))
-                    {
-                        _damageTimers[target] = _age;
-                        target.TakeDamage(_damage);
-                    }
-                }
-                else
-                {
-                    // 직접 데미지
+                    _damageTimers[target] = _age;
                     target.TakeDamage(_damage);
-
-                    if (config.DestroyOnTriggerEnter)
-                    {
-                        ReturnToPool();
-                        return;
-                    }
-                }
-
-                // 상태 효과 적용
-                if (config.HasShoveEffect)
-                {
-                    target.Shove(config.ShovePower, config.ShoveDuration);
                 }
             }
             else
             {
-                // 기존 호환성
+                // 직접 데미지
                 target.TakeDamage(_damage);
-                if (config != null && config.DestroyOnTriggerEnter)
+
+                if (config.DestroyOnTriggerEnter)
                 {
                     ReturnToPool();
+                    return;
                 }
+            }
+
+            // 상태 효과 적용
+            if (config.HasShoveEffect)
+            {
+                target.Shove(config.ShovePower, config.ShoveDuration);
             }
         }
 
@@ -287,11 +257,20 @@ namespace TrainDefense.Game
             }
         }
 
-
-        protected bool IsMonster(Collider2D other, out Monster monster)
+        private void ProcessDelayedDropImpact()
         {
-            return other.TryGetComponent(out monster);
+            // 지연 낙하가 타겟 위치에 도달했을 때 범위 내 모든 몬스터에 데미지
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
+            foreach (var col in colliders)
+            {
+                if (col.TryGetComponent<IProjectileTarget>(out var target))
+                {
+                    ProcessEnter(target);
+                }
+            }
         }
+        #endregion
+
 
         public bool IsScaleByAttackRange()
         {
