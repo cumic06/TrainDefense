@@ -109,12 +109,4 @@ namespace TrainDefense.Game.Datas
             return choices[^1].Option;
         }
     }
-
-    [Serializable]
-    public class ChoiceEntry
-    {
-        [SerializeReference]
-        public IChoiceOption Option;
-        public int Weight;
-    }
 }

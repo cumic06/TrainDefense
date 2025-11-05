@@ -7,7 +7,7 @@ using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game
 {
-    public class Monster : MonoBehaviour, IDamageable
+    public class Monster : MonoBehaviour, IDamageable, IProjectileTarget
     {
         #region Field
         [SerializeField]
@@ -31,6 +31,8 @@ namespace TrainDefense.Game
         protected Coroutine _shoveCoroutine;
 
         public string Id => id;
+        public bool IsActive => gameObject.activeInHierarchy;
+        public Transform TargetTransform => transform;
 
         private void Awake()
         {

@@ -59,16 +59,3 @@ namespace TrainDefense.Game.Datas
     }
 }
 
-[Serializable]
-public struct MonsterStatusInfo
-{
-    public int MaxHp;
-    public int Damage;
-    public float MoveSpeed;
-    public float AttackDelay;
-    public int DropExpMin;
-    public int DropExpMax;
-    public int DropMoneyMin;
-    public int DropMoneyMax;
-    public float AttackRange;
-}

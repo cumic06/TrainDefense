@@ -100,19 +100,4 @@ namespace TrainDefense.Game.Datas
             return upgrades[level];
         }
     }
-
-    [Serializable]
-    public struct TrainStatusData
-    {
-        public int MaxHp;
-    }
-
-    /// <summary>
-    /// Train 타입별 추가 업그레이드 데이터
-    /// </summary>
-    [System.Serializable]
-    public abstract class TrainUpgradeExtension
-    {
-
-    }
 }

@@ -37,19 +37,4 @@ namespace TrainDefense.Game.Datas
         [Obsolete("Use RangeProjectilePrefab property instead")]
         public Projectile RangeProjectilePrefabComponent => RangeProjectilePrefab?.GetComponent<Projectile>();
     }
-    
-    [Serializable]
-    public class RangeTrainUpgradeExtension : TrainUpgradeExtension
-    {
-        public RangeAttackTrainStatus RangeStatusUpgrade;
-    }
-
-    [Serializable]
-    public struct RangeAttackTrainStatus
-    {
-        public float AttackRange;
-        public int AttackDamage;
-        public int AttackCount;
-        public float AttackInterval;
-    }
 }

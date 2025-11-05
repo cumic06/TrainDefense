@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -9,178 +8,263 @@ namespace TrainDefense.Game
     {
         #region Field
         [SerializeField]
-        private float speed;
-        [SerializeField]
-        private float destroyDelay;
-        [SerializeField]
-        private bool destroyOnTriggerEnter = true;
-
-        [SerializeField]
-        private bool isTargeting = false;
-
-        [SerializeField]
-        [BoxGroup("TickProjectile")]
-        protected bool isTickProjectile;
-        [SerializeField]
-        [BoxGroup("TickProjectile")]
-        protected float tickDamageInterval = 0.1f;
-
-        [SerializeField]
-        [BoxGroup("SlowProjectile")]
-        protected bool isSlowProjectile;
-        [SerializeField]
-        [BoxGroup("SlowProjectile")]
-        protected float slowValue = 0.5f;
-
-        [SerializeField]
-        [BoxGroup("ShoveProjectile")]
-        protected bool isShoveProjectile;
-        [SerializeField]
-        [BoxGroup("ShoveProjectile")]
-        protected float shovePower = 1f;
-        [SerializeField]
-        [BoxGroup("ShoveProjectile")]
-        protected float shoveDuration = 0.5f;
-        [SerializeField]
-        [BoxGroup("StunProjectile")]
-        protected bool isStunProjectile;
-        [SerializeField]
-        [BoxGroup("StunProjectile")]
-        protected float stunDuration = 0.5f;
+        private ProjectileConfig config;
         #endregion
 
-        protected int _damage;
+        private int _damage;
+        private IProjectileTarget _target;
+        private IMovementStrategy _movementStrategy;
         private Coroutine _destroyCoroutine;
-
-        protected Dictionary<Monster, float> _monsterDamageTimers = new();
-        protected Monster targetMonster;
+        private Dictionary<IProjectileTarget, float> _damageTimers = new();
+        private float _age;
 
         #region Enable/Disable
 
         private void OnEnable()
         {
-            if (destroyDelay <= 0) return;
-
-            if (_destroyCoroutine != null)
+            _age = 0f;
+            _damageTimers.Clear();
+            
+            if (config != null && config.DestroyDelay > 0)
             {
-                StopCoroutine(_destroyCoroutine);
+                if (_destroyCoroutine != null)
+                {
+                    StopCoroutine(_destroyCoroutine);
+                }
+                _destroyCoroutine = StartCoroutine(DestroyCoroutine());
             }
-            _destroyCoroutine = StartCoroutine(DestroyCoroutine());
         }
 
         private void OnDisable()
         {
-            _monsterDamageTimers.Clear();
+            _damageTimers.Clear();
+            _movementStrategy = null;
         }
 
         #endregion
 
-        public void Init(int damage, Monster targetMonster = null)
+        /// <summary>
+        /// 투사체 초기화
+        /// </summary>
+        /// <param name="damage">데미지</param>
+        /// <param name="target">타겟 (Monster 또는 null)</param>
+        public void Init(int damage, IProjectileTarget target = null)
         {
             _damage = damage;
+            _target = target;
 
-            this.targetMonster = targetMonster;
+            if (config != null)
+            {
+                InitializeWithConfig();
+            }
+        }
+
+        private void InitializeWithConfig()
+        {
+            // 이동 전략 초기화
+            _movementStrategy = CreateMovementStrategy(config.MovementType);
+            _movementStrategy?.Initialize(this, config, _target);
+        }
+
+        private IMovementStrategy CreateMovementStrategy(MovementType movementType)
+        {
+            return movementType switch
+            {
+                MovementType.Linear => new LinearMovementStrategy(),
+                MovementType.DelayedDrop => new DelayedDropMovementStrategy(),
+                MovementType.NonMovement => new NonMovementStrategy(),
+                _ => new LinearMovementStrategy()
+            };
         }
 
         protected virtual void FixedUpdate()
         {
-            Move();
+            if (config != null && _movementStrategy != null)
+            {
+                float deltaTime = Time.fixedDeltaTime;
+                _age += deltaTime;
+                
+                _movementStrategy.UpdateMovement(this, deltaTime);
+                
+                // 지연 낙하 타입의 경우 충돌 없이 타겟 위치에 도달했을 때 처리
+                if (_movementStrategy.ShouldImpact(this))
+                {
+                    ProcessDelayedDropImpact();
+                }
+            }
+            else
+            {
+                // 기존 호환성 유지
+                MoveLegacy();
+            }
         }
 
-        protected virtual void Move()
+        private void MoveLegacy()
         {
-            if (speed <= 0) return;
+            if (config != null && config.Speed <= 0) return;
+            transform.Translate(Vector3.right * Time.deltaTime * config.Speed);
+        }
 
-            transform.Translate(Vector3.right * Time.deltaTime * speed);
+        private void ProcessDelayedDropImpact()
+        {
+            // 지연 낙하가 타겟 위치에 도달했을 때 범위 내 모든 몬스터에 데미지
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
+            foreach (var col in colliders)
+            {
+                if (col.TryGetComponent<IProjectileTarget>(out var target))
+                {
+                    ProcessImpact(target);
+                }
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (IsMonster(other, out Monster monster))
+            if (!other.TryGetComponent<IProjectileTarget>(out var target))
             {
-                if (isTargeting)
-                {
-                    if (monster == targetMonster)
-                    {
-                        monster.TakeDamage(_damage);
-                    }
-                }
-
-                if (isTickProjectile)
-                {
-                    // 처음 들어올 때는 즉시 데미지 적용
-                    if (!_monsterDamageTimers.ContainsKey(monster))
-                    {
-                        _monsterDamageTimers[monster] = Time.time;
-                        monster.TakeDamage(_damage);
-                    }
-                }
-                else
-                {
-                    monster.TakeDamage(_damage);
-
-                    if (destroyOnTriggerEnter)
-                    {
-                        ResourceManager.Instance.Destroy(gameObject);
-                    }
-                }
-
-                if (isShoveProjectile)
-                {
-                    if (monster == null) return;
-                    monster.Shove(shovePower, shoveDuration);
-                }
+                return;
             }
+
+            ProcessImpact(target);
         }
 
         private void OnTriggerStay2D(Collider2D other)
         {
-            if (IsMonster(other, out Monster monster))
+            if (!other.TryGetComponent<IProjectileTarget>(out var target))
             {
-                if (isTickProjectile)
-                {
-                    // Monster가 Dictionary에 있는지 확인하고, tickDamageInterval 시간이 지났으면 데미지 적용
-                    if (_monsterDamageTimers.ContainsKey(monster))
-                    {
-                        float lastDamageTime = _monsterDamageTimers[monster];
-                        if (Time.time - lastDamageTime >= tickDamageInterval)
-                        {
-                            if (monster == null) return;
-                            monster.TakeDamage(_damage);
-                            _monsterDamageTimers[monster] = Time.time;
-                        }
-                    }
-                }
-
-                if (isSlowProjectile)
-                {
-                    if (monster == null) return;
-                    monster.Slow(slowValue);
-                }
-
-                if (isShoveProjectile)
-                {
-                    if (monster == null) return;
-                    monster.Shove(shovePower, shoveDuration);
-                }
+                return;
             }
+
+            ProcessStay(target);
         }
 
         private void OnTriggerExit2D(Collider2D other)
         {
-            if (IsMonster(other, out Monster monster))
+            if (!other.TryGetComponent<IProjectileTarget>(out var target))
             {
-                if (isTickProjectile)
+                return;
+            }
+
+            ProcessExit(target);
+        }
+
+        internal void ProcessImpact(IProjectileTarget target)
+        {
+            if (target == null || !target.IsActive)
+            {
+                return;
+            }
+
+            // 타겟팅 체크
+            if (config != null && config.IsTargeting && _target != null)
+            {
+                if (!ReferenceEquals(target, _target))
                 {
-                    // Dictionary에서 제거
-                    _monsterDamageTimers.Remove(monster);
+                    return;
+                }
+            }
+
+            // 데미지 처리
+            if (config != null)
+            {
+                if (config.DamageType == DamageType.Tick)
+                {
+                    // 틱 데미지: 처음 진입 시 즉시 데미지
+                    if (!_damageTimers.ContainsKey(target))
+                    {
+                        _damageTimers[target] = _age;
+                        target.TakeDamage(_damage);
+                    }
+                }
+                else
+                {
+                    // 직접 데미지
+                    target.TakeDamage(_damage);
+                    
+                    if (config.DestroyOnTriggerEnter)
+                    {
+                        ReturnToPool();
+                        return;
+                    }
                 }
 
-                if (isSlowProjectile)
+                // 상태 효과 적용
+                if (config.HasShoveEffect)
                 {
-                    if (monster == null || !monster.gameObject.activeInHierarchy) return;
-                    monster.ResetMoveSpeed();
+                    target.Shove(config.ShovePower, config.ShoveDuration);
                 }
+            }
+            else
+            {
+                // 기존 호환성
+                target.TakeDamage(_damage);
+                if (config != null && config.DestroyOnTriggerEnter)
+                {
+                    ReturnToPool();
+                }
+            }
+        }
+
+        internal void ProcessStay(IProjectileTarget target)
+        {
+            if (target == null || !target.IsActive)
+            {
+                return;
+            }
+
+            if (config == null)
+            {
+                return;
+            }
+
+            // 틱 데미지 처리
+            if (config.DamageType == DamageType.Tick)
+            {
+                if (_damageTimers.TryGetValue(target, out float lastTime))
+                {
+                    if (_age - lastTime >= config.TickDamageInterval)
+                    {
+                        target.TakeDamage(_damage);
+                        _damageTimers[target] = _age;
+                    }
+                }
+            }
+
+            // 슬로우 효과 (Stay 중 지속 적용)
+            if (config.HasSlowEffect)
+            {
+                target.Slow(config.SlowValue);
+            }
+
+            // 넉백 효과 (Stay 중에도 적용)
+            if (config.HasShoveEffect)
+            {
+                target.Shove(config.ShovePower, config.ShoveDuration);
+            }
+        }
+
+        internal void ProcessExit(IProjectileTarget target)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            if (config == null)
+            {
+                return;
+            }
+
+            // 틱 데미지 타이머 제거
+            if (config.DamageType == DamageType.Tick)
+            {
+                _damageTimers.Remove(target);
+            }
+
+            // 슬로우 효과 해제
+            if (config.HasSlowEffect && target.IsActive)
+            {
+                target.ResetMoveSpeed();
             }
         }
 
@@ -189,10 +273,15 @@ namespace TrainDefense.Game
             return other.TryGetComponent(out monster);
         }
 
+        public void ReturnToPool()
+        {
+            ResourceManager.Instance.Destroy(gameObject);
+        }
+
         private IEnumerator DestroyCoroutine()
         {
-            yield return new WaitForSeconds(destroyDelay);
-            ResourceManager.Instance.Destroy(gameObject);
+            yield return new WaitForSeconds(config.DestroyDelay);
+            ReturnToPool();
         }
     }
 }

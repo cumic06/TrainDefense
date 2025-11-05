@@ -46,15 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0907a9776ee9974e812d3090ccb3113, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.RangeProjectile
-  speed: 0
-  destroyDelay: 0
-  isTickProjectile: 1
-  tickDamageInterval: 0.3
-  isSlowProjectile: 1
-  slowValue: 0.1
-  isShoveProjectile: 0
-  shovePower: 1
-  shoveDuration: 0.5
+  config: {fileID: 11400000, guid: 97f394dfc1cc56d488bb48621a6e60a1, type: 2}
 --- !u!58 &-652766451336997734
 CircleCollider2D:
   m_ObjectHideFlags: 0

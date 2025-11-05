@@ -37,23 +37,4 @@ namespace TrainDefense.Game.Datas
         [Obsolete("Use TurretProjectilePrefab property instead")]
         public Projectile TurretProjectilePrefabComponent => TurretProjectilePrefab?.GetComponent<Projectile>();
     }
-
-    [Serializable]
-    public struct TurretTrainStatus
-    {
-        public float AttackRange;
-        public int AttackDamage;
-        public int AttackCount;
-        public float AttackDelay;
-        public int TargetCount;
-    }
-
-    /// <summary>
-    /// TurretTrain의 추가 업그레이드 데이터
-    /// </summary>
-    [Serializable]
-    public class TurretTrainUpgradeExtension : TrainUpgradeExtension
-    {
-        public TurretTrainStatus TurretStatusUpgrade;
-    }
 }
