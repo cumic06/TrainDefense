@@ -58,6 +58,7 @@ namespace TrainDefense.Game.UI
                 choiceSelectUI.transform.localScale = Vector3.zero;
 
                 await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).SetUpdate(true);
+                choiceSelectUI.SetButtonInteractable(true);
             }
         }
 
@@ -68,6 +69,7 @@ namespace TrainDefense.Game.UI
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
                 choiceSelectUI.transform.localScale = Vector3.one;
+                choiceSelectUI.SetButtonInteractable(false);
                 choiceSelectUI.transform.DOScale(0, uiActiveDelay).SetEase(Ease.InBack).SetUpdate(true);
             }
 

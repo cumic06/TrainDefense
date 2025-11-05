@@ -59,6 +59,11 @@ namespace TrainDefense.Game.UI
             _isSelected = true;
         }
 
+        public void SetButtonInteractable(bool interactable)
+        {
+            _selectButton.interactable = interactable;
+        }
+
         #region Pointer Events
         public void OnPointerEnter(PointerEventData eventData)
         {
