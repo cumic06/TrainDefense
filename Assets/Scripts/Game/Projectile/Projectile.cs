@@ -9,6 +9,8 @@ namespace TrainDefense.Game
         #region Field
         [SerializeField]
         private ProjectileConfig config;
+        [SerializeField]
+        private GameObject model;
         #endregion
 
         private int _damage;
@@ -24,7 +26,7 @@ namespace TrainDefense.Game
         {
             _age = 0f;
             _damageTimers.Clear();
-            
+
             if (config != null && config.DestroyDelay > 0)
             {
                 if (_destroyCoroutine != null)
@@ -48,22 +50,39 @@ namespace TrainDefense.Game
         /// </summary>
         /// <param name="damage">데미지</param>
         /// <param name="target">타겟 (Monster 또는 null)</param>
-        public void Init(int damage, IProjectileTarget target = null)
+        /// <param name="attackRange">공격 범위 (스케일 조정에 사용)</param>
+        public void Init(int damage, IProjectileTarget target = null, float attackRange = 0f)
         {
             _damage = damage;
             _target = target;
 
             if (config != null)
             {
-                InitializeWithConfig();
+                InitializeWithConfig(attackRange);
             }
         }
 
-        private void InitializeWithConfig()
+        private void InitializeWithConfig(float attackRange = 0f)
         {
             // 이동 전략 초기화
             _movementStrategy = CreateMovementStrategy(config.MovementType);
             _movementStrategy?.Initialize(this, config, _target);
+
+            // AttackRange에 따른 스케일 조정
+            if (config.ScaleByAttackRange && attackRange > 0f)
+            {
+                ApplyScaleByAttackRange(attackRange);
+            }
+        }
+
+        private void ApplyScaleByAttackRange(float attackRange)
+        {
+            if (model == null) return;
+
+            Vector3 currentScale = model.transform.localScale;
+
+            model.transform.localPosition = new Vector3(attackRange / 2, 0, 0);
+            model.transform.localScale = new Vector3(attackRange, currentScale.y, currentScale.z);
         }
 
         private IMovementStrategy CreateMovementStrategy(MovementType movementType)
@@ -83,9 +102,9 @@ namespace TrainDefense.Game
             {
                 float deltaTime = Time.fixedDeltaTime;
                 _age += deltaTime;
-                
+
                 _movementStrategy.UpdateMovement(this, deltaTime);
-                
+
                 // 지연 낙하 타입의 경우 충돌 없이 타겟 위치에 도달했을 때 처리
                 if (_movementStrategy.ShouldImpact(this))
                 {
@@ -113,7 +132,7 @@ namespace TrainDefense.Game
             {
                 if (col.TryGetComponent<IProjectileTarget>(out var target))
                 {
-                    ProcessImpact(target);
+                    ProcessEnter(target);
                 }
             }
         }
@@ -125,7 +144,7 @@ namespace TrainDefense.Game
                 return;
             }
 
-            ProcessImpact(target);
+            ProcessEnter(target);
         }
 
         private void OnTriggerStay2D(Collider2D other)
@@ -148,7 +167,7 @@ namespace TrainDefense.Game
             ProcessExit(target);
         }
 
-        internal void ProcessImpact(IProjectileTarget target)
+        internal void ProcessEnter(IProjectileTarget target)
         {
             if (target == null || !target.IsActive)
             {
@@ -180,7 +199,7 @@ namespace TrainDefense.Game
                 {
                     // 직접 데미지
                     target.TakeDamage(_damage);
-                    
+
                     if (config.DestroyOnTriggerEnter)
                     {
                         ReturnToPool();
@@ -268,9 +287,16 @@ namespace TrainDefense.Game
             }
         }
 
+
         protected bool IsMonster(Collider2D other, out Monster monster)
         {
             return other.TryGetComponent(out monster);
+        }
+
+        public bool IsScaleByAttackRange()
+        {
+            if (config == null) return false;
+            return config.ScaleByAttackRange;
         }
 
         public void ReturnToPool()

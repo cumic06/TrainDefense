@@ -10,11 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_LocalScale.x
-      value: 15
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2592336871553980171, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_LocalPosition.x
@@ -84,22 +84,25 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4962468444152244275, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+    - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -967930815021062673}
+      addedObject: {fileID: 4647368486461747833}
+    - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4319115480271441579}
   m_SourcePrefab: {fileID: 100100000, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
---- !u!1 &3987502661359253927 stripped
+--- !u!1 &4599933861158539560 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 4962468444152244275, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
   m_PrefabInstance: {fileID: 8324989994183266708}
   m_PrefabAsset: {fileID: 0}
---- !u!61 &-967930815021062673
+--- !u!61 &4647368486461747833
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3987502661359253927}
+  m_GameObject: {fileID: 4599933861158539560}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -130,12 +133,24 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &4319115480271441579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4599933861158539560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d9d58d318f14614fa2184557df4d40c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ProjectileTriggerHelper

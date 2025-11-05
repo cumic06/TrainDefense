@@ -14,7 +14,7 @@ namespace TrainDefense.Game
         #endregion
 
         private RangeAttackTrainStatus _currentRangeTrainStatus;
-        private RangeProjectile _rangeProjectilePrefab;
+        private Projectile _rangeProjectilePrefab;
         private Coroutine _rangeAttackCoroutine;
 
         protected override void Setup()
@@ -83,15 +83,10 @@ namespace TrainDefense.Game
             if (rangeTrainData.RangeProjectilePrefab != null)
             {
                 Projectile projectile = rangeTrainData.RangeProjectilePrefab?.GetComponent<Projectile>();
+                
                 if (projectile != null)
                 {
-                    RangeProjectile rangeProjectile = projectile.GetComponent<RangeProjectile>();
-                    if (rangeProjectile == null)
-                    {
-                        Debug.LogWarning($"RangeTrain: RangeProjectilePrefab requires RangeProjectile component on {rangeTrainData.RangeProjectilePrefab.name}");
-                        return;
-                    }
-                    _rangeProjectilePrefab = ResourceManager.Instance.Spawn(rangeProjectile);
+                    _rangeProjectilePrefab = ResourceManager.Instance.Spawn(projectile);
                     _rangeProjectilePrefab.transform.SetParent(transform);
                     _rangeProjectilePrefab.transform.localScale = new Vector3(rangeTrainData.RangeTrainStatus.AttackRange, rangeTrainData.RangeTrainStatus.AttackRange, 1);
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
@@ -121,6 +116,7 @@ namespace TrainDefense.Game
                 }
             }
         }
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;

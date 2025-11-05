@@ -45,9 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a0228f3b6521904faa99e0d29c6d059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Projectile
-  damage: 10
-  speed: 20
-  destroyDelay: 5
+  config: {fileID: 0}
+  model: {fileID: 5502960260318281916}
 --- !u!1 &5502960260318281916
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,7 +124,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 731328439
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

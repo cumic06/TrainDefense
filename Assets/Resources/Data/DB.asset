@@ -122,6 +122,23 @@ MonoBehaviour:
       AttackDelay: 1.5
       TargetCount: 5
     turretProjectilePrefabId: ElectrickProjectile
+  - id: 30006
+    name: "\uD3EC\uACA9 \uD3EC\uD0D1"
+    iconId: 
+    description: "\uAC70\uB300\uD55C \uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574
+      \uBA87 \uCD08 \uD6C4 \uAD11\uC5ED \uD53C\uD574\uB97C \uC900\uB2E4."
+    trainStatusData:
+      MaxHp: 100
+    prefabId: CannonTurretTrain
+    isMainTrain: 0
+    upgrades: []
+    turretTrainStatus:
+      AttackRange: 10
+      AttackDamage: 50
+      AttackCount: 1
+      AttackDelay: 2
+      TargetCount: 0
+    turretProjectilePrefabId: CannonProjectile
   rangeTrainDataList:
   - id: 40002
     name: "\uB0C9\uAE30 \uD3EC\uD0D1"
@@ -270,7 +287,7 @@ MonoBehaviour:
     addTrainChoices:
     - Option:
         rid: 2066870334413602903
-      Weight: 0
+      Weight: 100
     - Option:
         rid: 2066870334413602905
       Weight: 0
@@ -282,7 +299,7 @@ MonoBehaviour:
       Weight: 0
     - Option:
         rid: 2066870334413602908
-      Weight: 100
+      Weight: 0
     - Option:
         rid: 2066870365229940814
       Weight: 0

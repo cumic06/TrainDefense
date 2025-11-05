@@ -146,7 +146,15 @@ namespace TrainDefense.Game
 
                 bullet.transform.localPosition = Vector3.zero;
 
-                bullet.Init(_currentTurretTrainStatus.AttackDamage, GetNearTargetMonster());
+                if (bullet.IsScaleByAttackRange())
+                {
+                    bullet.Init(_currentTurretTrainStatus.AttackDamage, GetNearTargetMonster(), _currentTurretTrainStatus.AttackRange);
+                }
+                else
+                {
+                    bullet.Init(_currentTurretTrainStatus.AttackDamage, GetNearTargetMonster());
+                }
+                
                 bullet.transform.LookAt2D(GetNearTargetMonster().transform);
             }
         }
@@ -157,26 +165,31 @@ namespace TrainDefense.Game
             {
                 if (i >= _targetMonsters.Count) break;
 
-                Debug.Log($"TargetedCount : {_targetMonsters.Count} realCount : {i}");
-
-                Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
-                bullet.transform.localScale = Vector3.one;
+                Projectile projectile = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
+                projectile.transform.localScale = Vector3.one;
 
                 if (i < turretProjectileSpawnPoints.Length)
                 {
-                    bullet.transform.SetParent(turretProjectileSpawnPoints[i]);
+                    projectile.transform.SetParent(turretProjectileSpawnPoints[i]);
                 }
                 else
                 {
-                    bullet.transform.SetParent(turretProjectileSpawnPoints[0]);
+                    projectile.transform.SetParent(turretProjectileSpawnPoints[0]);
                 }
 
-                bullet.transform.localPosition = Vector3.zero;
+                projectile.transform.localPosition = Vector3.zero;
 
                 if (_targetMonsters[i] != null)
                 {
-                    bullet.Init(_currentTurretTrainStatus.AttackDamage, _targetMonsters[i]);
-                    bullet.transform.LookAt2D(_targetMonsters[i].transform);
+                    if (projectile.IsScaleByAttackRange())
+                    {
+                        projectile.Init(_currentTurretTrainStatus.AttackDamage, _targetMonsters[i], _currentTurretTrainStatus.AttackRange);
+                    }
+                    else
+                    {
+                        projectile.Init(_currentTurretTrainStatus.AttackDamage, _targetMonsters[i]);
+                    }
+                    projectile.transform.LookAt2D(_targetMonsters[i].transform);
                 }
             }
         }
@@ -196,26 +209,26 @@ namespace TrainDefense.Game
                 Monster currentTarget = _targetMonsters[i];
                 if (currentTarget == null) continue;
 
-                Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
-                if (bullet == null) continue;
+                Projectile projectile = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
+                if (projectile == null) continue;
 
-                bullet.transform.localScale = Vector3.one;
+                projectile.transform.localScale = Vector3.one;
 
                 if (i < turretProjectileSpawnPoints.Length)
                 {
-                    bullet.transform.SetParent(turretProjectileSpawnPoints[i]);
+                    projectile.transform.SetParent(turretProjectileSpawnPoints[i]);
                 }
                 else
                 {
-                    bullet.transform.SetParent(turretProjectileSpawnPoints[0]);
+                    projectile.transform.SetParent(turretProjectileSpawnPoints[0]);
                 }
 
-                bullet.transform.localPosition = Vector3.zero;
-                bullet.transform.localRotation = Quaternion.identity;
+                projectile.transform.localPosition = Vector3.zero;
+                projectile.transform.localRotation = Quaternion.identity;
 
                 // 지연 낙하 투사체 초기화
-                bullet.Init(_currentTurretTrainStatus.AttackDamage, currentTarget);
-                
+                projectile.Init(_currentTurretTrainStatus.AttackDamage, currentTarget);
+
                 // 투사체가 DelayedDropMovement를 사용하도록 Config가 설정되어 있어야 함
                 // 또는 여기서 직접 위치를 설정하고 투사체를 비활성화해두고, 코루틴으로 지연 후 활성화
             }

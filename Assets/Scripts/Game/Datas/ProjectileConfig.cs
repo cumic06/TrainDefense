@@ -32,6 +32,10 @@ namespace TrainDefense.Game
         [SerializeField]
         private bool destroyOnTriggerEnter = true;
         
+        [BoxGroup("Scale")]
+        [SerializeField]
+        private bool scaleByAttackRange = false;
+        
         [BoxGroup("Targeting")]
         [SerializeField]
         private bool isTargeting = false;
@@ -84,6 +88,7 @@ namespace TrainDefense.Game
         public float DelaySeconds => delaySeconds;
         public float DestroyDelay => destroyDelay;
         public bool DestroyOnTriggerEnter => destroyOnTriggerEnter;
+        public bool ScaleByAttackRange => scaleByAttackRange;
         public bool IsTargeting => isTargeting;
         public DamageType DamageType => damageType;
         public float TickDamageInterval => tickDamageInterval;
