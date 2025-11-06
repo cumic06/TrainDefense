@@ -278,6 +278,11 @@ namespace TrainDefense.Game
             return config.ScaleByAttackRange;
         }
 
+        public ProjectileConfig GetConfig()
+        {
+            return config;
+        }
+
         public void ReturnToPool()
         {
             ResourceManager.Instance.Destroy(gameObject);

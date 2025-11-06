@@ -1,7 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Events;
+using Cumic.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -202,6 +205,15 @@ namespace TrainDefense.Game
             Monster targetMonster = GetNearTargetMonster();
             if (targetMonster == null) return;
 
+            // Projectile prefab에서 config 가져오기
+            Projectile projectilePrefab = turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
+            if (projectilePrefab == null) return;
+
+            ProjectileConfig config = projectilePrefab.GetConfig();
+            if (config == null || config.MovementType != MovementType.DelayedDrop) return;
+
+            float delaySeconds = config.DelaySeconds;
+
             for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
             {
                 if (i >= _targetMonsters.Count) break;
@@ -209,29 +221,56 @@ namespace TrainDefense.Game
                 Monster currentTarget = _targetMonsters[i];
                 if (currentTarget == null) continue;
 
-                Projectile projectile = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
-                if (projectile == null) continue;
+                // 고유 ID 생성
+                string warningId = $"{GetInstanceID()}_{i}_{Time.time}";
+                Vector3 targetPosition = currentTarget.transform.position;
+                Vector3 warningSize = Vector3.one; // Warning UI 크기 (필요시 조정 가능)
 
-                projectile.transform.localScale = Vector3.one;
+                // WarningEvent 발행
+                GameEventSystem.Publish(new WarningEvent(warningId, targetPosition, warningSize));
 
-                if (i < turretProjectileSpawnPoints.Length)
-                {
-                    projectile.transform.SetParent(turretProjectileSpawnPoints[i]);
-                }
-                else
-                {
-                    projectile.transform.SetParent(turretProjectileSpawnPoints[0]);
-                }
-
-                projectile.transform.localPosition = Vector3.zero;
-                projectile.transform.localRotation = Quaternion.identity;
-
-                // 지연 낙하 투사체 초기화
-                projectile.Init(_currentTurretTrainStatus.AttackDamage, currentTarget);
-
-                // 투사체가 DelayedDropMovement를 사용하도록 Config가 설정되어 있어야 함
-                // 또는 여기서 직접 위치를 설정하고 투사체를 비활성화해두고, 코루틴으로 지연 후 활성화
+                // 코루틴으로 지연 후 Projectile 생성
+                StartCoroutine(DelayedProjectileSpawn(warningId, currentTarget, delaySeconds, i));
             }
+        }
+
+        private IEnumerator DelayedProjectileSpawn(string warningId, Monster target, float delaySeconds, int spawnPointIndex)
+        {
+            yield return new WaitForSeconds(delaySeconds);
+
+            if (target == null || !target.IsActive)
+            {
+                // 타겟이 사라졌으면 Warning 제거
+                GameEventSystem.Publish(new WarningRemovedEvent(warningId));
+                yield break;
+            }
+
+            Projectile projectile = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
+            if (projectile == null)
+            {
+                GameEventSystem.Publish(new WarningRemovedEvent(warningId));
+                yield break;
+            }
+
+            projectile.transform.localScale = Vector3.one;
+
+            if (spawnPointIndex < turretProjectileSpawnPoints.Length)
+            {
+                projectile.transform.SetParent(turretProjectileSpawnPoints[spawnPointIndex]);
+            }
+            else
+            {
+                projectile.transform.SetParent(turretProjectileSpawnPoints[0]);
+            }
+
+            projectile.transform.localPosition = Vector3.zero;
+            projectile.transform.localRotation = Quaternion.identity;
+
+            // 지연 낙하 투사체 초기화
+            projectile.Init(_currentTurretTrainStatus.AttackDamage, target);
+
+            // Projectile 생성 후 Warning 제거
+            GameEventSystem.Publish(new WarningRemovedEvent(warningId));
         }
         #endregion
 
