@@ -231,7 +231,7 @@ namespace TrainDefense.Game
                 if (data.IsWarningProjectile && data.WarningObject != null)
                 {
                     Vector3 warningPosition = currentTarget.transform.position;
-                    GameObject warningInstance = Instantiate(data.WarningObject, warningPosition, Quaternion.identity);
+                    GameObject warningInstance = ResourceManager.Instance.Spawn(data.WarningObject, warningPosition, Quaternion.identity);
                     warningInstance.SetActive(true);
 
                     // 코루틴으로 지연 시간 후 WarningObject 제거 및 Projectile 소환

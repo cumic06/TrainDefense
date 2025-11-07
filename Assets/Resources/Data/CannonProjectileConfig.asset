@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ProjectileConfig
   movementType: 1
   speed: 10
-  delaySeconds: 2
+  delaySeconds: 0.5
   destroyDelay: 0.5
   destroyOnTriggerEnter: 0
   scaleByAttackRange: 0
