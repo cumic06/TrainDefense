@@ -8,7 +8,7 @@ namespace TrainDefense.Game
     {
         #region Field
         [SerializeField]
-        private ProjectileConfig config;
+        private ProjectileData data;
         [SerializeField]
         private GameObject model;
         #endregion
@@ -27,7 +27,7 @@ namespace TrainDefense.Game
             _age = 0f;
             _damageTimers.Clear();
 
-            if (config != null && config.DestroyDelay > 0)
+            if (data != null && data.DestroyDelay > 0)
             {
                 if (_destroyCoroutine != null)
                 {
@@ -56,7 +56,7 @@ namespace TrainDefense.Game
             _damage = damage;
             _target = target;
 
-            if (config != null)
+            if (data != null)
             {
                 InitializeWithConfig(attackRange);
             }
@@ -65,11 +65,11 @@ namespace TrainDefense.Game
         private void InitializeWithConfig(float attackRange = 0f)
         {
             // 이동 전략 초기화
-            _movementStrategy = CreateMovementStrategy(config.MovementType);
-            _movementStrategy?.Initialize(this, config, _target);
+            _movementStrategy = CreateMovementStrategy(data.MovementType);
+            _movementStrategy?.Initialize(this, data, _target);
 
             // AttackRange에 따른 스케일 조정
-            if (config.ScaleByAttackRange && attackRange > 0f)
+            if (data.ScaleByAttackRange && attackRange > 0f)
             {
                 ApplyScaleByAttackRange(attackRange);
             }
@@ -98,7 +98,7 @@ namespace TrainDefense.Game
 
         protected virtual void FixedUpdate()
         {
-            if (config == null || _movementStrategy == null) return;
+            if (data == null || _movementStrategy == null) return;
 
             float deltaTime = Time.fixedDeltaTime;
             _age += deltaTime;
@@ -155,7 +155,7 @@ namespace TrainDefense.Game
             }
 
             // 타겟팅 체크
-            if (config != null && config.IsTargeting && _target != null)
+            if (data != null && data.IsTargeting && _target != null)
             {
                 if (!ReferenceEquals(target, _target))
                 {
@@ -164,9 +164,9 @@ namespace TrainDefense.Game
             }
 
             // 데미지 처리
-            if (config == null) return;
+            if (data == null) return;
 
-            if (config.DamageType == DamageType.Tick)
+            if (data.DamageType == DamageType.Tick)
             {
                 // 틱 데미지: 처음 진입 시 즉시 데미지
                 if (!_damageTimers.ContainsKey(target))
@@ -180,7 +180,7 @@ namespace TrainDefense.Game
                 // 직접 데미지
                 target.TakeDamage(_damage);
 
-                if (config.DestroyOnTriggerEnter)
+                if (data.DestroyOnTriggerEnter)
                 {
                     ReturnToPool();
                     return;
@@ -188,9 +188,9 @@ namespace TrainDefense.Game
             }
 
             // 상태 효과 적용
-            if (config.HasShoveEffect)
+            if (data.HasShoveEffect)
             {
-                target.Shove(config.ShovePower, config.ShoveDuration);
+                target.Shove(data.ShovePower, data.ShoveDuration);
             }
         }
 
@@ -201,17 +201,17 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (config == null)
+            if (data == null)
             {
                 return;
             }
 
             // 틱 데미지 처리
-            if (config.DamageType == DamageType.Tick)
+            if (data.DamageType == DamageType.Tick)
             {
                 if (_damageTimers.TryGetValue(target, out float lastTime))
                 {
-                    if (_age - lastTime >= config.TickDamageInterval)
+                    if (_age - lastTime >= data.TickDamageInterval)
                     {
                         target.TakeDamage(_damage);
                         _damageTimers[target] = _age;
@@ -220,15 +220,15 @@ namespace TrainDefense.Game
             }
 
             // 슬로우 효과 (Stay 중 지속 적용)
-            if (config.HasSlowEffect)
+            if (data.HasSlowEffect)
             {
-                target.Slow(config.SlowValue);
+                target.Slow(data.SlowValue);
             }
 
             // 넉백 효과 (Stay 중에도 적용)
-            if (config.HasShoveEffect)
+            if (data.HasShoveEffect)
             {
-                target.Shove(config.ShovePower, config.ShoveDuration);
+                target.Shove(data.ShovePower, data.ShoveDuration);
             }
         }
 
@@ -239,19 +239,19 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (config == null)
+            if (data == null)
             {
                 return;
             }
 
             // 틱 데미지 타이머 제거
-            if (config.DamageType == DamageType.Tick)
+            if (data.DamageType == DamageType.Tick)
             {
                 _damageTimers.Remove(target);
             }
 
             // 슬로우 효과 해제
-            if (config.HasSlowEffect && target.IsActive)
+            if (data.HasSlowEffect && target.IsActive)
             {
                 target.ResetMoveSpeed();
             }
@@ -274,13 +274,13 @@ namespace TrainDefense.Game
 
         public bool IsScaleByAttackRange()
         {
-            if (config == null) return false;
-            return config.ScaleByAttackRange;
+            if (data == null) return false;
+            return data.ScaleByAttackRange;
         }
 
-        public ProjectileConfig GetConfig()
+        public ProjectileData GetData()
         {
-            return config;
+            return data;
         }
 
         public void ReturnToPool()
@@ -290,7 +290,7 @@ namespace TrainDefense.Game
 
         private IEnumerator DestroyCoroutine()
         {
-            yield return new WaitForSeconds(config.DestroyDelay);
+            yield return new WaitForSeconds(data.DestroyDelay);
             ReturnToPool();
         }
     }

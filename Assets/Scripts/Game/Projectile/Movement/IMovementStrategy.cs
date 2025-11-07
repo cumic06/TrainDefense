@@ -5,7 +5,7 @@ namespace TrainDefense.Game
     /// </summary>
     public interface IMovementStrategy
     {
-        void Initialize(Projectile projectile, ProjectileConfig config, IProjectileTarget target);
+        void Initialize(Projectile projectile, ProjectileData data, IProjectileTarget target);
         void UpdateMovement(Projectile projectile, float deltaTime);
         bool ShouldImpact(Projectile projectile);
     }

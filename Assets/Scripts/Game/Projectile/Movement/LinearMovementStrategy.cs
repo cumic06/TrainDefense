@@ -9,9 +9,9 @@ namespace TrainDefense.Game
     {
         private float _speed;
         
-        public void Initialize(Projectile projectile, ProjectileConfig config, IProjectileTarget target)
+        public void Initialize(Projectile projectile, ProjectileData data, IProjectileTarget target)
         {
-            _speed = config.Speed;
+            _speed = data.Speed;
         }
         
         public void UpdateMovement(Projectile projectile, float deltaTime)

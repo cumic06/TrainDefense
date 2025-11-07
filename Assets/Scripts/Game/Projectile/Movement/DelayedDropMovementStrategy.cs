@@ -12,9 +12,9 @@ namespace TrainDefense.Game
         private Vector3 _targetPosition;
         private bool _hasImpacted;
         
-        public void Initialize(Projectile projectile, ProjectileConfig config, IProjectileTarget target)
+        public void Initialize(Projectile projectile, ProjectileData data, IProjectileTarget target)
         {
-            _delaySeconds = config.DelaySeconds;
+            _delaySeconds = data.DelaySeconds;
             _elapsedTime = 0f;
             _hasImpacted = false;
             

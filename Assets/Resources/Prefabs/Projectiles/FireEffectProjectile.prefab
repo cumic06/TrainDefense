@@ -47,7 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42ec66f1f54ac3e41910ce2a359a12dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ParticleProjectile
-  config: {fileID: 11400000, guid: ff277412d1ef2a7469b1ff332b0d0dc4, type: 2}
+  data: {fileID: 11400000, guid: ff277412d1ef2a7469b1ff332b0d0dc4, type: 2}
+  model: {fileID: 0}
   colliderUpdateInterval: 0.1
   particleRadius: 0.5
 --- !u!198 &7808667237599030221

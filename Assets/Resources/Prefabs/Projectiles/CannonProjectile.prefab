@@ -61,6 +61,10 @@ PrefabInstance:
       value: CannonProjectile
       objectReference: {fileID: 0}
     - target: {fileID: 7647787386087136604, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 11400000, guid: 9553de41d544bb64e8eb513ac280e48d, type: 2}
+    - target: {fileID: 7647787386087136604, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: speed
       value: 20
       objectReference: {fileID: 0}
@@ -82,7 +86,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 0.87209356
       objectReference: {fileID: 0}
     - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_Color.r

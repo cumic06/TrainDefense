@@ -5,7 +5,7 @@ namespace TrainDefense.Game
     /// </summary>
     public class NonMovementStrategy : IMovementStrategy
     {
-        public void Initialize(Projectile projectile, ProjectileConfig config, IProjectileTarget target)
+        public void Initialize(Projectile projectile, ProjectileData data, IProjectileTarget target)
         {
             // 이동하지 않으므로 초기화 작업 없음
         }

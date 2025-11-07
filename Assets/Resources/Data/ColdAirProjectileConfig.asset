@@ -9,18 +9,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32079aa857465c94ba944a744525088d, type: 3}
+  m_Script: {fileID: 11500000, guid: 85d71741927f0cb49979c6bbb9b6f67a, type: 3}
   m_Name: ColdAirProjectileConfig
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ProjectileConfig
   movementType: 2
-  speed: 0
+  speed: 10
   delaySeconds: 1
   destroyDelay: 0
   destroyOnTriggerEnter: 0
   scaleByAttackRange: 0
   isTargeting: 0
   damageType: 1
-  tickDamageInterval: 0.1
+  tickDamageInterval: 0.2
   hasSlowEffect: 1
   slowValue: 0.5
   hasShoveEffect: 0
@@ -28,3 +28,5 @@ MonoBehaviour:
   shoveDuration: 0.5
   hasStunEffect: 0
   stunDuration: 0.5
+  isWarningProjectile: 0
+  warningObject: {fileID: 0}

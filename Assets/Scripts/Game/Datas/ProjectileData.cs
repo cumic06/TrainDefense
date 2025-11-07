@@ -7,8 +7,8 @@ namespace TrainDefense.Game
     /// 투사체 설정 데이터 (ScriptableObject)
     /// Unity Inspector에서 설정하여 재사용 가능
     /// </summary>
-    [CreateAssetMenu(fileName = "ProjectileConfig", menuName = "Data/Projectile/ProjectileConfig")]
-    public class ProjectileConfig : ScriptableObject
+    [CreateAssetMenu(fileName = "ProjectileData", menuName = "Data/Projectile/ProjectileData")]
+    public class ProjectileData : ScriptableObject
     {
         [BoxGroup("Movement")]
         [SerializeField]
@@ -81,6 +81,15 @@ namespace TrainDefense.Game
         [SerializeField]
         private float stunDuration = 0.5f;
         
+        [BoxGroup("Warning")]
+        [SerializeField]
+        private bool isWarningProjectile = false;
+        
+        [BoxGroup("Warning")]
+        [ShowIf("isWarningProjectile")]
+        [SerializeField]
+        private GameObject warningObject;
+        
         #region Properties
         
         public MovementType MovementType => movementType;
@@ -99,7 +108,10 @@ namespace TrainDefense.Game
         public float ShoveDuration => shoveDuration;
         public bool HasStunEffect => hasStunEffect;
         public float StunDuration => stunDuration;
+        public bool IsWarningProjectile => isWarningProjectile;
+        public GameObject WarningObject => warningObject;
         
         #endregion
     }
 }
+
