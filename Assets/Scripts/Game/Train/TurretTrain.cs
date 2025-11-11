@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cumic.Events;
 using DG.Tweening;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
-using Cumic.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -35,6 +35,12 @@ namespace TrainDefense.Game
         {
             base.Setup();
             _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
+            GameEventSystem.Subscribe<WarningRemovedEvent>(OnWarningRemoved);
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<WarningRemovedEvent>(OnWarningRemoved);
         }
 
         private void FixedUpdate()
@@ -115,15 +121,11 @@ namespace TrainDefense.Game
                 });
             }
 
-            Projectile projectilePrefab = turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
-            if (projectilePrefab != null)
+            ProjectileData projectileData = GetProjectile().GetData();
+            if (projectileData != null && projectileData.MovementType == MovementType.DelayedDrop)
             {
-                ProjectileData data = projectilePrefab.GetData();
-                if (data != null && data.MovementType == MovementType.DelayedDrop)
-                {
-                    DelayedDropAttack();
-                    return;
-                }
+                DelayedDropAttack();
+                return;
             }
 
             if (isTargeting)
@@ -146,7 +148,7 @@ namespace TrainDefense.Game
             {
                 if (i >= _targetMonsters.Count) break;
 
-                Projectile bullet = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
+                Projectile bullet = ResourceManager.Instance.Spawn(GetProjectile());
                 bullet.transform.localScale = Vector3.one;
 
                 if (i < turretProjectileSpawnPoints.Length)
@@ -168,7 +170,7 @@ namespace TrainDefense.Game
                 {
                     bullet.Init(_currentTurretTrainStatus.AttackDamage, GetNearTargetMonster());
                 }
-                
+
                 bullet.transform.LookAt2D(GetNearTargetMonster().transform);
             }
         }
@@ -179,7 +181,7 @@ namespace TrainDefense.Game
             {
                 if (i >= _targetMonsters.Count) break;
 
-                Projectile projectile = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
+                Projectile projectile = ResourceManager.Instance.Spawn(GetProjectile());
                 projectile.transform.localScale = Vector3.one;
 
                 if (i < turretProjectileSpawnPoints.Length)
@@ -212,7 +214,7 @@ namespace TrainDefense.Game
         private void DelayedDropAttack()
         {
             // ProjectileData 가져오기
-            Projectile projectilePrefab = turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
+            Projectile projectilePrefab = GetProjectile();
             if (projectilePrefab == null) return;
 
             ProjectileData data = projectilePrefab.GetData();
@@ -227,33 +229,52 @@ namespace TrainDefense.Game
                 Monster currentTarget = _targetMonsters[i];
                 if (currentTarget == null) continue;
 
-                // WarningObject가 있으면 먼저 소환
+                Vector3 targetPosition = currentTarget.transform.position;
+
+                // WarningObject가 있으면 이벤트 발행
                 if (data.IsWarningProjectile && data.WarningObject != null)
                 {
-                    Vector3 warningPosition = currentTarget.transform.position;
-                    GameObject warningInstance = ResourceManager.Instance.Spawn(data.WarningObject, warningPosition, Quaternion.identity);
-                    warningInstance.SetActive(true);
-
-                    // 코루틴으로 지연 시간 후 WarningObject 제거 및 Projectile 소환
-                    StartCoroutine(DelayedProjectileSpawn(warningInstance, currentTarget, delaySeconds, i, data));
+                    WarningEvent warningEvent = new WarningEvent(data.WarningObject, targetPosition, delaySeconds, currentTarget);
+                    GameEventSystem.Publish(warningEvent);
                 }
                 else
                 {
-                    // WarningObject가 없으면 지연 시간 후 바로 Projectile 소환
-                    StartCoroutine(DelayedProjectileSpawn(null, currentTarget, delaySeconds, i, data));
+                    // Warning이 없으면 바로 Projectile 소환
+                    StartCoroutine(DelayedProjectileSpawn(currentTarget, targetPosition, delaySeconds));
                 }
             }
         }
 
-        private IEnumerator DelayedProjectileSpawn(GameObject warningInstance, Monster target, float delaySeconds, int spawnPointIndex, ProjectileData data)
+        private void OnWarningRemoved(WarningRemovedEvent warningRemovedEvent)
+        {
+            // 타겟이 사라졌으면 Projectile 소환하지 않음
+            if (warningRemovedEvent.Target == null || !warningRemovedEvent.Target.IsActive)
+            {
+                return;
+            }
+
+            Projectile projectile = ResourceManager.Instance.Spawn(GetProjectile());
+
+            if (projectile == null)
+            {
+                return;
+            }
+
+            projectile.transform.position = warningRemovedEvent.WorldPosition;
+
+            if (projectile.IsScaleByAttackRange())
+            {
+                projectile.Init(_currentTurretTrainStatus.AttackDamage, warningRemovedEvent.Target, _currentTurretTrainStatus.AttackRange);
+            }
+            else
+            {
+                projectile.Init(_currentTurretTrainStatus.AttackDamage, warningRemovedEvent.Target);
+            }
+        }
+
+        private IEnumerator DelayedProjectileSpawn(Monster target, Vector3 spawnWorldPosition, float delaySeconds)
         {
             yield return new WaitForSeconds(delaySeconds);
-
-            // WarningObject 제거
-            if (warningInstance != null)
-            {
-                ResourceManager.Instance.Destroy(warningInstance);
-            }
 
             // 타겟이 사라졌으면 Projectile 소환하지 않음
             if (target == null || !target.IsActive)
@@ -261,31 +282,15 @@ namespace TrainDefense.Game
                 yield break;
             }
 
-            // Projectile 소환
-            Projectile projectile = ResourceManager.Instance.Spawn(turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>());
+            Projectile projectile = ResourceManager.Instance.Spawn(GetProjectile());
+
             if (projectile == null)
             {
                 yield break;
             }
 
-            projectile.transform.localScale = Vector3.one;
+            projectile.transform.position = spawnWorldPosition;
 
-            if (spawnPointIndex < turretProjectileSpawnPoints.Length)
-            {
-                projectile.transform.SetParent(turretProjectileSpawnPoints[spawnPointIndex]);
-            }
-            else
-            {
-                projectile.transform.SetParent(turretProjectileSpawnPoints[0]);
-            }
-
-            projectile.transform.localPosition = Vector3.zero;
-            projectile.transform.localRotation = Quaternion.identity;
-
-            // 타겟 위치로 이동
-            projectile.transform.position = target.transform.position;
-
-            // Projectile 초기화
             if (projectile.IsScaleByAttackRange())
             {
                 projectile.Init(_currentTurretTrainStatus.AttackDamage, target, _currentTurretTrainStatus.AttackRange);
@@ -353,6 +358,11 @@ namespace TrainDefense.Game
                 _particleProjectilePrefab.gameObject.SetActive(false);
             }
             base.OnDead();
+        }
+
+        private Projectile GetProjectile()
+        {
+            return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
         }
 
 #if UNITY_EDITOR

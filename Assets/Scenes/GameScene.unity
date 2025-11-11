@@ -401,6 +401,7 @@ GameObject:
   - component: {fileID: 214686403}
   - component: {fileID: 214686402}
   - component: {fileID: 214686405}
+  - component: {fileID: 214686406}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -512,6 +513,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.DamageUISpawner
   damageUI: {fileID: -8015864109821002527, guid: 5624163a5f8572f4a8e71f3874781b47, type: 3}
+--- !u!114 &214686406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 214686400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3281a8ddf9a390e48b08cf5cd532aec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.WarningUISpawner
 --- !u!1001 &215704412
 PrefabInstance:
   m_ObjectHideFlags: 0

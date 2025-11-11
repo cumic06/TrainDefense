@@ -18,14 +18,7 @@ namespace TrainDefense.Game
             _elapsedTime = 0f;
             _hasImpacted = false;
             
-            if (target != null && target.TargetTransform != null)
-            {
-                _targetPosition = target.TargetTransform.position;
-            }
-            else
-            {
-                _targetPosition = projectile.transform.position;
-            }
+            _targetPosition = projectile.transform.position;
         }
         
         public void UpdateMovement(Projectile projectile, float deltaTime)

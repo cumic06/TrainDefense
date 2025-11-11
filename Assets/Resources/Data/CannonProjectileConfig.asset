@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ProjectileConfig
   movementType: 1
   speed: 10
-  delaySeconds: 0.5
-  destroyDelay: 0.5
+  delaySeconds: 1
+  destroyDelay: 0.25
   destroyOnTriggerEnter: 0
   scaleByAttackRange: 0
   isTargeting: 0
@@ -29,4 +29,4 @@ MonoBehaviour:
   hasStunEffect: 0
   stunDuration: 0.5
   isWarningProjectile: 1
-  warningObject: {fileID: 6703959836020111167, guid: f640fda18fdc3474ab91702dc8fc983e, type: 3}
+  warningObject: {fileID: 1478840698368329111, guid: 1801ab89b587696458f689d6123a298f, type: 3}
