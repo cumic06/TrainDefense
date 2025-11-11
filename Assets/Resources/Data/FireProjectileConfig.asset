@@ -16,7 +16,7 @@ MonoBehaviour:
   speed: 10
   delaySeconds: 1
   destroyDelay: 0
-  destroyOnTriggerEnter: 1
+  destroyOnTriggerEnter: 0
   scaleByAttackRange: 0
   isTargeting: 0
   damageType: 0
