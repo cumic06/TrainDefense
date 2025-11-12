@@ -33,7 +33,7 @@ namespace TrainDefense.Game.UI
             }
 
             // 지연 시간 후 제거 및 WarningRemovedEvent 발행
-            StartCoroutine(RemoveWarningAfterDelay(warningInstance, warningEvent.DelaySeconds, warningEvent));
+            StartCoroutine(RemoveWarningAfterDelay(warningInstance, warningEvent.WarningDelaySeconds, warningEvent));
         }
 
         private IEnumerator RemoveWarningAfterDelay(GameObject warningInstance, float delaySeconds, WarningEvent warningEvent)
@@ -53,7 +53,7 @@ namespace TrainDefense.Game.UI
                 }
 
                 // WarningRemovedEvent 발행
-                GameEventSystem.Publish(new WarningRemovedEvent(worldPosition, warningEvent.Target));
+                GameEventSystem.Publish(new WarningRemovedEvent(worldPosition, warningEvent.WarningDelaySeconds, warningEvent.Target));
 
                 ResourceManager.Instance.Destroy(warningInstance);
             }

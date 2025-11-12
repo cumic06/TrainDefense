@@ -87,7 +87,7 @@ MonoBehaviour:
       AttackCount: 1
       AttackDelay: 0.3
       TargetCount: 0
-    turretProjectilePrefabId: NormalTurretProjectile
+    turretProjectilePrefabId: NormalProjectile
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: 
@@ -112,7 +112,7 @@ MonoBehaviour:
       \uC804\uAE30\uB85C \uACF5\uACA9\uD55C\uB2E4."
     trainStatusData:
       MaxHp: 100
-    prefabId: ElectrickTrain
+    prefabId: ElectrickTurretTrain
     isMainTrain: 0
     upgrades: []
     turretTrainStatus:
@@ -139,6 +139,23 @@ MonoBehaviour:
       AttackDelay: 2
       TargetCount: 0
     turretProjectilePrefabId: CannonProjectile
+  - id: 30007
+    name: "\uC800\uACA9 \uD3EC\uD0D1"
+    iconId: 
+    description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uCD08 \uD6C4 \uAC15\uD55C
+      \uD53C\uD574\uB97C \uC900\uB2E4."
+    trainStatusData:
+      MaxHp: 100
+    prefabId: SniperTurretTrain
+    isMainTrain: 0
+    upgrades: []
+    turretTrainStatus:
+      AttackRange: 15
+      AttackDamage: 50
+      AttackCount: 1
+      AttackDelay: 7
+      TargetCount: 0
+    turretProjectilePrefabId: SniperProjectile
   rangeTrainDataList:
   - id: 40002
     name: "\uB0C9\uAE30 \uD3EC\uD0D1"
@@ -147,7 +164,7 @@ MonoBehaviour:
       \uB290\uB824\uC9C0\uACE0 \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
-    prefabId: ColdAirTrain
+    prefabId: ColdAirRangeTrain
     isMainTrain: 0
     upgrades: []
     rangeTrainStatus:
@@ -163,7 +180,7 @@ MonoBehaviour:
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
-    prefabId: ExplosionTrain
+    prefabId: ExplosionRangeTrain
     isMainTrain: 0
     upgrades: []
     rangeTrainStatus:
@@ -299,15 +316,18 @@ MonoBehaviour:
       Weight: 0
     - Option:
         rid: 2066870334413602908
-      Weight: 100
+      Weight: 0
     - Option:
         rid: 2066870365229940814
-      Weight: 0
+      Weight: 100
     - Option:
         rid: 439507874151399537
       Weight: 0
     - Option:
         rid: 439507899332690073
+      Weight: 0
+    - Option:
+        rid: 439508061413965932
       Weight: 0
     upgradeTrainChoices:
     - Option:
@@ -332,11 +352,16 @@ MonoBehaviour:
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60007
-        trainDataId: 40001
+        trainDataId: 30007
     - rid: 439507899332690073
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60008
+        trainDataId: 40001
+    - rid: 439508061413965932
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 60009
         trainDataId: 40002
     - rid: 2066870334413602903
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}

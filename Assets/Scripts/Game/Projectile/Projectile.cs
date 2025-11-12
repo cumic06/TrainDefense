@@ -90,7 +90,7 @@ namespace TrainDefense.Game
             return movementType switch
             {
                 MovementType.Linear => new LinearMovementStrategy(),
-                MovementType.DelayedDrop => new DelayedDropMovementStrategy(),
+                MovementType.TargetPos => new TargetPosMovementStrategy(),
                 MovementType.NonMovement => new NonMovementStrategy(),
                 _ => new LinearMovementStrategy()
             };
@@ -105,10 +105,10 @@ namespace TrainDefense.Game
 
             _movementStrategy.UpdateMovement(this, deltaTime);
 
-            // 지연 낙하 타입의 경우 충돌 없이 타겟 위치에 도달했을 때 처리
+            // 타겟 위치 이동 타입의 경우 충돌 없이 타겟 위치에 도달했을 때 처리
             if (_movementStrategy.ShouldImpact(this))
             {
-                ProcessDelayedDropImpact();
+                ProcessTargetPosImpact();
             }
         }
 
@@ -262,9 +262,9 @@ namespace TrainDefense.Game
             }
         }
 
-        private void ProcessDelayedDropImpact()
+        private void ProcessTargetPosImpact()
         {
-            // 지연 낙하가 타겟 위치에 도달했을 때 범위 내 모든 몬스터에 데미지
+            // 타겟 위치에 도달했을 때 범위 내 모든 몬스터에 데미지
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
             foreach (var col in colliders)
             {

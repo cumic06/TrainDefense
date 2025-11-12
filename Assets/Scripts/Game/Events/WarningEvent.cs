@@ -6,19 +6,19 @@ namespace TrainDefense.Game.Events
     {
         private GameObject _warningObject;
         private Vector3 _worldPosition;
-        private float _delaySeconds;
+        private float _warningDelaySeconds;
         private Monster _target;
 
         public GameObject WarningObject => _warningObject;
         public Vector3 WorldPosition => _worldPosition;
-        public float DelaySeconds => _delaySeconds;
+        public float WarningDelaySeconds => _warningDelaySeconds;
         public Monster Target => _target;
 
-        public WarningEvent(GameObject warningObject, Vector3 worldPosition, float delaySeconds, Monster target)
+        public WarningEvent(GameObject warningObject, Vector3 worldPosition, float warningDelaySeconds, Monster target)
         {
             _warningObject = warningObject;
             _worldPosition = worldPosition;
-            _delaySeconds = delaySeconds;
+            _warningDelaySeconds = warningDelaySeconds;
             _target = target;
         }
     }

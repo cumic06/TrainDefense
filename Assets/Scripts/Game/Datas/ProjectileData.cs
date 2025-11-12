@@ -19,11 +19,6 @@ namespace TrainDefense.Game
         [SerializeField]
         private float speed = 10f;
         
-        [BoxGroup("Movement")]
-        [ShowIf("movementType", MovementType.DelayedDrop)]
-        [SerializeField]
-        private float delaySeconds = 1f;
-        
         [BoxGroup("Lifecycle")]
         [SerializeField]
         private float destroyDelay = 0f;
@@ -83,18 +78,22 @@ namespace TrainDefense.Game
         
         [BoxGroup("Warning")]
         [SerializeField]
-        private bool isWarningProjectile = false;
+        private bool hasWarning = false;
         
         [BoxGroup("Warning")]
-        [ShowIf("isWarningProjectile")]
+        [ShowIf("hasWarning")]
         [SerializeField]
-        private GameObject warningObject;
+        private GameObject warningPrefab;
+        
+        [BoxGroup("Warning")]
+        [ShowIf("hasWarning")]
+        [SerializeField]
+        private float warningDelaySeconds = 1f;
         
         #region Properties
         
         public MovementType MovementType => movementType;
         public float Speed => speed;
-        public float DelaySeconds => delaySeconds;
         public float DestroyDelay => destroyDelay;
         public bool DestroyOnTriggerEnter => destroyOnTriggerEnter;
         public bool ScaleByAttackRange => scaleByAttackRange;
@@ -108,10 +107,10 @@ namespace TrainDefense.Game
         public float ShoveDuration => shoveDuration;
         public bool HasStunEffect => hasStunEffect;
         public float StunDuration => stunDuration;
-        public bool IsWarningProjectile => isWarningProjectile;
-        public GameObject WarningObject => warningObject;
+        public bool HasWarning => hasWarning;
+        public GameObject WarningPrefab => warningPrefab;
+        public float WarningDelaySeconds => warningDelaySeconds;
         
         #endregion
     }
 }
-

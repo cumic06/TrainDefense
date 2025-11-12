@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2900397576479309464}
   - component: {fileID: 141009886251362742}
   m_Layer: 5
-  m_Name: WarningUI
+  m_Name: CannonWarningUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
