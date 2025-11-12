@@ -15,9 +15,6 @@ namespace TrainDefense.Game.UI
 
         [SerializeField]
         private float uiActiveDelay;
-
-        [SerializeField]
-        private string dbPath = "DB/DB";
         #endregion
 
         private int _choiceLeftCount;

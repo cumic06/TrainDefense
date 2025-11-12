@@ -60,7 +60,7 @@ namespace TrainDefense.Game
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _currentTurretTrainStatus.AttackRange);
             _targetMonsters = colliders.Where(a => a.GetComponent<Monster>() != null)
             .Select(a => a.GetComponent<Monster>())
-            .OrderBy(x => Vector3.Distance(transform.position, x.transform.position))
+            .OrderBy(x => transform.position.SqrDistance(x.transform.position))
             .ToList();
         }
 
@@ -115,6 +115,7 @@ namespace TrainDefense.Game
             if (turretModel != null)
             {
                 turretModel.transform.LookAt2D(GetNearTargetMonster().transform);
+
                 turretModel.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
                 {
                     turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
@@ -234,7 +235,7 @@ namespace TrainDefense.Game
                 // WarningObject가 있으면 이벤트 발행
                 if (data.IsWarningProjectile && data.WarningObject != null)
                 {
-                    WarningEvent warningEvent = new WarningEvent(data.WarningObject, targetPosition, delaySeconds, currentTarget);
+                    WarningEvent warningEvent = new(data.WarningObject, targetPosition, delaySeconds, currentTarget);
                     GameEventSystem.Publish(warningEvent);
                 }
                 else

@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using TrainDefense.Game.Datas;
-using TrainDefense;
 
 namespace TrainDefense.Game.UI
 {

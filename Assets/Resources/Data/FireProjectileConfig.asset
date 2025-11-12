@@ -19,7 +19,7 @@ MonoBehaviour:
   destroyOnTriggerEnter: 0
   scaleByAttackRange: 0
   isTargeting: 0
-  damageType: 0
+  damageType: 1
   tickDamageInterval: 0.1
   hasSlowEffect: 0
   slowValue: 0.5

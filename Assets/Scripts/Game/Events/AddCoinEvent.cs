@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace TrainDefense.Game.Events
 {
     public class AddCoinEvent
