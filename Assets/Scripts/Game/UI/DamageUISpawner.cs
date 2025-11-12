@@ -26,7 +26,6 @@ namespace TrainDefense.Game.UI
             if (hitEvent.Damageable is Train train) return;
 
             DamageUI spawnDamageUI = ResourceManager.Instance.Spawn(damageUI, parent: transform);
-            spawnDamageUI.transform.SetSiblingIndex(0);
             spawnDamageUI.SetPosition(Camera.main.WorldToScreenPoint(hitEvent.Position));
             spawnDamageUI.SetDamage(hitEvent.Damage);
         }

@@ -400,8 +400,6 @@ GameObject:
   - component: {fileID: 214686404}
   - component: {fileID: 214686403}
   - component: {fileID: 214686402}
-  - component: {fileID: 214686405}
-  - component: {fileID: 214686406}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -421,6 +419,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 457945049}
+  - {fileID: 1860671694}
   - {fileID: 1451208235}
   - {fileID: 882680029}
   - {fileID: 1643387769}
@@ -500,31 +500,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &214686405
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 214686400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0e01cfaf2497e845b885eedf288147a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.DamageUISpawner
-  damageUI: {fileID: -8015864109821002527, guid: 5624163a5f8572f4a8e71f3874781b47, type: 3}
---- !u!114 &214686406
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 214686400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3281a8ddf9a390e48b08cf5cd532aec8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.WarningUISpawner
 --- !u!1001 &215704412
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -965,6 +940,55 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8984849850624839933, guid: 541ada25a86ffb3479f8d945198245e1, type: 3}
   m_PrefabInstance: {fileID: 439689235}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &457945048
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 457945049}
+  - component: {fileID: 457945050}
+  m_Layer: 5
+  m_Name: DamaUISpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &457945049
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 457945048}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 214686401}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &457945050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 457945048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0e01cfaf2497e845b885eedf288147a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.DamageUISpawner
+  damageUI: {fileID: -8015864109821002527, guid: 5624163a5f8572f4a8e71f3874781b47, type: 3}
 --- !u!1 &534653167
 GameObject:
   m_ObjectHideFlags: 0
@@ -2821,7 +2845,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.TriChoiceUI
   choiceSelectUIs: []
   uiActiveDelay: 0.125
-  dbPath: DB/DB
 --- !u!114 &1451208237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4985,6 +5008,54 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &1860671693
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1860671694}
+  - component: {fileID: 1860671695}
+  m_Layer: 5
+  m_Name: WarningUISpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1860671694
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1860671693}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 214686401}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1860671695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1860671693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3281a8ddf9a390e48b08cf5cd532aec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.WarningUISpawner
 --- !u!1001 &1878387422
 PrefabInstance:
   m_ObjectHideFlags: 0
