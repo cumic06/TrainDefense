@@ -30,6 +30,15 @@ namespace TrainDefense.Game.UI
             if (rectTransform != null)
             {
                 rectTransform.position = screenPosition;
+
+                // 공격 범위에 따른 X 스케일 조정
+                if (warningEvent.IsScaleByAttackRange && warningEvent.AttackRange > 0f)
+                {
+                    Vector3 currentScale = rectTransform.localScale;
+                    Vector3 screenScale = Camera.main.WorldToScreenPoint(warningEvent.WorldPosition);
+                    float scaledX = warningEvent.AttackRange * (screenScale.x / Screen.width);
+                    rectTransform.localScale = new Vector3(scaledX, currentScale.y, currentScale.z);
+                }
             }
 
             // 지연 시간 후 제거 및 WarningRemovedEvent 발행

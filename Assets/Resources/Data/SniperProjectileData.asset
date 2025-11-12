@@ -30,3 +30,4 @@ MonoBehaviour:
   hasWarning: 1
   warningPrefab: {fileID: 1478840698368329111, guid: f300bffbdc7efae4c897674b2dca30d1, type: 3}
   warningDelaySeconds: 0.5
+  isScaleByAttackRange: 1

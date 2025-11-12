@@ -405,7 +405,7 @@ MonoBehaviour:
   IsUnDead: 0
   turretProjectileSpawnPoints:
   - {fileID: 3529707877163048822}
-  useParticleProjectile: 1
+  useParticleProjectile: 0
   isTargeting: 0
   turretModel: {fileID: 7436325860553494596}
 --- !u!4 &3802654949415311762 stripped

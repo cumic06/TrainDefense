@@ -106,7 +106,7 @@ namespace TrainDefense.Game
             {
                 if (_particleProjectilePrefab != null)
                 {
-                    _particleProjectilePrefab.ReturnToPool();
+                    _particleProjectilePrefab.gameObject.SetActive(false);
                 }
             }
         }
@@ -138,7 +138,8 @@ namespace TrainDefense.Game
             {
                 NormalAttack();
             }
-            else
+            
+            else if (useParticleProjectile)
             {
                 ParticleAttack();
             }
@@ -164,7 +165,9 @@ namespace TrainDefense.Game
                         data.WarningPrefab,
                         spawnPosition,
                         data.WarningDelaySeconds,
-                        nearTarget
+                        nearTarget,
+                        data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
+                        data.IsScaleByAttackRange
                     ));
                 }
                 else
@@ -198,7 +201,9 @@ namespace TrainDefense.Game
                         data.WarningPrefab,
                         spawnPosition,
                         data.WarningDelaySeconds,
-                        target
+                        target,
+                        data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
+                        data.IsScaleByAttackRange
                     ));
                 }
                 else
@@ -240,7 +245,9 @@ namespace TrainDefense.Game
                         data.WarningPrefab,
                         targetPosition,
                         data.WarningDelaySeconds,
-                        currentTarget
+                        currentTarget,
+                        data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
+                        data.IsScaleByAttackRange
                     ));
                 }
                 else
@@ -301,10 +308,13 @@ namespace TrainDefense.Game
         #region ParticleAttack
         private void ParticleAttack()
         {
-            ParticleProjectileSpawn();
-            if (_particleProjectilePrefab != null)
+            if (_particleProjectilePrefab == null)
             {
-                _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
+                ParticleProjectileSpawn();
+            }
+            else
+            {
+                _particleProjectilePrefab.gameObject.SetActive(true);
             }
         }
 
@@ -324,6 +334,7 @@ namespace TrainDefense.Game
                 _particleProjectilePrefab.transform.localScale = Vector3.one;
                 _particleProjectilePrefab.transform.localPosition = Vector3.zero;
                 _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
+                _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
             }
         }
         #endregion

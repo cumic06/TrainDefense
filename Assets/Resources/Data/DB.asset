@@ -150,7 +150,7 @@ MonoBehaviour:
     isMainTrain: 0
     upgrades: []
     turretTrainStatus:
-      AttackRange: 15
+      AttackRange: 10
       AttackDamage: 50
       AttackCount: 1
       AttackDelay: 7
@@ -319,10 +319,10 @@ MonoBehaviour:
       Weight: 0
     - Option:
         rid: 2066870365229940814
-      Weight: 100
+      Weight: 0
     - Option:
         rid: 439507874151399537
-      Weight: 0
+      Weight: 100
     - Option:
         rid: 439507899332690073
       Weight: 0
