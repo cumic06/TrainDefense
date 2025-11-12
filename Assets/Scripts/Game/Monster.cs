@@ -20,6 +20,7 @@ namespace TrainDefense.Game
         protected int _currentHp;
 
         protected bool _isShoved;
+        protected bool _isStunned;
         protected bool _isDead;
 
         protected Train _targetTrain;
@@ -29,6 +30,7 @@ namespace TrainDefense.Game
         protected Coroutine _slowCoroutine;
         protected Coroutine _resetMoveSpeedCoroutine;
         protected Coroutine _shoveCoroutine;
+        protected Coroutine _stunCoroutine;
 
         public string Id => id;
         public bool IsActive => gameObject.activeInHierarchy;
@@ -72,6 +74,7 @@ namespace TrainDefense.Game
             DetectTrain();
 
             if (_isShoved) return;
+            if (_isStunned) return;
             Move();
             AttackHandler();
         }
@@ -202,6 +205,27 @@ namespace TrainDefense.Game
             yield return new WaitForSeconds(shoveDuration);
             _isShoved = false;
             _rigidbody2D.linearVelocity = Vector2.zero;
+        }
+        #endregion
+
+        #region Stun
+        public void Stun(float stunDuration)
+        {
+            if (!gameObject.activeInHierarchy) return;
+            if (_isDead) return;
+            
+            if (_stunCoroutine != null)
+            {
+                StopCoroutine(_stunCoroutine);
+            }
+            _stunCoroutine = StartCoroutine(StunCoroutine(stunDuration));
+        }
+
+        private IEnumerator StunCoroutine(float stunDuration)
+        {
+            _isStunned = true;
+            yield return new WaitForSeconds(stunDuration);
+            _isStunned = false;
         }
         #endregion
 

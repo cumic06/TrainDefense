@@ -192,6 +192,11 @@ namespace TrainDefense.Game
             {
                 target.Shove(data.ShovePower, data.ShoveDuration);
             }
+
+            if (data.HasStunEffect)
+            {
+                target.Stun(data.StunDuration);
+            }
         }
 
         internal void ProcessStay(IProjectileTarget target)
@@ -270,7 +275,6 @@ namespace TrainDefense.Game
             }
         }
         #endregion
-
 
         public bool IsScaleByAttackRange()
         {

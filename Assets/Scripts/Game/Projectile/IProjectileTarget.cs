@@ -10,5 +10,6 @@ namespace TrainDefense.Game
         void Slow(float slowValue);
         void ResetMoveSpeed();
         void Shove(float shovePower, float shoveDuration);
+        void Stun(float stunDuration);
     }
 }

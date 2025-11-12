@@ -74,7 +74,7 @@ namespace TrainDefense.Game
             }
 
             // World Space 파티클 위치 수집
-            List<Vector2> particlePositions = new List<Vector2>(particleCount);
+            List<Vector2> particlePositions = new(particleCount);
             for (int i = 0; i < particleCount; i++)
             {
                 Vector3 worldPos = _particles[i].position;
@@ -151,7 +151,7 @@ namespace TrainDefense.Game
             Vector2 center = (points[0] + points[1] + points[2]) / 3f;
 
             // 중심점 기준으로 각도 순으로 정렬
-            List<Vector2> sorted = new List<Vector2>(points);
+            List<Vector2> sorted = new(points);
             sorted.Sort((a, b) =>
             {
                 float angleA = Mathf.Atan2(a.y - center.y, a.x - center.x);
