@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cumic.Events;
@@ -37,6 +36,12 @@ namespace TrainDefense.Game
             _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
 
             GameEventSystem.Subscribe<WarningRemovedEvent>(OnWarningRemoved);
+
+            // ParticleProjectile이 사용되는 경우 초기화 시 한 번만 소환
+            if (useParticleProjectile)
+            {
+                ParticleProjectileSpawn();
+            }
         }
 
         private void OnDestroy()
@@ -308,34 +313,40 @@ namespace TrainDefense.Game
         #region ParticleAttack
         private void ParticleAttack()
         {
-            if (_particleProjectilePrefab == null)
-            {
-                ParticleProjectileSpawn();
-            }
-            else
+            // ParticleProjectile은 Setup()에서 이미 소환되었으므로 활성화만 수행
+            if (_particleProjectilePrefab != null)
             {
                 _particleProjectilePrefab.gameObject.SetActive(true);
             }
         }
 
+        /// <summary>
+        /// ParticleProjectile 초기 소환 (Setup에서 한 번만 호출)
+        /// 포탑 위치에 붙어있도록 parent 설정
+        /// </summary>
         private void ParticleProjectileSpawn()
         {
-            Projectile projectile = GetProjectile();
+            if (_particleProjectilePrefab != null) return; // 이미 소환된 경우 중복 소환 방지
 
-            if (projectile != null)
+            Projectile projectile = GetProjectile();
+            if (projectile == null) return;
+
+            ParticleProjectile particleProjectile = projectile.GetComponent<ParticleProjectile>();
+            if (particleProjectile == null)
             {
-                ParticleProjectile particleProjectile = projectile.GetComponent<ParticleProjectile>();
-                if (particleProjectile == null)
-                {
-                    Debug.LogWarning($"TurretTrain: ParticleProjectile requires ParticleProjectile component on {turretTrainData.TurretProjectilePrefab.name}");
-                    return;
-                }
-                _particleProjectilePrefab = ResourceManager.Instance.Spawn(particleProjectile, parent: turretProjectileSpawnPoints[0]);
-                _particleProjectilePrefab.transform.localScale = Vector3.one;
-                _particleProjectilePrefab.transform.localPosition = Vector3.zero;
-                _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
-                _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
+                Debug.LogWarning($"TurretTrain: ParticleProjectile requires ParticleProjectile component on {turretTrainData.TurretProjectilePrefab.name}");
+                return;
             }
+
+            // 포탑 위치에 붙어있도록 parent 설정하여 소환
+            _particleProjectilePrefab = ResourceManager.Instance.Spawn(particleProjectile, parent: turretProjectileSpawnPoints[0]);
+            _particleProjectilePrefab.transform.localScale = Vector3.one;
+            _particleProjectilePrefab.transform.localPosition = Vector3.zero;
+            _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
+            _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
+            
+            // 초기 소환 시 비활성화 상태로 시작
+            _particleProjectilePrefab.gameObject.SetActive(false);
         }
         #endregion
 
