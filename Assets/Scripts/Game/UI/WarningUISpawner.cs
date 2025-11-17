@@ -22,49 +22,55 @@ namespace TrainDefense.Game.UI
             if (warningEvent.WarningObject == null) return;
 
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(warningEvent.WorldPosition);
-            GameObject warningInstance = ResourceManager.Instance.Spawn(warningEvent.WarningObject, parent: transform);
-            warningInstance.SetActive(true);
+            RectTransform warningInstance = ResourceManager.Instance.Spawn(warningEvent.WarningObject, parent: transform).GetComponent<RectTransform>();
+            warningInstance.gameObject.SetActive(true);
 
-            // UI 위치 설정
-            RectTransform rectTransform = warningInstance.GetComponent<RectTransform>();
-            if (rectTransform != null)
+            if (warningInstance != null)
             {
-                rectTransform.position = screenPosition;
+                warningInstance.position = screenPosition;
 
-                // 공격 범위에 따른 X 스케일 조정
                 if (warningEvent.IsScaleByAttackRange && warningEvent.AttackRange > 0f)
                 {
-                    Vector3 currentScale = rectTransform.localScale;
-                    Vector3 screenScale = Camera.main.WorldToScreenPoint(warningEvent.WorldPosition);
-                    float scaledX = warningEvent.AttackRange * (screenScale.x / Screen.width);
-                    rectTransform.localScale = new Vector3(scaledX, currentScale.y, currentScale.z);
+                    Vector3 currentScale = warningInstance.localScale;
+                    float scaledX = warningEvent.AttackRange / 2;
+                    warningInstance.localScale = new Vector3(scaledX, currentScale.y, currentScale.z);
+
+                    Vector3 currentLocalPosition = warningInstance.localPosition;
+                    float offsetHalf = warningEvent.AttackRange / 2;
+                    warningInstance.localPosition = new Vector3(currentLocalPosition.x + offsetHalf, currentLocalPosition.y, currentLocalPosition.z);
+
+                    if (warningEvent.Target != null)
+                    {
+                        warningInstance.LookAt2D(warningEvent.Target.transform);
+                        warningInstance.rotation = Quaternion.Euler(0f, 0f, warningInstance.rotation.eulerAngles.z + 30);
+                        warningInstance.localPosition = new Vector3(currentLocalPosition.x / 2, currentLocalPosition.y / 2, currentLocalPosition.z / 2);
+                    }
+
                 }
             }
 
-            // 지연 시간 후 제거 및 WarningRemovedEvent 발행
             StartCoroutine(RemoveWarningAfterDelay(warningInstance, warningEvent.WarningDelaySeconds, warningEvent));
         }
 
-        private IEnumerator RemoveWarningAfterDelay(GameObject warningInstance, float delaySeconds, WarningEvent warningEvent)
+        private IEnumerator RemoveWarningAfterDelay(RectTransform warningInstance, float delaySeconds, WarningEvent warningEvent)
         {
             yield return new WaitForSeconds(delaySeconds);
 
             if (warningInstance != null)
             {
-                // UI의 스크린 위치를 월드 위치로 변환
                 Vector3 worldPosition = warningEvent.WorldPosition;
                 RectTransform rectTransform = warningInstance.GetComponent<RectTransform>();
+
                 if (rectTransform != null)
                 {
                     Vector3 screenPosition = rectTransform.position;
                     worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, Camera.main.nearClipPlane + 1f));
-                    worldPosition.z = 0f; // 2D 게임이므로 Z는 0으로 설정
+                    worldPosition.z = 0f;
                 }
 
-                // WarningRemovedEvent 발행
                 GameEventSystem.Publish(new WarningRemovedEvent(worldPosition, warningEvent.WarningDelaySeconds, warningEvent.Target));
 
-                ResourceManager.Instance.Destroy(warningInstance);
+                ResourceManager.Instance.Destroy(warningInstance.gameObject);
             }
         }
     }

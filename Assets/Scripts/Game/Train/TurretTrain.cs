@@ -143,7 +143,7 @@ namespace TrainDefense.Game
             {
                 NormalAttack();
             }
-            
+
             else if (useParticleProjectile)
             {
                 ParticleAttack();
@@ -164,11 +164,9 @@ namespace TrainDefense.Game
 
                 if (hasWarning && data.WarningDelaySeconds > 0f)
                 {
-                    // Warning 프리팹 소환을 위한 이벤트 발행
-                    Vector3 spawnPosition = turretProjectileSpawnPoints[i < turretProjectileSpawnPoints.Length ? i : 0].position;
                     GameEventSystem.Publish(new WarningEvent(
                         data.WarningPrefab,
-                        spawnPosition,
+                        nearTarget.transform.position,
                         data.WarningDelaySeconds,
                         nearTarget,
                         data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
@@ -344,7 +342,7 @@ namespace TrainDefense.Game
             _particleProjectilePrefab.transform.localPosition = Vector3.zero;
             _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
             _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
-            
+
             // 초기 소환 시 비활성화 상태로 시작
             _particleProjectilePrefab.gameObject.SetActive(false);
         }

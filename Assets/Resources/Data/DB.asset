@@ -153,7 +153,7 @@ MonoBehaviour:
       AttackRange: 10
       AttackDamage: 50
       AttackCount: 1
-      AttackDelay: 7
+      AttackDelay: 5
       TargetCount: 0
     turretProjectilePrefabId: SniperProjectile
   rangeTrainDataList:
