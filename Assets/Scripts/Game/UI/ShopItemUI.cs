@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using TrainDefense.Game.Datas;
+using Cumic.Events;
+using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
 {
@@ -19,6 +21,8 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private TextMeshProUGUI needMoneyText;
         #endregion
+
+        private UpgradeData _upgradeData;
 
         private void Start()
         {
@@ -42,6 +46,8 @@ namespace TrainDefense.Game.UI
 
         private string GetLevelDescription(UpgradeData upgradeData)
         {
+            _upgradeData = upgradeData;
+
             int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
             float nextTotalValue = (currentLevel + 1) * upgradeData.UpgradeValue;
             float increaseAmount = upgradeData.UpgradeValue;
@@ -52,7 +58,7 @@ namespace TrainDefense.Game.UI
             }
             else if (increaseAmount < 0)
             {
-                increaseAmountText = $"-{increaseAmount}";
+                increaseAmountText = $"{increaseAmount}";
             }
 
             string description = string.Format(upgradeData.Description, nextTotalValue, increaseAmountText);
@@ -75,7 +81,8 @@ namespace TrainDefense.Game.UI
 
         private void OnBuyButtonClick()
         {
-            // GameEventSystem.Publish(new BuyShopItemEvent(shopItemData.NeedMoney));
+            GameEventSystem.Publish(new BuyShopItemEvent(_upgradeData.NeedMoney));
+            SetVaild(UserDataManager.Instance.Coin);
         }
     }
 }

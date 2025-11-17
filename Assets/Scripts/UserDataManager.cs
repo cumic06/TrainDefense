@@ -3,6 +3,7 @@ using TrainDefense.Game.Events;
 using Cumic.Events;
 using Cumic;
 using UnityEngine;
+using System;
 
 namespace TrainDefense
 {
@@ -23,10 +24,22 @@ namespace TrainDefense
 
             GameEventSystem.Subscribe<AddExpEvent>(AddExp);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(AddTriChoiceData);
-            GameEventSystem.Subscribe<AddCoinEvent>(AddMoney);
+            GameEventSystem.Subscribe<IncreaseCoinEvent>(InCreaseMoney);
+            GameEventSystem.Subscribe<BuyShopItemEvent>(BuyShopItem);
+            GameEventSystem.Subscribe<DecreaseCoinEvent>(DecreaseMoney);
             _coin = 0;
         }
 
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<BuyShopItemEvent>(BuyShopItem);
+            GameEventSystem.Unsubscribe<AddExpEvent>(AddExp);
+            GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(AddTriChoiceData);
+            GameEventSystem.Unsubscribe<IncreaseCoinEvent>(InCreaseMoney);
+            GameEventSystem.Unsubscribe<DecreaseCoinEvent>(DecreaseMoney);
+        }
+
+        #region Exp
         private void AddExp(AddExpEvent addExpEvent)
         {
             _currentExp += addExpEvent.Exp;
@@ -47,10 +60,16 @@ namespace TrainDefense
         {
             _currentLevel++;
         }
+        #endregion
 
-        private void AddMoney(AddCoinEvent addCoinEvent)
+        private void InCreaseMoney(IncreaseCoinEvent addCoinEvent)
         {
             _coin += addCoinEvent.Coin;
+        }
+
+        private void DecreaseMoney(DecreaseCoinEvent decreaseCoinEvent)
+        {
+            _coin -= decreaseCoinEvent.Coin;
         }
 
         public void AddTriChoiceData(TriChoiceSelectEvent triChoiceSelectEvent)
@@ -69,6 +88,7 @@ namespace TrainDefense
             }
         }
 
+        #region Upgrade
         public int GetUpgradeLevel(string upgradeId)
         {
             return _upgradeLevels.ContainsKey(upgradeId) ? _upgradeLevels[upgradeId] : 0;
@@ -93,6 +113,15 @@ namespace TrainDefense
         public float GetNextLevelUpExp()
         {
             return baseExp * Mathf.Pow(_currentLevel, powFactor) * Mathf.Pow(expMultiplier, _currentLevel);
+        }
+        #endregion
+
+        private void BuyShopItem(BuyShopItemEvent buyShopItemEvent)
+        {
+            if (_coin >= buyShopItemEvent.NeedMoney)
+            {
+                GameEventSystem.Publish(new DecreaseCoinEvent(buyShopItemEvent.NeedMoney));
+            }
         }
     }
 }

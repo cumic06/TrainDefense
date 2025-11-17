@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Cumic.Events;
+using System;
+using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
 {
@@ -34,6 +36,24 @@ namespace TrainDefense.Game.UI
             _shopItemUIs = GetComponentsInChildren<ShopItemUI>().ToList();
         }
 
+        private void Start()
+        {
+            GameEventSystem.Subscribe<BuyShopItemEvent>(OnBuyShopItem);
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<BuyShopItemEvent>(OnBuyShopItem);
+        }
+
+        private void OnBuyShopItem(BuyShopItemEvent buyShopItemEvent)
+        {
+            foreach (var shopItemUI in _shopItemUIs)
+            {
+                shopItemUI.SetVaild(UserDataManager.Instance.Coin);
+            }
+        }
+
         public async void OpenShop()
         {
             if (UserDataManager.Instance == null) return;
@@ -57,7 +77,7 @@ namespace TrainDefense.Game.UI
             backgroundImage.gameObject.SetActive(false);
 
             isShopOpen = false;
-            
+
             GameEventSystem.Publish(new EngageStartEvent());
         }
     }

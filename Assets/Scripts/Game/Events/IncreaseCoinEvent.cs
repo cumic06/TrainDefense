@@ -1,11 +1,11 @@
 namespace TrainDefense.Game.Events
 {
-    public class AddCoinEvent
+    public class IncreaseCoinEvent
     {
         private int _coin;
         public int Coin => _coin;
 
-        public AddCoinEvent(int coin)
+        public IncreaseCoinEvent(int coin)
         {
             _coin = coin;
         }

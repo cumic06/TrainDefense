@@ -263,7 +263,7 @@ namespace TrainDefense.Game
         {
             int dropMoney = Random.Range(_currentMonsterStatus.DropMoneyMin, _currentMonsterStatus.DropMoneyMax);
             ResourceManager.Instance.Spawn(Resources.Load<GameObject>("Prefabs/Money"), transform.position);
-            GameEventSystem.Publish(new AddCoinEvent(dropMoney));
+            GameEventSystem.Publish(new IncreaseCoinEvent(dropMoney));
         }
 
 #if UNITY_EDITOR
