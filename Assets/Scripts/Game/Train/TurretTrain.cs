@@ -30,21 +30,18 @@ namespace TrainDefense.Game
 
         private TurretTrainStatus _currentTurretTrainStatus;
         private ParticleProjectile _particleProjectilePrefab;
+        private readonly List<Projectile> _nonMovementProjectiles = new();
+        private bool _useNonMovementProjectilePooling;
 
         protected override void Setup()
         {
             base.Setup();
 
-            // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
 
             GameEventSystem.Subscribe<WarningRemovedEvent>(OnWarningRemoved);
 
-            // ParticleProjectile이 사용되는 경우 초기화 시 한 번만 소환
-            if (useParticleProjectile)
-            {
-                ParticleProjectileSpawn();
-            }
+            InitializeProjectilePoolingMode();
         }
 
         private void OnDestroy()
@@ -115,6 +112,17 @@ namespace TrainDefense.Game
                 if (_particleProjectilePrefab != null)
                 {
                     _particleProjectilePrefab.gameObject.SetActive(false);
+                }
+            }
+
+            if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+            {
+                foreach (var projectile in _nonMovementProjectiles)
+                {
+                    if (projectile != null)
+                    {
+                        projectile.gameObject.SetActive(false);
+                    }
                 }
             }
         }
@@ -351,6 +359,57 @@ namespace TrainDefense.Game
         }
         #endregion
 
+        #region NonMovement Projectile Pooling
+        /// <summary>
+        /// ProjectileData 가 NonMovement 인 경우, Turret 에서 발사하는 Projectile 을
+        /// ResourceManager 풀 대신 Turret 단위에서 한 번만 소환해두고 active 로만 관리한다.
+        /// (ParticleAttack 과 동일한 컨셉)
+        /// </summary>
+        private void InitializeProjectilePoolingMode()
+        {
+            Projectile projectile = GetProjectile();
+            ProjectileData projectileData = projectile != null ? projectile.GetData() : null;
+
+            _useNonMovementProjectilePooling =
+                projectileData != null && projectileData.MovementType == MovementType.NonMovement;
+
+            // ParticleProjectile 을 사용하는 경우는 기존 로직 그대로 유지
+            if (useParticleProjectile)
+            {
+                ParticleProjectileSpawn();
+            }
+        }
+
+        private Projectile GetOrCreateNonMovementProjectile(int index)
+        {
+            if (!_useNonMovementProjectilePooling)
+            {
+                return null;
+            }
+
+            // index 에 해당하는 Projectile 이 아직 없으면 새로 소환해서 리스트에 보관
+            while (_nonMovementProjectiles.Count <= index)
+            {
+                Projectile baseProjectile = GetProjectile();
+                if (baseProjectile == null)
+                {
+                    return null;
+                }
+
+                Projectile spawned = ResourceManager.Instance.Spawn(baseProjectile);
+                if (spawned == null)
+                {
+                    return null;
+                }
+
+                spawned.gameObject.SetActive(false); // 실제 발사 시점에 활성화
+                _nonMovementProjectiles.Add(spawned);
+            }
+
+            return _nonMovementProjectiles[index];
+        }
+        #endregion
+
         #region Projectile Spawn Helpers
         /// <summary>
         /// Projectile의 Transform 설정 (Parent, Position, Scale, Rotation)
@@ -391,13 +450,28 @@ namespace TrainDefense.Game
 
         private Projectile SpawnNormalProjectile(int index, Monster target = null)
         {
-            Projectile projectile = ResourceManager.Instance.Spawn(GetProjectile());
+            Projectile projectile = null;
+
+            if (_useNonMovementProjectilePooling)
+            {
+                projectile = GetOrCreateNonMovementProjectile(index);
+            }
+            else
+            {
+                projectile = ResourceManager.Instance.Spawn(GetProjectile());
+            }
+
             if (projectile == null) return null;
 
             SetupProjectileTransform(projectile, index);
 
             Monster targetMonster = target ?? GetNearTargetMonster();
             InitializeProjectile(projectile, targetMonster);
+
+            if (_useNonMovementProjectilePooling)
+            {
+                projectile.gameObject.SetActive(true);
+            }
 
             return projectile;
         }
@@ -445,6 +519,23 @@ namespace TrainDefense.Game
                     if (_particleProjectilePrefab != null)
                     {
                         _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
+                    }
+
+                    if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+                    {
+                        foreach (var projectile in _nonMovementProjectiles)
+                        {
+                            if (projectile != null)
+                            {
+                                projectile.Init(
+                                    _currentTurretTrainStatus.AttackDamage,
+                                    null,
+                                    projectile.IsScaleByAttackRange()
+                                        ? _currentTurretTrainStatus.AttackRange
+                                        : 0f
+                                );
+                            }
+                        }
                     }
                     break;
 
