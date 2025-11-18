@@ -12,6 +12,8 @@ namespace TrainDefense.Game.UI
         #region Fields
         [SerializeField]
         private TriChoiceSelectUI[] choiceSelectUIs;
+        [SerializeField]
+        private GameObject backgroundImage;
 
         [SerializeField]
         private float uiActiveDelay;
@@ -29,6 +31,8 @@ namespace TrainDefense.Game.UI
 
         public void OnInspectionEnter(int count)
         {
+            backgroundImage.SetActive(true);
+
             OnChoiceUIPopup(count).Forget();
         }
 
@@ -54,8 +58,9 @@ namespace TrainDefense.Game.UI
 
                 choiceSelectUI.transform.localScale = Vector3.zero;
 
-                await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).SetUpdate(true);
                 choiceSelectUI.SetButtonInteractable(true);
+
+                await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).SetUpdate(true);
             }
         }
 
@@ -78,6 +83,8 @@ namespace TrainDefense.Game.UI
 
             TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
             GameEventSystem.Publish(eventData);
+            
+            backgroundImage.SetActive(false);
         }
     }
 }
