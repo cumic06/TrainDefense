@@ -29,7 +29,6 @@ namespace TrainDefense.Game
         private List<Monster> _targetMonsters = new();
 
         private TurretTrainStatus _currentTurretTrainStatus;
-        private ParticleProjectile _particleProjectilePrefab;
         private readonly List<Projectile> _nonMovementProjectiles = new();
         private bool _useNonMovementProjectilePooling;
 
@@ -107,14 +106,6 @@ namespace TrainDefense.Game
             _targetMonsters.Clear();
             _currentTurretTrainStatus.AttackInterval = turretTrainData.TurretTrainStatus.AttackInterval;
 
-            if (useParticleProjectile)
-            {
-                if (_particleProjectilePrefab != null)
-                {
-                    _particleProjectilePrefab.gameObject.SetActive(false);
-                }
-            }
-
             if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
             {
                 foreach (var projectile in _nonMovementProjectiles)
@@ -150,14 +141,9 @@ namespace TrainDefense.Game
             {
                 TargetedAttack();
             }
-            else if (!useParticleProjectile)
+            else
             {
                 NormalAttack();
-            }
-
-            else if (useParticleProjectile)
-            {
-                ParticleAttack();
             }
         }
 
@@ -319,46 +305,6 @@ namespace TrainDefense.Game
 
         #endregion
 
-        #region ParticleAttack
-        private void ParticleAttack()
-        {
-            // ParticleProjectile은 Setup()에서 이미 소환되었으므로 활성화만 수행
-            if (_particleProjectilePrefab != null)
-            {
-                _particleProjectilePrefab.gameObject.SetActive(true);
-            }
-        }
-
-        /// <summary>
-        /// ParticleProjectile 초기 소환 (Setup에서 한 번만 호출)
-        /// 포탑 위치에 붙어있도록 parent 설정
-        /// </summary>
-        private void ParticleProjectileSpawn()
-        {
-            if (_particleProjectilePrefab != null) return; // 이미 소환된 경우 중복 소환 방지
-
-            Projectile projectile = GetProjectile();
-            if (projectile == null) return;
-
-            ParticleProjectile particleProjectile = projectile.GetComponent<ParticleProjectile>();
-            if (particleProjectile == null)
-            {
-                Debug.LogWarning($"TurretTrain: ParticleProjectile requires ParticleProjectile component on {turretTrainData.TurretProjectilePrefab.name}");
-                return;
-            }
-
-            // 포탑 위치에 붙어있도록 parent 설정하여 소환
-            _particleProjectilePrefab = ResourceManager.Instance.Spawn(particleProjectile, parent: turretProjectileSpawnPoints[0]);
-            _particleProjectilePrefab.transform.localScale = Vector3.one;
-            _particleProjectilePrefab.transform.localPosition = Vector3.zero;
-            _particleProjectilePrefab.transform.localRotation = Quaternion.identity;
-            _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
-
-            // 초기 소환 시 비활성화 상태로 시작
-            _particleProjectilePrefab.gameObject.SetActive(false);
-        }
-        #endregion
-
         #region NonMovement Projectile Pooling
         /// <summary>
         /// ProjectileData 가 NonMovement 인 경우, Turret 에서 발사하는 Projectile 을
@@ -372,12 +318,6 @@ namespace TrainDefense.Game
 
             _useNonMovementProjectilePooling =
                 projectileData != null && projectileData.MovementType == MovementType.NonMovement;
-
-            // ParticleProjectile 을 사용하는 경우는 기존 로직 그대로 유지
-            if (useParticleProjectile)
-            {
-                ParticleProjectileSpawn();
-            }
         }
 
         private Projectile GetOrCreateNonMovementProjectile(int index)
@@ -515,12 +455,6 @@ namespace TrainDefense.Game
 
                 case StatType.AttackDamage:
                     _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
-
-                    if (_particleProjectilePrefab != null)
-                    {
-                        _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
-                    }
-
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
                         foreach (var projectile in _nonMovementProjectiles)
@@ -555,10 +489,6 @@ namespace TrainDefense.Game
 
         protected override void OnDead()
         {
-            if (useParticleProjectile && _particleProjectilePrefab != null)
-            {
-                _particleProjectilePrefab.gameObject.SetActive(false);
-            }
             base.OnDead();
         }
 
