@@ -3,7 +3,6 @@ using TrainDefense.Game.Events;
 using Cumic.Events;
 using Cumic;
 using UnityEngine;
-using System;
 
 namespace TrainDefense
 {
@@ -62,6 +61,7 @@ namespace TrainDefense
         }
         #endregion
 
+        #region Coin
         private void InCreaseMoney(IncreaseCoinEvent addCoinEvent)
         {
             _coin += addCoinEvent.Coin;
@@ -71,6 +71,7 @@ namespace TrainDefense
         {
             _coin -= decreaseCoinEvent.Coin;
         }
+        #endregion
 
         public void AddTriChoiceData(TriChoiceSelectEvent triChoiceSelectEvent)
         {

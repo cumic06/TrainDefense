@@ -8,7 +8,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public float attackRange;
 		public int attackDamage;
 		public int attackCount;
-		public float attackDelay;
+		public float attackInterval;
 
 		public override void FromExcelRow(IRow row)
 		{
@@ -18,7 +18,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 				float.TryParse(row.GetCell(5)?.ToString(), out attackRange);
 				int.TryParse(row.GetCell(6)?.ToString(), out attackDamage);
 				int.TryParse(row.GetCell(7)?.ToString(), out attackCount);
-				float.TryParse(row.GetCell(8)?.ToString(), out attackDelay);
+				float.TryParse(row.GetCell(8)?.ToString(), out attackInterval);
 			}
 		}
 
@@ -28,9 +28,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			Set(row, 5, attackRange);
 			Set(row, 6, attackDamage);
 			Set(row, 7, attackCount);
-			Set(row, 8, attackDelay);
+			Set(row, 8, attackInterval);
 		}
 	}
 }
 #endif
-

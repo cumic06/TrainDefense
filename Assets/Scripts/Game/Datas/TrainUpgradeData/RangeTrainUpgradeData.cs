@@ -4,9 +4,6 @@ using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game.Datas
 {
-    /// <summary>
-    /// RangeTrain 전용 업그레이드 데이터
-    /// </summary>
     [Serializable]
     public class RangeTrainUpgradeData : ITrainUpgradeData, IDescribableData, IIconData
     {
@@ -31,7 +28,7 @@ namespace TrainDefense.Game.Datas
 
         [Header("Range Train Specific Upgrade")]
         [SerializeField]
-        private RangeAttackTrainStatus rangeStatusUpgrade;
+        private RangeTrainStatus rangeStatusUpgrade;
         #endregion
 
         #region IData
@@ -68,6 +65,6 @@ namespace TrainDefense.Game.Datas
         public TrainStatusData StatusUpgrade => statusUpgrade;
         #endregion
 
-        public RangeAttackTrainStatus RangeStatusUpgrade => rangeStatusUpgrade;
+        public RangeTrainStatus RangeStatusUpgrade => rangeStatusUpgrade;
     }
 }

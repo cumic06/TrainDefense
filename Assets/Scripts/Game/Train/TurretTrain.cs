@@ -4,6 +4,7 @@ using Cumic.Events;
 using DG.Tweening;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.Stats;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -33,6 +34,8 @@ namespace TrainDefense.Game
         protected override void Setup()
         {
             base.Setup();
+
+            // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
 
             GameEventSystem.Subscribe<WarningRemovedEvent>(OnWarningRemoved);
@@ -79,14 +82,14 @@ namespace TrainDefense.Game
 
         private bool IsAttackDelayZero()
         {
-            if (_currentTurretTrainStatus.AttackDelay <= 0)
+            if (_currentTurretTrainStatus.AttackInterval <= 0)
             {
-                _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
+                _currentTurretTrainStatus.AttackInterval = turretTrainData.TurretTrainStatus.AttackInterval;
                 return true;
             }
             else
             {
-                _currentTurretTrainStatus.AttackDelay -= Time.deltaTime;
+                _currentTurretTrainStatus.AttackInterval -= Time.deltaTime;
                 return false;
             }
         }
@@ -105,7 +108,7 @@ namespace TrainDefense.Game
         private void ResetTarget()
         {
             _targetMonsters.Clear();
-            _currentTurretTrainStatus.AttackDelay = turretTrainData.TurretTrainStatus.AttackDelay;
+            _currentTurretTrainStatus.AttackInterval = turretTrainData.TurretTrainStatus.AttackInterval;
 
             if (useParticleProjectile)
             {
@@ -412,7 +415,50 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackDamage += turretUpgradeData.TurretStatusUpgrade.AttackDamage;
                 _currentTurretTrainStatus.AttackRange += turretUpgradeData.TurretStatusUpgrade.AttackRange;
                 _currentTurretTrainStatus.AttackCount += turretUpgradeData.TurretStatusUpgrade.AttackCount;
-                _currentTurretTrainStatus.AttackDelay += turretUpgradeData.TurretStatusUpgrade.AttackDelay;
+                _currentTurretTrainStatus.AttackInterval += turretUpgradeData.TurretStatusUpgrade.AttackInterval;
+            }
+        }
+
+        public override void StatusUpgrade(TurretTrainStatus upgradeData)
+        {
+            _currentTurretTrainStatus.AttackDamage += upgradeData.AttackDamage;
+            _currentTurretTrainStatus.AttackRange += upgradeData.AttackRange;
+            _currentTurretTrainStatus.AttackCount += upgradeData.AttackCount;
+            _currentTurretTrainStatus.AttackInterval += upgradeData.AttackInterval;
+            _currentTurretTrainStatus.TargetCount += upgradeData.TargetCount;
+        }
+
+        protected override void ApplyStat(IStat stat)
+        {
+            base.ApplyStat(stat);
+            if (stat == null) return;
+
+            switch (stat.Type)
+            {
+                case StatType.AttackRange:
+                    _currentTurretTrainStatus.AttackRange += stat.Value;
+                    break;
+
+                case StatType.AttackDamage:
+                    _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
+
+                    if (_particleProjectilePrefab != null)
+                    {
+                        _particleProjectilePrefab.Init(_currentTurretTrainStatus.AttackDamage);
+                    }
+                    break;
+
+                case StatType.AttackCount:
+                    _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(stat.Value);
+                    break;
+
+                case StatType.AttackInterval:
+                    _currentTurretTrainStatus.AttackInterval += stat.Value;
+                    break;
+
+                case StatType.TargetCount:
+                    _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(stat.Value);
+                    break;
             }
         }
 

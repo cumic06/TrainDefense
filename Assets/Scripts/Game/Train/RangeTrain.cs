@@ -1,5 +1,6 @@
 using UnityEngine;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Stats;
 using System.Collections;
 
 namespace TrainDefense.Game
@@ -13,7 +14,7 @@ namespace TrainDefense.Game
         private bool isExplosionProjectile;
         #endregion
 
-        private RangeAttackTrainStatus _currentRangeTrainStatus;
+        private RangeTrainStatus _currentRangeTrainStatus;
         private Projectile _rangeProjectilePrefab;
         private Coroutine _rangeAttackCoroutine;
 
@@ -21,8 +22,8 @@ namespace TrainDefense.Game
         {
             base.Setup();
 
+            // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
-            _currentRangeTrainStatus.AttackInterval = rangeTrainData.RangeTrainStatus.AttackInterval;
 
             if (isExplosionProjectile) return;
             SpawnRangeProjectile();
@@ -83,7 +84,7 @@ namespace TrainDefense.Game
             if (rangeTrainData.RangeProjectilePrefab != null)
             {
                 Projectile projectile = rangeTrainData.RangeProjectilePrefab?.GetComponent<Projectile>();
-                
+
                 if (projectile != null)
                 {
                     _rangeProjectilePrefab = ResourceManager.Instance.Spawn(projectile);
@@ -109,11 +110,57 @@ namespace TrainDefense.Game
                 _currentRangeTrainStatus.AttackDamage += rangeUpgradeData.RangeStatusUpgrade.AttackDamage;
                 _currentRangeTrainStatus.AttackCount += rangeUpgradeData.RangeStatusUpgrade.AttackCount;
                 _currentRangeTrainStatus.AttackInterval += rangeUpgradeData.RangeStatusUpgrade.AttackInterval;
-                
+
                 if (_rangeProjectilePrefab != null)
                 {
                     _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
                 }
+            }
+        }
+
+        public override void StatusUpgrade(RangeTrainStatus upgradeData)
+        {
+            _currentRangeTrainStatus.AttackRange += upgradeData.AttackRange;
+            _currentRangeTrainStatus.AttackDamage += upgradeData.AttackDamage;
+            _currentRangeTrainStatus.AttackCount += upgradeData.AttackCount;
+            _currentRangeTrainStatus.AttackInterval += upgradeData.AttackInterval;
+
+            if (_rangeProjectilePrefab != null)
+            {
+                _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
+            }
+        }
+
+        protected override void ApplyStat(IStat stat)
+        {
+            base.ApplyStat(stat);
+            if (stat == null) return;
+
+            Debug.Log($"ApplyStat: {stat.Type} {stat.Value}");
+
+            switch (stat.Type)
+            {
+                case StatType.AttackRange:
+                    _currentRangeTrainStatus.AttackRange += stat.Value;
+
+                    if (_rangeProjectilePrefab != null)
+                    {
+                        _rangeProjectilePrefab.transform.localScale =
+                            new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1f);
+                    }
+                    break;
+
+                case StatType.AttackDamage:
+                    _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
+                    break;
+
+                case StatType.AttackCount:
+                    _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(stat.Value);
+                    break;
+
+                case StatType.AttackInterval:
+                    _currentRangeTrainStatus.AttackInterval += stat.Value;
+                    break;
             }
         }
 

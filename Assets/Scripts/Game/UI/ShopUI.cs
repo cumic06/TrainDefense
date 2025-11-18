@@ -38,31 +38,30 @@ namespace TrainDefense.Game.UI
 
         private void Start()
         {
-            GameEventSystem.Subscribe<BuyShopItemEvent>(OnBuyShopItem);
+            // 업그레이드가 실제로 적용된 이후에만 상점 UI를 갱신하기 위해 UpgradeAppliedEvent를 구독
+            GameEventSystem.Subscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
         }
 
         private void OnDestroy()
         {
-            GameEventSystem.Unsubscribe<BuyShopItemEvent>(OnBuyShopItem);
+            GameEventSystem.Unsubscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
         }
 
-        private void OnBuyShopItem(BuyShopItemEvent buyShopItemEvent)
+        private void OnUpgradeApplied(UpgradeAppliedEvent upgradeAppliedEvent)
         {
             foreach (var shopItemUI in _shopItemUIs)
             {
-                shopItemUI.SetVaild(UserDataManager.Instance.Coin);
+                shopItemUI.SetUp();
+                shopItemUI.SetVaild(GetCurrentMoney());
             }
         }
 
         public async void OpenShop()
         {
-            if (UserDataManager.Instance == null) return;
-
-            int money = UserDataManager.Instance.Coin;
-
             foreach (var shopItemUI in _shopItemUIs)
             {
-                shopItemUI.SetVaild(money);
+                shopItemUI.SetUp();
+                shopItemUI.SetVaild(GetCurrentMoney());
             }
 
             await _rectTransform.DOAnchorPosX(shopMoveXEndPos, shopMoveInterval).SetUpdate(true);
@@ -79,6 +78,13 @@ namespace TrainDefense.Game.UI
             isShopOpen = false;
 
             GameEventSystem.Publish(new EngageStartEvent());
+        }
+
+        private int GetCurrentMoney()
+        {
+            if (UserDataManager.Instance == null) return 0;
+
+            return UserDataManager.Instance.Coin;
         }
     }
 }

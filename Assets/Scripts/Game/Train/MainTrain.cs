@@ -134,6 +134,18 @@ namespace TrainDefense.Game
             return _currentTrains.Any(train => train.TrainData.Id == trainId);
         }
 
+        public void ApplyUpgrade(UpgradeData upgradeData)
+        {
+            if (upgradeData == null) return;
+
+            if (upgradeData.Stats == null || upgradeData.Stats.Length == 0) return;
+
+            foreach (var train in _currentTrains)
+            {
+                train.ApplyStats(upgradeData.Stats);
+            }
+        }
+
         protected override void OnDead()
         {
             if (isUnDead) return;

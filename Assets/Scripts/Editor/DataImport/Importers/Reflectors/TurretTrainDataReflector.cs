@@ -26,14 +26,14 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(t, target, "trainStatusData", trainStatusData);
 
 			var turretTrainType = typeof(TurretTrainData);
-			var turretTrainStatus = new TurretTrainStatus
-			{
-				AttackRange = r.attackRange,
-				AttackDamage = r.attackDamage,
-				AttackCount = r.attackCount,
-				AttackDelay = r.attackDelay,
-				TargetCount = r.targetCount
-			};
+            var turretTrainStatus = new TurretTrainStatus
+            {
+                AttackRange = r.attackRange,
+                AttackDamage = r.attackDamage,
+                AttackCount = r.attackCount,
+                AttackInterval = r.attackInterval,
+                TargetCount = r.targetCount
+            };
 			SetPrivateField(turretTrainType, target, "turretTrainStatus", turretTrainStatus);
 			SetPrivateField(turretTrainType, target, "turretProjectilePrefabId", r.turretProjectilePrefabId);
 		}

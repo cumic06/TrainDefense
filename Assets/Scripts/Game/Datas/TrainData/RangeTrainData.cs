@@ -9,13 +9,13 @@ namespace TrainDefense.Game.Datas
     {
         #region Fields
         [SerializeField]
-        private RangeAttackTrainStatus rangeTrainStatus;
+        private RangeTrainStatus rangeTrainStatus;
         [SerializeField]
         private string rangeProjectilePrefabId;
         private GameObject rangeProjectilePrefab;
         #endregion
 
-        public RangeAttackTrainStatus RangeTrainStatus => rangeTrainStatus;
+        public RangeTrainStatus RangeTrainStatus => rangeTrainStatus;
         
         [ShowInInspector, ReadOnly]
         public GameObject RangeProjectilePrefab

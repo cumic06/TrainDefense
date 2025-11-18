@@ -27,31 +27,46 @@ namespace TrainDefense.Game.UI
         private void Start()
         {
             buyButton.onClick.AddListener(OnBuyButtonClick);
+            _upgradeData = DataBaseManager.Instance.GetDB().GetUpgradeData(shopItemDataId);
             SetUp();
         }
 
-        private void SetUp()
+        public void SetUp()
         {
-            UpgradeData upgradeData = DataBaseManager.Instance.GetDB().GetUpgradeData(shopItemDataId);
-
-            if (upgradeData != null)
+            if (_upgradeData != null)
             {
-                itemNameText.text = upgradeData.Name;
-                string description = GetLevelDescription(upgradeData);
+                itemNameText.text = _upgradeData.Name;
+                string description = GetLevelDescription();
 
                 itemDescriptionText.text = description;
-                needMoneyText.text = $"{upgradeData.NeedMoney}$";
+                needMoneyText.text = $"{_upgradeData.NeedMoney}$";
             }
         }
 
-        private string GetLevelDescription(UpgradeData upgradeData)
+        private string GetLevelDescription()
         {
-            _upgradeData = upgradeData;
-
             int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
-            float nextTotalValue = (currentLevel + 1) * upgradeData.UpgradeValue;
-            float increaseAmount = upgradeData.UpgradeValue;
+
             string increaseAmountText = "";
+            float nextTotalValue = 0;
+            float increaseAmount = 0;
+
+            if (_upgradeData.UpgradeDataType == UpgradeDataType.NonTrainUpgrade)
+            {
+                nextTotalValue = (currentLevel + 1) * _upgradeData.UpgradeValue;
+                increaseAmount = _upgradeData.UpgradeValue;
+            }
+            else if (_upgradeData.UpgradeDataType == UpgradeDataType.TrainUpgrade)
+            {
+                foreach (var stat in _upgradeData.Stats)
+                {
+                    if (stat.Value == 0) continue;
+
+                    nextTotalValue += (currentLevel + 1) * stat.Value;
+                    increaseAmount += stat.Value;
+                }
+            }
+
             if (increaseAmount > 0)
             {
                 increaseAmountText = $"+{increaseAmount}";
@@ -61,15 +76,13 @@ namespace TrainDefense.Game.UI
                 increaseAmountText = $"{increaseAmount}";
             }
 
-            string description = string.Format(upgradeData.Description, nextTotalValue, increaseAmountText);
+            string description = string.Format(_upgradeData.Description, nextTotalValue, increaseAmountText);
             return description;
         }
 
         public void SetVaild(int currentMoney)
         {
-            UpgradeData upgradeData = DataBaseManager.Instance.GetDB().GetUpgradeData(shopItemDataId);
-
-            if (currentMoney >= upgradeData.NeedMoney)
+            if (currentMoney >= _upgradeData.NeedMoney)
             {
                 buyButton.interactable = true;
             }
@@ -81,8 +94,7 @@ namespace TrainDefense.Game.UI
 
         private void OnBuyButtonClick()
         {
-            GameEventSystem.Publish(new BuyShopItemEvent(_upgradeData.NeedMoney));
-            SetVaild(UserDataManager.Instance.Coin);
+            GameEventSystem.Publish(new BuyShopItemEvent(_upgradeData.NeedMoney, shopItemDataId));
         }
     }
 }

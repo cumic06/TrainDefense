@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game.Datas
 {
@@ -20,9 +21,16 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private int needMoney;
         [SerializeField]
+        private int maxUpgradeCount;
+        [SerializeField]
+        private UpgradeDataType upgradeDataType;
+
+        [SerializeField]
+        [ShowIf("upgradeDataType", UpgradeDataType.NonTrainUpgrade)]
         private float upgradeValue;
         [SerializeField]
-        private int maxUpgradeCount;
+        [ShowIf("upgradeDataType", UpgradeDataType.TrainUpgrade)]
+        private SimpleStat[] stats;
         #endregion
 
         #region IData
@@ -58,5 +66,11 @@ namespace TrainDefense.Game.Datas
         public string UpgradeName => name;
         public float UpgradeValue => upgradeValue;
         public int MaxUpgradeCount => maxUpgradeCount;
+        public UpgradeDataType UpgradeDataType => upgradeDataType;
+
+        /// <summary>
+        /// SimpleStat 기반 스탯 업그레이드
+        /// </summary>
+        public IStat[] Stats => stats;
     }
 }

@@ -396,7 +396,7 @@ namespace TrainDefense.Editor
 			var rows = new System.Collections.Generic.List<UpgradeRow>(db.upgradeDataList.Count);
 			foreach (var u in db.upgradeDataList)
 			{
-				rows.Add(new UpgradeRow
+				var row = new UpgradeRow
 				{
 					id = u.Id,
 					name = u.Name,
@@ -404,9 +404,25 @@ namespace TrainDefense.Editor
 					needMoney = u.NeedMoney,
 					upgradeValue = u.UpgradeValue,
 					maxUpgradeCount = u.MaxUpgradeCount
-				});
+				};
+
+				row.upgradeType = u.UpgradeDataType.ToString();
+
+				if (u.UpgradeDataType == UpgradeDataType.TrainUpgrade && u.Stats != null && u.Stats.Length > 0 && u.Stats[0] != null)
+				{
+					row.statType = u.Stats[0].Type.ToString();
+				}
+				else
+				{
+					row.statType = string.Empty;
+				}
+
+				rows.Add(row);
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "upgrade_data", new[] { "id", "upgrade_name", "description", "need_money", "upgrade_value", "max_upgrade_count" });
+			ExcelTemplate.EnsureSheetWithHeaders(
+				_excelPath,
+				"upgrade_data",
+				new[] { "id", "upgrade_name", "description", "need_money", "upgrade_value", "max_upgrade_count", "icon_id", "upgrade_type", "stat_type" });
 			ExcelWriter.WriteToSheet(_excelPath, "upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
@@ -431,7 +447,7 @@ namespace TrainDefense.Editor
 					attackRange = u.TurretStatusUpgrade.AttackRange,
 					attackDamage = u.TurretStatusUpgrade.AttackDamage,
 					attackCount = u.TurretStatusUpgrade.AttackCount,
-					attackDelay = u.TurretStatusUpgrade.AttackDelay
+					attackInterval = u.TurretStatusUpgrade.AttackInterval
 				});
 			}
 			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "attack_range", "attack_damage", "attack_count", "attack_delay" });

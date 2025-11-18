@@ -77,5 +77,16 @@ namespace TrainDefense.Game
         {
             return mainTrain.CurrentTrains.ToArray();
         }
+
+        public void ApplyUpgrade(UpgradeData upgradeData)
+        {
+            if (mainTrain == null)
+            {
+                Debug.LogWarning("TrainManager: MainTrain is null");
+                return;
+            }
+
+            mainTrain.ApplyUpgrade(upgradeData);
+        }
     }
 }

@@ -55,7 +55,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 			var statusUpgrade = new TrainStatusData { MaxHp = r.maxHp };
 			SetPrivateField(t, target, "statusUpgrade", statusUpgrade);
 			
-			var rangeStatus = new RangeAttackTrainStatus
+			var rangeStatus = new RangeTrainStatus
 			{
 				AttackRange = r.attackRange,
 				AttackDamage = r.attackDamage,

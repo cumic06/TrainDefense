@@ -8,7 +8,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public float attackRange;
 		public int attackDamage;
 		public int attackCount;
-		public float attackDelay;
+		public float attackInterval;
 		public int targetCount;
 		public string turretProjectilePrefabId;
 
@@ -18,7 +18,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		float.TryParse(row.GetCell(7)?.ToString(), out attackRange);
 		int.TryParse(row.GetCell(8)?.ToString(), out attackDamage);
 		int.TryParse(row.GetCell(9)?.ToString(), out attackCount);
-		float.TryParse(row.GetCell(10)?.ToString(), out attackDelay);
+		float.TryParse(row.GetCell(10)?.ToString(), out attackInterval);
 		int.TryParse(row.GetCell(11)?.ToString(), out targetCount);
 		turretProjectilePrefabId = row.GetCell(12)?.ToString();
 	}
@@ -29,7 +29,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		Set(row, 7, attackRange);
 		Set(row, 8, attackDamage);
 		Set(row, 9, attackCount);
-		Set(row, 10, attackDelay);
+		Set(row, 10, attackInterval);
 		Set(row, 11, targetCount);
 		Set(row, 12, turretProjectilePrefabId);
 	}

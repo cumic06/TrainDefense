@@ -9,9 +9,15 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string name;
 		public string description;
 		public int needMoney;
-		public float upgradeValue;
+		public float upgradeValue;	// NonTrainUpgrade: 그대로 사용, TrainUpgrade: stat 값으로도 사용
 		public int maxUpgradeCount;
 		public string iconId;
+
+		// 새 필드들 (UpgradeData의 확장과 매핑)
+		// upgradeType: "TrainUpgrade" / "NonTrainUpgrade" 또는 0 / 1 등 문자열로 표기
+		public string upgradeType;
+		// statType: StatType 이름 (예: "AttackDamage", "MaxHp" ...)
+		public string statType;
 
 		public void FromExcelRow(IRow row)
 		{
@@ -22,6 +28,17 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			float.TryParse(row.GetCell(4)?.ToString(), out upgradeValue);
 			int.TryParse(row.GetCell(5)?.ToString(), out maxUpgradeCount);
 			iconId = row.GetCell(6)?.ToString();
+
+			// 선택 컬럼: 시트에 없으면 무시
+			if (row.LastCellNum > 7)
+			{
+				upgradeType = row.GetCell(7)?.ToString();
+			}
+
+			if (row.LastCellNum > 8)
+			{
+				statType = row.GetCell(8)?.ToString();
+			}
 		}
 
 		public void ToExcelRow(IRow row)
@@ -33,6 +50,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			Set(row, 4, upgradeValue);
 			Set(row, 5, maxUpgradeCount);
 			Set(row, 6, iconId);
+			Set(row, 7, upgradeType);
+			Set(row, 8, statType);
 		}
 
 		private static void Set(IRow row, int idx, object value)
@@ -46,5 +65,3 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 	}
 }
 #endif
-
-

@@ -26,7 +26,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(t, target, "trainStatusData", trainStatusData);
 
 			var rangeTrainType = typeof(RangeTrainData);
-			var rangeTrainStatus = new RangeAttackTrainStatus
+			var rangeTrainStatus = new RangeTrainStatus
 			{
 				AttackRange = r.attackRange,
 				AttackDamage = r.attackDamage,

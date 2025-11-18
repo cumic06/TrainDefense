@@ -3,6 +3,7 @@ using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using Sirenix.OdinInspector;
+using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game
 {
@@ -18,6 +19,7 @@ namespace TrainDefense.Game
         protected bool _isDead;
         protected int _currentHp;
         protected int _currentLevel;
+        protected int _currentMaxHp;
 
         public bool IsUnDead;
 
@@ -42,7 +44,8 @@ namespace TrainDefense.Game
         protected virtual void Setup()
         {
             _isDead = false;
-            _currentHp = _trainData.TrainStatusData.MaxHp;
+            _currentMaxHp = _trainData.TrainStatusData.MaxHp;
+            _currentHp = _currentMaxHp;
             _currentLevel = 1;
         }
 
@@ -52,9 +55,9 @@ namespace TrainDefense.Game
             if (_isDead) return;
 
             _currentHp -= damage;
-            _currentHp = Mathf.Clamp(_currentHp, 0, _trainData.TrainStatusData.MaxHp);
+            _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
 
-            GameEventSystem.Publish(new HitEvent(_currentHp, _trainData.TrainStatusData.MaxHp, this, transform.position, damage));
+            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, damage));
 
             if (_currentHp <= 0)
             {
@@ -79,7 +82,53 @@ namespace TrainDefense.Game
             if (upgradeData == null) return;
 
             _currentLevel++;
+            _currentMaxHp += upgradeData.StatusUpgrade.MaxHp;
             _currentHp += upgradeData.StatusUpgrade.MaxHp;
+            _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+        }
+
+        public virtual void StatusUpgrade(TrainStatusData upgradeData)
+        {
+            _currentMaxHp += upgradeData.MaxHp;
+            _currentHp += upgradeData.MaxHp;
+            _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+        }
+
+        public virtual void StatusUpgrade(TurretTrainStatus upgradeData)
+        {
+
+        }
+
+        public virtual void StatusUpgrade(RangeTrainStatus upgradeData)
+        {
+
+        }
+
+        public virtual void ApplyStats(IStat[] stats)
+        {
+            if (stats == null || stats.Length == 0) return;
+
+            foreach (var stat in stats)
+            {
+                ApplyStat(stat);
+            }
+        }
+
+        protected virtual void ApplyStat(IStat stat)
+        {
+            if (stat == null) return;
+
+            switch (stat.Type)
+            {
+                case StatType.MaxHp:
+                    {
+                        int deltaHp = Mathf.RoundToInt(stat.Value);
+                        _currentMaxHp += deltaHp;
+                        _currentHp += deltaHp;
+                        _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+                        break;
+                    }
+            }
         }
     }
 }

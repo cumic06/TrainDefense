@@ -8,6 +8,6 @@ namespace TrainDefense.Game.Datas
     [Serializable]
     public class RangeTrainUpgradeExtension : TrainUpgradeExtension
     {
-        public RangeAttackTrainStatus RangeStatusUpgrade;
+        public RangeTrainStatus RangeStatusUpgrade;
     }
 }
