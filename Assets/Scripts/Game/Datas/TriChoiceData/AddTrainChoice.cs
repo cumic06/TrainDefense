@@ -18,6 +18,7 @@ namespace TrainDefense.Game.Datas
         private TrainData _trainData;
 
         public string Id => id;
+        public string TrainDataId => trainDataId;
 
         public void Initialize(DB db)
         {

@@ -6,5 +6,7 @@ namespace TrainDefense.Game.Datas
     public interface ITrainUpgradeData : IDescribableData, IIconData
     {
         TrainStatusData StatusUpgrade { get; }
+        int Level { get; }
+        int MaxLevel { get; }
     }
 }

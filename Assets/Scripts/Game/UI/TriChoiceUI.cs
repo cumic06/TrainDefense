@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -40,27 +41,44 @@ namespace TrainDefense.Game.UI
         {
             _choiceLeftCount = count;
 
-            var db = DataBaseManager.Instance.GetDB();
-
-            if (db == null)
+            var triChoiceManager = TriChoiceManager.Instance;
+            if (triChoiceManager == null)
             {
-                Debug.LogError("DB not found");
+                Debug.LogError("TriChoiceManager not found");
                 return;
             }
 
-            foreach (var choiceSelectUI in choiceSelectUIs)
+            // 선택지 풀을 미리 생성 (중복 없이)
+            List<IChoiceOption> availableChoices = triChoiceManager.GetAvailableChoices(choiceSelectUIs.Length);
+
+            if (availableChoices.Count == 0)
             {
-                var choiceOption = db.TriChoiceDB.RandomChoice();
+                Debug.LogWarning("No available choices found");
+                return;
+            }
 
-                if (choiceOption == null) continue;
+            // 사용 가능한 선택지 수만큼만 UI 표시
+            for (int i = 0; i < choiceSelectUIs.Length; i++)
+            {
+                var choiceSelectUI = choiceSelectUIs[i];
 
-                choiceSelectUI.SetData(choiceOption, this);
+                if (i < availableChoices.Count)
+                {
+                    // 선택지가 있으면 표시
+                    IChoiceOption choiceOption = availableChoices[i];
 
-                choiceSelectUI.transform.localScale = Vector3.zero;
+                    choiceSelectUI.SetData(choiceOption, this);
+                    choiceSelectUI.gameObject.SetActive(true);
+                    choiceSelectUI.transform.localScale = Vector3.zero;
+                    choiceSelectUI.SetButtonInteractable(true);
 
-                choiceSelectUI.SetButtonInteractable(true);
-
-                await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).SetUpdate(true);
+                    await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).SetUpdate(true);
+                }
+                else
+                {
+                    // 선택지가 부족하면 해당 슬롯 비활성화
+                    choiceSelectUI.gameObject.SetActive(false);
+                }
             }
         }
 
@@ -75,15 +93,15 @@ namespace TrainDefense.Game.UI
                 choiceSelectUI.transform.DOScale(0, uiActiveDelay).SetEase(Ease.InBack).SetUpdate(true);
             }
 
+            TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
+            GameEventSystem.Publish(eventData);
+
             if (_choiceLeftCount > 0)
             {
                 OnInspectionEnter(_choiceLeftCount);
                 return;
             }
 
-            TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
-            GameEventSystem.Publish(eventData);
-            
             backgroundImage.SetActive(false);
         }
     }

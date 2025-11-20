@@ -10,7 +10,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 	{
 		public string SheetName => "upgrade_train_choice_data";
 		public string ButtonLabel => "UpgradeTrainChoice 데이터 가져오기";
-		public string[] Headers => new[] { "id", "target_train_id", "weighted_upgrades", "weight" };
+		public string[] Headers => new[] { "id", "target_train_id", "weighted_upgrades", "weight", "weight" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -93,35 +93,50 @@ namespace TrainDefense.Editor.DataImport.Importers
 
 		private static WeightedUpgradeData[] ParseWeightedUpgrades(string weightedUpgradesStr)
 		{
-			if (string.IsNullOrEmpty(weightedUpgradesStr)) return System.Array.Empty<WeightedUpgradeData>();
+			if (string.IsNullOrEmpty(weightedUpgradesStr)) return Array.Empty<WeightedUpgradeData>();
 			
-			var parts = weightedUpgradesStr.Split(';');
-			var list = new List<WeightedUpgradeData>();
-			
-			foreach (var part in parts)
+			// 형식 1: "upgradeId:weight" 또는 "upgradeId1:weight1;upgradeId2:weight2" (기존 형식 지원)
+			if (weightedUpgradesStr.Contains(':'))
 			{
-				var trimmed = part.Trim();
-				if (string.IsNullOrEmpty(trimmed)) continue;
+				var parts = weightedUpgradesStr.Split(';');
+				var list = new List<WeightedUpgradeData>();
 				
-				var colonIndex = trimmed.IndexOf(':');
-				if (colonIndex < 0) continue;
+				foreach (var part in parts)
+				{
+					var trimmed = part.Trim();
+					if (string.IsNullOrEmpty(trimmed)) continue;
+					
+					var colonIndex = trimmed.IndexOf(':');
+					if (colonIndex < 0) continue;
+					
+					var upgradeDataId = trimmed.Substring(0, colonIndex).Trim();
+					var weightStr = trimmed.Substring(colonIndex + 1).Trim();
+					
+					if (string.IsNullOrEmpty(upgradeDataId)) continue;
+					
+					float.TryParse(weightStr, out float weight);
+					
+					var weightedUpgradeData = (WeightedUpgradeData)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(WeightedUpgradeData));
+					var t = typeof(WeightedUpgradeData);
+					SetPrivateField(t, weightedUpgradeData, "upgradeDataId", upgradeDataId);
+					SetPrivateField(t, weightedUpgradeData, "upgradeDataWeight", weight);
+					
+					list.Add(weightedUpgradeData);
+				}
 				
-				var upgradeId = trimmed.Substring(0, colonIndex).Trim();
-				var weightStr = trimmed.Substring(colonIndex + 1).Trim();
-				
-				if (string.IsNullOrEmpty(upgradeId)) continue;
-				
-				float.TryParse(weightStr, out float weight);
-				
-				var weightedUpgrade = (WeightedUpgradeData)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(WeightedUpgradeData));
-				var t = typeof(WeightedUpgradeData);
-				SetPrivateField(t, weightedUpgrade, "upgradeDataId", upgradeId);
-				SetPrivateField(t, weightedUpgrade, "upgradeDataWeight", weight);
-				
-				list.Add(weightedUpgrade);
+				return list.ToArray();
 			}
 			
-			return list.ToArray();
+			// 형식 2: C열에 업그레이드 ID만 있고, E열에 가중치가 있는 경우
+			var upgradeId = weightedUpgradesStr.Trim();
+			if (string.IsNullOrEmpty(upgradeId)) return Array.Empty<WeightedUpgradeData>();
+			
+			var weightedUpgrade = (WeightedUpgradeData)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(WeightedUpgradeData));
+			var upgradeType = typeof(WeightedUpgradeData);
+			SetPrivateField(upgradeType, weightedUpgrade, "upgradeDataId", upgradeId);
+			SetPrivateField(upgradeType, weightedUpgrade, "upgradeDataWeight", 1f);
+			
+			return new[] { weightedUpgrade };
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

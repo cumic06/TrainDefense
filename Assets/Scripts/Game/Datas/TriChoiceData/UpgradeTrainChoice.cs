@@ -23,6 +23,7 @@ namespace TrainDefense.Game.Datas
         private ITrainUpgradeData _selectedUpgrade;
 
         public string Id => id;
+        public string TargetTrainId => targetTrainId;
 
         public void Initialize(DB db)
         {
@@ -55,7 +56,31 @@ namespace TrainDefense.Game.Datas
         {
             if (weightedUpgrades == null || weightedUpgrades.Length == 0) return false;
             if (string.IsNullOrEmpty(targetTrainId)) return false;
-            return TrainDefense.Game.TrainManager.Instance.CheckHasTrainById(targetTrainId);
+            
+            var trainManager = TrainManager.Instance;
+            if (trainManager == null || !trainManager.CheckHasTrainById(targetTrainId)) return false;
+
+            // 현재 Train의 레벨에 해당하는 업그레이드 데이터가 있는지 확인
+            var train = GetTargetTrain();
+            if (train == null) return false;
+
+            var db = Resources.Load<DB>("Data/DB");
+            if (db == null) return false;
+
+            // 현재 레벨에 맞는 업그레이드가 하나라도 있는지 확인
+            bool hasValidUpgrade = weightedUpgrades.Any(w => 
+            {
+                var upgradeData = db.GetTrainUpgradeData(w?.UpgradeDataId);
+                if (upgradeData == null) return false;
+                
+                // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨보다 크거나 같으면 더 이상 업그레이드 불가
+                if (train.CurrentLevel >= upgradeData.MaxLevel) return false;
+                
+                // 현재 레벨에 해당하는 업그레이드 데이터가 있는지 확인
+                return upgradeData.Level == train.CurrentLevel;
+            });
+
+            return hasValidUpgrade;
         }
 
         public void Execute()
@@ -87,29 +112,61 @@ namespace TrainDefense.Game.Datas
             if (db == null) return null;
             if (weightedUpgrades == null || weightedUpgrades.Length == 0) return null;
 
-            if (weightedUpgrades.Length == 1)
+            var train = GetTargetTrain();
+            if (train == null) return null;
+
+            // 현재 Train의 레벨에 맞는 업그레이드만 필터링
+            var validUpgrades = weightedUpgrades
+                .Select(w => new { Weight = w, UpgradeData = db.GetTrainUpgradeData(w?.UpgradeDataId) })
+                .Where(x => 
+                {
+                    if (x.UpgradeData == null) return false;
+                    
+                    // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨보다 크거나 같으면 제외
+                    if (train.CurrentLevel >= x.UpgradeData.MaxLevel) return false;
+                    
+                    // 현재 레벨에 해당하는 업그레이드 데이터인지 확인
+                    return x.UpgradeData.Level == train.CurrentLevel;
+                })
+                .ToList();
+
+            if (validUpgrades.Count == 0)
             {
-                return db.GetTrainUpgradeData(weightedUpgrades[0]?.UpgradeDataId);
+                Debug.LogWarning($"UpgradeTrainChoice [{id}]: No upgrade data found for Train [{targetTrainId}] at level [{train.CurrentLevel}]");
+                return null;
             }
 
-            float total = weightedUpgrades.Sum(w => w.UpgradeDataWeight);
+            if (validUpgrades.Count == 1)
+            {
+                return validUpgrades[0].UpgradeData;
+            }
+
+            float total = validUpgrades.Sum(x => x.Weight.UpgradeDataWeight);
             if (total <= 0)
             {
-                return db.GetTrainUpgradeData(weightedUpgrades[0]?.UpgradeDataId);
+                return validUpgrades[0].UpgradeData;
             }
 
             float r = UnityEngine.Random.Range(0f, total);
             float acc = 0f;
-            foreach (var w in weightedUpgrades)
+            foreach (var item in validUpgrades)
             {
-                acc += w.UpgradeDataWeight;
+                acc += item.Weight.UpgradeDataWeight;
                 if (r <= acc)
                 {
-                    return db.GetTrainUpgradeData(w.UpgradeDataId);
+                    return item.UpgradeData;
                 }
             }
 
-            return db.GetTrainUpgradeData(weightedUpgrades[^1]?.UpgradeDataId);
+            return validUpgrades[^1].UpgradeData;
+        }
+
+        private Train GetTargetTrain()
+        {
+            var trainManager = TrainManager.Instance;
+            if (trainManager == null || trainManager.MainTrain == null) return null;
+
+            return trainManager.MainTrain.CurrentTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
         }
     }
 }

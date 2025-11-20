@@ -25,13 +25,13 @@ namespace TrainDefense.Game.Datas
         [TextArea(2, 4)]
         private string description;
 
-        [Header("Upgrade Stats")]
         [SerializeField]
-        private TrainStatusData statusUpgrade;
+        [Tooltip("업그레이드 스탯 배열 (인덱스 = 레벨 - 1, 예: [0] = 레벨 1, [1] = 레벨 2)")]
+        private TurretTrainUpgradeStats[] upgradeStats;
 
-        [Header("Turret Train Specific Upgrade")]
         [SerializeField]
-        private TurretTrainStatus turretStatusUpgrade;
+        [Tooltip("업그레이드 레벨 (1부터 시작)")]
+        private int level = 1;
         #endregion
 
         #region IData
@@ -64,9 +64,19 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         #region ITrainUpgradeData
-        public TrainStatusData StatusUpgrade => statusUpgrade;
+        public TrainStatusData StatusUpgrade => GetStatsForLevel(level)?.StatusUpgrade ?? default;
+        public int Level => level;
+        public int MaxLevel => upgradeStats?.Length ?? 0;
         #endregion
 
-        public TurretTrainStatus TurretStatusUpgrade => turretStatusUpgrade;
+        public TurretTrainStatus TurretStatusUpgrade => GetStatsForLevel(level)?.TurretStatusUpgrade ?? default;
+
+        private TurretTrainUpgradeStats GetStatsForLevel(int targetLevel)
+        {
+            if (upgradeStats == null || upgradeStats.Length == 0) return null;
+            int index = targetLevel - 1;
+            if (index < 0 || index >= upgradeStats.Length) return null;
+            return upgradeStats[index];
+        }
     }
 }

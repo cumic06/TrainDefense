@@ -89,6 +89,14 @@ namespace TrainDefense
             }
         }
 
+        /// <summary>
+        /// 선택된 ChoiceOption ID 목록을 반환합니다.
+        /// </summary>
+        public HashSet<string> GetSelectedChoiceIds()
+        {
+            return new HashSet<string>(_triChoiceData.Keys);
+        }
+
         #region Upgrade
         public int GetUpgradeLevel(string upgradeId)
         {

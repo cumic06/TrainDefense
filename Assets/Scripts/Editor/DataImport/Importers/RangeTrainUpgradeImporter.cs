@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using TrainDefense.Game.Datas;
 using TrainDefense.Editor.DataImport.Importers.Rows;
+using System.Collections.Generic;
 
 namespace TrainDefense.Editor.DataImport.Importers
 {
@@ -14,55 +15,94 @@ namespace TrainDefense.Editor.DataImport.Importers
 		{
 			var rows = ExcelReadUtil.ReadRows(excelPath, SheetName);
 			int imported = 0;
+			var list = db.rangeTrainUpgradeDataList;
+
+			// 같은 ID를 가진 행들을 그룹화
+			var groupedRows = new Dictionary<string, List<RangeTrainUpgradeRow>>();
+
 			foreach (var row in rows)
 			{
 				var r = new RangeTrainUpgradeRow();
 				r.FromExcelRow(row);
-			if (string.IsNullOrEmpty(r.id) && string.IsNullOrEmpty(r.name)) continue;
-			var list = db.rangeTrainUpgradeDataList;
-			RangeTrainUpgradeData existing = null;
-			if (!string.IsNullOrEmpty(r.id))
-			{
-				existing = list.Find(u => u.Id == r.id);
+				if (string.IsNullOrEmpty(r.id) && string.IsNullOrEmpty(r.name)) continue;
+
+				string key = r.id ?? r.name;
+				if (!groupedRows.ContainsKey(key))
+				{
+					groupedRows[key] = new List<RangeTrainUpgradeRow>();
+				}
+				groupedRows[key].Add(r);
 			}
-			if (existing == null && !string.IsNullOrEmpty(r.name))
+
+			// 각 그룹에 대해 업그레이드 데이터 생성
+			foreach (var group in groupedRows)
 			{
-				existing = list.Find(u => u.Name == r.name);
-			}
+				var rowsForId = group.Value;
+				if (rowsForId.Count == 0) continue;
+
+				string baseId = rowsForId[0].id ?? rowsForId[0].name;
+				RangeTrainUpgradeData existing = list.Find(u => u.Id == baseId);
+
+				if (existing == null && !string.IsNullOrEmpty(rowsForId[0].name))
+				{
+					existing = list.Find(u => u.Name == rowsForId[0].name);
+				}
+
 				if (existing == null)
 				{
 					var obj = (RangeTrainUpgradeData)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(RangeTrainUpgradeData));
-					Copy(r, obj);
+					Copy(rowsForId, obj);
 					list.Add(obj);
+					imported++;
 				}
 				else
 				{
-					Copy(r, existing);
+					Copy(rowsForId, existing);
+					imported++;
 				}
-				imported++;
 			}
+
 			return imported;
 		}
 
-		private static void Copy(RangeTrainUpgradeRow r, RangeTrainUpgradeData target)
+		private static void Copy(List<RangeTrainUpgradeRow> rows, RangeTrainUpgradeData target)
 		{
+			if (rows == null || rows.Count == 0) return;
+
 			var t = typeof(RangeTrainUpgradeData);
-			SetPrivateField(t, target, "id", r.id);
-			SetPrivateField(t, target, "name", r.name);
-			SetPrivateField(t, target, "description", r.description);
-			SetPrivateField(t, target, "iconId", r.iconId);
-			
-			var statusUpgrade = new TrainStatusData { MaxHp = r.maxHp };
-			SetPrivateField(t, target, "statusUpgrade", statusUpgrade);
-			
-			var rangeStatus = new RangeTrainStatus
+			var firstRow = rows[0];
+
+			SetPrivateField(t, target, "id", firstRow.id);
+			SetPrivateField(t, target, "name", firstRow.name);
+			SetPrivateField(t, target, "description", firstRow.description);
+			SetPrivateField(t, target, "iconId", firstRow.iconId);
+
+			// upgradeStats 배열 생성 (인덱스 = 레벨 - 1)
+			var upgradeStatsArray = new RangeTrainUpgradeStats[rows.Count];
+			var statsType = typeof(RangeTrainUpgradeStats);
+
+			for (int i = 0; i < rows.Count; i++)
 			{
-				AttackRange = r.attackRange,
-				AttackDamage = r.attackDamage,
-				AttackCount = r.attackCount,
-				AttackInterval = r.attackInterval
-			};
-			SetPrivateField(t, target, "rangeStatusUpgrade", rangeStatus);
+				var r = rows[i];
+				var upgradeStats = new RangeTrainUpgradeStats();
+
+				var statusUpgrade = new TrainStatusData { MaxHp = r.maxHp };
+				SetPrivateField(statsType, upgradeStats, "statusUpgrade", statusUpgrade);
+
+				var rangeStatus = new RangeTrainStatus
+				{
+					AttackRange = r.attackRange,
+					AttackDamage = r.attackDamage,
+					AttackCount = r.attackCount,
+					AttackInterval = r.attackInterval
+				};
+				SetPrivateField(statsType, upgradeStats, "rangeStatusUpgrade", rangeStatus);
+
+				upgradeStatsArray[i] = upgradeStats;
+			}
+
+			SetPrivateField(t, target, "upgradeStats", upgradeStatsArray);
+			SetPrivateField(t, target, "level", 1); // 기본 레벨은 1
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)
