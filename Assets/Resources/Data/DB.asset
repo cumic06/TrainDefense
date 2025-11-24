@@ -18,7 +18,7 @@ MonoBehaviour:
     description: basic
     monsterStatusData:
       MaxHp: 10
-      Damage: 40
+      Damage: 5
       MoveSpeed: 10
       AttackDelay: 1
       DropExpMin: 10
