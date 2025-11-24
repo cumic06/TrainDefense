@@ -24,6 +24,18 @@ namespace TrainDefense.Game.Datas
 
         public string Id => id;
         public string TargetTrainId => targetTrainId;
+        public ITrainUpgradeData SelectedUpgrade
+        {
+            get
+            {
+                if (_selectedUpgrade == null)
+                {
+                    var db = Resources.Load<DB>("Data/DB");
+                    _selectedUpgrade = SelectRandomUpgrade(db);
+                }
+                return _selectedUpgrade;
+            }
+        }
 
         public void Initialize(DB db)
         {

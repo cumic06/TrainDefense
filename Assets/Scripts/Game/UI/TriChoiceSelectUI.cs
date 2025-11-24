@@ -50,7 +50,59 @@ namespace TrainDefense.Game.UI
             var uiInfo = choiceOption.GetUIInfo();
             iconImage.sprite = uiInfo.Icon;
             nameText.text = uiInfo.Name;
-            descriptionText.text = uiInfo.Description;
+            
+            if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
+            {
+                var selectedUpgrade = upgradeTrainChoice.SelectedUpgrade;
+                if (selectedUpgrade != null)
+                {
+                    // 업그레이드 데이터 타입에 따라 스탯 값들을 추출
+                    object[] formatArgs = GetUpgradeFormatArgs(selectedUpgrade);
+                    descriptionText.text = string.Format(uiInfo.Description, formatArgs);
+                }
+                else
+                {
+                    descriptionText.text = uiInfo.Description;
+                }
+            }
+            else
+            {
+                descriptionText.text = uiInfo.Description;
+            }
+        }
+
+        private object[] GetUpgradeFormatArgs(ITrainUpgradeData upgradeData)
+        {
+            var statusUpgrade = upgradeData.StatusUpgrade;
+            var args = new System.Collections.Generic.List<object>();
+
+            // 기본 스탯 (모든 Train 타입에 공통)
+            if (statusUpgrade.MaxHp != 0)
+            {
+                args.Add(statusUpgrade.MaxHp);
+            }
+
+            // TurretTrain 전용 스탯
+            if (upgradeData is TurretTrainUpgradeData turretUpgrade)
+            {
+                var turretStatus = turretUpgrade.TurretStatusUpgrade;
+                if (turretStatus.AttackRange != 0) args.Add(turretStatus.AttackRange);
+                if (turretStatus.AttackDamage != 0) args.Add(turretStatus.AttackDamage);
+                if (turretStatus.AttackCount != 0) args.Add(turretStatus.AttackCount);
+                if (turretStatus.AttackInterval != 0) args.Add(turretStatus.AttackInterval);
+                if (turretStatus.TargetCount != 0) args.Add(turretStatus.TargetCount);
+            }
+            // RangeTrain 전용 스탯
+            else if (upgradeData is RangeTrainUpgradeData rangeUpgrade)
+            {
+                var rangeStatus = rangeUpgrade.RangeStatusUpgrade;
+                if (rangeStatus.AttackRange != 0) args.Add(rangeStatus.AttackRange);
+                if (rangeStatus.AttackDamage != 0) args.Add(rangeStatus.AttackDamage);
+                if (rangeStatus.AttackCount != 0) args.Add(rangeStatus.AttackCount);
+                if (rangeStatus.AttackInterval != 0) args.Add(rangeStatus.AttackInterval);
+            }
+
+            return args.ToArray();
         }
 
         private void OnSelectButtonClick()
