@@ -42,7 +42,7 @@ namespace TrainDefense.Game.UI
             _triChoiceUI = triChoiceUI;
             SetUI(choiceOption);
 
-            _isSelected = false;
+            SetSelected(false);
         }
 
         private void SetUI(IChoiceOption choiceOption)
@@ -50,7 +50,7 @@ namespace TrainDefense.Game.UI
             var uiInfo = choiceOption.GetUIInfo();
             iconImage.sprite = uiInfo.Icon;
             nameText.text = uiInfo.Name;
-            
+
             if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
             {
                 var selectedUpgrade = upgradeTrainChoice.SelectedUpgrade;
@@ -108,7 +108,7 @@ namespace TrainDefense.Game.UI
         private void OnSelectButtonClick()
         {
             _triChoiceUI.OnChoiceSelected(_choiceOption);
-            _isSelected = true;
+            SetSelected(true);
         }
 
         public void SetButtonInteractable(bool interactable)
@@ -116,16 +116,25 @@ namespace TrainDefense.Game.UI
             _selectButton.interactable = interactable;
         }
 
+        public void SetSelected(bool selected)
+        {
+            _isSelected = selected;
+        }
+
         #region Pointer Events
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (_isSelected) return;
+
+            transform.DOKill();
             transform.DOScale(1.1f, 0.1f).SetEase(Ease.OutBack).SetUpdate(true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             if (_isSelected) return;
+
+            transform.DOKill();
             transform.DOScale(1f, 0.1f).SetEase(Ease.InBack).SetUpdate(true);
         }
         #endregion

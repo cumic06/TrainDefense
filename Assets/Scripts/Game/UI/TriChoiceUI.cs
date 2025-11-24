@@ -90,7 +90,12 @@ namespace TrainDefense.Game.UI
             {
                 choiceSelectUI.transform.localScale = Vector3.one;
                 choiceSelectUI.SetButtonInteractable(false);
-                choiceSelectUI.transform.DOScale(0, uiActiveDelay).SetEase(Ease.InBack).SetUpdate(true);
+                choiceSelectUI.SetSelected(true);
+
+                choiceSelectUI.transform.DOScale(0, uiActiveDelay).SetEase(Ease.InBack).SetUpdate(true).OnComplete(() =>
+                {
+                    choiceSelectUI.transform.localScale = Vector3.zero;
+                });
             }
 
             TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
