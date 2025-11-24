@@ -13,65 +13,6 @@ namespace TrainDefense.Game
     public class TriChoiceManager : Singleton<TriChoiceManager>
     {
         /// <summary>
-        /// 랜덤 선택지를 반환합니다.
-        /// AddTrainChoice가 선택된 적이 있으면 해당 TrainId의 UpgradeTrainChoice를 반환합니다.
-        /// </summary>
-        public IChoiceOption RandomChoice()
-        {
-            var db = DataBaseManager.Instance?.GetDB();
-            if (db == null || db.TriChoiceDB == null)
-            {
-                Debug.LogError("DB or TriChoiceDB not found");
-                return null;
-            }
-
-            // UserDataManager를 통해 선택된 AddTrainChoice가 있는지 확인
-            HashSet<string> addedTrainIds = GetAddedTrainIdsFromUserData();
-
-            if (addedTrainIds.Count > 0)
-            {
-                // 추가된 Train들의 UpgradeTrainChoice만 선택
-                List<ChoiceEntry> validUpgradeChoices = GetValidUpgradeChoicesForAddedTrains(db.TriChoiceDB, addedTrainIds);
-
-                if (validUpgradeChoices.Count == 0)
-                {
-                    Debug.LogWarning("No valid upgrade choices available for added trains");
-                    return null;
-                }
-
-                IChoiceOption upgradeOption = SelectFromChoices(validUpgradeChoices);
-
-                // 선택지 초기화 (업그레이드 가중치 랜덤 선택)
-                if (upgradeOption != null)
-                {
-                    upgradeOption.Initialize(db);
-                }
-
-                return upgradeOption;
-            }
-
-            // AddTrainChoice가 선택된 적 없으면 AddTrain 데이터만 불러오기
-            List<ChoiceEntry> validAddTrain = GetValidChoices(db.TriChoiceDB.AddTrainChoices);
-
-            if (validAddTrain.Count == 0)
-            {
-                Debug.LogWarning("No valid add train choices available");
-                return null;
-            }
-
-            // AddTrain 선택지 중에서 가중치 기반 선택
-            IChoiceOption selectedOption = SelectFromChoices(validAddTrain);
-
-            // 선택지 초기화
-            if (selectedOption != null)
-            {
-                selectedOption.Initialize(db);
-            }
-
-            return selectedOption;
-        }
-
-        /// <summary>
         /// 사용 가능한 선택지 목록을 중복 없이 반환합니다.
         /// 요청한 개수만큼 반환하되, 사용 가능한 선택지가 부족하면 가능한 만큼만 반환합니다.
         /// </summary>
@@ -89,46 +30,72 @@ namespace TrainDefense.Game
             // UserDataManager를 통해 선택된 AddTrainChoice가 있는지 확인
             HashSet<string> addedTrainIds = GetAddedTrainIdsFromUserData();
 
-            List<ChoiceEntry> validChoices;
-
+            // UpgradeTrainChoice 선택 (addedTrainIds 개수만큼)
             if (addedTrainIds.Count > 0)
             {
-                // 추가된 Train들의 UpgradeTrainChoice만 선택
-                validChoices = GetValidUpgradeChoicesForAddedTrains(db.TriChoiceDB, addedTrainIds);
-            }
-            else
-            {
-                // AddTrainChoice가 선택된 적 없으면 AddTrain 데이터만 불러오기
-                validChoices = GetValidChoices(db.TriChoiceDB.AddTrainChoices);
+                List<ChoiceEntry> validUpgradeChoices = GetValidUpgradeChoicesForAddedTrains(db.TriChoiceDB, addedTrainIds);
+                
+                if (validUpgradeChoices.Count > 0)
+                {
+                    List<ChoiceEntry> remainingUpgradeChoices = new(validUpgradeChoices);
+                    int upgradeCount = Mathf.Min(addedTrainIds.Count, count, validUpgradeChoices.Count);
+
+                    for (int i = 0; i < upgradeCount && remainingUpgradeChoices.Count > 0; i++)
+                    {
+                        IChoiceOption selectedOption = SelectFromChoices(remainingUpgradeChoices);
+
+                        if (selectedOption == null)
+                        {
+                            break;
+                        }
+
+                        // 선택지 초기화
+                        selectedOption.Initialize(db);
+
+                        // 선택된 선택지를 결과에 추가
+                        availableChoices.Add(selectedOption);
+
+                        // 선택된 선택지를 풀에서 제거하여 중복 방지
+                        remainingUpgradeChoices.RemoveAll(entry => entry.Option?.Id == selectedOption.Id);
+                    }
+                }
             }
 
-            if (validChoices.Count == 0)
+            // 나머지 개수만큼 AddTrainChoice 선택
+            int remainingCount = count - availableChoices.Count;
+            if (remainingCount > 0)
+            {
+                List<ChoiceEntry> validAddTrainChoices = GetValidChoices(db.TriChoiceDB.AddTrainChoices);
+
+                if (validAddTrainChoices.Count > 0)
+                {
+                    List<ChoiceEntry> remainingAddTrainChoices = new(validAddTrainChoices);
+                    int addTrainCount = Mathf.Min(remainingCount, validAddTrainChoices.Count);
+
+                    for (int i = 0; i < addTrainCount && remainingAddTrainChoices.Count > 0; i++)
+                    {
+                        IChoiceOption selectedOption = SelectFromChoices(remainingAddTrainChoices);
+
+                        if (selectedOption == null)
+                        {
+                            break;
+                        }
+
+                        // 선택지 초기화
+                        selectedOption.Initialize(db);
+
+                        // 선택된 선택지를 결과에 추가
+                        availableChoices.Add(selectedOption);
+
+                        // 선택된 선택지를 풀에서 제거하여 중복 방지
+                        remainingAddTrainChoices.RemoveAll(entry => entry.Option?.Id == selectedOption.Id);
+                    }
+                }
+            }
+
+            if (availableChoices.Count == 0)
             {
                 Debug.LogWarning("No valid choices available");
-                return availableChoices;
-            }
-
-            // 가중치 기반으로 선택지를 선택하되, 중복되지 않도록 함
-            List<ChoiceEntry> remainingChoices = new List<ChoiceEntry>(validChoices);
-            int requestedCount = Mathf.Min(count, validChoices.Count);
-
-            for (int i = 0; i < requestedCount && remainingChoices.Count > 0; i++)
-            {
-                IChoiceOption selectedOption = SelectFromChoices(remainingChoices);
-
-                if (selectedOption == null)
-                {
-                    break;
-                }
-
-                // 선택지 초기화
-                selectedOption.Initialize(db);
-
-                // 선택된 선택지를 결과에 추가
-                availableChoices.Add(selectedOption);
-
-                // 선택된 선택지를 풀에서 제거하여 중복 방지
-                remainingChoices.RemoveAll(entry => entry.Option?.Id == selectedOption.Id);
             }
 
             return availableChoices;
