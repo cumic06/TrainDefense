@@ -37,12 +37,22 @@ namespace TrainDefense.Game
         private int _currentTrainCount;//생성된 Train 개수
         public int CurrentTrainCount => _currentTrainCount;
 
+        private struct DeadTrainInfo
+        {
+            public Train Train;
+            public int OriginalIndex;
+        }
+
+        private readonly List<DeadTrainInfo> _deadTrains = new();//죽은 Train 목록
+        private readonly Dictionary<Train, int> _trainOriginalIndexMap = new();//Train의 원래 인덱스 매핑
+
         protected override void Start()
         {
             base.Start();
 
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
             GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
+            GameEventSystem.Subscribe<InspectionEvent>(OnInspection);
 
             if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
             {
@@ -56,6 +66,7 @@ namespace TrainDefense.Game
         {
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
             GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);
+            GameEventSystem.Unsubscribe<InspectionEvent>(OnInspection);
         }
 
         private void FixedUpdate()
@@ -93,9 +104,12 @@ namespace TrainDefense.Game
             trainObject.IsUnDead = isUnDead;
             _currentTrains.Add(trainObject);
             _currentTrainCount++;
-            Vector3 spawnPos = Vector3.left * trainOffset * _currentTrainCount;
-            trainObject.transform.localPosition = spawnPos;
+            int originalIndex = _currentTrainCount;
+            _trainOriginalIndexMap[trainObject] = originalIndex;
             GameEventSystem.Publish(new AddTrainEvent(_trainData.Icon, trainObject));
+            
+            // 살아있는 기차 재정렬
+            RearrangeTrains();
         }
 
         public void UpgradeTrain(string targetTrainId, ITrainUpgradeData upgradeData)
@@ -118,12 +132,93 @@ namespace TrainDefense.Game
                 {
                     _currentTrains.Remove(train);
 
+                    // 원래 인덱스 가져오기
+                    int originalIndex = _trainOriginalIndexMap.ContainsKey(train) ? _trainOriginalIndexMap[train] : _currentTrains.Count;
+
+                    // 오브젝트 비활성화
+                    train.gameObject.SetActive(false);
+
+                    // 죽은 기차 정보 저장
+                    _deadTrains.Add(new DeadTrainInfo
+                    {
+                        Train = train,
+                        OriginalIndex = originalIndex
+                    });
+
+                    // 살아있는 기차 재정렬
+                    RearrangeTrains();
+
                     if (_currentTrains.Count == 0)
                     {
                         OnDead();
                     }
+                    break;
                 }
             }
+        }
+
+        private void RearrangeTrains()
+        {
+            // 살아있는 기차만 연속적으로 재정렬
+            for (int i = 0; i < _currentTrains.Count; i++)
+            {
+                Vector3 newPos = Vector3.left * trainOffset * (i + 1);
+                _currentTrains[i].transform.localPosition = newPos;
+            }
+        }
+
+        private void RearrangeAllTrainsToOriginalOrder()
+        {
+            // 모든 기차를 원래 순서대로 재정렬
+            // _currentTrains와 _deadTrains를 합쳐서 원래 인덱스 순서로 정렬
+            var allTrains = new List<(Train train, int originalIndex)>();
+
+            // 살아있는 기차 추가
+            foreach (var train in _currentTrains)
+            {
+                if (_trainOriginalIndexMap.ContainsKey(train))
+                {
+                    allTrains.Add((train, _trainOriginalIndexMap[train]));
+                }
+            }
+
+            // 죽은 기차 추가
+            foreach (var deadTrainInfo in _deadTrains)
+            {
+                allTrains.Add((deadTrainInfo.Train, deadTrainInfo.OriginalIndex));
+            }
+
+            // 원래 인덱스 순서로 정렬
+            allTrains.Sort((a, b) => a.originalIndex.CompareTo(b.originalIndex));
+
+            // 정렬된 순서대로 위치 재설정
+            for (int i = 0; i < allTrains.Count; i++)
+            {
+                Vector3 newPos = Vector3.left * trainOffset * (i + 1);
+                allTrains[i].train.transform.localPosition = newPos;
+            }
+        }
+
+        private void OnInspection(InspectionEvent inspectionEvent)
+        {
+            // 죽은 기차 복원
+            foreach (var deadTrainInfo in _deadTrains.ToList())
+            {
+                Train train = deadTrainInfo.Train;
+                
+                // HP 최대치로 복원 및 _isDead = false 설정 (레벨과 업그레이드는 유지)
+                train.Resurrect();
+                
+                // 오브젝트 활성화
+                train.gameObject.SetActive(true);
+                
+                // _deadTrains에서 제거하고 _currentTrains에 다시 추가
+                _deadTrains.Remove(deadTrainInfo);
+                _currentTrains.Add(train);
+            }
+
+            // 모든 기차를 원래 순서대로 재정렬
+            RearrangeAllTrainsToOriginalOrder();
         }
 
         public bool CheckHasTrain(TrainData trainData)

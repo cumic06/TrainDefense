@@ -77,6 +77,14 @@ namespace TrainDefense.Game
             _isDead = true;
         }
 
+        public virtual void Resurrect()
+        {
+            // HP를 최대치로 복원하고 죽음 상태 해제
+            _isDead = false;
+            _currentHp = _currentMaxHp;
+            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
+        }
+
         public virtual void Upgrade(ITrainUpgradeData upgradeData)
         {
             if (upgradeData == null) return;

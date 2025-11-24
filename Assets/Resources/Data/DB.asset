@@ -18,7 +18,7 @@ MonoBehaviour:
     description: basic
     monsterStatusData:
       MaxHp: 10
-      Damage: 5
+      Damage: 40
       MoveSpeed: 10
       AttackDelay: 1
       DropExpMin: 10
@@ -408,33 +408,6 @@ MonoBehaviour:
   rangeTrainUpgradeDataList:
   - id: 100001
     iconId: 
-    name: "\uB0C9\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uBC94\uC704 {1} \uC99D\uAC00"
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackRange: 1
-        AttackDamage: 1
-        AttackCount: 0
-        AttackInterval: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackRange: 1
-        AttackDamage: 1
-        AttackCount: 0
-        AttackInterval: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackRange: 1
-        AttackDamage: 2
-        AttackCount: 0
-        AttackInterval: 0
-    level: 1
-  - id: 100002
-    iconId: 
     name: "\uD3ED\uBC1C \uD3EC\uD0D1 \uAC15\uD654"
     description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uBC94\uC704 {1} \uC99D\uAC00"
     upgradeStats:
@@ -457,6 +430,33 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackRange: 1
         AttackDamage: 250
+        AttackCount: 0
+        AttackInterval: 0
+    level: 1
+  - id: 100002
+    iconId: 
+    name: "\uB0C9\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
+    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uBC94\uC704 {1} \uC99D\uAC00"
+    upgradeStats:
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackRange: 1
+        AttackDamage: 1
+        AttackCount: 0
+        AttackInterval: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackRange: 1
+        AttackDamage: 1
+        AttackCount: 0
+        AttackInterval: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackRange: 1
+        AttackDamage: 2
         AttackCount: 0
         AttackInterval: 0
     level: 1
