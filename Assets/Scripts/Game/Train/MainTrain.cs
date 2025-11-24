@@ -30,10 +30,12 @@ namespace TrainDefense.Game
         private bool isUnDead = false;
         #endregion
 
-        private readonly List<Train> _currentTrains = new();
+        private readonly List<Train> _currentTrains = new();//살아있는 Train만 있는 목록
         public List<Train> CurrentTrains => _currentTrains;
+        public int MaxTrainCount => maxTrainCount;
 
-        private int _currentTrainCount;
+        private int _currentTrainCount;//생성된 Train 개수
+        public int CurrentTrainCount => _currentTrainCount;
 
         protected override void Start()
         {

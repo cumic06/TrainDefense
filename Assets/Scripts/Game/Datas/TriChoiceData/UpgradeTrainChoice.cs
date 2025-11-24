@@ -24,6 +24,7 @@ namespace TrainDefense.Game.Datas
 
         public string Id => id;
         public string TargetTrainId => targetTrainId;
+        public WeightedUpgradeData[] WeightedUpgrades => weightedUpgrades;
         public ITrainUpgradeData SelectedUpgrade
         {
             get
