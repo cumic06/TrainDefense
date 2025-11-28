@@ -335,7 +335,7 @@ namespace TrainDefense.Game
 
             // AttackCount와 TargetCount 중 큰 값만큼 미리 생성
             int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
-            
+
             for (int i = 0; i < maxCount; i++)
             {
                 Projectile spawned = ResourceManager.Instance.Spawn(baseProjectile);
@@ -393,7 +393,12 @@ namespace TrainDefense.Game
         /// </summary>
         private void SetupProjectileTransform(Projectile projectile, int spawnIndex, Vector3? worldPosition = null)
         {
-            projectile.transform.localScale = Vector3.one;
+            if (projectile == null) return;
+
+            if (projectile.GetData().MovementType == MovementType.Linear || projectile.GetData().MovementType == MovementType.TargetPos)
+            {
+                projectile.transform.localScale = Vector3.one;
+            }
 
             if (worldPosition.HasValue)
             {
@@ -405,9 +410,21 @@ namespace TrainDefense.Game
                     ? turretProjectileSpawnPoints[spawnIndex]
                     : turretProjectileSpawnPoints[0];
 
-                projectile.transform.SetParent(parent);
-                projectile.transform.localPosition = Vector3.zero;
-                projectile.transform.localRotation = Quaternion.identity;
+                if (projectile.GetData().MovementType == MovementType.NonMovement)
+                {
+                    projectile.transform.SetParent(parent);
+                    projectile.transform.localPosition = Vector3.zero;
+                    projectile.transform.localRotation = Quaternion.identity;
+
+                    if (useParticleProjectile)
+                    {
+                        projectile.transform.localScale = Vector3.one;
+                    }
+                }
+                else
+                {
+                    projectile.transform.position = parent.position;
+                }
             }
         }
 
