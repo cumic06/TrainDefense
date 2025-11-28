@@ -314,39 +314,76 @@ namespace TrainDefense.Game
         private void InitializeProjectilePoolingMode()
         {
             Projectile projectile = GetProjectile();
-            ProjectileData projectileData = projectile != null ? projectile.GetData() : null;
+            ProjectileData projectileData = projectile?.GetData();
 
-            _useNonMovementProjectilePooling =
-                projectileData != null && projectileData.MovementType == MovementType.NonMovement;
+            _useNonMovementProjectilePooling = projectileData?.MovementType == MovementType.NonMovement;
+
+            if (_useNonMovementProjectilePooling)
+            {
+                // NonMovement 프로젝타일은 Setup 시점에 미리 생성
+                PreCreateNonMovementProjectiles();
+            }
         }
 
-        private Projectile GetOrCreateNonMovementProjectile(int index)
+        /// <summary>
+        /// NonMovement 프로젝타일을 미리 생성 (Setup 시점에 호출)
+        /// </summary>
+        private void PreCreateNonMovementProjectiles()
+        {
+            Projectile baseProjectile = GetProjectile();
+            if (baseProjectile == null) return;
+
+            // AttackCount와 TargetCount 중 큰 값만큼 미리 생성
+            int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
+            
+            for (int i = 0; i < maxCount; i++)
+            {
+                Projectile spawned = ResourceManager.Instance.Spawn(baseProjectile);
+                if (spawned == null) continue;
+
+                spawned.gameObject.SetActive(false); // 실제 발사 시점에 활성화
+                _nonMovementProjectiles.Add(spawned);
+            }
+        }
+
+        /// <summary>
+        /// NonMovement 프로젝타일 가져오기 (이미 생성된 것만 사용)
+        /// </summary>
+        private Projectile GetNonMovementProjectile(int index)
         {
             if (!_useNonMovementProjectilePooling)
             {
                 return null;
             }
 
-            // index 에 해당하는 Projectile 이 아직 없으면 새로 소환해서 리스트에 보관
-            while (_nonMovementProjectiles.Count <= index)
+            // index가 범위를 벗어나면 null 반환 (이미 생성된 것만 사용)
+            if (index < 0 || index >= _nonMovementProjectiles.Count)
             {
-                Projectile baseProjectile = GetProjectile();
-                if (baseProjectile == null)
-                {
-                    return null;
-                }
-
-                Projectile spawned = ResourceManager.Instance.Spawn(baseProjectile);
-                if (spawned == null)
-                {
-                    return null;
-                }
-
-                spawned.gameObject.SetActive(false); // 실제 발사 시점에 활성화
-                _nonMovementProjectiles.Add(spawned);
+                return null;
             }
 
             return _nonMovementProjectiles[index];
+        }
+
+        /// <summary>
+        /// AttackCount나 TargetCount가 증가했을 때 추가 프로젝타일 생성
+        /// </summary>
+        private void EnsureNonMovementProjectileCount(int requiredCount)
+        {
+            if (!_useNonMovementProjectilePooling) return;
+
+            Projectile baseProjectile = GetProjectile();
+            if (baseProjectile == null) return;
+
+            // 필요한 개수만큼 추가 생성
+            while (_nonMovementProjectiles.Count < requiredCount)
+            {
+                Projectile spawned = ResourceManager.Instance.Spawn(baseProjectile);
+                if (spawned == null) break;
+
+                spawned.gameObject.SetActive(false);
+                _nonMovementProjectiles.Add(spawned);
+            }
         }
         #endregion
 
@@ -394,10 +431,12 @@ namespace TrainDefense.Game
 
             if (_useNonMovementProjectilePooling)
             {
-                projectile = GetOrCreateNonMovementProjectile(index);
+                // NonMovement: 이미 생성된 프로젝타일 사용 (활성화만)
+                projectile = GetNonMovementProjectile(index);
             }
             else
             {
+                // 일반 프로젝타일: ResourceManager에서 소환
                 projectile = ResourceManager.Instance.Spawn(GetProjectile());
             }
 
@@ -430,6 +469,11 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackRange += turretUpgradeData.TurretStatusUpgrade.AttackRange;
                 _currentTurretTrainStatus.AttackCount += turretUpgradeData.TurretStatusUpgrade.AttackCount;
                 _currentTurretTrainStatus.AttackInterval += turretUpgradeData.TurretStatusUpgrade.AttackInterval;
+
+                if (_useNonMovementProjectilePooling)
+                {
+                    EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
+                }
             }
         }
 
@@ -440,6 +484,12 @@ namespace TrainDefense.Game
             _currentTurretTrainStatus.AttackCount += upgradeData.AttackCount;
             _currentTurretTrainStatus.AttackInterval += upgradeData.AttackInterval;
             _currentTurretTrainStatus.TargetCount += upgradeData.TargetCount;
+
+            if (_useNonMovementProjectilePooling)
+            {
+                int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
+                EnsureNonMovementProjectileCount(maxCount);
+            }
         }
 
         protected override void ApplyStat(IStat stat)
@@ -473,6 +523,10 @@ namespace TrainDefense.Game
 
                 case StatType.AttackCount:
                     _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(stat.Value);
+                    if (_useNonMovementProjectilePooling)
+                    {
+                        EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
+                    }
                     break;
 
                 case StatType.AttackInterval:
@@ -481,6 +535,10 @@ namespace TrainDefense.Game
 
                 case StatType.TargetCount:
                     _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(stat.Value);
+                    if (_useNonMovementProjectilePooling)
+                    {
+                        EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
+                    }
                     break;
             }
         }
