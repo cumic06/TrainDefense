@@ -49,7 +49,7 @@ namespace TrainDefense.Game.UI
             }
 
             // 선택지 풀을 미리 생성 (중복 없이)
-            List<IChoiceOption> availableChoices = triChoiceManager.GetAvailableChoices(choiceSelectUIs.Length);
+            List<IChoiceOption> availableChoices = triChoiceManager.GetChoices(choiceSelectUIs.Length);
 
             if (availableChoices.Count == 0)
             {

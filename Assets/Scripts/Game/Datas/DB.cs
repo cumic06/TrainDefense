@@ -122,6 +122,7 @@ namespace TrainDefense.Game.Datas
             {
                 Debug.LogWarning($"Train upgrade data with ID '{id}' not found");
             }
+            
             return result;
         }
 

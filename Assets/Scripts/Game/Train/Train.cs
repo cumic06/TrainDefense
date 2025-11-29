@@ -90,6 +90,7 @@ namespace TrainDefense.Game
             if (upgradeData == null) return;
 
             _currentLevel++;
+            Debug.Log($"Train [{Id}]: Upgrade: {_currentLevel}");
             _currentMaxHp += upgradeData.StatusUpgrade.MaxHp;
             _currentHp += upgradeData.StatusUpgrade.MaxHp;
             _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);

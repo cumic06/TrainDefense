@@ -13,14 +13,11 @@ namespace TrainDefense.Game
     public class TriChoiceManager : Singleton<TriChoiceManager>
     {
         /// <summary>
-        /// 사용 가능한 선택지 목록을 중복 없이 반환합니다.
-        /// 요청한 개수만큼 반환하되, 사용 가능한 선택지가 부족하면 가능한 만큼만 반환합니다.
-        /// 로직 순서는 
-        /// 1. TrainManager에서 IsMaxTrain이면 바로 UpgradeChoice만 가져온다.
-        /// 2. IsMaxTrain이 아니면 기존 로직인 1,2를 한다. (선택된 AddTrainChoiceId들을 가져옴, 그 데이터를 기반으로 UpgradeTrainChoice를 선택함)
-        /// 3. 최종 개수가 0이 아니면 return 해줌.
+        /// 삼중택일 선택지를 반환합니다.
         /// </summary>
-        public List<IChoiceOption> GetAvailableChoices(int count)
+        /// <param name="count">요청하는 선택지 개수</param>
+        /// <returns>선택된 선택지 목록</returns>
+        public List<IChoiceOption> GetChoices(int count)
         {
             var db = GetDB();
             if (db == null || db.TriChoiceDB == null)
@@ -29,169 +26,177 @@ namespace TrainDefense.Game
                 return new List<IChoiceOption>();
             }
 
-            List<IChoiceOption> availableChoices = new();
+            List<IChoiceOption> result = new();
 
-            // 1. TrainManager에서 IsMaxTrain이면 바로 UpgradeChoice만 가져온다.
+            // 1. TrainManager에서 IsMaxTrainCountReached면 UpgradeData만 가져온다.
             if (TrainManager.Instance.IsMaxTrainCountReached())
             {
-                List<ChoiceEntry> validUpgradeChoices = GetAllValidUpgradeChoices(db.TriChoiceDB);
+                List<ChoiceEntry> validUpgradeChoices = GetValidUpgradeChoicesForTrains(db.TriChoiceDB);
 
-                if (validUpgradeChoices.Count > 0)
+                // 모든 Train이 최대 업그레이드면 빈 리스트 반환
+                if (validUpgradeChoices.Count == 0)
                 {
-                    List<ChoiceEntry> remainingUpgradeChoices = new(validUpgradeChoices);
-                    int upgradeCount = Mathf.Min(count, remainingUpgradeChoices.Count);
+                    return result;
+                }
 
-                    for (int i = 0; i < upgradeCount && remainingUpgradeChoices.Count > 0; i++)
+                // 가중치 기반으로 count개만큼 선택
+                List<ChoiceEntry> remainingChoices = new(validUpgradeChoices);
+                int selectCount = Mathf.Min(count, remainingChoices.Count);
+
+                for (int i = 0; i < selectCount && remainingChoices.Count > 0; i++)
+                {
+                    IChoiceOption selectedOption = SelectFromChoices(remainingChoices);
+                    if (selectedOption == null)
                     {
-                        IChoiceOption selectedOption = SelectFromChoices(remainingUpgradeChoices);
-
-                        if (selectedOption == null)
-                        {
-                            break;
-                        }
-
-                        // 선택지 초기화
-                        selectedOption.Initialize(db);
-
-                        // 선택된 선택지를 결과에 추가
-                        availableChoices.Add(selectedOption);
-
-                        // 선택된 선택지를 풀에서 제거하여 중복 방지
-                        remainingUpgradeChoices.RemoveAll(entry => entry.Option?.Id == selectedOption.Id);
+                        break;
                     }
+
+                    selectedOption.Initialize(db);
+                    result.Add(selectedOption);
+                    remainingChoices.RemoveAll(entry => entry.Option?.Id == selectedOption.Id);
                 }
             }
             else
             {
-                // 2. IsMaxTrain이 아니면 기존 로직인 1,2를 한다.
-                // 1. 선택된 AddTrainChoiceId들을 가져옴
-                HashSet<string> addedTrainIds = GetAddedTrainIdsFromUserData();
+                // 2-2. IsMaxTrainCountReached가 아니면 AddTrainData과 UpgradeData를 가져와 이건 랜덤으로 정해지는거야.
+                CalculateChoiceRatio(count, out int addTrainCount, out int upgradeCount);
 
-                // 2. 1의 데이터를 기반으로 UpgradeTrainChoice를 선택함. (AddTrainChoice가 없으면 UpgradeTrainChoice는 선택하지 않음.)
-                availableChoices = GetValidAddTrainChoices(addedTrainIds, db, count, availableChoices);
-
-                // 나머지 개수만큼 AddTrainChoice 선택
-                int remainingCount = count - availableChoices.Count;
-                if (remainingCount > 0)
+                // AddTrain 선택지 가져오기
+                if (addTrainCount > 0)
                 {
-                    List<ChoiceEntry> validAddTrainChoices = GetValidChoices(db.TriChoiceDB.AddTrainChoices);
+                    List<ChoiceEntry> validAddTrainChoices = GetValidAddTrainChoices(db.TriChoiceDB);
+                    List<ChoiceEntry> remainingAddChoices = new(validAddTrainChoices);
+                    int selectAddCount = Mathf.Min(addTrainCount, remainingAddChoices.Count);
 
-                    if (validAddTrainChoices.Count > 0)
+                    for (int i = 0; i < selectAddCount && remainingAddChoices.Count > 0; i++)
                     {
-                        List<ChoiceEntry> remainingAddTrainChoices = new(validAddTrainChoices);
-                        int addTrainCount = Mathf.Min(remainingCount, validAddTrainChoices.Count);
-
-                        for (int i = 0; i < addTrainCount && remainingAddTrainChoices.Count > 0; i++)
-                        {
-                            IChoiceOption selectedOption = SelectFromChoices(remainingAddTrainChoices);
-
-                            if (selectedOption == null)
-                            {
-                                break;
-                            }
-
-                            // 선택지 초기화
-                            selectedOption.Initialize(db);
-
-                            // 선택된 선택지를 결과에 추가
-                            availableChoices.Add(selectedOption);
-
-                            // 선택된 선택지를 풀에서 제거하여 중복 방지
-                            remainingAddTrainChoices.RemoveAll(entry => entry.Option?.Id == selectedOption.Id);
-                        }
-                    }
-                }
-            }
-
-            // 3. 최종 개수가 0이 아니면 return 해줌.
-            if (availableChoices.Count == 0)
-            {
-                Debug.LogWarning("No valid choices available");
-                return availableChoices;
-            }
-
-            return availableChoices;
-        }
-
-        /// <summary>
-        /// UserDataManager를 통해 선택된 AddTrainChoice의 TrainId 목록을 가져옵니다.
-        /// </summary>
-        private HashSet<string> GetAddedTrainIdsFromUserData()
-        {
-            HashSet<string> addedTrainIds = new();
-
-            var userDataManager = UserDataManager.Instance;
-            if (userDataManager == null) return addedTrainIds;
-
-            var db = GetDB();
-            if (db == null) return addedTrainIds;
-
-            var selectedChoiceIds = userDataManager.GetSelectedChoiceIds();//이미 선택한 ChoiceOptionId들을 중복 없이 가져옴.
-
-            // 선택된 ChoiceOption 중 AddTrainChoice인 것들의 trainDataId를 수집
-            foreach (var choiceId in selectedChoiceIds)
-            {
-                var choiceEntry = db.TriChoiceDB.AddTrainChoices
-                    .FirstOrDefault(entry => entry.Option?.Id == choiceId);
-
-                if (choiceEntry?.Option is AddTrainChoice addTrainChoice)
-                {
-                    var trainDataId = addTrainChoice.TrainDataId;
-                    if (!string.IsNullOrEmpty(trainDataId))
-                    {
-                        addedTrainIds.Add(trainDataId);
-                    }
-                }
-            }
-
-            return addedTrainIds;
-        }
-
-        private List<IChoiceOption> GetValidAddTrainChoices(HashSet<string> addedTrainIds, DB db, int count, List<IChoiceOption> availableChoices)
-        {
-            // UpgradeTrainChoice 선택 (addedTrainIds 개수만큼)
-            if (addedTrainIds.Count > 0)
-            {
-                List<ChoiceEntry> validUpgradeChoices = GetValidUpgradeChoicesForAddedTrains(db.TriChoiceDB, addedTrainIds);
-
-                if (validUpgradeChoices.Count > 0)
-                {
-                    List<ChoiceEntry> remainingUpgradeChoices = new(validUpgradeChoices);
-                    int upgradeCount = Mathf.Min(addedTrainIds.Count, count, validUpgradeChoices.Count);
-
-                    for (int i = 0; i < upgradeCount && remainingUpgradeChoices.Count > 0; i++)
-                    {
-                        IChoiceOption selectedOption = SelectFromChoices(remainingUpgradeChoices);
-
+                        IChoiceOption selectedOption = SelectFromChoices(remainingAddChoices);
                         if (selectedOption == null)
                         {
                             break;
                         }
 
-                        // 선택지 초기화
                         selectedOption.Initialize(db);
+                        result.Add(selectedOption);
+                        remainingAddChoices.RemoveAll(entry => entry.Option?.Id == selectedOption.Id);
+                    }
+                }
 
-                        // 선택된 선택지를 결과에 추가
-                        availableChoices.Add(selectedOption);
+                // Upgrade 선택지 가져오기
+                if (upgradeCount > 0)
+                {
+                    List<ChoiceEntry> validUpgradeChoices = GetValidUpgradeChoicesForTrains(db.TriChoiceDB);
+                    List<ChoiceEntry> remainingUpgradeChoices = new(validUpgradeChoices);
+                    int selectUpgradeCount = Mathf.Min(upgradeCount, remainingUpgradeChoices.Count);
 
-                        // 선택된 선택지를 풀에서 제거하여 중복 방지
+                    for (int i = 0; i < selectUpgradeCount && remainingUpgradeChoices.Count > 0; i++)
+                    {
+                        IChoiceOption selectedOption = SelectFromChoices(remainingUpgradeChoices);
+                        if (selectedOption == null)
+                        {
+                            break;
+                        }
+
+                        selectedOption.Initialize(db);
+                        result.Add(selectedOption);
                         remainingUpgradeChoices.RemoveAll(entry => entry.Option?.Id == selectedOption.Id);
                     }
-
-                    return availableChoices;
                 }
             }
-            return availableChoices;
+
+            return result;
         }
 
         /// <summary>
-        /// 유효한 선택지 목록을 반환합니다.
+        /// 선택지 비율을 계산합니다. 균등 분할로 AddTrain과 Upgrade의 개수를 결정합니다.
         /// </summary>
-        private List<ChoiceEntry> GetValidChoices(IReadOnlyList<ChoiceEntry> entries)
+        /// <param name="totalCount">전체 선택지 개수</param>
+        /// <param name="addTrainCount">AddTrain 선택지 개수</param>
+        /// <param name="upgradeCount">Upgrade 선택지 개수</param>
+        private void CalculateChoiceRatio(int totalCount, out int addTrainCount, out int upgradeCount)
+        {
+            // 균등 분할: 가능한 경우 1:1, 홀수면 하나 더 많은 쪽에 배분
+            if (totalCount % 2 == 0)
+            {
+                addTrainCount = totalCount / 2;
+                upgradeCount = totalCount / 2;
+            }
+            else
+            {
+                addTrainCount = (totalCount / 2) + 1;
+                upgradeCount = totalCount / 2;
+            }
+        }
+
+        /// <summary>
+        /// 현재 Train들에 대한 유효한 UpgradeTrainChoice 목록을 반환합니다.
+        /// Train이 MaxLevel에 도달한 경우 제외하고, 레벨에 맞는 UpgradeData만 포함합니다.
+        /// </summary>
+        private List<ChoiceEntry> GetValidUpgradeChoicesForTrains(TriChoiceDB triChoiceDB)
+        {
+            List<ChoiceEntry> validChoices = new();
+            var db = GetDB();
+            if (db == null) return validChoices;
+
+            var trainManager = TrainManager.Instance;
+            if (trainManager == null || trainManager.MainTrain == null) return validChoices;
+
+            foreach (var entry in triChoiceDB.UpgradeTrainChoices)
+            {
+                if (entry.Option is UpgradeTrainChoice upgradeChoice)
+                {
+                    // MainTrain.CurrentTrains에서 targetTrainId와 일치하는 Train 찾기
+                    var targetTrain = trainManager.MainTrain.CurrentTrains
+                        .FirstOrDefault(train => train.TrainData.Id == upgradeChoice.TargetTrainId);
+
+                    if (targetTrain == null) continue;
+
+                    // Train의 최대 레벨 계산
+                    int trainMaxLevel = GetTrainMaxLevel(targetTrain);
+
+                    // Train이 MaxLevel에 도달했으면 제외
+                    if (targetTrain.CurrentLevel >= trainMaxLevel) continue;
+
+                    // 레벨에 맞는 UpgradeData가 있는지 확인
+                    bool hasValidUpgrade = false;
+                    if (upgradeChoice.WeightedUpgrades != null && upgradeChoice.WeightedUpgrades.Length > 0)
+                    {
+                        foreach (var weightedUpgrade in upgradeChoice.WeightedUpgrades)
+                        {
+                            var upgradeData = db.GetTrainUpgradeData(weightedUpgrade?.UpgradeDataId);
+                            if (upgradeData == null) continue;
+
+                            // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨보다 작아야 함
+                            if (targetTrain.CurrentLevel >= upgradeData.MaxLevel) continue;
+
+                            // 현재 레벨에 해당하는 업그레이드 데이터인지 확인
+                            if (upgradeData.Level == targetTrain.CurrentLevel)
+                            {
+                                hasValidUpgrade = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    // 유효한 업그레이드가 있고 IsValid()도 통과하면 선택지에 추가
+                    if (hasValidUpgrade && entry.Option.IsValid())
+                    {
+                        validChoices.Add(entry);
+                    }
+                }
+            }
+
+            return validChoices;
+        }
+
+        /// <summary>
+        /// 유효한 AddTrainChoice 목록을 반환합니다.
+        /// </summary>
+        private List<ChoiceEntry> GetValidAddTrainChoices(TriChoiceDB triChoiceDB)
         {
             List<ChoiceEntry> validChoices = new();
 
-            foreach (var entry in entries)
+            foreach (var entry in triChoiceDB.AddTrainChoices)
             {
                 if (entry.Option != null && entry.Option.IsValid())
                 {
@@ -237,130 +242,6 @@ namespace TrainDefense.Game
 
             // MaxLevel 중 최대값 반환
             return maxLevels.Count > 0 ? maxLevels.Max() : 0;
-        }
-
-        /// <summary>
-        /// 모든 현재 Train들에 대한 유효한 UpgradeTrainChoice 목록을 반환합니다.
-        /// Train이 MaxLevel에 도달한 경우 제외하고, MaxLevel이 아닌 경우에만 가져옵니다.
-        /// </summary>
-        private List<ChoiceEntry> GetAllValidUpgradeChoices(TriChoiceDB triChoiceDB)
-        {
-            List<ChoiceEntry> validChoices = new();
-            var db = GetDB();
-            if (db == null) return validChoices;
-
-            var trainManager = TrainManager.Instance;
-            if (trainManager == null || trainManager.MainTrain == null) return validChoices;
-
-            foreach (var entry in triChoiceDB.UpgradeTrainChoices)
-            {
-                if (entry.Option is UpgradeTrainChoice upgradeChoice)
-                {
-                    var targetTrain = trainManager.MainTrain.CurrentAliveTrains
-                        .FirstOrDefault(train => train.TrainData.Id == upgradeChoice.TargetTrainId);
-
-                    if (targetTrain == null) continue;
-
-                    // Train의 MaxLevel 계산 (TrainData.Upgrades에서 가장 큰 MaxLevel)
-                    int trainMaxLevel = GetTrainMaxLevel(targetTrain);
-
-                    // Train이 MaxLevel에 도달했으면 제외
-                    if (targetTrain.CurrentLevel >= trainMaxLevel) continue;
-
-                    // weightedUpgrades 중 하나라도 유효한 업그레이드가 있는지 확인
-                    bool hasValidUpgrade = false;
-                    if (upgradeChoice.WeightedUpgrades != null && upgradeChoice.WeightedUpgrades.Length > 0)
-                    {
-                        foreach (var weightedUpgrade in upgradeChoice.WeightedUpgrades)
-                        {
-                            var upgradeData = db.GetTrainUpgradeData(weightedUpgrade?.UpgradeDataId);
-                            if (upgradeData == null) continue;
-
-                            // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨(배열 길이) 이상이면 제외
-                            if (targetTrain.CurrentLevel >= upgradeData.MaxLevel) continue;
-
-                            // 현재 레벨에 해당하는 업그레이드 데이터가 있는지 확인
-                            if (upgradeData.Level == targetTrain.CurrentLevel)
-                            {
-                                hasValidUpgrade = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    // 유효한 업그레이드가 있고 IsValid()도 통과하면 선택지에 추가
-                    if (hasValidUpgrade && entry.Option.IsValid())
-                    {
-                        validChoices.Add(entry);
-                    }
-                }
-            }
-
-            return validChoices;
-        }
-
-        /// <summary>
-        /// 추가된 Train들에 대한 유효한 UpgradeTrainChoice 목록을 반환합니다.
-        /// Train이 MaxLevel에 도달한 경우 제외하고, MaxLevel이 아닌 경우에만 가져옵니다.
-        /// </summary>
-        private List<ChoiceEntry> GetValidUpgradeChoicesForAddedTrains(TriChoiceDB triChoiceDB, HashSet<string> addedTrainIds)
-        {
-            List<ChoiceEntry> validChoices = new();
-            var db = GetDB();
-            if (db == null) return validChoices;
-
-            var trainManager = TrainManager.Instance;
-            if (trainManager == null || trainManager.MainTrain == null) return validChoices;
-
-            foreach (var entry in triChoiceDB.UpgradeTrainChoices)
-            {
-                if (entry.Option is UpgradeTrainChoice upgradeChoice)
-                {
-                    // UpgradeTrainChoice의 targetTrainId가 추가된 Train 목록에 있는지 확인
-                    if (!addedTrainIds.Contains(upgradeChoice.TargetTrainId)) continue;
-
-                    var targetTrain = trainManager.MainTrain.CurrentAliveTrains
-                        .FirstOrDefault(train => train.TrainData.Id == upgradeChoice.TargetTrainId);
-
-                    if (targetTrain == null) continue;
-
-                    // Train의 MaxLevel 계산 (TrainData.Upgrades에서 가장 큰 MaxLevel)
-                    int trainMaxLevel = GetTrainMaxLevel(targetTrain);
-
-                    // Train이 MaxLevel에 도달했으면 제외
-                    Debug.Log($"Train {targetTrain.TrainData.Id} MaxLevel: {trainMaxLevel}, CurrentLevel: {targetTrain.CurrentLevel}");
-                    if (targetTrain.CurrentLevel >= trainMaxLevel) continue;
-
-                    // weightedUpgrades 중 하나라도 유효한 업그레이드가 있는지 확인
-                    bool hasValidUpgrade = false;
-                    if (upgradeChoice.WeightedUpgrades != null && upgradeChoice.WeightedUpgrades.Length > 0)
-                    {
-                        foreach (var weightedUpgrade in upgradeChoice.WeightedUpgrades)
-                        {
-                            var upgradeData = db.GetTrainUpgradeData(weightedUpgrade?.UpgradeDataId);
-                            if (upgradeData == null) continue;
-
-                            // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨(배열 길이) 이상이면 제외
-                            if (targetTrain.CurrentLevel >= upgradeData.MaxLevel) continue;
-
-                            // 현재 레벨에 해당하는 업그레이드 데이터가 있는지 확인
-                            if (upgradeData.Level == targetTrain.CurrentLevel)
-                            {
-                                hasValidUpgrade = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    // 유효한 업그레이드가 있고 IsValid()도 통과하면 선택지에 추가
-                    if (hasValidUpgrade && entry.Option.IsValid())
-                    {
-                        validChoices.Add(entry);
-                    }
-                }
-            }
-
-            return validChoices;
         }
 
         /// <summary>
