@@ -29,7 +29,7 @@ namespace TrainDefense.Game.Datas
         [Tooltip("업그레이드 스탯 배열 (인덱스 = 레벨 - 1, 예: [0] = 레벨 1, [1] = 레벨 2)")]
         private TrainUpgradeStats[] upgradeStats;
 
-        [SerializeField]
+        [SerializeField, ReadOnly]
         [Tooltip("업그레이드 레벨 (1부터 시작)")]
         private int level = 1;
         #endregion

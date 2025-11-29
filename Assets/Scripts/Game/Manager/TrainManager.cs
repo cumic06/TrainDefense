@@ -49,9 +49,14 @@ namespace TrainDefense.Game
             return mainTrain.CheckHasTrainById(trainId);
         }
 
+        public bool IsMaxTrainCountReached()
+        {
+            return mainTrain.CurrentTrainCount >= mainTrain.MaxTrainCount;
+        }
+
         public Train GetNearTrain(Vector3 position)
         {
-            var trains = mainTrain.CurrentTrains;
+            var trains = mainTrain.CurrentAliveTrains;
             if (trains.Count == 0) return null;
 
             Train closest = null;
@@ -75,7 +80,7 @@ namespace TrainDefense.Game
 
         public Train[] GetTrains()
         {
-            return mainTrain.CurrentTrains.ToArray();
+            return mainTrain.CurrentAliveTrains.ToArray();
         }
 
         public void ApplyUpgrade(UpgradeData upgradeData)

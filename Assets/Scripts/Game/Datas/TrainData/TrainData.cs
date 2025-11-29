@@ -27,10 +27,6 @@ namespace TrainDefense.Game.Datas
         private GameObject prefab;
         [SerializeField]
         private bool isMainTrain;
-
-        [Header("Upgrade Settings")]
-        [SerializeField]
-        private List<TrainUpgradeData> upgrades = new();
         #endregion
 
         #region IData
@@ -88,16 +84,5 @@ namespace TrainDefense.Game.Datas
         [Obsolete("Use Prefab property instead")]
         public Train TrainPrefab => Prefab?.GetComponent<Train>();
         public bool IsMainTrain => isMainTrain;
-        public IReadOnlyList<ITrainUpgradeData> Upgrades => upgrades.Cast<ITrainUpgradeData>().ToList();
-
-        public ITrainUpgradeData GetUpgrade(int level)
-        {
-            if (level < 0 || level >= upgrades.Count)
-            {
-                Debug.LogWarning($"Upgrade level {level} not found for {id}");
-                return null;
-            }
-            return upgrades[level];
-        }
     }
 }

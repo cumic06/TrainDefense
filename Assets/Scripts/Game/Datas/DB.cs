@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using TrainDefense.Game;
 
 namespace TrainDefense.Game.Datas
 {
@@ -122,6 +123,52 @@ namespace TrainDefense.Game.Datas
                 Debug.LogWarning($"Train upgrade data with ID '{id}' not found");
             }
             return result;
+        }
+
+        /// <summary>
+        /// TrainDataId로 해당 기차의 현재 레벨에 맞는 업그레이드 데이터 목록을 반환
+        /// MainTrain을 통해 현재 Train 인스턴스의 레벨을 확인하고, DB의 모든 업그레이드 데이터에서 해당 레벨에 맞는 데이터를 필터링하여 반환
+        /// </summary>
+        public List<ITrainUpgradeData> GetTrainUpgradeDataByTrainDataId(string trainDataId)
+        {
+            if (string.IsNullOrEmpty(trainDataId))
+            {
+                Debug.LogWarning("TrainDataId is null or empty");
+                return new List<ITrainUpgradeData>();
+            }
+
+            // TrainManager를 통해 MainTrain 접근
+            if (TrainManager.Instance == null)
+            {
+                Debug.LogWarning("TrainManager.Instance is null");
+                return new List<ITrainUpgradeData>();
+            }
+
+            var mainTrain = TrainManager.Instance.MainTrain;
+            if (mainTrain == null)
+            {
+                Debug.LogWarning("MainTrain is null");
+                return new List<ITrainUpgradeData>();
+            }
+
+            // MainTrain.CurrentTrains에서 trainDataId로 Train 찾기
+            var train = mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == trainDataId);
+            if (train == null)
+            {
+                Debug.LogWarning($"Train with ID '{trainDataId}' not found in MainTrain.CurrentTrains");
+                return new List<ITrainUpgradeData>();
+            }
+
+            // Train의 CurrentLevel 확인
+            int currentLevel = train.CurrentLevel;
+
+            // DB의 모든 업그레이드 데이터에서 Level == CurrentLevel 필터링
+            var allUpgradeData = GetAllTrainUpgradeData();
+            var filteredUpgrades = allUpgradeData
+                .Where(upgrade => upgrade.Level == currentLevel)
+                .ToList();
+
+            return filteredUpgrades;
         }
 
         /// <summary>
