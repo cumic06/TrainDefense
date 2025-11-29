@@ -97,6 +97,11 @@ namespace TrainDefense
             return new HashSet<string>(_triChoiceData.Keys);
         }
 
+        public bool IsFirstTimeSelected(string choiceId)
+        {
+            return !_triChoiceData.ContainsKey(choiceId);
+        }
+
         #region Upgrade
         public int GetUpgradeLevel(string upgradeId)
         {

@@ -30,12 +30,14 @@ namespace TrainDefense.Game
         private bool isUnDead = false;
         #endregion
 
-        private readonly List<Train> _currentTrains = new();//살아있는 Train만 있는 목록
-        public List<Train> CurrentTrains => _currentTrains;
+        private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
+        public List<Train> CurrentAliveTrains => _currentAliveTrains;
         public int MaxTrainCount => maxTrainCount;
 
-        private int _currentTrainCount;//생성된 Train 개수
-        public int CurrentTrainCount => _currentTrainCount;
+        private readonly List<Train> _currentTrains = new();//모든 Train 목록
+        public List<Train> CurrentTrains => _currentTrains;
+
+        public int CurrentTrainCount => _currentTrains.Count;
 
         private struct DeadTrainInfo
         {
@@ -59,7 +61,7 @@ namespace TrainDefense.Game
                 SpawnTrain(startTrainablePrefab);
             }
 
-            _currentTrainCount = 0;
+            _currentTrains.Clear();
         }
 
         private void OnDestroy()
@@ -91,7 +93,7 @@ namespace TrainDefense.Game
         [Button("SpawnTrain")]
         public void SpawnTrain(Train trainPrefab)
         {
-            if (_currentTrains.Count >= maxTrainCount)
+            if (_currentAliveTrains.Count >= maxTrainCount)
             {
 #if UNITY_EDITOR
                 Debug.LogWarning("Train count is max");
@@ -102,19 +104,19 @@ namespace TrainDefense.Game
             Train trainObject = Instantiate(trainPrefab, transform);
             trainObject.Initialize(DataBaseManager.Instance.GetDB().GetTrainData(trainPrefab.Id));
             trainObject.IsUnDead = isUnDead;
+            _currentAliveTrains.Add(trainObject);
             _currentTrains.Add(trainObject);
-            _currentTrainCount++;
-            int originalIndex = _currentTrainCount;
+            int originalIndex = _currentTrains.Count - 1;
             _trainOriginalIndexMap[trainObject] = originalIndex;
             GameEventSystem.Publish(new AddTrainEvent(_trainData.Icon, trainObject));
-            
+
             // 살아있는 기차 재정렬
             RearrangeTrains();
         }
 
         public void UpgradeTrain(string targetTrainId, ITrainUpgradeData upgradeData)
         {
-            Train upgradeTrain = _currentTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
+            Train upgradeTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
 
             if (upgradeTrain != null)
             {
@@ -126,14 +128,14 @@ namespace TrainDefense.Game
         {
             if (isUnDead) return;
 
-            foreach (var train in _currentTrains.ToList())
+            foreach (var train in _currentAliveTrains.ToList())
             {
                 if (trainDeadEvent.Train == train)
                 {
-                    _currentTrains.Remove(train);
+                    _currentAliveTrains.Remove(train);
 
                     // 원래 인덱스 가져오기
-                    int originalIndex = _trainOriginalIndexMap.ContainsKey(train) ? _trainOriginalIndexMap[train] : _currentTrains.Count;
+                    int originalIndex = _trainOriginalIndexMap.ContainsKey(train) ? _trainOriginalIndexMap[train] : _currentAliveTrains.Count;
 
                     // 오브젝트 비활성화
                     train.gameObject.SetActive(false);
@@ -148,7 +150,7 @@ namespace TrainDefense.Game
                     // 살아있는 기차 재정렬
                     RearrangeTrains();
 
-                    if (_currentTrains.Count == 0)
+                    if (_currentAliveTrains.Count == 0)
                     {
                         OnDead();
                     }
@@ -160,10 +162,10 @@ namespace TrainDefense.Game
         private void RearrangeTrains()
         {
             // 살아있는 기차만 연속적으로 재정렬
-            for (int i = 0; i < _currentTrains.Count; i++)
+            for (int i = 0; i < _currentAliveTrains.Count; i++)
             {
                 Vector3 newPos = Vector3.left * trainOffset * (i + 1);
-                _currentTrains[i].transform.localPosition = newPos;
+                _currentAliveTrains[i].transform.localPosition = newPos;
             }
         }
 
@@ -174,7 +176,7 @@ namespace TrainDefense.Game
             var allTrains = new List<(Train train, int originalIndex)>();
 
             // 살아있는 기차 추가
-            foreach (var train in _currentTrains)
+            foreach (var train in _currentAliveTrains)
             {
                 if (_trainOriginalIndexMap.ContainsKey(train))
                 {
@@ -205,16 +207,16 @@ namespace TrainDefense.Game
             foreach (var deadTrainInfo in _deadTrains.ToList())
             {
                 Train train = deadTrainInfo.Train;
-                
+
                 // HP 최대치로 복원 및 _isDead = false 설정 (레벨과 업그레이드는 유지)
                 train.Resurrect();
-                
+
                 // 오브젝트 활성화
                 train.gameObject.SetActive(true);
-                
+
                 // _deadTrains에서 제거하고 _currentTrains에 다시 추가
                 _deadTrains.Remove(deadTrainInfo);
-                _currentTrains.Add(train);
+                _currentAliveTrains.Add(train);
             }
 
             // 모든 기차를 원래 순서대로 재정렬
@@ -223,12 +225,12 @@ namespace TrainDefense.Game
 
         public bool CheckHasTrain(TrainData trainData)
         {
-            return _currentTrains.Any(train => train.TrainData.Id == trainData.Id);
+            return _currentAliveTrains.Any(train => train.TrainData.Id == trainData.Id);
         }
 
         public bool CheckHasTrainById(string trainId)
         {
-            return _currentTrains.Any(train => train.TrainData.Id == trainId);
+            return _currentAliveTrains.Any(train => train.TrainData.Id == trainId);
         }
 
         public void ApplyUpgrade(UpgradeData upgradeData)
@@ -237,7 +239,7 @@ namespace TrainDefense.Game
 
             if (upgradeData.Stats == null || upgradeData.Stats.Length == 0) return;
 
-            foreach (var train in _currentTrains)
+            foreach (var train in _currentAliveTrains)
             {
                 train.ApplyStats(upgradeData.Stats);
             }

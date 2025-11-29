@@ -53,7 +53,11 @@ namespace TrainDefense.Game.UI
 
             if (availableChoices.Count == 0)
             {
+                TriChoiceSelectEvent eventData = new(null, 0);
+                GameEventSystem.Publish(eventData); //우선 선택지 없으면 이벤트 쏴서 시작되게.
+                backgroundImage.SetActive(false);
                 Debug.LogWarning("No available choices found");
+
                 return;
             }
 
@@ -68,6 +72,16 @@ namespace TrainDefense.Game.UI
                     IChoiceOption choiceOption = availableChoices[i];
 
                     choiceSelectUI.SetData(choiceOption, this);
+
+                    // 처음 획득하는 ChoiceOption인지 확인
+                    var userDataManager = UserDataManager.Instance;
+
+                    if (userDataManager != null)
+                    {
+                        bool isFirstTime = userDataManager.IsFirstTimeSelected(choiceOption.Id);
+                        choiceSelectUI.SetNewText(isFirstTime);
+                    }
+
                     choiceSelectUI.gameObject.SetActive(true);
                     choiceSelectUI.transform.localScale = Vector3.zero;
                     choiceSelectUI.SetButtonInteractable(true);
@@ -91,6 +105,7 @@ namespace TrainDefense.Game.UI
                 choiceSelectUI.transform.localScale = Vector3.one;
                 choiceSelectUI.SetButtonInteractable(false);
                 choiceSelectUI.SetSelected(true);
+                choiceSelectUI.SetNewText(false);
 
                 choiceSelectUI.transform.DOScale(0, uiActiveDelay).SetEase(Ease.InBack).SetUpdate(true).OnComplete(() =>
                 {
