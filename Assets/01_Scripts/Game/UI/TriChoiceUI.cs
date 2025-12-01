@@ -57,7 +57,6 @@ namespace TrainDefense.Game.UI
                 GameEventSystem.Publish(eventData); //우선 선택지 없으면 이벤트 쏴서 시작되게.
                 backgroundImage.SetActive(false);
                 Debug.LogWarning("No available choices found");
-
                 return;
             }
 
@@ -65,13 +64,12 @@ namespace TrainDefense.Game.UI
             for (int i = 0; i < choiceSelectUIs.Length; i++)
             {
                 var choiceSelectUI = choiceSelectUIs[i];
+                choiceSelectUI.SetSelected(false);
 
                 if (i < availableChoices.Count)
                 {
                     // 선택지가 있으면 표시
                     IChoiceOption choiceOption = availableChoices[i];
-
-                    choiceSelectUI.SetData(choiceOption, this);
 
                     // 처음 획득하는 ChoiceOption인지 확인
                     var userDataManager = UserDataManager.Instance;
@@ -82,11 +80,17 @@ namespace TrainDefense.Game.UI
                         choiceSelectUI.SetNewText(isFirstTime);
                     }
 
+                    choiceSelectUI.SetData(choiceOption, this);
                     choiceSelectUI.gameObject.SetActive(true);
-                    choiceSelectUI.transform.localScale = Vector3.zero;
                     choiceSelectUI.SetButtonInteractable(true);
 
-                    await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).SetUpdate(true);
+                    choiceSelectUI.transform.localScale = Vector3.zero;
+
+                    await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
+                    {
+                        choiceSelectUI.transform.localScale = Vector3.one;
+                    }).SetUpdate(true);
+
                 }
                 else
                 {

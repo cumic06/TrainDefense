@@ -43,8 +43,6 @@ namespace TrainDefense.Game.UI
             _choiceOption = choiceOption;
             _triChoiceUI = triChoiceUI;
             SetUI(choiceOption);
-
-            SetSelected(false);
         }
 
         private void SetUI(IChoiceOption choiceOption)

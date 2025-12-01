@@ -13,6 +13,7 @@ namespace TrainDefense.Game
         {
             base.Awake();
             _db = Resources.Load<DB>("Data/DB");
+            Debug.Log($"DB: {_db}");
         }
 
         public DB GetDB() => _db;

@@ -61,6 +61,8 @@ namespace TrainDefense.Game
                 // 2-2. IsMaxTrainCountReached가 아니면 AddTrainData과 UpgradeData를 가져와 이건 랜덤으로 정해지는거야.
                 CalculateChoiceRatio(count, out int addTrainCount, out int upgradeCount);
 
+                Debug.Log($"addTrainCount: {addTrainCount}, upgradeCount: {upgradeCount}");
+
                 // AddTrain 선택지 가져오기
                 if (addTrainCount > 0)
                 {
@@ -108,14 +110,26 @@ namespace TrainDefense.Game
         }
 
         /// <summary>
-        /// 선택지 비율을 계산합니다. 균등 분할로 AddTrain과 Upgrade의 개수를 결정합니다.
+        /// 선택지 비율을 계산합니다. 현재 Train 개수를 기준으로 AddTrain과 Upgrade의 개수를 결정합니다.
+        /// Train이 없으면 Upgrade 선택지를 제외하고 모두 AddTrain으로 배분합니다.
         /// </summary>
         /// <param name="totalCount">전체 선택지 개수</param>
         /// <param name="addTrainCount">AddTrain 선택지 개수</param>
         /// <param name="upgradeCount">Upgrade 선택지 개수</param>
         private void CalculateChoiceRatio(int totalCount, out int addTrainCount, out int upgradeCount)
         {
-            // 균등 분할: 가능한 경우 1:1, 홀수면 하나 더 많은 쪽에 배분
+            // 현재 Train 개수 확인
+            int currentTrainCount = TrainManager.Instance?.MainTrain?.CurrentTrainCount ?? 0;
+            
+            // Train이 없으면 Upgrade 선택지 제외
+            if (currentTrainCount == 0)
+            {
+                addTrainCount = totalCount;
+                upgradeCount = 0;
+                return;
+            }
+            
+            // Train이 있으면 균등 분할: 가능한 경우 1:1, 홀수면 하나 더 많은 쪽에 배분
             if (totalCount % 2 == 0)
             {
                 addTrainCount = totalCount / 2;
