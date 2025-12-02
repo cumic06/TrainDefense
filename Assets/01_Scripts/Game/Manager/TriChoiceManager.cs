@@ -17,7 +17,7 @@ namespace TrainDefense.Game
         /// </summary>
         /// <param name="count">요청하는 선택지 개수</param>
         /// <returns>선택된 선택지 목록</returns>
-        public List<IChoiceOption> GetChoices(int count)
+        public List<IChoiceOption> GetChoices(int count) //TODO: 전체 로직 수정.
         {
             var db = GetDB();
             if (db == null || db.TriChoiceDB == null)
