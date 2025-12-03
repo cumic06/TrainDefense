@@ -110,35 +110,73 @@ namespace TrainDefense.Game
         }
 
         /// <summary>
-        /// 선택지 비율을 계산합니다. 현재 Train 개수를 기준으로 AddTrain과 Upgrade의 개수를 결정합니다.
-        /// Train이 없으면 Upgrade 선택지를 제외하고 모두 AddTrain으로 배분합니다.
+        /// 선택지 비율을 계산합니다. 현재 Train 개수와 업그레이드 가능 여부를 기준으로 AddTrain과 Upgrade의 개수를 결정합니다.
+        /// Train이 없거나 모든 Train이 최대 레벨이면 Upgrade 선택지를 제외하고 모두 AddTrain으로 배분합니다.
         /// </summary>
         /// <param name="totalCount">전체 선택지 개수</param>
         /// <param name="addTrainCount">AddTrain 선택지 개수</param>
         /// <param name="upgradeCount">Upgrade 선택지 개수</param>
         private void CalculateChoiceRatio(int totalCount, out int addTrainCount, out int upgradeCount)
         {
-            // 현재 Train 개수 확인
-            int currentTrainCount = TrainManager.Instance?.MainTrain?.CurrentTrainCount ?? 0;
+            var trainManager = TrainManager.Instance;
+            var mainTrain = trainManager?.MainTrain;
             
             // Train이 없으면 Upgrade 선택지 제외
-            if (currentTrainCount == 0)
+            if (mainTrain == null || mainTrain.CurrentTrainCount == 0)
             {
                 addTrainCount = totalCount;
                 upgradeCount = 0;
                 return;
             }
-            
-            // Train이 있으면 균등 분할: 가능한 경우 1:1, 홀수면 하나 더 많은 쪽에 배분
-            if (totalCount % 2 == 0)
+
+            // 업그레이드 가능한 Train 개수 확인
+            int upgradeableTrainCount = 0;
+            int maxLevelTrainCount = 0;
+
+            foreach (var train in mainTrain.CurrentTrains)
             {
-                addTrainCount = totalCount / 2;
-                upgradeCount = totalCount / 2;
+                int trainMaxLevel = GetTrainMaxLevel(train);
+                
+                if (train.CurrentLevel >= trainMaxLevel)
+                {
+                    maxLevelTrainCount++;
+                }
+                else
+                {
+                    upgradeableTrainCount++;
+                }
+            }
+
+            // 모든 Train이 최대 레벨이면 Upgrade 선택지 제외
+            if (upgradeableTrainCount == 0)
+            {
+                addTrainCount = totalCount;
+                upgradeCount = 0;
+                return;
+            }
+
+            // 업그레이드 가능한 Train의 비율에 따라 선택지 배분
+            float upgradeRatio = (float)upgradeableTrainCount / mainTrain.CurrentTrainCount;
+            
+            // 업그레이드 가능한 Train이 50% 이상이면 균등 분할
+            if (upgradeRatio >= 0.5f)
+            {
+                if (totalCount % 2 == 0)
+                {
+                    addTrainCount = totalCount / 2;
+                    upgradeCount = totalCount / 2;
+                }
+                else
+                {
+                    addTrainCount = (totalCount / 2) + 1;
+                    upgradeCount = totalCount / 2;
+                }
             }
             else
             {
-                addTrainCount = (totalCount / 2) + 1;
-                upgradeCount = totalCount / 2;
+                // 업그레이드 가능한 Train이 50% 미만이면 AddTrain 비중 증가
+                upgradeCount = Mathf.Max(1, Mathf.FloorToInt(totalCount * upgradeRatio));
+                addTrainCount = totalCount - upgradeCount;
             }
         }
 
