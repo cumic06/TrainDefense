@@ -36,28 +36,27 @@ namespace TrainDefense.Game.UI
             _selectButton.onClick.AddListener(OnSelectButtonClick);
         }
 
-        public void SetData(IChoiceOption choiceOption, TriChoiceUI triChoiceUI)
+        public void SetData(IChoiceOption choiceOption, ChoiceUIInfo choiceUIInfo, TriChoiceUI triChoiceUI)
         {
             if (choiceOption == null) return;
 
             _choiceOption = choiceOption;
 
             _triChoiceUI = triChoiceUI;
-            SetUI(choiceOption);
+
+            SetUI(choiceOption, choiceUIInfo);
         }
 
-        private void SetUI(IChoiceOption choiceOption)
+        private void SetUI(IChoiceOption choiceOption, ChoiceUIInfo choiceUIInfo)
         {
-            var uiInfo = choiceOption.GetUIInfo();
-
-            if (string.IsNullOrEmpty(uiInfo.Name) || string.IsNullOrEmpty(uiInfo.Description))
+            if (string.IsNullOrEmpty(choiceUIInfo.Name) || string.IsNullOrEmpty(choiceUIInfo.Description))
             {
                 Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Name or Description is null");
                 return;
             }
 
-            iconImage.sprite = uiInfo.Icon;
-            nameText.text = uiInfo.Name;
+            iconImage.sprite = choiceUIInfo.Icon;
+            nameText.text = choiceUIInfo.Name;
 
             if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
             {
@@ -66,16 +65,16 @@ namespace TrainDefense.Game.UI
                 {
                     // 업그레이드 데이터 타입에 따라 스탯 값들을 추출
                     object[] formatArgs = GetUpgradeFormatArgs(selectedUpgrade);
-                    descriptionText.text = string.Format(uiInfo.Description, formatArgs);
+                    descriptionText.text = string.Format(choiceUIInfo.Description, formatArgs);
                 }
                 else
                 {
-                    descriptionText.text = uiInfo.Description;
+                    descriptionText.text = choiceUIInfo.Description;
                 }
             }
             else
             {
-                descriptionText.text = uiInfo.Description;
+                descriptionText.text = choiceUIInfo.Description;
             }
         }
 

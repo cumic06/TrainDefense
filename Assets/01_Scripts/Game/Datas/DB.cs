@@ -80,7 +80,6 @@ namespace TrainDefense.Game.Datas
         public IReadOnlyList<StageData> StageDataList => stageDataList;
         public IReadOnlyList<UpgradeData> UpgradeDataList => upgradeDataList;
         public TriChoiceDB TriChoiceDB => triChoiceDB;
-
         #endregion
     }
 }

@@ -80,7 +80,26 @@ namespace TrainDefense.Game.UI
                         choiceSelectUI.SetNewText(isFirstTime);
                     }
 
-                    choiceSelectUI.SetData(choiceOption, this);
+                    ChoiceUIInfo choiceUIInfo = new();
+                    if (choiceOption is AddTrainChoice addTrainChoice)
+                    {
+                        choiceUIInfo.Icon = DatabaseManager.Instance.GetTrainData(addTrainChoice.TrainDataId).Icon;
+                        choiceUIInfo.Name = DatabaseManager.Instance.GetTrainData(addTrainChoice.TrainDataId).Name;
+                        choiceUIInfo.Description = DatabaseManager.Instance.GetTrainData(addTrainChoice.TrainDataId).Description;
+                    }
+                    else if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
+                    {
+                        choiceUIInfo.Icon = DatabaseManager.Instance.GetTrainUpgradeData(upgradeTrainChoice.SelectedUpgrade.Id).Icon;
+                        choiceUIInfo.Name = DatabaseManager.Instance.GetTrainUpgradeData(upgradeTrainChoice.SelectedUpgrade.Id).Name;
+                        choiceUIInfo.Description = DatabaseManager.Instance.GetTrainUpgradeData(upgradeTrainChoice.SelectedUpgrade.Id).Description;
+                    }
+                    else
+                    {
+                        Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Unknown choice type");
+                        return;
+                    }
+
+                    choiceSelectUI.SetData(choiceOption, choiceUIInfo, this);
                     choiceSelectUI.gameObject.SetActive(true);
                     choiceSelectUI.SetButtonInteractable(true);
 

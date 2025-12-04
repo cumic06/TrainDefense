@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace TrainDefense.Game.Datas
@@ -16,40 +16,8 @@ namespace TrainDefense.Game.Datas
         private string trainDataId;
         #endregion
 
-        private TrainData _trainData;
-
         public string Id => id;
         public string TrainDataId => trainDataId;
-
-        public void Initialize(DB db)
-        {
-            _trainData = DatabaseManager.Instance.GetAllTrainData().FirstOrDefault(x => x.Id == trainDataId);
-        }
-
-        public ChoiceUIInfo GetUIInfo()
-        {
-            if (_trainData == null)
-            {
-                _trainData = DatabaseManager.Instance.GetAllTrainData().FirstOrDefault(x => x.Id == trainDataId);
-            }
-
-            if (_trainData == null)
-            {
-                Debug.LogError($"AddTrainChoice [{id}]: TrainData is null");
-                return default;
-            }
-
-            Debug.Log($"trainDataId: {trainDataId}");
-            Debug.Log($"trainData.Name: {_trainData.Name}");
-            Debug.Log($"trainData.Description: {_trainData.Description}");
-
-            return new ChoiceUIInfo
-            {
-                Icon = _trainData.Icon,
-                Name = _trainData.Name,
-                Description = _trainData.Description
-            };
-        }
 
         public bool IsValid()
         {
@@ -59,7 +27,9 @@ namespace TrainDefense.Game.Datas
 
         public void Execute()
         {
-            if (_trainData == null || _trainData.Prefab == null)
+            var trainData = DatabaseManager.Instance.GetTrainData(trainDataId);
+
+            if (trainData == null || trainData.Prefab == null)
             {
                 Debug.LogError($"AddTrainChoice [{id}]: Invalid TrainData");
                 return;
@@ -72,7 +42,7 @@ namespace TrainDefense.Game.Datas
                 return;
             }
 
-            main.SpawnTrain(_trainData.Prefab.GetComponent<Train>());
+            main.SpawnTrain(trainData.Prefab.GetComponent<Train>());
         }
     }
 }

@@ -38,33 +38,6 @@ namespace TrainDefense.Game.Datas
             }
         }
 
-        public void Initialize(DB db)
-        {
-            _selectedUpgrade = SelectRandomUpgrade(db);
-        }
-
-        public ChoiceUIInfo GetUIInfo()
-        {
-            if (_selectedUpgrade == null)
-            {
-                var db = Resources.Load<DB>("Data/DB");
-                _selectedUpgrade = SelectRandomUpgrade(db);
-            }
-
-            if (_selectedUpgrade == null)
-            {
-                Debug.LogError($"UpgradeTrainChoice [{id}]: SelectedUpgradeData is null");
-                return default;
-            }
-
-            return new ChoiceUIInfo
-            {
-                Icon = _selectedUpgrade.Icon,
-                Name = _selectedUpgrade.Name,
-                Description = _selectedUpgrade.Description
-            };
-        }
-
         public bool IsValid()
         {
             if (weightedUpgrades == null || weightedUpgrades.Length == 0) return false;

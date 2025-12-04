@@ -48,12 +48,24 @@ namespace TrainDefense.Game
                     if (trains.Length > 0 && trains.Length < maxUpgradeTrains.Length)
                     {
                         Debug.Log("AddTrain");
-                        result.Add(GetRandomChoices(addChoices));
+                        IChoiceOption randomAddChoice = GetRandomChoices(addChoices);
+                        if (result.Contains(randomAddChoice))
+                        {
+                            continue;
+                        }
+                        
+                        result.Add(randomAddChoice);
                     }
                     else if (trains.Length <= 0)
                     {
                         Debug.Log("AddFirstTrain");
-                        result.Add(GetRandomChoices(addChoices));
+                        IChoiceOption randomAddChoice = GetRandomChoices(addChoices);
+                        if (result.Contains(randomAddChoice))
+                        {
+                            continue;
+                        }
+
+                        result.Add(randomAddChoice);
                     }
                 }
             }
@@ -80,6 +92,5 @@ namespace TrainDefense.Game
             var upgradeDatas = DatabaseManager.Instance.GetUpgradeTrainChoices();
             return upgradeDatas.ToList();
         }
-
     }
 }
