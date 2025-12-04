@@ -26,7 +26,7 @@ public class StageManager : MonoBehaviour
 
     private void LoadStageDatas()
     {
-        _stageDatas = DataBaseManager.Instance.GetStageDatas();
+        _stageDatas = DatabaseManager.Instance.GetStageDatas();
     }
 
     private void ResetCurrentStageInfo()

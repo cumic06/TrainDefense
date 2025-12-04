@@ -27,7 +27,7 @@ namespace TrainDefense.Game.UI
         private void Start()
         {
             buyButton.onClick.AddListener(OnBuyButtonClick);
-            _upgradeData = DataBaseManager.Instance.GetDB().GetUpgradeData(shopItemDataId);
+            _upgradeData = DatabaseManager.Instance.GetUpgradeData(shopItemDataId);
             SetUp();
         }
 

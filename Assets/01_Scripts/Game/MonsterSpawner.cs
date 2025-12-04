@@ -28,7 +28,7 @@ namespace TrainDefense.Game
 
         private void LoadMonsterDatas()
         {
-            _monsterDatas = DataBaseManager.Instance.GetMonsterDatas();
+            _monsterDatas = DatabaseManager.Instance.GetMonsterDatas();
         }
 
         public void StartSpawnMonster()

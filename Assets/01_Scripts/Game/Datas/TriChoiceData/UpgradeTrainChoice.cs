@@ -77,13 +77,10 @@ namespace TrainDefense.Game.Datas
             var train = GetTargetTrain();
             if (train == null) return false;
 
-            var db = Resources.Load<DB>("Data/DB");
-            if (db == null) return false;
-
             // 현재 레벨에 맞는 업그레이드가 하나라도 있는지 확인
             bool hasValidUpgrade = weightedUpgrades.Any(w => 
             {
-                var upgradeData = db.GetTrainUpgradeData(w?.UpgradeDataId);
+                var upgradeData = DatabaseManager.Instance.GetTrainUpgradeData(w?.UpgradeDataId);
                 if (upgradeData == null) return false;
                 
                 // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨보다 크거나 같으면 더 이상 업그레이드 불가
@@ -100,8 +97,7 @@ namespace TrainDefense.Game.Datas
         {
             if (_selectedUpgrade == null)
             {
-                var db = Resources.Load<DB>("Data/DB");
-                _selectedUpgrade = SelectRandomUpgrade(db);
+                _selectedUpgrade = SelectRandomUpgrade(DatabaseManager.Instance.GetDB());
             }
 
             if (_selectedUpgrade == null)
@@ -130,7 +126,7 @@ namespace TrainDefense.Game.Datas
 
             // 현재 Train의 레벨에 맞는 업그레이드만 필터링
             var validUpgrades = weightedUpgrades
-                .Select(w => new { Weight = w, UpgradeData = db.GetTrainUpgradeData(w?.UpgradeDataId) })
+                .Select(w => new { Weight = w, UpgradeData = DatabaseManager.Instance.GetTrainUpgradeData(w?.UpgradeDataId) })
                 .Where(x => 
                 {
                     if (x.UpgradeData == null) return false;
@@ -183,5 +179,3 @@ namespace TrainDefense.Game.Datas
         }
     }
 }
-
-

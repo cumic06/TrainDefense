@@ -22,15 +22,14 @@ namespace TrainDefense.Game.Datas
 
         public void Initialize(DB db)
         {
-            _trainData = db?.GetTrainData(trainDataId);
+            _trainData = DatabaseManager.Instance.GetTrainData(trainDataId);
         }
 
         public ChoiceUIInfo GetUIInfo()
         {
             if (_trainData == null)
             {
-                var db = Resources.Load<DB>("Data/DB");
-                _trainData = db?.GetTrainData(trainDataId);
+                _trainData = DatabaseManager.Instance.GetTrainData(trainDataId);
             }
 
             if (_trainData == null)
@@ -57,8 +56,7 @@ namespace TrainDefense.Game.Datas
         {
             if (_trainData == null)
             {
-                var db = Resources.Load<DB>("Data/DB");
-                _trainData = db?.GetTrainData(trainDataId);
+                _trainData = DatabaseManager.Instance.GetTrainData(trainDataId);
             }
 
             if (_trainData == null || _trainData.Prefab == null)

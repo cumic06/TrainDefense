@@ -32,8 +32,6 @@ namespace TrainDefense.Game
                 randomChoices.AddRange(addChoices);
                 randomChoices.AddRange(upgradeChoices);
 
-
-
                 if (addChoices.Count > 0 && upgradeChoices.Count > 0)
                 {
                     result = GetRandomChoices(randomChoices, count);
@@ -59,13 +57,13 @@ namespace TrainDefense.Game
 
         private List<IChoiceOption> GetUpgradeTrainChoices()//UpgradeTrainChoice 목록을 반환한다.
         {
-            var upgradeDatas = DataBaseManager.Instance.GetUpgradeTrainChoices();
+            var upgradeDatas = DatabaseManager.Instance.GetUpgradeTrainChoices();
             return upgradeDatas.ToList();
         }
 
         private List<IChoiceOption> GetAddTrainChoices()//AddTrainChoice 목록을 반환한다.
         {
-            var addDatas = DataBaseManager.Instance.GetAddTrainChoices();
+            var addDatas = DatabaseManager.Instance.GetAddTrainChoices();
             return addDatas.ToList();
         }
     }

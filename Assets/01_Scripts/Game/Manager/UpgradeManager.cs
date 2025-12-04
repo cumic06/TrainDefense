@@ -27,7 +27,7 @@ namespace TrainDefense.Game
             }
 
             string upgradeId = buyShopItemEvent.UpgradeId;
-            UpgradeData upgradeData = DataBaseManager.Instance.GetDB().GetUpgradeData(upgradeId);
+            UpgradeData upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
 
             if (upgradeData == null)
             {

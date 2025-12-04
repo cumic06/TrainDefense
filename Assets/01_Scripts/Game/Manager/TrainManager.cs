@@ -31,7 +31,7 @@ namespace TrainDefense.Game
         {
             if (mainTrain != null)
             {
-                var trainData = DataBaseManager.Instance.GetDB().GetTrainData(mainTrain.Id);
+                var trainData = DatabaseManager.Instance.GetTrainData(mainTrain.Id);
                 var trainObject = ResourceManager.Instance.Spawn(trainData.Prefab).GetComponent<MainTrain>();
                 mainTrain = trainObject;
                 mainTrain.Initialize(trainData);

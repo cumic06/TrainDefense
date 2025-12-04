@@ -102,7 +102,7 @@ namespace TrainDefense.Game
             }
 
             Train trainObject = Instantiate(trainPrefab, transform);
-            trainObject.Initialize(DataBaseManager.Instance.GetDB().GetTrainData(trainPrefab.Id));
+            trainObject.Initialize(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
             trainObject.IsUnDead = isUnDead;
             _currentAliveTrains.Add(trainObject);
             _currentTrains.Add(trainObject);
