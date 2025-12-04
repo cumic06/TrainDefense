@@ -41,6 +41,7 @@ namespace TrainDefense.Game.UI
             if (choiceOption == null) return;
 
             _choiceOption = choiceOption;
+
             _triChoiceUI = triChoiceUI;
             SetUI(choiceOption);
         }
@@ -48,6 +49,13 @@ namespace TrainDefense.Game.UI
         private void SetUI(IChoiceOption choiceOption)
         {
             var uiInfo = choiceOption.GetUIInfo();
+
+            if (string.IsNullOrEmpty(uiInfo.Name) || string.IsNullOrEmpty(uiInfo.Description))
+            {
+                Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Name or Description is null");
+                return;
+            }
+
             iconImage.sprite = uiInfo.Icon;
             nameText.text = uiInfo.Name;
 

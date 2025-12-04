@@ -1,8 +1,8 @@
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Cumic;
 using TrainDefense.Game.Datas;
-using System.Linq;
 
 namespace TrainDefense.Game
 {
@@ -20,39 +20,59 @@ namespace TrainDefense.Game
         {
             List<IChoiceOption> result = new();
 
-            if (TrainManager.Instance.IsMaxTrainCountReached())//무조건 UpgradeTrainChoice를 반환한다.
+            if (TrainManager.Instance == null)
             {
-                result = GetUpgradeTrainChoices();
+                Debug.LogError("TrainManager is null");
+                return result;
             }
-            else //AddTrainChoice와 UpgradeTrainChoice 중 랜덤으로 반환한다.
-            {
-                var addChoices = GetAddTrainChoices();
-                var upgradeChoices = GetUpgradeTrainChoices();
-                var randomChoices = new List<IChoiceOption>();
-                randomChoices.AddRange(addChoices);
-                randomChoices.AddRange(upgradeChoices);
-
-                if (addChoices.Count > 0 && upgradeChoices.Count > 0)
-                {
-                    result = GetRandomChoices(randomChoices, count);
-                }
-                else if (addChoices.Count > 0)
-                {
-                    result = addChoices;
-                }
-            }
-            return result;
-        }
-
-        private List<IChoiceOption> GetRandomChoices(List<IChoiceOption> choices, int count)//랜덤으로 선택지를 반환한다.
-        {
-            var result = new List<IChoiceOption>();
 
             for (int i = 0; i < count; i++)
             {
-                result.Add(choices[Random.Range(0, choices.Count)]);
+                if (TrainManager.Instance.IsMaxTrainCountReached())//무조건 UpgradeTrainChoice를 반환한다.
+                {
+                    result = GetUpgradeTrainChoices();
+                }
+                else //AddTrainChoice와 UpgradeTrainChoice 중 랜덤으로 반환한다.
+                {
+                    var addChoices = GetAddTrainChoices();
+                    var upgradeChoices = GetUpgradeTrainChoices();
+                    var maxUpgradeTrains = TrainManager.Instance.GetMaxUpgradeTrains();
+                    var trains = TrainManager.Instance.GetTrains();
+
+                    if (maxUpgradeTrains.Length > 0 && trains.Length < maxUpgradeTrains.Length)
+                    {
+                        Debug.Log("UpgradeTrain");
+                        result.Add(GetRandomChoices(upgradeChoices));
+                    }
+
+                    if (trains.Length > 0 && trains.Length < maxUpgradeTrains.Length)
+                    {
+                        Debug.Log("AddTrain");
+                        result.Add(GetRandomChoices(addChoices));
+                    }
+                    else if (trains.Length <= 0)
+                    {
+                        Debug.Log("AddFirstTrain");
+                        result.Add(GetRandomChoices(addChoices));
+                    }
+                }
             }
+
+            Debug.Log($"ResultCount: {result.Count}");
+
             return result;
+        }
+
+        private IChoiceOption GetRandomChoices(List<IChoiceOption> choices)//랜덤으로 선택지를 반환한다.
+        {
+            //중복은 제외하고 다시 랜덤으로 선택지를 반환한다.
+            return choices[Random.Range(0, choices.Count)];
+        }
+
+        private List<IChoiceOption> GetAddTrainChoices()//AddTrainChoice 목록을 반환한다.
+        {
+            var addDatas = DatabaseManager.Instance.GetAddTrainChoices();
+            return addDatas.ToList();
         }
 
         private List<IChoiceOption> GetUpgradeTrainChoices()//UpgradeTrainChoice 목록을 반환한다.
@@ -61,10 +81,5 @@ namespace TrainDefense.Game
             return upgradeDatas.ToList();
         }
 
-        private List<IChoiceOption> GetAddTrainChoices()//AddTrainChoice 목록을 반환한다.
-        {
-            var addDatas = DatabaseManager.Instance.GetAddTrainChoices();
-            return addDatas.ToList();
-        }
     }
 }

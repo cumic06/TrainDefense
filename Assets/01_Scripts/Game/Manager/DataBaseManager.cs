@@ -13,35 +13,44 @@ namespace TrainDefense.Game
         protected override void Awake()
         {
             base.Awake();
+
             _db = Resources.Load<DB>("Data/DB");
-            Debug.Log($"DB: {_db}");
         }
 
-        public DB GetDB() => _db;
+        public DB GetDB()
+        {
+            if (_db == null)
+            {
+                Debug.LogError("DB is null");
+                _db = Resources.Load<DB>("Data/DB");
+            }
 
-        public StageData[] GetStageDatas() => _db.StageDataList.ToArray();
+            return _db;
+        }
 
-        public MonsterData[] GetMonsterDatas() => _db.MonsterDataList.ToArray();
+        public StageData[] GetStageDatas() => GetDB().StageDataList.ToArray();
 
-        public UpgradeData[] GetUpgradeDatas() => _db.UpgradeDataList.ToArray();
+        public MonsterData[] GetMonsterDatas() => GetDB().MonsterDataList.ToArray();
+
+        public UpgradeData[] GetUpgradeDatas() => GetDB().UpgradeDataList.ToArray();
         #region TriChoiceDB
 
-        public TriChoiceDB GetTriChoiceDB() => _db.TriChoiceDB;
-        public IChoiceOption[] GetAddTrainChoices() => _db.TriChoiceDB.AddTrainChoices.Select(x => x.Option).ToArray();
-        public IChoiceOption[] GetUpgradeTrainChoices() => _db.TriChoiceDB.UpgradeTrainChoices.Select(x => x.Option).ToArray();
+        public TriChoiceDB GetTriChoiceDB() => GetDB().TriChoiceDB;
+        public IChoiceOption[] GetAddTrainChoices() => GetDB().TriChoiceDB.AddTrainChoices.Select(x => x.Option).ToArray();
+        public IChoiceOption[] GetUpgradeTrainChoices() => GetDB().TriChoiceDB.UpgradeTrainChoices.Select(x => x.Option).ToArray();
         #endregion
 
-        public TrainData[] GetTrainDatas() => _db.TrainDataList.ToArray();
+        public TrainData[] GetTrainDatas() => GetDB().TrainDataList.ToArray();
 
-        public TurretTrainData[] GetTurretTrainDatas() => _db.TurretTrainDataList.ToArray();
+        public TurretTrainData[] GetTurretTrainDatas() => GetDB().TurretTrainDataList.ToArray();
 
-        public RangeTrainData[] GetRangeTrainDatas() => _db.RangeTrainDataList.ToArray();
+        public RangeTrainData[] GetRangeTrainDatas() => GetDB().RangeTrainDataList.ToArray();
 
-        public TrainUpgradeData[] GetTrainUpgradeDatas() => _db.TrainUpgradeDataList.ToArray();
+        public TrainUpgradeData[] GetTrainUpgradeDatas() => GetDB().TrainUpgradeDataList.ToArray();
 
-        public TurretTrainUpgradeData[] GetTurretTrainUpgradeDatas() => _db.TurretTrainUpgradeDataList.ToArray();
+        public TurretTrainUpgradeData[] GetTurretTrainUpgradeDatas() => GetDB().TurretTrainUpgradeDataList.ToArray();
 
-        public RangeTrainUpgradeData[] GetRangeTrainUpgradeDatas() => _db.RangeTrainUpgradeDataList.ToArray();
+        public RangeTrainUpgradeData[] GetRangeTrainUpgradeDatas() => GetDB().RangeTrainUpgradeDataList.ToArray();
 
 
         #region Data Access Methods

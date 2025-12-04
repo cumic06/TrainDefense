@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace TrainDefense.Game.Datas
@@ -22,14 +23,14 @@ namespace TrainDefense.Game.Datas
 
         public void Initialize(DB db)
         {
-            _trainData = DatabaseManager.Instance.GetTrainData(trainDataId);
+            _trainData = DatabaseManager.Instance.GetAllTrainData().FirstOrDefault(x => x.Id == trainDataId);
         }
 
         public ChoiceUIInfo GetUIInfo()
         {
             if (_trainData == null)
             {
-                _trainData = DatabaseManager.Instance.GetTrainData(trainDataId);
+                _trainData = DatabaseManager.Instance.GetAllTrainData().FirstOrDefault(x => x.Id == trainDataId);
             }
 
             if (_trainData == null)
@@ -37,6 +38,10 @@ namespace TrainDefense.Game.Datas
                 Debug.LogError($"AddTrainChoice [{id}]: TrainData is null");
                 return default;
             }
+
+            Debug.Log($"trainDataId: {trainDataId}");
+            Debug.Log($"trainData.Name: {_trainData.Name}");
+            Debug.Log($"trainData.Description: {_trainData.Description}");
 
             return new ChoiceUIInfo
             {
@@ -54,11 +59,6 @@ namespace TrainDefense.Game.Datas
 
         public void Execute()
         {
-            if (_trainData == null)
-            {
-                _trainData = DatabaseManager.Instance.GetTrainData(trainDataId);
-            }
-
             if (_trainData == null || _trainData.Prefab == null)
             {
                 Debug.LogError($"AddTrainChoice [{id}]: Invalid TrainData");

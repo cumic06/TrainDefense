@@ -3,6 +3,7 @@ using Cumic;
 using TrainDefense.Game.Datas;
 using Cumic.Events;
 using Unity.Cinemachine;
+using System.Linq;
 
 namespace TrainDefense.Game
 {
@@ -51,6 +52,8 @@ namespace TrainDefense.Game
 
         public bool IsMaxTrainCountReached()
         {
+            if (mainTrain.CurrentTrainCount == 0) return false;
+            
             return mainTrain.CurrentTrainCount >= mainTrain.MaxTrainCount;
         }
 
@@ -78,9 +81,20 @@ namespace TrainDefense.Game
             return closest;
         }
 
-        public Train[] GetTrains()
+        public Train[] GetAliveTrains()
         {
             return mainTrain.CurrentAliveTrains.ToArray();
+        }
+
+        public Train[] GetTrains()
+        {
+            return mainTrain.CurrentTrains.ToArray();
+        }
+
+        public Train[] GetMaxUpgradeTrains()
+        {
+            var allUpgradeData = DatabaseManager.Instance.GetAllTrainUpgradeData();
+            return mainTrain.CurrentTrains.Where(train => allUpgradeData.Any(upgrade => upgrade.MaxLevel == train.CurrentLevel)).ToArray();
         }
 
         public void ApplyUpgrade(UpgradeData upgradeData)

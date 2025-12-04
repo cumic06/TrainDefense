@@ -21,8 +21,8 @@ MonoBehaviour:
       Damage: 5
       MoveSpeed: 10
       AttackDelay: 1
-      DropExpMin: 10000
-      DropExpMax: 10000
+      DropExpMin: 10
+      DropExpMax: 20
       DropMoneyMin: 10
       DropMoneyMax: 20
       AttackRange: 1.5
@@ -36,8 +36,22 @@ MonoBehaviour:
       MaxHp: 100
     prefabId: MainTrain
     isMainTrain: 1
-    upgrades: []
   turretTrainDataList:
+  - id: 30001
+    name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1"
+    iconId: 
+    description: "\uAE30\uAD00\uCD1D\uC73C\uB85C \uD53C\uD574\uB97C \uC900\uB2E4."
+    trainStatusData:
+      MaxHp: 100
+    prefabId: NormalTurretTrain
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackRange: 5
+      AttackDamage: 3
+      AttackCount: 1
+      AttackInterval: 0.3
+      TargetCount: 0
+    turretProjectilePrefabId: NormalProjectile
   - id: 30002
     name: "\uD654\uC5FC \uD3EC\uD0D1"
     iconId: 
@@ -47,7 +61,6 @@ MonoBehaviour:
       MaxHp: 100
     prefabId: FireTurretTrain
     isMainTrain: 0
-    upgrades: []
     turretTrainStatus:
       AttackRange: 5
       AttackDamage: 1
@@ -64,7 +77,6 @@ MonoBehaviour:
       MaxHp: 100
     prefabId: MissileTurretTrain
     isMainTrain: 0
-    upgrades: []
     turretTrainStatus:
       AttackRange: 10
       AttackDamage: 5
@@ -72,22 +84,6 @@ MonoBehaviour:
       AttackInterval: 1
       TargetCount: 0
     turretProjectilePrefabId: MissileProjectile
-  - id: 30001
-    name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1"
-    iconId: 
-    description: "\uAE30\uAD00\uCD1D\uC73C\uB85C \uD53C\uD574\uB97C \uC900\uB2E4."
-    trainStatusData:
-      MaxHp: 100
-    prefabId: NormalTurretTrain
-    isMainTrain: 0
-    upgrades: []
-    turretTrainStatus:
-      AttackRange: 5
-      AttackDamage: 3
-      AttackCount: 1
-      AttackInterval: 0.3
-      TargetCount: 0
-    turretProjectilePrefabId: NormalProjectile
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: 
@@ -97,7 +93,6 @@ MonoBehaviour:
       MaxHp: 100
     prefabId: LaserTurretTrain
     isMainTrain: 0
-    upgrades: []
     turretTrainStatus:
       AttackRange: 15
       AttackDamage: 30
@@ -114,7 +109,6 @@ MonoBehaviour:
       MaxHp: 100
     prefabId: ElectrickTurretTrain
     isMainTrain: 0
-    upgrades: []
     turretTrainStatus:
       AttackRange: 10
       AttackDamage: 25
@@ -131,7 +125,6 @@ MonoBehaviour:
       MaxHp: 100
     prefabId: CannonTurretTrain
     isMainTrain: 0
-    upgrades: []
     turretTrainStatus:
       AttackRange: 10
       AttackDamage: 50
@@ -148,7 +141,6 @@ MonoBehaviour:
       MaxHp: 100
     prefabId: SniperTurretTrain
     isMainTrain: 0
-    upgrades: []
     turretTrainStatus:
       AttackRange: 10
       AttackDamage: 50
@@ -157,22 +149,6 @@ MonoBehaviour:
       TargetCount: 0
     turretProjectilePrefabId: SniperProjectile
   rangeTrainDataList:
-  - id: 40002
-    name: "\uB0C9\uAE30 \uD3EC\uD0D1"
-    iconId: 
-    description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC758 \uC774\uB3D9\uC18D\uB3C4\uAC00
-      \uB290\uB824\uC9C0\uACE0 \uD53C\uD574\uB97C \uC900\uB2E4."
-    trainStatusData:
-      MaxHp: 100
-    prefabId: ColdAirRangeTrain
-    isMainTrain: 0
-    upgrades: []
-    rangeTrainStatus:
-      AttackRange: 5
-      AttackDamage: 1
-      AttackCount: 1
-      AttackInterval: 1
-    rangeProjectilePrefabId: ColdAirProjectile
   - id: 40001
     name: "\uCDA9\uACA9 \uD3EC\uD0D1"
     iconId: 
@@ -182,13 +158,27 @@ MonoBehaviour:
       MaxHp: 100
     prefabId: ExplosionRangeTrain
     isMainTrain: 0
-    upgrades: []
     rangeTrainStatus:
       AttackRange: 5
       AttackDamage: 5
       AttackCount: 1
       AttackInterval: 5
     rangeProjectilePrefabId: ExplosionProjectile
+  - id: 40002
+    name: "\uB0C9\uAE30 \uD3EC\uD0D1"
+    iconId: 
+    description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC758 \uC774\uB3D9\uC18D\uB3C4\uAC00
+      \uB290\uB824\uC9C0\uACE0 \uD53C\uD574\uB97C \uC900\uB2E4."
+    trainStatusData:
+      MaxHp: 100
+    prefabId: ColdAirRangeTrain
+    isMainTrain: 0
+    rangeTrainStatus:
+      AttackRange: 5
+      AttackDamage: 1
+      AttackCount: 1
+      AttackInterval: 1
+    rangeProjectilePrefabId: ColdAirProjectile
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
   - id: 90001
