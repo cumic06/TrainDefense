@@ -249,7 +249,7 @@ namespace TrainDefense.Game
             DropExp();
             DropMoney();
 
-            GameEventSystem.Publish(new MonsterDeadEvent());
+            // GameEventSystem.Publish(new MonsterDeadEvent());
             ResourceManager.Instance.Destroy(gameObject);
         }
 

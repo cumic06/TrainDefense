@@ -20,47 +20,35 @@ namespace TrainDefense.Game.Datas
         private WeightedUpgradeData[] weightedUpgrades;
         #endregion
 
-        private ITrainUpgradeData _selectedUpgrade;
-
         public string Id => id;
         public string TargetTrainId => targetTrainId;
         public WeightedUpgradeData[] WeightedUpgrades => weightedUpgrades;
-        public ITrainUpgradeData SelectedUpgrade
-        {
-            get
-            {
-                if (_selectedUpgrade == null)
-                {
-                    var db = Resources.Load<DB>("Data/DB");
-                    _selectedUpgrade = SelectRandomUpgrade(db);
-                }
-                return _selectedUpgrade;
-            }
-        }
 
         public bool IsValid()
         {
             if (weightedUpgrades == null || weightedUpgrades.Length == 0) return false;
             if (string.IsNullOrEmpty(targetTrainId)) return false;
-            
+
             var trainManager = TrainManager.Instance;
             if (trainManager == null || !trainManager.CheckHasTrainById(targetTrainId)) return false;
 
             // 현재 Train의 레벨에 해당하는 업그레이드 데이터가 있는지 확인
-            var train = GetTargetTrain();
+            var train = trainManager.MainTrain?.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == targetTrainId);
             if (train == null) return false;
 
             // 현재 레벨에 맞는 업그레이드가 하나라도 있는지 확인
-            bool hasValidUpgrade = weightedUpgrades.Any(w => 
+            int currentLevel = train.CurrentLevel;
+            bool hasValidUpgrade = weightedUpgrades.Any(w =>
             {
-                var upgradeData = DatabaseManager.Instance.GetTrainUpgradeData(w?.UpgradeDataId);
+                var upgradeData = DatabaseManager.Instance.GetTrainUpgradeDataById(w?.UpgradeDataId);
                 if (upgradeData == null) return false;
-                
+
                 // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨보다 크거나 같으면 더 이상 업그레이드 불가
-                if (train.CurrentLevel >= upgradeData.MaxLevel) return false;
-                
+                if (currentLevel >= upgradeData.MaxLevel) return false;
+
                 // 현재 레벨에 해당하는 업그레이드 데이터가 있는지 확인
-                return upgradeData.Level == train.CurrentLevel;
+                // upgradeStats 배열의 인덱스 = 레벨 (CurrentLevel은 0-based)
+                return currentLevel >= 0 && currentLevel < upgradeData.MaxLevel;
             });
 
             return hasValidUpgrade;
@@ -68,12 +56,15 @@ namespace TrainDefense.Game.Datas
 
         public void Execute()
         {
-            if (_selectedUpgrade == null)
+            var triChoiceManager = TriChoiceManager.Instance;
+            if (triChoiceManager == null)
             {
-                _selectedUpgrade = SelectRandomUpgrade(DatabaseManager.Instance.GetDB());
+                Debug.LogError("TriChoiceManager.Instance is null");
+                return;
             }
 
-            if (_selectedUpgrade == null)
+            var selectedUpgrade = triChoiceManager.GetSelectedUpgrade(this);
+            if (selectedUpgrade == null)
             {
                 Debug.LogError($"UpgradeTrainChoice [{id}]: SelectedUpgradeData is null");
                 return;
@@ -86,69 +77,7 @@ namespace TrainDefense.Game.Datas
                 return;
             }
 
-            main.UpgradeTrain(targetTrainId, _selectedUpgrade);
-        }
-
-        private ITrainUpgradeData SelectRandomUpgrade(DB db)
-        {
-            if (db == null) return null;
-            if (weightedUpgrades == null || weightedUpgrades.Length == 0) return null;
-
-            var train = GetTargetTrain();
-            if (train == null) return null;
-
-            // 현재 Train의 레벨에 맞는 업그레이드만 필터링
-            var validUpgrades = weightedUpgrades
-                .Select(w => new { Weight = w, UpgradeData = DatabaseManager.Instance.GetTrainUpgradeData(w?.UpgradeDataId) })
-                .Where(x => 
-                {
-                    if (x.UpgradeData == null) return false;
-                    
-                    // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨보다 크거나 같으면 제외
-                    if (train.CurrentLevel >= x.UpgradeData.MaxLevel) return false;
-                    
-                    // 현재 레벨에 해당하는 업그레이드 데이터인지 확인
-                    return x.UpgradeData.Level == train.CurrentLevel;
-                })
-                .ToList();
-
-            if (validUpgrades.Count == 0)
-            {
-                Debug.LogWarning($"UpgradeTrainChoice [{id}]: No upgrade data found for Train [{targetTrainId}] at level [{train.CurrentLevel}]");
-                return null;
-            }
-
-            if (validUpgrades.Count == 1)
-            {
-                return validUpgrades[0].UpgradeData;
-            }
-
-            float total = validUpgrades.Sum(x => x.Weight.UpgradeDataWeight);
-            if (total <= 0)
-            {
-                return validUpgrades[0].UpgradeData;
-            }
-
-            float r = UnityEngine.Random.Range(0f, total);
-            float acc = 0f;
-            foreach (var item in validUpgrades)
-            {
-                acc += item.Weight.UpgradeDataWeight;
-                if (r <= acc)
-                {
-                    return item.UpgradeData;
-                }
-            }
-
-            return validUpgrades[^1].UpgradeData;
-        }
-
-        private Train GetTargetTrain()
-        {
-            var trainManager = TrainManager.Instance;
-            if (trainManager == null || trainManager.MainTrain == null) return null;
-
-            return trainManager.MainTrain.CurrentTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
+            main.UpgradeTrain(targetTrainId, selectedUpgrade);
         }
     }
 }

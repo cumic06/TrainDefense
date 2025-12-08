@@ -316,9 +316,9 @@ namespace TrainDefense.Editor
 		private void WriteTrainSheetFromDb()
 		{
 			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
-			if (db == null)
+			if (db == null || db.trainDataList == null)
 			{
-				EditorUtility.DisplayDialog("오류", "Database가 없습니다.", "확인");
+				EditorUtility.DisplayDialog("오류", "Database 또는 Train 데이터가 없습니다.", "확인");
 				return;
 			}
 			var rows = new System.Collections.Generic.List<TrainRow>(db.trainDataList.Count);
@@ -326,7 +326,7 @@ namespace TrainDefense.Editor
 			{
 				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "train_data", new[] { "id", "train_name", "description", "is_main_train" });
+			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
 			ExcelWriter.WriteToSheet(_excelPath, "train_data", rows);
 			EditorUtility.DisplayDialog("완료", "train_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
@@ -334,9 +334,9 @@ namespace TrainDefense.Editor
 		private void WriteRangeTrainSheetFromDb()
 		{
 			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
-			if (db == null)
+			if (db == null || db.rangeTrainDataList == null)
 			{
-				EditorUtility.DisplayDialog("오류", "Database가 없습니다.", "확인");
+				EditorUtility.DisplayDialog("오류", "Database 또는 RangeTrain 데이터가 없습니다.", "확인");
 				return;
 			}
 			var rows = new System.Collections.Generic.List<TrainRow>(db.rangeTrainDataList.Count);
@@ -344,7 +344,7 @@ namespace TrainDefense.Editor
 			{
 				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "range_train_data", new[] { "id", "train_name", "description", "is_main_train" });
+			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "range_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
 			ExcelWriter.WriteToSheet(_excelPath, "range_train_data", rows);
 			EditorUtility.DisplayDialog("완료", "range_train_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
@@ -352,9 +352,9 @@ namespace TrainDefense.Editor
 		private void WriteTurretTrainSheetFromDb()
 		{
 			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
-			if (db == null)
+			if (db == null || db.turretTrainDataList == null)
 			{
-				EditorUtility.DisplayDialog("오류", "Database가 없습니다.", "확인");
+				EditorUtility.DisplayDialog("오류", "Database 또는 TurretTrain 데이터가 없습니다.", "확인");
 				return;
 			}
 			var rows = new System.Collections.Generic.List<TrainRow>(db.turretTrainDataList.Count);
@@ -362,7 +362,7 @@ namespace TrainDefense.Editor
 			{
 				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "turret_train_data", new[] { "id", "train_name", "description", "is_main_train" });
+			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "turret_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
 			ExcelWriter.WriteToSheet(_excelPath, "turret_train_data", rows);
 			EditorUtility.DisplayDialog("완료", "turret_train_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
@@ -370,17 +370,27 @@ namespace TrainDefense.Editor
 		private void WriteTrainUpgradeSheetFromDb()
 		{
 			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
-			if (db == null)
+			if (db == null || db.trainUpgradeDataList == null)
 			{
-				EditorUtility.DisplayDialog("오류", "Database가 없습니다.", "확인");
+				EditorUtility.DisplayDialog("오류", "Database 또는 TrainUpgrade 데이터가 없습니다.", "확인");
 				return;
 			}
 			var rows = new System.Collections.Generic.List<TrainUpgradeRow>(db.trainUpgradeDataList.Count);
 			foreach (var u in db.trainUpgradeDataList)
 			{
-				rows.Add(new TrainUpgradeRow { id = u.Id, name = u.Name, description = u.Description, maxHp = u.StatusUpgrade.MaxHp });
+				// 에디터에서는 레벨 0의 스탯을 사용 (첫 번째 업그레이드 레벨)
+				int level = 0;
+				var statusUpgrade = u.GetStatusUpgrade(level);
+				rows.Add(new TrainUpgradeRow 
+				{ 
+					id = u.Id, 
+					name = u.Name, 
+					description = u.Description, 
+					maxHp = statusUpgrade.MaxHp,
+					iconId = u.IconId 
+				});
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "train_upgrade_data", new[] { "upgrade_name", "description" });
+			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id" });
 			ExcelWriter.WriteToSheet(_excelPath, "train_upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
@@ -403,7 +413,8 @@ namespace TrainDefense.Editor
 					description = u.Description,
 					needMoney = u.NeedMoney,
 					upgradeValue = u.UpgradeValue,
-					maxUpgradeCount = u.MaxUpgradeCount
+					maxUpgradeCount = u.MaxUpgradeCount,
+					iconId = u.IconId
 				};
 
 				row.upgradeType = u.UpgradeDataType.ToString();
@@ -438,19 +449,24 @@ namespace TrainDefense.Editor
 			var rows = new System.Collections.Generic.List<TurretTrainUpgradeRow>(db.turretTrainUpgradeDataList.Count);
 			foreach (var u in db.turretTrainUpgradeDataList)
 			{
+				// 에디터에서는 레벨 0의 스탯을 사용 (첫 번째 업그레이드 레벨)
+				int level = 0;
+				var statusUpgrade = u.GetStatusUpgrade(level);
+				var turretStatus = u.GetTurretStatusUpgrade(level);
 				rows.Add(new TurretTrainUpgradeRow
 				{
 					id = u.Id,
 					name = u.Name,
 					description = u.Description,
-					maxHp = u.StatusUpgrade.MaxHp,
-					attackRange = u.TurretStatusUpgrade.AttackRange,
-					attackDamage = u.TurretStatusUpgrade.AttackDamage,
-					attackCount = u.TurretStatusUpgrade.AttackCount,
-					attackInterval = u.TurretStatusUpgrade.AttackInterval
+					maxHp = statusUpgrade.MaxHp,
+					iconId = u.IconId,
+					attackRange = turretStatus.AttackRange,
+					attackDamage = turretStatus.AttackDamage,
+					attackCount = turretStatus.AttackCount,
+					attackInterval = turretStatus.AttackInterval
 				});
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "attack_range", "attack_damage", "attack_count", "attack_delay" });
+			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_delay" });
 			ExcelWriter.WriteToSheet(_excelPath, "turret_train_upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "turret_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
@@ -466,19 +482,24 @@ namespace TrainDefense.Editor
 			var rows = new System.Collections.Generic.List<RangeTrainUpgradeRow>(db.rangeTrainUpgradeDataList.Count);
 			foreach (var u in db.rangeTrainUpgradeDataList)
 			{
+				// 에디터에서는 레벨 0의 스탯을 사용 (첫 번째 업그레이드 레벨)
+				int level = 0;
+				var statusUpgrade = u.GetStatusUpgrade(level);
+				var rangeStatus = u.GetRangeStatusUpgrade(level);
 				rows.Add(new RangeTrainUpgradeRow
 				{
 					id = u.Id,
 					name = u.Name,
 					description = u.Description,
-					maxHp = u.StatusUpgrade.MaxHp,
-					attackRange = u.RangeStatusUpgrade.AttackRange,
-					attackDamage = u.RangeStatusUpgrade.AttackDamage,
-					attackCount = u.RangeStatusUpgrade.AttackCount,
-					attackInterval = u.RangeStatusUpgrade.AttackInterval
+					maxHp = statusUpgrade.MaxHp,
+					iconId = u.IconId,
+					attackRange = rangeStatus.AttackRange,
+					attackDamage = rangeStatus.AttackDamage,
+					attackCount = rangeStatus.AttackCount,
+					attackInterval = rangeStatus.AttackInterval
 				});
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "range_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "attack_range", "attack_damage", "attack_count", "attack_interval" });
+			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "range_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_interval" });
 			ExcelWriter.WriteToSheet(_excelPath, "range_train_upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "range_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}

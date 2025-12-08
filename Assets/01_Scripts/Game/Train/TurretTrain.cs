@@ -12,7 +12,6 @@ namespace TrainDefense.Game
     public class TurretTrain : Train, ITrainable
     {
         #region Field
-        [SerializeField]
         private TurretTrainData turretTrainData => _trainData as TurretTrainData;
 
         [SerializeField]
@@ -475,17 +474,19 @@ namespace TrainDefense.Game
 
         public override void Upgrade(ITrainUpgradeData upgradeData)
         {
-            base.Upgrade(upgradeData);
-
             if (upgradeData == null) return;
+
+            int currentLevel = CurrentLevel; // 업그레이드 전 레벨
+            base.Upgrade(upgradeData);
 
             // TurretTrain 전용 업그레이드 데이터가 있다면 적용
             if (upgradeData is TurretTrainUpgradeData turretUpgradeData)
             {
-                _currentTurretTrainStatus.AttackDamage += turretUpgradeData.TurretStatusUpgrade.AttackDamage;
-                _currentTurretTrainStatus.AttackRange += turretUpgradeData.TurretStatusUpgrade.AttackRange;
-                _currentTurretTrainStatus.AttackCount += turretUpgradeData.TurretStatusUpgrade.AttackCount;
-                _currentTurretTrainStatus.AttackInterval += turretUpgradeData.TurretStatusUpgrade.AttackInterval;
+                var turretStatus = turretUpgradeData.GetTurretStatusUpgrade(currentLevel);
+                _currentTurretTrainStatus.AttackDamage += turretStatus.AttackDamage;
+                _currentTurretTrainStatus.AttackRange += turretStatus.AttackRange;
+                _currentTurretTrainStatus.AttackCount += turretStatus.AttackCount;
+                _currentTurretTrainStatus.AttackInterval += turretStatus.AttackInterval;
 
                 if (_useNonMovementProjectilePooling)
                 {

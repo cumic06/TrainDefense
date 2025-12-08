@@ -23,12 +23,8 @@ namespace TrainDefense.Game.Datas
         private string description;
 
         [SerializeField]
-        [Tooltip("업그레이드 스탯 배열 (인덱스 = 레벨 - 1, 예: [0] = 레벨 1, [1] = 레벨 2)")]
+        [Tooltip("업그레이드 스탯 배열 (인덱스 = 레벨, 예: [0] = 레벨 0, [1] = 레벨 1)")]
         private RangeTrainUpgradeStats[] upgradeStats;
-
-        [SerializeField, ReadOnly]
-        [Tooltip("업그레이드 레벨 (1부터 시작)")]
-        private int level = 1;
         #endregion
 
         #region IData
@@ -62,20 +58,26 @@ namespace TrainDefense.Game.Datas
 
         #region ITrainUpgradeData
         public string UpgradeName => name;
-        public TrainStatusData StatusUpgrade => GetStatsForLevel(level)?.StatusUpgrade ?? default;
-        public int Level => level;
+        public TrainStatusData GetStatusUpgrade(int level)
+        {
+            var stats = GetStatsForLevel(level);
+            return stats?.StatusUpgrade ?? default;
+        }
         [ShowInInspector, ReadOnly]
         public int MaxLevel => upgradeStats?.Length ?? 0;
         #endregion
 
-        public RangeTrainStatus RangeStatusUpgrade => GetStatsForLevel(level)?.RangeStatusUpgrade ?? default;
+        public RangeTrainStatus GetRangeStatusUpgrade(int level)
+        {
+            var stats = GetStatsForLevel(level);
+            return stats?.RangeStatusUpgrade ?? default;
+        }
 
         private RangeTrainUpgradeStats GetStatsForLevel(int targetLevel)
         {
             if (upgradeStats == null || upgradeStats.Length == 0) return null;
-            int index = targetLevel - 1;
-            if (index < 0 || index >= upgradeStats.Length) return null;
-            return upgradeStats[index];
+            if (targetLevel < 0 || targetLevel >= upgradeStats.Length) return null;
+            return upgradeStats[targetLevel];
         }
     }
 }

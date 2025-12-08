@@ -49,7 +49,7 @@ namespace TrainDefense.Game.UI
             }
 
             // 선택지 풀을 미리 생성 (중복 없이)
-            List<IChoiceOption> availableChoices = triChoiceManager.GetChoices(choiceSelectUIs.Length);
+            List<ChoiceEntry> availableChoices = triChoiceManager.GetChoices(choiceSelectUIs.Length);
 
             if (availableChoices.Count == 0)
             {
@@ -69,7 +69,7 @@ namespace TrainDefense.Game.UI
                 if (i < availableChoices.Count)
                 {
                     // 선택지가 있으면 표시
-                    IChoiceOption choiceOption = availableChoices[i];
+                    IChoiceOption choiceOption = availableChoices[i].Option;
 
                     // 처음 획득하는 ChoiceOption인지 확인
                     var userDataManager = UserDataManager.Instance;
@@ -89,9 +89,18 @@ namespace TrainDefense.Game.UI
                     }
                     else if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
                     {
-                        choiceUIInfo.Icon = DatabaseManager.Instance.GetTrainUpgradeData(upgradeTrainChoice.SelectedUpgrade.Id).Icon;
-                        choiceUIInfo.Name = DatabaseManager.Instance.GetTrainUpgradeData(upgradeTrainChoice.SelectedUpgrade.Id).Name;
-                        choiceUIInfo.Description = DatabaseManager.Instance.GetTrainUpgradeData(upgradeTrainChoice.SelectedUpgrade.Id).Description;
+                        var upgradeData = triChoiceManager.GetSelectedUpgrade(upgradeTrainChoice);
+
+                        if (upgradeData == null)
+                        {
+                            Debug.LogError($"UpgradeTrainChoice [{upgradeTrainChoice.Id}]: SelectedUpgrade is null");
+                            choiceSelectUI.gameObject.SetActive(false);
+                            continue;
+                        }
+                        
+                        choiceUIInfo.Icon = upgradeData.Icon;
+                        choiceUIInfo.Name = upgradeData.Name;
+                        choiceUIInfo.Description = upgradeData.Description;
                     }
                     else
                     {

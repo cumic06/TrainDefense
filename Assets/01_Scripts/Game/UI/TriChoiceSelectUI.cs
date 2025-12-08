@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using TrainDefense.Game.Datas;
+using System.Linq;
 
 namespace TrainDefense.Game.UI
 {
@@ -60,12 +61,20 @@ namespace TrainDefense.Game.UI
 
             if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
             {
-                var selectedUpgrade = upgradeTrainChoice.SelectedUpgrade;
-                if (selectedUpgrade != null)
+                var triChoiceManager = TrainDefense.Game.TriChoiceManager.Instance;
+                if (triChoiceManager != null)
                 {
-                    // 업그레이드 데이터 타입에 따라 스탯 값들을 추출
-                    object[] formatArgs = GetUpgradeFormatArgs(selectedUpgrade);
-                    descriptionText.text = string.Format(choiceUIInfo.Description, formatArgs);
+                    var selectedUpgrade = triChoiceManager.GetSelectedUpgrade(upgradeTrainChoice);
+                    if (selectedUpgrade != null)
+                    {
+                        // 업그레이드 데이터 타입에 따라 스탯 값들을 추출
+                        object[] formatArgs = GetUpgradeFormatArgs(selectedUpgrade);
+                        descriptionText.text = string.Format(choiceUIInfo.Description, formatArgs);
+                    }
+                    else
+                    {
+                        descriptionText.text = choiceUIInfo.Description;
+                    }
                 }
                 else
                 {
@@ -80,7 +89,23 @@ namespace TrainDefense.Game.UI
 
         private object[] GetUpgradeFormatArgs(ITrainUpgradeData upgradeData)
         {
-            var statusUpgrade = upgradeData.StatusUpgrade;
+            // 현재 Train의 레벨을 가져와서 해당 레벨의 스탯을 사용
+            int currentLevel = 0;
+            if (_choiceOption is UpgradeTrainChoice upgradeChoice)
+            {
+                var trainManager = TrainDefense.Game.TrainManager.Instance;
+                if (trainManager?.MainTrain != null)
+                {
+                    var train = trainManager.MainTrain.CurrentTrains
+                        .FirstOrDefault(t => t.TrainData.Id == upgradeChoice.TargetTrainId);
+                    if (train != null)
+                    {
+                        currentLevel = train.CurrentLevel;
+                    }
+                }
+            }
+
+            var statusUpgrade = upgradeData.GetStatusUpgrade(currentLevel);
             var args = new System.Collections.Generic.List<object>();
 
             // 기본 스탯 (모든 Train 타입에 공통)
@@ -92,7 +117,7 @@ namespace TrainDefense.Game.UI
             // TurretTrain 전용 스탯
             if (upgradeData is TurretTrainUpgradeData turretUpgrade)
             {
-                var turretStatus = turretUpgrade.TurretStatusUpgrade;
+                var turretStatus = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
                 if (turretStatus.AttackRange != 0) args.Add(turretStatus.AttackRange);
                 if (turretStatus.AttackDamage != 0) args.Add(turretStatus.AttackDamage);
                 if (turretStatus.AttackCount != 0) args.Add(turretStatus.AttackCount);
@@ -102,7 +127,7 @@ namespace TrainDefense.Game.UI
             // RangeTrain 전용 스탯
             else if (upgradeData is RangeTrainUpgradeData rangeUpgrade)
             {
-                var rangeStatus = rangeUpgrade.RangeStatusUpgrade;
+                var rangeStatus = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
                 if (rangeStatus.AttackRange != 0) args.Add(rangeStatus.AttackRange);
                 if (rangeStatus.AttackDamage != 0) args.Add(rangeStatus.AttackDamage);
                 if (rangeStatus.AttackCount != 0) args.Add(rangeStatus.AttackCount);

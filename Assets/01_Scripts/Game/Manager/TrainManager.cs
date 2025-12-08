@@ -53,8 +53,23 @@ namespace TrainDefense.Game
         public bool IsMaxTrainCountReached()
         {
             if (mainTrain.CurrentTrainCount == 0) return false;
-            
+
             return mainTrain.CurrentTrainCount >= mainTrain.MaxTrainCount;
+        }
+
+        public int GetMaxTrainCount()
+        {
+            return mainTrain.MaxTrainCount;
+        }
+
+        public int GetTrainCount()
+        {
+            return mainTrain.CurrentTrainCount;
+        }
+
+        public int GetMaxUpgradeTrainCount()
+        {
+            return GetMaxUpgradeTrains().Length;
         }
 
         public Train GetNearTrain(Vector3 position)
@@ -81,16 +96,28 @@ namespace TrainDefense.Game
             return closest;
         }
 
+        /// <summary>
+        /// 살아있는 모든 기차들을 반환한다.
+        /// </summary>
+        /// <returns></returns>
         public Train[] GetAliveTrains()
         {
             return mainTrain.CurrentAliveTrains.ToArray();
         }
 
+        /// <summary>
+        /// 획득한 모든 기차들을 반환한다.
+        /// </summary>
+        /// <returns></returns>
         public Train[] GetTrains()
         {
             return mainTrain.CurrentTrains.ToArray();
         }
 
+        /// <summary>
+        /// 최대 업그레이드 레벨에 도달한 기차들을 반환한다.
+        /// </summary>
+        /// <returns></returns>
         public Train[] GetMaxUpgradeTrains()
         {
             var allUpgradeData = DatabaseManager.Instance.GetAllTrainUpgradeData();

@@ -28,7 +28,7 @@ namespace TrainDefense.Game
         public bool IsMainTrain => _trainData.IsMainTrain;
 
         public bool IsDead => _isDead;
-        public int CurrentLevel => _currentLevel;
+        public int CurrentLevel => _currentLevel - 1;
 
         protected virtual void Start()
         {
@@ -89,10 +89,13 @@ namespace TrainDefense.Game
         {
             if (upgradeData == null) return;
 
+            int currentLevel = CurrentLevel; // 업그레이드 전 레벨
             _currentLevel++;
-            Debug.Log($"Train [{Id}]: Upgrade: {_currentLevel}");
-            _currentMaxHp += upgradeData.StatusUpgrade.MaxHp;
-            _currentHp += upgradeData.StatusUpgrade.MaxHp;
+            Debug.Log($"Train [{upgradeData.Name}]: Upgrade: {_currentLevel}");
+            
+            var statusUpgrade = upgradeData.GetStatusUpgrade(currentLevel);
+            _currentMaxHp += statusUpgrade.MaxHp;
+            _currentHp += statusUpgrade.MaxHp;
             _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
         }
 

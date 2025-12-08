@@ -8,7 +8,6 @@ namespace TrainDefense.Game
     public class RangeTrain : Train, ITrainable
     {
         #region Fields
-        [SerializeField]
         private RangeTrainData rangeTrainData => _trainData as RangeTrainData;
         [SerializeField]
         private bool isExplosionProjectile;
@@ -99,17 +98,19 @@ namespace TrainDefense.Game
 
         public override void Upgrade(ITrainUpgradeData upgradeData)
         {
-            base.Upgrade(upgradeData);
-
             if (upgradeData == null) return;
+
+            int currentLevel = CurrentLevel; // 업그레이드 전 레벨
+            base.Upgrade(upgradeData);
 
             // RangeTrain 전용 업그레이드 데이터가 있다면 적용
             if (upgradeData is RangeTrainUpgradeData rangeUpgradeData)
             {
-                _currentRangeTrainStatus.AttackRange += rangeUpgradeData.RangeStatusUpgrade.AttackRange;
-                _currentRangeTrainStatus.AttackDamage += rangeUpgradeData.RangeStatusUpgrade.AttackDamage;
-                _currentRangeTrainStatus.AttackCount += rangeUpgradeData.RangeStatusUpgrade.AttackCount;
-                _currentRangeTrainStatus.AttackInterval += rangeUpgradeData.RangeStatusUpgrade.AttackInterval;
+                var rangeStatus = rangeUpgradeData.GetRangeStatusUpgrade(currentLevel);
+                _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange;
+                _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage;
+                _currentRangeTrainStatus.AttackCount += rangeStatus.AttackCount;
+                _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval;
 
                 if (_rangeProjectilePrefab != null)
                 {
