@@ -14,6 +14,8 @@ namespace TrainDefense.Game.UI
 
         [SerializeField]
         private float moveDuration = 0.5f;
+        [SerializeField]
+        private float moveVDistance = 100f;
 
         [SerializeField]
         private float fadeDuration = 0.5f;
@@ -53,7 +55,7 @@ namespace TrainDefense.Game.UI
             _rectTransform.DOKill();
 
             float currentPosition = _rectTransform.anchoredPosition.y;
-            float targetPosition = currentPosition + 50f;
+            float targetPosition = currentPosition + moveVDistance;
 
             _rectTransform.DOLocalMoveY(targetPosition, moveDuration);
         }
