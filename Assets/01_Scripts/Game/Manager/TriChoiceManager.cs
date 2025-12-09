@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cumic;
 using TrainDefense.Game.Datas;
-using System.Text;
 
 namespace TrainDefense.Game
 {
@@ -33,8 +32,6 @@ namespace TrainDefense.Game
                 return result;
             }
 
-            StringBuilder sb = new();
-
             for (int i = 0; i < count; i++)
             {
                 if (TrainManager.Instance.IsMaxTrainCountReached())//무조건 UpgradeTrainChoice를 반환한다.
@@ -48,50 +45,51 @@ namespace TrainDefense.Game
                     int maxUpgradeTrainCount = TrainManager.Instance.GetMaxUpgradeTrainCount();
 
                     var addChoices = GetAddTrainChoices().Where(x => !result.Contains(x)).ToList();
-                    var upgradeChoices = GetUpgradeTrainChoices().Where(x => !result.Contains(x)).ToList();
+                    var upgradeChoices = GetUpgradeTrainChoices();
 
                     // 조건 분리
                     bool canUpgrade = trainCount <= maxTrainCount && maxUpgradeTrainCount != trainCount && upgradeChoices.Count > 0;
                     bool canAdd = trainCount > 0 && trainCount < maxTrainCount && addChoices.Count > 0;
                     bool needFirst = trainCount <= 0 && addChoices.Count > 0;
 
+                    Debug.Log($"trainCount: {trainCount}, maxTrainCount: {maxTrainCount}, maxUpgradeTrainCount: {maxUpgradeTrainCount}");
+
                     // 두 조건이 모두 만족될 때 확률적으로 선택
                     if (canUpgrade && canAdd)
                     {
+                        Debug.Log("canUpgrade && canAdd");
                         bool selectedUpgrade = SelectByProb(upgradeProb, addProb);
                         if (selectedUpgrade)
                         {
-                            sb.AppendLine("UpgradeTrain (Probability)");
                             AddChoiceToResult(result, upgradeChoices);
                         }
                         else
                         {
-                            sb.AppendLine("AddTrain (Probability)");
                             AddChoiceToResult(result, addChoices);
                         }
                     }
                     // 업그레이드만 가능
                     else if (canUpgrade)
                     {
-                        sb.AppendLine("UpgradeTrain");
+                        Debug.Log("canUpgrade");
                         AddChoiceToResult(result, upgradeChoices);
                     }
                     // 기차 추가만 가능
                     else if (canAdd)
                     {
-                        sb.AppendLine("AddTrain");
+                        Debug.Log("canAdd");
                         AddChoiceToResult(result, addChoices);
                     }
                     // 첫 기차 추가 필요
                     else if (needFirst)
                     {
-                        sb.AppendLine("AddFirstTrain");
+                        Debug.Log("needFirst");
                         AddChoiceToResult(result, addChoices);
                     }
                 }
             }
 
-            Debug.Log($"ResultCount: {result.Count}\n {sb}");
+            Debug.Log($"ResultCount: {result.Count}");
 
             return result;
         }
@@ -157,7 +155,7 @@ namespace TrainDefense.Game
             //이미 UserDataManager에 있는 선택지면 제외
             var userDataManager = UserDataManager.Instance;
             choices = choices.Where(x => !userDataManager.GetSelectedChoiceIds().Contains(x.Option.Id)).ToList();
-            
+
             if (choices.Count == 0)
             {
                 return null;
@@ -185,37 +183,79 @@ namespace TrainDefense.Game
         private List<ChoiceEntry> GetAddTrainChoices()//AddTrainChoice 목록을 반환한다.
         {
             var addDatas = DatabaseManager.Instance.GetTriChoiceDB().AddTrainChoices;
-            return addDatas.ToList();
+            // 아직 획득하지 않은 train에 대한 choice만 필터링
+            return addDatas
+                .Where(entry => entry.Option != null && entry.Option.IsValid())
+                .ToList();
         }
 
         private List<ChoiceEntry> GetUpgradeTrainChoices()//UpgradeTrainChoice 목록을 반환한다.
         {
             var upgradeDatas = DatabaseManager.Instance.GetTriChoiceDB().UpgradeTrainChoices;
-            return upgradeDatas.ToList();
+            // 획득한 train에 대한 upgrade choice만 필터링
+            return upgradeDatas
+                .Where(entry => entry.Option != null && entry.Option.IsValid())
+                .ToList();
         }
 
         /// <summary>
         /// UpgradeTrainChoice에 대한 선택된 업그레이드 데이터를 반환합니다.
         /// 선택되지 않은 경우 랜덤으로 선택하여 저장합니다.
+        /// 저장된 업그레이드가 현재 Train 레벨에 맞지 않으면 재선택합니다.
         /// </summary>
         public ITrainUpgradeData GetSelectedUpgrade(UpgradeTrainChoice choice)
         {
             if (choice == null) return null;
 
-            if (!_selectedUpgrades.TryGetValue(choice.Id, out var selectedUpgrade))
+            // 저장된 업그레이드가 있는 경우, 현재 Train 레벨에 맞는지 확인
+            if (_selectedUpgrades.TryGetValue(choice.Id, out var selectedUpgrade))
             {
-                selectedUpgrade = SelectRandomUpgrade(choice);
-                if (selectedUpgrade != null)
+                if (IsUpgradeValidForCurrentLevel(choice, selectedUpgrade))
                 {
-                    _selectedUpgrades[choice.Id] = selectedUpgrade;
+                    return selectedUpgrade;
                 }
+                else
+                {
+                    // 저장된 업그레이드가 현재 레벨에 맞지 않으면 캐시 제거
+                    _selectedUpgrades.Remove(choice.Id);
+                }
+            }
+
+            // 새로 선택
+            selectedUpgrade = SelectRandomUpgrade(choice);
+            if (selectedUpgrade != null)
+            {
+                _selectedUpgrades[choice.Id] = selectedUpgrade;
             }
 
             return selectedUpgrade;
         }
 
         /// <summary>
+        /// 저장된 업그레이드가 현재 Train 레벨에 유효한지 확인합니다.
+        /// </summary>
+        private bool IsUpgradeValidForCurrentLevel(UpgradeTrainChoice choice, ITrainUpgradeData upgradeData)
+        {
+            if (choice == null || upgradeData == null) return false;
+
+            var train = GetTargetTrain(choice.TargetTrainId);
+            if (train == null) return false;
+
+            int currentLevel = train.CurrentLevel;
+            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
+            // View 표시 및 업그레이드 적용 시: 레벨 + 1 인덱스 사용
+            int currentLevelIndex = currentLevel + 1;
+
+            // Train의 현재 레벨 인덱스가 업그레이드 데이터의 최대 레벨보다 크거나 같으면 유효하지 않음
+            if (currentLevelIndex >= upgradeData.MaxLevel) return false;
+
+            // 현재 레벨 인덱스에 해당하는 업그레이드 데이터인지 확인
+            return currentLevelIndex >= 0 && currentLevelIndex < upgradeData.MaxLevel;
+        }
+
+        /// <summary>
         /// UpgradeTrainChoice에서 랜덤으로 업그레이드를 선택합니다.
+        /// Train의 현재 레벨에 맞는 다음 레벨의 업그레이드를 선택합니다.
         /// </summary>
         private ITrainUpgradeData SelectRandomUpgrade(UpgradeTrainChoice choice)
         {
@@ -226,6 +266,10 @@ namespace TrainDefense.Game
             if (train == null) return null;
 
             int currentLevel = train.CurrentLevel;
+            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
+            // View 표시 및 업그레이드 적용 시: 레벨 + 1 인덱스 사용
+            // 레벨 -1이면 인덱스 0, 레벨 0이면 인덱스 1
+            int currentLevelIndex = currentLevel + 1;
 
             // 현재 Train의 레벨에 맞는 업그레이드만 필터링
             var validUpgrades = choice.WeightedUpgrades
@@ -234,23 +278,22 @@ namespace TrainDefense.Game
                 {
                     if (x.UpgradeData == null) return false;
 
-                    // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨보다 크거나 같으면 제외
-                    if (currentLevel >= x.UpgradeData.MaxLevel) return false;
+                    // Train의 현재 레벨 인덱스가 업그레이드 데이터의 최대 레벨보다 크거나 같으면 제외
+                    if (currentLevelIndex >= x.UpgradeData.MaxLevel) return false;
 
-                    // 현재 레벨에 해당하는 업그레이드 데이터인지 확인
-                    // upgradeStats 배열의 인덱스 = 레벨 (CurrentLevel은 0-based)
-                    return currentLevel >= 0 && currentLevel < x.UpgradeData.MaxLevel;
+                    // 현재 레벨 인덱스에 해당하는 업그레이드 데이터가 있는지 확인
+                    return currentLevelIndex >= 0 && currentLevelIndex < x.UpgradeData.MaxLevel;
                 })
                 .ToList();
 
             foreach (var item in validUpgrades)
             {
-                Debug.Log($"UpgradeTrainChoice [{choice.Id}]: {item.UpgradeData.Id} CurrentLevel: {currentLevel} MaxLevel: {item.UpgradeData.MaxLevel}");
+                Debug.Log($"UpgradeTrainChoice [{choice.Id}]: {item.UpgradeData.Id} Train CurrentLevel: {currentLevel} (Index: {currentLevelIndex}) MaxLevel: {item.UpgradeData.MaxLevel}");
             }
 
             if (validUpgrades.Count == 0)
             {
-                Debug.LogWarning($"UpgradeTrainChoice [{choice.Id}]: No upgrade data found for Train [{choice.TargetTrainId}] at level [{currentLevel}]");
+                Debug.LogWarning($"UpgradeTrainChoice [{choice.Id}]: No upgrade data found for Train [{choice.TargetTrainId}] at level [{currentLevel}] (Index: {currentLevelIndex})");
                 return null;
             }
 
@@ -277,22 +320,6 @@ namespace TrainDefense.Game
             }
 
             return validUpgrades[^1].UpgradeData;
-        }
-
-        /// <summary>
-        /// 선택된 업그레이드를 제거합니다 (선택지가 변경될 때 호출)
-        /// </summary>
-        public void ClearSelectedUpgrade(string choiceId)
-        {
-            _selectedUpgrades.Remove(choiceId);
-        }
-
-        /// <summary>
-        /// 모든 선택된 업그레이드를 제거합니다.
-        /// </summary>
-        public void ClearAllSelectedUpgrades()
-        {
-            _selectedUpgrades.Clear();
         }
 
         private Train GetTargetTrain(string targetTrainId)

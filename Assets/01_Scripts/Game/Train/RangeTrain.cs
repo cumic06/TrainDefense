@@ -100,13 +100,16 @@ namespace TrainDefense.Game
         {
             if (upgradeData == null) return;
 
-            int currentLevel = CurrentLevel; // 업그레이드 전 레벨
+            int currentLevel = CurrentLevel; // 업그레이드 전 레벨 저장
             base.Upgrade(upgradeData);
 
             // RangeTrain 전용 업그레이드 데이터가 있다면 적용
+            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
+            // 업그레이드 적용 시: 업그레이드 전 레벨 + 1 인덱스 사용
             if (upgradeData is RangeTrainUpgradeData rangeUpgradeData)
             {
-                var rangeStatus = rangeUpgradeData.GetRangeStatusUpgrade(currentLevel);
+                int upgradeLevelIndex = currentLevel + 1;
+                var rangeStatus = rangeUpgradeData.GetRangeStatusUpgrade(upgradeLevelIndex);
                 _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange;
                 _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage;
                 _currentRangeTrainStatus.AttackCount += rangeStatus.AttackCount;

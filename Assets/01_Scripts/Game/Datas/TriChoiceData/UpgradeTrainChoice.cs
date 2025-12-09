@@ -38,17 +38,22 @@ namespace TrainDefense.Game.Datas
 
             // 현재 레벨에 맞는 업그레이드가 하나라도 있는지 확인
             int currentLevel = train.CurrentLevel;
+            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
+            // View 표시 및 업그레이드 적용 시: 레벨 + 1 인덱스 사용
+            int currentLevelIndex = currentLevel + 1;
+            
             bool hasValidUpgrade = weightedUpgrades.Any(w =>
             {
                 var upgradeData = DatabaseManager.Instance.GetTrainUpgradeDataById(w?.UpgradeDataId);
+                Debug.Log($"upgradeData: {upgradeData?.Name}");
                 if (upgradeData == null) return false;
 
-                // Train의 현재 레벨이 업그레이드 데이터의 최대 레벨보다 크거나 같으면 더 이상 업그레이드 불가
-                if (currentLevel >= upgradeData.MaxLevel) return false;
+                // Train의 현재 레벨 인덱스가 업그레이드 데이터의 최대 레벨보다 크거나 같으면 더 이상 업그레이드 불가
+                if (currentLevelIndex >= upgradeData.MaxLevel) return false;
 
-                // 현재 레벨에 해당하는 업그레이드 데이터가 있는지 확인
-                // upgradeStats 배열의 인덱스 = 레벨 (CurrentLevel은 0-based)
-                return currentLevel >= 0 && currentLevel < upgradeData.MaxLevel;
+                // 현재 레벨 인덱스에 해당하는 업그레이드 데이터가 있는지 확인
+                Debug.Log($"Train CurrentLevel: {currentLevel} (Index: {currentLevelIndex}), upgradeData.MaxLevel: {upgradeData.MaxLevel}");
+                return currentLevelIndex >= 0 && currentLevelIndex < upgradeData.MaxLevel;
             });
 
             return hasValidUpgrade;

@@ -93,14 +93,16 @@ namespace TrainDefense.Game.UI
             int currentLevel = 0;
             if (_choiceOption is UpgradeTrainChoice upgradeChoice)
             {
-                var trainManager = TrainDefense.Game.TrainManager.Instance;
+                var trainManager = TrainManager.Instance;
                 if (trainManager?.MainTrain != null)
                 {
                     var train = trainManager.MainTrain.CurrentTrains
                         .FirstOrDefault(t => t.TrainData.Id == upgradeChoice.TargetTrainId);
                     if (train != null)
                     {
-                        currentLevel = train.CurrentLevel;
+                        // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
+                        // View 표시 시: 레벨 + 1 인덱스 사용 (레벨 -1이면 인덱스 0)
+                        currentLevel = train.CurrentLevel + 1;
                     }
                 }
             }
