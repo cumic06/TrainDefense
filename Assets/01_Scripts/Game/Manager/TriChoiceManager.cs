@@ -11,8 +11,10 @@ namespace TrainDefense.Game
     /// </summary>
     public class TriChoiceManager : Singleton<TriChoiceManager>
     {
-        [SerializeField] private int upgradeProb = 2; // UpgradeTrain 선택 확률 분모 (예: 2 = 1/2 확률)
-        [SerializeField] private int addProb = 2; // AddTrain 선택 확률 분모 (예: 2 = 1/2 확률)
+        [SerializeField]
+        private int upgradeProb = 2; // UpgradeTrain 선택 확률 분모 (예: 2 = 1/2 확률)
+        [SerializeField]
+        private int addProb = 2; // AddTrain 선택 확률 분모 (예: 2 = 1/2 확률)
 
         // 선택된 업그레이드를 런타임 상태로 관리
         private Dictionary<string, ITrainUpgradeData> _selectedUpgrades = new();
@@ -153,8 +155,17 @@ namespace TrainDefense.Game
             }
 
             //이미 UserDataManager에 있는 선택지면 제외
+            //UpgradeTrainChoice는 레벨업 후 다시 선택 가능하므로 제외하지 않음
             var userDataManager = UserDataManager.Instance;
-            choices = choices.Where(x => !userDataManager.GetSelectedChoiceIds().Contains(x.Option.Id)).ToList();
+            choices = choices.Where(x =>
+            {
+                // UpgradeTrainChoice는 레벨업 후 다시 선택 가능하므로 제외하지 않음
+                if (x.Option is UpgradeTrainChoice)
+                    return true;
+                
+                // AddTrainChoice는 한 번만 선택 가능하므로 제외
+                return !userDataManager.GetSelectedChoiceIds().Contains(x.Option.Id);
+            }).ToList();
 
             if (choices.Count == 0)
             {
