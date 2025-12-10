@@ -1,7 +1,7 @@
 using System.Collections;
-using DG.Tweening;
-using TMPro;
 using UnityEngine;
+using TMPro;
+using DG.Tweening;
 
 namespace TrainDefense.Game.UI
 {
