@@ -148,6 +148,21 @@ MonoBehaviour:
       AttackInterval: 5
       TargetCount: 0
     turretProjectilePrefabId: SniperProjectile
+  - id: 31001
+    name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
+    iconId: 
+    description: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteNormalTurretTrain
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackRange: 5
+      AttackDamage: 3
+      AttackCount: 2
+      AttackInterval: 0.3
+      TargetCount: 0
+    turretProjectilePrefabId: NormalProjectile
   rangeTrainDataList:
   - id: 40001
     name: "\uCDA9\uACA9 \uD3EC\uD0D1"
@@ -211,7 +226,6 @@ MonoBehaviour:
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
-    level: 1
   - id: 90002
     iconId: 
     name: "\uD654\uC5FC \uD3EC\uD0D1 \uAC15\uD654"
@@ -241,7 +255,6 @@ MonoBehaviour:
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
-    level: 1
   - id: 90003
     iconId: 
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1 \uAC15\uD654"
@@ -272,7 +285,6 @@ MonoBehaviour:
         AttackCount: 0
         AttackInterval: 0.2
         TargetCount: 0
-    level: 1
   - id: 90004
     iconId: 
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1 \uAC15\uD654"
@@ -302,7 +314,6 @@ MonoBehaviour:
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
-    level: 1
   - id: 90005
     iconId: 
     name: "\uC804\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
@@ -333,7 +344,6 @@ MonoBehaviour:
         AttackCount: 2
         AttackInterval: 0
         TargetCount: 0
-    level: 1
   - id: 90006
     iconId: 
     name: "\uD3EC\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
@@ -364,7 +374,6 @@ MonoBehaviour:
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
-    level: 1
   - id: 90007
     iconId: 
     name: "\uC800\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
@@ -394,7 +403,6 @@ MonoBehaviour:
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
-    level: 1
   rangeTrainUpgradeDataList:
   - id: 100001
     iconId: 
@@ -422,7 +430,6 @@ MonoBehaviour:
         AttackDamage: 250
         AttackCount: 0
         AttackInterval: 0
-    level: 1
   - id: 100002
     iconId: 
     name: "\uB0C9\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
@@ -449,7 +456,6 @@ MonoBehaviour:
         AttackDamage: 2
         AttackCount: 0
         AttackInterval: 0
-    level: 1
   stageDataList:
   - id: 50001
     stageInspectionTime:
@@ -543,6 +549,9 @@ MonoBehaviour:
     - Option:
         rid: 439508061413965932
       Weight: 0
+    - Option:
+        rid: 1014497644963168333
+      Weight: 0
     upgradeTrainChoices:
     - Option:
         rid: 2066870334413602904
@@ -621,6 +630,11 @@ MonoBehaviour:
         weightedUpgrades:
         - upgradeDataId: 100002
           upgradeDataWeight: 1
+    - rid: 1014497644963168333
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61001
+        trainDataId: 31001
     - rid: 2066870334413602903
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:

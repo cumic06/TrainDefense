@@ -56,5 +56,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "TrainDefense.sln"
+    "dotnet.defaultSolution": "TrainDefense.sln",
+    "dotrush.roslyn.projectOrSolutionFiles": []
 }

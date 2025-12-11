@@ -162,7 +162,7 @@ namespace TrainDefense.Game
                 // UpgradeTrainChoice는 레벨업 후 다시 선택 가능하므로 제외하지 않음
                 if (x.Option is UpgradeTrainChoice)
                     return true;
-                
+
                 // AddTrainChoice는 한 번만 선택 가능하므로 제외
                 return !userDataManager.GetSelectedChoiceIds().Contains(x.Option.Id);
             }).ToList();
