@@ -8,12 +8,14 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string id;
 		public string trainDataId;
 		public int weight;
+		public int tier;
 
 		public void FromExcelRow(IRow row)
 		{
 			id = row.GetCell(0)?.ToString();
 			trainDataId = row.GetCell(1)?.ToString();
 			int.TryParse(row.GetCell(2)?.ToString(), out weight);
+			int.TryParse(row.GetCell(3)?.ToString(), out tier);
 		}
 
 		public void ToExcelRow(IRow row)
@@ -21,6 +23,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			Set(row, 0, id);
 			Set(row, 1, trainDataId);
 			Set(row, 2, weight);
+			Set(row, 3, tier);
 		}
 
 		private static void Set(IRow row, int idx, object value)

@@ -11,5 +11,6 @@ namespace TrainDefense.Game.Datas
         [UnityEngine.SerializeReference]
         public IChoiceOption Option;
         public int Weight;
+        public int Tier; // 0: 기본, 1: 엘리트 등 고급 Train (Upgrade 3번 이상 선택 시 활성화)
     }
 }

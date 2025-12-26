@@ -102,6 +102,14 @@ namespace TrainDefense
             return !_triChoiceData.ContainsKey(choiceId);
         }
 
+        /// <summary>
+        /// 특정 Choice의 선택 횟수를 반환합니다.
+        /// </summary>
+        public int GetSelectionCount(string choiceId)
+        {
+            return _triChoiceData.ContainsKey(choiceId) ? _triChoiceData[choiceId] : 0;
+        }
+
         #region Upgrade
         public int GetUpgradeLevel(string upgradeId)
         {

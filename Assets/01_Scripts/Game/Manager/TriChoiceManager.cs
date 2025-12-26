@@ -194,10 +194,56 @@ namespace TrainDefense.Game
         private List<ChoiceEntry> GetAddTrainChoices()//AddTrainChoice 목록을 반환한다.
         {
             var addDatas = DatabaseManager.Instance.GetTriChoiceDB().AddTrainChoices;
+            var userDataManager = UserDataManager.Instance;
+
+            // Upgrade 3번 이상 한 Train이 있는지 확인
+            bool hasUpgradedTrain = HasAnyTrainUpgradedThreeTimes();
+
             // 아직 획득하지 않은 train에 대한 choice만 필터링
             return addDatas
-                .Where(entry => entry.Option != null && entry.Option.IsValid())
+                .Where(entry =>
+                {
+                    if (entry.Option == null || !entry.Option.IsValid())
+                        return false;
+
+                    // Tier 0은 항상 포함
+                    if (entry.Tier == 0)
+                        return true;
+
+                    // Tier 1은 Upgrade 3번 이상 한 Train이 있을 때만 포함
+                    if (entry.Tier == 1)
+                        return hasUpgradedTrain;
+
+                    // 기타 Tier는 제외 (확장성을 위해)
+                    return false;
+                })
                 .ToList();
+        }
+
+        /// <summary>
+        /// UpgradeChoice를 3번 이상 선택한 Train이 있는지 확인합니다.
+        /// </summary>
+        private bool HasAnyTrainUpgradedThreeTimes()
+        {
+            var userDataManager = UserDataManager.Instance;
+            if (userDataManager == null) return false;
+
+            var triChoiceDB = DatabaseManager.Instance.GetTriChoiceDB();
+            var upgradeChoices = triChoiceDB.UpgradeTrainChoices;
+
+            foreach (var entry in upgradeChoices)
+            {
+                if (entry.Option is UpgradeTrainChoice upgradeChoice)
+                {
+                    int count = userDataManager.GetSelectionCount(upgradeChoice.Id);
+                    if (count >= 3)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private List<ChoiceEntry> GetUpgradeTrainChoices()//UpgradeTrainChoice 목록을 반환한다.

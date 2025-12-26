@@ -8,7 +8,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 	{
 		public string SheetName => "add_train_choice_data";
 		public string ButtonLabel => "AddTrainChoice 데이터 가져오기";
-		public string[] Headers => new[] { "id", "train_data_id", "weight" };
+		public string[] Headers => new[] { "id", "train_data_id", "weight", "tier" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -22,14 +22,15 @@ namespace TrainDefense.Editor.DataImport.Importers
 
 				var list = db.TriChoiceDB.AddTrainChoices;
 				var existing = FindChoiceEntry(list, r.id);
-				
+
 				if (existing == null)
 				{
 					var choice = CreateAddTrainChoice(r);
 					var entry = new ChoiceEntry
 					{
 						Option = choice,
-						Weight = r.weight
+						Weight = r.weight,
+						Tier = r.tier
 					};
 					AddChoiceEntry(db, entry);
 				}
@@ -37,6 +38,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 				{
 					UpdateAddTrainChoice(existing.Option as AddTrainChoice, r);
 					SetChoiceEntryWeight(existing, r.weight);
+					SetChoiceEntryTier(existing, r.tier);
 				}
 				imported++;
 			}
@@ -79,6 +81,12 @@ namespace TrainDefense.Editor.DataImport.Importers
 		{
 			var field = typeof(ChoiceEntry).GetField("Weight", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 			field?.SetValue(entry, weight);
+		}
+
+		private void SetChoiceEntryTier(ChoiceEntry entry, int tier)
+		{
+			var field = typeof(ChoiceEntry).GetField("Tier", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+			field?.SetValue(entry, tier);
 		}
 
 		private static void Copy(AddTrainChoiceRow r, AddTrainChoice target)
