@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using Cumic.Events;
 using TrainDefense.Game.Events;
-using System;
 
 namespace TrainDefense.Game.UI
 {
@@ -25,8 +24,6 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<IncreaseCoinEvent>(OnIncreaseCoin);
             GameEventSystem.Unsubscribe<DecreaseCoinEvent>(OnDecreaseCoin);
         }
-
-
 
         private void Setup()
         {

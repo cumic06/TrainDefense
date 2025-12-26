@@ -97,7 +97,7 @@ namespace TrainDefense.Game.UI
                             choiceSelectUI.gameObject.SetActive(false);
                             continue;
                         }
-                        
+
                         choiceUIInfo.Icon = upgradeData.Icon;
                         choiceUIInfo.Name = upgradeData.Name;
                         choiceUIInfo.Description = upgradeData.Description;
