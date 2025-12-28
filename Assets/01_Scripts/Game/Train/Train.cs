@@ -101,6 +101,8 @@ namespace TrainDefense.Game
             _currentMaxHp += statusUpgrade.MaxHp;
             _currentHp += statusUpgrade.MaxHp;
             _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+            
+            GameEventSystem.Publish(new TrainLevelUpEvent(this, _currentLevel));
         }
 
         public virtual void StatusUpgrade(TrainStatusData upgradeData)
