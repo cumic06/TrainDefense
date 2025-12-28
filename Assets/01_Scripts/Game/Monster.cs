@@ -10,15 +10,20 @@ namespace TrainDefense.Game
 {
     public class Monster : MonoBehaviour, IDamageable, IProjectileTarget
     {
+        #region Variables
+
         #region Field
         [SerializeField]
         private string id;
+        [SerializeField]
+        private GameObject model;
         #endregion
 
         [ShowInInspector, ReadOnly]
         protected MonsterData _monsterData;
         protected MonsterStatusInfo _currentMonsterStatus;
         protected int _currentHp;
+        protected Vector2 _startScale;
 
         protected bool _isShoved;
         protected bool _isStunned;
@@ -36,10 +41,12 @@ namespace TrainDefense.Game
         public string Id => id;
         public bool IsActive => gameObject.activeInHierarchy;
         public Transform TargetTransform => transform;
+        #endregion
 
         private void Awake()
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            _startScale = model.transform.localScale;
         }
 
         public void Initialize(MonsterData monsterData)
@@ -78,6 +85,7 @@ namespace TrainDefense.Game
             if (_isStunned) return;
             Move();
             AttackHandler();
+            LookAtTarget();
         }
 
         private void DetectTrain()
@@ -89,6 +97,7 @@ namespace TrainDefense.Game
 
         private void Move()
         {
+
             transform.Translate(MoveDirection().normalized * Time.deltaTime * _currentMonsterStatus.MoveSpeed);
         }
 
@@ -99,12 +108,22 @@ namespace TrainDefense.Game
             return _targetTrain.transform.position - transform.position;
         }
 
+        private void LookAtTarget()
+        {
+            int x = MoveDirection().x > 0 ? -1 : 1;
+            model.transform.localScale = new Vector2(x * _startScale.x, _startScale.y);
+        }
+
         private void AttackHandler()
         {
             if (_currentMonsterStatus.AttackDelay <= 0)
             {
                 _currentMonsterStatus.AttackDelay = _monsterData.MonsterStatusData.AttackDelay;
-                Attack();
+
+                if (Vector3.Distance(transform.position, _targetTrain.transform.position) <= _currentMonsterStatus.AttackRange)
+                {
+                    Attack();
+                }
             }
             else
             {
@@ -115,11 +134,9 @@ namespace TrainDefense.Game
         private void Attack()
         {
             if (_targetTrain == null) return;
-
-            if (Vector3.Distance(transform.position, _targetTrain.transform.position) <= _currentMonsterStatus.AttackRange)
-            {
-                _targetTrain.TakeDamage(_currentMonsterStatus.Damage);
-            }
+            
+            _targetTrain.TakeDamage(_currentMonsterStatus.Damage);
+            model.GetComponentInChildren<Animator>().SetTrigger("2_Attack");
         }
 
         #region Slow N Reset Move Speed
@@ -214,7 +231,7 @@ namespace TrainDefense.Game
         {
             if (!gameObject.activeInHierarchy) return;
             if (_isDead) return;
-            
+
             if (_stunCoroutine != null)
             {
                 StopCoroutine(_stunCoroutine);
@@ -250,7 +267,6 @@ namespace TrainDefense.Game
             DropExp();
             DropMoney();
 
-            // GameEventSystem.Publish(new MonsterDeadEvent());
             ResourceManager.Instance.Destroy(gameObject);
         }
 
@@ -264,7 +280,7 @@ namespace TrainDefense.Game
         {
             int dropMoney = Random.Range(_currentMonsterStatus.DropMoneyMin, _currentMonsterStatus.DropMoneyMax);
             ResourceManager.Instance.Spawn(Resources.Load<GameObject>("Prefabs/Money"), transform.position);
-            
+
             if (UserDataManager.Instance != null)
             {
                 int beforeCoin = UserDataManager.Instance.Coin;
