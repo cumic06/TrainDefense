@@ -86,14 +86,11 @@ namespace TrainDefense.Game.UI
             pauseImage.transform.DOScale(0, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
             {
                 pauseImage.transform.localScale = Vector3.zero;
+                TimeManager.Instance.Resume();
+                pauseImage.gameObject.SetActive(false);
+                backgroundImage.gameObject.SetActive(false);
+                _isPauseUIActive = false;
             }).SetUpdate(true);
-
-            pauseImage.gameObject.SetActive(false);
-            backgroundImage.gameObject.SetActive(false);
-
-            _isPauseUIActive = false;
-
-            TimeManager.Instance.Resume();
         }
     }
 }
