@@ -17,6 +17,7 @@ namespace TrainDefense.Game
         #endregion
 
         private MonsterData[] _monsterDatas;
+        [ShowInInspector]
         private bool _stopSpawnMonster;
 
         private void Start()
@@ -35,7 +36,7 @@ namespace TrainDefense.Game
         {
             _stopSpawnMonster = false;
         }
-        
+
         public void StopSpawnMonster()
         {
             _stopSpawnMonster = true;
