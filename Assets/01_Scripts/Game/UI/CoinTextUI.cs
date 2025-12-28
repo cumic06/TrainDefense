@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using Cumic.Events;
 using TrainDefense.Game.Events;
+using TrainDefense;
+using DG.Tweening;
 
 namespace TrainDefense.Game.UI
 {
@@ -10,19 +12,19 @@ namespace TrainDefense.Game.UI
         #region Field
         [SerializeField]
         private TextMeshProUGUI coinText;
+        [SerializeField]
+        private float tweenDuration = 1f;
         #endregion
 
         private void Start()
         {
-            GameEventSystem.Subscribe<IncreaseCoinEvent>(OnIncreaseCoin);
-            GameEventSystem.Subscribe<DecreaseCoinEvent>(OnDecreaseCoin);
+            GameEventSystem.Subscribe<ChangeCoinUIEvent>(OnChangeCoin);
             Setup();
         }
 
         private void OnDestroy()
         {
-            GameEventSystem.Unsubscribe<IncreaseCoinEvent>(OnIncreaseCoin);
-            GameEventSystem.Unsubscribe<DecreaseCoinEvent>(OnDecreaseCoin);
+            GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(OnChangeCoin);
         }
 
         private void Setup()
@@ -37,18 +39,11 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        private void OnIncreaseCoin(IncreaseCoinEvent increaseCoinEvent)
+        private void OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)
         {
-            if (UserDataManager.Instance == null) return;
-
-            coinText.text = $"Coin : {UserDataManager.Instance.Coin}";
-        }
-
-        private void OnDecreaseCoin(DecreaseCoinEvent decreaseCoinEvent)
-        {
-            if (UserDataManager.Instance == null) return;
-
-            coinText.text = $"Coin : {UserDataManager.Instance.Coin}";
+            DOTween.To(() => changeCoinEvent.BeforeCoin, x => coinText.text = $"Coin : {x}", changeCoinEvent.AfterCoin, tweenDuration)
+            .SetEase(Ease.InOutSine)
+            .SetUpdate(true);
         }
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense;
 using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game
@@ -263,7 +264,13 @@ namespace TrainDefense.Game
         {
             int dropMoney = Random.Range(_currentMonsterStatus.DropMoneyMin, _currentMonsterStatus.DropMoneyMax);
             ResourceManager.Instance.Spawn(Resources.Load<GameObject>("Prefabs/Money"), transform.position);
-            GameEventSystem.Publish(new IncreaseCoinEvent(dropMoney));
+            
+            if (UserDataManager.Instance != null)
+            {
+                int beforeCoin = UserDataManager.Instance.Coin;
+                int afterCoin = beforeCoin + dropMoney;
+                GameEventSystem.Publish(new ChangeCoinUIEvent(beforeCoin, afterCoin));
+            }
         }
 
 #if UNITY_EDITOR

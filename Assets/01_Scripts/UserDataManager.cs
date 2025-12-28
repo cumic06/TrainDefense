@@ -21,22 +21,32 @@ namespace TrainDefense
         {
             DontDestroyOnLoad(gameObject);
 
-            GameEventSystem.Subscribe<AddExpEvent>(AddExp);
-            GameEventSystem.Subscribe<TriChoiceSelectEvent>(AddTriChoiceData);
-            GameEventSystem.Subscribe<IncreaseCoinEvent>(InCreaseMoney);
-            GameEventSystem.Subscribe<BuyShopItemEvent>(BuyShopItem);
-            GameEventSystem.Subscribe<DecreaseCoinEvent>(DecreaseMoney);
+            SubscribeEvents();
             _coin = 0;
         }
 
         private void OnDestroy()
         {
-            GameEventSystem.Unsubscribe<BuyShopItemEvent>(BuyShopItem);
+            UnsubscribeEvents();
+        }
+
+        #region Event   
+        private void SubscribeEvents()
+        {
+            GameEventSystem.Subscribe<AddExpEvent>(AddExp);
+            GameEventSystem.Subscribe<TriChoiceSelectEvent>(AddTriChoiceData);
+            GameEventSystem.Subscribe<ChangeCoinUIEvent>(ChangeCoin);
+            GameEventSystem.Subscribe<BuyShopItemEvent>(BuyShopItem);
+        }
+
+        private void UnsubscribeEvents()
+        {
             GameEventSystem.Unsubscribe<AddExpEvent>(AddExp);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(AddTriChoiceData);
-            GameEventSystem.Unsubscribe<IncreaseCoinEvent>(InCreaseMoney);
-            GameEventSystem.Unsubscribe<DecreaseCoinEvent>(DecreaseMoney);
+            GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(ChangeCoin);
+            GameEventSystem.Unsubscribe<BuyShopItemEvent>(BuyShopItem);
         }
+        #endregion
 
         #region Exp
         private void AddExp(AddExpEvent addExpEvent)
@@ -62,14 +72,9 @@ namespace TrainDefense
         #endregion
 
         #region Coin
-        private void InCreaseMoney(IncreaseCoinEvent addCoinEvent)
+        private void ChangeCoin(ChangeCoinUIEvent changeCoinEvent)
         {
-            _coin += addCoinEvent.Coin;
-        }
-
-        private void DecreaseMoney(DecreaseCoinEvent decreaseCoinEvent)
-        {
-            _coin -= decreaseCoinEvent.Coin;
+            _coin = changeCoinEvent.AfterCoin;
         }
         #endregion
 
@@ -142,7 +147,9 @@ namespace TrainDefense
         {
             if (_coin >= buyShopItemEvent.NeedMoney)
             {
-                GameEventSystem.Publish(new DecreaseCoinEvent(buyShopItemEvent.NeedMoney));
+                int beforeCoin = _coin;
+                int afterCoin = _coin - buyShopItemEvent.NeedMoney;
+                GameEventSystem.Publish(new ChangeCoinUIEvent(beforeCoin, afterCoin));
             }
         }
     }

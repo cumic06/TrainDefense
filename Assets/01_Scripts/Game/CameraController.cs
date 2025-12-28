@@ -9,7 +9,7 @@ namespace TrainDefense.Game
     public class CameraController : MonoBehaviour
     {
         #region Variable
-        
+
         #region Fields
         [SerializeField]
         private float testShakeIntensity;
