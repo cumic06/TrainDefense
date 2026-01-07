@@ -34,7 +34,7 @@ namespace Cumic.Sequence
             {
                 Debug.Log("AuthSceneCompleted");
 
-                SceneController.NextScene();
+                SceneController.NextScene(false);
 
                 LobbySceneSequence();
 

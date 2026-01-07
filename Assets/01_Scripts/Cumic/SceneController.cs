@@ -7,7 +7,7 @@ namespace Cumic
     {
         private const string LoadingSceneName = "LoadingScene";
 
-        public static void LoadScene(int sceneIndex)
+        public static void LoadScene(int sceneIndex, bool isLoadingScene = true)
         {
             if (sceneIndex < 0 || sceneIndex >= SceneManager.sceneCountInBuildSettings)
             {
@@ -15,11 +15,18 @@ namespace Cumic
                 return;
             }
 
-            SceneManager.LoadScene(LoadingSceneName);
-            LoadingSceneController.SetTargetSceneIndex(sceneIndex);
+            if (isLoadingScene)
+            {
+                SceneManager.LoadScene(LoadingSceneName);
+                LoadingSceneController.SetTargetSceneIndex(sceneIndex);
+            }
+            else
+            {
+                SceneManager.LoadScene(sceneIndex);
+            }
         }
 
-        public static void NextScene()
+        public static void NextScene(bool isLoadingScene = true)
         {
             int currentIndex = SceneManager.GetActiveScene().buildIndex;
             if (currentIndex == SceneManager.sceneCountInBuildSettings - 1)
@@ -29,18 +36,32 @@ namespace Cumic
             }
 
             int nextIndex = currentIndex + 1;
-            LoadingSceneController.SetTargetSceneIndex(nextIndex);
-            SceneManager.LoadScene(LoadingSceneName);
+            if (isLoadingScene)
+            {
+                LoadingSceneController.SetTargetSceneIndex(nextIndex);
+                SceneManager.LoadScene(LoadingSceneName);
+            }
+            else
+            {
+                SceneManager.LoadScene(nextIndex);
+            }
         }
 
-        public static void ResetScene()
+        public static void ResetScene(bool isLoadingScene = true)
         {
             int currentIndex = SceneManager.GetActiveScene().buildIndex;
-            LoadingSceneController.SetTargetSceneIndex(currentIndex);
-            SceneManager.LoadScene(LoadingSceneName);
+            if (isLoadingScene)
+            {
+                LoadingSceneController.SetTargetSceneIndex(currentIndex);
+                SceneManager.LoadScene(LoadingSceneName);
+            }
+            else
+            {
+                SceneManager.LoadScene(currentIndex);
+            }
         }
 
-        public static void PreviousScene()
+        public static void PreviousScene(bool isLoadingScene = true)
         {
             int currentIndex = SceneManager.GetActiveScene().buildIndex;
             if (currentIndex == 0)
@@ -50,8 +71,15 @@ namespace Cumic
             }
 
             int previousIndex = currentIndex - 1;
-            LoadingSceneController.SetTargetSceneIndex(previousIndex);
-            SceneManager.LoadScene(LoadingSceneName);
+            if (isLoadingScene)
+            {
+                LoadingSceneController.SetTargetSceneIndex(previousIndex);
+                SceneManager.LoadScene(LoadingSceneName);
+            }
+            else
+            {
+                SceneManager.LoadScene(previousIndex);
+            }
         }
     }
 }
