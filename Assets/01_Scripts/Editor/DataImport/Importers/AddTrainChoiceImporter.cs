@@ -8,7 +8,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 	{
 		public string SheetName => "add_train_choice_data";
 		public string ButtonLabel => "AddTrainChoice 데이터 가져오기";
-		public string[] Headers => new[] { "id", "train_data_id", "weight", "tier" };
+		public string[] Headers => new[] { "id", "train_data_id", "weight", "tier", "replace_train_id" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -94,6 +94,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 			var t = typeof(AddTrainChoice);
 			SetPrivateField(t, target, "id", r.id);
 			SetPrivateField(t, target, "trainDataId", r.trainDataId);
+			SetPrivateField(t, target, "replaceTrainId", r.replaceTrainId);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

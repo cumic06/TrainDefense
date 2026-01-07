@@ -124,6 +124,62 @@ namespace TrainDefense.Game
             }
         }
 
+        /// <summary>
+        /// 기존 Train을 새로운 Train으로 대체합니다. (Elite Train 전환용)
+        /// </summary>
+        /// <param name="oldTrainId">대체할 기존 Train ID</param>
+        /// <param name="newTrainPrefab">새로운 Train 프리팹</param>
+        public void ReplaceTrain(string oldTrainId, Train newTrainPrefab)
+        {
+            // 대체할 기존 Train 찾기
+            Train oldTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == oldTrainId);
+            if (oldTrain == null)
+            {
+                Debug.LogError($"ReplaceTrain: Train with ID [{oldTrainId}] not found");
+                return;
+            }
+
+            // 기존 Train의 인덱스 저장
+            int aliveIndex = _currentAliveTrains.IndexOf(oldTrain);
+            int originalIndex = _trainOriginalIndexMap.ContainsKey(oldTrain) ? _trainOriginalIndexMap[oldTrain] : aliveIndex;
+            Vector3 oldPosition = oldTrain.transform.localPosition;
+
+            // 새로운 Train 생성 (기존 Train 제거 전에 생성하여 이벤트에서 참조 가능)
+            Train newTrain = Instantiate(newTrainPrefab, transform);
+            newTrain.Initialize(DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
+            newTrain.IsUnDead = isUnDead;
+
+            // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
+            var newTrainData = DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id);
+            GameEventSystem.Publish(new ReplaceTrainEvent(oldTrain, newTrain, newTrainData?.Icon));
+
+            // 기존 Train 제거
+            _currentAliveTrains.Remove(oldTrain);
+            _currentTrains.Remove(oldTrain);
+            _trainOriginalIndexMap.Remove(oldTrain);
+            Destroy(oldTrain.gameObject);
+
+            // 기존 위치에 삽입
+            _currentAliveTrains.Insert(aliveIndex, newTrain);
+            if (originalIndex < _currentTrains.Count)
+            {
+                _currentTrains.Insert(originalIndex, newTrain);
+            }
+            else
+            {
+                _currentTrains.Add(newTrain);
+            }
+            _trainOriginalIndexMap[newTrain] = originalIndex;
+
+            // 기존 위치 복원
+            newTrain.transform.localPosition = oldPosition;
+
+            Debug.Log($"ReplaceTrain: [{oldTrainId}] replaced with [{newTrainPrefab.Id}]");
+
+            // 살아있는 기차 재정렬
+            RearrangeTrains();
+        }
+
         private void CheckDeadTrain(TrainDeadEvent trainDeadEvent)
         {
             if (isUnDead) return;

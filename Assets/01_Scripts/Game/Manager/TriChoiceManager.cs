@@ -34,65 +34,90 @@ namespace TrainDefense.Game
                 return result;
             }
 
-            for (int i = 0; i < count; i++)
-            {
-                if (TrainManager.Instance.IsMaxTrainCountReached())//무조건 UpgradeTrainChoice를 반환한다.
-                {
-                    result = GetUpgradeTrainChoices();
-                }
-                else //AddTrainChoice와 UpgradeTrainChoice 중 랜덤으로 반환한다.
-                {
-                    int trainCount = TrainManager.Instance.GetTrainCount();
-                    int maxTrainCount = TrainManager.Instance.GetMaxTrainCount();
-                    int maxUpgradeTrainCount = TrainManager.Instance.GetMaxUpgradeTrainCount();
+            int trainCount = TrainManager.Instance.GetTrainCount();
 
-                    var addChoices = GetAddTrainChoices().Where(x => !result.Contains(x)).ToList();
+            // 2. Train 미보유 (trainCount == 0): 무조건 AddTrainChoice만
+            if (trainCount == 0)
+            {
+                Debug.Log("No train owned - AddTrainChoice only");
+                var addChoices = GetAddTrainChoices();
+                for (int i = 0; i < count; i++)
+                {
+                    AddChoiceToResult(result, addChoices);
+                }
+                Debug.Log($"ResultCount: {result.Count}");
+                return result;
+            }
+
+            // 3. EliteTrain 보장: CanUpgradeToEliteTrain() true면 삼중택일 중 하나는 무조건 EliteTrain Choice
+            if (CanUpgradeToEliteTrain())
+            {
+                var eliteChoices = GetEliteTrainChoices();
+                if (eliteChoices.Count > 0)
+                {
+                    Debug.Log("Adding guaranteed Elite Train choice");
+                    AddChoiceToResult(result, eliteChoices);
+                }
+            }
+
+            // 4. 나머지 슬롯 채우기
+            for (int i = result.Count; i < count; i++)
+            {
+                // MaxTrainCount 도달: UpgradeChoice만
+                if (TrainManager.Instance.IsMaxTrainCountReached())
+                {
+                    Debug.Log("MaxTrainCount reached - UpgradeTrainChoice only");
+                    var upgradeChoices = GetUpgradeTrainChoices();
+                    AddChoiceToResult(result, upgradeChoices);
+                }
+                else
+                {
+                    // 가중치로 Add/Upgrade 선택
+                    var addChoices = GetAddTrainChoices();
                     var upgradeChoices = GetUpgradeTrainChoices();
 
-                    // 조건 분리
-                    bool canUpgrade = trainCount <= maxTrainCount && maxUpgradeTrainCount != trainCount && upgradeChoices.Count > 0;
-                    bool canAdd = trainCount > 0 && trainCount < maxTrainCount && addChoices.Count > 0;
-                    bool needFirst = trainCount <= 0 && addChoices.Count > 0;
+                    bool hasAddChoices = addChoices.Count > 0;
+                    bool hasUpgradeChoices = upgradeChoices.Count > 0;
 
-                    Debug.Log($"trainCount: {trainCount}, maxTrainCount: {maxTrainCount}, maxUpgradeTrainCount: {maxUpgradeTrainCount}");
-
-                    // 두 조건이 모두 만족될 때 확률적으로 선택
-                    if (canUpgrade && canAdd)
+                    if (hasAddChoices && hasUpgradeChoices)
                     {
-                        Debug.Log("canUpgrade && canAdd");
-                        bool selectedUpgrade = SelectByProb(upgradeProb, addProb);
-                        if (selectedUpgrade)
+                        // 가중치로 선택
+                        bool selectUpgrade = SelectByProb(upgradeProb, addProb);
+                        if (selectUpgrade)
                         {
-                            AddChoiceToResult(result, upgradeChoices);
+                            Debug.Log("Weighted selection: UpgradeTrainChoice");
+                            // 실패하면 다른 타입으로 재시도
+                            if (!AddChoiceToResult(result, upgradeChoices))
+                            {
+                                Debug.Log("Retry with AddTrainChoice");
+                                AddChoiceToResult(result, addChoices);
+                            }
                         }
                         else
                         {
-                            AddChoiceToResult(result, addChoices);
+                            Debug.Log("Weighted selection: AddTrainChoice");
+                            // 실패하면 다른 타입으로 재시도
+                            if (!AddChoiceToResult(result, addChoices))
+                            {
+                                Debug.Log("Retry with UpgradeTrainChoice");
+                                AddChoiceToResult(result, upgradeChoices);
+                            }
                         }
                     }
-                    // 업그레이드만 가능
-                    else if (canUpgrade)
+                    else if (hasUpgradeChoices)
                     {
-                        Debug.Log("canUpgrade");
+                        Debug.Log("Only UpgradeTrainChoice available");
                         AddChoiceToResult(result, upgradeChoices);
                     }
-                    // 기차 추가만 가능
-                    else if (canAdd)
+                    else if (hasAddChoices)
                     {
-                        Debug.Log("canAdd");
-                        AddChoiceToResult(result, addChoices);
-                    }
-                    // 첫 기차 추가 필요
-                    else if (needFirst)
-                    {
-                        Debug.Log("needFirst");
+                        Debug.Log("Only AddTrainChoice available");
                         AddChoiceToResult(result, addChoices);
                     }
                 }
             }
 
             Debug.Log($"ResultCount: {result.Count}");
-
             return result;
         }
 
@@ -112,53 +137,52 @@ namespace TrainDefense.Game
         }
 
         /// <summary>
-        /// 선택지를 결과 목록에 추가합니다. 중복 체크 포함.
+        /// 선택지를 결과 목록에 추가합니다. ID 기반 중복 체크 포함.
         /// </summary>
-        private void AddChoiceToResult(List<ChoiceEntry> result, List<ChoiceEntry> choices)
+        /// <returns>추가 성공 여부</returns>
+        private bool AddChoiceToResult(List<ChoiceEntry> result, List<ChoiceEntry> choices)
         {
             if (choices == null || choices.Count == 0)
             {
                 Debug.LogWarning("AddChoiceToResult: choices is null or empty");
-                return;
+                return false;
             }
 
-            ChoiceEntry randomChoice = GetRandomChoices(choices);
+            ChoiceEntry randomChoice = GetRandomChoice(choices, result);
             if (randomChoice == null)
             {
-                Debug.LogWarning("AddChoiceToResult: GetRandomChoices returned null");
-                return;
+                Debug.LogWarning("AddChoiceToResult: GetRandomChoice returned null (all choices may be duplicates)");
+                return false;
             }
 
-            int tryCount = 0;
-            while (result.Contains(randomChoice))
-            {
-                randomChoice = GetRandomChoices(choices);
-                if (randomChoice == null)
-                {
-                    Debug.LogWarning("AddChoiceToResult: GetRandomChoices returned null during retry");
-                    return;
-                }
-                tryCount++;
-                if (tryCount > 100)
-                {
-                    break;
-                }
-            }
             result.Add(randomChoice);
+            return true;
         }
 
-        private ChoiceEntry GetRandomChoices(List<ChoiceEntry> choices)//랜덤으로 선택지를 반환한다.
+        /// <summary>
+        /// 랜덤으로 선택지를 반환합니다. 동일한 ID를 가진 선택지는 제외합니다.
+        /// </summary>
+        /// <param name="choices">선택 가능한 선택지 목록</param>
+        /// <param name="excludeResult">제외할 선택지 목록 (이미 선택된 결과)</param>
+        private ChoiceEntry GetRandomChoice(List<ChoiceEntry> choices, List<ChoiceEntry> excludeResult)
         {
             if (choices == null || choices.Count == 0)
             {
                 return null;
             }
 
-            //이미 UserDataManager에 있는 선택지면 제외
-            //UpgradeTrainChoice는 레벨업 후 다시 선택 가능하므로 제외하지 않음
             var userDataManager = UserDataManager.Instance;
-            choices = choices.Where(x =>
+
+            // 1. 이미 결과에 포함된 ID 제외
+            // 2. UserDataManager에 있는 선택지 제외 (UpgradeTrainChoice는 제외하지 않음)
+            var filteredChoices = choices.Where(x =>
             {
+                if (x?.Option == null) return false;
+
+                // 이미 결과에 동일한 ID가 있으면 제외
+                if (excludeResult != null && excludeResult.Any(r => r?.Option?.Id == x.Option.Id))
+                    return false;
+
                 // UpgradeTrainChoice는 레벨업 후 다시 선택 가능하므로 제외하지 않음
                 if (x.Option is UpgradeTrainChoice)
                     return true;
@@ -167,20 +191,20 @@ namespace TrainDefense.Game
                 return !userDataManager.GetSelectedChoiceIds().Contains(x.Option.Id);
             }).ToList();
 
-            if (choices.Count == 0)
+            if (filteredChoices.Count == 0)
             {
                 return null;
             }
 
-            float totalWeight = choices.Sum(choice => choice.Weight);
+            float totalWeight = filteredChoices.Sum(choice => choice.Weight);
             if (totalWeight <= 0)
             {
-                return choices[0];
+                return filteredChoices[0];
             }
 
             float randomValue = Random.Range(0f, totalWeight);
             float currentWeight = 0f;
-            foreach (var choice in choices)
+            foreach (var choice in filteredChoices)
             {
                 currentWeight += choice.Weight;
                 if (randomValue <= currentWeight)
@@ -188,7 +212,7 @@ namespace TrainDefense.Game
                     return choice;
                 }
             }
-            return choices[^1];
+            return filteredChoices[^1];
         }
 
         private List<ChoiceEntry> GetAddTrainChoices()//AddTrainChoice 목록을 반환한다.
@@ -196,8 +220,8 @@ namespace TrainDefense.Game
             var addDatas = DatabaseManager.Instance.GetTriChoiceDB().AddTrainChoices;
             var userDataManager = UserDataManager.Instance;
 
-            // Upgrade 3번 이상 한 Train이 있는지 확인
-            bool hasUpgradedTrain = HasAnyTrainUpgradedThreeTimes();
+            // 엘리트 트레인으로 업그레이드가 가능한지 확인
+            bool hasUpgradedTrain = CanUpgradeToEliteTrain();
 
             // 아직 획득하지 않은 train에 대한 choice만 필터링
             return addDatas
@@ -221,29 +245,29 @@ namespace TrainDefense.Game
         }
 
         /// <summary>
-        /// UpgradeChoice를 3번 이상 선택한 Train이 있는지 확인합니다.
+        /// Tier 1 (엘리트 트레인) 선택지만 반환합니다.
         /// </summary>
-        private bool HasAnyTrainUpgradedThreeTimes()
+        private List<ChoiceEntry> GetEliteTrainChoices()
         {
-            var userDataManager = UserDataManager.Instance;
-            if (userDataManager == null) return false;
+            var addDatas = DatabaseManager.Instance.GetTriChoiceDB().AddTrainChoices;
 
-            var triChoiceDB = DatabaseManager.Instance.GetTriChoiceDB();
-            var upgradeChoices = triChoiceDB.UpgradeTrainChoices;
+            return addDatas
+                .Where(entry => entry.Option != null && entry.Option.IsValid() && entry.Tier == 1)
+                .ToList();
+        }
 
-            foreach (var entry in upgradeChoices)
-            {
-                if (entry.Option is UpgradeTrainChoice upgradeChoice)
-                {
-                    int count = userDataManager.GetSelectionCount(upgradeChoice.Id);
-                    if (count >= 3)
-                    {
-                        return true;
-                    }
-                }
-            }
+        /// <summary>
+        /// 엘리트 트레인으로 업그레이드가 가능한지 확인합니다.
+        /// 업그레이드 선택 횟수 기록 대신 실제 기차 레벨을 기준으로 판단합니다.
+        /// (기본 레벨 -1에서 3번 업그레이드 시 CurrentLevel >= 2)
+        /// </summary>
+        private bool CanUpgradeToEliteTrain()
+        {
+            var mainTrain = TrainManager.Instance?.MainTrain;
+            if (mainTrain == null) return false;
 
-            return false;
+            // 엘리트 조건: 업그레이드 3회 이상 진행된 기차가 존재하는지 확인
+            return mainTrain.CurrentTrains.Any(train => train != null && train.CurrentLevel >= 2);
         }
 
         private List<ChoiceEntry> GetUpgradeTrainChoices()//UpgradeTrainChoice 목록을 반환한다.
@@ -342,11 +366,6 @@ namespace TrainDefense.Game
                     return currentLevelIndex >= 0 && currentLevelIndex < x.UpgradeData.MaxLevel;
                 })
                 .ToList();
-
-            foreach (var item in validUpgrades)
-            {
-                Debug.Log($"UpgradeTrainChoice [{choice.Id}]: {item.UpgradeData.Id} Train CurrentLevel: {currentLevel} (Index: {currentLevelIndex}) MaxLevel: {item.UpgradeData.MaxLevel}");
-            }
 
             if (validUpgrades.Count == 0)
             {

@@ -39,6 +39,7 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Subscribe<HitEvent>(SetHp);
             GameEventSystem.Subscribe<TrainDeadEvent>(SetDead);
             GameEventSystem.Subscribe<TrainLevelUpEvent>(SetLevelUp);
+            GameEventSystem.Subscribe<ReplaceTrainEvent>(OnReplaceTrain);
         }
 
         private void UnsubscribeEvents()
@@ -46,6 +47,7 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<HitEvent>(SetHp);
             GameEventSystem.Unsubscribe<TrainDeadEvent>(SetDead);
             GameEventSystem.Unsubscribe<TrainLevelUpEvent>(SetLevelUp);
+            GameEventSystem.Unsubscribe<ReplaceTrainEvent>(OnReplaceTrain);
         }
         #endregion
 
@@ -99,6 +101,29 @@ namespace TrainDefense.Game.UI
             if (_train != trainDeadEvent.Train) return;
 
             backGroundImage.color = Color.gray;
+        }
+
+        private void OnReplaceTrain(ReplaceTrainEvent replaceTrainEvent)
+        {
+            // 이 슬롯이 대체될 oldTrain을 참조하고 있는지 확인
+            if (_train != replaceTrainEvent.OldTrain) return;
+
+            // 새로운 Train으로 교체
+            _train = replaceTrainEvent.NewTrain;
+
+            // 아이콘 업데이트
+            if (replaceTrainEvent.NewIcon != null)
+            {
+                SetIcon(replaceTrainEvent.NewIcon);
+            }
+
+            // 레벨 UI 초기화 (새 Train은 레벨 0부터 시작)
+            trainLevelImage.gameObject.SetActive(false);
+
+            // HP 상태 초기화
+            backGroundImage.color = Color.green;
+
+            Debug.Log($"TrainInfoSlotUI: Replaced train UI");
         }
     }
 }
