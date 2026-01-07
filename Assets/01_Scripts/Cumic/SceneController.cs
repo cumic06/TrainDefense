@@ -5,36 +5,53 @@ namespace Cumic
 {
     public static class SceneController
     {
+        private const string LoadingSceneName = "LoadingScene";
+
         public static void LoadScene(int sceneIndex)
         {
-            SceneManager.LoadScene(sceneIndex);
+            if (sceneIndex < 0 || sceneIndex >= SceneManager.sceneCountInBuildSettings)
+            {
+                Debug.LogError($"SceneController: Invalid scene index {sceneIndex}");
+                return;
+            }
+
+            SceneManager.LoadScene(LoadingSceneName);
+            LoadingSceneController.SetTargetSceneIndex(sceneIndex);
         }
 
         public static void NextScene()
         {
-            if (SceneManager.GetActiveScene().buildIndex == SceneManager.sceneCountInBuildSettings - 1)
+            int currentIndex = SceneManager.GetActiveScene().buildIndex;
+            if (currentIndex == SceneManager.sceneCountInBuildSettings - 1)
             {
-                Debug.LogError("No more scenes");
+                Debug.LogError("SceneController: No more scenes");
                 return;
             }
 
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            int nextIndex = currentIndex + 1;
+            LoadingSceneController.SetTargetSceneIndex(nextIndex);
+            SceneManager.LoadScene(LoadingSceneName);
         }
 
         public static void ResetScene()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            int currentIndex = SceneManager.GetActiveScene().buildIndex;
+            LoadingSceneController.SetTargetSceneIndex(currentIndex);
+            SceneManager.LoadScene(LoadingSceneName);
         }
 
         public static void PreviousScene()
         {
-            if (SceneManager.GetActiveScene().buildIndex == 0)
+            int currentIndex = SceneManager.GetActiveScene().buildIndex;
+            if (currentIndex == 0)
             {
-                Debug.LogError("No more scenes");
+                Debug.LogError("SceneController: No more scenes");
                 return;
             }
 
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+            int previousIndex = currentIndex - 1;
+            LoadingSceneController.SetTargetSceneIndex(previousIndex);
+            SceneManager.LoadScene(LoadingSceneName);
         }
     }
 }
