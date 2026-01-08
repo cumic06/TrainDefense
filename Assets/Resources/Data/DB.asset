@@ -524,7 +524,7 @@ MonoBehaviour:
     addTrainChoices:
     - Option:
         rid: 2066870334413602903
-      Weight: 100
+      Weight: 0
       Tier: 0
     - Option:
         rid: 2066870334413602905

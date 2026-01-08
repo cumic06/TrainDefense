@@ -5,9 +5,6 @@ namespace TrainDefense
 {
     public class OptionUI : MonoBehaviour
     {
-        #region Fields
-        #endregion
-
         public void ShowOptionUI()
         {
             gameObject.SetActive(true);
