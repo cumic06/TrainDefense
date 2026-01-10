@@ -3,13 +3,17 @@ using TrainDefense.Game.Events;
 using Cumic.Events;
 using Cumic;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace TrainDefense
 {
     public class UserDataManager : Singleton<UserDataManager>
     {
         private Dictionary<string, int> _triChoiceData = new();
+        
+        [ShowInInspector]
         private Dictionary<string, int> _upgradeLevels = new();
+
         private int _coin;
         private int _currentExp;
         private int _currentLevel = 1;
@@ -131,6 +135,14 @@ namespace TrainDefense
             {
                 _upgradeLevels.Add(upgradeId, 1);
             }
+        }
+
+        /// <summary>
+        /// 상점에서 구매한 모든 업그레이드 ID 목록을 반환합니다.
+        /// </summary>
+        public IEnumerable<string> GetAllUpgradeIds()
+        {
+            return _upgradeLevels.Keys;
         }
 
         private const float baseExp = 10f;

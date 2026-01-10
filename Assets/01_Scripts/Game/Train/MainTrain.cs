@@ -108,6 +108,10 @@ namespace TrainDefense.Game
             _currentTrains.Add(trainObject);
             int originalIndex = _currentTrains.Count - 1;
             _trainOriginalIndexMap[trainObject] = originalIndex;
+            
+            // 새로 생성된 train에 기존 업그레이드 적용
+            ApplyExistingUpgradesToTrain(trainObject);
+            
             GameEventSystem.Publish(new AddTrainEvent(_trainData.Icon, trainObject));
 
             // 살아있는 기차 재정렬
@@ -148,6 +152,9 @@ namespace TrainDefense.Game
             Train newTrain = Instantiate(newTrainPrefab, transform);
             newTrain.Initialize(DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
             newTrain.IsUnDead = isUnDead;
+
+            // 새로 생성된 train에 기존 업그레이드 적용
+            ApplyExistingUpgradesToTrain(newTrain);
 
             // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
             var newTrainData = DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id);
@@ -298,6 +305,94 @@ namespace TrainDefense.Game
             foreach (var train in _currentAliveTrains)
             {
                 train.ApplyStats(upgradeData.Stats);
+            }
+        }
+
+        /// <summary>
+        /// 새로 생성된 train에 UserDataManager._upgradeLevels에 저장된 상점 업그레이드를 적용합니다.
+        /// UpgradeManager.ApplyTrainUpgrade와 동일한 방식으로 작동합니다.
+        /// </summary>
+        private void ApplyExistingUpgradesToTrain(Train train)
+        {
+            if (train == null)
+            {
+                Debug.LogWarning("ApplyExistingUpgradesToTrain: train is null");
+                return;
+            }
+            
+            if (UserDataManager.Instance == null)
+            {
+                Debug.LogWarning("ApplyExistingUpgradesToTrain: UserDataManager.Instance is null");
+                return;
+            }
+            
+            if (DatabaseManager.Instance == null)
+            {
+                Debug.LogWarning("ApplyExistingUpgradesToTrain: DatabaseManager.Instance is null");
+                return;
+            }
+
+            // UserDataManager._upgradeLevels dictionary의 모든 항목을 순회
+            var upgradeIds = UserDataManager.Instance.GetAllUpgradeIds();
+            if (upgradeIds == null)
+            {
+                Debug.LogWarning("ApplyExistingUpgradesToTrain: GetAllUpgradeIds returned null");
+                return;
+            }
+
+            int totalAppliedCount = 0;
+            foreach (var upgradeId in upgradeIds)
+            {
+                if (string.IsNullOrEmpty(upgradeId))
+                {
+                    Debug.LogWarning("ApplyExistingUpgradesToTrain: upgradeId is null or empty");
+                    continue;
+                }
+
+                // UserDataManager에서 해당 업그레이드의 레벨 확인
+                // UpgradeManager.OnBuyShopItem에서 UserDataManager.Instance.UpgradeLevel(upgradeId)로 기록됨
+                int upgradeLevel = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
+                
+                if (upgradeLevel <= 0)
+                {
+                    Debug.LogWarning($"ApplyExistingUpgradesToTrain: upgradeLevel is {upgradeLevel} for upgradeId '{upgradeId}'");
+                    continue;
+                }
+
+                // UpgradeData 조회
+                UpgradeData upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
+                if (upgradeData == null)
+                {
+                    Debug.LogWarning($"ApplyExistingUpgradesToTrain: UpgradeData not found for ID '{upgradeId}'");
+                    continue;
+                }
+
+                // TrainUpgrade 타입의 업그레이드만 적용
+                if (upgradeData.UpgradeDataType != UpgradeDataType.TrainUpgrade)
+                {
+                    continue;
+                }
+
+                if (upgradeData.Stats == null || upgradeData.Stats.Length == 0)
+                {
+                    Debug.LogWarning($"ApplyExistingUpgradesToTrain: Stats is null or empty for upgradeId '{upgradeId}'");
+                    continue;
+                }
+
+                // 업그레이드 레벨만큼 스탯 적용
+                // UpgradeManager.ApplyTrainUpgrade와 동일한 방식: upgradeData.Stats를 train에 적용
+                for (int i = 0; i < upgradeLevel; i++)
+                {
+                    train.ApplyStats(upgradeData.Stats);
+                }
+                
+                totalAppliedCount++;
+                Debug.Log($"[ApplyExistingUpgradesToTrain] Train '{train.Id}': Applied upgrade '{upgradeId}' level {upgradeLevel}");
+            }
+
+            if (totalAppliedCount > 0)
+            {
+                Debug.Log($"[ApplyExistingUpgradesToTrain] Train '{train.Id}': Total {totalAppliedCount} upgrades applied");
             }
         }
 

@@ -85,33 +85,27 @@ namespace TrainDefense.Game
                         bool selectUpgrade = SelectByProb(upgradeProb, addProb);
                         if (selectUpgrade)
                         {
-                            Debug.Log("Weighted selection: UpgradeTrainChoice");
                             // 실패하면 다른 타입으로 재시도
                             if (!AddChoiceToResult(result, upgradeChoices))
                             {
-                                Debug.Log("Retry with AddTrainChoice");
                                 AddChoiceToResult(result, addChoices);
                             }
                         }
                         else
                         {
-                            Debug.Log("Weighted selection: AddTrainChoice");
                             // 실패하면 다른 타입으로 재시도
                             if (!AddChoiceToResult(result, addChoices))
                             {
-                                Debug.Log("Retry with UpgradeTrainChoice");
                                 AddChoiceToResult(result, upgradeChoices);
                             }
                         }
                     }
                     else if (hasUpgradeChoices)
                     {
-                        Debug.Log("Only UpgradeTrainChoice available");
                         AddChoiceToResult(result, upgradeChoices);
                     }
                     else if (hasAddChoices)
                     {
-                        Debug.Log("Only AddTrainChoice available");
                         AddChoiceToResult(result, addChoices);
                     }
                 }
