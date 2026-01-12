@@ -39,13 +39,11 @@ namespace TrainDefense.Game
             // 2. Train 미보유 (trainCount == 0): 무조건 AddTrainChoice만
             if (trainCount == 0)
             {
-                Debug.Log("No train owned - AddTrainChoice only");
                 var addChoices = GetAddTrainChoices();
                 for (int i = 0; i < count; i++)
                 {
                     AddChoiceToResult(result, addChoices);
                 }
-                Debug.Log($"ResultCount: {result.Count}");
                 return result;
             }
 
@@ -66,7 +64,6 @@ namespace TrainDefense.Game
                 // MaxTrainCount 도달: UpgradeChoice만
                 if (TrainManager.Instance.IsMaxTrainCountReached())
                 {
-                    Debug.Log("MaxTrainCount reached - UpgradeTrainChoice only");
                     var upgradeChoices = GetUpgradeTrainChoices();
                     AddChoiceToResult(result, upgradeChoices);
                 }
