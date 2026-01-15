@@ -82,7 +82,6 @@ namespace TrainDefense.Game
             
             foreach (var stat in upgradeData.Stats)
             {
-                Debug.Log($"ApplyTrainUpgrade: {stat.Type} {stat.Value}");
             }
             TrainManager.Instance.ApplyUpgrade(upgradeData);
         }

@@ -53,7 +53,6 @@ namespace TrainDefense.Game
                 var eliteChoices = GetEliteTrainChoices();
                 if (eliteChoices.Count > 0)
                 {
-                    Debug.Log("Adding guaranteed Elite Train choice");
                     AddChoiceToResult(result, eliteChoices);
                 }
             }
@@ -108,7 +107,6 @@ namespace TrainDefense.Game
                 }
             }
 
-            Debug.Log($"ResultCount: {result.Count}");
             return result;
         }
 

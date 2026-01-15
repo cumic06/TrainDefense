@@ -574,7 +574,6 @@ namespace TrainDefense.Game
             return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
         }
 
-#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
@@ -584,5 +583,4 @@ namespace TrainDefense.Game
             }
         }
     }
-#endif
 }

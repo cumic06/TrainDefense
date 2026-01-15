@@ -95,9 +95,7 @@ namespace TrainDefense.Game
         {
             if (_currentAliveTrains.Count >= maxTrainCount)
             {
-#if UNITY_EDITOR
                 Debug.LogWarning("Train count is max");
-#endif
                 return;
             }
 
@@ -387,12 +385,10 @@ namespace TrainDefense.Game
                 }
                 
                 totalAppliedCount++;
-                Debug.Log($"[ApplyExistingUpgradesToTrain] Train '{train.Id}': Applied upgrade '{upgradeId}' level {upgradeLevel}");
             }
 
             if (totalAppliedCount > 0)
             {
-                Debug.Log($"[ApplyExistingUpgradesToTrain] Train '{train.Id}': Total {totalAppliedCount} upgrades applied");
             }
         }
 
