@@ -106,10 +106,10 @@ namespace TrainDefense.Game
             _currentTrains.Add(trainObject);
             int originalIndex = _currentTrains.Count - 1;
             _trainOriginalIndexMap[trainObject] = originalIndex;
-            
+
             // 새로 생성된 train에 기존 업그레이드 적용
             ApplyExistingUpgradesToTrain(trainObject);
-            
+
             GameEventSystem.Publish(new AddTrainEvent(_trainData.Icon, trainObject));
 
             // 살아있는 기차 재정렬
@@ -317,13 +317,13 @@ namespace TrainDefense.Game
                 Debug.LogWarning("ApplyExistingUpgradesToTrain: train is null");
                 return;
             }
-            
+
             if (UserDataManager.Instance == null)
             {
                 Debug.LogWarning("ApplyExistingUpgradesToTrain: UserDataManager.Instance is null");
                 return;
             }
-            
+
             if (DatabaseManager.Instance == null)
             {
                 Debug.LogWarning("ApplyExistingUpgradesToTrain: DatabaseManager.Instance is null");
@@ -350,7 +350,7 @@ namespace TrainDefense.Game
                 // UserDataManager에서 해당 업그레이드의 레벨 확인
                 // UpgradeManager.OnBuyShopItem에서 UserDataManager.Instance.UpgradeLevel(upgradeId)로 기록됨
                 int upgradeLevel = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
-                
+
                 if (upgradeLevel <= 0)
                 {
                     Debug.LogWarning($"ApplyExistingUpgradesToTrain: upgradeLevel is {upgradeLevel} for upgradeId '{upgradeId}'");
@@ -377,13 +377,16 @@ namespace TrainDefense.Game
                     continue;
                 }
 
+                Debug.Log($"UpgradeLevel: {upgradeLevel}");
+
                 // 업그레이드 레벨만큼 스탯 적용
                 // UpgradeManager.ApplyTrainUpgrade와 동일한 방식: upgradeData.Stats를 train에 적용
                 for (int i = 0; i < upgradeLevel; i++)
                 {
+                    Debug.Log($"ApplyStats: {upgradeData.Stats[i].Type} {upgradeData.Stats[i].Value}");
                     train.ApplyStats(upgradeData.Stats);
                 }
-                
+
                 totalAppliedCount++;
             }
 

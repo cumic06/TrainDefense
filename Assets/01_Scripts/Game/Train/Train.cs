@@ -91,7 +91,6 @@ namespace TrainDefense.Game
 
             int currentLevel = CurrentLevel; // 업그레이드 전 레벨
             _currentLevel++;
-            Debug.Log($"Train [{upgradeData.Name}]: Current Level: {_currentLevel}");
 
             // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
             // View 표시 및 업그레이드 적용 시: 레벨 + 1 인덱스 사용
@@ -101,7 +100,7 @@ namespace TrainDefense.Game
             _currentMaxHp += statusUpgrade.MaxHp;
             _currentHp += statusUpgrade.MaxHp;
             _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
-            
+
             GameEventSystem.Publish(new TrainLevelUpEvent(this, _currentLevel));
         }
 
