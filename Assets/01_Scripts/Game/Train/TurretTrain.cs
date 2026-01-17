@@ -28,6 +28,7 @@ namespace TrainDefense.Game
         private List<Monster> _targetMonsters = new();
 
         private TurretTrainStatus _currentTurretTrainStatus;
+        private bool _isStatusInitialized = false; // Setup이 이미 호출되었는지 추적
         private readonly List<Projectile> _nonMovementProjectiles = new();
         private bool _useNonMovementProjectilePooling;
 
@@ -35,7 +36,12 @@ namespace TrainDefense.Game
         {
             base.Setup();
 
-            _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
+            // 이미 초기화된 경우 업그레이드된 값이 덮어쓰이지 않도록 보호
+            if (!_isStatusInitialized)
+            {
+                _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
+                _isStatusInitialized = true;
+            }
 
             GameEventSystem.Subscribe<WarningRemovedEvent>(OnWarningRemoved);
 
@@ -341,6 +347,10 @@ namespace TrainDefense.Game
                 if (spawned == null) continue;
 
                 spawned.gameObject.SetActive(false); // 실제 발사 시점에 활성화
+
+                // 생성 시점에 AttackDamage와 AttackRange 초기화
+                InitializeProjectileDamage(spawned);
+
                 _nonMovementProjectiles.Add(spawned);
             }
         }
@@ -381,6 +391,10 @@ namespace TrainDefense.Game
                 if (spawned == null) break;
 
                 spawned.gameObject.SetActive(false);
+
+                // 생성 시점에 AttackDamage와 AttackRange 초기화
+                InitializeProjectileDamage(spawned);
+
                 _nonMovementProjectiles.Add(spawned);
             }
         }
@@ -441,6 +455,21 @@ namespace TrainDefense.Game
             );
         }
 
+        /// <summary>
+        /// Projectile의 AttackDamage와 AttackRange만 초기화 (타겟 없이)
+        /// NonMovement 프로젝타일 생성 시점에 사용
+        /// </summary>
+        private void InitializeProjectileDamage(Projectile projectile)
+        {
+            if (projectile == null) return;
+
+            projectile.Init(
+                _currentTurretTrainStatus.AttackDamage,
+                null,
+                projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f
+            );
+        }
+
         private Projectile SpawnNormalProjectile(int index, Monster target = null)
         {
             Projectile projectile = null;
@@ -494,6 +523,18 @@ namespace TrainDefense.Game
                 if (_useNonMovementProjectilePooling)
                 {
                     EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
+
+                    // AttackDamage나 AttackRange 변경 시 기존 프로젝타일 업데이트
+                    if (_nonMovementProjectiles.Count > 0 && (turretStatus.AttackDamage != 0 || turretStatus.AttackRange != 0))
+                    {
+                        foreach (var projectile in _nonMovementProjectiles)
+                        {
+                            if (projectile != null)
+                            {
+                                InitializeProjectileDamage(projectile);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -510,6 +551,18 @@ namespace TrainDefense.Game
             {
                 int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
                 EnsureNonMovementProjectileCount(maxCount);
+
+                // AttackDamage나 AttackRange 변경 시 기존 프로젝타일 업데이트
+                if (_nonMovementProjectiles.Count > 0 && (upgradeData.AttackDamage != 0 || upgradeData.AttackRange != 0))
+                {
+                    foreach (var projectile in _nonMovementProjectiles)
+                    {
+                        if (projectile != null)
+                        {
+                            InitializeProjectileDamage(projectile);
+                        }
+                    }
+                }
             }
         }
 
@@ -522,21 +575,30 @@ namespace TrainDefense.Game
             {
                 case StatType.AttackRange:
                     _currentTurretTrainStatus.AttackRange += stat.Value;
-                    break;
 
-                case StatType.AttackDamage:
-                    _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
+                    // AttackRange 변경 시 NonMovement 프로젝타일도 업데이트
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
                         foreach (var projectile in _nonMovementProjectiles)
                         {
                             if (projectile != null)
                             {
-                                projectile.Init(
-                                    _currentTurretTrainStatus.AttackDamage,
-                                    null,
-                                    projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f
-                                );
+                                InitializeProjectileDamage(projectile);
+                            }
+                        }
+                    }
+                    break;
+
+                case StatType.AttackDamage:
+                    _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
+
+                    if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+                    {
+                        foreach (var projectile in _nonMovementProjectiles)
+                        {
+                            if (projectile != null)
+                            {
+                                InitializeProjectileDamage(projectile);
                             }
                         }
                     }

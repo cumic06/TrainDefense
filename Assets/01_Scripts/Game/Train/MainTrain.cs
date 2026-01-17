@@ -377,13 +377,10 @@ namespace TrainDefense.Game
                     continue;
                 }
 
-                Debug.Log($"UpgradeLevel: {upgradeLevel}");
-
                 // 업그레이드 레벨만큼 스탯 적용
                 // UpgradeManager.ApplyTrainUpgrade와 동일한 방식: upgradeData.Stats를 train에 적용
                 for (int i = 0; i < upgradeLevel; i++)
                 {
-                    Debug.Log($"ApplyStats: {upgradeData.Stats[i].Type} {upgradeData.Stats[i].Value}");
                     train.ApplyStats(upgradeData.Stats);
                 }
 

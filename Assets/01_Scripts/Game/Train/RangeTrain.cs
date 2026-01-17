@@ -140,6 +140,7 @@ namespace TrainDefense.Game
             base.ApplyStat(stat);
             if (stat == null) return;
 
+            Debug.Log($"ApplyStat: {stat.Type} {stat.Value}");
 
             switch (stat.Type)
             {

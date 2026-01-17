@@ -143,6 +143,7 @@ namespace TrainDefense.Game
                         _currentMaxHp += deltaHp;
                         _currentHp += deltaHp;
                         _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+                        Debug.Log($"{name}ApplyStat: MaxHp {_currentMaxHp}");
                         break;
                     }
             }

@@ -56,6 +56,8 @@ namespace TrainDefense.Game
             _damage = damage;
             _target = target;
 
+            Debug.Log($"projectile Init Damage{damage}");
+
             if (data != null)
             {
                 InitializeWithConfig(attackRange);
