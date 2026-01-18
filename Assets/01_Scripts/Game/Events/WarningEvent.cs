@@ -1,4 +1,5 @@
 using UnityEngine;
+using TrainDefense.Game;
 
 namespace TrainDefense.Game.Events
 {
@@ -10,6 +11,7 @@ namespace TrainDefense.Game.Events
         private Monster _target;
         private float _attackRange;
         private bool _isScaleByAttackRange;
+        private Train _sender;
 
         public GameObject WarningObject => _warningObject;
         public Vector3 WorldPosition => _worldPosition;
@@ -17,8 +19,9 @@ namespace TrainDefense.Game.Events
         public Monster Target => _target;
         public float AttackRange => _attackRange;
         public bool IsScaleByAttackRange => _isScaleByAttackRange;
+        public Train Sender => _sender;
 
-        public WarningEvent(GameObject warningObject, Vector3 worldPosition, float warningDelaySeconds, Monster target, float attackRange = 0f, bool isScaleByAttackRange = false)
+        public WarningEvent(GameObject warningObject, Vector3 worldPosition, float warningDelaySeconds, Monster target, Train sender, float attackRange = 0f, bool isScaleByAttackRange = false)
         {
             _warningObject = warningObject;
             _worldPosition = worldPosition;
@@ -26,6 +29,7 @@ namespace TrainDefense.Game.Events
             _target = target;
             _attackRange = attackRange;
             _isScaleByAttackRange = isScaleByAttackRange;
+            _sender = sender;
         }
     }
 }

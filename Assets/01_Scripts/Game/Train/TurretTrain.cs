@@ -171,6 +171,7 @@ namespace TrainDefense.Game
                         nearTarget.transform.position,
                         data.WarningDelaySeconds,
                         nearTarget,
+                        this,
                         data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
                         data.IsScaleByAttackRange
                     ));
@@ -207,6 +208,7 @@ namespace TrainDefense.Game
                         spawnPosition,
                         data.WarningDelaySeconds,
                         target,
+                        this,
                         data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
                         data.IsScaleByAttackRange
                     ));
@@ -251,6 +253,7 @@ namespace TrainDefense.Game
                         targetPosition,
                         data.WarningDelaySeconds,
                         currentTarget,
+                        this,
                         data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
                         data.IsScaleByAttackRange
                     ));
@@ -268,6 +271,9 @@ namespace TrainDefense.Game
         /// </summary>
         private void OnWarningRemoved(WarningRemovedEvent warningRemovedEvent)
         {
+            // 자신이 발신한 WarningRemovedEvent가 아니면 무시
+            if (warningRemovedEvent.Sender != this) return;
+
             if (warningRemovedEvent.Target == null || !warningRemovedEvent.Target.IsActive) return;
 
             ProjectileData data = GetProjectile()?.GetData();
@@ -282,15 +288,48 @@ namespace TrainDefense.Game
             else
             {
                 // Linear/NonMovement 타입: spawn point 위치에서 타겟을 향해 발사
-                Projectile projectile = ResourceManager.Instance.Spawn(GetProjectile());
+                Projectile projectile = null;
+
+                // NonMovement 프로젝타일인 경우 풀링 사용
+                if (_useNonMovementProjectilePooling)
+                {
+                    // 사용 가능한 비활성화된 프로젝타일 찾기
+                    projectile = _nonMovementProjectiles.FirstOrDefault(p => p != null && !p.gameObject.activeSelf);
+                    
+                    // 사용 가능한 프로젝타일이 없으면 새로 생성
+                    if (projectile == null)
+                    {
+                        Projectile baseProjectile = GetProjectile();
+                        if (baseProjectile != null)
+                        {
+                            projectile = ResourceManager.Instance.Spawn(baseProjectile);
+                            if (projectile != null)
+                            {
+                                projectile.gameObject.SetActive(false);
+                                InitializeProjectileDamage(projectile);
+                                _nonMovementProjectiles.Add(projectile);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // 일반 프로젝타일: ResourceManager에서 소환
+                    projectile = ResourceManager.Instance.Spawn(GetProjectile());
+                }
+
                 if (projectile == null) return;
 
                 // WarningRemovedEvent의 WorldPosition은 spawn point 위치
-                projectile.transform.position = warningRemovedEvent.WorldPosition;
-                projectile.transform.localScale = Vector3.one;
+                SetupProjectileTransform(projectile, 0, warningRemovedEvent.WorldPosition);
                 projectile.transform.LookAt2D(warningRemovedEvent.Target.transform);
 
                 InitializeProjectile(projectile, warningRemovedEvent.Target);
+
+                if (_useNonMovementProjectilePooling)
+                {
+                    projectile.gameObject.SetActive(true);
+                }
             }
         }
 
@@ -301,11 +340,45 @@ namespace TrainDefense.Game
         {
             if (target == null || !target.IsActive) return;
 
-            Projectile projectile = ResourceManager.Instance.Spawn(GetProjectile());
+            Projectile projectile = null;
+
+            // NonMovement 프로젝타일인 경우 풀링 사용
+            if (_useNonMovementProjectilePooling)
+            {
+                // 사용 가능한 비활성화된 프로젝타일 찾기
+                projectile = _nonMovementProjectiles.FirstOrDefault(p => p != null && !p.gameObject.activeSelf);
+                
+                // 사용 가능한 프로젝타일이 없으면 새로 생성
+                if (projectile == null)
+                {
+                    Projectile baseProjectile = GetProjectile();
+                    if (baseProjectile != null)
+                    {
+                        projectile = ResourceManager.Instance.Spawn(baseProjectile);
+                        if (projectile != null)
+                        {
+                            projectile.gameObject.SetActive(false);
+                            InitializeProjectileDamage(projectile);
+                            _nonMovementProjectiles.Add(projectile);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // 일반 프로젝타일: ResourceManager에서 소환
+                projectile = ResourceManager.Instance.Spawn(GetProjectile());
+            }
+
             if (projectile == null) return;
 
             SetupProjectileTransform(projectile, 0, worldPosition);
             InitializeProjectile(projectile, target);
+
+            if (_useNonMovementProjectilePooling)
+            {
+                projectile.gameObject.SetActive(true);
+            }
         }
 
         #endregion
@@ -408,14 +481,31 @@ namespace TrainDefense.Game
         {
             if (projectile == null) return;
 
-            if (projectile.GetData().MovementType == MovementType.Linear || projectile.GetData().MovementType == MovementType.TargetPos)
+            MovementType movementType = projectile.GetData().MovementType;
+
+            if (movementType == MovementType.Linear || movementType == MovementType.TargetPos)
             {
                 projectile.transform.localScale = Vector3.one;
             }
 
             if (worldPosition.HasValue)
             {
-                projectile.transform.position = worldPosition.Value;
+                // NonMovement 타입인 경우 부모 해제 후 world position 설정
+                if (movementType == MovementType.NonMovement)
+                {
+                    projectile.transform.SetParent(null);
+                    projectile.transform.position = worldPosition.Value;
+                    projectile.transform.localRotation = Quaternion.identity;
+                    
+                    if (useParticleProjectile)
+                    {
+                        projectile.transform.localScale = Vector3.one;
+                    }
+                }
+                else
+                {
+                    projectile.transform.position = worldPosition.Value;
+                }
             }
             else
             {
@@ -423,7 +513,7 @@ namespace TrainDefense.Game
                     ? turretProjectileSpawnPoints[spawnIndex]
                     : turretProjectileSpawnPoints[0];
 
-                if (projectile.GetData().MovementType == MovementType.NonMovement)
+                if (movementType == MovementType.NonMovement)
                 {
                     projectile.transform.SetParent(parent);
                     projectile.transform.localPosition = Vector3.zero;

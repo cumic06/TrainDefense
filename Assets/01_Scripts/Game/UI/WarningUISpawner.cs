@@ -68,7 +68,7 @@ namespace TrainDefense.Game.UI
                     worldPosition.z = 0f;
                 }
 
-                GameEventSystem.Publish(new WarningRemovedEvent(worldPosition, warningEvent.WarningDelaySeconds, warningEvent.Target));
+                GameEventSystem.Publish(new WarningRemovedEvent(worldPosition, warningEvent.WarningDelaySeconds, warningEvent.Target, warningEvent.Sender));
 
                 ResourceManager.Instance.Destroy(warningInstance.gameObject);
             }
