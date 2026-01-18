@@ -36,6 +36,19 @@ namespace Cumic.Sequence
 
         private void Start()
         {
+            SubscribeEvents();
+
+            StartCoroutine(GameEnterCoroutine());
+        }
+
+        private void OnDestroy()
+        {
+            UnsubscribeEvents();
+        }
+
+        #region Events
+        private void SubscribeEvents()
+        {
             GameEventSystem.Subscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(EngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(EngageStart);
@@ -44,17 +57,10 @@ namespace Cumic.Sequence
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(TriChoiceSelect);
             GameEventSystem.Subscribe<StageEndEvent>(StageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(GameEnd);
-
-            StartCoroutine(GameEnterCoroutine());
         }
 
-        private IEnumerator GameEnterCoroutine()
-        {
-            yield return null;
-            GameEventSystem.Publish(new GameEnterEvent());
-        }
 
-        private void OnDestroy()
+        private void UnsubscribeEvents()
         {
             GameEventSystem.Unsubscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Unsubscribe<EngageReadyEvent>(EngageReady);
@@ -64,6 +70,13 @@ namespace Cumic.Sequence
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(TriChoiceSelect);
             GameEventSystem.Unsubscribe<StageEndEvent>(StageEnd);
             GameEventSystem.Unsubscribe<GameEndEvent>(GameEnd);
+        }
+        #endregion
+
+        private IEnumerator GameEnterCoroutine()
+        {
+            yield return null;
+            GameEventSystem.Publish(new GameEnterEvent());
         }
 
         private void GameEnter(GameEnterEvent gameEnterEvent)
@@ -96,6 +109,13 @@ namespace Cumic.Sequence
 
         private void Inspection(InspectionEvent inspectionEvent)
         {
+            // 모든 적 유닛 제거
+            MonsterSpawner spawner = FindFirstObjectByType<MonsterSpawner>();
+            if (spawner != null)
+            {
+                spawner.DestroyAllMonsters();
+            }
+
             if (shopButtonUI != null)
             {
                 shopButtonUI.gameObject.SetActive(true);

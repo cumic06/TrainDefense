@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TrainDefense.Game.Datas;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace TrainDefense.Game
         private MonsterData[] _monsterDatas;
         [ShowInInspector]
         private bool _stopSpawnMonster;
+        private readonly List<Monster> _spawnedMonsters = new();
 
         private void Start()
         {
@@ -58,6 +60,7 @@ namespace TrainDefense.Game
                 MonsterData randomMonsterData = _monsterDatas[Random.Range(0, _monsterDatas.Length)];
                 Monster spawnMonster = ResourceManager.Instance.Spawn(randomMonsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
                 spawnMonster.Initialize(randomMonsterData);
+                _spawnedMonsters.Add(spawnMonster);
                 yield return spawnWait;
             }
         }
@@ -94,6 +97,30 @@ namespace TrainDefense.Game
             }
 
             return spawnPos;
+        }
+
+        public void RemoveMonster(Monster monster)
+        {
+            if (monster != null)
+            {
+                _spawnedMonsters.Remove(monster);
+            }
+        }
+
+        public void DestroyAllMonsters()
+        {
+            // 리스트를 복사해서 순회 (제거 중 리스트 변경 방지)
+            List<Monster> monstersToDestroy = new(_spawnedMonsters);
+            
+            foreach (Monster monster in monstersToDestroy)
+            {
+                if (monster != null && monster.gameObject != null)
+                {
+                    ResourceManager.Instance.Destroy(monster.gameObject);
+                }
+            }
+            
+            _spawnedMonsters.Clear();
         }
     }
 }

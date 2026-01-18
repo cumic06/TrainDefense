@@ -32,7 +32,7 @@ public class ResourceManager : MonoBehaviour
         if (_pools[key].Count > 0)
         {
             GameObject popObject = _pools[key].Pop();
-            
+
             popObject.SetActive(true);
             popObject.transform.SetPositionAndRotation(position, rotation);
 

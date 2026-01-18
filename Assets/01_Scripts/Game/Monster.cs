@@ -267,6 +267,12 @@ namespace TrainDefense.Game
             DropExp();
             DropMoney();
 
+            // 부모가 MonsterSpawner인 경우 List에서 제거
+            if (transform.parent != null && transform.parent.TryGetComponent<MonsterSpawner>(out var spawner))
+            {
+                spawner.RemoveMonster(this);
+            }
+
             ResourceManager.Instance.Destroy(gameObject);
         }
 
