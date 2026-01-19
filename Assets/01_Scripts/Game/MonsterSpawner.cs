@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cumic;
+using Cumic.Events;
 using Sirenix.OdinInspector;
 using TrainDefense.Game.Datas;
 using UnityEngine;
 
 namespace TrainDefense.Game
 {
-    public class MonsterSpawner : MonoBehaviour
+    public class MonsterSpawner : Singleton<MonsterSpawner>
     {
         #region Field
         [SerializeField]
@@ -25,7 +27,18 @@ namespace TrainDefense.Game
         private void Start()
         {
             LoadMonsterDatas();
-            _stopSpawnMonster = false;
+            StopSpawnMonster();
+            GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
+        }
+
+        private void OnGameEnter(GameEnterEvent gameEnterEvent)
+        {
+            StartSpawnMonster();
             StartCoroutine(SpawnMonster());
         }
 
@@ -111,7 +124,7 @@ namespace TrainDefense.Game
         {
             // 리스트를 복사해서 순회 (제거 중 리스트 변경 방지)
             List<Monster> monstersToDestroy = new(_spawnedMonsters);
-            
+
             foreach (Monster monster in monstersToDestroy)
             {
                 if (monster != null && monster.gameObject != null)
@@ -119,7 +132,7 @@ namespace TrainDefense.Game
                     ResourceManager.Instance.Destroy(monster.gameObject);
                 }
             }
-            
+
             _spawnedMonsters.Clear();
         }
     }

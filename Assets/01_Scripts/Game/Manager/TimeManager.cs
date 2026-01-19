@@ -35,6 +35,16 @@ namespace TrainDefense.Game
             Pause();
         }
 
+        private void OnEngageReady(EngageReadyEvent engageReadyEvent)
+        {
+            Pause();
+        }
+
+        private void OnEngageStart(EngageStartEvent engageStartEvent)
+        {
+            Resume();
+        }
+        
         private void OnStageEnd(StageEndEvent stageEndEvent)
         {
             Pause();
@@ -45,21 +55,12 @@ namespace TrainDefense.Game
             Pause();
         }
 
-        private void OnEngageReady(EngageReadyEvent engageReadyEvent)
-        {
-            Pause();
-        }
-
-        private void OnEngageStart(EngageStartEvent engageStartEvent)
-        {
-            Resume();
-        }
 
         private void OnLevelUp(LevelUpEvent levelUpEvent)
         {
             Pause();
         }
-        
+
         private void OnInspection(InspectionEvent inspectionEvent)
         {
             Pause();

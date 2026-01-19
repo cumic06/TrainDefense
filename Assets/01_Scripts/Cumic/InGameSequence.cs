@@ -1,6 +1,7 @@
 using System.Collections;
 using Cumic.Events;
 using Sirenix.OdinInspector;
+using TrainDefense;
 using TrainDefense.Game;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.UI;
@@ -37,8 +38,6 @@ namespace Cumic.Sequence
         private void Start()
         {
             SubscribeEvents();
-
-            StartCoroutine(GameEnterCoroutine());
         }
 
         private void OnDestroy()
@@ -73,9 +72,9 @@ namespace Cumic.Sequence
         }
         #endregion
 
-        private IEnumerator GameEnterCoroutine()
+        public void GameEnterHandler()
         {
-            yield return null;
+            Debug.Log("GameEnterHandler");
             GameEventSystem.Publish(new GameEnterEvent());
         }
 

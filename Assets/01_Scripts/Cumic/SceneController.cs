@@ -36,6 +36,7 @@ namespace Cumic
             }
 
             int nextIndex = currentIndex + 1;
+
             if (isLoadingScene)
             {
                 LoadingSceneController.SetTargetSceneIndex(nextIndex);

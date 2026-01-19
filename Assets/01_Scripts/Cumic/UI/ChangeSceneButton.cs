@@ -5,7 +5,7 @@ public class ChangeSceneButton : MonoBehaviour
 {
     public void OnClickNextScene()
     {
-        SceneController.NextScene();
+        SceneController.NextScene(false);
     }
 
     public void OnClickPreviousScene()
@@ -20,6 +20,6 @@ public class ChangeSceneButton : MonoBehaviour
 
     public void OnClickLoadScene(int sceneIndex)
     {
-        SceneController.LoadScene(sceneIndex);
+        SceneController.LoadScene(sceneIndex, false);
     }
 }
