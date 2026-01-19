@@ -4,6 +4,7 @@ using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using Sirenix.OdinInspector;
 using TrainDefense.Game.Stats;
+using System.Linq;
 
 namespace TrainDefense.Game
 {
@@ -12,6 +13,10 @@ namespace TrainDefense.Game
         #region Field
         [SerializeField]
         protected string id;
+        [SerializeField]
+        protected float explosionRadius = 5f;
+        [SerializeField]
+        protected float explosionForce = 10f;
         #endregion
 
         [ShowInInspector, ReadOnly]
@@ -75,6 +80,24 @@ namespace TrainDefense.Game
             }
 
             _isDead = true;
+
+            // 주변 적을 밀치는 효과
+            PushNearbyEnemies();
+        }
+
+        protected virtual void PushNearbyEnemies()
+        {
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, explosionRadius)
+            .Where(collider => collider.TryGetComponent(out Monster monster) && monster.gameObject.activeInHierarchy)
+            .ToArray();
+
+            foreach (var collider in colliders)
+            {
+                if (collider.TryGetComponent(out Monster monster))
+                {
+                    monster.Shove(explosionForce, 0.5f);
+                }
+            }
         }
 
         public virtual void Resurrect()

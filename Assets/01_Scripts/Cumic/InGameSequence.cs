@@ -74,7 +74,6 @@ namespace Cumic.Sequence
 
         public void GameEnterHandler()
         {
-            Debug.Log("GameEnterHandler");
             GameEventSystem.Publish(new GameEnterEvent());
         }
 
