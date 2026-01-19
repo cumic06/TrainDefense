@@ -57,5 +57,14 @@
         "Temp/": true
     },
     "dotnet.defaultSolution": "TrainDefense.sln",
-    "dotrush.roslyn.projectOrSolutionFiles": []
+    "dotrush.roslyn.projectOrSolutionFiles": [
+        "c:\\Users\\chang\\GitHub\\TrainDefense\\TrainDefense.sln",
+        "c:\\Users\\chang\\GitHub\\TrainDefense\\TrainDefense.slnx",
+        "c:\\Users\\chang\\GitHub\\TrainDefense\\Assembly-CSharp-Editor-firstpass.csproj",
+        "c:\\Users\\chang\\GitHub\\TrainDefense\\Assembly-CSharp-Editor.csproj",
+        "c:\\Users\\chang\\GitHub\\TrainDefense\\Assembly-CSharp-firstpass.csproj",
+        "c:\\Users\\chang\\GitHub\\TrainDefense\\Assembly-CSharp.csproj",
+        "c:\\Users\\chang\\GitHub\\TrainDefense\\Sirenix.OdinInspector.Modules.UnityMathematics.csproj",
+        "c:\\Users\\chang\\GitHub\\TrainDefense\\TrainDefense.Tests.EditMode.csproj"
+    ]
 }
