@@ -15,7 +15,7 @@ MonoBehaviour:
   monsterDataList:
   - id: 10001
     name: Skull
-    description: basic
+    description: "\uD574\uACE8 \uBCD1\uC0AC\uB2E4."
     monsterStatusData:
       MaxHp: 10
       Damage: 5
@@ -27,6 +27,34 @@ MonoBehaviour:
       DropMoneyMax: 20
       AttackRange: 1.5
     prefabId: Skull
+  - id: 10002
+    name: Thief
+    description: "\uB3C4\uC801\uC774\uB2E4."
+    monsterStatusData:
+      MaxHp: 30
+      Damage: 5
+      MoveSpeed: 8
+      AttackDelay: 0.5
+      DropExpMin: 40
+      DropExpMax: 60
+      DropMoneyMin: 50
+      DropMoneyMax: 70
+      AttackRange: 1
+    prefabId: Thief
+  - id: 10003
+    name: Gnoll
+    description: "\uB180\uC774\uB2E4."
+    monsterStatusData:
+      MaxHp: 50
+      Damage: 10
+      MoveSpeed: 3
+      AttackDelay: 3
+      DropExpMin: 100
+      DropExpMax: 120
+      DropMoneyMin: 150
+      DropMoneyMax: 170
+      AttackRange: 7
+    prefabId: Gnoll
   trainDataList:
   - id: 20001
     name: "\uBA54\uC778 \uAE30\uCC28"

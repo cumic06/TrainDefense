@@ -84,7 +84,7 @@ namespace TrainDefense.Game
 
             if (_isShoved) return;
             if (_isStunned) return;
-            Move();
+            MoveHandler();
             AttackHandler();
             LookAtTarget();
         }
@@ -94,6 +94,14 @@ namespace TrainDefense.Game
             if (TrainManager.Instance == null) return;
 
             _targetTrain = TrainManager.Instance.GetNearTrain(transform.position);
+        }
+
+        private void MoveHandler()
+        {
+            if (Vector3.Distance(transform.position, _targetTrain.transform.position) > _currentMonsterStatus.AttackRange)
+            {
+                Move();
+            }
         }
 
         private void Move()
