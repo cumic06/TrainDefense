@@ -14,19 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.DB
   monsterDataList:
   - id: 10001
-    name: Slime
+    name: Skull
     description: basic
     monsterStatusData:
       MaxHp: 10
       Damage: 5
-      MoveSpeed: 10
+      MoveSpeed: 5
       AttackDelay: 1
       DropExpMin: 10
       DropExpMax: 20
       DropMoneyMin: 10
       DropMoneyMax: 20
       AttackRange: 1.5
-    prefabId: BaseMonster
+    prefabId: Skull
   trainDataList:
   - id: 20001
     name: "\uBA54\uC778 \uAE30\uCC28"

@@ -3,7 +3,6 @@ using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
-using TrainDefense;
 using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game
@@ -32,6 +31,7 @@ namespace TrainDefense.Game
         protected Train _targetTrain;
 
         protected Rigidbody2D _rigidbody2D;
+        protected Animator _modelAnimator;
 
         protected Coroutine _slowCoroutine;
         protected Coroutine _resetMoveSpeedCoroutine;
@@ -47,6 +47,7 @@ namespace TrainDefense.Game
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _startScale = model.transform.localScale;
+            _modelAnimator = model.GetComponentInChildren<Animator>();
         }
 
         public void Initialize(MonsterData monsterData)
@@ -97,7 +98,6 @@ namespace TrainDefense.Game
 
         private void Move()
         {
-
             transform.Translate(MoveDirection().normalized * Time.deltaTime * _currentMonsterStatus.MoveSpeed);
         }
 
@@ -110,7 +110,7 @@ namespace TrainDefense.Game
 
         private void LookAtTarget()
         {
-            int x = MoveDirection().x > 0 ? -1 : 1;
+            int x = MoveDirection().x > 0 ? 1 : -1;
             model.transform.localScale = new Vector2(x * _startScale.x, _startScale.y);
         }
 
@@ -134,9 +134,9 @@ namespace TrainDefense.Game
         private void Attack()
         {
             if (_targetTrain == null) return;
-            
+
             _targetTrain.TakeDamage(_currentMonsterStatus.Damage);
-            model.GetComponentInChildren<Animator>().SetTrigger("2_Attack");
+            _modelAnimator.CrossFade("Attack", 0);
         }
 
         #region Slow N Reset Move Speed

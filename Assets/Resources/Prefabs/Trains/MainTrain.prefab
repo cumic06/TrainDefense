@@ -234,9 +234,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MainTrain
   id: 20001
+  explosionRadius: 5
+  explosionForce: 10
   IsUnDead: 1
-  moveSpeed: 5
+  moveSpeed: 2
   maxTrainCount: 5
   trainOffset: 2.4
   startTrainablePrefab: {fileID: 0}
-  isUnDead: 0
+  isUnDead: 1
