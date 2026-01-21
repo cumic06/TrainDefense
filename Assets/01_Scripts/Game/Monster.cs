@@ -143,8 +143,16 @@ namespace TrainDefense.Game
         {
             if (_targetTrain == null) return;
 
-            _targetTrain.TakeDamage(_currentMonsterStatus.Damage);
             _modelAnimator.CrossFade("Attack", 0);
+
+            if (_currentMonsterStatus.AttackType == MonsterAttackType.Ranged)
+            {
+
+            }
+            else if (_currentMonsterStatus.AttackType == MonsterAttackType.Melee)
+            {
+                _targetTrain.TakeDamage(_currentMonsterStatus.Damage);
+            }
         }
 
         #region Slow N Reset Move Speed

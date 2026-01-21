@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using TrainDefense;
 
 namespace TrainDefense.Game.Datas
 {
@@ -20,6 +21,10 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private string prefabId;
         private GameObject prefab;
+
+        [ShowIf("@AttackType == TrainDefense.MonsterAttackType.Ranged")]
+        [SerializeField]
+        private GameObject rangedProjectilePrefab;
         #endregion
 
         #region IData
@@ -53,7 +58,8 @@ namespace TrainDefense.Game.Datas
 
         public string MonsterName => name;
         public MonsterStatusInfo MonsterStatusData => monsterStatusData;
-        
+        public MonsterAttackType AttackType => monsterStatusData.AttackType;
+
         [Obsolete("Use Prefab property instead")]
         public Monster MonsterPrefab => Prefab?.GetComponent<Monster>();
     }

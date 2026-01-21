@@ -17,5 +17,6 @@ namespace TrainDefense.Game.Datas
         public int DropMoneyMin;
         public int DropMoneyMax;
         public float AttackRange;
+        public MonsterAttackType AttackType;
     }
 }
