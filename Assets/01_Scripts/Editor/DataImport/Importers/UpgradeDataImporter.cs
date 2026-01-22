@@ -60,7 +60,17 @@ namespace TrainDefense.Editor.DataImport.Importers
 
 			// 기본 필드 매핑
 			SetPrivateField(t, target, "id", r.id);
-			SetPrivateField(t, target, "name", r.name);
+
+            string formattedName = r.name;
+            try
+            {
+                // 사용자 요청: B(name)의 {1}에는 (upgradeValue * maxUpgradeCount) 값을 넣고, {0}은 그대로 둠 (ShopItemUI에서 처리)
+                // string.Format에서 literal "{0}"을 첫 번째 인자로 넘겨서 {0} 자리는 그대로 유지되게 함
+                float maxTotalValue = r.upgradeValue * r.maxUpgradeCount;
+                formattedName = string.Format(r.name, "{0}", maxTotalValue);
+            }
+            catch { }
+            SetPrivateField(t, target, "name", formattedName);
 			SetPrivateField(t, target, "description", r.description);
 			SetPrivateField(t, target, "needMoney", r.needMoney);
 			SetPrivateField(t, target, "upgradeValue", r.upgradeValue);
