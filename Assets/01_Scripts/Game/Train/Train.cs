@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace TrainDefense.Game
 {
-    public abstract class Train : MonoBehaviour, ITrainable, IDamageable
+    public abstract class Train : MonoBehaviour, ITrainable, IProjectileTarget
     {
         #region Field
         [SerializeField]
@@ -54,6 +54,21 @@ namespace TrainDefense.Game
             _currentLevel = -1;
         }
 
+        public Transform TargetTransform => transform;
+        public bool IsActive => !IsDead;
+
+        public void Slow(float slowValue){
+
+        }
+        public void ResetMoveSpeed(){
+
+        }
+        public void Shove(float shovePower, float shoveDuration){
+
+        }
+        public void Stun(float stunDuration){
+            
+        }
 
         public virtual void TakeDamage(int damage)
         {

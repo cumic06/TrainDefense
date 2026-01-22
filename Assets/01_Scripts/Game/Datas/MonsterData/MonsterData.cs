@@ -24,7 +24,7 @@ namespace TrainDefense.Game.Datas
 
         [ShowIf("@AttackType == TrainDefense.MonsterAttackType.Ranged")]
         [SerializeField]
-        private GameObject rangedProjectilePrefab;
+        private Projectile rangedProjectilePrefab;
         #endregion
 
         #region IData
@@ -59,6 +59,7 @@ namespace TrainDefense.Game.Datas
         public string MonsterName => name;
         public MonsterStatusInfo MonsterStatusData => monsterStatusData;
         public MonsterAttackType AttackType => monsterStatusData.AttackType;
+        public Projectile RangedProjectilePrefab => rangedProjectilePrefab;
 
         [Obsolete("Use Prefab property instead")]
         public Monster MonsterPrefab => Prefab?.GetComponent<Monster>();

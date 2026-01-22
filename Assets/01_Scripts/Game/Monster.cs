@@ -147,7 +147,8 @@ namespace TrainDefense.Game
 
             if (_currentMonsterStatus.AttackType == MonsterAttackType.Ranged)
             {
-
+                var projectile = ResourceManager.Instance.Spawn(_monsterData.RangedProjectilePrefab);
+                projectile.Init(_monsterData.MonsterStatusData.Damage, _targetTrain);
             }
             else if (_currentMonsterStatus.AttackType == MonsterAttackType.Melee)
             {
