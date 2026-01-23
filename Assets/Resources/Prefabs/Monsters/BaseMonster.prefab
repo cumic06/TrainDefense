@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7835390160826455579}
   - component: {fileID: 6218008665424669355}
   - component: {fileID: 3062613401689317436}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MonsterModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 2390104975334823038}
   - component: {fileID: 8967810716900712770}
   - component: {fileID: -452411931163683401}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BaseMonster
   m_TagString: Untagged
   m_Icon: {fileID: 0}

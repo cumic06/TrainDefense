@@ -99,7 +99,7 @@ namespace TrainDefense.Game
 
         private void MoveHandler()
         {
-            if (Vector3.Distance(transform.position, _targetTrain.transform.position) > _currentMonsterStatus.AttackRange)
+            if (Vector3.Distance(transform.position, _targetTrain.transform.position) > _currentMonsterStatus.AttackRange && _currentMonsterStatus.AttackDelay > 0)
             {
                 Move();
             }
@@ -108,6 +108,7 @@ namespace TrainDefense.Game
         private void Move()
         {
             transform.Translate(MoveDirection().normalized * Time.deltaTime * _currentMonsterStatus.MoveSpeed);
+            _modelAnimator.CrossFade("Idle", 0);
         }
 
         private Vector3 MoveDirection()
@@ -127,12 +128,12 @@ namespace TrainDefense.Game
         {
             if (_currentMonsterStatus.AttackDelay <= 0)
             {
-                _currentMonsterStatus.AttackDelay = _monsterData.MonsterStatusData.AttackDelay;
-
                 if (Vector3.Distance(transform.position, _targetTrain.transform.position) <= _currentMonsterStatus.AttackRange)
                 {
                     Attack();
                 }
+
+                _currentMonsterStatus.AttackDelay = _monsterData.MonsterStatusData.AttackDelay;
             }
             else
             {
@@ -149,6 +150,8 @@ namespace TrainDefense.Game
             if (_currentMonsterStatus.AttackType == MonsterAttackType.Ranged)
             {
                 var projectile = ResourceManager.Instance.Spawn(_monsterData.RangedProjectilePrefab);
+                projectile.transform.position = transform.position;
+                projectile.transform.LookAt2D(_targetTrain.transform);
                 projectile.Init(_monsterData.MonsterStatusData.Damage, _targetTrain);
             }
             else if (_currentMonsterStatus.AttackType == MonsterAttackType.Melee)
