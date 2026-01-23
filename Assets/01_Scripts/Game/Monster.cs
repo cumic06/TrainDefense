@@ -84,6 +84,7 @@ namespace TrainDefense.Game
 
             if (_isShoved) return;
             if (_isStunned) return;
+            
             MoveHandler();
             AttackHandler();
             LookAtTarget();

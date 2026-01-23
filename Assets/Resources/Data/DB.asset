@@ -60,7 +60,7 @@ MonoBehaviour:
       AttackRange: 7
       AttackType: 1
     prefabId: Gnoll
-    rangedProjectilePrefab: {fileID: 0}
+    rangedProjectilePrefab: {fileID: 1036439603542617377, guid: 6a9ea03ac9f950d439de3c0caecb2b4e, type: 3}
   trainDataList:
   - id: 20001
     name: "\uBA54\uC778 \uAE30\uCC28"
