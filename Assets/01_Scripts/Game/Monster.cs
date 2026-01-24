@@ -181,6 +181,8 @@ namespace TrainDefense.Game
 
         private bool IsAttackRange()
         {
+            if (_targetTrain == null) return false;
+
             return Vector3.Distance(transform.position, _targetTrain.transform.position) <= _currentMonsterStatus.AttackRange;
         }
 
