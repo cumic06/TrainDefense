@@ -145,7 +145,7 @@ namespace TrainDefense
             return _upgradeLevels.Keys;
         }
 
-        private const float baseExp = 10f;
+        private const float baseExp = 100f;
         private const float powFactor = 1.8f;
         private const float expMultiplier = 1.05f;
 

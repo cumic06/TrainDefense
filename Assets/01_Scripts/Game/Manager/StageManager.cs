@@ -25,7 +25,7 @@ public class StageManager : Singleton<StageManager>
     private float _currentStageTime;
     private int _currentStageInspectionTimeIndex;
     #endregion
-
+    
     private void Start()
     {
         LoadStageDatas();
