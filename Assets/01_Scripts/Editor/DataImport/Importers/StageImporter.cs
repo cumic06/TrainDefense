@@ -41,7 +41,7 @@ namespace TrainDefense.Editor.DataImport.Importers
             SetPrivateField(t, target, "id", r.id);
             SetPrivateField(t, target, "stageInspectionTime", ParseFloatArray(r.stageInspectionTime));
             SetPrivateField(t, target, "stageEndTime", r.stageEndTime);
-            SetPrivateField(t, target, "spawnDatas", ParseSpawnData(r.spawnMonsters, r.spawnMonstersProbability));
+            SetPrivateField(t, target, "spawnDatas", ParseSpawnData(r.spawnMonsters, r.spawnMonstersProbability, r.spawnMonstersLevel));
         }
 
         private static float[] ParseFloatArray(string csv)
@@ -60,12 +60,13 @@ namespace TrainDefense.Editor.DataImport.Importers
             return list.ToArray();
         }
 
-        private static StageSpawnData[] ParseSpawnData(string idsCsv, string probsCsv)
+        private static StageSpawnData[] ParseSpawnData(string idsCsv, string probsCsv, string levelCsv)
         {
             if (string.IsNullOrEmpty(idsCsv)) return System.Array.Empty<StageSpawnData>();
 
             var idsParts = idsCsv.Split(';');
             var probsParts = string.IsNullOrEmpty(probsCsv) ? System.Array.Empty<string>() : probsCsv.Split(';');
+            var levelParts = string.IsNullOrEmpty(levelCsv) ? System.Array.Empty<string>() : levelCsv.Split(';');
 
             var list = new System.Collections.Generic.List<StageSpawnData>();
 
@@ -82,7 +83,13 @@ namespace TrainDefense.Editor.DataImport.Importers
                         prob = p;
                     }
 
-                    list.Add(new StageSpawnData(id, prob));
+                    int level = 1;
+                    if (i < levelParts.Length && int.TryParse(levelParts[i].Trim(), out int l))
+                    {
+                        level = l;
+                    }
+
+                    list.Add(new StageSpawnData(id, prob, level));
                 }
             }
             return list.ToArray();

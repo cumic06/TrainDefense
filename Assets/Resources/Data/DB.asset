@@ -17,14 +17,14 @@ MonoBehaviour:
     name: Skull
     description: "\uD574\uACE8 \uBCD1\uC0AC\uB2E4."
     monsterStatusData:
-      MaxHp: 60
-      Damage: 20
+      MaxHp: 10
+      Damage: 5
       MoveSpeed: 5
-      AttackDelay: 2
-      DropExpMin: 100
-      DropExpMax: 100
-      DropMoneyMin: 40
-      DropMoneyMax: 40
+      AttackDelay: 1
+      DropExpMin: 10
+      DropExpMax: 10
+      DropMoneyMin: 10
+      DropMoneyMax: 10
       AttackRange: 2
       AttackType: 0
     prefabId: Skull
@@ -33,14 +33,14 @@ MonoBehaviour:
     name: Thief
     description: "\uB3C4\uC801\uC774\uB2E4."
     monsterStatusData:
-      MaxHp: 300
-      Damage: 40
-      MoveSpeed: 2.5
-      AttackDelay: 5
-      DropExpMin: 100
-      DropExpMax: 100
-      DropMoneyMin: 300
-      DropMoneyMax: 300
+      MaxHp: 50
+      Damage: 5
+      MoveSpeed: 8
+      AttackDelay: 0.5
+      DropExpMin: 30
+      DropExpMax: 30
+      DropMoneyMin: 30
+      DropMoneyMax: 30
       AttackRange: 1.5
       AttackType: 0
     prefabId: Thief
@@ -49,15 +49,15 @@ MonoBehaviour:
     name: Gnoll
     description: "\uB180\uC774\uB2E4."
     monsterStatusData:
-      MaxHp: 60
-      Damage: 30
-      MoveSpeed: 4
+      MaxHp: 50
+      Damage: 10
+      MoveSpeed: 3
       AttackDelay: 3
-      DropExpMin: 100
-      DropExpMax: 100
-      DropMoneyMin: 80
-      DropMoneyMax: 80
-      AttackRange: 6
+      DropExpMin: 50
+      DropExpMax: 50
+      DropMoneyMin: 50
+      DropMoneyMax: 50
+      AttackRange: 7
       AttackType: 1
     prefabId: Gnoll
     rangedProjectilePrefab: {fileID: 1036439603542617377, guid: 6a9ea03ac9f950d439de3c0caecb2b4e, type: 3}
@@ -80,7 +80,7 @@ MonoBehaviour:
     prefabId: NormalTurretTrain
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
+      AttackRange: 5
       AttackDamage: 10
       AttackCount: 1
       AttackInterval: 0.25
@@ -96,7 +96,7 @@ MonoBehaviour:
     prefabId: FireTurretTrain
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
+      AttackRange: 5
       AttackDamage: 3
       AttackCount: 1
       AttackInterval: 0.1
@@ -131,7 +131,7 @@ MonoBehaviour:
       AttackRange: 15
       AttackDamage: 50
       AttackCount: 1
-      AttackInterval: 3
+      AttackInterval: 2
       TargetCount: 0
     turretProjectilePrefabId: LaserProjectile
   - id: 30005
@@ -497,11 +497,14 @@ MonoBehaviour:
     stageEndTime: 180
     spawnDatas:
     - MonsterId: 10001
-      Probability: 7
+      Probability: 0
+      SpawnLevel: 1
     - MonsterId: 10002
-      Probability: 1
+      Probability: 0
+      SpawnLevel: 1
     - MonsterId: 10003
-      Probability: 2
+      Probability: 0
+      SpawnLevel: 1
   upgradeDataList:
   - id: 110001
     iconId: 
