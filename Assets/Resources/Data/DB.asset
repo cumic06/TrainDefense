@@ -57,7 +57,7 @@ MonoBehaviour:
       DropExpMax: 50
       DropMoneyMin: 50
       DropMoneyMax: 50
-      AttackRange: 7
+      AttackRange: 6
       AttackType: 1
     prefabId: Gnoll
     rangedProjectilePrefab: {fileID: 1036439603542617377, guid: 6a9ea03ac9f950d439de3c0caecb2b4e, type: 3}
@@ -80,7 +80,7 @@ MonoBehaviour:
     prefabId: NormalTurretTrain
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 5
+      AttackRange: 7
       AttackDamage: 10
       AttackCount: 1
       AttackInterval: 0.25
@@ -96,7 +96,7 @@ MonoBehaviour:
     prefabId: FireTurretTrain
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 5
+      AttackRange: 7
       AttackDamage: 3
       AttackCount: 1
       AttackInterval: 0.1
@@ -493,7 +493,7 @@ MonoBehaviour:
   stageDataList:
   - id: 50001
     stageInspectionTime:
-    - 180
+    - 60
     stageEndTime: 180
   upgradeDataList:
   - id: 110001
