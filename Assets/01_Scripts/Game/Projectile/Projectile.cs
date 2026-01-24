@@ -154,17 +154,16 @@ namespace TrainDefense.Game
                 return;
             }
 
+            if (data == null) return;
+
             // 타겟팅 체크
             if (data != null && data.IsTargeting && _target != null)
             {
-                if (!ReferenceEquals(target, _target))
+                if (target.TargetTransform != _target.TargetTransform)
                 {
                     return;
                 }
             }
-
-            // 데미지 처리
-            if (data == null) return;
 
             if (data.DamageType == DamageType.Tick)
             {

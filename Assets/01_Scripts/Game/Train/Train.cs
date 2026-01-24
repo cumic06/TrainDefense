@@ -26,6 +26,7 @@ namespace TrainDefense.Game
         protected int _currentLevel;
         protected int _currentMaxHp;
 
+        [HideInInspector]
         public bool IsUnDead;
 
         public string Id => id;
@@ -57,17 +58,21 @@ namespace TrainDefense.Game
         public Transform TargetTransform => transform;
         public bool IsActive => !IsDead;
 
-        public void Slow(float slowValue){
+        public void Slow(float slowValue)
+        {
 
         }
-        public void ResetMoveSpeed(){
+        public void ResetMoveSpeed()
+        {
 
         }
-        public void Shove(float shovePower, float shoveDuration){
+        public void Shove(float shovePower, float shoveDuration)
+        {
 
         }
-        public void Stun(float stunDuration){
-            
+        public void Stun(float stunDuration)
+        {
+
         }
 
         public virtual void TakeDamage(int damage)
