@@ -900,7 +900,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 323823270}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1624291279}
+        m_TargetAssemblyTypeName: TrainDefense.Game.UI.PauseUI, Assembly-CSharp
+        m_MethodName: OnClickPauseButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &323823270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17204,7 +17216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1624291278
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17240,7 +17252,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.PauseUI
   backgroundImage: {fileID: 246014802}
   pauseImage: {fileID: 2133722742}
-  pauseButton: {fileID: 323823269}
   uiActiveDelay: 0.125
 --- !u!1 &1643387768
 GameObject:

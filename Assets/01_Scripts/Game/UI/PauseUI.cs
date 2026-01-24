@@ -14,35 +14,12 @@ namespace TrainDefense.Game.UI
         private Image pauseImage;
 
         [SerializeField]
-        private Button pauseButton;
-
-        [SerializeField]
         private float uiActiveDelay;
         #endregion
 
         private bool _isPauseUIActive = false;
 
-        private void Awake()
-        {
-            SubscribeEvents();
-        }
-
-        private void OnDestroy()
-        {
-            UnsubscribeEvents();
-        }
-
-        private void SubscribeEvents()
-        {
-            pauseButton.onClick.AddListener(OnClickPauseButton);
-        }
-
-        private void UnsubscribeEvents()
-        {
-            pauseButton.onClick.RemoveListener(OnClickPauseButton);
-        }
-
-        private void OnClickPauseButton()
+        public void OnClickPauseButton()
         {
             if (_isPauseUIActive)
             {
@@ -58,8 +35,10 @@ namespace TrainDefense.Game.UI
         /// 버튼 눌렀을 때
         /// 일시정지 UI 표시 
         /// </summary>
-        public void ShowPauseUI()
+        private void ShowPauseUI()
         {
+            gameObject.SetActive(true);
+
             TimeManager.Instance.Pause();
 
             pauseImage.gameObject.SetActive(true);
@@ -79,7 +58,7 @@ namespace TrainDefense.Game.UI
         /// 버튼 눌렀을 때
         /// 일시정지 UI 숨기기
         /// </summary>
-        public void HidePauseUI()
+        private void HidePauseUI()
         {
             pauseImage.transform.localScale = Vector3.one;
 
