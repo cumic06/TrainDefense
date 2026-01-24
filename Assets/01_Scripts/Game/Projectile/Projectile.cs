@@ -19,6 +19,7 @@ namespace TrainDefense.Game
         private Coroutine _destroyCoroutine;
         private Dictionary<IProjectileTarget, float> _damageTimers = new();
         private float _age;
+        private bool _isSpawnedTrigger;
 
         #region Enable/Disable
 
@@ -26,6 +27,7 @@ namespace TrainDefense.Game
         {
             _age = 0f;
             _damageTimers.Clear();
+            _isSpawnedTrigger = false;
 
             if (data != null && data.DestroyDelay > 0)
             {
@@ -177,6 +179,7 @@ namespace TrainDefense.Game
             else
             {
                 // 직접 데미지
+                TrySpawnTriggerHandle();
                 target.TakeDamage(_damage);
 
                 if (data.DestroyOnTriggerEnter)
@@ -289,6 +292,15 @@ namespace TrainDefense.Game
         public void ReturnToPool()
         {
             ResourceManager.Instance.Destroy(gameObject);
+        }
+
+        private void TrySpawnTriggerHandle()
+        {
+            if (_isSpawnedTrigger) return;
+            if (data == null || !data.IsSpawnTriggerHandle || data.TriggerHandlePrefab == null) return;
+
+            _isSpawnedTrigger = true;
+            ResourceManager.Instance.Spawn(data.TriggerHandlePrefab, transform.position, Quaternion.identity);
         }
 
         private IEnumerator DestroyCoroutine()

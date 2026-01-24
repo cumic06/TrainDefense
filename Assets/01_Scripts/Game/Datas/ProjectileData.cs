@@ -27,6 +27,17 @@ namespace TrainDefense.Game
         [SerializeField]
         private bool destroyOnTriggerEnter = true;
 
+        [BoxGroup("Trigger Spawn")]
+        [SerializeField]
+        [LabelText("Trigger Handle 생성 여부")]
+        private bool isSpawnTriggerHandle = false;
+
+        [BoxGroup("Trigger Spawn")]
+        [ShowIf("isSpawnTriggerHandle")]
+        [SerializeField]
+        [LabelText("생성할 Trigger Handle 프리팹")]
+        private TriggerHandle triggerHandlePrefab;
+
         [BoxGroup("Scale")]
         [SerializeField]
         private bool scaleByAttackRange = false;
@@ -100,6 +111,8 @@ namespace TrainDefense.Game
         public float Speed => speed;
         public float DestroyDelay => destroyDelay;
         public bool DestroyOnTriggerEnter => destroyOnTriggerEnter;
+        public bool IsSpawnTriggerHandle => isSpawnTriggerHandle;
+        public TriggerHandle TriggerHandlePrefab => triggerHandlePrefab;
         public bool ScaleByAttackRange => scaleByAttackRange;
         public bool IsTargeting => isTargeting;
         public DamageType DamageType => damageType;
