@@ -19,14 +19,13 @@ namespace TrainDefense.Game
         private float spawnRange;
         #endregion
 
-        private MonsterData[] _monsterDatas;
+        private StageSpawnData[] _currentSpawnDatas;
         [ShowInInspector]
         private bool _stopSpawnMonster;
         private readonly List<Monster> _spawnedMonsters = new();
 
         private void Start()
         {
-            LoadMonsterDatas();
             StopSpawnMonster();
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
         }
@@ -42,9 +41,9 @@ namespace TrainDefense.Game
             StartCoroutine(SpawnMonster());
         }
 
-        private void LoadMonsterDatas()
+        public void SetSpawnRule(StageSpawnData[] spawnDatas)
         {
-            _monsterDatas = DatabaseManager.Instance.GetMonsterDatas();
+            _currentSpawnDatas = spawnDatas;
         }
 
         public void StartSpawnMonster()
@@ -68,14 +67,67 @@ namespace TrainDefense.Game
                     yield break;
                 }
 
+                if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
+                {
+                    yield return spawnWait;
+                    continue;
+                }
+
                 Vector3 spawnPos = RandomSpawnPos();
 
-                MonsterData randomMonsterData = _monsterDatas[Random.Range(0, _monsterDatas.Length)];
-                Monster spawnMonster = ResourceManager.Instance.Spawn(randomMonsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
-                spawnMonster.Initialize(randomMonsterData);
-                _spawnedMonsters.Add(spawnMonster);
+                // 가중치 선택 로직
+                StageSpawnData selectedData = SelectMonsterData();
+                if (selectedData != null)
+                {
+                    // MonsterData 가져오기 (DatabaseManager를 통해 ID로 조회)
+                    MonsterData monsterData = DatabaseManager.Instance.GetMonsterData(selectedData.MonsterId);
+                    if (monsterData != null)
+                    {
+                        Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
+                        spawnMonster.Initialize(monsterData);
+                        _spawnedMonsters.Add(spawnMonster);
+                    }
+                }
+
                 yield return spawnWait;
             }
+        }
+
+        private StageSpawnData SelectMonsterData()
+        {
+            if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0) return null;
+
+            bool useProbability = false;
+            float totalProbability = 0f;
+            foreach (var data in _currentSpawnDatas)
+            {
+                if (data.Probability > 0)
+                {
+                    useProbability = true;
+                    totalProbability += data.Probability;
+                }
+            }
+
+            if (!useProbability)
+            {
+                return _currentSpawnDatas[Random.Range(0, _currentSpawnDatas.Length)];
+            }
+
+            float randomPoint = Random.value * totalProbability;
+
+            for (int i = 0; i < _currentSpawnDatas.Length; i++)
+            {
+                if (_currentSpawnDatas[i].Probability > 0)
+                {
+                    if (randomPoint < _currentSpawnDatas[i].Probability)
+                    {
+                        return _currentSpawnDatas[i];
+                    }
+                    randomPoint -= _currentSpawnDatas[i].Probability;
+                }
+            }
+
+            return _currentSpawnDatas[^1]; // fallback
         }
 
         private Vector3 RandomSpawnPos()

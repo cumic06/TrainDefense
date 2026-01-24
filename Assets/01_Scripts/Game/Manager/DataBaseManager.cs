@@ -32,6 +32,11 @@ namespace TrainDefense.Game
 
         public MonsterData[] GetMonsterDatas() => GetDB().MonsterDataList.ToArray();
 
+        public MonsterData GetMonsterData(string id)
+        {
+            return GetMonsterDatas().FirstOrDefault(m => m.Id == id);
+        }
+
         public UpgradeData[] GetUpgradeDatas() => GetDB().UpgradeDataList.ToArray();
         #region TriChoiceDB
 

@@ -25,7 +25,9 @@ public class StageManager : Singleton<StageManager>
     private float _currentStageTime;
     private int _currentStageInspectionTimeIndex;
     #endregion
-    
+
+    public StageData CurrentStageData => _stageDatas[_currentStageIndex];
+
     private void Start()
     {
         LoadStageDatas();
@@ -49,6 +51,8 @@ public class StageManager : Singleton<StageManager>
         _currentStageIndex = 0;
         _currentStageTime = 0;
         _currentStageInspectionTimeIndex = 0;
+
+        MonsterSpawner.Instance.SetSpawnRule(CurrentStageData.SpawnDatas);
     }
 
     private void Update()
@@ -60,11 +64,11 @@ public class StageManager : Singleton<StageManager>
 
     private void StageHandler()
     {
-        if (_currentStageTime >= GetCurrentStageInspectionTime() && _currentStageInspectionTimeIndex < GetCurrentStageData().StageInspectionTime.Length)
+        if (_currentStageTime >= GetCurrentStageInspectionTime() && _currentStageInspectionTimeIndex < CurrentStageData.StageInspectionTime.Length)
         {
             CurrentStageInpectionUp();
         }
-        else if (_currentStageTime >= GetCurrentStageData().StageEndTime)
+        else if (_currentStageTime >= CurrentStageData.StageEndTime)
         {
             StageEnd();
         }
@@ -89,28 +93,24 @@ public class StageManager : Singleton<StageManager>
         GameEventSystem.Publish(new ChangeStageTimeEvent(nextInspectionRemainingtime));
     }
 
-    private StageData GetCurrentStageData()
-    {
-        return _stageDatas[_currentStageIndex];
-    }
 
     private float GetCurrentStageInspectionTime()
     {
-        if (_currentStageInspectionTimeIndex >= GetCurrentStageData().StageInspectionTime.Length)
+        if (_currentStageInspectionTimeIndex >= CurrentStageData.StageInspectionTime.Length)
         {
-            return GetCurrentStageData().StageInspectionTime[^1];
+            return CurrentStageData.StageInspectionTime[^1];
         }
 
-        return GetCurrentStageData().StageInspectionTime[_currentStageInspectionTimeIndex];
+        return CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex];
     }
 
     private float GetNextInspectionRemainingTime(GetNextInspectionRemainingTimeEvent getNextInspectionRemainingTimeEvent)
     {
-        if (_currentStageInspectionTimeIndex >= GetCurrentStageData().StageInspectionTime.Length)
+        if (_currentStageInspectionTimeIndex >= CurrentStageData.StageInspectionTime.Length)
         {
-            return GetCurrentStageData().StageInspectionTime[^1] - _currentStageTime;
+            return CurrentStageData.StageInspectionTime[^1] - _currentStageTime;
         }
-        return GetCurrentStageData().StageInspectionTime[_currentStageInspectionTimeIndex] - _currentStageTime;
+        return CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex] - _currentStageTime;
     }
 
     #region Scaling
@@ -121,9 +121,9 @@ public class StageManager : Singleton<StageManager>
     {
         // 0번째 역(시작)은 1.0 (기본값)
         if (_currentStageInspectionTimeIndex <= 0) return 1.0f;
-        
+
         // TODO: 구체적인 수식 적용 필요
-        return 1.0f + (_currentStageInspectionTimeIndex * hpScale); 
+        return 1.0f + (_currentStageInspectionTimeIndex * hpScale);
     }
 
     /// <summary>
