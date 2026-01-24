@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using TrainDefense.Game;
 using TrainDefense.Game.Datas;
+using TrainDefense;
 
 public class StageManager : Singleton<StageManager>
 {
@@ -34,11 +36,13 @@ public class StageManager : Singleton<StageManager>
         ResetCurrentStageInfo();
 
         GameEventSystem.Subscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
+        GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
     }
 
     private void OnDestroy()
     {
         GameEventSystem.Unsubscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
+        GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
     }
 
     private void LoadStageDatas()
@@ -52,7 +56,31 @@ public class StageManager : Singleton<StageManager>
         _currentStageTime = 0;
         _currentStageInspectionTimeIndex = 0;
 
-        MonsterSpawner.Instance.SetSpawnRule(CurrentStageData.SpawnDatas);
+        UpdateSpawnRules();
+    }
+
+    private void OnLevelUp(LevelUpEvent levelUpEvent)
+    {
+        UpdateSpawnRules();
+    }
+
+    private void UpdateSpawnRules()
+    {
+        if (_stageDatas == null || _stageDatas.Length == 0) return;
+
+        var allSpawnDatas = CurrentStageData.SpawnDatas;
+        var filteredList = new List<StageSpawnData>();
+        int userLevel = UserDataManager.Instance.CurrentLevel;
+
+        foreach (var data in allSpawnDatas)
+        {
+            if (userLevel >= data.SpawnLevel)
+            {
+                filteredList.Add(data);
+            }
+        }
+
+        MonsterSpawner.Instance.SetSpawnRule(filteredList.ToArray());
     }
 
     private void Update()

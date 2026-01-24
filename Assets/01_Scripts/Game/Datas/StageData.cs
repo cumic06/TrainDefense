@@ -32,11 +32,13 @@ namespace TrainDefense.Game.Datas
     {
         public string MonsterId;
         public float Probability;
+        public int SpawnLevel;
 
-        public StageSpawnData(string monsterId, float probability)
+        public StageSpawnData(string monsterId, float probability, int spawnLevel)
         {
             MonsterId = monsterId;
             Probability = probability;
+            SpawnLevel = spawnLevel;
         }
     }
 }

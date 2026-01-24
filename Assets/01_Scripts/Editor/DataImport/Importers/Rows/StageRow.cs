@@ -10,6 +10,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
         public float stageEndTime;
         public string spawnMonsters;
         public string spawnMonstersProbability;
+        public string spawnMonstersLevel;
 
         public void FromExcelRow(IRow row)
         {
@@ -18,6 +19,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
             float.TryParse(row.GetCell(2)?.ToString(), out stageEndTime);
             spawnMonsters = row.GetCell(3)?.ToString();
             spawnMonstersProbability = row.GetCell(4)?.ToString();
+            spawnMonstersLevel = row.GetCell(5)?.ToString();
         }
 
         public void ToExcelRow(IRow row)
@@ -27,6 +29,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
             Set(row, 2, stageEndTime);
             Set(row, 3, spawnMonsters);
             Set(row, 4, spawnMonstersProbability);
+            Set(row, 5, spawnMonstersLevel);
         }
 
         private static void Set(IRow row, int idx, object value)
