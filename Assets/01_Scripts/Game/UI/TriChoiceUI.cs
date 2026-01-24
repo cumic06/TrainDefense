@@ -18,6 +18,8 @@ namespace TrainDefense.Game.UI
 
         [SerializeField]
         private float uiActiveDelay;
+        [SerializeField]
+        private ParticleSystem coinParticleSystem;
         #endregion
 
         private int _choiceLeftCount;
@@ -58,6 +60,12 @@ namespace TrainDefense.Game.UI
                 backgroundImage.SetActive(false);
                 Debug.LogWarning("No available choices found");
                 return;
+            }
+
+            if (coinParticleSystem != null)
+            {
+                coinParticleSystem.gameObject.SetActive(true);
+                coinParticleSystem.Play();
             }
 
             // 사용 가능한 선택지 수만큼만 UI 표시
@@ -118,7 +126,6 @@ namespace TrainDefense.Game.UI
                     {
                         choiceSelectUI.transform.localScale = Vector3.one;
                     }).SetUpdate(true);
-
                 }
                 else
                 {
@@ -152,6 +159,11 @@ namespace TrainDefense.Game.UI
             {
                 OnInspectionEnter(_choiceLeftCount);
                 return;
+            }
+
+            if (coinParticleSystem != null)
+            {
+                coinParticleSystem.gameObject.SetActive(false);
             }
 
             backgroundImage.SetActive(false);
