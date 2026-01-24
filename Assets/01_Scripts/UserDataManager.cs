@@ -151,6 +151,8 @@ namespace TrainDefense
 
         public float GetNextLevelUpExp()
         {
+            if (_currentLevel == 1) return baseExp;
+
             return baseExp * Mathf.Pow(_currentLevel - 1, powFactor) * Mathf.Pow(expMultiplier, _currentLevel - 1);
         }
         #endregion
