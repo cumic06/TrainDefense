@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2362905985618566758}
   - component: {fileID: 2431252561190381474}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,9 +155,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: ColdAirRangeTrain
       objectReference: {fileID: 0}
+    - target: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3716768962924445455, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       propertyPath: m_Size.y
       value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6735068727782679935, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -188,6 +196,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.RangeTrain
   id: 40002
+  explosionRadius: 5
+  explosionForce: 10
   IsUnDead: 0
   isExplosionProjectile: 0
 --- !u!4 &5615039991222222496 stripped

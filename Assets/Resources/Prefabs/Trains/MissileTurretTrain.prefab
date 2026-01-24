@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4742846827080450473}
   - component: {fileID: 6561611825348552956}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   m_Component:
   - component: {fileID: 227635202341469454}
   - component: {fileID: 6262771784466595776}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretHead (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7631871212096712288}
   - component: {fileID: 7957110902449995139}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretHead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -284,7 +284,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7171937046627540702}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -367,6 +367,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MissileTurretTrain
       objectReference: {fileID: 0}
+    - target: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3716768962924445455, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       propertyPath: m_Size.x
       value: 3
@@ -374,6 +378,10 @@ PrefabInstance:
     - target: {fileID: 5579549060489529598, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       propertyPath: m_Constraints
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6735068727782679935, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4523707312484850496, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
@@ -405,6 +413,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.TurretTrain
   id: 30003
+  explosionRadius: 5
+  explosionForce: 10
   IsUnDead: 0
   turretProjectileSpawnPoints:
   - {fileID: 227635202341469454}
