@@ -25,7 +25,7 @@ MonoBehaviour:
       DropExpMax: 20
       DropMoneyMin: 10
       DropMoneyMax: 20
-      AttackRange: 1.5
+      AttackRange: 2
       AttackType: 0
     prefabId: Skull
     rangedProjectilePrefab: {fileID: 0}
@@ -41,7 +41,7 @@ MonoBehaviour:
       DropExpMax: 60
       DropMoneyMin: 50
       DropMoneyMax: 70
-      AttackRange: 1
+      AttackRange: 1.5
       AttackType: 0
     prefabId: Thief
     rangedProjectilePrefab: {fileID: 0}

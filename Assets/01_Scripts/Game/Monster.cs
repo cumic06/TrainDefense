@@ -75,6 +75,18 @@ namespace TrainDefense.Game
         private void InitStats()
         {
             _currentMonsterStatus = _monsterData.MonsterStatusData;
+
+            if (StageManager.Instance != null)
+            {
+                float hpScale = StageManager.Instance.GetHPScale();
+                float attackScale = StageManager.Instance.GetAttackScale();
+
+                _currentMonsterStatus.MaxHp = Mathf.RoundToInt(_currentMonsterStatus.MaxHp * hpScale);
+                _currentMonsterStatus.Damage = Mathf.RoundToInt(_currentMonsterStatus.Damage * attackScale);
+
+                Debug.Log($"[Monster] Init Stats Scaled - HP: {_monsterData.MonsterStatusData.MaxHp} -> {_currentMonsterStatus.MaxHp} (x{hpScale}), DMG: {_monsterData.MonsterStatusData.Damage} -> {_currentMonsterStatus.Damage} (x{attackScale})");
+            }
+
             _currentHp = _currentMonsterStatus.MaxHp;
         }
 
@@ -305,7 +317,22 @@ namespace TrainDefense.Game
 
         private void DropMoney()
         {
-            int dropMoney = Random.Range(_currentMonsterStatus.DropMoneyMin, _currentMonsterStatus.DropMoneyMax);
+            float goldScale = 1.0f;
+            if (StageManager.Instance != null)
+            {
+                goldScale = StageManager.Instance.GetGoldScale();
+            }
+
+            int dropMoneyMin = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMin * goldScale);
+            int dropMoneyMax = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMax * goldScale);
+
+            int dropMoney = Random.Range(dropMoneyMin, dropMoneyMax);
+
+            if (goldScale > 1.0f)
+            {
+                Debug.Log($"[Monster] Drop Money Scaled - {_currentMonsterStatus.DropMoneyMin}~{_currentMonsterStatus.DropMoneyMax} -> {dropMoneyMin}~{dropMoneyMax} (x{goldScale})");
+            }
+
             ResourceManager.Instance.Spawn(Resources.Load<GameObject>("Prefabs/Money"), transform.position);
 
             if (UserDataManager.Instance != null)
