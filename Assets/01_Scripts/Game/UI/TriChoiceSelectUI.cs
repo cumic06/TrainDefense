@@ -18,7 +18,7 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private Image iconImage;
         [SerializeField]
-        private TextMeshProUGUI newText;
+        private Image newImage;
         #endregion
 
         private Button _selectButton;
@@ -157,7 +157,7 @@ namespace TrainDefense.Game.UI
 
         public void SetNewText(bool isNew)
         {
-            newText.gameObject.SetActive(isNew);
+            newImage.gameObject.SetActive(isNew);
         }
 
         #region Pointer Events
