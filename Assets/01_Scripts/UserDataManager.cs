@@ -10,7 +10,7 @@ namespace TrainDefense
     public class UserDataManager : Singleton<UserDataManager>
     {
         private Dictionary<string, int> _triChoiceData = new();
-        
+
         [ShowInInspector]
         private Dictionary<string, int> _upgradeLevels = new();
 
@@ -151,6 +151,7 @@ namespace TrainDefense
 
         public float GetNextLevelUpExp()
         {
+            if (_currentLevel == 1) return baseExp;
             return baseExp * Mathf.Pow(_currentLevel, powFactor) * Mathf.Pow(expMultiplier, _currentLevel);
         }
         #endregion
