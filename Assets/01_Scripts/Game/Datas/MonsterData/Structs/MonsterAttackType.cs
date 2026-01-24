@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace TrainDefense
 {
     public enum MonsterAttackType

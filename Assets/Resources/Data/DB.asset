@@ -57,7 +57,7 @@ MonoBehaviour:
       DropExpMax: 50
       DropMoneyMin: 50
       DropMoneyMax: 50
-      AttackRange: 6
+      AttackRange: 7
       AttackType: 1
     prefabId: Gnoll
     rangedProjectilePrefab: {fileID: 1036439603542617377, guid: 6a9ea03ac9f950d439de3c0caecb2b4e, type: 3}

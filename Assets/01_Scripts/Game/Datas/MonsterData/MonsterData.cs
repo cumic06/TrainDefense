@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using Sirenix.OdinInspector;
-using TrainDefense;
 
 namespace TrainDefense.Game.Datas
 {
