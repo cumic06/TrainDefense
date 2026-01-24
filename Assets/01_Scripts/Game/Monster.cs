@@ -96,7 +96,7 @@ namespace TrainDefense.Game
 
             if (_isShoved) return;
             if (_isStunned) return;
-            
+
             MoveHandler();
             AttackHandler();
             LookAtTarget();
@@ -111,7 +111,7 @@ namespace TrainDefense.Game
 
         private void MoveHandler()
         {
-            if (Vector3.Distance(transform.position, _targetTrain.transform.position) > _currentMonsterStatus.AttackRange && _currentMonsterStatus.AttackDelay > 0)
+            if (!IsAttackRange())
             {
                 Move();
             }
@@ -120,7 +120,6 @@ namespace TrainDefense.Game
         private void Move()
         {
             transform.Translate(MoveDirection().normalized * Time.deltaTime * _currentMonsterStatus.MoveSpeed);
-            _modelAnimator.CrossFade("Idle", 0);
         }
 
         private Vector3 MoveDirection()
@@ -138,9 +137,9 @@ namespace TrainDefense.Game
 
         private void AttackHandler()
         {
-            if (_currentMonsterStatus.AttackDelay <= 0)
+            if (IsAttackDelay())
             {
-                if (Vector3.Distance(transform.position, _targetTrain.transform.position) <= _currentMonsterStatus.AttackRange)
+                if (IsAttackRange())
                 {
                     Attack();
                 }
@@ -170,6 +169,16 @@ namespace TrainDefense.Game
             {
                 _targetTrain.TakeDamage(_currentMonsterStatus.Damage);
             }
+        }
+
+        private bool IsAttackRange()
+        {
+            return Vector3.Distance(transform.position, _targetTrain.transform.position) <= _currentMonsterStatus.AttackRange;
+        }
+
+        private bool IsAttackDelay()
+        {
+            return _currentMonsterStatus.AttackDelay <= 0;
         }
 
         #region Slow N Reset Move Speed
@@ -309,6 +318,7 @@ namespace TrainDefense.Game
             ResourceManager.Instance.Destroy(gameObject);
         }
 
+        #region Result
         private void DropExp()
         {
             int dropExp = Random.Range(_currentMonsterStatus.DropExpMin, _currentMonsterStatus.DropExpMax);
@@ -342,6 +352,7 @@ namespace TrainDefense.Game
                 GameEventSystem.Publish(new ChangeCoinUIEvent(beforeCoin, afterCoin));
             }
         }
+        #endregion
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
