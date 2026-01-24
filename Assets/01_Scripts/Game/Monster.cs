@@ -32,6 +32,7 @@ namespace TrainDefense.Game
 
         protected Rigidbody2D _rigidbody2D;
         protected Animator _modelAnimator;
+        protected SpriteRenderer _modelSpriteRenderer;
 
         protected Coroutine _slowCoroutine;
         protected Coroutine _resetMoveSpeedCoroutine;
@@ -48,6 +49,7 @@ namespace TrainDefense.Game
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _startScale = model.transform.localScale;
             _modelAnimator = model.GetComponentInChildren<Animator>();
+            _modelSpriteRenderer = model.GetComponent<SpriteRenderer>();
         }
 
         public void Initialize(MonsterData monsterData)
@@ -92,6 +94,7 @@ namespace TrainDefense.Game
 
         private void FixedUpdate()
         {
+            OrderSprite();
             DetectTrain();
 
             if (_isShoved) return;
@@ -127,6 +130,11 @@ namespace TrainDefense.Game
             if (_targetTrain == null) return Vector3.zero;
 
             return _targetTrain.transform.position - transform.position;
+        }
+
+        private void OrderSprite()
+        {
+            _modelSpriteRenderer.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
         }
 
         private void LookAtTarget()
