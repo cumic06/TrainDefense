@@ -69,7 +69,16 @@ namespace TrainDefense.Game.UI
                     {
                         // 업그레이드 데이터 타입에 따라 스탯 값들을 추출
                         object[] formatArgs = GetUpgradeFormatArgs(selectedUpgrade);
-                        descriptionText.text = string.Format(choiceUIInfo.Description, formatArgs);
+                        try
+                        {
+                            descriptionText.text = string.Format(choiceUIInfo.Description, formatArgs);
+                        }
+                        catch (System.FormatException)
+                        {
+                            // 포맷 에러 발생 시 원본 텍스트 표시
+                            descriptionText.text = choiceUIInfo.Description;
+                            Debug.LogWarning($"[TriChoiceSelectUI] Format Error: {choiceUIInfo.Description}");
+                        }
                     }
                     else
                     {
