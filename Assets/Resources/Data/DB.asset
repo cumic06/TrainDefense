@@ -92,7 +92,7 @@ MonoBehaviour:
       AttackRange: 5
       AttackType: 1
     prefabId: Shark
-    rangedProjectilePrefab: {fileID: 0}
+    rangedProjectilePrefab: {fileID: 7851231680386804850, guid: ddc4306fa2d8ff6478e229d8bd8e7ce4, type: 3}
   - id: 10006
     name: Turtle
     description: "\uAC70\uBD81\uC774\uB2E4"
@@ -252,7 +252,7 @@ MonoBehaviour:
       AttackRange: 5
       AttackType: 1
     prefabId: GoblinSorcerer
-    rangedProjectilePrefab: {fileID: 0}
+    rangedProjectilePrefab: {fileID: 8711250047576817517, guid: b3a9d71d931c9ce42bea0c9077e8b8d3, type: 3}
   - id: 10016
     name: GiantGoblin
     description: "\uACE0\uBE14\uB9B0 \uAC70\uC778"
