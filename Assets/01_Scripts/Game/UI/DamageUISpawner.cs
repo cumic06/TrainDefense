@@ -9,7 +9,20 @@ namespace TrainDefense.Game.UI
         #region Field
         [SerializeField]
         private DamageUI damageUI;
+
+        [SerializeField]
+        private RectTransform canvasRect;
+
+        private Camera _mainCamera;
+        private Camera _uiCamera;
         #endregion
+
+        private void Awake()
+        {
+            _mainCamera = Camera.main;
+            _uiCamera = canvasRect.GetComponentInParent<Canvas>().worldCamera;
+            if (_uiCamera == null) _uiCamera = _mainCamera;
+        }
 
         private void Start()
         {
@@ -26,7 +39,11 @@ namespace TrainDefense.Game.UI
             if (hitEvent.Damageable is Train train) return;
 
             DamageUI spawnDamageUI = ResourceManager.Instance.Spawn(damageUI, parent: transform);
-            spawnDamageUI.SetPosition(Camera.main.WorldToScreenPoint(hitEvent.Position));
+
+            Vector2 screenPoint = _mainCamera.WorldToScreenPoint(hitEvent.Position);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, _uiCamera, out Vector2 localPoint);
+
+            spawnDamageUI.SetLocalPosition(localPoint);
             spawnDamageUI.SetDamage(hitEvent.Damage);
         }
     }

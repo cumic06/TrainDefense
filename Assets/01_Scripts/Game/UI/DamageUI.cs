@@ -49,6 +49,12 @@ namespace TrainDefense.Game.UI
             MoveToTargetPosition();
         }
 
+        public void SetLocalPosition(Vector2 localPosition)
+        {
+            _rectTransform.anchoredPosition = localPosition;
+            MoveToTargetPosition();
+        }
+
         private void MoveToTargetPosition()
         {
             _rectTransform.DOKill();
