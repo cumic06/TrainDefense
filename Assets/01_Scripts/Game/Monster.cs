@@ -31,7 +31,7 @@ namespace TrainDefense.Game
         protected Train _targetTrain;
 
         protected Rigidbody2D _rigidbody2D;
-        protected Animator _modelAnimator;
+        protected MonsterAnimator _modelAnimator;
         protected SpriteRenderer _modelSpriteRenderer;
 
         protected Coroutine _slowCoroutine;
@@ -48,7 +48,15 @@ namespace TrainDefense.Game
         {
             _rigidbody2D = GetComponent<Rigidbody2D>();
             _startScale = model.transform.localScale;
-            _modelAnimator = model.GetComponentInChildren<Animator>();
+            _modelAnimator = model.GetComponentInChildren<MonsterAnimator>();
+            if (_modelAnimator == null)
+            {
+                var anim = model.GetComponentInChildren<Animator>();
+                if (anim != null)
+                {
+                    _modelAnimator = anim.gameObject.AddComponent<MonsterAnimator>();
+                }
+            }
             _modelSpriteRenderer = model.GetComponent<SpriteRenderer>();
         }
 
@@ -63,6 +71,11 @@ namespace TrainDefense.Game
         {
             _isDead = false;
             _targetTrain = null;
+
+            if (_modelAnimator != null)
+            {
+                _modelAnimator.OnAttackHit += OnAttackHit;
+            }
         }
 
         private void OnDisable()
@@ -70,6 +83,11 @@ namespace TrainDefense.Game
             if (_slowCoroutine != null)
             {
                 StopCoroutine(_slowCoroutine);
+            }
+
+            if (_modelAnimator != null)
+            {
+                _modelAnimator.OnAttackHit -= OnAttackHit;
             }
         }
         #endregion
@@ -164,7 +182,15 @@ namespace TrainDefense.Game
         {
             if (_targetTrain == null) return;
 
-            _modelAnimator.CrossFade("Attack", 0);
+            if (_modelAnimator != null)
+            {
+                _modelAnimator.Attack();
+            }
+        }
+
+        private void OnAttackHit()
+        {
+            if (_targetTrain == null) return;
 
             if (_currentMonsterStatus.AttackType == MonsterAttackType.Ranged)
             {
