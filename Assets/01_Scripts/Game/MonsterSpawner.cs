@@ -17,7 +17,20 @@ namespace TrainDefense.Game
         [SerializeField]
         [BoxGroup("SpawnSetting")]
         private float spawnRange;
+        [SerializeField]
+        [BoxGroup("SpawnSetting")]
+        private SpawnMode spawnMode = SpawnMode.CameraBased;
+        [SerializeField]
+        [BoxGroup("SpawnSetting")]
+        [ShowIf("spawnMode", SpawnMode.CustomArea)]
+        private List<Vector3> customSpawnPositions;
         #endregion
+
+        public enum SpawnMode
+        {
+            CameraBased,
+            CustomArea
+        }
 
         private StageSpawnData[] _currentSpawnDatas;
         [ShowInInspector]
@@ -132,37 +145,77 @@ namespace TrainDefense.Game
 
         private Vector3 RandomSpawnPos()
         {
-            Camera camera = Camera.main;
-
-            Vector3 bottomLeft = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.transform.position.z));
-            Vector3 topRight = camera.ViewportToWorldPoint(new Vector3(1, 1, camera.transform.position.z));
-
-            float minX = bottomLeft.x;
-            float maxX = topRight.x;
-            float minY = bottomLeft.y;
-            float maxY = topRight.y;
-
-            int randomDirection = Random.Range(0, 4);
             Vector3 spawnPos = Vector3.zero;
-
-            switch (randomDirection)
+            if (spawnMode == SpawnMode.CustomArea)
             {
-                case 0:
-                    spawnPos = new(Random.Range(minX, maxX), maxY + spawnRange, 0);
-                    break;
-                case 1:
-                    spawnPos = new(Random.Range(minX, maxX), minY - spawnRange, 0);
-                    break;
-                case 2:
-                    spawnPos = new(minX - spawnRange, Random.Range(minY, maxY), 0);
-                    break;
-                case 3:
-                    spawnPos = new(maxY + spawnRange, Random.Range(minX, maxX), 0);
-                    break;
+                if (TrainManager.Instance != null && customSpawnPositions != null && customSpawnPositions.Count > 0)
+                {
+                    Train mainTrain = TrainManager.Instance.MainTrain;
+                    if (mainTrain != null)
+                    {
+                        Vector3 selectedPos = customSpawnPositions[Random.Range(0, customSpawnPositions.Count)];
+                        spawnPos = mainTrain.transform.position + selectedPos;
+                    }
+                }
+
+                // Fallback to CameraBased if setup is missing
+            }
+            else
+            {
+                Camera camera = Camera.main;
+
+                Vector3 bottomLeft = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.transform.position.z));
+                Vector3 topRight = camera.ViewportToWorldPoint(new Vector3(1, 1, camera.transform.position.z));
+
+                float minX = bottomLeft.x;
+                float maxX = topRight.x;
+                float minY = bottomLeft.y;
+                float maxY = topRight.y;
+
+                int randomDirection = Random.Range(0, 4);
+
+                switch (randomDirection)
+                {
+                    case 0:
+                        spawnPos = new(Random.Range(minX, maxX), maxY + spawnRange, 0);
+                        break;
+                    case 1:
+                        spawnPos = new(Random.Range(minX, maxX), minY - spawnRange, 0);
+                        break;
+                    case 2:
+                        spawnPos = new(minX - spawnRange, Random.Range(minY, maxY), 0);
+                        break;
+                    case 3:
+                        spawnPos = new(maxY + spawnRange, Random.Range(minX, maxX), 0);
+                        break;
+                }
+                return spawnPos;
             }
 
             return spawnPos;
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            if (spawnMode == SpawnMode.CustomArea && customSpawnPositions != null)
+            {
+                Gizmos.color = Color.cyan;
+
+                // Draw relative to zero if not playing, or relative to MainTrain if playing
+                Vector3 basePos = Vector3.zero;
+                if (Application.isPlaying && TrainManager.Instance != null && TrainManager.Instance.MainTrain != null)
+                {
+                    basePos = TrainManager.Instance.MainTrain.transform.position;
+                }
+
+                foreach (var pos in customSpawnPositions)
+                {
+                    Gizmos.DrawWireSphere(basePos + pos, 0.5f);
+                }
+            }
+        }
+#endif
 
         public void RemoveMonster(Monster monster)
         {
