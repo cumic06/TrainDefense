@@ -27082,7 +27082,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MonsterSpawner
   dontDestroyOnLoad: 0
-  spawnInterval: 1.5
+  spawnInterval: 20
   spawnRange: 2
 --- !u!1 &1735321058
 GameObject:

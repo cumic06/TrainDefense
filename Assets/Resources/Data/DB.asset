@@ -18,7 +18,7 @@ MonoBehaviour:
     description: "\uD574\uACE8 \uBCD1\uC0AC\uB2E4."
     monsterStatusData:
       MaxHp: 10
-      Damage: 5
+      Damage: 10
       MoveSpeed: 5
       AttackDelay: 1
       DropExpMin: 10
@@ -33,8 +33,8 @@ MonoBehaviour:
     name: Thief
     description: "\uB3C4\uC801\uC774\uB2E4."
     monsterStatusData:
-      MaxHp: 50
-      Damage: 5
+      MaxHp: 35
+      Damage: 10
       MoveSpeed: 8
       AttackDelay: 0.5
       DropExpMin: 30
@@ -50,17 +50,225 @@ MonoBehaviour:
     description: "\uB180\uC774\uB2E4."
     monsterStatusData:
       MaxHp: 50
-      Damage: 10
+      Damage: 20
       MoveSpeed: 3
       AttackDelay: 3
       DropExpMin: 50
       DropExpMax: 50
       DropMoneyMin: 50
       DropMoneyMax: 50
-      AttackRange: 7
+      AttackRange: 6
       AttackType: 1
     prefabId: Gnoll
     rangedProjectilePrefab: {fileID: 1036439603542617377, guid: 6a9ea03ac9f950d439de3c0caecb2b4e, type: 3}
+  - id: 10004
+    name: Hammershark
+    description: "\uADC0\uC0C1\uC5B4\uB2E4."
+    monsterStatusData:
+      MaxHp: 60
+      Damage: 20
+      MoveSpeed: 4
+      AttackDelay: 2
+      DropExpMin: 50
+      DropExpMax: 50
+      DropMoneyMin: 50
+      DropMoneyMax: 50
+      AttackRange: 2
+      AttackType: 0
+    prefabId: Hammershark
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10005
+    name: Shark
+    description: "\uC0C1\uC5B4\uB2E4 "
+    monsterStatusData:
+      MaxHp: 40
+      Damage: 20
+      MoveSpeed: 3
+      AttackDelay: 3.5
+      DropExpMin: 70
+      DropExpMax: 70
+      DropMoneyMin: 100
+      DropMoneyMax: 100
+      AttackRange: 5
+      AttackType: 1
+    prefabId: Shark
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10006
+    name: Turtle
+    description: "\uAC70\uBD81\uC774\uB2E4"
+    monsterStatusData:
+      MaxHp: 200
+      Damage: 30
+      MoveSpeed: 2.2
+      AttackDelay: 4
+      DropExpMin: 150
+      DropExpMax: 150
+      DropMoneyMin: 300
+      DropMoneyMax: 300
+      AttackRange: 2
+      AttackType: 0
+    prefabId: Turtle
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10007
+    name: Snake
+    description: "\uBC40\uC774\uB2E4"
+    monsterStatusData:
+      MaxHp: 40
+      Damage: 10
+      MoveSpeed: 5
+      AttackDelay: 2
+      DropExpMin: 30
+      DropExpMax: 30
+      DropMoneyMin: 30
+      DropMoneyMax: 30
+      AttackRange: 3
+      AttackType: 0
+    prefabId: Snake
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10008
+    name: Panda
+    description: "\uD310\uB2E4\uB2E4"
+    monsterStatusData:
+      MaxHp: 70
+      Damage: 20
+      MoveSpeed: 6.4
+      AttackDelay: 1
+      DropExpMin: 70
+      DropExpMax: 70
+      DropMoneyMin: 80
+      DropMoneyMax: 80
+      AttackRange: 1.5
+      AttackType: 0
+    prefabId: Panda
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10009
+    name: Lizard
+    description: "\uB3C4\uB9C8\uBC40\uC774\uB2E4"
+    monsterStatusData:
+      MaxHp: 100
+      Damage: 30
+      MoveSpeed: 4.3
+      AttackDelay: 1
+      DropExpMin: 100
+      DropExpMax: 100
+      DropMoneyMin: 100
+      DropMoneyMax: 100
+      AttackRange: 1.5
+      AttackType: 0
+    prefabId: Lizard
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10010
+    name: Bear
+    description: "\uACF0\uC774\uB2E4"
+    monsterStatusData:
+      MaxHp: 150
+      Damage: 40
+      MoveSpeed: 7
+      AttackDelay: 4
+      DropExpMin: 200
+      DropExpMax: 200
+      DropMoneyMin: 300
+      DropMoneyMax: 300
+      AttackRange: 2
+      AttackType: 0
+    prefabId: Bear
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10011
+    name: Dwarf
+    description: "\uB09C\uC7C1\uC774\uB2E4"
+    monsterStatusData:
+      MaxHp: 30
+      Damage: 10
+      MoveSpeed: 7
+      AttackDelay: 0.5
+      DropExpMin: 30
+      DropExpMax: 30
+      DropMoneyMin: 30
+      DropMoneyMax: 30
+      AttackRange: 2
+      AttackType: 0
+    prefabId: Dwarf
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10012
+    name: Spider
+    description: "\uAC70\uBBF8\uB2E4"
+    monsterStatusData:
+      MaxHp: 100
+      Damage: 30
+      MoveSpeed: 5
+      AttackDelay: 3
+      DropExpMin: 80
+      DropExpMax: 80
+      DropMoneyMin: 80
+      DropMoneyMax: 80
+      AttackRange: 3
+      AttackType: 0
+    prefabId: Spider
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10013
+    name: Minotaur
+    description: "\uBBF8\uB178\uD0C0\uC6B0\uB85C\uC2A4\uB2E4"
+    monsterStatusData:
+      MaxHp: 250
+      Damage: 40
+      MoveSpeed: 5
+      AttackDelay: 4
+      DropExpMin: 150
+      DropExpMax: 150
+      DropMoneyMin: 150
+      DropMoneyMax: 150
+      AttackRange: 2
+      AttackType: 0
+    prefabId: Minotaur
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10014
+    name: GoblinSpear
+    description: "\uACE0\uBE14\uB9B0 \uCC3D\uBCD1\uC774\uB2E4"
+    monsterStatusData:
+      MaxHp: 60
+      Damage: 20
+      MoveSpeed: 5
+      AttackDelay: 2
+      DropExpMin: 40
+      DropExpMax: 40
+      DropMoneyMin: 40
+      DropMoneyMax: 40
+      AttackRange: 2
+      AttackType: 0
+    prefabId: GoblinSpear
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10015
+    name: GoblinSorcerer
+    description: "\uACE0\uBE14\uB9B0 \uC8FC\uC220\uC0AC\uB2E4"
+    monsterStatusData:
+      MaxHp: 60
+      Damage: 30
+      MoveSpeed: 4
+      AttackDelay: 3
+      DropExpMin: 60
+      DropExpMax: 60
+      DropMoneyMin: 80
+      DropMoneyMax: 80
+      AttackRange: 5
+      AttackType: 1
+    prefabId: GoblinSorcerer
+    rangedProjectilePrefab: {fileID: 0}
+  - id: 10016
+    name: GiantGoblin
+    description: "\uACE0\uBE14\uB9B0 \uAC70\uC778"
+    monsterStatusData:
+      MaxHp: 300
+      Damage: 40
+      MoveSpeed: 2.5
+      AttackDelay: 4
+      DropExpMin: 150
+      DropExpMax: 150
+      DropMoneyMin: 300
+      DropMoneyMax: 300
+      AttackRange: 2
+      AttackType: 0
+    prefabId: GiantGoblin
+    rangedProjectilePrefab: {fileID: 0}
   trainDataList:
   - id: 20001
     name: "\uBA54\uC778 \uAE30\uCC28"
@@ -496,15 +704,9 @@ MonoBehaviour:
     - 180
     stageEndTime: 180
     spawnDatas:
-    - MonsterId: 10001
-      Probability: 0
+    - MonsterId: 10016
+      Probability: 1
       SpawnLevel: 1
-    - MonsterId: 10002
-      Probability: 0
-      SpawnLevel: 4
-    - MonsterId: 10003
-      Probability: 0
-      SpawnLevel: 4
   upgradeDataList:
   - id: 110001
     iconId: 
