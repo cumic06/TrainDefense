@@ -64,6 +64,11 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private TriChoiceDB triChoiceDB = new();
 
+        [TabGroup("Sound Database")]
+        [InfoBox("사운드 데이터베이스")]
+        [SerializeField]
+        private SoundDB soundDB;
+
         #endregion
 
         #region Public Properties
@@ -78,6 +83,7 @@ namespace TrainDefense.Game.Datas
         public IReadOnlyList<StageData> StageDataList => stageDataList;
         public IReadOnlyList<UpgradeData> UpgradeDataList => upgradeDataList;
         public TriChoiceDB TriChoiceDB => triChoiceDB;
+        public SoundDB SoundDB => soundDB;
         #endregion
     }
 }

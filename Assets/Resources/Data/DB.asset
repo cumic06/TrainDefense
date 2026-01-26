@@ -849,6 +849,7 @@ MonoBehaviour:
         rid: 439508238012514414
       Weight: 0
       Tier: 0
+  soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   references:
     version: 2
     RefIds:
