@@ -27084,6 +27084,12 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   spawnInterval: 2
   spawnRange: 2
+  spawnMode: 1
+  customSpawnAreas:
+  - Offset: {x: 0, y: 5}
+    Size: {x: 30, y: 4}
+  - Offset: {x: 0, y: -5}
+    Size: {x: 30, y: 4}
 --- !u!1 &1735321058
 GameObject:
   m_ObjectHideFlags: 0
