@@ -17,6 +17,8 @@ namespace TrainDefense.Game.Datas
 
         public TurretTrainStatus TurretTrainStatus => turretTrainStatus;
 
+        private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
+
         [ShowInInspector, ReadOnly]
         public GameObject TurretProjectilePrefab
         {
@@ -24,10 +26,10 @@ namespace TrainDefense.Game.Datas
             {
                 if (turretProjectilePrefab == null && !string.IsNullOrEmpty(turretProjectilePrefabId))
                 {
-                    turretProjectilePrefab = Resources.Load<GameObject>($"Prefabs/Projectiles/{turretProjectilePrefabId}");
+                    turretProjectilePrefab = Resources.Load<GameObject>($"{PROJECTILE_PREFAB_PATH}{turretProjectilePrefabId}");
                     if (turretProjectilePrefab == null)
                     {
-                        Debug.LogWarning($"TurretTrainData [{Id}]: Projectile Prefab not found at 'Prefabs/{turretProjectilePrefabId}'");
+                        Debug.LogWarning($"TurretTrainData [{Id}]: Projectile Prefab not found at '{PROJECTILE_PREFAB_PATH}{turretProjectilePrefabId}'");
                     }
                 }
                 return turretProjectilePrefab;
