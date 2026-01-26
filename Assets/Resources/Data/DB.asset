@@ -288,7 +288,7 @@ MonoBehaviour:
     prefabId: NormalTurretTrain
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 5
+      AttackRange: 10
       AttackDamage: 10
       AttackCount: 1
       AttackInterval: 0.25
@@ -304,7 +304,7 @@ MonoBehaviour:
     prefabId: FireTurretTrain
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 5
+      AttackRange: 10
       AttackDamage: 3
       AttackCount: 1
       AttackInterval: 0.1
@@ -701,8 +701,8 @@ MonoBehaviour:
   stageDataList:
   - id: 50001
     stageInspectionTime:
-    - 180
-    stageEndTime: 180
+    - 30
+    stageEndTime: 200
     spawnDatas:
     - MonsterId: 10001
       Probability: 1
@@ -713,6 +713,13 @@ MonoBehaviour:
     - MonsterId: 10003
       Probability: 1
       SpawnLevel: 1
+    mapDataList:
+    - id: 
+      prefabId: 
+    - id: 
+      prefabId: 
+    - id: 
+      prefabId: 
   upgradeDataList:
   - id: 110001
     iconId: 

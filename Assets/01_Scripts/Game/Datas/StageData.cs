@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TrainDefense.Game.Datas
@@ -15,6 +16,8 @@ namespace TrainDefense.Game.Datas
         private float stageEndTime;
         [SerializeField]
         private StageSpawnData[] spawnDatas;
+        [SerializeField]
+        private List<MapData> mapDataList = new();
         #endregion
 
         #region IData
@@ -25,6 +28,7 @@ namespace TrainDefense.Game.Datas
         public float StageEndTime => stageEndTime;
 
         public StageSpawnData[] SpawnDatas => spawnDatas;
+        public IReadOnlyList<MapData> MapDataList => mapDataList;
     }
 
     [Serializable]
