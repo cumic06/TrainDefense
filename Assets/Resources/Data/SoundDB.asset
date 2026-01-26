@@ -15,6 +15,16 @@ MonoBehaviour:
   soundDataList:
   - id: 
     clipId: 
-    soundType: 0
-    clip: {fileID: 0}
-    volume: 1
+    soundType: 100
+    clip: {fileID: 8300000, guid: 041d80d5fbd818c41a2136357a4d2226, type: 3}
+    volume: 0.5
+  - id: 
+    clipId: 
+    soundType: 101
+    clip: {fileID: 8300000, guid: e023b1165d71b4edb94fca9b8106ebc1, type: 3}
+    volume: 0.5
+  - id: 
+    clipId: 
+    soundType: 303
+    clip: {fileID: 8300000, guid: 64795b87003c2324fa0814fbc336066c, type: 3}
+    volume: 0.5

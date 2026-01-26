@@ -7,6 +7,9 @@ namespace TrainDefense.Game
 {
     public class SoundManager : Singleton<SoundManager>
     {
+        #region Variable
+
+        #region Fields
         [Header("Audio Sources")]
         [SerializeField]
         private AudioSource bgmSoundSource;
@@ -22,29 +25,37 @@ namespace TrainDefense.Game
         [Range(0f, 1f)]
         [SerializeField]
         private float sfxVolume = 1f;
+        #endregion
 
         private bool IsBgmMuted { get; set; }
         private bool IsSfxMuted { get; set; }
 
-        private Stack<AudioSource> _sfxPool = new Stack<AudioSource>();
-        private List<AudioSource> _activeSfxSources = new List<AudioSource>();
+        private readonly Stack<AudioSource> _sfxPool = new();
+        private readonly List<AudioSource> _activeSfxSources = new();
         private SoundDB _soundDB;
-
-        protected override void Awake()
+        private SoundDB GetSoundDB()
         {
-            base.Awake();
+            if (_soundDB == null)
+            {
+                if (DatabaseManager.Instance != null && DatabaseManager.Instance.GetDB() != null)
+                {
+                    _soundDB = DatabaseManager.Instance.GetDB().SoundDB;
+                    if (_soundDB != null)
+                    {
+                        _soundDB.Initialize();
+                    }
+                }
+            }
+            return _soundDB;
+        }
+        #endregion
 
+        private void Start()
+        {
             if (sfxRoot == null)
             {
                 sfxRoot = new GameObject("SFX_Root").transform;
                 sfxRoot.SetParent(transform);
-            }
-
-            // DatabaseManager를 통해 SoundDB 캐싱
-            _soundDB = DatabaseManager.Instance.GetDB().SoundDB;
-            if (_soundDB != null)
-            {
-                _soundDB.Initialize();
             }
         }
 
@@ -52,19 +63,25 @@ namespace TrainDefense.Game
 
         public void PlayBGM(SoundType type)
         {
-            var data = _soundDB.GetSoundData(type);
+            var db = GetSoundDB();
+            if (db == null) return;
+            var data = db.GetSoundData(type);
             if (data != null) PlayBGM(data);
         }
 
         public void PlayBGM(string id)
         {
-            var data = _soundDB.GetSoundData(id);
+            var db = GetSoundDB();
+            if (db == null) return;
+            var data = db.GetSoundData(id);
             if (data != null) PlayBGM(data);
         }
 
         public void PlayBGMByClipId(string clipId)
         {
-            var data = _soundDB.GetSoundDataByClipId(clipId);
+            var db = GetSoundDB();
+            if (db == null) return;
+            var data = db.GetSoundDataByClipId(clipId);
             if (data != null) PlayBGM(data);
         }
 
@@ -128,19 +145,25 @@ namespace TrainDefense.Game
 
         public void PlaySFX(SoundType type)
         {
-            var data = _soundDB.GetSoundData(type);
+            var db = GetSoundDB();
+            if (db == null) return;
+            var data = db.GetSoundData(type);
             if (data != null) PlaySFX(data);
         }
 
         public void PlaySFX(string id)
         {
-            var data = _soundDB.GetSoundData(id);
+            var db = GetSoundDB();
+            if (db == null) return;
+            var data = db.GetSoundData(id);
             if (data != null) PlaySFX(data);
         }
 
         public void PlaySFXByClipId(string clipId)
         {
-            var data = _soundDB.GetSoundDataByClipId(clipId);
+            var db = GetSoundDB();
+            if (db == null) return;
+            var data = db.GetSoundDataByClipId(clipId);
             if (data != null) PlaySFX(data);
         }
 
