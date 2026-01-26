@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7835390160826455579}
   - component: {fileID: 6218008665424669355}
   - component: {fileID: 3062613401689317436}
+  - component: {fileID: 734766354598665770}
   m_Layer: 6
   m_Name: MonsterModel
   m_TagString: Untagged
@@ -114,6 +115,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &734766354598665770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 24558831701991884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f235f89360222594783433ff5aea95db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MonsterAnimator
 --- !u!1 &2418233220438619890
 GameObject:
   m_ObjectHideFlags: 0
