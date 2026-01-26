@@ -20,10 +20,19 @@ namespace TrainDefense.Game
         [SerializeField]
         [BoxGroup("SpawnSetting")]
         private SpawnMode spawnMode = SpawnMode.CameraBased;
+
         [SerializeField]
         [BoxGroup("SpawnSetting")]
         [ShowIf("spawnMode", SpawnMode.CustomArea)]
-        private List<Vector3> customSpawnPositions;
+        private List<SpawnAreaInfo> customSpawnAreas;
+
+        [System.Serializable]
+        public struct SpawnAreaInfo
+        {
+            public Vector2 Offset;
+            public Vector2 Size;
+        }
+
         #endregion
 
         public enum SpawnMode
@@ -148,17 +157,19 @@ namespace TrainDefense.Game
             Vector3 spawnPos = Vector3.zero;
             if (spawnMode == SpawnMode.CustomArea)
             {
-                if (TrainManager.Instance != null && customSpawnPositions != null && customSpawnPositions.Count > 0)
+                if (TrainManager.Instance != null && customSpawnAreas != null && customSpawnAreas.Count > 0)
                 {
                     Train mainTrain = TrainManager.Instance.MainTrain;
                     if (mainTrain != null)
                     {
-                        Vector3 selectedPos = customSpawnPositions[Random.Range(0, customSpawnPositions.Count)];
+                        var area = customSpawnAreas[Random.Range(0, customSpawnAreas.Count)];
+                        float rx = Random.Range(-area.Size.x / 2f, area.Size.x / 2f);
+                        float ry = Random.Range(-area.Size.y / 2f, area.Size.y / 2f);
+
+                        Vector3 selectedPos = (Vector3)area.Offset + new Vector3(rx, ry, 0);
                         spawnPos = mainTrain.transform.position + selectedPos;
                     }
                 }
-
-                // Fallback to CameraBased if setup is missing
             }
             else
             {
@@ -198,20 +209,19 @@ namespace TrainDefense.Game
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (spawnMode == SpawnMode.CustomArea && customSpawnPositions != null)
+            if (spawnMode == SpawnMode.CustomArea && customSpawnAreas != null)
             {
                 Gizmos.color = Color.cyan;
 
-                // Draw relative to zero if not playing, or relative to MainTrain if playing
                 Vector3 basePos = Vector3.zero;
                 if (Application.isPlaying && TrainManager.Instance != null && TrainManager.Instance.MainTrain != null)
                 {
                     basePos = TrainManager.Instance.MainTrain.transform.position;
                 }
 
-                foreach (var pos in customSpawnPositions)
+                foreach (var area in customSpawnAreas)
                 {
-                    Gizmos.DrawWireSphere(basePos + pos, 0.5f);
+                    Gizmos.DrawCube(basePos + (Vector3)area.Offset, area.Size);
                 }
             }
         }
