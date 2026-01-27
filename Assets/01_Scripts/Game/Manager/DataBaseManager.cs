@@ -30,12 +30,7 @@ namespace TrainDefense.Game
 
         public StageData[] GetStageDatas() => GetDB().StageDataList.ToArray();
 
-        public MapData[] GetMapDatas(StageData stageData) => stageData.MapDataList.ToArray();
-
-        public MapData GetMapData(string id, StageData stageData)
-        {
-            return GetMapDatas(stageData).FirstOrDefault(m => m.Id == id);
-        }
+        public MapData GetMapData(StageData stageData) => stageData.MapData;
 
         public MonsterData[] GetMonsterDatas() => GetDB().MonsterDataList.ToArray();
 

@@ -701,8 +701,8 @@ MonoBehaviour:
   stageDataList:
   - id: 50001
     stageInspectionTime:
-    - 30
-    stageEndTime: 200
+    - 10
+    stageEndTime: 180
     spawnDatas:
     - MonsterId: 10001
       Probability: 1
@@ -713,12 +713,45 @@ MonoBehaviour:
     - MonsterId: 10003
       Probability: 1
       SpawnLevel: 1
-    mapDataList:
-    - id: 
+    mapData:
+      id: 
       prefabId: 
-    - id: 
+  - id: 50002
+    stageInspectionTime:
+    - 20
+    stageEndTime: 180
+    spawnDatas:
+    - MonsterId: 10004
+      Probability: 1
+      SpawnLevel: 1
+    - MonsterId: 10005
+      Probability: 1
+      SpawnLevel: 1
+    - MonsterId: 10006
+      Probability: 1
+      SpawnLevel: 1
+    mapData:
+      id: 
       prefabId: 
-    - id: 
+  - id: 50003
+    stageInspectionTime:
+    - 20
+    stageEndTime: 180
+    spawnDatas:
+    - MonsterId: 10007
+      Probability: 1
+      SpawnLevel: 1
+    - MonsterId: 10008
+      Probability: 1
+      SpawnLevel: 1
+    - MonsterId: 10009
+      Probability: 1
+      SpawnLevel: 1
+    - MonsterId: 10010
+      Probability: 1
+      SpawnLevel: 1
+    mapData:
+      id: 
       prefabId: 
   upgradeDataList:
   - id: 110001

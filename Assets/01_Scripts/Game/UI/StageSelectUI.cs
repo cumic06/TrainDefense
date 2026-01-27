@@ -1,0 +1,92 @@
+using UnityEngine;
+using UnityEngine.UI;
+using Cumic.Events;
+using TrainDefense.Game.Events;
+using TrainDefense.Game.Datas;
+
+namespace TrainDefense.Game.UI
+{
+    public class StageSelectUI : MonoBehaviour
+    {
+        #region Fields
+        [SerializeField]
+        private GameObject stageSelectPanel;
+        
+        [SerializeField]
+        private Button stage1Button;
+        
+        [SerializeField]
+        private Button stage2Button;
+        #endregion
+
+        private StageData _stageData1;
+        private StageData _stageData2;
+        private bool _isSelecting = false;
+
+        private void Start()
+        {
+            GameEventSystem.Subscribe<RandomStageOptionsEvent>(OnStageSelect);
+            
+            if (stage1Button != null)
+            {
+                stage1Button.onClick.AddListener(() => OnStageSelected(_stageData1));
+            }
+            
+            if (stage2Button != null)
+            {
+                stage2Button.onClick.AddListener(() => OnStageSelected(_stageData2));
+            }
+
+            if (stageSelectPanel != null)
+            {
+                stageSelectPanel.SetActive(false);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<RandomStageOptionsEvent>(OnStageSelect);
+        }
+
+        private void OnStageSelect(RandomStageOptionsEvent stageSelectEvent)
+        {
+            if (_isSelecting) return;
+
+            _stageData1 = stageSelectEvent.StageData1;
+            _stageData2 = stageSelectEvent.StageData2;
+
+            if (_stageData1 == null || _stageData2 == null)
+            {
+                Debug.LogWarning("RandomStageOptionsEvent에 StageData가 null입니다.");
+                return;
+            }
+
+            ShowStageSelection();
+        }
+
+        private void ShowStageSelection()
+        {
+            _isSelecting = true;
+
+            if (stageSelectPanel != null)
+            {
+                stageSelectPanel.SetActive(true);
+            }
+        }
+
+        private void OnStageSelected(StageData selectedStageData)
+        {
+            if (!_isSelecting || selectedStageData == null) return;
+
+            _isSelecting = false;
+
+            if (stageSelectPanel != null)
+            {
+                stageSelectPanel.SetActive(false);
+            }
+
+            // 선택 결과 전달 (UI -> StageManager)
+            GameEventSystem.Publish(new StageSelectEvent(selectedStageData));
+        }
+    }
+}

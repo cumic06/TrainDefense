@@ -17,7 +17,7 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private StageSpawnData[] spawnDatas;
         [SerializeField]
-        private List<MapData> mapDataList = new();
+        private MapData mapData;
         #endregion
 
         #region IData
@@ -28,7 +28,7 @@ namespace TrainDefense.Game.Datas
         public float StageEndTime => stageEndTime;
 
         public StageSpawnData[] SpawnDatas => spawnDatas;
-        public IReadOnlyList<MapData> MapDataList => mapDataList;
+        public MapData MapData => mapData;
     }
 
     [Serializable]

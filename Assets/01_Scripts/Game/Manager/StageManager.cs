@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Cumic;
 using Cumic.Events;
@@ -13,6 +14,12 @@ public class StageManager : Singleton<StageManager>
 
     #region Fields
     [SerializeField]
+    private Transform mapParent;
+
+    [SerializeField]
+    private int changeInterval = 1;
+
+    [SerializeField]
     private float hpScale;
 
     [SerializeField]
@@ -26,6 +33,8 @@ public class StageManager : Singleton<StageManager>
     private int _currentStageIndex;
     private float _currentStageTime;
     private int _currentStageInspectionTimeIndex;
+    private GameObject _currentMapInstance;
+    private int _inspectionCount = 0;
     #endregion
 
     public StageData CurrentStageData => _stageDatas[_currentStageIndex];
@@ -33,16 +42,20 @@ public class StageManager : Singleton<StageManager>
     private void Start()
     {
         LoadStageDatas();
+
+        _currentStageIndex = 0;
         ResetCurrentStageInfo();
 
         GameEventSystem.Subscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
         GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
+        GameEventSystem.Subscribe<StageSelectEvent>(OnStageSelected);
     }
 
     private void OnDestroy()
     {
         GameEventSystem.Unsubscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
         GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
+        GameEventSystem.Unsubscribe<StageSelectEvent>(OnStageSelected);
     }
 
     private void LoadStageDatas()
@@ -52,11 +65,12 @@ public class StageManager : Singleton<StageManager>
 
     private void ResetCurrentStageInfo()
     {
-        _currentStageIndex = 0;
         _currentStageTime = 0;
         _currentStageInspectionTimeIndex = 0;
+        _inspectionCount = 0;
 
         UpdateSpawnRules();
+        SetCurrentStage();
     }
 
     private void OnLevelUp(LevelUpEvent levelUpEvent)
@@ -81,6 +95,50 @@ public class StageManager : Singleton<StageManager>
         }
 
         MonsterSpawner.Instance.SetSpawnRule(filteredList.ToArray());
+    }
+
+    private void SetCurrentStage()
+    {
+        if (_stageDatas == null || _stageDatas.Length == 0)
+        {
+            Debug.LogWarning("StageManager: _stageDatas is null or empty. Cannot set map.");
+            return;
+        }
+
+        var stageData = CurrentStageData;
+        if (stageData == null)
+        {
+            Debug.LogWarning("StageManager: CurrentStageData is null. Cannot set map.");
+            return;
+        }
+
+        var mapData = DatabaseManager.Instance.GetMapData(stageData);
+        if (mapData == null)
+        {
+            Debug.LogWarning($"StageManager: StageData [{stageData.Id}] has null MapData. Cannot set map.");
+            return;
+        }
+
+        var prefab = mapData.Prefab;
+        if (prefab == null)
+        {
+            Debug.LogWarning($"StageManager: MapData [{mapData.Id}] prefab is null. Cannot instantiate map.");
+            return;
+        }
+
+        if (_currentMapInstance != null)
+        {
+            Destroy(_currentMapInstance);
+        }
+
+        if (mapParent != null)
+        {
+            _currentMapInstance = Instantiate(prefab, mapParent.position, mapParent.rotation, mapParent);
+        }
+        else
+        {
+            _currentMapInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+        }
     }
 
     private void Update()
@@ -111,6 +169,12 @@ public class StageManager : Singleton<StageManager>
     {
         _currentStageInspectionTimeIndex++;
         GameEventSystem.Publish(new InspectionEvent());
+
+        _inspectionCount++;
+        if (changeInterval > 0 && _inspectionCount % changeInterval == 0)
+        {
+            ShowStageSelection();
+        }
     }
 
     private void CurrentStageTimeUp()
@@ -139,6 +203,50 @@ public class StageManager : Singleton<StageManager>
             return CurrentStageData.StageInspectionTime[^1] - _currentStageTime;
         }
         return CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex] - _currentStageTime;
+    }
+
+    private void OnStageSelected(StageSelectEvent stageSelectedEvent)
+    {
+        if (stageSelectedEvent == null || stageSelectedEvent.SelectedStageData == null)
+        {
+            Debug.LogWarning("StageManager: StageSelectEvent or SelectedStageData is null.");
+            return;
+        }
+
+        var selectedStage = stageSelectedEvent.SelectedStageData;
+
+        int index = System.Array.FindIndex(_stageDatas, s => s != null && s.Id == selectedStage.Id);
+        if (index < 0)
+        {
+            Debug.LogWarning($"StageManager: Selected StageData [{selectedStage.Id}] not found in stage list.");
+            return;
+        }
+
+        _currentStageIndex = index;
+        ResetCurrentStageInfo();
+    }
+
+    private void ShowStageSelection()
+    {
+        if (_stageDatas == null || _stageDatas.Length < 2)
+        {
+            Debug.LogWarning("StageManager: StageData is null or less than 2. Cannot show stage selection.");
+            return;
+        }
+
+        var candidates = _stageDatas
+            .Where((stage, index) => index != _currentStageIndex)
+            .OrderBy(_ => Random.value)
+            .Take(2)
+            .ToArray();
+
+        if (candidates.Length < 2)
+        {
+            Debug.LogWarning("StageManager: Not enough candidate stages to show selection.");
+            return;
+        }
+
+        GameEventSystem.Publish(new RandomStageOptionsEvent(candidates[0], candidates[1]));
     }
 
     #region Scaling
