@@ -68,9 +68,24 @@ namespace TrainDefense.Game.UI
         {
             _isSelecting = true;
 
+            // 스테이지 이미지 적용 (버튼의 Image 컴포넌트에 스프라이트 적용)
+            ApplyStageSprite(stage1Button, _stageData1);
+            ApplyStageSprite(stage2Button, _stageData2);
+
             if (stageSelectPanel != null)
             {
                 stageSelectPanel.SetActive(true);
+            }
+        }
+
+        private void ApplyStageSprite(Button targetButton, StageData stageData)
+        {
+            if (targetButton == null || stageData == null) return;
+
+            var buttonImage = targetButton.GetComponent<Image>();
+            if (buttonImage != null && stageData.StageImage != null)
+            {
+                buttonImage.sprite = stageData.StageImage;
             }
         }
 

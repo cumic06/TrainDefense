@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -42,7 +43,6 @@ public class StageManager : Singleton<StageManager>
     private void Start()
     {
         LoadStageDatas();
-
         _currentStageIndex = 0;
         ResetCurrentStageInfo();
 
@@ -171,10 +171,38 @@ public class StageManager : Singleton<StageManager>
         GameEventSystem.Publish(new InspectionEvent());
 
         _inspectionCount++;
+        
+        // 보스 소환 체크: inspectionCount가 changeInterval - 1일 때
+        if (changeInterval > 0 && _inspectionCount % changeInterval == changeInterval - 1)
+        {
+            TriggerBossSpawn();
+        }
+        
         if (changeInterval > 0 && _inspectionCount % changeInterval == 0)
         {
             ShowStageSelection();
         }
+    }
+    
+    private void TriggerBossSpawn()
+    {
+        StartCoroutine(BossSpawnCoroutine());
+    }
+    
+    private IEnumerator BossSpawnCoroutine()
+    {
+        // 15초 대기 (5초 경고 후 20초에 스폰)
+        yield return new WaitForSeconds(15f);
+        
+        var stageData = CurrentStageData;
+        if (stageData == null || string.IsNullOrEmpty(stageData.BossMonsterId))
+        {
+            Debug.LogWarning("StageManager: BossMonsterId is null or empty. Cannot spawn boss.");
+            yield break;
+        }
+        
+        GameEventSystem.Publish(new BossSpawnEvent(stageData.BossMonsterId, 0.7f));
+        Debug.Log($"[StageManager] Boss spawn triggered: {stageData.BossMonsterId}");
     }
 
     private void CurrentStageTimeUp()

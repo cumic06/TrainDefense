@@ -269,6 +269,22 @@ MonoBehaviour:
       AttackType: 0
     prefabId: GiantGoblin
     rangedProjectilePrefab: {fileID: 0}
+  - id: 99999
+    name: Booooossssss
+    description: "\uBCF4\uC2A4"
+    monsterStatusData:
+      MaxHp: 500
+      Damage: 5
+      MoveSpeed: 2.1
+      AttackDelay: 10
+      DropExpMin: 500
+      DropExpMax: 500
+      DropMoneyMin: 500
+      DropMoneyMax: 500
+      AttackRange: 5
+      AttackType: 0
+    prefabId: Boss
+    rangedProjectilePrefab: {fileID: 0}
   trainDataList:
   - id: 20001
     name: "\uBA54\uC778 \uAE30\uCC28"
@@ -701,7 +717,7 @@ MonoBehaviour:
   stageDataList:
   - id: 50001
     stageInspectionTime:
-    - 10
+    - 50
     stageEndTime: 180
     spawnDatas:
     - MonsterId: 10001
@@ -716,6 +732,8 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: 
+    stageImage: {fileID: 7257567913506708742, guid: abc79d95ca2994e20b019ba42fccbcb9, type: 3}
+    bossMonsterId: 99999
   - id: 50002
     stageInspectionTime:
     - 20
@@ -733,6 +751,8 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: 
+    stageImage: {fileID: 0}
+    bossMonsterId: 
   - id: 50003
     stageInspectionTime:
     - 20
@@ -753,6 +773,8 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: 
+    stageImage: {fileID: 0}
+    bossMonsterId: 
   upgradeDataList:
   - id: 110001
     iconId: 

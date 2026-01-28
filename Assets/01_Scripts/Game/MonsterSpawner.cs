@@ -4,6 +4,7 @@ using Cumic;
 using Cumic.Events;
 using Sirenix.OdinInspector;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -45,16 +46,23 @@ namespace TrainDefense.Game
         [ShowInInspector]
         private bool _stopSpawnMonster;
         private readonly List<Monster> _spawnedMonsters = new();
+        
+        private float _originalSpawnInterval;
 
         private void Start()
         {
+            _originalSpawnInterval = spawnInterval;
             StopSpawnMonster();
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Subscribe<BossSpawnEvent>(OnBossSpawn);
+            GameEventSystem.Subscribe<BossDeadEvent>(OnBossDead);
         }
 
         private void OnDestroy()
         {
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Unsubscribe<BossSpawnEvent>(OnBossSpawn);
+            GameEventSystem.Unsubscribe<BossDeadEvent>(OnBossDead);
         }
 
         private void OnGameEnter(GameEnterEvent gameEnterEvent)
@@ -76,6 +84,54 @@ namespace TrainDefense.Game
         public void StopSpawnMonster()
         {
             _stopSpawnMonster = true;
+        }
+        
+        private void OnBossSpawn(BossSpawnEvent bossSpawnEvent)
+        {
+            StartCoroutine(BossSpawnSequence(bossSpawnEvent));
+        }
+
+        private IEnumerator BossSpawnSequence(BossSpawnEvent bossSpawnEvent)
+        {
+            // 5초 대기 (경고 시간)
+            yield return new WaitForSeconds(5f);
+
+            // 스폰 속도 빨라지게
+            spawnInterval = _originalSpawnInterval * bossSpawnEvent.SpawnSpeedMultiplier;
+            
+            // 보스 스폰
+            SpawnBoss(bossSpawnEvent.BossMonsterId);
+        }
+        
+        private void OnBossDead(BossDeadEvent bossDeadEvent)
+        {
+            // 스폰 속도 원래대로 복구
+            spawnInterval = _originalSpawnInterval;
+        }
+        
+        private void SpawnBoss(string bossMonsterId)
+        {
+            if (string.IsNullOrEmpty(bossMonsterId)) return;
+            
+            MonsterData bossData = DatabaseManager.Instance.GetMonsterData(bossMonsterId);
+            if (bossData == null)
+            {
+                Debug.LogWarning($"MonsterSpawner: Boss monster data not found for ID: {bossMonsterId}");
+                return;
+            }
+            
+            Vector3 spawnPos = RandomSpawnPos();
+            GameObject bossObject = ResourceManager.Instance.Spawn(bossData.Prefab, spawnPos, parent: transform);
+            
+            // Boss 컴포넌트 우선, 없으면 Monster 컴포넌트 사용
+            Monster bossMonster = bossObject.GetComponent<Monster>();
+            
+            if (bossMonster != null)
+            {
+                bossMonster.Initialize(bossData);
+                _spawnedMonsters.Add(bossMonster);
+                Debug.Log($"[MonsterSpawner] Boss spawned: {bossMonsterId}");
+            }
         }
 
         private IEnumerator SpawnMonster()
