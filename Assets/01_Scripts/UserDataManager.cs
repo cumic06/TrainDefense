@@ -9,10 +9,15 @@ namespace TrainDefense
 {
     public class UserDataManager : Singleton<UserDataManager>
     {
+        private const string DISCOVERED_MONSTERS_KEY = "DiscoveredMonsters";
+
         private Dictionary<string, int> _triChoiceData = new();
 
         [ShowInInspector]
         private Dictionary<string, int> _upgradeLevels = new();
+
+        [ShowInInspector]
+        private HashSet<string> _discoveredMonsterIds = new();
 
         private int _coin;
         private int _currentExp;
@@ -25,6 +30,7 @@ namespace TrainDefense
         {
             DontDestroyOnLoad(gameObject);
 
+            LoadDiscoveredMonsters();
             SubscribeEvents();
             _coin = 0;
         }
@@ -41,6 +47,7 @@ namespace TrainDefense
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(AddTriChoiceData);
             GameEventSystem.Subscribe<ChangeCoinUIEvent>(ChangeCoin);
             GameEventSystem.Subscribe<BuyShopItemEvent>(BuyShopItem);
+            GameEventSystem.Subscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
         }
 
         private void UnsubscribeEvents()
@@ -49,8 +56,79 @@ namespace TrainDefense
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(AddTriChoiceData);
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(ChangeCoin);
             GameEventSystem.Unsubscribe<BuyShopItemEvent>(BuyShopItem);
+            GameEventSystem.Unsubscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
         }
         #endregion
+
+        private void OnMonsterSpawned(MonsterSpawnedEvent monsterSpawnedEvent)
+        {
+            string monsterId = monsterSpawnedEvent.MonsterId;
+
+            if (string.IsNullOrEmpty(monsterId)) return;
+
+            if (!_discoveredMonsterIds.Contains(monsterId))
+            {
+                _discoveredMonsterIds.Add(monsterId);
+                SaveDiscoveredMonsters();
+
+                // UI에 새 몬스터 발견 알림
+                GameEventSystem.Publish(new NewMonsterDiscoveredEvent(monsterId, monsterSpawnedEvent.IsBoss));
+            }
+        }
+
+        private void LoadDiscoveredMonsters()
+        {
+            string savedData = PlayerPrefs.GetString(DISCOVERED_MONSTERS_KEY, "");
+            _discoveredMonsterIds.Clear();
+
+            if (!string.IsNullOrEmpty(savedData))
+            {
+                string[] ids = savedData.Split(',');
+                foreach (string id in ids)
+                {
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        _discoveredMonsterIds.Add(id);
+                    }
+                }
+            }
+        }
+
+        private void SaveDiscoveredMonsters()
+        {
+            string dataToSave = string.Join(",", _discoveredMonsterIds);
+            PlayerPrefs.SetString(DISCOVERED_MONSTERS_KEY, dataToSave);
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>
+        /// 발견된 몬스터 데이터를 초기화합니다.
+        /// </summary>
+        [Button("발견된 몬스터 초기화")]
+        private void ResetDiscoveredMonsters()
+        {
+            _discoveredMonsterIds.Clear();
+            PlayerPrefs.DeleteKey(DISCOVERED_MONSTERS_KEY);
+            PlayerPrefs.Save();
+            Debug.Log("[UserDataManager] 발견된 몬스터 데이터가 초기화되었습니다.");
+        }
+
+        /// <summary>
+        /// 해당 몬스터가 이미 발견되었는지 확인합니다.
+        /// </summary>
+        public bool IsMonsterDiscovered(string monsterId)
+        {
+            return _discoveredMonsterIds.Contains(monsterId);
+        }
+
+        /// <summary>
+        /// 발견한 모든 몬스터 ID 목록을 반환합니다.
+        /// </summary>
+        public HashSet<string> GetDiscoveredMonsterIds()
+        {
+            return new HashSet<string>(_discoveredMonsterIds);
+        }
+
 
         #region Exp
         private void AddExp(AddExpEvent addExpEvent)

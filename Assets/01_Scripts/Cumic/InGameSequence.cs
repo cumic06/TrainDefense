@@ -27,6 +27,8 @@ namespace Cumic.Sequence
         private StageResultUI _stageResultUI;
         #endregion
 
+        private bool firstTriChoice = false;
+
         private void Awake()
         {
             if (TimeManager.Instance == null) return;
@@ -126,6 +128,13 @@ namespace Cumic.Sequence
             if (triChoiceSelectEvent.ChoiceLeftCount == 0)
             {
                 GameEventSystem.Publish(new EngageStartEvent());
+            }
+
+            if (!firstTriChoice)
+            {
+                firstTriChoice = true;
+                MonsterSpawner.Instance.StartSpawnMonster();
+                return;
             }
         }
 

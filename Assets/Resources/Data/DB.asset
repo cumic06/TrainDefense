@@ -16,6 +16,7 @@ MonoBehaviour:
   - id: 10001
     name: Skull
     description: "\uD574\uACE8 \uBCD1\uC0AC\uB2E4."
+    icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
     monsterStatusData:
       MaxHp: 10
       Damage: 10
@@ -32,6 +33,7 @@ MonoBehaviour:
   - id: 10002
     name: Thief
     description: "\uB3C4\uC801\uC774\uB2E4."
+    icon: {fileID: -8975192331532836980, guid: 5d9812acc860e45b4be3490475ec11ce, type: 3}
     monsterStatusData:
       MaxHp: 35
       Damage: 10
@@ -48,6 +50,7 @@ MonoBehaviour:
   - id: 10003
     name: Gnoll
     description: "\uB180\uC774\uB2E4."
+    icon: {fileID: -3602873763752426733, guid: c8770fe2a236a4dd4b51a7fa9eac9569, type: 3}
     monsterStatusData:
       MaxHp: 50
       Damage: 20
@@ -64,6 +67,7 @@ MonoBehaviour:
   - id: 10004
     name: Hammershark
     description: "\uADC0\uC0C1\uC5B4\uB2E4."
+    icon: {fileID: -7218776650163668934, guid: 65602c0b9fc4f4152bc6802be7cd391c, type: 3}
     monsterStatusData:
       MaxHp: 60
       Damage: 20
@@ -80,6 +84,7 @@ MonoBehaviour:
   - id: 10005
     name: Shark
     description: "\uC0C1\uC5B4\uB2E4 "
+    icon: {fileID: -7414083336469400027, guid: 231acd077d50441dc8c800208a8a508d, type: 3}
     monsterStatusData:
       MaxHp: 40
       Damage: 20
@@ -96,6 +101,7 @@ MonoBehaviour:
   - id: 10006
     name: Turtle
     description: "\uAC70\uBD81\uC774\uB2E4"
+    icon: {fileID: 6240235003232040363, guid: 02a56956d819644e9ba1f5230f17be41, type: 3}
     monsterStatusData:
       MaxHp: 200
       Damage: 30
@@ -112,6 +118,7 @@ MonoBehaviour:
   - id: 10007
     name: Snake
     description: "\uBC40\uC774\uB2E4"
+    icon: {fileID: -3625172091503848354, guid: 6b0643aaa67844e2aae806b506ebe8f5, type: 3}
     monsterStatusData:
       MaxHp: 40
       Damage: 10
@@ -128,6 +135,7 @@ MonoBehaviour:
   - id: 10008
     name: Panda
     description: "\uD310\uB2E4\uB2E4"
+    icon: {fileID: -3635613324321525249, guid: ef9ae9e2cb8b84e81b8c56aea546a281, type: 3}
     monsterStatusData:
       MaxHp: 70
       Damage: 20
@@ -144,6 +152,7 @@ MonoBehaviour:
   - id: 10009
     name: Lizard
     description: "\uB3C4\uB9C8\uBC40\uC774\uB2E4"
+    icon: {fileID: 3863950976592595061, guid: a9f259f952e5f4141a134eb245f1d344, type: 3}
     monsterStatusData:
       MaxHp: 100
       Damage: 30
@@ -160,6 +169,7 @@ MonoBehaviour:
   - id: 10010
     name: Bear
     description: "\uACF0\uC774\uB2E4"
+    icon: {fileID: 8580189074808014292, guid: 3addccd9ed6334cf9b6fa384aba038d0, type: 3}
     monsterStatusData:
       MaxHp: 150
       Damage: 40
@@ -176,6 +186,7 @@ MonoBehaviour:
   - id: 10011
     name: Dwarf
     description: "\uB09C\uC7C1\uC774\uB2E4"
+    icon: {fileID: -6557010917886046056, guid: 327caefdcf18245b58192e6d50fa930a, type: 3}
     monsterStatusData:
       MaxHp: 30
       Damage: 10
@@ -192,6 +203,7 @@ MonoBehaviour:
   - id: 10012
     name: Spider
     description: "\uAC70\uBBF8\uB2E4"
+    icon: {fileID: -3068608994661831594, guid: ae483a7a0e01f492ab7488474a21b3e4, type: 3}
     monsterStatusData:
       MaxHp: 100
       Damage: 30
@@ -208,6 +220,7 @@ MonoBehaviour:
   - id: 10013
     name: Minotaur
     description: "\uBBF8\uB178\uD0C0\uC6B0\uB85C\uC2A4\uB2E4"
+    icon: {fileID: 6790613064428419975, guid: c71a51d7fffe3487db08e462fa5be6e3, type: 3}
     monsterStatusData:
       MaxHp: 250
       Damage: 40
@@ -224,6 +237,7 @@ MonoBehaviour:
   - id: 10014
     name: GoblinSpear
     description: "\uACE0\uBE14\uB9B0 \uCC3D\uBCD1\uC774\uB2E4"
+    icon: {fileID: 6527618186103422146, guid: 4eea2bd4e5d564b41a313f4ca7f40676, type: 3}
     monsterStatusData:
       MaxHp: 60
       Damage: 20
@@ -240,6 +254,7 @@ MonoBehaviour:
   - id: 10015
     name: GoblinSorcerer
     description: "\uACE0\uBE14\uB9B0 \uC8FC\uC220\uC0AC\uB2E4"
+    icon: {fileID: -3827772250807918378, guid: 1d9455a2d50d04d4380ccb041dbe4aea, type: 3}
     monsterStatusData:
       MaxHp: 60
       Damage: 30
@@ -256,6 +271,7 @@ MonoBehaviour:
   - id: 10016
     name: GiantGoblin
     description: "\uACE0\uBE14\uB9B0 \uAC70\uC778"
+    icon: {fileID: -5698702345733656577, guid: 5e42c47f439f04c37a62aec53dbbe7b9, type: 3}
     monsterStatusData:
       MaxHp: 300
       Damage: 40
@@ -272,6 +288,7 @@ MonoBehaviour:
   - id: 99999
     name: Booooossssss
     description: "\uBCF4\uC2A4"
+    icon: {fileID: -5698702345733656577, guid: 5e42c47f439f04c37a62aec53dbbe7b9, type: 3}
     monsterStatusData:
       MaxHp: 500
       Damage: 5
@@ -288,6 +305,7 @@ MonoBehaviour:
   - id: 10100
     name: SkullKing
     description: "\uD574\uACE8 \uC655\uC774\uB2F9."
+    icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
     monsterStatusData:
       MaxHp: 500
       Damage: 100

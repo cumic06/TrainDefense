@@ -16,6 +16,8 @@ namespace TrainDefense.Game.Datas
         [TextArea(2, 4)]
         private string description;
         [SerializeField]
+        private Sprite icon;
+        [SerializeField]
         private MonsterStatusInfo monsterStatusData;
         [SerializeField]
         private string prefabId;
@@ -33,6 +35,7 @@ namespace TrainDefense.Game.Datas
         #region IDescribableData
         public string Name => name;
         public string Description => description;
+        public Sprite Icon => icon;
         #endregion
 
         #region IPrefabData

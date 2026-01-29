@@ -46,7 +46,7 @@ namespace TrainDefense.Game
         [ShowInInspector]
         private bool _stopSpawnMonster;
         private readonly List<Monster> _spawnedMonsters = new();
-        
+
         private float _originalSpawnInterval;
 
         private void Start()
@@ -67,7 +67,6 @@ namespace TrainDefense.Game
 
         private void OnGameEnter(GameEnterEvent gameEnterEvent)
         {
-            StartSpawnMonster();
             StartCoroutine(SpawnMonster());
         }
 
@@ -85,7 +84,7 @@ namespace TrainDefense.Game
         {
             _stopSpawnMonster = true;
         }
-        
+
         private void OnBossSpawn(BossSpawnEvent bossSpawnEvent)
         {
             StartCoroutine(BossSpawnSequence(bossSpawnEvent));
@@ -98,39 +97,42 @@ namespace TrainDefense.Game
 
             // 스폰 속도 빨라지게
             spawnInterval = _originalSpawnInterval * bossSpawnEvent.SpawnSpeedMultiplier;
-            
+
             // 보스 스폰
             SpawnBoss(bossSpawnEvent.BossMonsterId);
         }
-        
+
         private void OnBossDead(BossDeadEvent bossDeadEvent)
         {
             // 스폰 속도 원래대로 복구
             spawnInterval = _originalSpawnInterval;
         }
-        
+
         private void SpawnBoss(string bossMonsterId)
         {
             if (string.IsNullOrEmpty(bossMonsterId)) return;
-            
+
             MonsterData bossData = DatabaseManager.Instance.GetMonsterData(bossMonsterId);
             if (bossData == null)
             {
                 Debug.LogWarning($"MonsterSpawner: Boss monster data not found for ID: {bossMonsterId}");
                 return;
             }
-            
+
             Vector3 spawnPos = RandomSpawnPos();
             GameObject bossObject = ResourceManager.Instance.Spawn(bossData.Prefab, spawnPos, parent: transform);
-            
+
             // Boss 컴포넌트 우선, 없으면 Monster 컴포넌트 사용
             Monster bossMonster = bossObject.GetComponent<Monster>();
-            
+
             if (bossMonster != null)
             {
                 bossMonster.Initialize(bossData);
                 _spawnedMonsters.Add(bossMonster);
                 Debug.Log($"[MonsterSpawner] Boss spawned: {bossMonsterId}");
+
+                // 보스도 몬스터 스폰 이벤트 발행
+                GameEventSystem.Publish(new MonsterSpawnedEvent(bossMonsterId, true));
             }
         }
 
@@ -142,7 +144,7 @@ namespace TrainDefense.Game
             {
                 if (_stopSpawnMonster)
                 {
-                    yield break;
+                    yield return new WaitUntil(() => !_stopSpawnMonster);
                 }
 
                 if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
@@ -164,6 +166,9 @@ namespace TrainDefense.Game
                         Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
                         spawnMonster.Initialize(monsterData);
                         _spawnedMonsters.Add(spawnMonster);
+
+                        // 몬스터 스폰 이벤트 발행
+                        GameEventSystem.Publish(new MonsterSpawnedEvent(selectedData.MonsterId, false));
                     }
                 }
 
