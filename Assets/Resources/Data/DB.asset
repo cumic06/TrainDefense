@@ -285,6 +285,22 @@ MonoBehaviour:
       AttackType: 0
     prefabId: Boss
     rangedProjectilePrefab: {fileID: 0}
+  - id: 10100
+    name: SkullKing
+    description: "\uD574\uACE8 \uC655\uC774\uB2F9."
+    monsterStatusData:
+      MaxHp: 500
+      Damage: 100
+      MoveSpeed: 8
+      AttackDelay: 0.1
+      DropExpMin: 1000
+      DropExpMax: 1000
+      DropMoneyMin: 10000
+      DropMoneyMax: 10000
+      AttackRange: 3
+      AttackType: 0
+    prefabId: SkullKing
+    rangedProjectilePrefab: {fileID: 0}
   trainDataList:
   - id: 20001
     name: "\uBA54\uC778 \uAE30\uCC28"
