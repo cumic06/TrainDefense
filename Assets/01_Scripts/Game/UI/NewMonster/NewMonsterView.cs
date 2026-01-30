@@ -39,6 +39,8 @@ namespace TrainDefense.Game.UI
 
         [SerializeField]
         private float specialShowDuration = 0.5f;
+        [SerializeField]
+        private float specialShowPosX = 80;
 
         [SerializeField]
         private bool autoHide = true;
@@ -109,7 +111,7 @@ namespace TrainDefense.Game.UI
             {
                 specialMonster.SetActive(_viewModel.IsBoss);
 
-                specialMonster.transform.DOLocalMoveX(showPosX, specialShowDuration)
+                specialMonster.transform.DOLocalMoveX(specialShowPosX, specialShowDuration)
                 .SetEase(Ease.OutQuad)
                 .SetUpdate(true);
             }
