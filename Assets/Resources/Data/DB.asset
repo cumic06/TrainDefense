@@ -765,7 +765,7 @@ MonoBehaviour:
       SpawnLevel: 1
     mapData:
       id: 
-      prefabId: 
+      prefabId: Map1
     stageImage: {fileID: 7257567913506708742, guid: abc79d95ca2994e20b019ba42fccbcb9, type: 3}
     bossMonsterId: 99999
   - id: 50002
@@ -784,7 +784,7 @@ MonoBehaviour:
       SpawnLevel: 1
     mapData:
       id: 
-      prefabId: 
+      prefabId: Map2
     stageImage: {fileID: 0}
     bossMonsterId: 
   - id: 50003
@@ -806,7 +806,7 @@ MonoBehaviour:
       SpawnLevel: 1
     mapData:
       id: 
-      prefabId: 
+      prefabId: Map3
     stageImage: {fileID: 0}
     bossMonsterId: 
   upgradeDataList:

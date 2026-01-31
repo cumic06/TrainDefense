@@ -14,8 +14,6 @@ public class StageManager : Singleton<StageManager>
     #region Variables
 
     #region Fields
-    [SerializeField]
-    private Transform mapParent;
 
     [SerializeField]
     private int changeInterval = 1;
@@ -131,14 +129,12 @@ public class StageManager : Singleton<StageManager>
             Destroy(_currentMapInstance);
         }
 
-        if (mapParent != null)
+        Vector3 spawnPosition = Vector3.zero;
+        if (TrainManager.Instance.MainTrain != null)
         {
-            _currentMapInstance = Instantiate(prefab, mapParent.position, mapParent.rotation, mapParent);
+            spawnPosition = TrainManager.Instance.MainTrain.transform.position;
         }
-        else
-        {
-            _currentMapInstance = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-        }
+        _currentMapInstance = Instantiate(prefab, spawnPosition, Quaternion.identity);
     }
 
     private void Update()

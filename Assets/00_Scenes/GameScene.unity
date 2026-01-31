@@ -17537,6 +17537,7 @@ MonoBehaviour:
   hidePosX: -350
   showPosX: 0
   specialShowDuration: 0.5
+  specialShowPosX: 80
   autoHide: 1
 --- !u!1 &1260207841
 GameObject:
@@ -22229,7 +22230,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   dontDestroyOnLoad: 0
-  mapParent: {fileID: 0}
   changeInterval: 1
   hpScale: 0.5
   attackScale: 0.2
