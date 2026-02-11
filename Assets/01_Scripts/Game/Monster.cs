@@ -52,7 +52,7 @@ namespace TrainDefense.Game
             _modelSpriteRenderer = model.GetComponent<SpriteRenderer>();
         }
 
-        public virtual void Initialize(MonsterData monsterData)
+        public void Initialize(MonsterData monsterData)
         {
             _monsterData = monsterData;
             InitStats();

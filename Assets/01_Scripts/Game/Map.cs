@@ -21,8 +21,6 @@ namespace TrainDefense
 
         private void Update()
         {
-            if (_cam == null) return;
-
             // 오른쪽 끝이 화면 왼쪽(0)을 벗어났는지 확인
             if (_cam.WorldToViewportPoint(transform.position + Vector3.right * _halfWidth).x < 0)
             {
