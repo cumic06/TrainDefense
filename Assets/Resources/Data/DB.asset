@@ -449,15 +449,105 @@ MonoBehaviour:
     prefabId: EliteNormalTurretTrain
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 5
-      AttackDamage: 3
-      AttackCount: 2
-      AttackInterval: 0.3
+      AttackRange: 10
+      AttackDamage: 50
+      AttackCount: 1
+      AttackInterval: 0.1
       TargetCount: 0
     turretProjectilePrefabId: NormalProjectile
+  - id: 31002
+    name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
+    iconId: 
+    description: "\uD654\uC5FC \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    trainStatusData:
+      MaxHp: 150
+    prefabId: 
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackRange: 10
+      AttackDamage: 25
+      AttackCount: 1
+      AttackInterval: 0.1
+      TargetCount: 0
+    turretProjectilePrefabId: FireEffectProjectile
+  - id: 31003
+    name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
+    iconId: 
+    description: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    trainStatusData:
+      MaxHp: 150
+    prefabId: 
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackRange: 10
+      AttackDamage: 100
+      AttackCount: 1
+      AttackInterval: 0.5
+      TargetCount: 0
+    turretProjectilePrefabId: MissileProjectile
+  - id: 31004
+    name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
+    iconId: 
+    description: "\uB808\uC774\uC800 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    trainStatusData:
+      MaxHp: 150
+    prefabId: 
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackRange: 10
+      AttackDamage: 300
+      AttackCount: 1
+      AttackInterval: 3
+      TargetCount: 0
+    turretProjectilePrefabId: LaserProjectile
+  - id: 31005
+    name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
+    iconId: 
+    description: "\uC804\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    trainStatusData:
+      MaxHp: 150
+    prefabId: 
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackRange: 10
+      AttackDamage: 400
+      AttackCount: 1
+      AttackInterval: 5
+      TargetCount: 0
+    turretProjectilePrefabId: ElectrickProjectile
+  - id: 31006
+    name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
+    iconId: 
+    description: "\uD3EC\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    trainStatusData:
+      MaxHp: 150
+    prefabId: 
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackRange: 10
+      AttackDamage: 400
+      AttackCount: 1
+      AttackInterval: 3
+      TargetCount: 0
+    turretProjectilePrefabId: CannonProjectile
+  - id: 31007
+    name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
+    iconId: 
+    description: "\uC800\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    trainStatusData:
+      MaxHp: 150
+    prefabId: 
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackRange: 10
+      AttackDamage: 600
+      AttackCount: 1
+      AttackInterval: 1.5
+      TargetCount: 0
+    turretProjectilePrefabId: SniperProjectile
   rangeTrainDataList:
   - id: 40001
-    name: "\uCDA9\uACA9 \uD3EC\uD0D1"
+    name: "\uD3ED\uBC1C \uD3EC\uD0D1"
     iconId: 
     description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC744 \uBC00\uCE58\uACE0
       \uD53C\uD574\uB97C \uC900\uB2E4."
@@ -483,6 +573,34 @@ MonoBehaviour:
     rangeTrainStatus:
       AttackRange: 5
       AttackDamage: 1
+      AttackCount: 1
+      AttackInterval: 0.1
+    rangeProjectilePrefabId: ColdAirProjectile
+  - id: 41001
+    name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
+    iconId: 
+    description: "\uD3ED\uBC1C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    trainStatusData:
+      MaxHp: 150
+    prefabId: 
+    isMainTrain: 0
+    rangeTrainStatus:
+      AttackRange: 8
+      AttackDamage: 500
+      AttackCount: 1
+      AttackInterval: 4
+    rangeProjectilePrefabId: ExplosionProjectile
+  - id: 41002
+    name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
+    iconId: 
+    description: "\uB0C9\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    trainStatusData:
+      MaxHp: 150
+    prefabId: 
+    isMainTrain: 0
+    rangeTrainStatus:
+      AttackRange: 13
+      AttackDamage: 15
       AttackCount: 1
       AttackInterval: 0.1
     rangeProjectilePrefabId: ColdAirProjectile
@@ -731,27 +849,27 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackRange: 1
-        AttackDamage: 1
-        AttackCount: 0
-        AttackInterval: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackRange: 1
-        AttackDamage: 1
-        AttackCount: 0
-        AttackInterval: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 2
+        AttackCount: 0
+        AttackInterval: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackRange: 1
+        AttackDamage: 3
+        AttackCount: 0
+        AttackInterval: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackRange: 1
+        AttackDamage: 4
         AttackCount: 0
         AttackInterval: 0
   stageDataList:
   - id: 50001
     stageInspectionTime:
-    - 50
+    - 180
     stageEndTime: 180
     spawnDatas:
     - MonsterId: 10001
@@ -770,7 +888,7 @@ MonoBehaviour:
     bossMonsterId: 99999
   - id: 50002
     stageInspectionTime:
-    - 20
+    - 180
     stageEndTime: 180
     spawnDatas:
     - MonsterId: 10004
@@ -789,7 +907,7 @@ MonoBehaviour:
     bossMonsterId: 
   - id: 50003
     stageInspectionTime:
-    - 20
+    - 180
     stageEndTime: 180
     spawnDatas:
     - MonsterId: 10007
