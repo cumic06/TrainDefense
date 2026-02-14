@@ -461,7 +461,7 @@ MonoBehaviour:
     description: "\uD654\uC5FC \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
-    prefabId: 
+    prefabId: EliteFireTurretTrain
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -476,7 +476,7 @@ MonoBehaviour:
     description: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
-    prefabId: 
+    prefabId: EliteMissileTurretTrain
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -491,7 +491,7 @@ MonoBehaviour:
     description: "\uB808\uC774\uC800 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
-    prefabId: 
+    prefabId: EliteLaserTurretTrain
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -506,7 +506,7 @@ MonoBehaviour:
     description: "\uC804\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
-    prefabId: 
+    prefabId: EliteElectrickTurretTrain
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -521,7 +521,7 @@ MonoBehaviour:
     description: "\uD3EC\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
-    prefabId: 
+    prefabId: EliteCannonTurretTrain
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -536,7 +536,7 @@ MonoBehaviour:
     description: "\uC800\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
-    prefabId: 
+    prefabId: EliteSniperTurretTrain
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -582,7 +582,7 @@ MonoBehaviour:
     description: "\uD3ED\uBC1C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
-    prefabId: 
+    prefabId: EliteExplosionRangeTrain
     isMainTrain: 0
     rangeTrainStatus:
       AttackRange: 8
@@ -596,7 +596,7 @@ MonoBehaviour:
     description: "\uB0C9\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
-    prefabId: 
+    prefabId: EliteColdAirRangeTrain
     isMainTrain: 0
     rangeTrainStatus:
       AttackRange: 13
