@@ -285,7 +285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       propertyPath: m_Name
-      value: EliteNormalTurretTrain
+      value: EliteFireTurretTrain
       objectReference: {fileID: 0}
     - target: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       propertyPath: m_Layer
@@ -332,7 +332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba1f7756381f5114e9b8c4a258a20912, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.TurretTrain
-  id: 31001
+  id: 31002
   explosionRadius: 5
   explosionForce: 10
   IsUnDead: 0
