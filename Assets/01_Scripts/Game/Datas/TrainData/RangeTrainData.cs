@@ -16,7 +16,9 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         public RangeTrainStatus RangeTrainStatus => rangeTrainStatus;
-        
+
+        private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
+
         [ShowInInspector, ReadOnly]
         public GameObject RangeProjectilePrefab
         {
@@ -24,7 +26,7 @@ namespace TrainDefense.Game.Datas
             {
                 if (rangeProjectilePrefab == null && !string.IsNullOrEmpty(rangeProjectilePrefabId))
                 {
-                    rangeProjectilePrefab = Resources.Load<GameObject>($"Prefabs/Projectiles/{rangeProjectilePrefabId}");
+                    rangeProjectilePrefab = Resources.Load<GameObject>($"{PROJECTILE_PREFAB_PATH}{rangeProjectilePrefabId}");
                     if (rangeProjectilePrefab == null)
                     {
                         Debug.LogWarning($"RangeTrainData [{Id}]: Projectile Prefab not found at 'Prefabs/{rangeProjectilePrefabId}'");
@@ -33,7 +35,7 @@ namespace TrainDefense.Game.Datas
                 return rangeProjectilePrefab;
             }
         }
-        
+
         [Obsolete("Use RangeProjectilePrefab property instead")]
         public Projectile RangeProjectilePrefabComponent => RangeProjectilePrefab?.GetComponent<Projectile>();
     }
