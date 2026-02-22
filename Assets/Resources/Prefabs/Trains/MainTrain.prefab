@@ -243,6 +243,6 @@ MonoBehaviour:
   IsUnDead: 0
   moveSpeed: 2
   maxTrainCount: 5
-  trainOffset: 3
+  trainOffset: 2.8
   startTrainablePrefab: {fileID: 0}
   isUnDead: 1
