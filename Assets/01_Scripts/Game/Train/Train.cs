@@ -17,6 +17,8 @@ namespace TrainDefense.Game
         protected float explosionRadius = 5f;
         [SerializeField]
         protected float explosionForce = 10f;
+        [SerializeField]
+        protected bool isRotateModel = true;
         #endregion
 
         [ShowInInspector, ReadOnly]

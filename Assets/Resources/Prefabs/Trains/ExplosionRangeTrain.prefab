@@ -322,6 +322,7 @@ MonoBehaviour:
   id: 40001
   explosionRadius: 5
   explosionForce: 10
+  isRotateModel: 0
   IsUnDead: 0
   isExplosionProjectile: 1
 --- !u!4 &2882259565530538111 stripped

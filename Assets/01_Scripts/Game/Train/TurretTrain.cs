@@ -127,7 +127,10 @@ namespace TrainDefense.Game
         {
             if (turretModel != null)
             {
-                turretModel.transform.LookAt2D(GetNearTargetMonster().transform);
+                if (isRotateModel)
+                {
+                    turretModel.transform.LookAt2D(GetNearTargetMonster().transform);
+                }
 
                 turretModel.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
                 {
@@ -295,7 +298,7 @@ namespace TrainDefense.Game
                 {
                     // 사용 가능한 비활성화된 프로젝타일 찾기
                     projectile = _nonMovementProjectiles.FirstOrDefault(p => p != null && !p.gameObject.activeSelf);
-                    
+
                     // 사용 가능한 프로젝타일이 없으면 새로 생성
                     if (projectile == null)
                     {
@@ -347,7 +350,7 @@ namespace TrainDefense.Game
             {
                 // 사용 가능한 비활성화된 프로젝타일 찾기
                 projectile = _nonMovementProjectiles.FirstOrDefault(p => p != null && !p.gameObject.activeSelf);
-                
+
                 // 사용 가능한 프로젝타일이 없으면 새로 생성
                 if (projectile == null)
                 {
@@ -496,7 +499,7 @@ namespace TrainDefense.Game
                     projectile.transform.SetParent(null);
                     projectile.transform.position = worldPosition.Value;
                     projectile.transform.localRotation = Quaternion.identity;
-                    
+
                     if (useParticleProjectile)
                     {
                         projectile.transform.localScale = Vector3.one;

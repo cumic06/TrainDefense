@@ -323,6 +323,7 @@ MonoBehaviour:
   id: 30002
   explosionRadius: 5
   explosionForce: 10
+  isRotateModel: 1
   IsUnDead: 0
   turretProjectileSpawnPoints:
   - {fileID: 3529707877163048822}

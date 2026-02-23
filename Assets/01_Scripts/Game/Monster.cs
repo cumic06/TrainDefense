@@ -62,7 +62,6 @@ namespace TrainDefense.Game
         private void OnEnable()
         {
             _isDead = false;
-            _targetTrain = null;
 
             if (_modelAnimator != null)
             {
@@ -81,6 +80,8 @@ namespace TrainDefense.Game
             {
                 _modelAnimator.OnAttackHit -= OnAttackHit;
             }
+
+            _targetTrain = null;
         }
         #endregion
 
@@ -132,12 +133,15 @@ namespace TrainDefense.Game
 
         private void Move()
         {
-            transform.Translate(MoveDirection().normalized * Time.deltaTime * _currentMonsterStatus.MoveSpeed);
+            transform.Translate(_currentMonsterStatus.MoveSpeed * Time.deltaTime * MoveDirection().normalized);
         }
 
         private Vector3 MoveDirection()
         {
-            if (_targetTrain == null) return Vector3.zero;
+            if (_targetTrain == null)
+            {
+                return Vector3.zero;
+            }
 
             return _targetTrain.transform.position - transform.position;
         }
