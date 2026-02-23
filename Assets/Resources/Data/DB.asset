@@ -1000,7 +1000,7 @@ MonoBehaviour:
       Tier: 0
     - Option:
         rid: 2066870334413602907
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 2066870334413602908
