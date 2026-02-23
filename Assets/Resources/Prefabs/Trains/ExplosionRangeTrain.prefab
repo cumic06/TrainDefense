@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2402762123945960705}
   - component: {fileID: 5532455163100083545}
   m_Layer: 8
-  m_Name: Triangle
+  m_Name: Bomb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
