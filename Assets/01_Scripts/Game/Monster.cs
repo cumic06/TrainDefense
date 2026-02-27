@@ -11,7 +11,7 @@ namespace TrainDefense.Game
     {
         #region Variables
 
-        #region Field
+        #region Fields
         [SerializeField]
         private string id;
         [SerializeField]
@@ -80,6 +80,9 @@ namespace TrainDefense.Game
             {
                 _modelAnimator.OnAttackHit -= OnAttackHit;
             }
+
+            _isStunned = false;
+            _isShoved = false;
 
             _targetTrain = null;
         }
