@@ -68,9 +68,10 @@ namespace TrainDefense.Game
             StartCoroutine(SpawnMonster());
         }
 
-        public void SetSpawnRule(StageSpawnData[] spawnDatas)
+        public void SetSpawnRule(StageSpawnData[] spawnDatas, float monsterSpawnInterval)
         {
             _currentSpawnDatas = spawnDatas;
+            _originalSpawnInterval = monsterSpawnInterval;
             spawnInterval = _originalSpawnInterval;
         }
 
@@ -119,14 +120,14 @@ namespace TrainDefense.Game
 
         private IEnumerator SpawnMonster()
         {
-            WaitForSeconds spawnWait = new(spawnInterval);
-
             while (true)
             {
                 if (_stopSpawnMonster)
                 {
                     yield return new WaitUntil(() => !_stopSpawnMonster);
                 }
+
+                WaitForSeconds spawnWait = new(spawnInterval);
 
                 if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
                 {

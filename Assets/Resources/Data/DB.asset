@@ -871,6 +871,7 @@ MonoBehaviour:
     stageInspectionTime:
     - 180
     stageEndTime: 180
+    spawnInterval: 1
     spawnDatas:
     - MonsterId: 10001
       Probability: 1
@@ -885,11 +886,11 @@ MonoBehaviour:
       id: 
       prefabId: Map1
     stageImage: {fileID: 7257567913506708742, guid: abc79d95ca2994e20b019ba42fccbcb9, type: 3}
-    bossMonsterId: 99999
   - id: 50002
     stageInspectionTime:
     - 180
     stageEndTime: 180
+    spawnInterval: 0
     spawnDatas:
     - MonsterId: 10004
       Probability: 1
@@ -904,11 +905,11 @@ MonoBehaviour:
       id: 
       prefabId: Map2
     stageImage: {fileID: 0}
-    bossMonsterId: 
   - id: 50003
     stageInspectionTime:
     - 180
     stageEndTime: 180
+    spawnInterval: 0
     spawnDatas:
     - MonsterId: 10007
       Probability: 1
@@ -926,7 +927,6 @@ MonoBehaviour:
       id: 
       prefabId: Map3
     stageImage: {fileID: 0}
-    bossMonsterId: 
   upgradeDataList:
   - id: 110001
     iconId: 

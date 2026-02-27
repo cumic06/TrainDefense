@@ -92,7 +92,7 @@ public class StageManager : Singleton<StageManager>
             }
         }
 
-        MonsterSpawner.Instance.SetSpawnRule(filteredList.ToArray());
+        MonsterSpawner.Instance.SetSpawnRule(filteredList.ToArray(), CurrentStageData.SpawnInterval);
     }
 
     private void SetCurrentStage()
@@ -179,7 +179,7 @@ public class StageManager : Singleton<StageManager>
             ShowStageSelection();
         }
     }
-    
+
     private void StartMonsterRush()
     {
         GameEventSystem.Publish(new MonsterRushEvent(0.5f));
@@ -189,7 +189,7 @@ public class StageManager : Singleton<StageManager>
     //{
     //    StartCoroutine(BossSpawnCoroutine());
     //}
-    
+
     //private void BossSpawnCoroutine()
     //{
     //    var stageData = CurrentStageData;
@@ -198,7 +198,7 @@ public class StageManager : Singleton<StageManager>
     //        Debug.LogWarning("StageManager: BossMonsterId is null or empty. Cannot spawn boss.");
     //        yield break;
     //    }
-        
+
     //    GameEventSystem.Publish(new BossSpawnEvent(stageData.BossMonsterId, 0.7f));
     //    Debug.Log($"[StageManager] Boss spawn triggered: {stageData.BossMonsterId}");
     //}

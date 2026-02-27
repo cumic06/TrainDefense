@@ -15,6 +15,8 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private float stageEndTime;
         [SerializeField]
+        private float spawnInterval;
+        [SerializeField]
         private StageSpawnData[] spawnDatas;
         [SerializeField]
         private MapData mapData;
@@ -28,7 +30,7 @@ namespace TrainDefense.Game.Datas
 
         public float[] StageInspectionTime => stageInspectionTime;
         public float StageEndTime => stageEndTime;
-
+        public float SpawnInterval => spawnInterval;
         public StageSpawnData[] SpawnDatas => spawnDatas;
         public MapData MapData => mapData;
         public Sprite StageImage => stageImage;
