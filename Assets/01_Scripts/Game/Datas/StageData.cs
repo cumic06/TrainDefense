@@ -20,8 +20,6 @@ namespace TrainDefense.Game.Datas
         private MapData mapData;
         [SerializeField]
         private Sprite stageImage;
-        [SerializeField]
-        private string bossMonsterId;
         #endregion
 
         #region IData
@@ -34,7 +32,6 @@ namespace TrainDefense.Game.Datas
         public StageSpawnData[] SpawnDatas => spawnDatas;
         public MapData MapData => mapData;
         public Sprite StageImage => stageImage;
-        public string BossMonsterId => bossMonsterId;
     }
 
     [Serializable]

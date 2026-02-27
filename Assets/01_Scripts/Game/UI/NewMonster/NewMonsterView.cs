@@ -24,8 +24,6 @@ namespace TrainDefense.Game.UI
         private Image iconImage;
         [SerializeField]
         private TMP_Text nameText;
-        [SerializeField]
-        private GameObject specialMonster;
 
         [Header("Settings")]
         [SerializeField]
@@ -63,7 +61,7 @@ namespace TrainDefense.Game.UI
 
         private void OnNewMonsterDiscovered(NewMonsterDiscoveredEvent evt)
         {
-            _viewModel = new NewMonsterViewModel(evt.MonsterId, evt.IsBoss);
+            _viewModel = new NewMonsterViewModel(evt.MonsterId);
 
             if (_viewModel.IsValid)
             {
@@ -105,15 +103,6 @@ namespace TrainDefense.Game.UI
             if (nameText != null)
             {
                 nameText.text = _viewModel.MonsterName ?? "???";
-            }
-
-            if (specialMonster != null)
-            {
-                specialMonster.SetActive(_viewModel.IsBoss);
-
-                specialMonster.transform.DOLocalMoveX(specialShowPosX, specialShowDuration)
-                .SetEase(Ease.OutQuad)
-                .SetUpdate(true);
             }
         }
 

@@ -334,7 +334,7 @@ namespace TrainDefense.Game
             }
         }
 
-        protected virtual void OnDead()
+        protected void OnDead()
         {
             _isDead = true;
 

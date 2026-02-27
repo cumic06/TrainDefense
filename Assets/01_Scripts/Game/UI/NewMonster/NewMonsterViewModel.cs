@@ -13,14 +13,12 @@ namespace TrainDefense.Game.UI
         public string MonsterId { get; private set; }
         public string MonsterName { get; private set; }
         public Sprite Icon { get; private set; }
-        public bool IsBoss { get; private set; }
 
         public bool IsValid => !string.IsNullOrEmpty(MonsterId);
 
-        public NewMonsterViewModel(string monsterId, bool isBoss)
+        public NewMonsterViewModel(string monsterId)
         {
             MonsterId = monsterId;
-            IsBoss = isBoss;
             LoadMonsterData(monsterId);
         }
 

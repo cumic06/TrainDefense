@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace TrainDefense.Game.UI
 {
-    public class BossWarningUI : MonoBehaviour
+    public class WarningUI : MonoBehaviour
     {
         [SerializeField]
         private GameObject warningPanel;
@@ -15,7 +15,7 @@ namespace TrainDefense.Game.UI
 
         private void Start()
         {
-            GameEventSystem.Subscribe<BossSpawnEvent>(OnBossSpawn);
+            GameEventSystem.Subscribe<MonsterRushEvent>(OnMonsterRush);
             
             if (warningPanel != null)
             {
@@ -25,10 +25,10 @@ namespace TrainDefense.Game.UI
 
         private void OnDestroy()
         {
-            GameEventSystem.Unsubscribe<BossSpawnEvent>(OnBossSpawn);
+            GameEventSystem.Unsubscribe<MonsterRushEvent>(OnMonsterRush);
         }
 
-        private void OnBossSpawn(BossSpawnEvent spawnEvent)
+        private void OnMonsterRush(MonsterRushEvent spawnEvent)
         {
             ShowWarning();
         }

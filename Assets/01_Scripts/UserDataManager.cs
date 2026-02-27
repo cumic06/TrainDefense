@@ -72,7 +72,7 @@ namespace TrainDefense
                 SaveDiscoveredMonsters();
 
                 // UI에 새 몬스터 발견 알림
-                GameEventSystem.Publish(new NewMonsterDiscoveredEvent(monsterId, monsterSpawnedEvent.IsBoss));
+                GameEventSystem.Publish(new NewMonsterDiscoveredEvent(monsterId));
             }
         }
 

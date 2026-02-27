@@ -6,15 +6,12 @@ namespace TrainDefense.Game.Events
     public class MonsterSpawnedEvent
     {
         private string _monsterId;
-        private bool _isBoss;
 
         public string MonsterId => _monsterId;
-        public bool IsBoss => _isBoss;
 
-        public MonsterSpawnedEvent(string monsterId, bool isBoss)
+        public MonsterSpawnedEvent(string monsterId)
         {
             _monsterId = monsterId;
-            _isBoss = isBoss;
         }
     }
 }
