@@ -81,6 +81,9 @@ namespace TrainDefense.Game
                 _modelAnimator.OnAttackHit -= OnAttackHit;
             }
 
+            _isStunned = false;
+            _isShoved = false;
+
             _targetTrain = null;
         }
         #endregion
