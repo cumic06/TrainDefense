@@ -1,0 +1,572 @@
+fileFormatVersion: 2
+guid: 10ee004310cb8bc4db14860956c64b18
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8670675246235083985
+    second: FXT_Dash_0
+  - first:
+      213: -5965257235000715758
+    second: FXT_Dash_1
+  - first:
+      213: -3956507374951838656
+    second: FXT_Dash_2
+  - first:
+      213: 3370738176210781293
+    second: FXT_Dash_3
+  - first:
+      213: 7798742204309762316
+    second: FXT_Dash_4
+  - first:
+      213: 5967943812493576862
+    second: FXT_Dash_5
+  - first:
+      213: -6994312475112781556
+    second: FXT_Dash_6
+  - first:
+      213: -4731815592796736030
+    second: FXT_Dash_7
+  - first:
+      213: 7321753357915523796
+    second: FXT_Dash_8
+  - first:
+      213: 8445229768288563656
+    second: FXT_Dash_9
+  - first:
+      213: -5713126982319195205
+    second: FXT_Dash_10
+  - first:
+      213: 6912005999394395793
+    second: FXT_Dash_11
+  - first:
+      213: -8278515215015887806
+    second: FXT_Dash_12
+  - first:
+      213: 3057525205629599764
+    second: FXT_Dash_13
+  - first:
+      213: -6276650335120824608
+    second: FXT_Dash_14
+  - first:
+      213: -3813465121144403137
+    second: FXT_Dash_15
+  - first:
+      213: -3499821160639108347
+    second: FXT_Dash_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: FXT_Dash_0
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 280
+        width: 156
+        height: 224
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d46d9e723d645870800000000000000
+      internalID: 8670675246235083985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_1
+      rect:
+        serializedVersion: 2
+        x: 310
+        y: 273
+        width: 153
+        height: 232
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21614f96626273da0800000000000000
+      internalID: -5965257235000715758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_2
+      rect:
+        serializedVersion: 2
+        x: 567
+        y: 259
+        width: 150
+        height: 245
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04c48c44189a719c0800000000000000
+      internalID: -3956507374951838656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_3
+      rect:
+        serializedVersion: 2
+        x: 819
+        y: 261
+        width: 157
+        height: 243
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6444e7238447ce20800000000000000
+      internalID: 3370738176210781293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_4
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 38
+        width: 152
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c01fabe17b2ba3c60800000000000000
+      internalID: 7798742204309762316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_5
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 32
+        width: 151
+        height: 218
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9a8b27274562d250800000000000000
+      internalID: 5967943812493576862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_6
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 38
+        width: 144
+        height: 213
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c09c1d08cd53fee90800000000000000
+      internalID: -6994312475112781556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_7
+      rect:
+        serializedVersion: 2
+        x: 827
+        y: 171
+        width: 10
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e532b0e9c6355eb0800000000000000
+      internalID: -4731815592796736030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_8
+      rect:
+        serializedVersion: 2
+        x: 830
+        y: 42
+        width: 141
+        height: 208
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4da049ff2e71c9560800000000000000
+      internalID: 7321753357915523796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_9
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 70
+        width: 11
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c1f461cabb733570800000000000000
+      internalID: 8445229768288563656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_10
+      rect:
+        serializedVersion: 2
+        x: 865
+        y: 39
+        width: 11
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbb3a2e6745e6b0b0800000000000000
+      internalID: -5713126982319195205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_11
+      rect:
+        serializedVersion: 2
+        x: 882
+        y: 72
+        width: 8
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1969547c5d06cef50800000000000000
+      internalID: 6912005999394395793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_12
+      rect:
+        serializedVersion: 2
+        x: 889
+        y: 83
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24cbf4df54ecc1d80800000000000000
+      internalID: -8278515215015887806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_13
+      rect:
+        serializedVersion: 2
+        x: 613
+        y: 47
+        width: 7
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4100b5d99f28e6a20800000000000000
+      internalID: 3057525205629599764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_14
+      rect:
+        serializedVersion: 2
+        x: 626
+        y: 38
+        width: 6
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e669cb76cbd4e8a0800000000000000
+      internalID: -6276650335120824608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_15
+      rect:
+        serializedVersion: 2
+        x: 659
+        y: 36
+        width: 15
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3b88da4da9d31bc0800000000000000
+      internalID: -3813465121144403137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: FXT_Dash_16
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 16
+        width: 8
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50be5be72332e6fc0800000000000000
+      internalID: -3499821160639108347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      FXT_Dash_0: 8670675246235083985
+      FXT_Dash_1: -5965257235000715758
+      FXT_Dash_10: -5713126982319195205
+      FXT_Dash_11: 6912005999394395793
+      FXT_Dash_12: -8278515215015887806
+      FXT_Dash_13: 3057525205629599764
+      FXT_Dash_14: -6276650335120824608
+      FXT_Dash_15: -3813465121144403137
+      FXT_Dash_16: -3499821160639108347
+      FXT_Dash_2: -3956507374951838656
+      FXT_Dash_3: 3370738176210781293
+      FXT_Dash_4: 7798742204309762316
+      FXT_Dash_5: 5967943812493576862
+      FXT_Dash_6: -6994312475112781556
+      FXT_Dash_7: -4731815592796736030
+      FXT_Dash_8: 7321753357915523796
+      FXT_Dash_9: 8445229768288563656
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

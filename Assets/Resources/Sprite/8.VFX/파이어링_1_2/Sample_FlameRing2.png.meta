@@ -1,0 +1,2704 @@
+fileFormatVersion: 2
+guid: e432e4ef48c8fc448aa1cc1be610aa76
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1348014565101646628
+    second: Sample_FlameRing2_0
+  - first:
+      213: 2208366722159491918
+    second: Sample_FlameRing2_1
+  - first:
+      213: 4981433605065830265
+    second: Sample_FlameRing2_2
+  - first:
+      213: -5824815869364925714
+    second: Sample_FlameRing2_3
+  - first:
+      213: -5541223138887525055
+    second: Sample_FlameRing2_4
+  - first:
+      213: -3333962233304130293
+    second: Sample_FlameRing2_5
+  - first:
+      213: -5568644730306473844
+    second: Sample_FlameRing2_6
+  - first:
+      213: -4916349832950622341
+    second: Sample_FlameRing2_7
+  - first:
+      213: -5656861732312966712
+    second: Sample_FlameRing2_8
+  - first:
+      213: 1870220317383480907
+    second: Sample_FlameRing2_9
+  - first:
+      213: -4007139133072481953
+    second: Sample_FlameRing2_10
+  - first:
+      213: 4896788483771385230
+    second: Sample_FlameRing2_11
+  - first:
+      213: -4837457195713923305
+    second: Sample_FlameRing2_12
+  - first:
+      213: -3765229117570094774
+    second: Sample_FlameRing2_13
+  - first:
+      213: -1555637503538127859
+    second: Sample_FlameRing2_14
+  - first:
+      213: -4334347629938307475
+    second: Sample_FlameRing2_15
+  - first:
+      213: 9208747105797167328
+    second: Sample_FlameRing2_16
+  - first:
+      213: 4397788246799793711
+    second: Sample_FlameRing2_17
+  - first:
+      213: 953750973401034427
+    second: Sample_FlameRing2_18
+  - first:
+      213: -6818735331086690530
+    second: Sample_FlameRing2_19
+  - first:
+      213: 8845586159993501845
+    second: Sample_FlameRing2_20
+  - first:
+      213: -4445269212825418415
+    second: Sample_FlameRing2_21
+  - first:
+      213: 7918015946832138499
+    second: Sample_FlameRing2_22
+  - first:
+      213: -9166683082091018547
+    second: Sample_FlameRing2_23
+  - first:
+      213: 316390197436627438
+    second: Sample_FlameRing2_24
+  - first:
+      213: -7215702038773604896
+    second: Sample_FlameRing2_25
+  - first:
+      213: 5006993831291727769
+    second: Sample_FlameRing2_26
+  - first:
+      213: -5595305865012975043
+    second: Sample_FlameRing2_27
+  - first:
+      213: 3633216047838047693
+    second: Sample_FlameRing2_28
+  - first:
+      213: 290924871551532199
+    second: Sample_FlameRing2_29
+  - first:
+      213: 8735523096826289975
+    second: Sample_FlameRing2_30
+  - first:
+      213: 6538097418462128217
+    second: Sample_FlameRing2_31
+  - first:
+      213: 4884637153503962
+    second: Sample_FlameRing2_32
+  - first:
+      213: 8545078455230459741
+    second: Sample_FlameRing2_33
+  - first:
+      213: 4263212759435469068
+    second: Sample_FlameRing2_34
+  - first:
+      213: -6889514743368059674
+    second: Sample_FlameRing2_35
+  - first:
+      213: -5790810570818446973
+    second: Sample_FlameRing2_36
+  - first:
+      213: -8999751743589033411
+    second: Sample_FlameRing2_37
+  - first:
+      213: -4092377186910415603
+    second: Sample_FlameRing2_38
+  - first:
+      213: 4562223714054866509
+    second: Sample_FlameRing2_39
+  - first:
+      213: 273596865347477084
+    second: Sample_FlameRing2_40
+  - first:
+      213: -7358956242251680981
+    second: Sample_FlameRing2_41
+  - first:
+      213: 8523725850147541868
+    second: Sample_FlameRing2_42
+  - first:
+      213: -4181847673420345537
+    second: Sample_FlameRing2_43
+  - first:
+      213: -4046639030186081401
+    second: Sample_FlameRing2_44
+  - first:
+      213: 324921153703224462
+    second: Sample_FlameRing2_45
+  - first:
+      213: -3811977170249629274
+    second: Sample_FlameRing2_46
+  - first:
+      213: -6968609584492628290
+    second: Sample_FlameRing2_47
+  - first:
+      213: -5973598704772068902
+    second: Sample_FlameRing2_48
+  - first:
+      213: -2271066073620624528
+    second: Sample_FlameRing2_49
+  - first:
+      213: 6809717379293588071
+    second: Sample_FlameRing2_50
+  - first:
+      213: 8418767743254573871
+    second: Sample_FlameRing2_51
+  - first:
+      213: -1842688710532377936
+    second: Sample_FlameRing2_52
+  - first:
+      213: -2302202000858575829
+    second: Sample_FlameRing2_53
+  - first:
+      213: 2543554817200444806
+    second: Sample_FlameRing2_54
+  - first:
+      213: 4214935046807519692
+    second: Sample_FlameRing2_55
+  - first:
+      213: 3095590855898931703
+    second: Sample_FlameRing2_56
+  - first:
+      213: 2873133484082205604
+    second: Sample_FlameRing2_57
+  - first:
+      213: 199000709862493010
+    second: Sample_FlameRing2_58
+  - first:
+      213: -3922901327876513691
+    second: Sample_FlameRing2_59
+  - first:
+      213: -1882439233947210432
+    second: Sample_FlameRing2_60
+  - first:
+      213: 4443035031849826840
+    second: Sample_FlameRing2_61
+  - first:
+      213: 7161066945150127817
+    second: Sample_FlameRing2_62
+  - first:
+      213: -6711794423901141884
+    second: Sample_FlameRing2_63
+  - first:
+      213: -4366156979645130160
+    second: Sample_FlameRing2_64
+  - first:
+      213: -7709863346693438581
+    second: Sample_FlameRing2_65
+  - first:
+      213: -9089255315910182918
+    second: Sample_FlameRing2_66
+  - first:
+      213: 1680995062416920234
+    second: Sample_FlameRing2_67
+  - first:
+      213: -2115027342140353443
+    second: Sample_FlameRing2_68
+  - first:
+      213: -3254879744472207344
+    second: Sample_FlameRing2_69
+  - first:
+      213: 1599871709533459348
+    second: Sample_FlameRing2_70
+  - first:
+      213: 5439249710342371311
+    second: Sample_FlameRing2_71
+  - first:
+      213: -1199639860364509235
+    second: Sample_FlameRing2_72
+  - first:
+      213: 1547701353623415843
+    second: Sample_FlameRing2_73
+  - first:
+      213: 2869239580229585320
+    second: Sample_FlameRing2_74
+  - first:
+      213: -2706797226810728968
+    second: Sample_FlameRing2_75
+  - first:
+      213: -2988155397997242484
+    second: Sample_FlameRing2_76
+  - first:
+      213: 2096472593479500669
+    second: Sample_FlameRing2_77
+  - first:
+      213: -5039419760430984963
+    second: Sample_FlameRing2_78
+  - first:
+      213: -7698660861699820522
+    second: Sample_FlameRing2_79
+  - first:
+      213: 1397776484751448311
+    second: Sample_FlameRing2_80
+  - first:
+      213: -1657412391701409733
+    second: Sample_FlameRing2_81
+  - first:
+      213: 6678820332427994531
+    second: Sample_FlameRing2_82
+  - first:
+      213: 5448208158329031546
+    second: Sample_FlameRing2_83
+  - first:
+      213: 5316853758635786458
+    second: Sample_FlameRing2_84
+  - first:
+      213: 4658892744242786856
+    second: Sample_FlameRing2_85
+  - first:
+      213: 6838916729868366943
+    second: Sample_FlameRing2_86
+  - first:
+      213: -2709735928625145152
+    second: Sample_FlameRing2_87
+  - first:
+      213: -2268194941034089239
+    second: Sample_FlameRing2_88
+  - first:
+      213: -746948415944888118
+    second: Sample_FlameRing2_89
+  - first:
+      213: 3952389671481868503
+    second: Sample_FlameRing2_90
+  - first:
+      213: 5299546592677374028
+    second: Sample_FlameRing2_91
+  - first:
+      213: -3404884043333019683
+    second: Sample_FlameRing2_92
+  - first:
+      213: 8375518560599009957
+    second: Sample_FlameRing2_93
+  - first:
+      213: -3386420879991719830
+    second: Sample_FlameRing2_94
+  - first:
+      213: 5737509172251966069
+    second: Sample_FlameRing2_95
+  - first:
+      213: -7477215365939573235
+    second: Sample_FlameRing2_96
+  - first:
+      213: 747185140067241345
+    second: Sample_FlameRing2_97
+  - first:
+      213: -6140011985678466319
+    second: Sample_FlameRing2_98
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Sample_FlameRing2_0
+      rect:
+        serializedVersion: 2
+        x: 1115
+        y: 1131
+        width: 307
+        height: 301
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 423bfe8da1c15b210800000000000000
+      internalID: 1348014565101646628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_1
+      rect:
+        serializedVersion: 2
+        x: 1428
+        y: 1335
+        width: 21
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4b3c1855d1b5ae10800000000000000
+      internalID: 2208366722159491918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_2
+      rect:
+        serializedVersion: 2
+        x: 1630
+        y: 1116
+        width: 340
+        height: 328
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97f6426987b912540800000000000000
+      internalID: 4981433605065830265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_3
+      rect:
+        serializedVersion: 2
+        x: 1954
+        y: 1319
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eea0278f3d81a2fa0800000000000000
+      internalID: -5824815869364925714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_4
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 1267
+        width: 42
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14d1f61f9ee9913b0800000000000000
+      internalID: -5541223138887525055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_5
+      rect:
+        serializedVersion: 2
+        x: 720
+        y: 1235
+        width: 100
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0dd65d43036bb1d0800000000000000
+      internalID: -3333962233304130293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_6
+      rect:
+        serializedVersion: 2
+        x: 1621
+        y: 1268
+        width: 27
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c805bb92f1338b2b0800000000000000
+      internalID: -5568644730306473844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_7
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 595
+        width: 351
+        height: 347
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b775d67ffdd95cbb0800000000000000
+      internalID: -4916349832950622341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_8
+      rect:
+        serializedVersion: 2
+        x: 604
+        y: 598
+        width: 347
+        height: 345
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c91cfdc93ace71b0800000000000000
+      internalID: -5656861732312966712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_9
+      rect:
+        serializedVersion: 2
+        x: 1115
+        y: 596
+        width: 359
+        height: 345
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b465c55487b54f910800000000000000
+      internalID: 1870220317383480907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_10
+      rect:
+        serializedVersion: 2
+        x: 1618
+        y: 591
+        width: 345
+        height: 345
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f51e5af6038c368c0800000000000000
+      internalID: -4007139133072481953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_11
+      rect:
+        serializedVersion: 2
+        x: 1836
+        y: 926
+        width: 20
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e85ca638e23e4f340800000000000000
+      internalID: 4896788483771385230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_12
+      rect:
+        serializedVersion: 2
+        x: 1960
+        y: 792
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71770597f46eddcb0800000000000000
+      internalID: -4837457195713923305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_13
+      rect:
+        serializedVersion: 2
+        x: 1959
+        y: 735
+        width: 19
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a49e64d01183fbbc0800000000000000
+      internalID: -3765229117570094774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_14
+      rect:
+        serializedVersion: 2
+        x: 1704
+        y: 587
+        width: 25
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0c9552cee3496ae0800000000000000
+      internalID: -1555637503538127859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_15
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 67
+        width: 342
+        height: 376
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6e88708bcd49d3c0800000000000000
+      internalID: -4334347629938307475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_16
+      rect:
+        serializedVersion: 2
+        x: 1220
+        y: 443
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e85273e3ba0ccf70800000000000000
+      internalID: 9208747105797167328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_17
+      rect:
+        serializedVersion: 2
+        x: 1238
+        y: 437
+        width: 37
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2eb3e72c15180d30800000000000000
+      internalID: 4397788246799793711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_18
+      rect:
+        serializedVersion: 2
+        x: 1285
+        y: 404
+        width: 61
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbe60c505776c3d00800000000000000
+      internalID: 953750973401034427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_19
+      rect:
+        serializedVersion: 2
+        x: 1740
+        y: 439
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e171c25f75cfe51a0800000000000000
+      internalID: -6818735331086690530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_20
+      rect:
+        serializedVersion: 2
+        x: 1767
+        y: 441
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59836802fb5d1ca70800000000000000
+      internalID: 8845586159993501845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_21
+      rect:
+        serializedVersion: 2
+        x: 1824
+        y: 405
+        width: 36
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1558f86f33b3f42c0800000000000000
+      internalID: -4445269212825418415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_22
+      rect:
+        serializedVersion: 2
+        x: 656
+        y: 378
+        width: 162
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 301decc5d8172ed60800000000000000
+      internalID: 7918015946832138499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_23
+      rect:
+        serializedVersion: 2
+        x: 836
+        y: 419
+        width: 21
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc6c163dd4669c080800000000000000
+      internalID: -9166683082091018547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_24
+      rect:
+        serializedVersion: 2
+        x: 1180
+        y: 385
+        width: 58
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee930a0553b046400800000000000000
+      internalID: 316390197436627438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_25
+      rect:
+        serializedVersion: 2
+        x: 1248
+        y: 403
+        width: 32
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ed56d5e93dacdb90800000000000000
+      internalID: -7215702038773604896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_26
+      rect:
+        serializedVersion: 2
+        x: 1706
+        y: 391
+        width: 43
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99f27b28c5a6c7540800000000000000
+      internalID: 5006993831291727769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_27
+      rect:
+        serializedVersion: 2
+        x: 1766
+        y: 408
+        width: 22
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3aed3206fa7952b0800000000000000
+      internalID: -5595305865012975043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_28
+      rect:
+        serializedVersion: 2
+        x: 823
+        y: 347
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcda2a3feb6cb6230800000000000000
+      internalID: 3633216047838047693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_29
+      rect:
+        serializedVersion: 2
+        x: 873
+        y: 404
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7acb72911a2990400800000000000000
+      internalID: 290924871551532199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_30
+      rect:
+        serializedVersion: 2
+        x: 1361
+        y: 379
+        width: 59
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73f1d8949ffca3970800000000000000
+      internalID: 8735523096826289975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_31
+      rect:
+        serializedVersion: 2
+        x: 1891
+        y: 378
+        width: 28
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 958655636fcfbba50800000000000000
+      internalID: 6538097418462128217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_32
+      rect:
+        serializedVersion: 2
+        x: 1924
+        y: 395
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ada24663d8a511000800000000000000
+      internalID: 4884637153503962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_33
+      rect:
+        serializedVersion: 2
+        x: 635
+        y: 388
+        width: 26
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5feaddc497369670800000000000000
+      internalID: 8545078455230459741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_34
+      rect:
+        serializedVersion: 2
+        x: 909
+        y: 369
+        width: 29
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c016010da69f92b30800000000000000
+      internalID: 4263212759435469068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_35
+      rect:
+        serializedVersion: 2
+        x: 1177
+        y: 386
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e4fab6d7d68360a0800000000000000
+      internalID: -6889514743368059674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_36
+      rect:
+        serializedVersion: 2
+        x: 1436
+        y: 333
+        width: 33
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3891ac48778e2afa0800000000000000
+      internalID: -5790810570818446973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_37
+      rect:
+        serializedVersion: 2
+        x: 1655
+        y: 372
+        width: 27
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3a5ca0d8757a1380800000000000000
+      internalID: -8999751743589033411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_38
+      rect:
+        serializedVersion: 2
+        x: 607
+        y: 253
+        width: 74
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d05da4f71a4f437c0800000000000000
+      internalID: -4092377186910415603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_39
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 343
+        width: 50
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d468a16db46405f30800000000000000
+      internalID: 4562223714054866509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_40
+      rect:
+        serializedVersion: 2
+        x: 889
+        y: 329
+        width: 22
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5e52b246e20cc300800000000000000
+      internalID: 273596865347477084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_41
+      rect:
+        serializedVersion: 2
+        x: 1118
+        y: 310
+        width: 68
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b23f1fe794cbfd990800000000000000
+      internalID: -7358956242251680981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_42
+      rect:
+        serializedVersion: 2
+        x: 1422
+        y: 344
+        width: 20
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c63dbd4008b5a4670800000000000000
+      internalID: 8523725850147541868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_43
+      rect:
+        serializedVersion: 2
+        x: 1637
+        y: 344
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3f8cf882b717f5c0800000000000000
+      internalID: -4181847673420345537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_44
+      rect:
+        serializedVersion: 2
+        x: 1960
+        y: 362
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7830787fd3377d7c0800000000000000
+      internalID: -4046639030186081401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_45
+      rect:
+        serializedVersion: 2
+        x: 933
+        y: 329
+        width: 18
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e84ad7a511a528400800000000000000
+      internalID: 324921153703224462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_46
+      rect:
+        serializedVersion: 2
+        x: 1678
+        y: 345
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a14f5bd5f2291bc0800000000000000
+      internalID: -3811977170249629274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_47
+      rect:
+        serializedVersion: 2
+        x: 1945
+        y: 340
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb63fe111868a4f90800000000000000
+      internalID: -6968609584492628290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_48
+      rect:
+        serializedVersion: 2
+        x: 1968
+        y: 322
+        width: 17
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad9c353a0a3891da0800000000000000
+      internalID: -5973598704772068902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_49
+      rect:
+        serializedVersion: 2
+        x: 658
+        y: 287
+        width: 26
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07bc66c407d8b70e0800000000000000
+      internalID: -2271066073620624528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_50
+      rect:
+        serializedVersion: 2
+        x: 856
+        y: 327
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76a299580e9f08e50800000000000000
+      internalID: 6809717379293588071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_51
+      rect:
+        serializedVersion: 2
+        x: 863
+        y: 297
+        width: 36
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f23b43f68a875d470800000000000000
+      internalID: 8418767743254573871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_52
+      rect:
+        serializedVersion: 2
+        x: 902
+        y: 254
+        width: 45
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b2581971647d66e0800000000000000
+      internalID: -1842688710532377936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_53
+      rect:
+        serializedVersion: 2
+        x: 1398
+        y: 318
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2c81a15a7fec00e0800000000000000
+      internalID: -2302202000858575829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_54
+      rect:
+        serializedVersion: 2
+        x: 1606
+        y: 293
+        width: 26
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68557f141a58c4320800000000000000
+      internalID: 2543554817200444806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_55
+      rect:
+        serializedVersion: 2
+        x: 1631
+        y: 322
+        width: 13
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc18e48e7157e7a30800000000000000
+      internalID: 4214935046807519692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_56
+      rect:
+        serializedVersion: 2
+        x: 1648
+        y: 319
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f1adc77b7fb5fa20800000000000000
+      internalID: 3095590855898931703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_57
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 271
+        width: 17
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a310076eab6fd720800000000000000
+      internalID: 2873133484082205604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_58
+      rect:
+        serializedVersion: 2
+        x: 1084
+        y: 224
+        width: 38
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25b876d571ef2c200800000000000000
+      internalID: 199000709862493010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_59
+      rect:
+        serializedVersion: 2
+        x: 1388
+        y: 132
+        width: 89
+        height: 185
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5602307d60e0f89c0800000000000000
+      internalID: -3922901327876513691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_60
+      rect:
+        serializedVersion: 2
+        x: 1595
+        y: 254
+        width: 18
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04d61558d7b30e5e0800000000000000
+      internalID: -1882439233947210432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_61
+      rect:
+        serializedVersion: 2
+        x: 1917
+        y: 290
+        width: 15
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81a760e32d4d8ad30800000000000000
+      internalID: 4443035031849826840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_62
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 98
+        width: 155
+        height: 168
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ce07761278316360800000000000000
+      internalID: 7161066945150127817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_63
+      rect:
+        serializedVersion: 2
+        x: 590
+        y: 127
+        width: 59
+        height: 151
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 484cce5388aead2a0800000000000000
+      internalID: -6711794423901141884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_64
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 250
+        width: 14
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05ad8a22c5b4863c0800000000000000
+      internalID: -4366156979645130160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_65
+      rect:
+        serializedVersion: 2
+        x: 1116
+        y: 221
+        width: 15
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8388818220110590800000000000000
+      internalID: -7709863346693438581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_66
+      rect:
+        serializedVersion: 2
+        x: 1626
+        y: 235
+        width: 14
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af7b756727a7cd180800000000000000
+      internalID: -9089255315910182918
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_67
+      rect:
+        serializedVersion: 2
+        x: 1967
+        y: 245
+        width: 30
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aaecb8c5a18145710800000000000000
+      internalID: 1680995062416920234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_68
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 219
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d545c7596d9e5a2e0800000000000000
+      internalID: -2115027342140353443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_69
+      rect:
+        serializedVersion: 2
+        x: 871
+        y: 163
+        width: 67
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 010be141e1854d2d0800000000000000
+      internalID: -3254879744472207344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_70
+      rect:
+        serializedVersion: 2
+        x: 940
+        y: 212
+        width: 18
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49350f4e7d2e33610800000000000000
+      internalID: 1599871709533459348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_71
+      rect:
+        serializedVersion: 2
+        x: 1095
+        y: 157
+        width: 28
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe77a9d0bc81c7b40800000000000000
+      internalID: 5439249710342371311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_72
+      rect:
+        serializedVersion: 2
+        x: 1153
+        y: 199
+        width: 12
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcff29827e50a5fe0800000000000000
+      internalID: -1199639860364509235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_73
+      rect:
+        serializedVersion: 2
+        x: 1618
+        y: 215
+        width: 13
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32c6d195e2a8a7510800000000000000
+      internalID: 1547701353623415843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_74
+      rect:
+        serializedVersion: 2
+        x: 1960
+        y: 216
+        width: 17
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a94313423691d720800000000000000
+      internalID: 2869239580229585320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_75
+      rect:
+        serializedVersion: 2
+        x: 645
+        y: 176
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fd1fe073468f6ad0800000000000000
+      internalID: -2706797226810728968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_76
+      rect:
+        serializedVersion: 2
+        x: 1182
+        y: 166
+        width: 12
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8755b85f70f786d0800000000000000
+      internalID: -2988155397997242484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_77
+      rect:
+        serializedVersion: 2
+        x: 1602
+        y: 179
+        width: 20
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7300b757ba281d10800000000000000
+      internalID: 2096472593479500669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_78
+      rect:
+        serializedVersion: 2
+        x: 1690
+        y: 168
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df05d698d62601ab0800000000000000
+      internalID: -5039419760430984963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_79
+      rect:
+        serializedVersion: 2
+        x: 1899
+        y: 131
+        width: 70
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 614fd2c4cbcd82590800000000000000
+      internalID: -7698660861699820522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_80
+      rect:
+        serializedVersion: 2
+        x: 685
+        y: 143
+        width: 37
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f81101ae46e56310800000000000000
+      internalID: 1397776484751448311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_81
+      rect:
+        serializedVersion: 2
+        x: 758
+        y: 113
+        width: 124
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b309e4a0630bff8e0800000000000000
+      internalID: -1657412391701409733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_82
+      rect:
+        serializedVersion: 2
+        x: 1193
+        y: 160
+        width: 14
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a5e609d4bfefac50800000000000000
+      internalID: 6678820332427994531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_83
+      rect:
+        serializedVersion: 2
+        x: 669
+        y: 76
+        width: 178
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7b4693447ceb9b40800000000000000
+      internalID: 5448208158329031546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_84
+      rect:
+        serializedVersion: 2
+        x: 898
+        y: 137
+        width: 16
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad0cf26d25249c940800000000000000
+      internalID: 5316853758635786458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_85
+      rect:
+        serializedVersion: 2
+        x: 1153
+        y: 98
+        width: 47
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8227c3b5446b7a040800000000000000
+      internalID: 4658892744242786856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_86
+      rect:
+        serializedVersion: 2
+        x: 1660
+        y: 122
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f54b74c1886b8ee50800000000000000
+      internalID: 6838916729868366943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_87
+      rect:
+        serializedVersion: 2
+        x: 859
+        y: 98
+        width: 30
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ca5f2b9785156ad0800000000000000
+      internalID: -2709735928625145152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_88
+      rect:
+        serializedVersion: 2
+        x: 1204
+        y: 106
+        width: 25
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e43352f7b0c580e0800000000000000
+      internalID: -2268194941034089239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_89
+      rect:
+        serializedVersion: 2
+        x: 1251
+        y: 95
+        width: 55
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac0701a8f5e42a5f0800000000000000
+      internalID: -746948415944888118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_90
+      rect:
+        serializedVersion: 2
+        x: 1310
+        y: 112
+        width: 48
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d0899e2775b9d630800000000000000
+      internalID: 3952389671481868503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_91
+      rect:
+        serializedVersion: 2
+        x: 1711
+        y: 107
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c48aa2f3c85cb8940800000000000000
+      internalID: 5299546592677374028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_92
+      rect:
+        serializedVersion: 2
+        x: 1761
+        y: 93
+        width: 28
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd75dbf900c6fb0d0800000000000000
+      internalID: -3404884043333019683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_93
+      rect:
+        serializedVersion: 2
+        x: 1823
+        y: 108
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5aae13661c1db3470800000000000000
+      internalID: 8375518560599009957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_94
+      rect:
+        serializedVersion: 2
+        x: 664
+        y: 86
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a68b024d6240101d0800000000000000
+      internalID: -3386420879991719830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_95
+      rect:
+        serializedVersion: 2
+        x: 1235
+        y: 71
+        width: 89
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57abf9b813abf9f40800000000000000
+      internalID: 5737509172251966069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_96
+      rect:
+        serializedVersion: 2
+        x: 1355
+        y: 94
+        width: 20
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0e441c9d389b3890800000000000000
+      internalID: -7477215365939573235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_97
+      rect:
+        serializedVersion: 2
+        x: 1742
+        y: 70
+        width: 63
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18d88271de88e5a00800000000000000
+      internalID: 747185140067241345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sample_FlameRing2_98
+      rect:
+        serializedVersion: 2
+        x: 1863
+        y: 91
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f28ef451ab4acaa0800000000000000
+      internalID: -6140011985678466319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Sample_FlameRing2_0: 1348014565101646628
+      Sample_FlameRing2_1: 2208366722159491918
+      Sample_FlameRing2_10: -4007139133072481953
+      Sample_FlameRing2_11: 4896788483771385230
+      Sample_FlameRing2_12: -4837457195713923305
+      Sample_FlameRing2_13: -3765229117570094774
+      Sample_FlameRing2_14: -1555637503538127859
+      Sample_FlameRing2_15: -4334347629938307475
+      Sample_FlameRing2_16: 9208747105797167328
+      Sample_FlameRing2_17: 4397788246799793711
+      Sample_FlameRing2_18: 953750973401034427
+      Sample_FlameRing2_19: -6818735331086690530
+      Sample_FlameRing2_2: 4981433605065830265
+      Sample_FlameRing2_20: 8845586159993501845
+      Sample_FlameRing2_21: -4445269212825418415
+      Sample_FlameRing2_22: 7918015946832138499
+      Sample_FlameRing2_23: -9166683082091018547
+      Sample_FlameRing2_24: 316390197436627438
+      Sample_FlameRing2_25: -7215702038773604896
+      Sample_FlameRing2_26: 5006993831291727769
+      Sample_FlameRing2_27: -5595305865012975043
+      Sample_FlameRing2_28: 3633216047838047693
+      Sample_FlameRing2_29: 290924871551532199
+      Sample_FlameRing2_3: -5824815869364925714
+      Sample_FlameRing2_30: 8735523096826289975
+      Sample_FlameRing2_31: 6538097418462128217
+      Sample_FlameRing2_32: 4884637153503962
+      Sample_FlameRing2_33: 8545078455230459741
+      Sample_FlameRing2_34: 4263212759435469068
+      Sample_FlameRing2_35: -6889514743368059674
+      Sample_FlameRing2_36: -5790810570818446973
+      Sample_FlameRing2_37: -8999751743589033411
+      Sample_FlameRing2_38: -4092377186910415603
+      Sample_FlameRing2_39: 4562223714054866509
+      Sample_FlameRing2_4: -5541223138887525055
+      Sample_FlameRing2_40: 273596865347477084
+      Sample_FlameRing2_41: -7358956242251680981
+      Sample_FlameRing2_42: 8523725850147541868
+      Sample_FlameRing2_43: -4181847673420345537
+      Sample_FlameRing2_44: -4046639030186081401
+      Sample_FlameRing2_45: 324921153703224462
+      Sample_FlameRing2_46: -3811977170249629274
+      Sample_FlameRing2_47: -6968609584492628290
+      Sample_FlameRing2_48: -5973598704772068902
+      Sample_FlameRing2_49: -2271066073620624528
+      Sample_FlameRing2_5: -3333962233304130293
+      Sample_FlameRing2_50: 6809717379293588071
+      Sample_FlameRing2_51: 8418767743254573871
+      Sample_FlameRing2_52: -1842688710532377936
+      Sample_FlameRing2_53: -2302202000858575829
+      Sample_FlameRing2_54: 2543554817200444806
+      Sample_FlameRing2_55: 4214935046807519692
+      Sample_FlameRing2_56: 3095590855898931703
+      Sample_FlameRing2_57: 2873133484082205604
+      Sample_FlameRing2_58: 199000709862493010
+      Sample_FlameRing2_59: -3922901327876513691
+      Sample_FlameRing2_6: -5568644730306473844
+      Sample_FlameRing2_60: -1882439233947210432
+      Sample_FlameRing2_61: 4443035031849826840
+      Sample_FlameRing2_62: 7161066945150127817
+      Sample_FlameRing2_63: -6711794423901141884
+      Sample_FlameRing2_64: -4366156979645130160
+      Sample_FlameRing2_65: -7709863346693438581
+      Sample_FlameRing2_66: -9089255315910182918
+      Sample_FlameRing2_67: 1680995062416920234
+      Sample_FlameRing2_68: -2115027342140353443
+      Sample_FlameRing2_69: -3254879744472207344
+      Sample_FlameRing2_7: -4916349832950622341
+      Sample_FlameRing2_70: 1599871709533459348
+      Sample_FlameRing2_71: 5439249710342371311
+      Sample_FlameRing2_72: -1199639860364509235
+      Sample_FlameRing2_73: 1547701353623415843
+      Sample_FlameRing2_74: 2869239580229585320
+      Sample_FlameRing2_75: -2706797226810728968
+      Sample_FlameRing2_76: -2988155397997242484
+      Sample_FlameRing2_77: 2096472593479500669
+      Sample_FlameRing2_78: -5039419760430984963
+      Sample_FlameRing2_79: -7698660861699820522
+      Sample_FlameRing2_8: -5656861732312966712
+      Sample_FlameRing2_80: 1397776484751448311
+      Sample_FlameRing2_81: -1657412391701409733
+      Sample_FlameRing2_82: 6678820332427994531
+      Sample_FlameRing2_83: 5448208158329031546
+      Sample_FlameRing2_84: 5316853758635786458
+      Sample_FlameRing2_85: 4658892744242786856
+      Sample_FlameRing2_86: 6838916729868366943
+      Sample_FlameRing2_87: -2709735928625145152
+      Sample_FlameRing2_88: -2268194941034089239
+      Sample_FlameRing2_89: -746948415944888118
+      Sample_FlameRing2_9: 1870220317383480907
+      Sample_FlameRing2_90: 3952389671481868503
+      Sample_FlameRing2_91: 5299546592677374028
+      Sample_FlameRing2_92: -3404884043333019683
+      Sample_FlameRing2_93: 8375518560599009957
+      Sample_FlameRing2_94: -3386420879991719830
+      Sample_FlameRing2_95: 5737509172251966069
+      Sample_FlameRing2_96: -7477215365939573235
+      Sample_FlameRing2_97: 747185140067241345
+      Sample_FlameRing2_98: -6140011985678466319
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
