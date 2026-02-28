@@ -20,11 +20,11 @@ namespace TrainDefense.Game
         private float spawnRange;
         [SerializeField]
         [BoxGroup("SpawnSetting")]
-        private SpawnMode spawnMode = SpawnMode.CameraBased;
+        private MonsterSpawnType spawnMode = MonsterSpawnType.CameraBased;
 
         [SerializeField]
         [BoxGroup("SpawnSetting")]
-        [ShowIf("spawnMode", SpawnMode.CustomArea)]
+        [ShowIf("spawnMode", MonsterSpawnType.CustomArea)]
         private List<SpawnAreaInfo> customSpawnAreas;
 
         [System.Serializable]
@@ -36,15 +36,11 @@ namespace TrainDefense.Game
 
         #endregion
 
-        public enum SpawnMode
-        {
-            CameraBased,
-            CustomArea
-        }
-
-        private StageSpawnData[] _currentSpawnDatas;
         [ShowInInspector]
         private bool _stopSpawnMonster;
+
+        private StageSpawnData[] _currentSpawnDatas;
+
         private readonly List<Monster> _spawnedMonsters = new();
 
         private float _originalSpawnInterval;
@@ -198,7 +194,7 @@ namespace TrainDefense.Game
         private Vector3 RandomSpawnPos()
         {
             Vector3 spawnPos = Vector3.zero;
-            if (spawnMode == SpawnMode.CustomArea)
+            if (spawnMode == MonsterSpawnType.CustomArea)
             {
                 if (TrainManager.Instance != null && customSpawnAreas != null && customSpawnAreas.Count > 0)
                 {
@@ -252,7 +248,7 @@ namespace TrainDefense.Game
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
-            if (spawnMode == SpawnMode.CustomArea && customSpawnAreas != null)
+            if (spawnMode == MonsterSpawnType.CustomArea && customSpawnAreas != null)
             {
                 Gizmos.color = Color.cyan;
 
