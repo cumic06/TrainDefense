@@ -55,7 +55,6 @@ namespace TrainDefense.Game
             Pause();
         }
 
-
         private void OnLevelUp(LevelUpEvent levelUpEvent)
         {
             Pause();

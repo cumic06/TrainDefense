@@ -240,9 +240,10 @@ MonoBehaviour:
   id: 20001
   explosionRadius: 5
   explosionForce: 10
+  isRotateModel: 0
   IsUnDead: 0
   moveSpeed: 2
   maxTrainCount: 5
   trainOffset: 2.8
   startTrainablePrefab: {fileID: 0}
-  isUnDead: 1
+  isUnDead: 0
