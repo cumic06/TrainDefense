@@ -17454,7 +17454,6 @@ MonoBehaviour:
   panel: {fileID: 1895147650}
   iconImage: {fileID: 1216043811}
   nameText: {fileID: 446547455}
-  specialMonster: {fileID: 0}
   moveDuration: 1.2
   hideDuration: 3
   hidePosX: -350
