@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace TrainDefense
 {
-    public class Map : MonoBehaviour
+    public class MapController : MonoBehaviour
     {
         private float _halfWidth;
         
