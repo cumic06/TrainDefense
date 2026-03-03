@@ -18,7 +18,7 @@ namespace TrainDefense.Game
         {
             if (_speed <= 0) return;
             
-            projectile.transform.Translate(Vector3.right * deltaTime * _speed);
+            projectile.transform.Translate(Vector3.right  * deltaTime * _speed);
         }
         
         public bool ShouldImpact(Projectile projectile)

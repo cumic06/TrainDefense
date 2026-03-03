@@ -10,11 +10,31 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_LocalScale.y
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 2592336871553980171, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_LocalPosition.x
@@ -89,9 +109,21 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+      objectReference: {fileID: 9082429109045791810, guid: eb3a61e551d3fca40993155b9a53fddc, type: 3}
+    - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_DrawMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_SpriteTileMode
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -102,6 +134,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4319115480271441579}
+    - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 628469527670258843}
   m_SourcePrefab: {fileID: 100100000, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
 --- !u!1 &4599933861158539560 stripped
 GameObject:
@@ -146,10 +181,10 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 1, y: 2}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
-    drawMode: 0
+    drawMode: 2
     adaptiveTiling: 0
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
@@ -166,3 +201,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d9d58d318f14614fa2184557df4d40c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ProjectileTriggerHelper
+--- !u!95 &628469527670258843
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4599933861158539560}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 99ad3b8401f20d34bbde1b3f92eb33f0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
