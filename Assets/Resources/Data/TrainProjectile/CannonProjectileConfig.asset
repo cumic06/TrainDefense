@@ -16,6 +16,8 @@ MonoBehaviour:
   speed: 10
   destroyDelay: 0.25
   destroyOnTriggerEnter: 0
+  isSpawnTriggerHandle: 1
+  triggerHandlePrefab: {fileID: 0}
   scaleByAttackRange: 0
   isTargeting: 0
   damageType: 0
@@ -27,7 +29,7 @@ MonoBehaviour:
   shoveDuration: 0.5
   hasStunEffect: 0
   stunDuration: 0.5
-  hasWarning: 1
+  hasWarning: 0
   warningPrefab: {fileID: 1478840698368329111, guid: 1801ab89b587696458f689d6123a298f, type: 3}
   warningDelaySeconds: 0.5
   isScaleByAttackRange: 0

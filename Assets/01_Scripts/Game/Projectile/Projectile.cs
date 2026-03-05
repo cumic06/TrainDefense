@@ -181,7 +181,6 @@ namespace TrainDefense.Game
             else
             {
                 // 직접 데미지
-                TrySpawnTriggerHandle();
                 target.TakeDamage(_damage);
 
                 if (data.DestroyOnTriggerEnter)
@@ -293,6 +292,7 @@ namespace TrainDefense.Game
 
         public void ReturnToPool()
         {
+            TrySpawnTriggerHandle();
             ResourceManager.Instance.Destroy(gameObject);
         }
 
