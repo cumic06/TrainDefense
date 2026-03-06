@@ -37,6 +37,11 @@ namespace TrainDefense.Game
                 }
                 _destroyCoroutine = StartCoroutine(DestroyCoroutine());
             }
+
+            if (data.ScaleByRange && data.ScaleRangeType == ScaleByRangeType.TargetRange && _target != null)
+            {
+                ApplyScaleByTargetRange(_target.TargetTransform.position);
+            }
         }
 
         private void OnDisable()
@@ -71,7 +76,7 @@ namespace TrainDefense.Game
             _movementStrategy?.Initialize(this, data, _target);
 
             // AttackRange에 따른 스케일 조정
-            if (data.ScaleByAttackRange && attackRange > 0f)
+            if (data.ScaleByRange && data.ScaleRangeType == ScaleByRangeType.AttackRange && attackRange > 0f)
             {
                 ApplyScaleByAttackRange(attackRange);
             }
@@ -87,6 +92,18 @@ namespace TrainDefense.Game
             //model.transform.localScale = new Vector3(attackRange, currentScale.y, currentScale.z);
             model.GetComponent<BoxCollider2D>().size = new Vector2(1, attackRange);
             model.GetComponent<SpriteRenderer>().size = new Vector2(1, attackRange);
+        }
+
+        private void ApplyScaleByTargetRange(Vector3 targetPos)
+        {
+            if (model == null) return;
+
+            Vector3 currentScale = model.transform.localScale;
+            float distance = Vector2.Distance(transform.position, targetPos);
+            model.transform.localPosition = new Vector3(distance / 2, 0, 0);
+            //model.transform.localScale = new Vector3(attackRange, currentScale.y, currentScale.z);
+            model.GetComponent<BoxCollider2D>().size = new Vector2(1, distance);
+            model.GetComponent<SpriteRenderer>().size = new Vector2(1, distance);
         }
 
         private IMovementStrategy CreateMovementStrategy(MovementType movementType)
@@ -282,7 +299,7 @@ namespace TrainDefense.Game
         public bool IsScaleByAttackRange()
         {
             if (data == null) return false;
-            return data.ScaleByAttackRange;
+            return data.ScaleByRange;
         }
 
         public ProjectileData GetData()
