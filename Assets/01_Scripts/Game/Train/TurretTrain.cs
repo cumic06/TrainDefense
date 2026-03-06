@@ -43,14 +43,7 @@ namespace TrainDefense.Game
                 _isStatusInitialized = true;
             }
 
-            GameEventSystem.Subscribe<WarningRemovedEvent>(OnWarningRemoved);
-
             InitializeProjectilePoolingMode();
-        }
-
-        private void OnDestroy()
-        {
-            GameEventSystem.Unsubscribe<WarningRemovedEvent>(OnWarningRemoved);
         }
 
         private void FixedUpdate()
@@ -161,31 +154,15 @@ namespace TrainDefense.Game
             if (nearTarget == null) return;
 
             ProjectileData data = GetProjectile()?.GetData();
-            bool hasWarning = data != null && data.HasWarning && data.WarningPrefab != null;
 
             for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
             {
                 if (i >= _targetMonsters.Count) break;
 
-                if (hasWarning && data.WarningDelaySeconds > 0f)
+                Projectile projectile = SpawnNormalProjectile(i);
+                if (projectile != null)
                 {
-                    GameEventSystem.Publish(new WarningEvent(
-                        data.WarningPrefab,
-                        nearTarget.transform.position,
-                        data.WarningDelaySeconds,
-                        nearTarget,
-                        this,
-                        data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
-                        data.IsScaleByAttackRange
-                    ));
-                }
-                else
-                {
-                    Projectile projectile = SpawnNormalProjectile(i);
-                    if (projectile != null)
-                    {
-                        projectile.transform.LookAt2D(nearTarget.transform);
-                    }
+                    projectile.transform.LookAt2D(nearTarget.transform);
                 }
             }
         }
@@ -193,7 +170,6 @@ namespace TrainDefense.Game
         private void TargetedAttack()
         {
             ProjectileData data = GetProjectile()?.GetData();
-            bool hasWarning = data != null && data.HasWarning && data.WarningPrefab != null;
 
             for (int i = 0; i < _currentTurretTrainStatus.TargetCount; i++)
             {
@@ -202,27 +178,10 @@ namespace TrainDefense.Game
                 Monster target = _targetMonsters[i];
                 if (target == null) continue;
 
-                if (hasWarning && data.WarningDelaySeconds > 0f)
+                Projectile projectile = SpawnNormalProjectile(i, target);
+                if (projectile != null)
                 {
-                    // Warning 프리팹 소환을 위한 이벤트 발행
-                    Vector3 spawnPosition = turretProjectileSpawnPoints[i < turretProjectileSpawnPoints.Length ? i : 0].position;
-                    GameEventSystem.Publish(new WarningEvent(
-                        data.WarningPrefab,
-                        spawnPosition,
-                        data.WarningDelaySeconds,
-                        target,
-                        this,
-                        data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
-                        data.IsScaleByAttackRange
-                    ));
-                }
-                else
-                {
-                    Projectile projectile = SpawnNormalProjectile(i, target);
-                    if (projectile != null)
-                    {
-                        projectile.transform.LookAt2D(target.transform);
-                    }
+                    projectile.transform.LookAt2D(target.transform);
                 }
             }
         }
@@ -237,8 +196,6 @@ namespace TrainDefense.Game
             ProjectileData data = projectilePrefab.GetData();
             if (data == null) return;
 
-            bool hasWarning = data.HasWarning && data.WarningPrefab != null;
-
             for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
             {
                 if (i >= _targetMonsters.Count) break;
@@ -248,91 +205,7 @@ namespace TrainDefense.Game
 
                 Vector3 targetPosition = currentTarget.transform.position;
 
-                // Warning이 있고 딜레이가 있는 경우 WarningEvent 발행
-                if (hasWarning && data.WarningDelaySeconds > 0f)
-                {
-                    GameEventSystem.Publish(new WarningEvent(
-                        data.WarningPrefab,
-                        targetPosition,
-                        data.WarningDelaySeconds,
-                        currentTarget,
-                        this,
-                        data.IsScaleByAttackRange ? _currentTurretTrainStatus.AttackRange : 0f,
-                        data.IsScaleByAttackRange
-                    ));
-                }
-                else
-                {
-                    // 딜레이가 없으면 바로 타겟 위치에 Projectile 소환
-                    SpawnProjectileAtWorldPosition(currentTarget, targetPosition);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Warning 딜레이 후 프로젝타일 발사 처리
-        /// </summary>
-        private void OnWarningRemoved(WarningRemovedEvent warningRemovedEvent)
-        {
-            // 자신이 발신한 WarningRemovedEvent가 아니면 무시
-            if (warningRemovedEvent.Sender != this) return;
-
-            if (warningRemovedEvent.Target == null || !warningRemovedEvent.Target.IsActive) return;
-
-            ProjectileData data = GetProjectile()?.GetData();
-            if (data == null) return;
-
-            // MovementType에 따라 다른 방식으로 프로젝타일 소환
-            if (data.MovementType == MovementType.TargetPos)
-            {
-                // TargetPos 타입: 타겟 위치에 프로젝타일 소환
-                SpawnProjectileAtWorldPosition(warningRemovedEvent.Target, warningRemovedEvent.WorldPosition);
-            }
-            else
-            {
-                // Linear/NonMovement 타입: spawn point 위치에서 타겟을 향해 발사
-                Projectile projectile = null;
-
-                // NonMovement 프로젝타일인 경우 풀링 사용
-                if (_useNonMovementProjectilePooling)
-                {
-                    // 사용 가능한 비활성화된 프로젝타일 찾기
-                    projectile = _nonMovementProjectiles.FirstOrDefault(p => p != null && !p.gameObject.activeSelf);
-
-                    // 사용 가능한 프로젝타일이 없으면 새로 생성
-                    if (projectile == null)
-                    {
-                        Projectile baseProjectile = GetProjectile();
-                        if (baseProjectile != null)
-                        {
-                            projectile = ResourceManager.Instance.Spawn(baseProjectile);
-                            if (projectile != null)
-                            {
-                                projectile.gameObject.SetActive(false);
-                                InitializeProjectileDamage(projectile);
-                                _nonMovementProjectiles.Add(projectile);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // 일반 프로젝타일: ResourceManager에서 소환
-                    projectile = ResourceManager.Instance.Spawn(GetProjectile());
-                }
-
-                if (projectile == null) return;
-
-                // WarningRemovedEvent의 WorldPosition은 spawn point 위치
-                SetupProjectileTransform(projectile, 0, warningRemovedEvent.WorldPosition);
-                projectile.transform.LookAt2D(warningRemovedEvent.Target.transform);
-
-                InitializeProjectile(projectile, warningRemovedEvent.Target);
-
-                if (_useNonMovementProjectilePooling)
-                {
-                    projectile.gameObject.SetActive(true);
-                }
+                SpawnProjectileAtWorldPosition(currentTarget, targetPosition);
             }
         }
 
