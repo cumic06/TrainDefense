@@ -63,7 +63,7 @@ Material:
     - _GlowOffset: 0
     - _GlowOuter: 0.05
     - _GlowPower: 0.75
-    - _GradientScale: 1
+    - _GradientScale: 3
     - _LightAngle: 3.1416
     - _MaskSoftnessX: 0
     - _MaskSoftnessY: 0
@@ -87,7 +87,7 @@ Material:
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _TextureHeight: 4096
-    - _TextureWidth: 4096
+    - _TextureWidth: 8192
     - _UnderlayDilate: 0
     - _UnderlayOffsetX: 0
     - _UnderlayOffsetY: 0
