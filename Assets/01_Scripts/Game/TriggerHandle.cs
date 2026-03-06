@@ -8,10 +8,12 @@ namespace TrainDefense.Game
     {
         [BoxGroup("Damage Settings")]
         [SerializeField]
-        private int damage = 10;
+        private bool hasTurretDamage = false;
 
+        [BoxGroup("Damage Settings")]
+        [HideIf("hasTurretDamage")]
         [SerializeField]
-        private float destroyDelay = 0.2f; 
+        private int damage = 10;
 
         [BoxGroup("Damage Settings")]
         [SerializeField]
@@ -22,12 +24,15 @@ namespace TrainDefense.Game
         [SerializeField]
         private float tickInterval = 0.5f;
 
-
-        [BoxGroup("Damage Settings")]
         [SerializeField]
         private bool destroyOnTriggerEnter = false;
 
-        private Dictionary<IProjectileTarget, float> _damageTimers = new Dictionary<IProjectileTarget, float>();
+        [SerializeField]
+        private float destroyDelay = 0.2f;
+
+        private Dictionary<IProjectileTarget, float> _damageTimers = new();
+
+        public bool HasTurretDamage => hasTurretDamage;
 
         private void OnEnable()
         {
@@ -37,6 +42,14 @@ namespace TrainDefense.Game
         private void OnDisable()
         {
             _damageTimers.Clear();
+        }
+
+        public void Init(int damage)
+        {
+            if (hasTurretDamage)
+            {
+                this.damage = damage;
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -80,7 +93,7 @@ namespace TrainDefense.Game
             {
                 // 직접 데미지는 즉시 피해
                 target.TakeDamage(damage);
-                
+
                 if (destroyOnTriggerEnter)
                 {
                     if (destroyDelay > 0)
