@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ProjectileConfig
   movementType: 0
   speed: 30
-  destroyDelay: 0
+  destroyDelay: 0.2
   destroyOnTriggerEnter: 1
   isSpawnTriggerHandle: 1
   triggerHandlePrefab: {fileID: 4234567116659896457, guid: 9207244270465c84282cc75810256add, type: 3}
