@@ -188,11 +188,7 @@ namespace TrainDefense.Game
             }
          }
 
-         if (data.TriggerHandlePrefab != null)
-         {
-            if (data.TriggerHandlePrefab.HasTurretDamage)
-               return;
-         }
+
 
          if (data.DamageType == DamageType.Tick)
          {
@@ -205,8 +201,17 @@ namespace TrainDefense.Game
          }
          else
          {
-            // 직접 데미지
-            target.TakeDamage(_damage);
+            if (data.TriggerHandlePrefab != null)
+            {
+               if (!data.TriggerHandlePrefab.HasTurretDamage)
+               {
+                  target.TakeDamage(_damage);
+               }
+            }
+            else
+            {
+               target.TakeDamage(_damage);
+            }
 
             if (data.DestroyOnTriggerEnter)
             {
@@ -237,12 +242,6 @@ namespace TrainDefense.Game
          if (data == null)
          {
             return;
-         }
-
-         if (data.TriggerHandlePrefab != null)
-         {
-            if (data.TriggerHandlePrefab.HasTurretDamage)
-               return;
          }
 
          // 틱 데미지 처리
