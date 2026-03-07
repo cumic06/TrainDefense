@@ -239,8 +239,11 @@ namespace TrainDefense.Game
             return;
          }
 
-         if (data.TriggerHandlePrefab.HasTurretDamage)
-            return;
+         if (data.TriggerHandlePrefab != null)
+         {
+            if (data.TriggerHandlePrefab.HasTurretDamage)
+               return;
+         }
 
          // 틱 데미지 처리
          if (data.DamageType == DamageType.Tick)
