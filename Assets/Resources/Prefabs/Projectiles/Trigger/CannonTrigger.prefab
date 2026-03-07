@@ -196,8 +196,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e9ea777c7a7c540a13b6cd8cd7e91c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.TriggerHandle
+  hasTurretDamage: 1
   damage: 50
-  destroyDelay: 0.3
   damageType: 0
   tickInterval: 0.5
   destroyOnTriggerEnter: 1
+  destroyDelay: 0.3
