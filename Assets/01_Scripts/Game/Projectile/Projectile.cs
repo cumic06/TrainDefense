@@ -89,7 +89,6 @@ namespace TrainDefense.Game
             Vector3 currentScale = model.transform.localScale;
 
             model.transform.localPosition = new Vector3(attackRange / 2, 0, 0);
-            //model.transform.localScale = new Vector3(attackRange, currentScale.y, currentScale.z);
             model.GetComponent<BoxCollider2D>().size = new Vector2(1, attackRange);
             model.GetComponent<SpriteRenderer>().size = new Vector2(1, attackRange);
         }
@@ -132,7 +131,6 @@ namespace TrainDefense.Game
                 ProcessTargetPosImpact();
             }
         }
-
 
 
         #region Trigger Events
@@ -186,6 +184,8 @@ namespace TrainDefense.Game
                 }
             }
 
+            if (data.TriggerHandlePrefab.HasTurretDamage) return;
+
             if (data.DamageType == DamageType.Tick)
             {
                 // 틱 데미지: 처음 진입 시 즉시 데미지
@@ -230,6 +230,8 @@ namespace TrainDefense.Game
             {
                 return;
             }
+
+            if (data.TriggerHandlePrefab.HasTurretDamage) return;
 
             // 틱 데미지 처리
             if (data.DamageType == DamageType.Tick)
@@ -299,6 +301,7 @@ namespace TrainDefense.Game
         public bool IsScaleByAttackRange()
         {
             if (data == null) return false;
+
             return data.ScaleByRange;
         }
 
@@ -316,10 +319,13 @@ namespace TrainDefense.Game
         private void TrySpawnTriggerHandle()
         {
             if (_isSpawnedTrigger) return;
+
             if (data == null || !data.IsSpawnTriggerHandle || data.TriggerHandlePrefab == null) return;
 
             _isSpawnedTrigger = true;
-            ResourceManager.Instance.Spawn(data.TriggerHandlePrefab, transform.position, Quaternion.identity);
+
+            TriggerHandle triggerHandle = ResourceManager.Instance.Spawn(data.TriggerHandlePrefab, transform.position, Quaternion.identity);
+            triggerHandle.Init(_damage);
         }
 
         private IEnumerator DestroyCoroutine()
