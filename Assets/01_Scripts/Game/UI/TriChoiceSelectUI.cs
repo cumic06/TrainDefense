@@ -42,7 +42,6 @@ namespace TrainDefense.Game.UI
             if (choiceOption == null) return;
 
             _choiceOption = choiceOption;
-
             _triChoiceUI = triChoiceUI;
 
             SetUI(choiceOption, choiceUIInfo);
@@ -67,7 +66,6 @@ namespace TrainDefense.Game.UI
                     var selectedUpgrade = triChoiceManager.GetSelectedUpgrade(upgradeTrainChoice);
                     if (selectedUpgrade != null)
                     {
-                        // 업그레이드 데이터 타입에 따라 스탯 값들을 추출
                         object[] formatArgs = GetUpgradeFormatArgs(selectedUpgrade);
                         try
                         {
@@ -75,7 +73,6 @@ namespace TrainDefense.Game.UI
                         }
                         catch (System.FormatException)
                         {
-                            // 포맷 에러 발생 시 원본 텍스트 표시
                             descriptionText.text = choiceUIInfo.Description;
                             Debug.LogWarning($"[TriChoiceSelectUI] Format Error: {choiceUIInfo.Description}");
                         }
@@ -98,7 +95,6 @@ namespace TrainDefense.Game.UI
 
         private object[] GetUpgradeFormatArgs(ITrainUpgradeData upgradeData)
         {
-            // 현재 Train의 레벨을 가져와서 해당 레벨의 스탯을 사용
             int currentLevel = 0;
             if (_choiceOption is UpgradeTrainChoice upgradeChoice)
             {
@@ -109,8 +105,6 @@ namespace TrainDefense.Game.UI
                         .FirstOrDefault(t => t.TrainData.Id == upgradeChoice.TargetTrainId);
                     if (train != null)
                     {
-                        // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
-                        // View 표시 시: 레벨 + 1 인덱스 사용 (레벨 -1이면 인덱스 0)
                         currentLevel = train.CurrentLevel + 1;
                     }
                 }
@@ -119,13 +113,11 @@ namespace TrainDefense.Game.UI
             var statusUpgrade = upgradeData.GetStatusUpgrade(currentLevel);
             var args = new System.Collections.Generic.List<object>();
 
-            // 기본 스탯 (모든 Train 타입에 공통)
             if (statusUpgrade.MaxHp != 0)
             {
                 args.Add(statusUpgrade.MaxHp);
             }
 
-            // TurretTrain 전용 스탯
             if (upgradeData is TurretTrainUpgradeData turretUpgrade)
             {
                 var turretStatus = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
@@ -135,7 +127,6 @@ namespace TrainDefense.Game.UI
                 if (turretStatus.AttackInterval != 0) args.Add(turretStatus.AttackInterval);
                 if (turretStatus.TargetCount != 0) args.Add(turretStatus.TargetCount);
             }
-            // RangeTrain 전용 스탯
             else if (upgradeData is RangeTrainUpgradeData rangeUpgrade)
             {
                 var rangeStatus = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
@@ -150,8 +141,11 @@ namespace TrainDefense.Game.UI
 
         private void OnSelectButtonClick()
         {
-            _triChoiceUI.OnChoiceSelected(_choiceOption);
+            if (_isSelected || _choiceOption == null || _triChoiceUI == null) return;
+
+            _selectButton.interactable = false;
             SetSelected(true);
+            _triChoiceUI.OnChoiceSelected(_choiceOption);
         }
 
         public void SetButtonInteractable(bool interactable)

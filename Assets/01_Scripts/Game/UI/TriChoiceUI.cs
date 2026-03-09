@@ -23,9 +23,8 @@ namespace TrainDefense.Game.UI
         #endregion
 
         private int _choiceLeftCount;
-
-        // 중복 선택 방지를 위한 플래그
         private bool _isSelecting = false;
+        private int _popupRequestId = 0;
 
         private void Awake()
         {
@@ -39,14 +38,13 @@ namespace TrainDefense.Game.UI
         {
             backgroundImage.SetActive(true);
 
-            OnChoiceUIPopup(count).Forget();
+            int requestId = ++_popupRequestId;
+            OnChoiceUIPopup(count, requestId).Forget();
         }
 
-        private async UniTask OnChoiceUIPopup(int count)
+        private async UniTask OnChoiceUIPopup(int count, int requestId)
         {
             _choiceLeftCount = count;
-
-            // 팝업이 뜰 때 선택 가능 상태로 초기화 (약간의 딜레이 후 설정하거나 바로 설정)
             _isSelecting = false;
 
             var triChoiceManager = TriChoiceManager.Instance;
@@ -56,13 +54,14 @@ namespace TrainDefense.Game.UI
                 return;
             }
 
-            // 선택지 풀을 미리 생성 (중복 없이)
             List<ChoiceEntry> availableChoices = triChoiceManager.GetChoices(choiceSelectUIs.Length);
+
+            if (requestId != _popupRequestId) return;
 
             if (availableChoices.Count == 0)
             {
                 TriChoiceSelectEvent eventData = new(null, 0);
-                GameEventSystem.Publish(eventData); //우선 선택지 없으면 이벤트 쏴서 시작되게.
+                GameEventSystem.Publish(eventData);
                 backgroundImage.SetActive(false);
                 Debug.LogWarning("No available choices found");
                 return;
@@ -74,20 +73,18 @@ namespace TrainDefense.Game.UI
                 coinParticleSystem.Play();
             }
 
-            // 사용 가능한 선택지 수만큼만 UI 표시
             for (int i = 0; i < choiceSelectUIs.Length; i++)
             {
+                if (requestId != _popupRequestId) return;
+
                 var choiceSelectUI = choiceSelectUIs[i];
                 choiceSelectUI.SetSelected(false);
 
                 if (i < availableChoices.Count)
                 {
-                    // 선택지가 있으면 표시
                     IChoiceOption choiceOption = availableChoices[i].Option;
 
-                    // 처음 획득하는 ChoiceOption인지 확인
                     var userDataManager = UserDataManager.Instance;
-
                     if (userDataManager != null)
                     {
                         bool isFirstTime = userDataManager.IsFirstTimeSelected(choiceOption.Id);
@@ -130,16 +127,18 @@ namespace TrainDefense.Game.UI
                     choiceSelectUI.gameObject.SetActive(true);
                     choiceSelectUI.SetButtonInteractable(true);
 
+                    choiceSelectUI.transform.DOKill();
                     choiceSelectUI.transform.localScale = Vector3.zero;
 
                     await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
                     {
                         choiceSelectUI.transform.localScale = Vector3.one;
                     }).SetUpdate(true);
+
+                    if (requestId != _popupRequestId) return;
                 }
                 else
                 {
-                    // 선택지가 부족하면 해당 슬롯 비활성화
                     choiceSelectUI.gameObject.SetActive(false);
                 }
             }
@@ -149,6 +148,7 @@ namespace TrainDefense.Game.UI
         {
             if (_isSelecting) return;
             _isSelecting = true;
+            _popupRequestId++;
 
             _choiceLeftCount--;
 
@@ -156,12 +156,12 @@ namespace TrainDefense.Game.UI
 
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
+                choiceSelectUI.transform.DOKill();
                 choiceSelectUI.transform.localScale = Vector3.one;
                 choiceSelectUI.SetButtonInteractable(false);
                 choiceSelectUI.SetSelected(true);
                 choiceSelectUI.SetNewText(false);
 
-                // DOTween을 비동기로 대기
                 tasks.Add(choiceSelectUI.transform.DOScale(0, uiActiveDelay)
                     .SetEase(Ease.InBack)
                     .SetUpdate(true)
@@ -172,7 +172,6 @@ namespace TrainDefense.Game.UI
                     .ToUniTask());
             }
 
-            // 모든 애니메이션이 끝날 때까지 대기
             await UniTask.WhenAll(tasks);
 
             TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
