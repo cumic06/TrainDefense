@@ -31,18 +31,18 @@ namespace TrainDefense.Game.UI
       {
          if (UserDataManager.Instance != null)
          {
-            coinText.text = $"Coin : 0";
+            coinText.text = $"0";
             //coinText.text = $"Coin : {UserDataManager.Instance.Coin}";
          }
          else
          {
-            coinText.text = $"Coin : 0";
+            coinText.text = $"0";
          }
       }
 
       private void OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)
       {
-         DOTween.To(() => changeCoinEvent.BeforeCoin, x => coinText.text = $"Coin : {x}", changeCoinEvent.AfterCoin, tweenDuration)
+         DOTween.To(() => changeCoinEvent.BeforeCoin, x => coinText.text = $"{x}", changeCoinEvent.AfterCoin, tweenDuration)
          .SetEase(Ease.InOutSine)
          .SetUpdate(true);
       }
