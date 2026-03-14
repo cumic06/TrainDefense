@@ -1,23 +1,10 @@
 fileFormatVersion: 2
-guid: 3b5af92575b87497ba7bfae8e982b2f2
-AssetOrigin:
-  serializedVersion: 1
-  productId: 352566
-  packageName: Tiny Swords
-  packageVersion: 1.0
-  assetPath: Assets/Tiny Swords/UI Elements/Bars/SmallBar_Base.png
-  uploadId: 844324
+guid: 71462e0bee377bc4786c732ff06b80d2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1056237759172199722
-    second: SmallBar_Base_0
-  - first:
-      213: -2020892919288343516
-    second: SmallBar_Base_1
-  - first:
-      213: -8602477449284256100
-    second: SmallBar_Base_2
+      213: 3997766605359117159
+    second: Icon_12Mute_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -50,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -61,11 +48,11 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
-  spriteBorder: {x: 60, y: 25, z: 58, w: 23}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -88,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -114,7 +101,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -127,7 +114,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -139,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SmallBar_Base_0
+      name: Icon_12Mute_0
       rect:
         serializedVersion: 2
-        x: 49
-        y: 23
-        width: 94
-        height: 19
+        x: 5
+        y: 2
+        width: 54
+        height: 60
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 11, y: 0, z: 11, w: 0}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6dabf2eaa5d7751f0800000000000000
-      internalID: -1056237759172199722
+      spriteID: 7637957eb8bea7730800000000000000
+      internalID: 3997766605359117159
       vertices: []
       indices: 
       edges: []
@@ -164,19 +151,17 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a351577de86b04a2fa0c2e8182c3f42c
-    internalID: 38608943
+    spriteID: 
+    internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      SmallBar_Base_0: -1056237759172199722
+      Icon_12Mute_0: 3997766605359117159
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
