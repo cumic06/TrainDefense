@@ -59,7 +59,6 @@ namespace TrainDefense.Game.UI
 
       public void SetIcon(Sprite icon)
       {
-         Debug.Log(icon);
          iconImage.sprite = icon;
       }
 
@@ -127,8 +126,6 @@ namespace TrainDefense.Game.UI
 
          // HP 상태 초기화
          backGroundImage.color = Color.green;
-
-         Debug.Log($"TrainInfoSlotUI: Replaced train UI");
       }
    }
 }

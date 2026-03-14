@@ -113,7 +113,6 @@ namespace TrainDefense.Game
          ApplyExistingUpgradesToTrain(trainObject);
 
          var newTrainData = DatabaseManager.Instance.GetTrainData(trainObject.Id);
-         Debug.Log($"trainData.Icon{newTrainData.Icon}");
          GameEventSystem.Publish(new AddTrainEvent(newTrainData.Icon, trainObject));
 
          // 살아있는 기차 재정렬
@@ -182,8 +181,6 @@ namespace TrainDefense.Game
 
          // 기존 위치 복원
          newTrain.transform.localPosition = oldPosition;
-
-         Debug.Log($"ReplaceTrain: [{oldTrainId}] replaced with [{newTrainPrefab.Id}]");
 
          // 살아있는 기차 재정렬
          RearrangeTrains();
@@ -262,7 +259,7 @@ namespace TrainDefense.Game
          // 정렬된 순서대로 위치 재설정
          for (int i = 0; i < allTrains.Count; i++)
          {
-            Vector3 newPos = Vector3.left * trainOffset * (i + 1);
+            Vector3 newPos = (i + 1) * trainOffset * Vector3.left;
             allTrains[i].train.transform.localPosition = newPos;
          }
       }
