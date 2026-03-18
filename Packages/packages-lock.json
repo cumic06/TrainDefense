@@ -33,11 +33,11 @@
       "hash": "ca3ddd6f27c61fb6d7cffbe4f053c837fa12b584"
     },
     "com.unity.2d.animation": {
-      "version": "13.0.2",
+      "version": "13.0.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.2d.common": "12.0.1",
+        "com.unity.2d.common": "12.0.2",
         "com.unity.2d.sprite": "1.0.0",
         "com.unity.collections": "2.4.3",
         "com.unity.modules.animation": "1.0.0",
@@ -59,7 +59,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.2d.common": {
-      "version": "12.0.1",
+      "version": "12.0.2",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -122,7 +122,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.burst": {
-      "version": "1.8.25",
+      "version": "1.8.28",
       "depth": 2,
       "source": "registry",
       "dependencies": {
@@ -142,7 +142,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "2.10.2",
+      "version": "2.11.4",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -177,7 +177,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.inputsystem": {
-      "version": "1.16.0",
+      "version": "1.19.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -263,7 +263,7 @@
       }
     },
     "com.unity.splines": {
-      "version": "2.8.2",
+      "version": "2.8.3",
       "depth": 1,
       "source": "registry",
       "dependencies": {
@@ -294,7 +294,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.8.10",
+      "version": "1.8.11",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -315,7 +315,7 @@
       }
     },
     "com.unity.visualscripting": {
-      "version": "1.9.9",
+      "version": "1.9.10",
       "depth": 0,
       "source": "registry",
       "dependencies": {
