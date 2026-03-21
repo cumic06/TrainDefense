@@ -60,11 +60,15 @@ namespace TrainDefense
       public void ShowOptionUI()
       {
          gameObject.SetActive(true);
+         if (TimeManager.Instance != null)
+            TimeManager.Instance.Pause();
       }
 
       public void HideOptionUI()
       {
          gameObject.SetActive(false);
+         if (TimeManager.Instance != null)
+            TimeManager.Instance.Resume();
       }
 
       private void _ChangeBGMVolume(float value)
