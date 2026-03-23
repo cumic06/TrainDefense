@@ -25,6 +25,12 @@
       "dependencies": {},
       "hash": "98538ef7c7a22f4ec22101e72f7eec4ed831c724"
     },
+    "com.febucci.text-animator-unity": {
+      "version": "file:com.febucci.text-animator-unity",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.redeyestemplate.core": {
       "version": "https://github.com/RedEyesHQ/UnityTemplate.git",
       "depth": 0,
