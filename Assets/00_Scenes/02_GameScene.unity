@@ -5037,11 +5037,11 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 457945049}
   - {fileID: 1643387769}
   - {fileID: 2057298133}
   - {fileID: 323823268}
   - {fileID: 739713837}
-  - {fileID: 457945049}
   - {fileID: 882680029}
   - {fileID: 6884424855140019222}
   - {fileID: 423875888}
@@ -10950,6 +10950,14 @@ PrefabInstance:
     - target: {fileID: 1156509102890481432, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3298864642988066370, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 5072626790815758282, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 6446761962134726433, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_Name
