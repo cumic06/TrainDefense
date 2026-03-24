@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -38,45 +37,66 @@ public class StageManager : Singleton<StageManager>
 
     public StageData CurrentStageData => _stageDatas[_currentStageIndex];
 
+    //protected override void Awake()
+    //{
+    //    base.Awake();
+    //    //TODO: 타이밍 때문에 Awake에 빼뒀지만 나중에는 Start로 옮기는거 고려해보기.
+    //}
+
     private void Start()
     {
-        LoadStageDatas();
+        _LoadStageDatas();
         _currentStageIndex = 0;
-        ResetCurrentStageInfo();
-
-        GameEventSystem.Subscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
-        GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
-        GameEventSystem.Subscribe<StageSelectEvent>(OnStageSelected);
+        _ResetCurrentStageInfo();
+        _SubscribeEvents();
     }
 
     private void OnDestroy()
     {
-        GameEventSystem.Unsubscribe<GetNextInspectionRemainingTimeEvent, float>(GetNextInspectionRemainingTime);
-        GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
-        GameEventSystem.Unsubscribe<StageSelectEvent>(OnStageSelected);
+        _UnsubscribeEvents();
     }
 
-    private void LoadStageDatas()
+    private void _SubscribeEvents()
+    {
+        GameEventSystem.Subscribe<GetCurrentInspectionDurationEvent, float>(_GetCurrentInspectionDuration);
+        GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
+        GameEventSystem.Subscribe<StageSelectEvent>(_OnStageSelected);
+    }
+
+    private void _UnsubscribeEvents()
+    {
+        GameEventSystem.Unsubscribe<GetCurrentInspectionDurationEvent, float>(_GetCurrentInspectionDuration);
+        GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
+        GameEventSystem.Unsubscribe<StageSelectEvent>(_OnStageSelected);
+    }
+
+    private void Update()
+    {
+        _CurrentStageTimeUp();
+        _StageHandler();
+    }
+
+    private void _LoadStageDatas()
     {
         _stageDatas = DatabaseManager.Instance.GetStageDatas();
     }
 
-    private void ResetCurrentStageInfo()
+    private void _ResetCurrentStageInfo()
     {
         _currentStageTime = 0;
         _currentStageInspectionTimeIndex = 0;
         _inspectionCount = 0;
 
-        UpdateSpawnRules();
-        SetCurrentStage();
+        _UpdateSpawnRules();
+        _SetCurrentStage();
     }
 
-    private void OnLevelUp(LevelUpEvent levelUpEvent)
+    private void _OnLevelUp(LevelUpEvent levelUpEvent)
     {
-        UpdateSpawnRules();
+        _UpdateSpawnRules();
     }
 
-    private void UpdateSpawnRules()
+    private void _UpdateSpawnRules()
     {
         if (_stageDatas == null || _stageDatas.Length == 0) return;
 
@@ -95,7 +115,7 @@ public class StageManager : Singleton<StageManager>
         MonsterSpawner.Instance.SetSpawnRule(filteredList.ToArray(), CurrentStageData.SpawnInterval);
     }
 
-    private void SetCurrentStage()
+    private void _SetCurrentStage()
     {
         if (_stageDatas == null || _stageDatas.Length == 0)
         {
@@ -137,31 +157,24 @@ public class StageManager : Singleton<StageManager>
         _currentMapInstance = Instantiate(prefab, spawnPosition, Quaternion.identity);
     }
 
-    private void Update()
+    private void _StageHandler()
     {
-        CurrentStageTimeUp();
-
-        StageHandler();
-    }
-
-    private void StageHandler()
-    {
-        if (_currentStageTime >= GetCurrentStageInspectionTime() && _currentStageInspectionTimeIndex < CurrentStageData.StageInspectionTime.Length)
+        if (_currentStageTime >= _GetCurrentStageInspectionTime() && _currentStageInspectionTimeIndex < CurrentStageData.StageInspectionTime.Length)
         {
-            CurrentStageInpectionUp();
+            _CurrentStageInpectionUp();
         }
         else if (_currentStageTime >= CurrentStageData.StageEndTime)
         {
-            StageEnd();
+            _StageEnd();
         }
     }
 
-    private void StageEnd()
+    private void _StageEnd()
     {
         GameEventSystem.Publish(new StageEndEvent(true));
     }
 
-    private void CurrentStageInpectionUp()
+    private void _CurrentStageInpectionUp()
     {
         _currentStageInspectionTimeIndex++;
         GameEventSystem.Publish(new InspectionEvent());
@@ -171,16 +184,16 @@ public class StageManager : Singleton<StageManager>
         // 몬스터 러쉬 체크 : inspectionCount가 changeInterval - 1일 때
         if (changeInterval > 0 && _inspectionCount % changeInterval == changeInterval - 1)
         {
-            StartMonsterRush();
+            _StartMonsterRush();
         }
 
         if (changeInterval > 0 && _inspectionCount % changeInterval == 0)
         {
-            ShowStageSelection();
+            _ShowStageSelection();
         }
     }
 
-    private void StartMonsterRush()
+    private void _StartMonsterRush()
     {
         GameEventSystem.Publish(new MonsterRushEvent(0.5f));
     }
@@ -203,16 +216,16 @@ public class StageManager : Singleton<StageManager>
     //    Debug.Log($"[StageManager] Boss spawn triggered: {stageData.BossMonsterId}");
     //}
 
-    private void CurrentStageTimeUp()
+    private void _CurrentStageTimeUp()
     {
         _currentStageTime += Time.deltaTime;
 
-        float nextInspectionRemainingtime = GetCurrentStageInspectionTime() - _currentStageTime;
+        float nextInspectionRemainingtime = _GetCurrentStageInspectionTime() - _currentStageTime;
         GameEventSystem.Publish(new ChangeStageTimeEvent(nextInspectionRemainingtime));
     }
 
 
-    private float GetCurrentStageInspectionTime()
+    private float _GetCurrentStageInspectionTime()
     {
         if (_currentStageInspectionTimeIndex >= CurrentStageData.StageInspectionTime.Length)
         {
@@ -222,16 +235,27 @@ public class StageManager : Singleton<StageManager>
         return CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex];
     }
 
-    private float GetNextInspectionRemainingTime(GetNextInspectionRemainingTimeEvent getNextInspectionRemainingTimeEvent)
+    private float _GetCurrentInspectionDuration(GetCurrentInspectionDurationEvent getCurrentInspectionDurationEvent)
     {
+        if (CurrentStageData == null || CurrentStageData.StageInspectionTime == null)
+        {
+            return 0f;
+        }
+
         if (_currentStageInspectionTimeIndex >= CurrentStageData.StageInspectionTime.Length)
         {
-            return CurrentStageData.StageInspectionTime[^1] - _currentStageTime;
+            return 0f;
         }
-        return CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex] - _currentStageTime;
+
+        float currentInspectionTime = CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex];
+        float previousInspectionTime = _currentStageInspectionTimeIndex > 0
+            ? CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex - 1]
+            : 0f;
+
+        return currentInspectionTime - previousInspectionTime;
     }
 
-    private void OnStageSelected(StageSelectEvent stageSelectedEvent)
+    private void _OnStageSelected(StageSelectEvent stageSelectedEvent)
     {
         if (stageSelectedEvent == null || stageSelectedEvent.SelectedStageData == null)
         {
@@ -249,10 +273,10 @@ public class StageManager : Singleton<StageManager>
         }
 
         _currentStageIndex = index;
-        ResetCurrentStageInfo();
+        _ResetCurrentStageInfo();
     }
 
-    private void ShowStageSelection()
+    private void _ShowStageSelection()
     {
         if (_stageDatas == null || _stageDatas.Length < 2)
         {

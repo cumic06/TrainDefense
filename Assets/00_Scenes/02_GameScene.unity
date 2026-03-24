@@ -13653,20 +13653,12 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 214686401}
     m_Modifications:
-    - target: {fileID: 2992754778374092917, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
-      propertyPath: m_Value
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4464143324520739034, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4464143324520739034, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4464143324520739034, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
-      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4701399315867174204, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
@@ -13749,25 +13741,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4718382812715901533, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -125.00012
+      objectReference: {fileID: 0}
+    - target: {fileID: 4718382812715901533, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -12.499939
+      objectReference: {fileID: 0}
     - target: {fileID: 6657354639661050422, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_Name
       value: StageInspectionTimeSlider
-      objectReference: {fileID: 0}
-    - target: {fileID: 7151380929488042311, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
-      propertyPath: m_Pivot.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7151380929488042311, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7151380929488042311, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7151380929488042311, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
