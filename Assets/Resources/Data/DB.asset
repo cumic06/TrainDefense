@@ -629,8 +629,8 @@ MonoBehaviour:
     iconId: Weapon_KMD_08_UI
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>
-      \uACF5\uACA9\uB51C\uB808\uC774 {1}<bounce>\uAC10\uC18C</bounce>"
+    description: "\uACF5\uACA9\uB825 <bounce><color=#FF5851>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9\uB51C\uB808\uC774 <bounce>{1}\uAC10\uC18C</bounce>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -660,7 +660,7 @@ MonoBehaviour:
     iconId: Weapon_MEL_05_UI
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     name: "\uD654\uC5FC \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -690,8 +690,8 @@ MonoBehaviour:
     iconId: Weapon_KMD_10_UI
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>
-      \uACF5\uACA9\uB51C\uB808\uC774 {1} <bounce>\uAC10\uC18C</bounce>"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9\uB51C\uB808\uC774 <bounce>{1} \uAC10\uC18C</bounce>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -721,7 +721,7 @@ MonoBehaviour:
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -751,7 +751,7 @@ MonoBehaviour:
     iconId: Weapon_MEL_16_UI
     icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     name: "\uC804\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -781,8 +781,8 @@ MonoBehaviour:
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     name: "\uD3EC\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>
-      \uACF5\uACA9 \uBC94\uC704 {1} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -812,7 +812,7 @@ MonoBehaviour:
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     name: "\uC800\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -843,8 +843,8 @@ MonoBehaviour:
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     name: "\uD3ED\uBC1C \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>
-      \uBC94\uC704 {1} <color=FF5851><bounce>\uC99D\uAC00</bounce></color>"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uBC94\uC704 <color=FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -871,8 +871,8 @@ MonoBehaviour:
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     name: "\uB0C9\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851><bounce>\uC99D\uAC00</bounce></color>
-      \uBC94\uC704 {1} <color=FF5851><bounce>\uC99D\uAC00</bounce></color>"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uBC94\uC704 <color=FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
