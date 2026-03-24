@@ -658,7 +658,7 @@ MonoBehaviour:
         TargetCount: 0
   - id: 90002
     iconId: Weapon_MEL_05_UI
-    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
+    icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     name: "\uD654\uC5FC \uD3EC\uD0D1 \uAC15\uD654"
     description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
@@ -688,7 +688,7 @@ MonoBehaviour:
         TargetCount: 0
   - id: 90003
     iconId: Weapon_KMD_10_UI
-    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
+    icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1 \uAC15\uD654"
     description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
       \uACF5\uACA9\uB51C\uB808\uC774 <bounce>{1} \uAC10\uC18C</bounce>"
