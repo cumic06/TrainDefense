@@ -8,396 +8,401 @@ using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Game
 {
-    public class MainTrain : Train
-    {
-        #region Field
+   public class MainTrain : Train
+   {
+      #region Field
 
-        [SerializeField]
-        private float moveSpeed;
+      [SerializeField]
+      private float moveSpeed;
 
-        [SerializeField]
-        [BoxGroup("TrainSetting")]
-        private int maxTrainCount;
-        [SerializeField]
-        [BoxGroup("TrainSetting")]
-        private float trainOffset;
-        [SerializeField]
-        [Header("테스트용")]
-        [BoxGroup("TrainSetting")]
-        private Train startTrainablePrefab;
-        [SerializeField]
-        [BoxGroup("TrainSetting")]
-        private bool isUnDead = false;
-        #endregion
+      [SerializeField]
+      [BoxGroup("TrainSetting")]
+      private int maxTrainCount;
+      [SerializeField]
+      [BoxGroup("TrainSetting")]
+      private float trainOffset;
+      [SerializeField]
+      [Header("테스트용")]
+      [BoxGroup("TrainSetting")]
+      private Train startTrainablePrefab;
+      [SerializeField]
+      [BoxGroup("TrainSetting")]
+      private bool isUnDead = false;
+      #endregion
 
-        private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
-        public List<Train> CurrentAliveTrains => _currentAliveTrains;
-        public int MaxTrainCount => maxTrainCount;
+      private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
+      public List<Train> CurrentAliveTrains => _currentAliveTrains;
+      public int MaxTrainCount => maxTrainCount;
 
-        private readonly List<Train> _currentTrains = new();//모든 Train 목록
-        public List<Train> CurrentTrains => _currentTrains;
+      private readonly List<Train> _currentTrains = new();//모든 Train 목록
+      public List<Train> CurrentTrains => _currentTrains;
 
-        public int CurrentTrainCount => _currentTrains.Count;
+      public int CurrentTrainCount => _currentTrains.Count;
 
-        private struct DeadTrainInfo
-        {
-            public Train Train;
-            public int OriginalIndex;
-        }
+      private struct DeadTrainInfo
+      {
+         public Train Train;
+         public int OriginalIndex;
+      }
 
-        private readonly List<DeadTrainInfo> _deadTrains = new();//죽은 Train 목록
-        private readonly Dictionary<Train, int> _trainOriginalIndexMap = new();//Train의 원래 인덱스 매핑
+      private readonly List<DeadTrainInfo> _deadTrains = new();//죽은 Train 목록
+      private readonly Dictionary<Train, int> _trainOriginalIndexMap = new();//Train의 원래 인덱스 매핑
 
-        protected override void Start()
-        {
-            base.Start();
+      protected override void Start()
+      {
+         base.Start();
 
-            GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
-            GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
-            GameEventSystem.Subscribe<InspectionEvent>(OnInspection);
+         GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+         GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
+         GameEventSystem.Subscribe<InspectionEvent>(OnInspection);
 
-            if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
+         if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
+         {
+            SpawnTrain(startTrainablePrefab);
+         }
+
+         _currentTrains.Clear();
+      }
+
+      private void OnDestroy()
+      {
+         GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+         GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);
+         GameEventSystem.Unsubscribe<InspectionEvent>(OnInspection);
+      }
+
+      private void FixedUpdate()
+      {
+         if (_isDead)
+            return;
+
+         Move();
+      }
+
+      private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
+      {
+         var choice = triChoiceSelectEvent.ChoiceOption;
+         if (choice == null)
+            return;
+         choice.Execute();
+      }
+
+      private void Move()
+      {
+         transform.Translate(Vector3.right * Time.deltaTime * moveSpeed);
+      }
+
+      [Button("SpawnTrain")]
+      public void SpawnTrain(Train trainPrefab)
+      {
+         if (_currentAliveTrains.Count >= maxTrainCount)
+         {
+            Debug.LogWarning("Train count is max");
+            return;
+         }
+
+         Train trainObject = Instantiate(trainPrefab, transform);
+         trainObject.Initialize(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
+         trainObject.IsUnDead = isUnDead;
+         _currentAliveTrains.Add(trainObject);
+         _currentTrains.Add(trainObject);
+         int originalIndex = _currentTrains.Count - 1;
+         _trainOriginalIndexMap[trainObject] = originalIndex;
+
+         // 새로 생성된 train에 기존 업그레이드 적용
+         ApplyExistingUpgradesToTrain(trainObject);
+
+         var newTrainData = DatabaseManager.Instance.GetTrainData(trainObject.Id);
+         GameEventSystem.Publish(new AddTrainEvent(newTrainData.Icon, trainObject));
+
+         // 살아있는 기차 재정렬
+         RearrangeTrains();
+      }
+
+      public void UpgradeTrain(string targetTrainId, ITrainUpgradeData upgradeData)
+      {
+         Train upgradeTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
+
+         if (upgradeTrain != null)
+         {
+            upgradeTrain.Upgrade(upgradeData);
+         }
+      }
+
+      /// <summary>
+      /// 기존 Train을 새로운 Train으로 대체합니다. (Elite Train 전환용)
+      /// </summary>
+      /// <param name="oldTrainId">대체할 기존 Train ID</param>
+      /// <param name="newTrainPrefab">새로운 Train 프리팹</param>
+      public void ReplaceTrain(string oldTrainId, Train newTrainPrefab)
+      {
+         // 대체할 기존 Train 찾기
+         Train oldTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == oldTrainId);
+         if (oldTrain == null)
+         {
+            Debug.LogError($"ReplaceTrain: Train with ID [{oldTrainId}] not found");
+            return;
+         }
+
+         // 기존 Train의 인덱스 저장
+         int aliveIndex = _currentAliveTrains.IndexOf(oldTrain);
+         int originalIndex = _trainOriginalIndexMap.ContainsKey(oldTrain) ? _trainOriginalIndexMap[oldTrain] : aliveIndex;
+         Vector3 oldPosition = oldTrain.transform.localPosition;
+
+         // 새로운 Train 생성 (기존 Train 제거 전에 생성하여 이벤트에서 참조 가능)
+         Train newTrain = Instantiate(newTrainPrefab, transform);
+         newTrain.Initialize(DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
+         newTrain.IsUnDead = isUnDead;
+
+         // 새로 생성된 train에 기존 업그레이드 적용
+         ApplyExistingUpgradesToTrain(newTrain);
+
+         // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
+         var newTrainData = DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id);
+         GameEventSystem.Publish(new ReplaceTrainEvent(oldTrain, newTrain, newTrainData?.Icon));
+
+         // 기존 Train 제거
+         _currentAliveTrains.Remove(oldTrain);
+         _currentTrains.Remove(oldTrain);
+         _trainOriginalIndexMap.Remove(oldTrain);
+         Destroy(oldTrain.gameObject);
+
+         // 기존 위치에 삽입
+         _currentAliveTrains.Insert(aliveIndex, newTrain);
+         if (originalIndex < _currentTrains.Count)
+         {
+            _currentTrains.Insert(originalIndex, newTrain);
+         }
+         else
+         {
+            _currentTrains.Add(newTrain);
+         }
+         _trainOriginalIndexMap[newTrain] = originalIndex;
+
+         // 기존 위치 복원
+         newTrain.transform.localPosition = oldPosition;
+
+         // 살아있는 기차 재정렬
+         RearrangeTrains();
+      }
+
+      private void CheckDeadTrain(TrainDeadEvent trainDeadEvent)
+      {
+         if (isUnDead)
+            return;
+
+         foreach (var train in _currentAliveTrains.ToList())
+         {
+            if (trainDeadEvent.Train == train)
             {
-                SpawnTrain(startTrainablePrefab);
+               _currentAliveTrains.Remove(train);
+
+               // 원래 인덱스 가져오기
+               int originalIndex = _trainOriginalIndexMap.ContainsKey(train) ? _trainOriginalIndexMap[train] : _currentAliveTrains.Count;
+
+               // 오브젝트 비활성화
+               train.gameObject.SetActive(false);
+
+               // 죽은 기차 정보 저장
+               _deadTrains.Add(new DeadTrainInfo
+               {
+                  Train = train,
+                  OriginalIndex = originalIndex
+               });
+
+               // 살아있는 기차 재정렬
+               RearrangeTrains();
+
+               if (_currentAliveTrains.Count == 0)
+               {
+                  OnDead();
+               }
+               break;
+            }
+         }
+      }
+
+      private void RearrangeTrains()
+      {
+         // 살아있는 기차만 연속적으로 재정렬
+         for (int i = 0; i < _currentAliveTrains.Count; i++)
+         {
+            Vector3 newPos = Vector3.left * trainOffset * (i + 1);
+            _currentAliveTrains[i].transform.localPosition = newPos;
+         }
+      }
+
+      private void RearrangeAllTrainsToOriginalOrder()
+      {
+         // 모든 기차를 원래 순서대로 재정렬
+         // _currentTrains와 _deadTrains를 합쳐서 원래 인덱스 순서로 정렬
+         var allTrains = new List<(Train train, int originalIndex)>();
+
+         // 살아있는 기차 추가
+         foreach (var train in _currentAliveTrains)
+         {
+            if (_trainOriginalIndexMap.ContainsKey(train))
+            {
+               allTrains.Add((train, _trainOriginalIndexMap[train]));
+            }
+         }
+
+         // 죽은 기차 추가
+         foreach (var deadTrainInfo in _deadTrains)
+         {
+            allTrains.Add((deadTrainInfo.Train, deadTrainInfo.OriginalIndex));
+         }
+
+         // 원래 인덱스 순서로 정렬
+         allTrains.Sort((a, b) => a.originalIndex.CompareTo(b.originalIndex));
+
+         // 정렬된 순서대로 위치 재설정
+         for (int i = 0; i < allTrains.Count; i++)
+         {
+            Vector3 newPos = (i + 1) * trainOffset * Vector3.left;
+            allTrains[i].train.transform.localPosition = newPos;
+         }
+      }
+
+      private void OnInspection(InspectionEvent inspectionEvent)
+      {
+         // 죽은 기차 복원
+         foreach (var deadTrainInfo in _deadTrains.ToList())
+         {
+            Train train = deadTrainInfo.Train;
+
+            // HP 최대치로 복원 및 _isDead = false 설정 (레벨과 업그레이드는 유지)
+            train.Resurrect();
+
+            // 오브젝트 활성화
+            train.gameObject.SetActive(true);
+
+            // _deadTrains에서 제거하고 _currentTrains에 다시 추가
+            _deadTrains.Remove(deadTrainInfo);
+            _currentAliveTrains.Add(train);
+         }
+
+         // 모든 기차를 원래 순서대로 재정렬
+         RearrangeAllTrainsToOriginalOrder();
+      }
+
+      public bool CheckHasTrain(TrainData trainData)
+      {
+         return _currentAliveTrains.Any(train => train.TrainData.Id == trainData.Id);
+      }
+
+      public bool CheckHasTrainById(string trainId)
+      {
+         return _currentAliveTrains.Any(train => train.TrainData.Id == trainId);
+      }
+
+      public void ApplyUpgrade(UpgradeData upgradeData)
+      {
+         if (upgradeData == null)
+            return;
+
+         if (upgradeData.Stats == null || upgradeData.Stats.Length == 0)
+            return;
+
+         foreach (var train in _currentAliveTrains)
+         {
+            train.ApplyStats(upgradeData.Stats);
+         }
+      }
+
+      /// <summary>
+      /// 새로 생성된 train에 UserDataManager._upgradeLevels에 저장된 상점 업그레이드를 적용합니다.
+      /// UpgradeManager.ApplyTrainUpgrade와 동일한 방식으로 작동합니다.
+      /// </summary>
+      private void ApplyExistingUpgradesToTrain(Train train)
+      {
+         if (train == null)
+         {
+            Debug.LogWarning("ApplyExistingUpgradesToTrain: train is null");
+            return;
+         }
+
+         if (UserDataManager.Instance == null)
+         {
+            Debug.LogWarning("ApplyExistingUpgradesToTrain: UserDataManager.Instance is null");
+            return;
+         }
+
+         if (DatabaseManager.Instance == null)
+         {
+            Debug.LogWarning("ApplyExistingUpgradesToTrain: DatabaseManager.Instance is null");
+            return;
+         }
+
+         // UserDataManager._upgradeLevels dictionary의 모든 항목을 순회
+         var upgradeIds = UserDataManager.Instance.GetAllUpgradeIds();
+         if (upgradeIds == null)
+         {
+            Debug.LogWarning("ApplyExistingUpgradesToTrain: GetAllUpgradeIds returned null");
+            return;
+         }
+
+         int totalAppliedCount = 0;
+         foreach (var upgradeId in upgradeIds)
+         {
+            if (string.IsNullOrEmpty(upgradeId))
+            {
+               Debug.LogWarning("ApplyExistingUpgradesToTrain: upgradeId is null or empty");
+               continue;
             }
 
-            _currentTrains.Clear();
-        }
+            // UserDataManager에서 해당 업그레이드의 레벨 확인
+            // UpgradeManager.OnBuyShopItem에서 UserDataManager.Instance.UpgradeLevel(upgradeId)로 기록됨
+            int upgradeLevel = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
 
-        private void OnDestroy()
-        {
-            GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
-            GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);
-            GameEventSystem.Unsubscribe<InspectionEvent>(OnInspection);
-        }
-
-        private void FixedUpdate()
-        {
-            if (_isDead) return;
-
-            Move();
-        }
-
-        private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
-        {
-            var choice = triChoiceSelectEvent.ChoiceOption;
-            if (choice == null) return;
-            choice.Execute();
-        }
-
-        private void Move()
-        {
-            transform.Translate(Vector3.right * Time.deltaTime * moveSpeed);
-        }
-
-        [Button("SpawnTrain")]
-        public void SpawnTrain(Train trainPrefab)
-        {
-            if (_currentAliveTrains.Count >= maxTrainCount)
+            if (upgradeLevel <= 0)
             {
-                Debug.LogWarning("Train count is max");
-                return;
+               Debug.LogWarning($"ApplyExistingUpgradesToTrain: upgradeLevel is {upgradeLevel} for upgradeId '{upgradeId}'");
+               continue;
             }
 
-            Train trainObject = Instantiate(trainPrefab, transform);
-            trainObject.Initialize(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
-            trainObject.IsUnDead = isUnDead;
-            _currentAliveTrains.Add(trainObject);
-            _currentTrains.Add(trainObject);
-            int originalIndex = _currentTrains.Count - 1;
-            _trainOriginalIndexMap[trainObject] = originalIndex;
-
-            // 새로 생성된 train에 기존 업그레이드 적용
-            ApplyExistingUpgradesToTrain(trainObject);
-
-            GameEventSystem.Publish(new AddTrainEvent(_trainData.Icon, trainObject));
-
-            // 살아있는 기차 재정렬
-            RearrangeTrains();
-        }
-
-        public void UpgradeTrain(string targetTrainId, ITrainUpgradeData upgradeData)
-        {
-            Train upgradeTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
-
-            if (upgradeTrain != null)
+            // UpgradeData 조회
+            UpgradeData upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
+            if (upgradeData == null)
             {
-                upgradeTrain.Upgrade(upgradeData);
-            }
-        }
-
-        /// <summary>
-        /// 기존 Train을 새로운 Train으로 대체합니다. (Elite Train 전환용)
-        /// </summary>
-        /// <param name="oldTrainId">대체할 기존 Train ID</param>
-        /// <param name="newTrainPrefab">새로운 Train 프리팹</param>
-        public void ReplaceTrain(string oldTrainId, Train newTrainPrefab)
-        {
-            // 대체할 기존 Train 찾기
-            Train oldTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == oldTrainId);
-            if (oldTrain == null)
-            {
-                Debug.LogError($"ReplaceTrain: Train with ID [{oldTrainId}] not found");
-                return;
+               Debug.LogWarning($"ApplyExistingUpgradesToTrain: UpgradeData not found for ID '{upgradeId}'");
+               continue;
             }
 
-            // 기존 Train의 인덱스 저장
-            int aliveIndex = _currentAliveTrains.IndexOf(oldTrain);
-            int originalIndex = _trainOriginalIndexMap.ContainsKey(oldTrain) ? _trainOriginalIndexMap[oldTrain] : aliveIndex;
-            Vector3 oldPosition = oldTrain.transform.localPosition;
-
-            // 새로운 Train 생성 (기존 Train 제거 전에 생성하여 이벤트에서 참조 가능)
-            Train newTrain = Instantiate(newTrainPrefab, transform);
-            newTrain.Initialize(DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
-            newTrain.IsUnDead = isUnDead;
-
-            // 새로 생성된 train에 기존 업그레이드 적용
-            ApplyExistingUpgradesToTrain(newTrain);
-
-            // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
-            var newTrainData = DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id);
-            GameEventSystem.Publish(new ReplaceTrainEvent(oldTrain, newTrain, newTrainData?.Icon));
-
-            // 기존 Train 제거
-            _currentAliveTrains.Remove(oldTrain);
-            _currentTrains.Remove(oldTrain);
-            _trainOriginalIndexMap.Remove(oldTrain);
-            Destroy(oldTrain.gameObject);
-
-            // 기존 위치에 삽입
-            _currentAliveTrains.Insert(aliveIndex, newTrain);
-            if (originalIndex < _currentTrains.Count)
+            // TrainUpgrade 타입의 업그레이드만 적용
+            if (upgradeData.UpgradeDataType != UpgradeDataType.TrainUpgrade)
             {
-                _currentTrains.Insert(originalIndex, newTrain);
-            }
-            else
-            {
-                _currentTrains.Add(newTrain);
-            }
-            _trainOriginalIndexMap[newTrain] = originalIndex;
-
-            // 기존 위치 복원
-            newTrain.transform.localPosition = oldPosition;
-
-            Debug.Log($"ReplaceTrain: [{oldTrainId}] replaced with [{newTrainPrefab.Id}]");
-
-            // 살아있는 기차 재정렬
-            RearrangeTrains();
-        }
-
-        private void CheckDeadTrain(TrainDeadEvent trainDeadEvent)
-        {
-            if (isUnDead) return;
-
-            foreach (var train in _currentAliveTrains.ToList())
-            {
-                if (trainDeadEvent.Train == train)
-                {
-                    _currentAliveTrains.Remove(train);
-
-                    // 원래 인덱스 가져오기
-                    int originalIndex = _trainOriginalIndexMap.ContainsKey(train) ? _trainOriginalIndexMap[train] : _currentAliveTrains.Count;
-
-                    // 오브젝트 비활성화
-                    train.gameObject.SetActive(false);
-
-                    // 죽은 기차 정보 저장
-                    _deadTrains.Add(new DeadTrainInfo
-                    {
-                        Train = train,
-                        OriginalIndex = originalIndex
-                    });
-
-                    // 살아있는 기차 재정렬
-                    RearrangeTrains();
-
-                    if (_currentAliveTrains.Count == 0)
-                    {
-                        OnDead();
-                    }
-                    break;
-                }
-            }
-        }
-
-        private void RearrangeTrains()
-        {
-            // 살아있는 기차만 연속적으로 재정렬
-            for (int i = 0; i < _currentAliveTrains.Count; i++)
-            {
-                Vector3 newPos = Vector3.left * trainOffset * (i + 1);
-                _currentAliveTrains[i].transform.localPosition = newPos;
-            }
-        }
-
-        private void RearrangeAllTrainsToOriginalOrder()
-        {
-            // 모든 기차를 원래 순서대로 재정렬
-            // _currentTrains와 _deadTrains를 합쳐서 원래 인덱스 순서로 정렬
-            var allTrains = new List<(Train train, int originalIndex)>();
-
-            // 살아있는 기차 추가
-            foreach (var train in _currentAliveTrains)
-            {
-                if (_trainOriginalIndexMap.ContainsKey(train))
-                {
-                    allTrains.Add((train, _trainOriginalIndexMap[train]));
-                }
+               continue;
             }
 
-            // 죽은 기차 추가
-            foreach (var deadTrainInfo in _deadTrains)
+            if (upgradeData.Stats == null || upgradeData.Stats.Length == 0)
             {
-                allTrains.Add((deadTrainInfo.Train, deadTrainInfo.OriginalIndex));
+               Debug.LogWarning($"ApplyExistingUpgradesToTrain: Stats is null or empty for upgradeId '{upgradeId}'");
+               continue;
             }
 
-            // 원래 인덱스 순서로 정렬
-            allTrains.Sort((a, b) => a.originalIndex.CompareTo(b.originalIndex));
-
-            // 정렬된 순서대로 위치 재설정
-            for (int i = 0; i < allTrains.Count; i++)
+            // 업그레이드 레벨만큼 스탯 적용
+            // UpgradeManager.ApplyTrainUpgrade와 동일한 방식: upgradeData.Stats를 train에 적용
+            for (int i = 0; i < upgradeLevel; i++)
             {
-                Vector3 newPos = Vector3.left * trainOffset * (i + 1);
-                allTrains[i].train.transform.localPosition = newPos;
-            }
-        }
-
-        private void OnInspection(InspectionEvent inspectionEvent)
-        {
-            // 죽은 기차 복원
-            foreach (var deadTrainInfo in _deadTrains.ToList())
-            {
-                Train train = deadTrainInfo.Train;
-
-                // HP 최대치로 복원 및 _isDead = false 설정 (레벨과 업그레이드는 유지)
-                train.Resurrect();
-
-                // 오브젝트 활성화
-                train.gameObject.SetActive(true);
-
-                // _deadTrains에서 제거하고 _currentTrains에 다시 추가
-                _deadTrains.Remove(deadTrainInfo);
-                _currentAliveTrains.Add(train);
+               train.ApplyStats(upgradeData.Stats);
             }
 
-            // 모든 기차를 원래 순서대로 재정렬
-            RearrangeAllTrainsToOriginalOrder();
-        }
+            totalAppliedCount++;
+         }
 
-        public bool CheckHasTrain(TrainData trainData)
-        {
-            return _currentAliveTrains.Any(train => train.TrainData.Id == trainData.Id);
-        }
+         if (totalAppliedCount > 0)
+         {
+         }
+      }
 
-        public bool CheckHasTrainById(string trainId)
-        {
-            return _currentAliveTrains.Any(train => train.TrainData.Id == trainId);
-        }
+      protected override void OnDead()
+      {
+         if (isUnDead)
+            return;
 
-        public void ApplyUpgrade(UpgradeData upgradeData)
-        {
-            if (upgradeData == null) return;
-
-            if (upgradeData.Stats == null || upgradeData.Stats.Length == 0) return;
-
-            foreach (var train in _currentAliveTrains)
-            {
-                train.ApplyStats(upgradeData.Stats);
-            }
-        }
-
-        /// <summary>
-        /// 새로 생성된 train에 UserDataManager._upgradeLevels에 저장된 상점 업그레이드를 적용합니다.
-        /// UpgradeManager.ApplyTrainUpgrade와 동일한 방식으로 작동합니다.
-        /// </summary>
-        private void ApplyExistingUpgradesToTrain(Train train)
-        {
-            if (train == null)
-            {
-                Debug.LogWarning("ApplyExistingUpgradesToTrain: train is null");
-                return;
-            }
-
-            if (UserDataManager.Instance == null)
-            {
-                Debug.LogWarning("ApplyExistingUpgradesToTrain: UserDataManager.Instance is null");
-                return;
-            }
-
-            if (DatabaseManager.Instance == null)
-            {
-                Debug.LogWarning("ApplyExistingUpgradesToTrain: DatabaseManager.Instance is null");
-                return;
-            }
-
-            // UserDataManager._upgradeLevels dictionary의 모든 항목을 순회
-            var upgradeIds = UserDataManager.Instance.GetAllUpgradeIds();
-            if (upgradeIds == null)
-            {
-                Debug.LogWarning("ApplyExistingUpgradesToTrain: GetAllUpgradeIds returned null");
-                return;
-            }
-
-            int totalAppliedCount = 0;
-            foreach (var upgradeId in upgradeIds)
-            {
-                if (string.IsNullOrEmpty(upgradeId))
-                {
-                    Debug.LogWarning("ApplyExistingUpgradesToTrain: upgradeId is null or empty");
-                    continue;
-                }
-
-                // UserDataManager에서 해당 업그레이드의 레벨 확인
-                // UpgradeManager.OnBuyShopItem에서 UserDataManager.Instance.UpgradeLevel(upgradeId)로 기록됨
-                int upgradeLevel = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
-
-                if (upgradeLevel <= 0)
-                {
-                    Debug.LogWarning($"ApplyExistingUpgradesToTrain: upgradeLevel is {upgradeLevel} for upgradeId '{upgradeId}'");
-                    continue;
-                }
-
-                // UpgradeData 조회
-                UpgradeData upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
-                if (upgradeData == null)
-                {
-                    Debug.LogWarning($"ApplyExistingUpgradesToTrain: UpgradeData not found for ID '{upgradeId}'");
-                    continue;
-                }
-
-                // TrainUpgrade 타입의 업그레이드만 적용
-                if (upgradeData.UpgradeDataType != UpgradeDataType.TrainUpgrade)
-                {
-                    continue;
-                }
-
-                if (upgradeData.Stats == null || upgradeData.Stats.Length == 0)
-                {
-                    Debug.LogWarning($"ApplyExistingUpgradesToTrain: Stats is null or empty for upgradeId '{upgradeId}'");
-                    continue;
-                }
-
-                // 업그레이드 레벨만큼 스탯 적용
-                // UpgradeManager.ApplyTrainUpgrade와 동일한 방식: upgradeData.Stats를 train에 적용
-                for (int i = 0; i < upgradeLevel; i++)
-                {
-                    train.ApplyStats(upgradeData.Stats);
-                }
-
-                totalAppliedCount++;
-            }
-
-            if (totalAppliedCount > 0)
-            {
-            }
-        }
-
-        protected override void OnDead()
-        {
-            if (isUnDead) return;
-
-            base.OnDead();
-            GameEventSystem.Publish(new GameEndEvent(false));
-        }
-    }
+         base.OnDead();
+         GameEventSystem.Publish(new GameEndEvent(false));
+      }
+   }
 }

@@ -323,6 +323,7 @@ MonoBehaviour:
   - id: 20001
     name: "\uBA54\uC778 \uAE30\uCC28"
     iconId: 
+    icon: {fileID: 0}
     description: "\uC81C\uC77C \uAE30\uBCF8\uC774 \uB418\uB294 \uAE30\uCC28\uC774\uB2E4."
     trainStatusData:
       MaxHp: 100
@@ -331,7 +332,8 @@ MonoBehaviour:
   turretTrainDataList:
   - id: 30001
     name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_KMD_08_UI
+    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     description: "\uAE30\uAD00\uCD1D\uC73C\uB85C \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
@@ -346,7 +348,8 @@ MonoBehaviour:
     turretProjectilePrefabId: NormalProjectile
   - id: 30002
     name: "\uD654\uC5FC \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_MEL_05_UI
+    icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     description: "\uD654\uC5FC\uC73C\uB85C \uC9C0\uC18D\uC801\uC778 \uD53C\uD574\uB97C
       \uC900\uB2E4."
     trainStatusData:
@@ -362,7 +365,8 @@ MonoBehaviour:
     turretProjectilePrefabId: FireEffectProjectile
   - id: 30003
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_KMD_10_UI
+    icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     description: "\uBBF8\uC0AC\uC77C\uB85C \uAC15\uD55C \uD53C\uD574\uB97C \uC900\uB2E4.
       \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
     trainStatusData:
@@ -378,7 +382,8 @@ MonoBehaviour:
     turretProjectilePrefabId: MissileProjectile
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_288_19_UI
+    icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     description: "\uB808\uC774\uC800\uB85C \uAC15\uD558\uAC8C \uC9C0\uC18D\uC801\uC778
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
@@ -394,7 +399,8 @@ MonoBehaviour:
     turretProjectilePrefabId: LaserProjectile
   - id: 30005
     name: "\uC804\uAE30 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_MEL_16_UI
+    icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     description: "\uD654\uBA74\uC5D0 \uC788\uB294 \uB2E4\uC218\uC758 \uC801\uB4E4\uC744
       \uC804\uAE30\uB85C \uACF5\uACA9\uD55C\uB2E4."
     trainStatusData:
@@ -410,7 +416,8 @@ MonoBehaviour:
     turretProjectilePrefabId: ElectrickProjectile
   - id: 30006
     name: "\uD3EC\uACA9 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_MEL_14_UI
+    icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     description: "\uAC70\uB300\uD55C \uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574
       \uBA87 \uCD08 \uD6C4 \uAD11\uC5ED \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
@@ -426,7 +433,8 @@ MonoBehaviour:
     turretProjectilePrefabId: CannonProjectile
   - id: 30007
     name: "\uC800\uACA9 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_KMD_12_UI
+    icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uCD08 \uD6C4 \uAC15\uD55C
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
@@ -443,6 +451,7 @@ MonoBehaviour:
   - id: 31001
     name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
     description: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
@@ -458,6 +467,7 @@ MonoBehaviour:
   - id: 31002
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
     description: "\uD654\uC5FC \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
@@ -473,6 +483,7 @@ MonoBehaviour:
   - id: 31003
     name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
     description: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
@@ -488,6 +499,7 @@ MonoBehaviour:
   - id: 31004
     name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
     description: "\uB808\uC774\uC800 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
@@ -503,6 +515,7 @@ MonoBehaviour:
   - id: 31005
     name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
     description: "\uC804\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
@@ -518,6 +531,7 @@ MonoBehaviour:
   - id: 31006
     name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
     description: "\uD3EC\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
@@ -533,6 +547,7 @@ MonoBehaviour:
   - id: 31007
     name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
     description: "\uC800\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
@@ -548,7 +563,8 @@ MonoBehaviour:
   rangeTrainDataList:
   - id: 40001
     name: "\uD3ED\uBC1C \uD3EC\uD0D1"
-    iconId: 
+    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
+    icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC744 \uBC00\uCE58\uACE0
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
@@ -563,7 +579,8 @@ MonoBehaviour:
     rangeProjectilePrefabId: ExplosionProjectile
   - id: 40002
     name: "\uB0C9\uAE30 \uD3EC\uD0D1"
-    iconId: 
+    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
+    icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC758 \uC774\uB3D9\uC18D\uB3C4\uAC00
       \uB290\uB824\uC9C0\uACE0 \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
@@ -579,6 +596,7 @@ MonoBehaviour:
   - id: 41001
     name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
     description: "\uD3ED\uBC1C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
@@ -593,6 +611,7 @@ MonoBehaviour:
   - id: 41002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
     description: "\uB0C9\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
@@ -607,9 +626,10 @@ MonoBehaviour:
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
   - id: 90001
-    iconId: 
+    iconId: Weapon_KMD_08_UI
+    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uACF5\uACA9\uB51C\uB808\uC774
+    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851>\uC99D\uAC00</color> \uACF5\uACA9\uB51C\uB808\uC774
       {1} \uAC10\uC18C"
     upgradeStats:
     - statusUpgrade:
@@ -637,9 +657,10 @@ MonoBehaviour:
         AttackInterval: 0.05
         TargetCount: 0
   - id: 90002
-    iconId: 
+    iconId: Weapon_MEL_05_UI
+    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     name: "\uD654\uC5FC \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851>\uC99D\uAC00</color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -666,9 +687,10 @@ MonoBehaviour:
         AttackInterval: 0
         TargetCount: 0
   - id: 90003
-    iconId: 
+    iconId: Weapon_KMD_10_UI
+    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uACF5\uACA9\uB51C\uB808\uC774
+    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851>\uC99D\uAC00</color> \uACF5\uACA9\uB51C\uB808\uC774
       {1} \uAC10\uC18C"
     upgradeStats:
     - statusUpgrade:
@@ -696,9 +718,10 @@ MonoBehaviour:
         AttackInterval: 0.2
         TargetCount: 0
   - id: 90004
-    iconId: 
+    iconId: Weapon_288_19_UI
+    icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851>\uC99D\uAC00</color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -725,10 +748,10 @@ MonoBehaviour:
         AttackInterval: 0
         TargetCount: 0
   - id: 90005
-    iconId: 
+    iconId: Weapon_MEL_16_UI
+    icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     name: "\uC804\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uACF5\uACA9\uD558\uB294 \uC801
-      \uC218 {1} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851>\uC99D\uAC00</color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -755,10 +778,11 @@ MonoBehaviour:
         AttackInterval: 0
         TargetCount: 0
   - id: 90006
-    iconId: 
+    iconId: Weapon_MEL_14_UI
+    icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     name: "\uD3EC\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uACF5\uACA9 \uBC94\uC704 {1}
-      \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851>\uC99D\uAC00</color> \uACF5\uACA9
+      \uBC94\uC704 {1} <color=#FF5851>\uC99D\uAC00</color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -785,9 +809,10 @@ MonoBehaviour:
         AttackInterval: 0
         TargetCount: 0
   - id: 90007
-    iconId: 
+    iconId: Weapon_KMD_12_UI
+    icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     name: "\uC800\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851>\uC99D\uAC00</color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -815,9 +840,11 @@ MonoBehaviour:
         TargetCount: 0
   rangeTrainUpgradeDataList:
   - id: 100001
-    iconId: 
+    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
+    icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     name: "\uD3ED\uBC1C \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uBC94\uC704 {1} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851>\uC99D\uAC00</color> \uBC94\uC704
+      {1} <color=FF5851>\uC99D\uAC00</color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -841,9 +868,11 @@ MonoBehaviour:
         AttackCount: 0
         AttackInterval: 0
   - id: 100002
-    iconId: 
+    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
+    icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     name: "\uB0C9\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uBC94\uC704 {1} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 {0} <color=#FF5851>\uC99D\uAC00</color> \uBC94\uC704
+      {1} <color=FF5854>\uC99D\uAC00</color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -996,15 +1025,15 @@ MonoBehaviour:
       Tier: 0
     - Option:
         rid: 2066870334413602906
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 2066870334413602907
-      Weight: 1
+      Weight: 0
       Tier: 0
     - Option:
         rid: 2066870334413602908
-      Weight: 1
+      Weight: 0
       Tier: 0
     - Option:
         rid: 2066870365229940814
