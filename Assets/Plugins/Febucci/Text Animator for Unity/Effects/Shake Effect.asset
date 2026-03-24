@@ -29,7 +29,7 @@ MonoBehaviour:
     playback: {fileID: 11400000, guid: 70d5b5db9762743afa895ebe0e9ea4cb, type: 2}
   persistent:
     stateParams:
-      amplitude: 0.3
+      amplitude: 0.6
       progressIndexWithTime: 1
     phaseParams:
       charOffset: 0.182
