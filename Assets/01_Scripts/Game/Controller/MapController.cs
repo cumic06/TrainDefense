@@ -29,8 +29,6 @@ namespace TrainDefense
             if (_cam.WorldToViewportPoint(_maps[_currentIndex].transform.position + Vector3.right * width * 0.5f).x < 0)
             {
                 _maps[_currentIndex].transform.position = _maps[1 - _currentIndex].transform.position + Vector3.right * width;
-                Debug.Log("아라라라라" + _maps[_currentIndex].transform.position);
-                Debug.Log("아라라라라" + _maps[1 - _currentIndex].transform.position + Vector3.right * width);
                 _currentIndex = 1 - _currentIndex;
             }
         }
