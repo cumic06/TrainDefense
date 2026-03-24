@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 61ea8ff3fc9ec4b46b30f685a3afe034
+guid: 4e22abe836719084699423e9fcb048f9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7636701915186941633
-    second: ElectrickProjectile_0
+      213: 4409895422744502411
+    second: ElectrickProjectileSheet_0
   - first:
-      213: 4246966628365444324
-    second: ElectrickProjectile_1
+      213: 5485345906927879680
+    second: ElectrickProjectileSheet_1
   - first:
-      213: 8434214240539831953
-    second: ElectrickProjectile_2
+      213: -8875018507819257524
+    second: ElectrickProjectileSheet_2
   - first:
-      213: -9072617491489415482
-    second: ElectrickProjectile_3
+      213: 3170584731447774970
+    second: ElectrickProjectileSheet_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -60,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 32
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -106,7 +106,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: WebGL
+    buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -119,7 +119,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
-    buildTarget: Android
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -135,13 +135,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ElectrickProjectile_0
+      name: ElectrickProjectileSheet_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
-        height: 64
+        width: 64
+        height: 256
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -150,42 +150,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f31bcb1b11cf40690800000000000000
-      internalID: -7636701915186941633
+      spriteID: b80ae49b588133d30800000000000000
+      internalID: 4409895422744502411
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ElectrickProjectile_1
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 32
-        height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4e429a8a5a140fa30800000000000000
-      internalID: 4246966628365444324
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ElectrickProjectile_2
+      name: ElectrickProjectileSheet_1
       rect:
         serializedVersion: 2
         x: 64
         y: 0
-        width: 32
-        height: 64
+        width: 64
+        height: 256
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,30 +172,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 19eeae65a295c0570800000000000000
-      internalID: 8434214240539831953
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ElectrickProjectile_3
-      rect:
-        serializedVersion: 2
-        x: 96
-        y: 0
-        width: 32
-        height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6ce17c4d576971280800000000000000
-      internalID: -9072617491489415482
+      spriteID: 006449c2a0ddf1c40800000000000000
+      internalID: 5485345906927879680
       vertices: []
       indices: 
       edges: []
@@ -226,7 +182,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: e436170e82533b742a280091e836b9b3
+    spriteID: 36a187f4a0476b545a836b89706b26d1
     internalID: 0
     vertices: []
     indices: 
@@ -234,12 +190,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      ElectrickProjectile_0: -7636701915186941633
-      ElectrickProjectile_1: 4246966628365444324
-      ElectrickProjectile_2: 8434214240539831953
-      ElectrickProjectile_3: -9072617491489415482
+      ElectrickProjectileSheet_0: 4409895422744502411
+      ElectrickProjectileSheet_1: 5485345906927879680
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
