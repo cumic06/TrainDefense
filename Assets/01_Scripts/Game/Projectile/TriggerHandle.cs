@@ -30,13 +30,24 @@ namespace TrainDefense.Game
         [SerializeField]
         private float destroyDelay = 0.2f;
 
+        [BoxGroup("Wave Settings")]
+        [SerializeField]
+        private ExpandingWave expandingWave;
+
         private Dictionary<IProjectileTarget, float> _damageTimers = new();
 
         public bool HasTurretDamage => hasTurretDamage;
 
         private void OnEnable()
         {
-            Destroy(gameObject, destroyDelay);
+            float lifetime = destroyDelay;
+
+            if (expandingWave != null)
+            {
+                lifetime = Mathf.Max(lifetime, expandingWave.RequiredLifetime);
+            }
+
+            Destroy(gameObject, lifetime);
         }
 
         private void OnDisable()
@@ -52,8 +63,15 @@ namespace TrainDefense.Game
             }
         }
 
+        public void ApplyWaveHit(IProjectileTarget target)
+        {
+            ProcessEnter(target);
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (expandingWave != null) return;
+
             if (other.TryGetComponent<IProjectileTarget>(out var target))
             {
                 ProcessEnter(target);
@@ -62,6 +80,8 @@ namespace TrainDefense.Game
 
         private void OnTriggerStay2D(Collider2D other)
         {
+            if (expandingWave != null) return;
+
             if (other.TryGetComponent<IProjectileTarget>(out var target))
             {
                 ProcessStay(target);
@@ -70,6 +90,8 @@ namespace TrainDefense.Game
 
         private void OnTriggerExit2D(Collider2D other)
         {
+            if (expandingWave != null) return;
+
             if (other.TryGetComponent<IProjectileTarget>(out var target))
             {
                 ProcessExit(target);
@@ -94,7 +116,7 @@ namespace TrainDefense.Game
                 // 직접 데미지는 즉시 피해
                 target.TakeDamage(damage);
 
-                if (destroyOnTriggerEnter)
+                if (destroyOnTriggerEnter && expandingWave == null)
                 {
                     if (destroyDelay > 0)
                     {
