@@ -1,4 +1,3 @@
-using System;
 using TrainDefense.Game;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +15,8 @@ namespace TrainDefense
       private Slider sfxSlider;
       [SerializeField]
       private Button sfxMuteButton;
+      [SerializeField]
+      private Toggle hapticToggle;
 
       [SerializeField]
       private Sprite muteSprite;
@@ -34,6 +35,7 @@ namespace TrainDefense
          _SetSFXSliderValue(SoundManager.Instance.SFXVolume);
          _SetBGMMuteSprite();
          _SetSFXMuteSprite();
+         _RefreshHapticToggle();
       }
 
       private void OnDestroy()
@@ -47,6 +49,11 @@ namespace TrainDefense
          sfxMuteButton.onClick.AddListener(_MuteSFX);
          bgmSlider.onValueChanged.AddListener(_ChangeBGMVolume);
          sfxSlider.onValueChanged.AddListener(_ChangeSFXVolume);
+
+         if (hapticToggle != null)
+         {
+            hapticToggle.onValueChanged.AddListener(_OnHapticToggleChanged);
+         }
       }
 
       private void _UnSubscribeListeners()
@@ -55,6 +62,11 @@ namespace TrainDefense
          sfxMuteButton.onClick.RemoveAllListeners();
          bgmSlider.onValueChanged.RemoveAllListeners();
          sfxSlider.onValueChanged.RemoveAllListeners();
+
+         if (hapticToggle != null)
+         {
+            hapticToggle.onValueChanged.RemoveListener(_OnHapticToggleChanged);
+         }
       }
 
       public void ShowOptionUI()
@@ -112,6 +124,38 @@ namespace TrainDefense
       {
          Sprite sprite = SoundManager.Instance.IsSfxMuted ? muteSprite : unMuteSprite;
          sfxMuteButton.image.sprite = sprite;
+      }
+
+      private void _OnHapticToggleChanged(bool isEnabled)
+      {
+         if (HapticManager.Instance != null)
+         {
+            HapticManager.Instance.SetEnabled(isEnabled);
+         }
+         else if (UserDataManager.Instance != null)
+         {
+            UserDataManager.Instance.SetHapticEnabled(isEnabled);
+         }
+      }
+
+      private void _RefreshHapticToggle()
+      {
+         if (hapticToggle == null)
+         {
+            return;
+         }
+
+         bool isEnabled = true;
+         if (HapticManager.Instance != null)
+         {
+            isEnabled = HapticManager.Instance.IsEnabled;
+         }
+         else if (UserDataManager.Instance != null)
+         {
+            isEnabled = UserDataManager.Instance.IsHapticEnabled;
+         }
+
+         hapticToggle.SetIsOnWithoutNotify(isEnabled);
       }
    }
 }
