@@ -1,6 +1,6 @@
 namespace TrainDefense.Game.Events
 {
-    public class InspectionEvent
+    public class InspectionStartEvent
     {
     }
 }

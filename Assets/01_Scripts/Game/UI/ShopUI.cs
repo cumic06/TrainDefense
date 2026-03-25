@@ -77,6 +77,7 @@ namespace TrainDefense.Game.UI
 
             isShopOpen = false;
 
+            GameEventSystem.Publish(new InspectionEndEvent());
             GameEventSystem.Publish(new EngageStartEvent());
         }
 

@@ -54,7 +54,7 @@ namespace TrainDefense.Game
 
          GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
          GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
-         GameEventSystem.Subscribe<InspectionEvent>(OnInspection);
+         GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
 
          if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
          {
@@ -68,7 +68,7 @@ namespace TrainDefense.Game
       {
          GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
          GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);
-         GameEventSystem.Unsubscribe<InspectionEvent>(OnInspection);
+         GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
       }
 
       private void FixedUpdate()
@@ -264,7 +264,7 @@ namespace TrainDefense.Game
          }
       }
 
-      private void OnInspection(InspectionEvent inspectionEvent)
+      private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
       {
          // 죽은 기차 복원
          foreach (var deadTrainInfo in _deadTrains.ToList())
