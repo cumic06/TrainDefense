@@ -38,7 +38,8 @@ namespace TrainDefense.Editor
 
             // Scan Scenes
             var sceneGuids = AssetDatabase.FindAssets("t:Scene");
-            var originalScenePath = SceneManager.GetActiveScene().path;
+            var originalSetup = EditorSceneManager.GetSceneManagerSetup();
+            var originalActiveScenePath = SceneManager.GetActiveScene().path;
             
             foreach (var guid in sceneGuids)
             {
@@ -47,13 +48,23 @@ namespace TrainDefense.Editor
 
 
                 // Open the scene to scan
-                var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
-                var rootObjects = scene.GetRootGameObjects();
+                // Use Single to avoid side effects from multiple loaded scenes (e.g., URP 2D Global Light warnings).
+                var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+                var rootObjects = SceneManager.GetActiveScene().GetRootGameObjects();
                 foreach (var root in rootObjects)
                 {
                     results.AddRange(ScanGameObjectForMissingReferences(root, scenePath, includeNull));
                 }
-                EditorSceneManager.CloseScene(scene, true);
+            }
+
+            // Restore original scene setup if possible (best effort).
+            if (originalSetup != null && originalSetup.Length > 0)
+            {
+                EditorSceneManager.RestoreSceneManagerSetup(originalSetup);
+            }
+            else if (!string.IsNullOrEmpty(originalActiveScenePath))
+            {
+                EditorSceneManager.OpenScene(originalActiveScenePath, OpenSceneMode.Single);
             }
 
             return results;
