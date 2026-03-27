@@ -35,9 +35,21 @@ namespace TrainDefense.Game
                return;
             }
 
-            using AndroidJavaClass contextClass = new("android.content.Context");
-            string vibratorService = contextClass.GetStatic<string>("VIBRATOR_SERVICE");
-            _vibrator = currentActivity.Call<AndroidJavaObject>("getSystemService", vibratorService);
+            using AndroidJavaClass versionClass = new("android.os.Build$VERSION");
+            _sdkInt = versionClass.GetStatic<int>("SDK_INT");
+
+            // API 31+ prefers VibrationManager.
+            if (_sdkInt >= 31)
+            {
+               using AndroidJavaObject vibrationManager = currentActivity.Call<AndroidJavaObject>("getSystemService", "vibration_manager");
+               if (vibrationManager != null)
+               {
+                  _vibrator = vibrationManager.Call<AndroidJavaObject>("getDefaultVibrator");
+               }
+            }
+
+            // Fallback for older Android (and if VibrationManager unavailable).
+            _vibrator ??= currentActivity.Call<AndroidJavaObject>("getSystemService", "vibrator");
 
             if (_vibrator == null)
             {
@@ -45,9 +57,6 @@ namespace TrainDefense.Game
             }
 
             IsSupported = _vibrator.Call<bool>("hasVibrator");
-
-            using AndroidJavaClass versionClass = new("android.os.Build$VERSION");
-            _sdkInt = versionClass.GetStatic<int>("SDK_INT");
          }
          catch (Exception exception)
          {
