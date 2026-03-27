@@ -53,7 +53,7 @@ namespace Cumic.Sequence
             GameEventSystem.Subscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(EngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(EngageStart);
-            GameEventSystem.Subscribe<InspectionEvent>(Inspection);
+            GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
             GameEventSystem.Subscribe<LevelUpEvent>(LevelUp);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(TriChoiceSelect);
             GameEventSystem.Subscribe<StageEndEvent>(StageEnd);
@@ -66,7 +66,7 @@ namespace Cumic.Sequence
             GameEventSystem.Unsubscribe<GameEnterEvent>(GameEnter);
             GameEventSystem.Unsubscribe<EngageReadyEvent>(EngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(EngageStart);
-            GameEventSystem.Unsubscribe<InspectionEvent>(Inspection);
+            GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
             GameEventSystem.Unsubscribe<LevelUpEvent>(LevelUp);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(TriChoiceSelect);
             GameEventSystem.Unsubscribe<StageEndEvent>(StageEnd);
@@ -107,7 +107,7 @@ namespace Cumic.Sequence
             }
         }
 
-        private void Inspection(InspectionEvent inspectionEvent)
+        private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
             // 모든 적 유닛 제거
             MonsterSpawner spawner = FindFirstObjectByType<MonsterSpawner>();

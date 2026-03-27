@@ -177,7 +177,7 @@ public class StageManager : Singleton<StageManager>
     private void _CurrentStageInpectionUp()
     {
         _currentStageInspectionTimeIndex++;
-        GameEventSystem.Publish(new InspectionEvent());
+        GameEventSystem.Publish(new InspectionStartEvent());
 
         _inspectionCount++;
 

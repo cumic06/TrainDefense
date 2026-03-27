@@ -14,7 +14,7 @@ namespace TrainDefense.Game
             GameEventSystem.Subscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
             GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
-            GameEventSystem.Subscribe<InspectionEvent>(OnInspection);
+            GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
             GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
         }
@@ -25,7 +25,7 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
             GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
-            GameEventSystem.Unsubscribe<InspectionEvent>(OnInspection);
+            GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
             GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
         }
@@ -60,7 +60,7 @@ namespace TrainDefense.Game
             Pause();
         }
 
-        private void OnInspection(InspectionEvent inspectionEvent)
+        private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
             Pause();
         }

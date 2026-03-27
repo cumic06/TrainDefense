@@ -22,15 +22,19 @@ namespace TrainDefense
         private int _coin;
         private int _currentExp;
         private int _currentLevel = 1;
+        private UserOptionData _userOptionData = new();
         public int Coin => _coin;
         public float ExpPercent => _currentExp / GetNextLevelUpExp();
         public int CurrentLevel => _currentLevel;
+        public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
+        public UserOptionData UserOptionData => _userOptionData;
 
         private void Start()
         {
             DontDestroyOnLoad(gameObject);
 
             LoadDiscoveredMonsters();
+            LoadUserOptionData();
             SubscribeEvents();
             _coin = 0;
         }
@@ -99,6 +103,18 @@ namespace TrainDefense
             string dataToSave = string.Join(",", _discoveredMonsterIds);
             PlayerPrefs.SetString(DISCOVERED_MONSTERS_KEY, dataToSave);
             PlayerPrefs.Save();
+        }
+
+        private void LoadUserOptionData()
+        {
+            _userOptionData = UserOptionDataParser.Load();
+        }
+
+        public void SetHapticEnabled(bool enabled)
+        {
+            _userOptionData ??= new UserOptionData();
+            _userOptionData.IsHapticEnabled = enabled;
+            UserOptionDataParser.Save(_userOptionData);
         }
 
         /// <summary>

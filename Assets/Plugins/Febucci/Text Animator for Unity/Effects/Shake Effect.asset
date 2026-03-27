@@ -19,7 +19,7 @@ MonoBehaviour:
     bakeCurves: 1
   appearance:
     stateParams:
-      amplitude: 4.4
+      amplitude: 6
       progressIndexWithTime: 0
     phaseParams:
       charOffset: 0.114

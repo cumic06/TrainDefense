@@ -367,7 +367,7 @@ MonoBehaviour:
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: Weapon_KMD_10_UI
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
-    description: "\uBBF8\uC0AC\uC77C\uB85C <shake>\uAC15\uD55C \uD53C\uD574</shake>\uB97C
+    description: "\uBBF8\uC0AC\uC77C\uB85C <color=#FFDD52><shake>\uAC15\uD55C \uD53C\uD574</shake></color>\uB97C
       \uC900\uB2E4. \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
     trainStatusData:
       MaxHp: 100
@@ -384,7 +384,7 @@ MonoBehaviour:
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
-    description: "\uB808\uC774\uC800\uB85C <shake>\uAC15\uD558\uAC8C</shake> \uC9C0\uC18D\uC801\uC778
+    description: "\uB808\uC774\uC800\uB85C <color=#FFDD52><shake>\uAC15\uD558\uAC8C</shake></color>
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
@@ -435,8 +435,8 @@ MonoBehaviour:
     name: "\uC800\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
-    description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uCD08 \uD6C4 <shake>\uAC15\uD55C
-      \uD53C\uD574</shake>\uB97C \uC900\uB2E4."
+    description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uCD08 \uD6C4 <color=#FFDD52><shake>\uAC15\uD55C
+      \uD53C\uD574</shake></color>\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: SniperTurretTrain
@@ -630,7 +630,7 @@ MonoBehaviour:
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1 \uAC15\uD654"
     description: "\uACF5\uACA9\uB825 <bounce><color=#FF5851>{0} \uC99D\uAC00</bounce></color>
-      \uACF5\uACA9\uB51C\uB808\uC774 <bounce>{1}\uAC10\uC18C</bounce>"
+      \uACF5\uACA9\uB51C\uB808\uC774 <color=#5196FF><bounce>{1}\uAC10\uC18C</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -691,7 +691,7 @@ MonoBehaviour:
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1 \uAC15\uD654"
     description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
-      \uACF5\uACA9\uB51C\uB808\uC774 <bounce>{1} \uAC10\uC18C</bounce>"
+      \uACF5\uACA9\uB51C\uB808\uC774 <color=#5196FF><bounce>{1} \uAC10\uC18C</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
