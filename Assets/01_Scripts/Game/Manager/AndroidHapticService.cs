@@ -36,20 +36,33 @@ namespace TrainDefense.Game
             }
 
             using AndroidJavaClass versionClass = new("android.os.Build$VERSION");
+            using AndroidJavaClass contextClass = new("android.content.Context");
             _sdkInt = versionClass.GetStatic<int>("SDK_INT");
 
             // API 31+ prefers VibrationManager.
             if (_sdkInt >= 31)
             {
-               using AndroidJavaObject vibrationManager = currentActivity.Call<AndroidJavaObject>("getSystemService", "vibration_manager");
-               if (vibrationManager != null)
+               try
                {
-                  _vibrator = vibrationManager.Call<AndroidJavaObject>("getDefaultVibrator");
+                  string vibratorManagerService = contextClass.GetStatic<string>("VIBRATOR_MANAGER_SERVICE");
+                  using AndroidJavaObject vibrationManager = currentActivity.Call<AndroidJavaObject>("getSystemService", vibratorManagerService);
+                  if (vibrationManager != null)
+                  {
+                     _vibrator = vibrationManager.Call<AndroidJavaObject>("getDefaultVibrator");
+                  }
+               }
+               catch (Exception exception)
+               {
+                  Debug.LogWarning($"[HapticManager] VibrationManager unavailable, falling back to Vibrator: {exception.Message}");
                }
             }
 
             // Fallback for older Android (and if VibrationManager unavailable).
-            _vibrator ??= currentActivity.Call<AndroidJavaObject>("getSystemService", "vibrator");
+            if (_vibrator == null)
+            {
+               string vibratorService = contextClass.GetStatic<string>("VIBRATOR_SERVICE");
+               _vibrator = currentActivity.Call<AndroidJavaObject>("getSystemService", vibratorService);
+            }
 
             if (_vibrator == null)
             {
