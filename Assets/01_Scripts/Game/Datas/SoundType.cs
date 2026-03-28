@@ -14,9 +14,21 @@ namespace TrainDefense.Game.Datas
         SFX_UI_WindowClose = 202,
 
         // SFX - Game
-        SFX_Game_Attack = 300,
-        SFX_Game_Hit = 301,
-        SFX_Game_Explosion = 302,
-        SFX_Game_Upgrade = 303,
+        SFX_Game_Hit = 300,
+        NormalTurretTrainAttack = 301,
+        FireTurretTrainAttack = 302,
+        MissileTurretTrainAttack = 303,
+        LaserTurretTrainAttack = 304,
+        ElectrickTurretTrainAttack = 305,
+        CannonTurretTrainAttack = 306,
+        SniperTurretTrainAttack = 307,
+        ExplosionRangeTrainAttack = 308,
+        ColdAirRangeTrainAttack = 309,
+
+        CannonTriggerSound = 401,
+        MissleTriggerSound = 402,
+
+        SFX_Game_Explosion = 501,
+        SFX_Game_Upgrade = 502
     }
 }

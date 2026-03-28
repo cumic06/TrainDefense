@@ -131,6 +131,11 @@ namespace TrainDefense.Game
                 });
             }
 
+            if (turretTrainData.AttackSoundType != SoundType.None)
+            {
+                SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
+            }
+
             ProjectileData projectileData = GetProjectile().GetData();
             if (projectileData != null && projectileData.MovementType == MovementType.TargetPos)
             {
