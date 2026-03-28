@@ -82,36 +82,37 @@ namespace TrainDefense.Game
 
       public void Play(HapticFeedbackType type)
       {
-         if (!IsSupported || _vibrator == null)
-         {
-            return;
-         }
-
-         if (!Patterns.TryGetValue(type, out HapticPattern pattern))
-         {
-            pattern = Patterns[HapticFeedbackType.Selection];
-         }
-
          try
          {
-            if (_sdkInt >= 26)
+            if (IsSupported && _vibrator != null)
             {
-               using AndroidJavaClass vibrationEffectClass = new("android.os.VibrationEffect");
-               using AndroidJavaObject vibrationEffect = vibrationEffectClass.CallStatic<AndroidJavaObject>(
-                  "createOneShot",
-                  pattern.DurationMs,
-                  pattern.Amplitude);
+               if (!Patterns.TryGetValue(type, out HapticPattern pattern))
+               {
+                  pattern = Patterns[HapticFeedbackType.Selection];
+               }
 
-               _vibrator.Call("vibrate", vibrationEffect);
+               if (_sdkInt >= 26)
+               {
+                  using AndroidJavaClass vibrationEffectClass = new("android.os.VibrationEffect");
+                  using AndroidJavaObject vibrationEffect = vibrationEffectClass.CallStatic<AndroidJavaObject>(
+                     "createOneShot",
+                     pattern.DurationMs,
+                     pattern.Amplitude);
+
+                  _vibrator.Call("vibrate", vibrationEffect);
+                  return;
+               }
+
+               _vibrator.Call("vibrate", pattern.DurationMs);
                return;
             }
-
-            _vibrator.Call("vibrate", pattern.DurationMs);
          }
          catch (Exception exception)
          {
-            Debug.LogWarning($"[HapticManager] Android vibration failed: {exception.Message}");
+            Debug.LogWarning($"[HapticManager] Android vibration failed: {exception.Message}. Fallback to Handheld.Vibrate.");
          }
+
+         Handheld.Vibrate();
       }
    }
 #else
