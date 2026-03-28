@@ -27,29 +27,45 @@ namespace TrainDefense.Game
       {
          try
          {
-            using AndroidJavaClass unityPlayer = new("com.unity3d.player.UnityPlayer");
-            using AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            // NOTE: Do NOT use 'using' on currentActivity — it is a global object
+            // managed by Unity. Disposing it destroys the Java-side reference and
+            // causes JNI crashes for all subsequent Android API calls.
+            AndroidJavaClass unityPlayer = new("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
             if (currentActivity == null)
             {
                return;
             }
 
-            using AndroidJavaClass versionClass = new("android.os.Build$VERSION");
+            AndroidJavaClass versionClass = new("android.os.Build$VERSION");
+            AndroidJavaClass contextClass = new("android.content.Context");
             _sdkInt = versionClass.GetStatic<int>("SDK_INT");
 
             // API 31+ prefers VibrationManager.
             if (_sdkInt >= 31)
             {
-               using AndroidJavaObject vibrationManager = currentActivity.Call<AndroidJavaObject>("getSystemService", "vibration_manager");
-               if (vibrationManager != null)
+               try
                {
-                  _vibrator = vibrationManager.Call<AndroidJavaObject>("getDefaultVibrator");
+                  string vibratorManagerService = contextClass.GetStatic<string>("VIBRATOR_MANAGER_SERVICE");
+                  AndroidJavaObject vibrationManager = currentActivity.Call<AndroidJavaObject>("getSystemService", vibratorManagerService);
+                  if (vibrationManager != null)
+                  {
+                     _vibrator = vibrationManager.Call<AndroidJavaObject>("getDefaultVibrator");
+                  }
+               }
+               catch (Exception exception)
+               {
+                  Debug.LogWarning($"[HapticManager] VibrationManager unavailable, falling back to Vibrator: {exception.Message}");
                }
             }
 
             // Fallback for older Android (and if VibrationManager unavailable).
-            _vibrator ??= currentActivity.Call<AndroidJavaObject>("getSystemService", "vibrator");
+            if (_vibrator == null)
+            {
+               string vibratorService = contextClass.GetStatic<string>("VIBRATOR_SERVICE");
+               _vibrator = currentActivity.Call<AndroidJavaObject>("getSystemService", vibratorService);
+            }
 
             if (_vibrator == null)
             {
@@ -66,36 +82,37 @@ namespace TrainDefense.Game
 
       public void Play(HapticFeedbackType type)
       {
-         if (!IsSupported || _vibrator == null)
-         {
-            return;
-         }
-
-         if (!Patterns.TryGetValue(type, out HapticPattern pattern))
-         {
-            pattern = Patterns[HapticFeedbackType.Selection];
-         }
-
          try
          {
-            if (_sdkInt >= 26)
+            if (IsSupported && _vibrator != null)
             {
-               using AndroidJavaClass vibrationEffectClass = new("android.os.VibrationEffect");
-               using AndroidJavaObject vibrationEffect = vibrationEffectClass.CallStatic<AndroidJavaObject>(
-                  "createOneShot",
-                  pattern.DurationMs,
-                  pattern.Amplitude);
+               if (!Patterns.TryGetValue(type, out HapticPattern pattern))
+               {
+                  pattern = Patterns[HapticFeedbackType.Selection];
+               }
 
-               _vibrator.Call("vibrate", vibrationEffect);
+               if (_sdkInt >= 26)
+               {
+                  using AndroidJavaClass vibrationEffectClass = new("android.os.VibrationEffect");
+                  using AndroidJavaObject vibrationEffect = vibrationEffectClass.CallStatic<AndroidJavaObject>(
+                     "createOneShot",
+                     pattern.DurationMs,
+                     pattern.Amplitude);
+
+                  _vibrator.Call("vibrate", vibrationEffect);
+                  return;
+               }
+
+               _vibrator.Call("vibrate", pattern.DurationMs);
                return;
             }
-
-            _vibrator.Call("vibrate", pattern.DurationMs);
          }
          catch (Exception exception)
          {
-            Debug.LogWarning($"[HapticManager] Android vibration failed: {exception.Message}");
+            Debug.LogWarning($"[HapticManager] Android vibration failed: {exception.Message}. Fallback to Handheld.Vibrate.");
          }
+
+         Handheld.Vibrate();
       }
    }
 #else

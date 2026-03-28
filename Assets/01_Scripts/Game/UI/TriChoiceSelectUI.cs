@@ -159,7 +159,11 @@ namespace TrainDefense.Game.UI
          if (_isSelected || _choiceOption == null || _triChoiceUI == null)
             return;
 
-         HapticManager.Instance.Play(HapticFeedbackType.LightImpact);
+         if (HapticManager.Instance != null)
+         {
+            HapticManager.Instance.Play(HapticFeedbackType.LightImpact);
+         }
+
          _selectButton.interactable = false;
          SetSelected(true);
          _triChoiceUI.OnChoiceSelected(_choiceOption).Forget();
