@@ -27,16 +27,19 @@ namespace TrainDefense.Game
       {
          try
          {
-            using AndroidJavaClass unityPlayer = new("com.unity3d.player.UnityPlayer");
-            using AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            // NOTE: Do NOT use 'using' on currentActivity — it is a global object
+            // managed by Unity. Disposing it destroys the Java-side reference and
+            // causes JNI crashes for all subsequent Android API calls.
+            AndroidJavaClass unityPlayer = new("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject currentActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
 
             if (currentActivity == null)
             {
                return;
             }
 
-            using AndroidJavaClass versionClass = new("android.os.Build$VERSION");
-            using AndroidJavaClass contextClass = new("android.content.Context");
+            AndroidJavaClass versionClass = new("android.os.Build$VERSION");
+            AndroidJavaClass contextClass = new("android.content.Context");
             _sdkInt = versionClass.GetStatic<int>("SDK_INT");
 
             // API 31+ prefers VibrationManager.
@@ -45,7 +48,7 @@ namespace TrainDefense.Game
                try
                {
                   string vibratorManagerService = contextClass.GetStatic<string>("VIBRATOR_MANAGER_SERVICE");
-                  using AndroidJavaObject vibrationManager = currentActivity.Call<AndroidJavaObject>("getSystemService", vibratorManagerService);
+                  AndroidJavaObject vibrationManager = currentActivity.Call<AndroidJavaObject>("getSystemService", vibratorManagerService);
                   if (vibrationManager != null)
                   {
                      _vibrator = vibrationManager.Call<AndroidJavaObject>("getDefaultVibrator");
