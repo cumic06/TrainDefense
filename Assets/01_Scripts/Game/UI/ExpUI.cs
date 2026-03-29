@@ -29,14 +29,14 @@ namespace TrainDefense.Game.UI
 
         private void Setup()
         {
-            if (UserDataManager.Instance != null)
-            {
-                _slider.value = UserDataManager.Instance.ExpPercent;
-            }
-            else
-            {
-                _slider.value = 0;
-            }
+            // if (UserDataManager.Instance != null)
+            // {
+            //     _slider.value = UserDataManager.Instance.ExpPercent;
+            // }
+            // else
+            // {
+            _slider.value = 0;
+            // }
         }
 
         private void OnDestroy()
