@@ -28,6 +28,7 @@ namespace Cumic.Sequence
         #endregion
 
         private bool firstTriChoice = false;
+        private bool _isGameOver = false;
 
         private void Awake()
         {
@@ -81,6 +82,8 @@ namespace Cumic.Sequence
 
         private void GameEnter(GameEnterEvent gameEnterEvent)
         {
+            _isGameOver = false;
+
             if (triChoiceUI != null)
             {
                 triChoiceUI.OnInspectionEnter(1);
@@ -101,6 +104,8 @@ namespace Cumic.Sequence
 
         private void LevelUp(LevelUpEvent levelUpEvent)
         {
+            if (_isGameOver) return;
+            
             if (triChoiceUI != null)
             {
                 triChoiceUI.OnInspectionEnter(levelUpEvent.LevelUpCount);
@@ -158,6 +163,12 @@ namespace Cumic.Sequence
 
         private void StageEnd(StageEndEvent stageEndEvent)
         {
+            _isGameOver = true;
+            if (triChoiceUI != null)
+            {
+                triChoiceUI.gameObject.SetActive(false);
+            }
+
             if (_stageResultUI != null)
             {
                 _stageResultUI.gameObject.SetActive(true);
@@ -175,6 +186,12 @@ namespace Cumic.Sequence
 
         private void GameEnd(GameEndEvent gameEndEvent)
         {
+            _isGameOver = true;
+            if (triChoiceUI != null)
+            {
+                triChoiceUI.gameObject.SetActive(false);
+            }
+
             if (_stageResultUI != null)
             {
                 _stageResultUI.gameObject.SetActive(true);

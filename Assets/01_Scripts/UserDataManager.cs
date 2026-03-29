@@ -52,6 +52,7 @@ namespace TrainDefense
             GameEventSystem.Subscribe<ChangeCoinUIEvent>(ChangeCoin);
             GameEventSystem.Subscribe<BuyShopItemEvent>(BuyShopItem);
             GameEventSystem.Subscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
+            GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
         }
 
         private void UnsubscribeEvents()
@@ -61,6 +62,16 @@ namespace TrainDefense
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(ChangeCoin);
             GameEventSystem.Unsubscribe<BuyShopItemEvent>(BuyShopItem);
             GameEventSystem.Unsubscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
+            GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
+        }
+
+        private void OnGameEnter(GameEnterEvent gameEnterEvent)
+        {
+            _coin = 0;
+            _currentExp = 0;
+            _currentLevel = 1;
+            _triChoiceData.Clear();
+            _upgradeLevels.Clear();
         }
         #endregion
 
