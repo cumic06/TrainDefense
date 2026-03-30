@@ -61,6 +61,9 @@ namespace TrainDefense.Game
             sfxRoot = new GameObject("SFX_Root").transform;
             sfxRoot.SetParent(transform);
          }
+
+         bgmVolume = bgmSoundSource.volume;
+         sfxVolume = sfxSoundSourcePrefab.volume;
       }
 
       #region BGM Management
