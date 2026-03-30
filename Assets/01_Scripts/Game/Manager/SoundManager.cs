@@ -8,6 +8,13 @@ namespace TrainDefense.Game
 {
    public class SoundManager : Singleton<SoundManager>
    {
+      private enum SfxDuplicatePolicy
+      {
+         Allow,
+         RestartExisting,
+         IgnoreNew,
+      }
+
       #region Variable
 
       #region Fields
@@ -27,6 +34,10 @@ namespace TrainDefense.Game
       [SerializeField]
       private float sfxVolume = 1f;
 
+      [Header("SFX Behavior")]
+      [SerializeField]
+      private SfxDuplicatePolicy sfxDuplicatePolicy = SfxDuplicatePolicy.RestartExisting;
+
       public float BGMVolume => bgmVolume;
       public float SFXVolume => sfxVolume;
       #endregion
@@ -36,8 +47,10 @@ namespace TrainDefense.Game
 
       private readonly Stack<AudioSource> _sfxPool = new();
       private readonly List<AudioSource> _activeSfxSources = new();
+      private readonly Dictionary<AudioSource, float> _sfxBaseVolumes = new();
       private SoundDB _soundDB;
-      private SoundDB GetSoundDB()
+
+      private SoundDB _GetSoundDB()
       {
          if (_soundDB == null)
          {
@@ -52,6 +65,7 @@ namespace TrainDefense.Game
          }
          return _soundDB;
       }
+
       #endregion
 
       private void Start()
@@ -70,7 +84,7 @@ namespace TrainDefense.Game
 
       public void PlayBGM(SoundType type)
       {
-         var db = GetSoundDB();
+         var db = _GetSoundDB();
          if (db == null)
             return;
          var data = db.GetSoundData(type);
@@ -80,7 +94,7 @@ namespace TrainDefense.Game
 
       public void PlayBGM(string id)
       {
-         var db = GetSoundDB();
+         var db = _GetSoundDB();
          if (db == null)
             return;
          var data = db.GetSoundData(id);
@@ -90,7 +104,7 @@ namespace TrainDefense.Game
 
       public void PlayBGMByClipId(string clipId)
       {
-         var db = GetSoundDB();
+         var db = _GetSoundDB();
          if (db == null)
             return;
          var data = db.GetSoundDataByClipId(clipId);
@@ -169,7 +183,7 @@ namespace TrainDefense.Game
 
       public void PlaySFX(SoundType type)
       {
-         var db = GetSoundDB();
+         var db = _GetSoundDB();
          if (db == null)
             return;
          var data = db.GetSoundData(type);
@@ -179,7 +193,7 @@ namespace TrainDefense.Game
 
       public void PlaySFX(string id)
       {
-         var db = GetSoundDB();
+         var db = _GetSoundDB();
          if (db == null)
             return;
          var data = db.GetSoundData(id);
@@ -189,7 +203,7 @@ namespace TrainDefense.Game
 
       public void PlaySFXByClipId(string clipId)
       {
-         var db = GetSoundDB();
+         var db = _GetSoundDB();
          if (db == null)
             return;
          var data = db.GetSoundDataByClipId(clipId);
@@ -204,12 +218,55 @@ namespace TrainDefense.Game
          if (IsSfxMuted)
             return;
 
+         var existing = FindActiveSfxSourceByClip(data.Clip);
+         if (existing != null)
+         {
+            if (sfxDuplicatePolicy == SfxDuplicatePolicy.IgnoreNew)
+               return;
+
+            if (sfxDuplicatePolicy == SfxDuplicatePolicy.RestartExisting)
+            {
+               ApplySfxSettings(existing, data);
+               existing.Stop();
+               existing.Play();
+               return;
+            }
+         }
+
          AudioSource source = GetSfxSource();
-         source.clip = data.Clip;
-         source.volume = data.Volume * sfxVolume;
+         ApplySfxSettings(source, data);
          source.Play();
 
          _activeSfxSources.Add(source);
+      }
+
+      private void ApplySfxSettings(AudioSource source, SoundData data)
+      {
+         source.clip = data.Clip;
+         _sfxBaseVolumes[source] = data.Volume;
+         source.volume = data.Volume * sfxVolume;
+         source.mute = IsSfxMuted;
+      }
+
+      private AudioSource FindActiveSfxSourceByClip(AudioClip clip)
+      {
+         if (clip == null)
+            return null;
+
+         for (int i = _activeSfxSources.Count - 1; i >= 0; i--)
+         {
+            var source = _activeSfxSources[i];
+            if (source == null)
+            {
+               _activeSfxSources.RemoveAt(i);
+               continue;
+            }
+
+            if (source.isPlaying && source.clip == clip)
+               return source;
+         }
+
+         return null;
       }
 
       private AudioSource GetSfxSource()
@@ -239,13 +296,27 @@ namespace TrainDefense.Game
 
       public void SetSFXVolume(float volume)
       {
+         var previous = sfxVolume;
          sfxVolume = Mathf.Clamp01(volume);
+
+         if (Mathf.Approximately(previous, sfxVolume))
+            return;
+
          foreach (var source in _activeSfxSources)
          {
-            if (source.isPlaying)
-            {
-               source.volume = sfxVolume;
-            }
+            if (source == null)
+               continue;
+
+            var baseVolume = _sfxBaseVolumes.TryGetValue(source, out var v) ? v : 1f;
+            source.volume = baseVolume * sfxVolume;
+         }
+
+         foreach (var source in _sfxPool)
+         {
+            if (source == null)
+               continue;
+            var baseVolume = _sfxBaseVolumes.TryGetValue(source, out var v) ? v : 1f;
+            source.volume = baseVolume * sfxVolume;
          }
       }
 
@@ -285,6 +356,7 @@ namespace TrainDefense.Game
          source.clip = null;
          source.gameObject.SetActive(false);
          _sfxPool.Push(source);
+         _sfxBaseVolumes[source] = 1f;
       }
 
       public void StopAllSFX()
