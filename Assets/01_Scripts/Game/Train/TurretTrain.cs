@@ -158,8 +158,6 @@ namespace TrainDefense.Game
             Monster nearTarget = GetNearTargetMonster();
             if (nearTarget == null) return;
 
-            ProjectileData data = GetProjectile()?.GetData();
-
             for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
             {
                 if (i >= _targetMonsters.Count) break;
@@ -174,8 +172,6 @@ namespace TrainDefense.Game
 
         private void TargetedAttack()
         {
-            ProjectileData data = GetProjectile()?.GetData();
-
             for (int i = 0; i < _currentTurretTrainStatus.TargetCount; i++)
             {
                 if (i >= _targetMonsters.Count) break;
