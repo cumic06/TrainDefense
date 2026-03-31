@@ -1,24 +1,24 @@
 using System;
+using UnityEngine;
 
 namespace TrainDefense.Game.Datas
 {
-    /// <summary>
-    /// 기차의 스킬 관련 데이터. Struct로 유지해서 ScriptableObject 원본이
-    /// 런타임에 변경되지 않도록 합니다.
-    /// Sprite 로딩은 TrainData 클래스에서 처리합니다.
-    /// </summary>
     [Serializable]
-    public struct TrainSkillData
+    public class TrainSkillData
     {
-        [UnityEngine.SerializeField]
-        private bool hasSkill;
-        [UnityEngine.SerializeField]
+        [SerializeField]
+        private TrainSkillType skillType;
+        [SerializeField]
         private float skillCooldown;
-        [UnityEngine.SerializeField]
+        [SerializeField]
         private string skillIconId;
+        [SerializeField]
+        private TrainSkillProjectileData projectileData;
 
-        public bool HasSkill => hasSkill;
+        public bool HasSkill => skillType != TrainSkillType.None;
+        public TrainSkillType SkillType => skillType;
         public float SkillCooldown => skillCooldown;
         public string SkillIconId => skillIconId;
+        public TrainSkillProjectileData ProjectileData => projectileData ??= new TrainSkillProjectileData();
     }
 }

@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using NPOI.SS.UserModel;
+using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Editor.DataImport.Importers.Rows
 {
@@ -12,9 +13,13 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public bool isMainTrain;
 		public string prefabId;
 		public string iconId;
-		public bool hasSkill;
+		public TrainSkillType skillType;
 		public float skillCooldown;
 		public string skillIconId;
+		public string skillProjectilePrefabId;
+		public int skillProjectileDamage;
+		public float skillProjectileRange;
+		public int skillProjectileCount;
 
 		public virtual void FromExcelRow(IRow row)
 		{
@@ -25,9 +30,22 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			bool.TryParse(row.GetCell(4)?.ToString(), out isMainTrain);
 			prefabId = row.GetCell(5)?.ToString();
 			iconId = row.GetCell(6)?.ToString();
-			bool.TryParse(row.GetCell(7)?.ToString(), out hasSkill);
+
+			var skillTypeValue = row.GetCell(7)?.ToString();
+			if (!System.Enum.TryParse(skillTypeValue, true, out skillType))
+			{
+				if (bool.TryParse(skillTypeValue, out bool hasSkill) && hasSkill)
+				{
+					skillType = TrainSkillType.Projectile;
+				}
+			}
+
 			float.TryParse(row.GetCell(8)?.ToString(), out skillCooldown);
 			skillIconId = row.GetCell(9)?.ToString();
+			skillProjectilePrefabId = row.GetCell(10)?.ToString();
+			int.TryParse(row.GetCell(11)?.ToString(), out skillProjectileDamage);
+			float.TryParse(row.GetCell(12)?.ToString(), out skillProjectileRange);
+			int.TryParse(row.GetCell(13)?.ToString(), out skillProjectileCount);
 		}
 
 		public virtual void ToExcelRow(IRow row)
@@ -39,9 +57,13 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			Set(row, 4, isMainTrain);
 			Set(row, 5, prefabId);
 			Set(row, 6, iconId);
-			Set(row, 7, hasSkill);
+			Set(row, 7, skillType.ToString());
 			Set(row, 8, skillCooldown);
 			Set(row, 9, skillIconId);
+			Set(row, 10, skillProjectilePrefabId);
+			Set(row, 11, skillProjectileDamage);
+			Set(row, 12, skillProjectileRange);
+			Set(row, 13, skillProjectileCount);
 		}
 
 	protected static void Set(IRow row, int idx, object value)

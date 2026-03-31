@@ -89,12 +89,12 @@ namespace TrainDefense.Game.Datas
         public string TrainName => name;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
-        public TrainSkillData TrainSkillData => trainSkillData;
+        public TrainSkillData TrainSkillData => trainSkillData ??= new TrainSkillData();
         public Sprite SkillIcon
         {
             get
             {
-                var skillIconId = trainSkillData.SkillIconId;
+                var skillIconId = TrainSkillData.SkillIconId;
                 if (skillIcon == null && !string.IsNullOrEmpty(skillIconId))
                 {
                     skillIcon = Resources.LoadAll<Sprite>("")

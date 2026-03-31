@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
@@ -21,8 +20,6 @@ namespace TrainDefense.Game
         protected float explosionForce = 10f;
         [SerializeField]
         protected bool isRotateModel = true;
-        [SerializeField]
-        protected UnityEvent onUseSkill;
         #endregion
 
         [ShowInInspector, ReadOnly]
@@ -31,7 +28,7 @@ namespace TrainDefense.Game
         protected int _currentHp;
         protected int _currentLevel;
         protected int _currentMaxHp;
-        protected float _lastSkillUseTime;
+        protected TrainSkillAction _skillAction;
 
         [HideInInspector]
         public bool IsUnDead;
@@ -52,15 +49,12 @@ namespace TrainDefense.Game
             }
         }
         public float SkillCooldown => _trainData != null ? _trainData.TrainSkillData.SkillCooldown : 0f;
-        public bool CanUseSkill => HasSkill && !IsDead && !IsMainTrain && GetRemainingSkillCooldown() <= 0f;
+        public bool CanUseSkill => _skillAction != null && _skillAction.CanUse;
         public float SkillCooldownRatio
         {
             get
             {
-                if (!HasSkill || SkillCooldown <= 0f)
-                    return 0f;
-
-                return Mathf.Clamp01(GetRemainingSkillCooldown() / SkillCooldown);
+                return _skillAction?.GetCooldownRatio() ?? 0f;
             }
         }
         #endregion
@@ -79,14 +73,25 @@ namespace TrainDefense.Game
         protected virtual void Setup()
         {
             _isDead = false;
+            if (_trainData == null)
+            {
+                _skillAction = null;
+                return;
+            }
+
             _currentMaxHp = _trainData.TrainStatusData.MaxHp;
             _currentHp = _currentMaxHp;
             _currentLevel = -1;
-            _lastSkillUseTime = float.NegativeInfinity;
+            _skillAction = TrainSkillActionFactory.Create(this, _trainData.TrainSkillData);
         }
 
         public Transform TargetTransform => transform;
         public bool IsActive => !IsDead;
+
+        public virtual Transform GetSkillSpawnPoint(int index)
+        {
+            return transform;
+        }
 
         public void Slow(float slowValue)
         {
@@ -160,25 +165,7 @@ namespace TrainDefense.Game
 
         public virtual bool TryUseSkill()
         {
-            if (!CanUseSkill)
-                return false;
-
-            _lastSkillUseTime = Time.time;
-            OnUseSkill();
-            onUseSkill?.Invoke();
-            return true;
-        }
-
-        protected virtual void OnUseSkill()
-        {
-        }
-
-        protected float GetRemainingSkillCooldown()
-        {
-            if (!HasSkill || SkillCooldown <= 0f)
-                return 0f;
-
-            return Mathf.Max(0f, SkillCooldown - (Time.time - _lastSkillUseTime));
+            return _skillAction != null && _skillAction.TryUse();
         }
 
         public virtual void Upgrade(ITrainUpgradeData upgradeData)
