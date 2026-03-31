@@ -70,14 +70,31 @@ namespace TrainDefense.Game
 
       private void Start()
       {
-         if (sfxRoot == null)
+         if (sfxSoundSourcePrefab != null)
+         {
+            ConfigureSfxSourceDefaults(sfxSoundSourcePrefab);
+            ResetSfxSource(sfxSoundSourcePrefab);
+            sfxSoundSourcePrefab.gameObject.SetActive(false);
+         }
+
+         if (sfxRoot == null || (sfxSoundSourcePrefab != null && sfxRoot == sfxSoundSourcePrefab.transform))
          {
             sfxRoot = new GameObject("SFX_Root").transform;
             sfxRoot.SetParent(transform);
+            sfxRoot.localPosition = Vector3.zero;
+            sfxRoot.localRotation = Quaternion.identity;
+            sfxRoot.localScale = Vector3.one;
          }
 
-         bgmVolume = bgmSoundSource.volume;
-         sfxVolume = sfxSoundSourcePrefab.volume;
+         if (bgmSoundSource != null)
+         {
+            bgmVolume = bgmSoundSource.volume;
+         }
+
+         if (sfxSoundSourcePrefab != null)
+         {
+            sfxVolume = sfxSoundSourcePrefab.volume;
+         }
       }
 
       #region BGM Management
@@ -242,6 +259,7 @@ namespace TrainDefense.Game
 
       private void ApplySfxSettings(AudioSource source, SoundData data)
       {
+         ConfigureSfxSourceDefaults(source);
          source.clip = data.Clip;
          _sfxBaseVolumes[source] = data.Volume;
          source.volume = data.Volume * sfxVolume;
@@ -275,22 +293,34 @@ namespace TrainDefense.Game
          if (_sfxPool.Count > 0)
          {
             source = _sfxPool.Pop();
-            source.gameObject.SetActive(true);
          }
          else
          {
-            if (sfxSoundSourcePrefab != null)
-            {
-               source = Instantiate(sfxSoundSourcePrefab, sfxRoot);
-            }
-            else
-            {
-               GameObject go = new GameObject("SFXSource");
-               go.transform.SetParent(sfxRoot);
-               source = go.AddComponent<AudioSource>();
-               source.playOnAwake = false;
-            }
+            source = CreateSfxSource();
          }
+
+         ResetSfxSource(source);
+         ConfigureSfxSourceDefaults(source);
+         source.gameObject.SetActive(true);
+
+         return source;
+      }
+
+      private AudioSource CreateSfxSource()
+      {
+         AudioSource source;
+         if (sfxSoundSourcePrefab != null)
+         {
+            source = Instantiate(sfxSoundSourcePrefab, sfxRoot);
+         }
+         else
+         {
+            GameObject go = new GameObject("SFXSource");
+            go.transform.SetParent(sfxRoot);
+            source = go.AddComponent<AudioSource>();
+         }
+
+         ConfigureSfxSourceDefaults(source);
          return source;
       }
 
@@ -343,9 +373,16 @@ namespace TrainDefense.Game
          // 재생이 끝난 SFX Source들을 풀로 반환
          for (int i = _activeSfxSources.Count - 1; i >= 0; i--)
          {
-            if (!_activeSfxSources[i].isPlaying)
+            var source = _activeSfxSources[i];
+            if (source == null)
             {
-               ReturnSfxSource(_activeSfxSources[i]);
+               _activeSfxSources.RemoveAt(i);
+               continue;
+            }
+
+            if (!source.isPlaying)
+            {
+               ReturnSfxSource(source);
                _activeSfxSources.RemoveAt(i);
             }
          }
@@ -353,10 +390,41 @@ namespace TrainDefense.Game
 
       private void ReturnSfxSource(AudioSource source)
       {
-         source.clip = null;
+         if (source == null)
+            return;
+
+         ResetSfxSource(source);
+         ConfigureSfxSourceDefaults(source);
          source.gameObject.SetActive(false);
          _sfxPool.Push(source);
          _sfxBaseVolumes[source] = 1f;
+      }
+
+      private void ConfigureSfxSourceDefaults(AudioSource source)
+      {
+         if (source == null)
+            return;
+
+         source.playOnAwake = false;
+         source.loop = false;
+         source.mute = IsSfxMuted;
+      }
+
+      private void ResetSfxSource(AudioSource source)
+      {
+         if (source == null)
+            return;
+
+         if (source.isPlaying || source.clip != null)
+         {
+            source.Stop();
+         }
+
+         if (source.clip != null)
+         {
+            source.time = 0f;
+            source.clip = null;
+         }
       }
 
       public void StopAllSFX()
