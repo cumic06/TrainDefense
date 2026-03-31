@@ -1,18 +1,26 @@
+using Cumic.Events;
+using TMPro;
+using TrainDefense.Game.Events;
 using UnityEngine;
 using UnityEngine.UI;
-using Cumic.Events;
-using TrainDefense.Game.Events;
-using TMPro;
 
 namespace TrainDefense.Game.UI
 {
+   [RequireComponent(typeof(Button))]
    public class TrainInfoSlotUI : MonoBehaviour
    {
+      #region Verialbes
       #region Field
+      [SerializeField]
+      private Button slotButton;
       [SerializeField]
       private Image backGroundImage;
       [SerializeField]
       private Image iconImage;
+      [SerializeField]
+      private Image skillIcon;
+      [SerializeField]
+      private Image skillCooldownImage;
 
       [SerializeField]
       private Image trainLevelImage;
@@ -21,33 +29,55 @@ namespace TrainDefense.Game.UI
       #endregion
 
       private Train _train;
+      #endregion
+
+      private void Awake()
+      {
+         if (slotButton == null)
+         {
+            slotButton = GetComponent<Button>();
+         }
+
+         slotButton.onClick.AddListener(_OnClickSlot);
+      }
 
       private void Start()
       {
-         SubscribeEvents();
+         _SubscribeEvents();
          backGroundImage.color = Color.green;
+         _RefreshSkillUI();
+      }
+
+      private void Update()
+      {
+         _UpdateSkillCooldownUI();
       }
 
       private void OnDestroy()
       {
-         UnsubscribeEvents();
+         if (slotButton != null)
+         {
+            slotButton.onClick.RemoveListener(_OnClickSlot);
+         }
+
+         _UnsubscribeEvents();
       }
 
       #region Event
-      private void SubscribeEvents()
+      private void _SubscribeEvents()
       {
-         GameEventSystem.Subscribe<HitEvent>(SetHp);
-         GameEventSystem.Subscribe<TrainDeadEvent>(SetDead);
-         GameEventSystem.Subscribe<TrainLevelUpEvent>(SetLevelUp);
-         GameEventSystem.Subscribe<ReplaceTrainEvent>(OnReplaceTrain);
+         GameEventSystem.Subscribe<HitEvent>(_SetHp);
+         GameEventSystem.Subscribe<TrainDeadEvent>(_SetDead);
+         GameEventSystem.Subscribe<TrainLevelUpEvent>(_SetLevelUp);
+         GameEventSystem.Subscribe<ReplaceTrainEvent>(_OnReplaceTrain);
       }
 
-      private void UnsubscribeEvents()
+      private void _UnsubscribeEvents()
       {
-         GameEventSystem.Unsubscribe<HitEvent>(SetHp);
-         GameEventSystem.Unsubscribe<TrainDeadEvent>(SetDead);
-         GameEventSystem.Unsubscribe<TrainLevelUpEvent>(SetLevelUp);
-         GameEventSystem.Unsubscribe<ReplaceTrainEvent>(OnReplaceTrain);
+         GameEventSystem.Unsubscribe<HitEvent>(_SetHp);
+         GameEventSystem.Unsubscribe<TrainDeadEvent>(_SetDead);
+         GameEventSystem.Unsubscribe<TrainLevelUpEvent>(_SetLevelUp);
+         GameEventSystem.Unsubscribe<ReplaceTrainEvent>(_OnReplaceTrain);
       }
       #endregion
 
@@ -55,6 +85,7 @@ namespace TrainDefense.Game.UI
       {
          _train = train;
          trainLevelImage.gameObject.SetActive(false);
+         _RefreshSkillUI();
       }
 
       public void SetIcon(Sprite icon)
@@ -62,7 +93,44 @@ namespace TrainDefense.Game.UI
          iconImage.sprite = icon;
       }
 
-      private void SetHp(HitEvent hitEvent)
+      private void _RefreshSkillUI()
+      {
+         bool hasSkill = _train != null && _train.HasSkill;
+
+         if (skillIcon != null)
+         {
+            skillIcon.gameObject.SetActive(hasSkill);
+            if (hasSkill)
+            {
+               skillIcon.sprite = _train.SkillIcon;
+            }
+         }
+
+         if (skillCooldownImage != null)
+         {
+            skillCooldownImage.gameObject.SetActive(hasSkill);
+            skillCooldownImage.fillAmount = hasSkill ? _train.SkillCooldownRatio : 0f;
+         }
+      }
+
+      private void _UpdateSkillCooldownUI()
+      {
+         if (skillCooldownImage == null || _train == null || !_train.HasSkill)
+            return;
+
+         skillCooldownImage.fillAmount = _train.SkillCooldownRatio;
+      }
+
+      private void _OnClickSlot()
+      {
+         if (_train == null)
+            return;
+
+         TrainManager.Instance.TryUseTrainSkill(_train);
+         _UpdateSkillCooldownUI();
+      }
+
+      private void _SetHp(HitEvent hitEvent)
       {
          if (_train != hitEvent.Damageable as Train)
             return;
@@ -89,7 +157,7 @@ namespace TrainDefense.Game.UI
          }
       }
 
-      private void SetLevelUp(TrainLevelUpEvent trainLevelUpEvent)
+      private void _SetLevelUp(TrainLevelUpEvent trainLevelUpEvent)
       {
          if (_train != trainLevelUpEvent.Train)
             return;
@@ -98,7 +166,7 @@ namespace TrainDefense.Game.UI
          trainLevelText.text = $"{trainLevelUpEvent.Level + 1}";
       }
 
-      private void SetDead(TrainDeadEvent trainDeadEvent)
+      private void _SetDead(TrainDeadEvent trainDeadEvent)
       {
          if (_train != trainDeadEvent.Train)
             return;
@@ -106,26 +174,21 @@ namespace TrainDefense.Game.UI
          backGroundImage.color = Color.gray;
       }
 
-      private void OnReplaceTrain(ReplaceTrainEvent replaceTrainEvent)
+      private void _OnReplaceTrain(ReplaceTrainEvent replaceTrainEvent)
       {
-         // 이 슬롯이 대체될 oldTrain을 참조하고 있는지 확인
          if (_train != replaceTrainEvent.OldTrain)
             return;
 
-         // 새로운 Train으로 교체
          _train = replaceTrainEvent.NewTrain;
 
-         // 아이콘 업데이트
          if (replaceTrainEvent.NewIcon != null)
          {
             SetIcon(replaceTrainEvent.NewIcon);
          }
 
-         // 레벨 UI 초기화 (새 Train은 레벨 0부터 시작)
          trainLevelImage.gameObject.SetActive(false);
-
-         // HP 상태 초기화
          backGroundImage.color = Color.green;
+         _RefreshSkillUI();
       }
    }
 }

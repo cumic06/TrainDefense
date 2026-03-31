@@ -28,6 +28,9 @@ namespace TrainDefense.Game.Datas
         private string prefabId;
         private GameObject prefab;
         [SerializeField]
+        private TrainSkillData trainSkillData;
+        private Sprite skillIcon;
+        [SerializeField]
         private bool isMainTrain;
         #endregion
 
@@ -86,6 +89,25 @@ namespace TrainDefense.Game.Datas
         public string TrainName => name;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
+        public TrainSkillData TrainSkillData => trainSkillData;
+        public Sprite SkillIcon
+        {
+            get
+            {
+                var skillIconId = trainSkillData.SkillIconId;
+                if (skillIcon == null && !string.IsNullOrEmpty(skillIconId))
+                {
+                    skillIcon = Resources.LoadAll<Sprite>("")
+                                    .FirstOrDefault(item => item.name == skillIconId);
+
+                    if (skillIcon == null)
+                    {
+                        Debug.LogWarning($"TrainData [{id}]: SkillIcon not found for '{skillIconId}'");
+                    }
+                }
+                return skillIcon;
+            }
+        }
 
         [Obsolete("Use Prefab property instead")]
         public Train TrainPrefab => Prefab?.GetComponent<Train>();

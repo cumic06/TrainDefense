@@ -12,6 +12,9 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public bool isMainTrain;
 		public string prefabId;
 		public string iconId;
+		public bool hasSkill;
+		public float skillCooldown;
+		public string skillIconId;
 
 		public virtual void FromExcelRow(IRow row)
 		{
@@ -22,6 +25,9 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			bool.TryParse(row.GetCell(4)?.ToString(), out isMainTrain);
 			prefabId = row.GetCell(5)?.ToString();
 			iconId = row.GetCell(6)?.ToString();
+			bool.TryParse(row.GetCell(7)?.ToString(), out hasSkill);
+			float.TryParse(row.GetCell(8)?.ToString(), out skillCooldown);
+			skillIconId = row.GetCell(9)?.ToString();
 		}
 
 		public virtual void ToExcelRow(IRow row)
@@ -33,6 +39,9 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			Set(row, 4, isMainTrain);
 			Set(row, 5, prefabId);
 			Set(row, 6, iconId);
+			Set(row, 7, hasSkill);
+			Set(row, 8, skillCooldown);
+			Set(row, 9, skillIconId);
 		}
 
 	protected static void Set(IRow row, int idx, object value)

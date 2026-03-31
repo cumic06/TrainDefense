@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
@@ -10,6 +11,7 @@ namespace TrainDefense.Game
 {
     public abstract class Train : MonoBehaviour, ITrainable, IProjectileTarget
     {
+        #region Verialbes
         #region Field
         [SerializeField]
         protected string id;
@@ -19,6 +21,8 @@ namespace TrainDefense.Game
         protected float explosionForce = 10f;
         [SerializeField]
         protected bool isRotateModel = true;
+        [SerializeField]
+        protected UnityEvent onUseSkill;
         #endregion
 
         [ShowInInspector, ReadOnly]
@@ -27,6 +31,7 @@ namespace TrainDefense.Game
         protected int _currentHp;
         protected int _currentLevel;
         protected int _currentMaxHp;
+        protected float _lastSkillUseTime;
 
         [HideInInspector]
         public bool IsUnDead;
@@ -37,6 +42,28 @@ namespace TrainDefense.Game
 
         public bool IsDead => _isDead;
         public int CurrentLevel => _currentLevel;
+        public bool HasSkill => _trainData != null && _trainData.TrainSkillData.HasSkill;
+        public Sprite SkillIcon
+        {
+            get
+            {
+                if (_trainData == null) return null;
+                return _trainData.SkillIcon != null ? _trainData.SkillIcon : _trainData.Icon;
+            }
+        }
+        public float SkillCooldown => _trainData != null ? _trainData.TrainSkillData.SkillCooldown : 0f;
+        public bool CanUseSkill => HasSkill && !IsDead && !IsMainTrain && GetRemainingSkillCooldown() <= 0f;
+        public float SkillCooldownRatio
+        {
+            get
+            {
+                if (!HasSkill || SkillCooldown <= 0f)
+                    return 0f;
+
+                return Mathf.Clamp01(GetRemainingSkillCooldown() / SkillCooldown);
+            }
+        }
+        #endregion
 
         protected virtual void Start()
         {
@@ -55,6 +82,7 @@ namespace TrainDefense.Game
             _currentMaxHp = _trainData.TrainStatusData.MaxHp;
             _currentHp = _currentMaxHp;
             _currentLevel = -1;
+            _lastSkillUseTime = float.NegativeInfinity;
         }
 
         public Transform TargetTransform => transform;
@@ -128,6 +156,29 @@ namespace TrainDefense.Game
             _isDead = false;
             _currentHp = _currentMaxHp;
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
+        }
+
+        public virtual bool TryUseSkill()
+        {
+            if (!CanUseSkill)
+                return false;
+
+            _lastSkillUseTime = Time.time;
+            OnUseSkill();
+            onUseSkill?.Invoke();
+            return true;
+        }
+
+        protected virtual void OnUseSkill()
+        {
+        }
+
+        protected float GetRemainingSkillCooldown()
+        {
+            if (!HasSkill || SkillCooldown <= 0f)
+                return 0f;
+
+            return Mathf.Max(0f, SkillCooldown - (Time.time - _lastSkillUseTime));
         }
 
         public virtual void Upgrade(ITrainUpgradeData upgradeData)
