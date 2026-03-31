@@ -329,6 +329,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: MainTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 1
   turretTrainDataList:
   - id: 30001
@@ -340,6 +349,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: NormalTurretTrain
+    trainSkillData:
+      skillType: 1
+      skillCooldown: 10
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: LaserProjectile
+        damage: 1000
+        range: 10
+        projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -358,6 +376,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: FireTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -376,6 +403,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: MissileTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -394,6 +430,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: LaserTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 15
@@ -412,6 +457,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: ElectrickTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -430,6 +484,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: CannonTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -448,6 +511,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: SniperTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -465,6 +537,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteNormalTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -482,6 +563,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteFireTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -499,6 +589,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteMissileTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -516,6 +615,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteLaserTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -533,6 +641,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteElectrickTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -550,6 +667,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteCannonTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -567,6 +693,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteSniperTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackRange: 10
@@ -586,6 +721,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: ExplosionRangeTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
       AttackRange: 5
@@ -603,6 +747,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 100
     prefabId: ColdAirRangeTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
       AttackRange: 5
@@ -619,6 +772,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteExplosionRangeTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
       AttackRange: 8
@@ -635,6 +797,15 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteColdAirRangeTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
       AttackRange: 13
