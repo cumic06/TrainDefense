@@ -188,7 +188,8 @@ namespace TrainDefense.Game
             float totalWeight = filteredChoices.Sum(choice => choice.Weight);
             if (totalWeight <= 0)
             {
-                return filteredChoices[0];
+                int randomIndex = Random.Range(0, filteredChoices.Count);
+                return filteredChoices[randomIndex];
             }
 
             float randomValue = Random.Range(0f, totalWeight);
