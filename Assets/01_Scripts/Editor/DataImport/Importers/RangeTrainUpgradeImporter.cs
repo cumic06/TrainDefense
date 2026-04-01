@@ -9,7 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 	{
 		public string SheetName => "range_train_upgrade_data";
 		public string ButtonLabel => "RangeTrainUpgrade 데이터 가져오기";
-		public string[] Headers => new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_interval" };
+		public string[] Headers => new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_damage", "attack_range", "attack_count", "attack_interval" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -91,8 +91,8 @@ namespace TrainDefense.Editor.DataImport.Importers
 
 				var rangeStatus = new RangeTrainStatus
 				{
-					AttackRange = r.attackRange,
 					AttackDamage = r.attackDamage,
+					AttackRange = r.attackRange,
 					AttackCount = r.attackCount,
 					AttackInterval = r.attackInterval
 				};

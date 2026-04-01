@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Cumic.Events;
@@ -20,6 +21,10 @@ namespace TrainDefense.Game.UI
         private float uiActiveDelay;
         [SerializeField]
         private ParticleSystem coinParticleSystem;
+
+        [Header("Reroll")]
+        [SerializeField]
+        private Button rerollButton;
         #endregion
 
         private int _choiceLeftCount;
@@ -31,6 +36,11 @@ namespace TrainDefense.Game.UI
             if (choiceSelectUIs.Length == 0)
             {
                 choiceSelectUIs = GetComponentsInChildren<TriChoiceSelectUI>(true);
+            }
+
+            if (rerollButton != null)
+            {
+                rerollButton.onClick.AddListener(OnRerollButtonClick);
             }
         }
 
@@ -189,6 +199,27 @@ namespace TrainDefense.Game.UI
             }
 
             backgroundImage.SetActive(false);
+        }
+
+        private void OnRerollButtonClick()
+        {
+            if (_isSelecting) return;
+
+            var triChoiceManager = TriChoiceManager.Instance;
+            if (triChoiceManager != null)
+            {
+                triChoiceManager.ClearSelectedUpgrades();
+            }
+
+            // 현재 선택지 UI를 숨기고 새로운 선택지로 다시 표시
+            foreach (var choiceSelectUI in choiceSelectUIs)
+            {
+                choiceSelectUI.transform.DOKill();
+                choiceSelectUI.gameObject.SetActive(false);
+            }
+
+            int requestId = ++_popupRequestId;
+            OnChoiceUIPopup(_choiceLeftCount, requestId).Forget();
         }
     }
 }
