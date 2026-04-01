@@ -388,6 +388,14 @@ namespace TrainDefense.Game
             return validUpgrades[^1].UpgradeData;
         }
 
+        /// <summary>
+        /// 캐시된 업그레이드 선택을 모두 초기화합니다. (리롤 시 사용)
+        /// </summary>
+        public void ClearSelectedUpgrades()
+        {
+            _selectedUpgrades.Clear();
+        }
+
         private Train GetTargetTrain(string targetTrainId)
         {
             var trainManager = TrainManager.Instance;
