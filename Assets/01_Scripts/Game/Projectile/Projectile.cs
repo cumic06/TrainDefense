@@ -102,7 +102,6 @@ namespace TrainDefense.Game
          Vector3 currentScale = model.transform.localScale;
          float distance = Vector2.Distance(transform.position, targetPos);
          model.transform.localPosition = new Vector3(distance / 2, 0, 0);
-         //model.transform.localScale = new Vector3(attackRange, currentScale.y, currentScale.z);
          model.GetComponent<BoxCollider2D>().size = new Vector2(1, distance);
          model.GetComponent<SpriteRenderer>().size = new Vector2(1, distance);
       }

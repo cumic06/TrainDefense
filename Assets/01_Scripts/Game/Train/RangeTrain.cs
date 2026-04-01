@@ -82,6 +82,12 @@ namespace TrainDefense.Game
         {
             if (rangeTrainData.RangeProjectilePrefab != null)
             {
+                // 기존 Projectile 제거
+                if (_rangeProjectilePrefab != null)
+                {
+                    ResourceManager.Instance.Destroy(_rangeProjectilePrefab.gameObject);
+                    _rangeProjectilePrefab = null;
+                }
                 Projectile projectile = rangeTrainData.RangeProjectilePrefab?.GetComponent<Projectile>();
 
                 if (projectile != null)
@@ -118,6 +124,7 @@ namespace TrainDefense.Game
                 if (_rangeProjectilePrefab != null)
                 {
                     _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
+                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage);
                 }
             }
         }
@@ -132,6 +139,7 @@ namespace TrainDefense.Game
             if (_rangeProjectilePrefab != null)
             {
                 _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
+                _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage);
             }
         }
 
@@ -156,6 +164,10 @@ namespace TrainDefense.Game
 
                 case StatType.AttackDamage:
                     _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
+                    if (_rangeProjectilePrefab != null)
+                    {
+                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage);
+                    }
                     break;
 
                 case StatType.AttackCount:

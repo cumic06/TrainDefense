@@ -360,8 +360,8 @@ MonoBehaviour:
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 10
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.25
       TargetCount: 0
@@ -387,8 +387,8 @@ MonoBehaviour:
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 3
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
@@ -414,8 +414,8 @@ MonoBehaviour:
         projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 25
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 0
@@ -441,8 +441,8 @@ MonoBehaviour:
         projectileCount: 2
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 15
       AttackDamage: 50
+      AttackRange: 15
       AttackCount: 1
       AttackInterval: 2
       TargetCount: 0
@@ -468,8 +468,8 @@ MonoBehaviour:
         projectileCount: 2
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 10
+      AttackRange: 10
       AttackCount: 5
       AttackInterval: 2
       TargetCount: 5
@@ -495,8 +495,8 @@ MonoBehaviour:
         projectileCount: 3
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 50
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
@@ -522,8 +522,8 @@ MonoBehaviour:
         projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 50
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 0
@@ -548,8 +548,8 @@ MonoBehaviour:
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 50
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
@@ -574,8 +574,8 @@ MonoBehaviour:
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 25
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
@@ -600,8 +600,8 @@ MonoBehaviour:
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 100
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.5
       TargetCount: 0
@@ -626,8 +626,8 @@ MonoBehaviour:
         projectileCount: 3
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 300
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
@@ -652,8 +652,8 @@ MonoBehaviour:
         projectileCount: 5
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 400
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 5
       TargetCount: 0
@@ -678,8 +678,8 @@ MonoBehaviour:
         projectileCount: 3
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 400
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
@@ -704,8 +704,8 @@ MonoBehaviour:
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 600
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 1.5
       TargetCount: 0
@@ -732,8 +732,8 @@ MonoBehaviour:
         projectileCount: 4
     isMainTrain: 0
     rangeTrainStatus:
-      AttackRange: 5
       AttackDamage: 100
+      AttackRange: 5
       AttackCount: 1
       AttackInterval: 4
     rangeProjectilePrefabId: ExplosionProjectile
@@ -758,8 +758,8 @@ MonoBehaviour:
         projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
-      AttackRange: 5
       AttackDamage: 1
+      AttackRange: 5
       AttackCount: 1
       AttackInterval: 0.1
     rangeProjectilePrefabId: ColdAirProjectile
@@ -783,8 +783,8 @@ MonoBehaviour:
         projectileCount: 4
     isMainTrain: 0
     rangeTrainStatus:
-      AttackRange: 8
       AttackDamage: 500
+      AttackRange: 8
       AttackCount: 1
       AttackInterval: 4
     rangeProjectilePrefabId: ExplosionProjectile
@@ -808,8 +808,8 @@ MonoBehaviour:
         projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
-      AttackRange: 13
       AttackDamage: 15
+      AttackRange: 13
       AttackCount: 1
       AttackInterval: 0.1
     rangeProjectilePrefabId: ColdAirProjectile
@@ -825,24 +825,24 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 5
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 10
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 25
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
@@ -855,24 +855,24 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 2
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 5
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 10
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -886,24 +886,24 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 15
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.15
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 20
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.15
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 40
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.2
         TargetCount: 0
@@ -916,24 +916,24 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 50
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 150
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 250
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -946,24 +946,24 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 3
+        AttackRange: 0
         AttackCount: 1
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 5
+        AttackRange: 0
         AttackCount: 1
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 7
+        AttackRange: 0
         AttackCount: 2
         AttackInterval: 0
         TargetCount: 0
@@ -977,24 +977,24 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 50
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 100
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 200
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1007,24 +1007,24 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 50
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 150
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 350
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1039,22 +1039,22 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 50
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 100
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 250
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
   - id: 100002
@@ -1067,22 +1067,22 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 2
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 3
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 4
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
   stageDataList:
