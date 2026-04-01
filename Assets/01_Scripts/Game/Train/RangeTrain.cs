@@ -97,7 +97,7 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.transform.localScale = new Vector3(rangeTrainData.RangeTrainStatus.AttackRange, rangeTrainData.RangeTrainStatus.AttackRange, 1);
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
-                    _rangeProjectilePrefab.Init(rangeTrainData.RangeTrainStatus.AttackDamage);
+                    _rangeProjectilePrefab.Init(rangeTrainData.RangeTrainStatus.AttackDamage, null, rangeTrainData.RangeTrainStatus.AttackRange);
                 }
             }
         }
@@ -124,7 +124,7 @@ namespace TrainDefense.Game
                 if (_rangeProjectilePrefab != null)
                 {
                     _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
-                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage);
+                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, null, _currentRangeTrainStatus.AttackRange);
                 }
             }
         }
@@ -139,7 +139,7 @@ namespace TrainDefense.Game
             if (_rangeProjectilePrefab != null)
             {
                 _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
-                _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage);
+                _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, null, _currentRangeTrainStatus.AttackRange);
             }
         }
 
@@ -166,7 +166,7 @@ namespace TrainDefense.Game
                     _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
                     if (_rangeProjectilePrefab != null)
                     {
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage);
+                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, null, _currentRangeTrainStatus.AttackRange);
                     }
                     break;
 
