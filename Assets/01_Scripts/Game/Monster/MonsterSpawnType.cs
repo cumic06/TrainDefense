@@ -1,5 +1,8 @@
-public enum MonsterSpawnType
+namespace TrainDefense.Game.Monster
 {
-   CameraBased,
-   CustomArea
+    public enum MonsterSpawnType
+    {
+        CameraBased,
+        CustomArea
+    }
 }

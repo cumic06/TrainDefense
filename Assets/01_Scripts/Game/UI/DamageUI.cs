@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using TrainDefense;
 
 namespace TrainDefense.Game.UI
 {

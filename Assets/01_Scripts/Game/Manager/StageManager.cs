@@ -8,6 +8,8 @@ using TrainDefense.Game;
 using TrainDefense.Game.Datas;
 using TrainDefense;
 
+namespace TrainDefense.Game.Manager
+{
 public class StageManager : Singleton<StageManager>
 {
     #region Variables
@@ -336,4 +338,5 @@ public class StageManager : Singleton<StageManager>
         return 1.0f + (_currentStageInspectionTimeIndex * goldScale);
     }
     #endregion
+}
 }

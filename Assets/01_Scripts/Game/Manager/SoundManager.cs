@@ -1,4 +1,5 @@
 using Cumic;
+using Cumic.Events;
 using System.Collections.Generic;
 using System.Threading;
 using TrainDefense.Game.Datas;
@@ -95,6 +96,23 @@ namespace TrainDefense.Game
          {
             sfxVolume = sfxSoundSourcePrefab.volume;
          }
+
+         GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
+      }
+
+      private void OnDestroy()
+      {
+         GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
+      }
+
+      private void OnGameEnter(GameEnterEvent gameEnterEvent)
+      {
+         PlayBGM(SoundType.BGM_Stage);
+      }
+
+      public void PlayBGMOnInit()
+      {
+         PlayBGM(SoundType.BGM_Lobby);
       }
 
       #region BGM Management
