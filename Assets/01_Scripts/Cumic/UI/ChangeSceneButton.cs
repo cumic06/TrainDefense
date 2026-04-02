@@ -1,25 +1,28 @@
 using Cumic;
 using UnityEngine;
 
-public class ChangeSceneButton : MonoBehaviour
+namespace Cumic.UI
 {
-    public void OnClickNextScene()
+    public class ChangeSceneButton : MonoBehaviour
     {
-        SceneController.NextScene(false);
-    }
+        public void OnClickNextScene()
+        {
+            SceneController.NextScene(false);
+        }
 
-    public void OnClickPreviousScene()
-    {
-        SceneController.PreviousScene();
-    }
+        public void OnClickPreviousScene()
+        {
+            SceneController.PreviousScene();
+        }
 
-    public void OnClickResetScene()
-    {
-        SceneController.ResetScene();
-    }
+        public void OnClickResetScene()
+        {
+            SceneController.ResetScene();
+        }
 
-    public void OnClickLoadScene(int sceneIndex)
-    {
-        SceneController.LoadScene(sceneIndex, false);
+        public void OnClickLoadScene(int sceneIndex)
+        {
+            SceneController.LoadScene(sceneIndex, false);
+        }
     }
 }

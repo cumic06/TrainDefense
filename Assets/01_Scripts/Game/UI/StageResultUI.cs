@@ -1,3 +1,5 @@
+using Cumic.Events;
+using TrainDefense.Game.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game.UI
@@ -10,6 +12,44 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private GameObject failResultUI;
         #endregion
+
+        private void Start()
+        {
+            GameEventSystem.Subscribe<EngageReadyEvent>(OnEngageReady);
+            GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
+            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<EngageReadyEvent>(OnEngageReady);
+            GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
+            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
+        }
+
+        private void OnEngageReady(EngageReadyEvent engageReadyEvent)
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void OnEngageStart(EngageStartEvent engageStartEvent)
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void OnStageEnd(StageEndEvent stageEndEvent)
+        {
+            gameObject.SetActive(true);
+            ShowResult(stageEndEvent.IsClear);
+        }
+
+        private void OnGameEnd(GameEndEvent gameEndEvent)
+        {
+            gameObject.SetActive(true);
+            ShowResult(gameEndEvent.IsClear);
+        }
 
         public void ShowResult(bool isClear)
         {

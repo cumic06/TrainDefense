@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cumic;
+using TrainDefense;
 using TrainDefense.Game.Datas;
 using Cumic.Events;
 using Unity.Cinemachine;

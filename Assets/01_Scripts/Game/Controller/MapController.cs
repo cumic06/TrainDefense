@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TrainDefense
+namespace TrainDefense.Game.Controller
 {
     public class MapController : MonoBehaviour
     {

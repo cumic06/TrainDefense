@@ -4,7 +4,7 @@ using Unity.Cinemachine;
 using DG.Tweening;
 using Sirenix.OdinInspector;
 
-namespace TrainDefense.Game
+namespace TrainDefense.Game.Controller
 {
     public class CameraController : MonoBehaviour
     {

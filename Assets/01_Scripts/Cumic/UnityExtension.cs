@@ -2,6 +2,8 @@ using System;
 using System.Diagnostics;
 using UnityEngine;
 
+namespace Cumic
+{
 public static class UnityExtension
 {
     public static float SqrDistance(this Vector3 vector, Vector3 target)
@@ -56,4 +58,5 @@ public static class UnityExtension
 
         UnityEngine.Debug.Log($"Action {action.Method.Name} executed {iterations} times! Total: {stopwatch.ElapsedMilliseconds}ms");
     }
+}
 }
