@@ -54,6 +54,8 @@ namespace TrainDefense.Game.UI
                 return;
             }
 
+            SoundManager.Instance.MuteSFX(true);
+
             List<ChoiceEntry> availableChoices = triChoiceManager.GetChoices(choiceSelectUIs.Length);
 
             if (requestId != _popupRequestId) return;
@@ -187,6 +189,8 @@ namespace TrainDefense.Game.UI
             {
                 coinParticleSystem.gameObject.SetActive(false);
             }
+
+            SoundManager.Instance.MuteSFX(false);
 
             backgroundImage.SetActive(false);
         }
