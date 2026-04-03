@@ -6,7 +6,6 @@ using Sirenix.OdinInspector;
 using TrainDefense;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
-using TrainDefense.Game.Monster;
 using UnityEngine;
 
 namespace TrainDefense.Game

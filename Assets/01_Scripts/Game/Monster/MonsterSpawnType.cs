@@ -1,4 +1,4 @@
-namespace TrainDefense.Game.Monster
+namespace TrainDefense.Game
 {
     public enum MonsterSpawnType
     {
