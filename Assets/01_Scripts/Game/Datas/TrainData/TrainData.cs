@@ -18,6 +18,8 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private Sprite icon;
         [SerializeField]
+        private DamageType damageType;
+        [SerializeField]
         private SoundType attackSoundType;
         [SerializeField]
         [TextArea(2, 4)]
@@ -84,6 +86,7 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         public string TrainName => name;
+        public DamageType DamageType => damageType;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
 
