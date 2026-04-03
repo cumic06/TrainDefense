@@ -176,15 +176,6 @@ namespace TrainDefense.Game
             }
         }
 
-        protected override void OnDead()
-        {
-            if (rangeTrainData.AttackSoundType != SoundType.None && TrainData.DamageType == DamageType.Tick)
-            {
-                SoundManager.Instance.StopSFX(rangeTrainData.AttackSoundType);
-            }
-            base.OnDead();
-        }
-
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;

@@ -103,6 +103,11 @@ namespace TrainDefense.Game
 
             _isDead = true;
 
+            if (TrainData.AttackSoundType != SoundType.None && TrainData.DamageType == DamageType.Tick)
+            {
+                SoundManager.Instance.StopSFX(TrainData.AttackSoundType);
+            }
+
             // 주변 적을 밀치는 효과
             PushNearbyEnemies();
         }

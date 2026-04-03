@@ -604,11 +604,6 @@ namespace TrainDefense.Game
             }
         }
 
-        protected override void OnDead()
-        {
-            base.OnDead();
-        }
-
         private Projectile GetProjectile()
         {
             return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
