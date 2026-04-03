@@ -141,7 +141,7 @@ namespace TrainDefense.Game
                 {
                     SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
                 }
-                else if (_nonMovementProjectiles.FirstOrDefault(p => p != null && !p.gameObject.activeSelf))
+                else if (!_nonMovementProjectiles[0].gameObject.activeSelf)
                 {
                     SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
                 }
