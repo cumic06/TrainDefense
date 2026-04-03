@@ -17,7 +17,22 @@ MonoBehaviour:
   _steps:
   - _id: 10000
     _targetObject: {fileID: 0}
-    _targetObjectName: 
+    _targetObjectName: TrainInfoSlotUI(Clone)
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "\uC774 \uC544\uC774\uCF58\uC774 \uAE30\uCC28\uC758 \uC2A4\uD0AC\uC785\uB2C8\uB2E4.\n\uC2A4\uD0AC\uC744 \uC0AC\uC6A9\uD574\uBCF4\uC138\uC694!"
+    _arrowDirection: 0
+    _useDimming: 1
+    _useHighlight: 1
+    _delayBefore: 1
+    _sfxKey:
+    _prerequisiteStepId:
+  - _id: 10001
+    _targetObject: {fileID: 0}
+    _targetObjectName: TrainInfoSlotUI(Clone)
     _skipCondition: 1
     _timeoutDuration: 3
     _customSkipEvent:
@@ -29,7 +44,22 @@ MonoBehaviour:
     _useDimming: 1
     _useHighlight: 1
     _delayBefore: 0
-    _sfxKey: 
-    _prerequisiteStepId: 
+    _sfxKey:
+    _prerequisiteStepId:
+  - _id: 10002
+    _targetObject: {fileID: 0}
+    _targetObjectName:
+    _skipCondition: 2
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "\uC798\uD588\uC5B4\uC694! \uCFE8\uB2E4\uC6B4\uC774 \uB05D\uB098\uBA74 \uB2E4\uC2DC \uC0AC\uC6A9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    _arrowDirection: 0
+    _useDimming: 1
+    _useHighlight: 0
+    _delayBefore: 0.5
+    _sfxKey:
+    _prerequisiteStepId:
   _canSkip: 1
   _priority: 0
