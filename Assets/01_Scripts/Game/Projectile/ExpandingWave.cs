@@ -5,24 +5,17 @@ using UnityEngine;
 namespace TrainDefense.Game
 {
     [RequireComponent(typeof(CircleCollider2D))]
-    public class ExpandingWave : MonoBehaviour
+    public class ExpandingWave : Projectile
     {
+        #region Variables
+
+        #region Fields
         [SerializeField]
         private CircleCollider2D waveCollider;
 
         [SerializeField]
-        private TriggerHandle triggerHandle;
-
-        [SerializeField]
-        private Transform visualRoot;
-
-        [SerializeField]
         [Min(0f)]
         private float startRadius = 0f;
-
-        [SerializeField]
-        [Min(0f)]
-        private float endRadius = 3f;
 
         [SerializeField]
         [Min(0.01f)]
@@ -37,27 +30,32 @@ namespace TrainDefense.Game
 
         [SerializeField]
         private LayerMask detectionLayerMask = ~0;
+        #endregion
 
+        private float _endRadius;
         private Coroutine _expandCoroutine;
         private Vector3 _initialVisualScale = Vector3.one;
         private bool _hasCapturedVisualScale;
         private readonly HashSet<IProjectileTarget> _hitTargets = new();
 
         public float RequiredLifetime => expandDuration;
+        #endregion
 
         private void Awake()
         {
-            CacheReferences();
+            _CacheReferences();
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             _hitTargets.Clear();
-            RestartWave();
+            _RestartWave();
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
             if (_expandCoroutine != null)
             {
                 StopCoroutine(_expandCoroutine);
@@ -67,46 +65,56 @@ namespace TrainDefense.Game
             _hitTargets.Clear();
         }
 
+        public override void Init(int damage, IProjectileTarget target = null, float attackRange = 0f)
+        {
+            if (attackRange > 0f)
+            {
+                _endRadius = attackRange;
+            }
+
+            base.Init(damage, target, attackRange);
+        }
+
         public void SetWave(float radius)
         {
-            endRadius = Mathf.Max(startRadius, radius);
+            _endRadius = Mathf.Max(startRadius, radius);
 
             if (isActiveAndEnabled)
             {
-                RestartWave();
+                _RestartWave();
             }
         }
 
         public void SetWave(float radius, float duration)
         {
-            endRadius = Mathf.Max(startRadius, radius);
+            _endRadius = Mathf.Max(startRadius, radius);
             expandDuration = Mathf.Max(0.01f, duration);
 
             if (isActiveAndEnabled)
             {
-                RestartWave();
+                _RestartWave();
             }
         }
 
-        private void RestartWave()
+        private void _RestartWave()
         {
-            CacheReferences();
+            _CacheReferences();
 
             if (_expandCoroutine != null)
             {
                 StopCoroutine(_expandCoroutine);
             }
 
-            ApplyRadius(startRadius);
-            _expandCoroutine = StartCoroutine(ExpandCoroutine());
+            _ApplyRadius(startRadius);
+            _expandCoroutine = StartCoroutine(_ExpandCoroutine());
         }
 
-        private IEnumerator ExpandCoroutine()
+        private IEnumerator _ExpandCoroutine()
         {
             if (expandDuration <= 0f)
             {
-                ApplyRadius(endRadius);
-                DetectWaveFront(startRadius, endRadius);
+                _ApplyRadius(_endRadius);
+                _DetectWaveFront(startRadius, _endRadius);
                 _expandCoroutine = null;
                 yield break;
             }
@@ -120,64 +128,54 @@ namespace TrainDefense.Game
 
                 float progress = Mathf.Clamp01(elapsed / expandDuration);
                 float curvedProgress = expandCurve != null ? expandCurve.Evaluate(progress) : progress;
-                float currentRadius = Mathf.LerpUnclamped(startRadius, endRadius, curvedProgress);
+                float currentRadius = Mathf.LerpUnclamped(startRadius, _endRadius, curvedProgress);
 
-                ApplyRadius(currentRadius);
-                DetectWaveFront(previousRadius, currentRadius);
+                _ApplyRadius(currentRadius);
+                _DetectWaveFront(previousRadius, currentRadius);
                 previousRadius = currentRadius;
                 yield return null;
             }
 
-            ApplyRadius(endRadius);
-            DetectWaveFront(previousRadius, endRadius);
+            _ApplyRadius(_endRadius);
+            _DetectWaveFront(previousRadius, _endRadius);
             _expandCoroutine = null;
         }
 
-        private void ApplyRadius(float radius)
+        private void _ApplyRadius(float radius)
         {
-            if (waveCollider != null)
-            {
-                waveCollider.radius = radius;
-            }
-
-            if (visualRoot == null)
-            {
-                return;
-            }
-
             float diameter = radius * 2f;
             float scaleFactor = visualBaseDiameter > 0f ? diameter / visualBaseDiameter : diameter;
-            visualRoot.localScale = _initialVisualScale * scaleFactor;
+
+            transform.localScale = _initialVisualScale * scaleFactor;
         }
 
-        private void CacheReferences()
+        private void _CacheReferences()
         {
             if (waveCollider == null)
             {
                 waveCollider = GetComponent<CircleCollider2D>();
             }
 
-            if (triggerHandle == null)
-            {
-                triggerHandle = GetComponent<TriggerHandle>();
-            }
-
             if (waveCollider != null)
             {
                 waveCollider.isTrigger = true;
             }
 
-            if (visualRoot != null && !_hasCapturedVisualScale)
+            if (!_hasCapturedVisualScale)
             {
-                _initialVisualScale = visualRoot.localScale;
+                _initialVisualScale = transform.localScale;
                 _hasCapturedVisualScale = true;
             }
         }
 
+        // 파도 확장 방식으로 데미지를 주므로 Projectile의 트리거 무효화
+        private void OnTriggerEnter2D(Collider2D other) { }
+        private void OnTriggerStay2D(Collider2D other) { }
+        private void OnTriggerExit2D(Collider2D other) { }
+
         private void Reset()
         {
             waveCollider = GetComponent<CircleCollider2D>();
-            triggerHandle = GetComponent<TriggerHandle>();
 
             if (waveCollider != null)
             {
@@ -185,14 +183,8 @@ namespace TrainDefense.Game
             }
         }
 
-        private void DetectWaveFront(float previousRadius, float currentRadius)
+        private void _DetectWaveFront(float previousRadius, float currentRadius)
         {
-            if (triggerHandle == null)
-            {
-                return;
-            }
-
-            float minRadius = Mathf.Min(previousRadius, currentRadius);
             float maxRadius = Mathf.Max(previousRadius, currentRadius);
 
             if (maxRadius <= 0f)
@@ -214,16 +206,8 @@ namespace TrainDefense.Game
                     continue;
                 }
 
-                Vector2 closestPoint = col.ClosestPoint(transform.position);
-                float distance = Vector2.Distance(transform.position, closestPoint);
-
-                if (distance <= minRadius || distance > maxRadius)
-                {
-                    continue;
-                }
-
-                triggerHandle.ApplyWaveHit(target);
                 _hitTargets.Add(target);
+                ProcessEnter(target);
             }
         }
     }

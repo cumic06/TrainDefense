@@ -609,6 +609,28 @@ namespace TrainDefense.Game
             return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
         }
 
+        public override Transform GetSkillSpawnPoint(int index)
+        {
+            if (turretProjectileSpawnPoints == null || turretProjectileSpawnPoints.Length == 0)
+            {
+                return base.GetSkillSpawnPoint(index);
+            }
+
+            if (index < 0)
+            {
+                index = 0;
+            }
+
+            if (index >= turretProjectileSpawnPoints.Length)
+            {
+                index = turretProjectileSpawnPoints.Length - 1;
+            }
+
+            return turretProjectileSpawnPoints[index] != null
+                ? turretProjectileSpawnPoints[index]
+                : base.GetSkillSpawnPoint(index);
+        }
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;

@@ -23,7 +23,7 @@ namespace TrainDefense.Game
 
       #region Enable/Disable
 
-      private void OnEnable()
+      protected virtual void OnEnable()
       {
          _age = 0f;
          _damageTimers.Clear();
@@ -44,7 +44,7 @@ namespace TrainDefense.Game
          }
       }
 
-      private void OnDisable()
+      protected virtual void OnDisable()
       {
          _damageTimers.Clear();
          _movementStrategy = null;
@@ -58,7 +58,7 @@ namespace TrainDefense.Game
       /// <param name="damage">데미지</param>
       /// <param name="target">타겟 (Monster 또는 null)</param>
       /// <param name="attackRange">공격 범위 (스케일 조정에 사용)</param>
-      public void Init(int damage, IProjectileTarget target = null, float attackRange = 0f)
+      public virtual void Init(int damage, IProjectileTarget target = null, float attackRange = 0f)
       {
          _damage = damage;
          _target = target;
@@ -102,7 +102,6 @@ namespace TrainDefense.Game
          Vector3 currentScale = model.transform.localScale;
          float distance = Vector2.Distance(transform.position, targetPos);
          model.transform.localPosition = new Vector3(distance / 2, 0, 0);
-         //model.transform.localScale = new Vector3(attackRange, currentScale.y, currentScale.z);
          model.GetComponent<BoxCollider2D>().size = new Vector2(1, distance);
          model.GetComponent<SpriteRenderer>().size = new Vector2(1, distance);
       }
