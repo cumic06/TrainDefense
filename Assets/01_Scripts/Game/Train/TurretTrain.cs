@@ -95,6 +95,10 @@ namespace TrainDefense.Game
             if (_targetMonsters.Count == 0)
             {
                 ResetTarget();
+                if (TrainData.DamageType == DamageType.Tick)
+                {
+                    SoundManager.Instance.StopSFX(turretTrainData.AttackSoundType);
+                }
                 return;
             }
 
@@ -138,7 +142,14 @@ namespace TrainDefense.Game
 
             if (turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
             {
-                SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
+                if (TrainData.DamageType == DamageType.Direct)
+                {
+                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
+                }
+                else if (!_nonMovementProjectiles[0].gameObject.activeSelf)
+                {
+                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
+                }
             }
 
             ProjectileData projectileData = GetProjectile().GetData();
@@ -610,11 +621,6 @@ namespace TrainDefense.Game
                     }
                     break;
             }
-        }
-
-        protected override void OnDead()
-        {
-            base.OnDead();
         }
 
         private Projectile GetProjectile()

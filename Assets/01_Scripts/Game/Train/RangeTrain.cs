@@ -10,8 +10,6 @@ namespace TrainDefense.Game
     {
         #region Fields
         private RangeTrainData rangeTrainData => _trainData as RangeTrainData;
-        [SerializeField]
-        private bool isExplosionProjectile;
         #endregion
 
         private RangeTrainStatus _currentRangeTrainStatus;
@@ -25,8 +23,14 @@ namespace TrainDefense.Game
             // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
 
-            if (isExplosionProjectile) return;
+            if (TrainData.DamageType == DamageType.Direct) return;
+
             SpawnRangeProjectile();
+
+            if (rangeTrainData.AttackSoundType != SoundType.None)
+            {
+                SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType, true);
+            }
         }
 
         private void Update()
@@ -50,9 +54,14 @@ namespace TrainDefense.Game
                         SpawnRangeProjectile();
                     }
 
+                    if (rangeTrainData.AttackSoundType != SoundType.None && TrainData.DamageType == DamageType.Direct)
+                    {
+                        SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType);
+                    }
+
                     _currentRangeTrainStatus.AttackInterval = rangeTrainData.RangeTrainStatus.AttackInterval;
 
-                    if (isExplosionProjectile)
+                    if (TrainData.DamageType == DamageType.Direct)
                     {
                         if (_rangeAttackCoroutine != null)
                         {
@@ -65,7 +74,6 @@ namespace TrainDefense.Game
             else
             {
                 _currentRangeTrainStatus.AttackInterval -= Time.deltaTime;
-
             }
         }
 
