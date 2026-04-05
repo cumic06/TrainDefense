@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Cumic;
 using Cumic.Events;
 using Sirenix.OdinInspector;
+using TrainDefense;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using UnityEngine;
@@ -53,18 +54,35 @@ namespace TrainDefense.Game
          StopSpawnMonster();
          GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
          GameEventSystem.Subscribe<MonsterRushEvent>(OnMonsterRush);
+         GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
+         GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
       }
 
       private void OnDestroy()
       {
          GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
          GameEventSystem.Unsubscribe<MonsterRushEvent>(OnMonsterRush);
+         GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
+         GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
       }
       #endregion
 
       private void OnGameEnter(GameEnterEvent gameEnterEvent)
       {
          StartCoroutine(SpawnMonster());
+      }
+
+      private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
+      {
+         DestroyAllMonsters();
+      }
+
+      private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
+      {
+         if (_stopSpawnMonster)
+         {
+            StartSpawnMonster();
+         }
       }
 
       public void SetSpawnRule(StageSpawnData[] spawnDatas, float monsterSpawnInterval)

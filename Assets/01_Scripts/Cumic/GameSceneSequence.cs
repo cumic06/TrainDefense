@@ -1,9 +1,9 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Cumic.Checker;
+using Cumic.Events;
+using Cumic.UI;
 using TrainDefense;
-using TrainDefense.Game;
-using TrainDefense.Game.Datas;
 
 namespace Cumic.Sequence
 {
@@ -50,16 +50,7 @@ namespace Cumic.Sequence
                _userDataManager = userDataManager;
             }
 
-            if (DatabaseManager.Instance == null)
-            {
-               Instantiate(Resources.Load<DatabaseManager>("Prefabs/DatabaseManager"));
-            }
-
-            if (SoundManager.Instance == null)
-            {
-               SoundManager soundManager = Instantiate(Resources.Load<SoundManager>("Prefabs/SoundManager"));
-               soundManager.PlayBGM(SoundType.BGM_Lobby);
-            }
+            GameEventSystem.Publish(new LobbyEnterEvent());
          }
       }
       #endregion

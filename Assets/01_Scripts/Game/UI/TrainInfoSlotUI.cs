@@ -124,7 +124,16 @@ namespace TrainDefense.Game.UI
       private void _OnClickSlot()
       {
          if (_train == null)
+         {
+            Debug.LogWarning("[TrainInfoSlotUI] _train is null, cannot use skill");
             return;
+         }
+
+         if (!_train.HasSkill)
+         {
+            Debug.LogWarning($"[TrainInfoSlotUI] {_train.name} does not have skill");
+            return;
+         }
 
          TrainManager.Instance.TryUseTrainSkill(_train);
          _UpdateSkillCooldownUI();
@@ -177,7 +186,10 @@ namespace TrainDefense.Game.UI
       private void _OnReplaceTrain(ReplaceTrainEvent replaceTrainEvent)
       {
          if (_train != replaceTrainEvent.OldTrain)
+         {
+            Debug.LogWarning($"[TrainInfoSlotUI] OldTrain mismatch - Expected: {(_train != null ? _train.name : "null")}, Got: {(replaceTrainEvent.OldTrain != null ? replaceTrainEvent.OldTrain.name : "null")}");
             return;
+         }
 
          _train = replaceTrainEvent.NewTrain;
 

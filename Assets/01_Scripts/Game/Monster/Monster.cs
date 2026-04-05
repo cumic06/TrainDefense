@@ -1,8 +1,10 @@
 using System.Collections;
 using UnityEngine;
+using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.Manager;
 using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game
@@ -39,6 +41,8 @@ namespace TrainDefense.Game
       protected Coroutine _shoveCoroutine;
       protected Coroutine _stunCoroutine;
 
+      private const string MoneyPrefabPath = "Prefabs/Money";
+
       public string Id => id;
       public bool IsActive => gameObject.activeInHierarchy;
       public Transform TargetTransform => transform;
@@ -55,7 +59,7 @@ namespace TrainDefense.Game
       public void Initialize(MonsterData monsterData)
       {
          _monsterData = monsterData;
-         InitStats();
+         _InitStats();
       }
 
       #region Enable/Disable
@@ -65,7 +69,7 @@ namespace TrainDefense.Game
 
          if (_modelAnimator != null)
          {
-            _modelAnimator.OnAttackHit += OnAttackHit;
+            _modelAnimator.OnAttackHit += _OnAttackHit;
          }
       }
 
@@ -78,7 +82,7 @@ namespace TrainDefense.Game
 
          if (_modelAnimator != null)
          {
-            _modelAnimator.OnAttackHit -= OnAttackHit;
+            _modelAnimator.OnAttackHit -= _OnAttackHit;
          }
 
          _isStunned = false;
@@ -88,7 +92,7 @@ namespace TrainDefense.Game
       }
       #endregion
 
-      private void InitStats()
+      private void _InitStats()
       {
          _currentMonsterStatus = _monsterData.MonsterStatusData;
 
@@ -108,20 +112,20 @@ namespace TrainDefense.Game
 
       private void FixedUpdate()
       {
-         OrderSprite();
-         DetectTrain();
+         _OrderSprite();
+         _DetectTrain();
 
          if (_isShoved)
             return;
          if (_isStunned)
             return;
 
-         MoveHandler();
-         AttackHandler();
-         LookAtTarget();
+         _MoveHandler();
+         _AttackHandler();
+         _LookAtTarget();
       }
 
-      private void DetectTrain()
+      private void _DetectTrain()
       {
          if (TrainManager.Instance == null)
             return;
@@ -129,20 +133,20 @@ namespace TrainDefense.Game
          _targetTrain = TrainManager.Instance.GetNearTrain(transform.position);
       }
 
-      private void MoveHandler()
+      private void _MoveHandler()
       {
-         if (!IsAttackRange())
+         if (!_IsAttackRange())
          {
-            Move();
+            _Move();
          }
       }
 
-      private void Move()
+      private void _Move()
       {
-         transform.Translate(_currentMonsterStatus.MoveSpeed * Time.deltaTime * MoveDirection().normalized);
+         transform.Translate(_currentMonsterStatus.MoveSpeed * Time.deltaTime * _MoveDirection().normalized);
       }
 
-      private Vector3 MoveDirection()
+      private Vector3 _MoveDirection()
       {
          if (_targetTrain == null)
          {
@@ -154,24 +158,24 @@ namespace TrainDefense.Game
          return dir;
       }
 
-      private void OrderSprite()
+      private void _OrderSprite()
       {
          _modelSpriteRenderer.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
       }
 
-      private void LookAtTarget()
+      private void _LookAtTarget()
       {
-         int x = MoveDirection().x > 0 ? 1 : -1;
+         int x = _MoveDirection().x > 0 ? 1 : -1;
          model.transform.localScale = new Vector2(x * _startScale.x, _startScale.y);
       }
 
-      private void AttackHandler()
+      private void _AttackHandler()
       {
-         if (IsAttackDelay())
+         if (_IsAttackDelay())
          {
-            if (IsAttackRange())
+            if (_IsAttackRange())
             {
-               Attack();
+               _Attack();
             }
 
             _currentMonsterStatus.AttackDelay = _monsterData.MonsterStatusData.AttackDelay;
@@ -182,7 +186,7 @@ namespace TrainDefense.Game
          }
       }
 
-      private void Attack()
+      private void _Attack()
       {
          if (_targetTrain == null)
             return;
@@ -193,7 +197,7 @@ namespace TrainDefense.Game
          }
       }
 
-      private void OnAttackHit()
+      private void _OnAttackHit()
       {
          if (_targetTrain == null)
             return;
@@ -211,7 +215,7 @@ namespace TrainDefense.Game
          }
       }
 
-      private bool IsAttackRange()
+      private bool _IsAttackRange()
       {
          if (_targetTrain == null)
             return false;
@@ -219,7 +223,7 @@ namespace TrainDefense.Game
          return Vector3.Distance(transform.position, _targetTrain.transform.position) <= _currentMonsterStatus.AttackRange;
       }
 
-      private bool IsAttackDelay()
+      private bool _IsAttackDelay()
       {
          return _currentMonsterStatus.AttackDelay <= 0;
       }
@@ -234,10 +238,10 @@ namespace TrainDefense.Game
          {
             StopCoroutine(_slowCoroutine);
          }
-         _slowCoroutine = StartCoroutine(SlowCoroutine(slowValue));
+         _slowCoroutine = StartCoroutine(_SlowCoroutine(slowValue));
       }
 
-      private IEnumerator SlowCoroutine(float slowValue)
+      private IEnumerator _SlowCoroutine(float slowValue)
       {
          var slowSpeed = _currentMonsterStatus.MoveSpeed * slowValue;
          var startSpeed = _currentMonsterStatus.MoveSpeed;
@@ -264,10 +268,10 @@ namespace TrainDefense.Game
          {
             StopCoroutine(_resetMoveSpeedCoroutine);
          }
-         _resetMoveSpeedCoroutine = StartCoroutine(ResetMoveSpeedCoroutine());
+         _resetMoveSpeedCoroutine = StartCoroutine(_ResetMoveSpeedCoroutine());
       }
 
-      private IEnumerator ResetMoveSpeedCoroutine()
+      private IEnumerator _ResetMoveSpeedCoroutine()
       {
          var targetSpeed = _monsterData.MonsterStatusData.MoveSpeed;
          var startSpeed = _currentMonsterStatus.MoveSpeed;
@@ -300,14 +304,14 @@ namespace TrainDefense.Game
             {
                StopCoroutine(_shoveCoroutine);
             }
-            _shoveCoroutine = StartCoroutine(ShoveCoroutine(shovePower, shoveDuration));
+            _shoveCoroutine = StartCoroutine(_ShoveCoroutine(shovePower, shoveDuration));
          }
       }
 
-      private IEnumerator ShoveCoroutine(float shovePower, float shoveDuration)
+      private IEnumerator _ShoveCoroutine(float shovePower, float shoveDuration)
       {
          _isShoved = true;
-         _rigidbody2D.AddForce(-MoveDirection().normalized * shovePower, ForceMode2D.Impulse);
+         _rigidbody2D.AddForce(-_MoveDirection().normalized * shovePower, ForceMode2D.Impulse);
          yield return new WaitForSeconds(shoveDuration);
          _isShoved = false;
          _rigidbody2D.linearVelocity = Vector2.zero;
@@ -326,10 +330,10 @@ namespace TrainDefense.Game
          {
             StopCoroutine(_stunCoroutine);
          }
-         _stunCoroutine = StartCoroutine(StunCoroutine(stunDuration));
+         _stunCoroutine = StartCoroutine(_StunCoroutine(stunDuration));
       }
 
-      private IEnumerator StunCoroutine(float stunDuration)
+      private IEnumerator _StunCoroutine(float stunDuration)
       {
          _isStunned = true;
          yield return new WaitForSeconds(stunDuration);
@@ -355,8 +359,8 @@ namespace TrainDefense.Game
       {
          _isDead = true;
 
-         DropExp();
-         DropMoney();
+         _DropExp();
+         _DropMoney();
 
          // 부모가 MonsterSpawner인 경우 List에서 제거
          if (transform.parent != null && transform.parent.TryGetComponent<MonsterSpawner>(out var spawner))
@@ -368,13 +372,13 @@ namespace TrainDefense.Game
       }
 
       #region Result
-      private void DropExp()
+      private void _DropExp()
       {
          int dropExp = Random.Range(_currentMonsterStatus.DropExpMin, _currentMonsterStatus.DropExpMax);
          GameEventSystem.Publish(new AddExpEvent(dropExp));
       }
 
-      private void DropMoney()
+      private void _DropMoney()
       {
          float goldScale = 1.0f;
          if (StageManager.Instance != null)
@@ -392,7 +396,7 @@ namespace TrainDefense.Game
             Debug.Log($"[Monster] Drop Money Scaled - {_currentMonsterStatus.DropMoneyMin}~{_currentMonsterStatus.DropMoneyMax} -> {dropMoneyMin}~{dropMoneyMax} (x{goldScale})");
          }
 
-         ResourceManager.Instance.Spawn(Resources.Load<GameObject>("Prefabs/Money"), transform.position);
+         ResourceManager.Instance.Spawn(Resources.Load<GameObject>(MoneyPrefabPath), transform.position);
 
          if (UserDataManager.Instance != null)
          {

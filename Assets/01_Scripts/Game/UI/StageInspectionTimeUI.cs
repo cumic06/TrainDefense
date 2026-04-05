@@ -4,6 +4,8 @@ using TMPro;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 
+namespace TrainDefense.Game.UI
+{
 public class StageInspectionTimeUI : MonoBehaviour
 {
     #region Variable
@@ -103,4 +105,5 @@ public class StageInspectionTimeUI : MonoBehaviour
             stationIcon.sprite = sprite;
         }
     }
+}
 }

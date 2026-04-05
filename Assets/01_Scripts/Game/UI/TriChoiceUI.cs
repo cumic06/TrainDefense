@@ -44,6 +44,42 @@ namespace TrainDefense.Game.UI
             }
         }
 
+        private void Start()
+        {
+            GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
+            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
+            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
+        }
+
+        private void OnGameEnter(GameEnterEvent gameEnterEvent)
+        {
+            OnInspectionEnter(1);
+        }
+
+        private void OnLevelUp(LevelUpEvent levelUpEvent)
+        {
+            OnInspectionEnter(levelUpEvent.LevelUpCount);
+        }
+
+        private void OnStageEnd(StageEndEvent stageEndEvent)
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void OnGameEnd(GameEndEvent gameEndEvent)
+        {
+            gameObject.SetActive(false);
+        }
+
         public void OnInspectionEnter(int count)
         {
             backgroundImage.SetActive(true);
@@ -188,6 +224,8 @@ namespace TrainDefense.Game.UI
 
             TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
             GameEventSystem.Publish(eventData);
+
+            _isSelecting = false;
 
             if (_choiceLeftCount > 0)
             {

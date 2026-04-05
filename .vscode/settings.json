@@ -66,5 +66,6 @@
         "c:\\Users\\chang\\GitHub\\TrainDefense\\Assembly-CSharp.csproj",
         "c:\\Users\\chang\\GitHub\\TrainDefense\\Sirenix.OdinInspector.Modules.UnityMathematics.csproj",
         "c:\\Users\\chang\\GitHub\\TrainDefense\\TrainDefense.Tests.EditMode.csproj"
-    ]
+    ],
+    "claudeCode.useTerminal": true
 }

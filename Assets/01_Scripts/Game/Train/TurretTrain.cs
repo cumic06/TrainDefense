@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Cumic;
 using Cumic.Events;
 using DG.Tweening;
+using TrainDefense;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Stats;
@@ -122,11 +124,14 @@ namespace TrainDefense.Game
 
         private void Attack()
         {
+            Monster nearTarget = GetNearTargetMonster();
+            if (nearTarget == null) return;
+
             if (turretModel != null)
             {
                 if (isRotateModel)
                 {
-                    turretModel.transform.LookAt2D(GetNearTargetMonster().transform);
+                    turretModel.transform.LookAt2D(nearTarget.transform);
                 }
 
                 turretModel.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
@@ -135,7 +140,7 @@ namespace TrainDefense.Game
                 });
             }
 
-            if (turretTrainData.AttackSoundType != SoundType.None)
+            if (turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
             {
                 if (TrainData.DamageType == DamageType.Direct)
                 {
@@ -397,15 +402,29 @@ namespace TrainDefense.Game
             }
             else
             {
-                Transform parent = spawnIndex < turretProjectileSpawnPoints.Length
-                    ? turretProjectileSpawnPoints[spawnIndex]
-                    : turretProjectileSpawnPoints[0];
+                Transform parent = null;
+
+                if (turretProjectileSpawnPoints != null && turretProjectileSpawnPoints.Length > 0)
+                {
+                    parent = spawnIndex < turretProjectileSpawnPoints.Length
+                        ? turretProjectileSpawnPoints[spawnIndex]
+                        : turretProjectileSpawnPoints[0];
+                }
 
                 if (movementType == MovementType.NonMovement)
                 {
-                    projectile.transform.SetParent(parent);
-                    projectile.transform.localPosition = Vector3.zero;
-                    projectile.transform.localRotation = Quaternion.identity;
+                    if (parent != null)
+                    {
+                        projectile.transform.SetParent(parent);
+                        projectile.transform.localPosition = Vector3.zero;
+                        projectile.transform.localRotation = Quaternion.identity;
+                    }
+                    else
+                    {
+                        projectile.transform.SetParent(transform);
+                        projectile.transform.localPosition = Vector3.zero;
+                        projectile.transform.localRotation = Quaternion.identity;
+                    }
 
                     if (useParticleProjectile)
                     {
@@ -414,7 +433,7 @@ namespace TrainDefense.Game
                 }
                 else
                 {
-                    projectile.transform.position = parent.position;
+                    projectile.transform.position = parent != null ? parent.position : transform.position;
                 }
             }
         }

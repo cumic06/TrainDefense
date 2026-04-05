@@ -1,4 +1,5 @@
 using UnityEngine;
+using TrainDefense.Game;
 
 namespace TrainDefense.Game.Events
 {
