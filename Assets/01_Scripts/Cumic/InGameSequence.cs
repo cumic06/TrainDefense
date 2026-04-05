@@ -1,5 +1,7 @@
 using Cumic.Events;
 using Sirenix.OdinInspector;
+using TrainDefense.Game;
+using TrainDefense.Game.Datas;
 using UnityEngine;
 
 namespace Cumic.Sequence
@@ -15,6 +17,8 @@ namespace Cumic.Sequence
         private void Start()
         {
             SubscribeEvents();
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayBGM(SoundType.BGM_Stage);
         }
 
         private void OnDestroy()

@@ -4,6 +4,7 @@ using Cumic.Checker;
 using Cumic.Events;
 using Cumic.UI;
 using TrainDefense;
+using TrainDefense.Game;
 
 namespace Cumic.Sequence
 {
@@ -48,6 +49,17 @@ namespace Cumic.Sequence
             {
                UserDataManager userDataManager = new GameObject("UserDataManager").AddComponent<UserDataManager>();
                _userDataManager = userDataManager;
+            }
+
+            if (DatabaseManager.Instance == null)
+            {
+               Instantiate(Resources.Load<DatabaseManager>("Prefabs/DatabaseManager"));
+            }
+
+            if (SoundManager.Instance == null)
+            {
+               SoundManager soundManager = Instantiate(Resources.Load<SoundManager>("Prefabs/SoundManager"));
+               soundManager.PlayBGMOnInit();
             }
 
             GameEventSystem.Publish(new LobbyEnterEvent());

@@ -1,7 +1,6 @@
 using Cumic;
+using Cumic.Events;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using TrainDefense.Game.Datas;
 using UnityEngine;
 
@@ -96,6 +95,11 @@ namespace TrainDefense.Game
             {
                 sfxVolume = sfxSoundSourcePrefab.volume;
             }
+        }
+
+        public void PlayBGMOnInit()
+        {
+            PlayBGM(SoundType.BGM_Lobby);
         }
 
         #region BGM Management

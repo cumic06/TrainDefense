@@ -108,12 +108,12 @@ namespace TrainDefense
 
       private void _SetBGMSliderValue(float value)
       {
-         bgmSlider.value = value;
+         bgmSlider.SetValueWithoutNotify(value);
       }
 
       private void _SetSFXSliderValue(float value)
       {
-         sfxSlider.value = value;
+         sfxSlider.SetValueWithoutNotify(value);
       }
 
       private void _SetBGMMuteSprite()
