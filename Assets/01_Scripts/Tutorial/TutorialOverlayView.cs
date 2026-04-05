@@ -24,6 +24,7 @@ namespace TrainDefense.Game.Tutorial
 
         private Canvas _rootCanvas;
         private RectTransform _canvasRect;
+        private TutorialRaycastBlocker _screenTapBlocker;
 
         public event Action OnScreenTapped;
         public event Action OnSkipRequested;
@@ -33,6 +34,32 @@ namespace TrainDefense.Game.Tutorial
             _rootCanvas = GetComponentInParent<Canvas>();
             if (_rootCanvas != null)
                 _canvasRect = _rootCanvas.GetComponent<RectTransform>();
+
+            SetupRaycastBlocker();
+        }
+
+        /// <summary>
+        /// ScreenTapArea에 레이캐스트 블로커를 설정하여
+        /// cutout 영역 외부의 터치를 차단합니다.
+        /// </summary>
+        private void SetupRaycastBlocker()
+        {
+            if (_screenTapArea == null) return;
+
+            var tapImage = _screenTapArea.GetComponent<Image>();
+            if (tapImage != null)
+            {
+                tapImage.raycastTarget = true;
+            }
+
+            _screenTapBlocker = _screenTapArea.gameObject.GetComponent<TutorialRaycastBlocker>();
+            if (_screenTapBlocker == null)
+            {
+                _screenTapBlocker = _screenTapArea.gameObject.AddComponent<TutorialRaycastBlocker>();
+            }
+
+            // 초기 상태: cutout 없이 전체 차단
+            _screenTapBlocker.SetBlockAll(true);
         }
 
         private void OnEnable()
@@ -70,17 +97,22 @@ namespace TrainDefense.Game.Tutorial
                 if (targetRect != null)
                 {
                     SetHighlight(targetRect);
+                    // cutout 영역 내부는 터치 통과
+                    _screenTapBlocker?.SetCutoutRect(_highlight.CutoutRect);
                 }
                 else
                 {
                     _highlight.SetTargetWorldPosition(
                         target.transform.position,
                         new Vector2(100f, 100f));
+                    _screenTapBlocker?.SetCutoutRect(_highlight.CutoutRect);
                 }
             }
             else
             {
                 _highlight.ClearTarget();
+                // cutout 없으면 전체 차단
+                _screenTapBlocker?.SetBlockAll(true);
             }
 
             // 화살표
@@ -111,6 +143,7 @@ namespace TrainDefense.Game.Tutorial
         public void HideStep()
         {
             _highlight.ClearTarget();
+            _screenTapBlocker?.SetBlockAll(true);
             _arrowGuide.Hide();
             _messageBubble.Hide();
             Hide();
@@ -119,7 +152,11 @@ namespace TrainDefense.Game.Tutorial
         public void SetDimming(bool enabled)
         {
             if (_dimmingOverlay != null)
+            {
                 _dimmingOverlay.alpha = enabled ? _dimmingAlpha : 0f;
+                // 딤핑이 꺼져도 레이캐스트는 차단 유지
+                _dimmingOverlay.blocksRaycasts = true;
+            }
         }
 
         public void SetHighlight(RectTransform target)
@@ -148,14 +185,17 @@ namespace TrainDefense.Game.Tutorial
         private Vector2 GetCanvasPosition(GameObject target)
         {
             var rectTransform = target.GetComponent<RectTransform>();
+            Camera cam = _rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay
+                ? null
+                : _rootCanvas.worldCamera;
+
             if (rectTransform != null && _canvasRect != null)
             {
                 // UI 요소: 월드 좌표 -> 스크린 -> 캔버스 로컬
                 var worldPos = rectTransform.position;
-                var screenPoint = RectTransformUtility.WorldToScreenPoint(
-                    _rootCanvas.worldCamera, worldPos);
+                var screenPoint = RectTransformUtility.WorldToScreenPoint(cam, worldPos);
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    _canvasRect, screenPoint, _rootCanvas.worldCamera, out var localPoint);
+                    _canvasRect, screenPoint, cam, out var localPoint);
                 return localPoint;
             }
             else if (_canvasRect != null)
@@ -164,7 +204,7 @@ namespace TrainDefense.Game.Tutorial
                 var screenPoint = RectTransformUtility.WorldToScreenPoint(
                     Camera.main, target.transform.position);
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    _canvasRect, screenPoint, _rootCanvas.worldCamera, out var localPoint);
+                    _canvasRect, screenPoint, cam, out var localPoint);
                 return localPoint;
             }
 
@@ -173,6 +213,8 @@ namespace TrainDefense.Game.Tutorial
 
         private void HandleScreenTap()
         {
+            // ScreenTapArea의 onClick은 cutout 외부를 탭했을 때만 호출됨
+            // (TutorialRaycastBlocker가 cutout 내부는 통과시킴)
             OnScreenTapped?.Invoke();
         }
 

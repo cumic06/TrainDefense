@@ -31,6 +31,8 @@ namespace TrainDefense
 
       private void OnEnable()
       {
+         if (SoundManager.Instance == null) return;
+
          _SetBGMSliderValue(SoundManager.Instance.BGMVolume);
          _SetSFXSliderValue(SoundManager.Instance.SFXVolume);
          _SetBGMMuteSprite();

@@ -538,14 +538,14 @@ MonoBehaviour:
       MaxHp: 150
     prefabId: EliteNormalTurretTrain
     trainSkillData:
-      skillType: 0
-      skillCooldown: 0
+      skillType: 1
+      skillCooldown: 5
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 50
-        range: 1
-        projectileCount: 0
+        projectilePrefabId: SniperProjectile
+        damage: 10
+        range: 50
+        projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -564,7 +564,7 @@ MonoBehaviour:
       MaxHp: 150
     prefabId: EliteFireTurretTrain
     trainSkillData:
-      skillType: 0
+      skillType: 1
       skillCooldown: 0
       skillIconId: 
       projectileData:
@@ -590,7 +590,7 @@ MonoBehaviour:
       MaxHp: 150
     prefabId: EliteMissileTurretTrain
     trainSkillData:
-      skillType: 0
+      skillType: 1
       skillCooldown: 0
       skillIconId: 
       projectileData:
@@ -616,7 +616,7 @@ MonoBehaviour:
       MaxHp: 150
     prefabId: EliteLaserTurretTrain
     trainSkillData:
-      skillType: 0
+      skillType: 1
       skillCooldown: 0
       skillIconId: 
       projectileData:
@@ -642,7 +642,7 @@ MonoBehaviour:
       MaxHp: 150
     prefabId: EliteElectrickTurretTrain
     trainSkillData:
-      skillType: 0
+      skillType: 1
       skillCooldown: 0
       skillIconId: 
       projectileData:
@@ -668,7 +668,7 @@ MonoBehaviour:
       MaxHp: 150
     prefabId: EliteCannonTurretTrain
     trainSkillData:
-      skillType: 0
+      skillType: 1
       skillCooldown: 0
       skillIconId: 
       projectileData:
@@ -694,7 +694,7 @@ MonoBehaviour:
       MaxHp: 150
     prefabId: EliteSniperTurretTrain
     trainSkillData:
-      skillType: 0
+      skillType: 1
       skillCooldown: 0
       skillIconId: 
       projectileData:

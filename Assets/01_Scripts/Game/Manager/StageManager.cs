@@ -4,9 +4,7 @@ using UnityEngine;
 using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
-using TrainDefense.Game;
 using TrainDefense.Game.Datas;
-using TrainDefense;
 
 namespace TrainDefense.Game.Manager
 {
@@ -30,7 +28,7 @@ public class StageManager : Singleton<StageManager>
     #endregion
 
     private StageData[] _stageDatas;
-    private int _currentStageIndex;
+    private int _currentStageIndex = 0;
     private float _currentStageTime;
     private int _currentStageInspectionTimeIndex;
     private GameObject _currentMapInstance;

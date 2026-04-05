@@ -14,11 +14,13 @@ namespace TrainDefense.Game.Tutorial
         [SerializeField] private List<TutorialStepData> _steps = new();
         [SerializeField] private bool _canSkip = true;
         [SerializeField] private int _priority;
+        [SerializeField] private bool _shouldPauseTime = true;
 
         public string SequenceId => _sequenceId;
         public string DisplayName => _displayName;
         public IReadOnlyList<TutorialStepData> Steps => _steps;
         public bool CanSkip => _canSkip;
         public int Priority => _priority;
+        public bool ShouldPauseTime => _shouldPauseTime;
     }
 }

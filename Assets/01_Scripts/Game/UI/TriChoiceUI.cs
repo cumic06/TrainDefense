@@ -223,6 +223,8 @@ namespace TrainDefense.Game.UI
             TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
             GameEventSystem.Publish(eventData);
 
+            _isSelecting = false;
+
             if (_choiceLeftCount > 0)
             {
                 OnInspectionEnter(_choiceLeftCount);

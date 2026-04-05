@@ -126,6 +126,7 @@ namespace TrainDefense.Game
          if (upgradeTrain != null)
          {
             upgradeTrain.Upgrade(upgradeData);
+            GameEventSystem.Publish(new UpgradeTrainEvent(upgradeTrain, upgradeData));
          }
       }
 

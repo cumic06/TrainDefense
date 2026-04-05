@@ -45,6 +45,18 @@ namespace TrainDefense.Game.Tutorial
         public bool IsActive => _service?.IsActive ?? false;
         public string CurrentSequenceId => _service?.CurrentSequenceId;
 
+        /// <summary>
+        /// 현재 튜토리얼이 시간을 멈춰야 하는지 여부
+        /// </summary>
+        public bool CurrentShouldPauseTime
+        {
+            get
+            {
+                var sequence = GetCurrentSequence();
+                return sequence?.ShouldPauseTime ?? true;
+            }
+        }
+
         #endregion
 
         protected override void Awake()
@@ -120,6 +132,16 @@ namespace TrainDefense.Game.Tutorial
             _saveData.ResetAll();
         }
 
+#if UNITY_EDITOR
+        [UnityEditor.MenuItem("Debug/Tutorial/Reset All Progress")]
+        private static void ResetAllProgressMenu()
+        {
+            PlayerPrefs.DeleteKey("TutorialSaveData");
+            PlayerPrefs.Save();
+            Debug.Log("[Tutorial] PlayerPrefs 초기화 완료");
+        }
+#endif
+
         #endregion
 
         #region Step Handling
@@ -146,7 +168,7 @@ namespace TrainDefense.Game.Tutorial
 
         private IEnumerator DelayThenShowStep(TutorialStepData step)
         {
-            yield return new WaitForSeconds(step.DelayBefore);
+            yield return new WaitForSecondsRealtime(step.DelayBefore);
 
             var target = step.ResolveTarget();
             _overlayView.ShowStep(step, target);
@@ -173,23 +195,29 @@ namespace TrainDefense.Game.Tutorial
 
         private IEnumerator TimeoutAdvance(float duration)
         {
-            yield return new WaitForSeconds(duration);
+            yield return new WaitForSecondsRealtime(duration);
             _service.AdvanceStep();
         }
 
         private void SetupButtonTarget(TutorialStepData step)
         {
             var target = step.ResolveTarget();
-            if (target == null) return;
+
+            if (target == null)
+            {
+                Debug.LogWarning($"[Tutorial] ButtonClick 조건이지만 타겟을 찾을 수 없습니다: {step.Id}");
+                return;
+            }
 
             _currentButtonTarget = target.GetComponent<Button>();
+
             if (_currentButtonTarget != null)
             {
                 _currentButtonTarget.onClick.AddListener(HandleButtonTargetClicked);
             }
             else
             {
-                Debug.LogWarning($"[Tutorial] ButtonClick 조건이지만 타겟에 Button이 없습니다: {step.Id}");
+                Debug.LogWarning($"[Tutorial] ButtonClick 조건이지만 타겟에 Button이 없습니다: {step.Id}, Target: {target.name}");
             }
         }
 
