@@ -27,7 +27,7 @@ MonoBehaviour:
     clipId: 
     soundType: 301
     clip: {fileID: 8300000, guid: caec70bf9340b5e4a9c3e72208bd3fd7, type: 3}
-    volume: 1
+    volume: 0.4
   - id: 
     clipId: 
     soundType: 302
@@ -37,22 +37,22 @@ MonoBehaviour:
     clipId: 
     soundType: 303
     clip: {fileID: 8300000, guid: af66162561d2eed40ad49268cab318bb, type: 3}
-    volume: 1
+    volume: 0.3
   - id: 
     clipId: 
     soundType: 304
     clip: {fileID: 8300000, guid: de812cfb519929c4aad9d296f655c81d, type: 3}
-    volume: 1
+    volume: 0.4
   - id: 
     clipId: 
     soundType: 305
     clip: {fileID: 8300000, guid: ab297b593498a6e47ba84de770477cbe, type: 3}
-    volume: 1
+    volume: 0.3
   - id: 
     clipId: 
     soundType: 306
     clip: {fileID: 8300000, guid: 5da3cb73108aee9428351147401fbbf0, type: 3}
-    volume: 1
+    volume: 0.2
   - id: 
     clipId: 
     soundType: 307
@@ -62,9 +62,9 @@ MonoBehaviour:
     clipId: 
     soundType: 308
     clip: {fileID: 8300000, guid: 97bd4dbbfbe4eff4eb9d4d5c2b045db9, type: 3}
-    volume: 1
+    volume: 0.4
   - id: 
     clipId: 
     soundType: 309
     clip: {fileID: 8300000, guid: d5012cb5b56f118499035db0c250bed2, type: 3}
-    volume: 1
+    volume: 0.5
