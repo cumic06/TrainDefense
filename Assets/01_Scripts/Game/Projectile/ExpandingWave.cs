@@ -196,12 +196,13 @@ namespace TrainDefense.Game
 
             foreach (var col in colliders)
             {
-                if (col == null || !col.TryGetComponent<IProjectileTarget>(out var target))
+                if (col == null || !col.TryGetComponent<Monster>(out var monster))
                 {
                     continue;
                 }
 
-                if (target == null || !target.IsActive || _hitTargets.Contains(target))
+                IProjectileTarget target = monster;
+                if (!target.IsActive || _hitTargets.Contains(target))
                 {
                     continue;
                 }

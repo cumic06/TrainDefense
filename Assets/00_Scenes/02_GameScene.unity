@@ -12073,6 +12073,11 @@ MonoBehaviour:
     Size: {x: 35, y: 1}
   - Offset: {x: -0, y: -10}
     Size: {x: 35, y: 1}
+--- !u!1 &1689974564 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 850055885106972166, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
+  m_PrefabInstance: {fileID: 8373318151808286563}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1696234801
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13777,6 +13782,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 214686401}
     m_Modifications:
+    - target: {fileID: 16111794173146418, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: b3864bb0e656f1648b5cf3e56704a297, type: 2}
+    - target: {fileID: 189603838361216664, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
+      propertyPath: resultUI
+      value: 
+      objectReference: {fileID: 8373318151808286564}
+    - target: {fileID: 189603838361216664, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
+      propertyPath: background
+      value: 
+      objectReference: {fileID: 1689974564}
     - target: {fileID: 409639994930660694, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -13866,6 +13883,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
+--- !u!1 &8373318151808286564 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9135799624379318013, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
+  m_PrefabInstance: {fileID: 8373318151808286563}
+  m_PrefabAsset: {fileID: 0}
 --- !u!222 &8507224420453541290
 CanvasRenderer:
   m_ObjectHideFlags: 0
