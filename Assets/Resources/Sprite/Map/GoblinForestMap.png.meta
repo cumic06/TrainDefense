@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 36a96b526898ef64595432763c5436f6
+guid: 0980d694155662c49bcb150ed8cb626b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8750756355730269390
-    second: ForestMap_0
+      213: 9023624542499435072
+    second: GoblinForestMap_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ForestMap_0
+      name: GoblinForestMap_0
       rect:
         serializedVersion: 2
         x: 0
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ec46b43ca8ee07970800000000000000
-      internalID: 8750756355730269390
+      spriteID: 042fc2256ba5a3d70800000000000000
+      internalID: 9023624542499435072
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ForestMap_0: 8750756355730269390
+      GoblinForestMap_0: 9023624542499435072
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
