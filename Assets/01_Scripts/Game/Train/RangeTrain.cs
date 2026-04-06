@@ -1,5 +1,4 @@
 using UnityEngine;
-using TrainDefense;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Stats;
 using System.Collections;

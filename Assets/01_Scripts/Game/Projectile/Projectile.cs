@@ -139,32 +139,32 @@ namespace TrainDefense.Game
       #region Trigger Events
       private void OnTriggerEnter2D(Collider2D other)
       {
-         if (!other.TryGetComponent<IProjectileTarget>(out var target))
+         if (!other.TryGetComponent<Monster>(out var monster))
          {
             return;
          }
 
-         ProcessEnter(target);
+         ProcessEnter(monster);
       }
 
       private void OnTriggerStay2D(Collider2D other)
       {
-         if (!other.TryGetComponent<IProjectileTarget>(out var target))
+         if (!other.TryGetComponent<Monster>(out var monster))
          {
             return;
          }
 
-         ProcessStay(target);
+         ProcessStay(monster);
       }
 
       private void OnTriggerExit2D(Collider2D other)
       {
-         if (!other.TryGetComponent<IProjectileTarget>(out var target))
+         if (!other.TryGetComponent<Monster>(out var monster))
          {
             return;
          }
 
-         ProcessExit(target);
+         ProcessExit(monster);
       }
       #endregion
 
@@ -301,9 +301,9 @@ namespace TrainDefense.Game
          Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
          foreach (var col in colliders)
          {
-            if (col.TryGetComponent<IProjectileTarget>(out var target))
+            if (col.TryGetComponent<Monster>(out var monster))
             {
-               ProcessEnter(target);
+               ProcessEnter(monster);
             }
          }
       }

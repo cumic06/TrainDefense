@@ -49,6 +49,7 @@ namespace TrainDefense.Game
         private readonly List<AudioSource> _activeSfxSources = new();
         private readonly Dictionary<AudioSource, float> _sfxBaseVolumes = new();
         private SoundDB _soundDB;
+        private float _currentBgmBaseVolume = 1f;
 
         private SoundDB _GetSoundDB()
         {
@@ -86,15 +87,35 @@ namespace TrainDefense.Game
                 sfxRoot.localScale = Vector3.one;
             }
 
+            LoadOptions();
+        }
+
+        private void LoadOptions()
+        {
+            var option = UserOptionDataParser.Load();
+            bgmVolume = Mathf.Clamp01(option.BgmVolume);
+            sfxVolume = Mathf.Clamp01(option.SfxVolume);
+            IsBgmMuted = option.IsBgmMuted;
+            IsSfxMuted = option.IsSfxMuted;
+
             if (bgmSoundSource != null)
             {
-                bgmVolume = bgmSoundSource.volume;
+                bgmSoundSource.volume = _currentBgmBaseVolume * bgmVolume;
+                bgmSoundSource.mute = IsBgmMuted;
             }
+        }
 
-            if (sfxSoundSourcePrefab != null)
-            {
-                sfxVolume = sfxSoundSourcePrefab.volume;
-            }
+        private void SaveOptions()
+        {
+            var option = (UserDataManager.Instance != null && UserDataManager.Instance.UserOptionData != null)
+                ? UserDataManager.Instance.UserOptionData
+                : UserOptionDataParser.Load();
+
+            option.BgmVolume = bgmVolume;
+            option.SfxVolume = sfxVolume;
+            option.IsBgmMuted = IsBgmMuted;
+            option.IsSfxMuted = IsSfxMuted;
+            UserOptionDataParser.Save(option);
         }
 
         public void PlayBGMOnInit()
@@ -141,8 +162,9 @@ namespace TrainDefense.Game
             if (data == null || data.Clip == null)
                 return;
 
+            _currentBgmBaseVolume = data.Volume;
             bgmSoundSource.clip = data.Clip;
-            bgmSoundSource.volume = data.Volume * bgmVolume;
+            bgmSoundSource.volume = _currentBgmBaseVolume * bgmVolume;
             bgmSoundSource.loop = true;
             bgmSoundSource.mute = IsBgmMuted;
             bgmSoundSource.Play();
@@ -177,8 +199,9 @@ namespace TrainDefense.Game
             bgmVolume = Mathf.Clamp01(volume);
             if (bgmSoundSource != null)
             {
-                bgmSoundSource.volume = bgmVolume;
+                bgmSoundSource.volume = _currentBgmBaseVolume * bgmVolume;
             }
+            SaveOptions();
         }
 
         public void MuteBGM(bool mute)
@@ -188,6 +211,7 @@ namespace TrainDefense.Game
             {
                 bgmSoundSource.mute = IsBgmMuted;
             }
+            SaveOptions();
         }
 
         public void MuteBGM()
@@ -197,6 +221,7 @@ namespace TrainDefense.Game
             {
                 bgmSoundSource.mute = IsBgmMuted;
             }
+            SaveOptions();
         }
 
         #endregion
@@ -358,7 +383,10 @@ namespace TrainDefense.Game
             sfxVolume = Mathf.Clamp01(volume);
 
             if (Mathf.Approximately(previous, sfxVolume))
+            {
+                SaveOptions();
                 return;
+            }
 
             foreach (var source in _activeSfxSources)
             {
@@ -376,6 +404,8 @@ namespace TrainDefense.Game
                 var baseVolume = _sfxBaseVolumes.TryGetValue(source, out var v) ? v : 1f;
                 source.volume = baseVolume * sfxVolume;
             }
+
+            SaveOptions();
         }
 
         public void MuteSFX(bool mute)
@@ -385,6 +415,7 @@ namespace TrainDefense.Game
             {
                 source.mute = IsSfxMuted;
             }
+            SaveOptions();
         }
 
         public void MuteSFX()
@@ -394,6 +425,7 @@ namespace TrainDefense.Game
             {
                 source.mute = IsSfxMuted;
             }
+            SaveOptions();
         }
 
         private void Update()
