@@ -1109,7 +1109,7 @@ MonoBehaviour:
   stageDataList:
   - id: 50001
     stageInspectionTime:
-    - 60
+    - 10
     stageEndTime: 180
     spawnInterval: 0.3
     spawnDatas:

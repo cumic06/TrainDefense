@@ -18,6 +18,9 @@ public class StageManager : Singleton<StageManager>
     private int changeInterval = 1;
 
     [SerializeField]
+    private int mapSelectInterval = 3;
+
+    [SerializeField]
     private float hpScale;
 
     [SerializeField]
@@ -61,6 +64,7 @@ public class StageManager : Singleton<StageManager>
         GameEventSystem.Subscribe<GetCurrentInspectionDurationEvent, float>(_GetCurrentInspectionDuration);
         GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
         GameEventSystem.Subscribe<StageSelectEvent>(_OnStageSelected);
+        GameEventSystem.Subscribe<InspectionEndEvent>(_OnInspectionEnd);
     }
 
     private void _UnsubscribeEvents()
@@ -68,6 +72,7 @@ public class StageManager : Singleton<StageManager>
         GameEventSystem.Unsubscribe<GetCurrentInspectionDurationEvent, float>(_GetCurrentInspectionDuration);
         GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
         GameEventSystem.Unsubscribe<StageSelectEvent>(_OnStageSelected);
+        GameEventSystem.Unsubscribe<InspectionEndEvent>(_OnInspectionEnd);
     }
 
     private void Update()
@@ -186,8 +191,13 @@ public class StageManager : Singleton<StageManager>
         {
             _StartMonsterRush();
         }
+    }
 
-        if (changeInterval > 0 && _inspectionCount % changeInterval == 0)
+    // 상점 닫힘(InspectionEnd) 시점에 맵 선택 표시
+    // 역(점검) 도착 횟수가 mapSelectInterval 배수일 때만 표시
+    private void _OnInspectionEnd(InspectionEndEvent inspectionEndEvent)
+    {
+        if (mapSelectInterval > 0 && _inspectionCount > 0 && _inspectionCount % mapSelectInterval == 0)
         {
             _ShowStageSelection();
         }
