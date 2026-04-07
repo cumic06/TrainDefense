@@ -34,6 +34,14 @@ namespace TrainDefense.Game.UI
         private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
             gameObject.SetActive(true);
+
+            if (shopUI == null)
+            {
+                Debug.LogWarning("ShopButtonUI: shopUI reference is null.");
+                return;
+            }
+
+            shopUI.gameObject.SetActive(true);
             OnShopOpen();
         }
 
@@ -54,6 +62,12 @@ namespace TrainDefense.Game.UI
 
         private void OnShopButtonClick()
         {
+            if (shopUI == null)
+            {
+                Debug.LogWarning("ShopButtonUI: shopUI reference is null.");
+                return;
+            }
+
             if (shopUI.IsShopOpen)
             {
                 shopUI.CloseShop();
@@ -64,6 +78,12 @@ namespace TrainDefense.Game.UI
 
         public void OnShopOpen()
         {
+            if (shopUI == null)
+            {
+                Debug.LogWarning("ShopButtonUI: shopUI reference is null.");
+                return;
+            }
+
             shopUI.OpenShop();
         }
     }

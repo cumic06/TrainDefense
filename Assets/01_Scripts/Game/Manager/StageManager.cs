@@ -36,6 +36,7 @@ public class StageManager : Singleton<StageManager>
     private int _currentStageInspectionTimeIndex;
     private GameObject _currentMapInstance;
     private int _inspectionCount = 0;
+    private bool _shouldShowStageSelectionOnStageEnd;
     #endregion
 
     public StageData CurrentStageData => _stageDatas[_currentStageIndex];
@@ -91,6 +92,7 @@ public class StageManager : Singleton<StageManager>
         _currentStageTime = 0;
         _currentStageInspectionTimeIndex = 0;
         _inspectionCount = 0;
+        _shouldShowStageSelectionOnStageEnd = false;
 
         _UpdateSpawnRules();
         _SetCurrentStage();
@@ -176,6 +178,12 @@ public class StageManager : Singleton<StageManager>
 
     private void _StageEnd()
     {
+        if (_shouldShowStageSelectionOnStageEnd)
+        {
+            _TransitionToStageSelection();
+            return;
+        }
+
         GameEventSystem.Publish(new StageEndEvent(true));
     }
 
@@ -185,21 +193,25 @@ public class StageManager : Singleton<StageManager>
         GameEventSystem.Publish(new InspectionStartEvent());
 
         _inspectionCount++;
+    }
 
-        // 몬스터 러쉬 체크 : inspectionCount가 changeInterval - 1일 때
-        if (changeInterval > 0 && _inspectionCount % changeInterval == changeInterval - 1)
+    private void _OnInspectionEnd(InspectionEndEvent inspectionEndEvent)
+    {
+        bool shouldStartMonsterRush = changeInterval > 0
+            && _inspectionCount > 0
+            && _inspectionCount % changeInterval == changeInterval - 1;
+
+        if (shouldStartMonsterRush)
         {
             _StartMonsterRush();
         }
-    }
 
-    // 상점 닫힘(InspectionEnd) 시점에 맵 선택 표시
-    // 역(점검) 도착 횟수가 mapSelectInterval 배수일 때만 표시
-    private void _OnInspectionEnd(InspectionEndEvent inspectionEndEvent)
-    {
-        if (mapSelectInterval > 0 && _inspectionCount > 0 && _inspectionCount % mapSelectInterval == 0)
+        if (shouldStartMonsterRush
+            && mapSelectInterval > 0
+            && _inspectionCount > 0
+            && _inspectionCount % mapSelectInterval == 0)
         {
-            _ShowStageSelection();
+            _shouldShowStageSelectionOnStageEnd = true;
         }
     }
 
@@ -284,14 +296,15 @@ public class StageManager : Singleton<StageManager>
 
         _currentStageIndex = index;
         _ResetCurrentStageInfo();
+        GameEventSystem.Publish(new EngageStartEvent());
     }
 
-    private void _ShowStageSelection()
+    private bool _ShowStageSelection()
     {
         if (_stageDatas == null || _stageDatas.Length < 2)
         {
             Debug.LogWarning("StageManager: StageData is null or less than 2. Cannot show stage selection.");
-            return;
+            return false;
         }
 
         var candidates = _stageDatas
@@ -303,10 +316,24 @@ public class StageManager : Singleton<StageManager>
         if (candidates.Length < 2)
         {
             Debug.LogWarning("StageManager: Not enough candidate stages to show selection.");
-            return;
+            return false;
         }
 
         GameEventSystem.Publish(new RandomStageOptionsEvent(candidates[0], candidates[1]));
+        return true;
+    }
+
+    private void _TransitionToStageSelection()
+    {
+        MonsterSpawner.Instance?.DestroyAllMonsters();
+        GameEventSystem.Publish(new EngageReadyEvent());
+
+        if (!_ShowStageSelection())
+        {
+            _shouldShowStageSelectionOnStageEnd = false;
+            GameEventSystem.Publish(new StageEndEvent(true));
+            return;
+        }
     }
 
     #region Scaling

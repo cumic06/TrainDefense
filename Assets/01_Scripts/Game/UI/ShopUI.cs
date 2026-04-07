@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Cumic.Events;
-using System;
 using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
@@ -58,6 +57,18 @@ namespace TrainDefense.Game.UI
 
         public async void OpenShop()
         {
+            if (isShopOpen)
+            {
+                return;
+            }
+
+            gameObject.SetActive(true);
+
+            if (_rectTransform == null)
+            {
+                _rectTransform = GetComponent<RectTransform>();
+            }
+
             foreach (var shopItemUI in _shopItemUIs)
             {
                 shopItemUI.SetUp();
@@ -65,15 +76,28 @@ namespace TrainDefense.Game.UI
             }
 
             await _rectTransform.DOAnchorPosX(shopMoveXEndPos, shopMoveInterval).SetUpdate(true);
-            backgroundImage.gameObject.SetActive(true);
+
+            if (backgroundImage != null)
+            {
+                backgroundImage.gameObject.SetActive(true);
+            }
 
             isShopOpen = true;
         }
 
         public async void CloseShop()
         {
+            if (!isShopOpen)
+            {
+                return;
+            }
+
             await _rectTransform.DOAnchorPosX(shopMoveXStartPos, shopMoveInterval).SetUpdate(true);
-            backgroundImage.gameObject.SetActive(false);
+            
+            if (backgroundImage != null)
+            {
+                backgroundImage.gameObject.SetActive(false);
+            }
 
             isShopOpen = false;
 
