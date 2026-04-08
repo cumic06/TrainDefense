@@ -5041,10 +5041,10 @@ RectTransform:
   - {fileID: 1643387769}
   - {fileID: 2057298133}
   - {fileID: 323823268}
-  - {fileID: 739713837}
   - {fileID: 882680029}
   - {fileID: 6884424855140019222}
   - {fileID: 423875888}
+  - {fileID: 739713837}
   - {fileID: 1224249018}
   - {fileID: 807435033}
   - {fileID: 995391900}
@@ -10346,9 +10346,9 @@ GameObject:
   m_Component:
   - component: {fileID: 534653168}
   - component: {fileID: 534653171}
+  - component: {fileID: 534653172}
   - component: {fileID: 534653170}
   - component: {fileID: 534653169}
-  - component: {fileID: 534653172}
   m_Layer: 5
   m_Name: ShopButton
   m_TagString: Untagged
@@ -10471,7 +10471,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopButtonUI
   shopButton: {fileID: 534653169}
-  shopUI: {fileID: 968793911}
 --- !u!1 &692818404
 GameObject:
   m_ObjectHideFlags: 0
@@ -10757,17 +10756,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8984849850624839933, guid: 541ada25a86ffb3479f8d945198245e1, type: 3}
   m_PrefabInstance: {fileID: 8162964444723150729}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &968793911 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3478269449431848385, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
-  m_PrefabInstance: {fileID: 9175971760435476421}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f34315c1c70d384abe342c26ded0825, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShopUI
 --- !u!1001 &995391899
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11354,6 +11342,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   dontDestroyOnLoad: 0
   changeInterval: 1
+  mapSelectInterval: 3
   hpScale: 0.5
   attackScale: 0.2
   goldScale: 0
@@ -13976,6 +13965,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3478269449431848385, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
+      propertyPath: shopButtonUI
+      value: 
+      objectReference: {fileID: 534653172}
     - target: {fileID: 3561183843977512664, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
