@@ -1,7 +1,5 @@
 using System.Linq;
 using Cumic;
-using TrainDefense;
-using TrainDefense.Game.Datas;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -51,7 +49,7 @@ namespace TrainDefense.Game
                     continue;
 
                 projectile.transform.LookAt2D(target.transform);
-                projectile.Init(projectileSkillData.Damage, target, attackRange);
+                projectile.Init(projectileSkillData.Damage, owner, target, attackRange);
             }
 
             return true;

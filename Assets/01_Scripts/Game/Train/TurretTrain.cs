@@ -447,6 +447,7 @@ namespace TrainDefense.Game
 
             projectile.Init(
                 _currentTurretTrainStatus.AttackDamage,
+                this,
                 target,
                 projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f
             );
@@ -462,6 +463,7 @@ namespace TrainDefense.Game
 
             projectile.Init(
                 _currentTurretTrainStatus.AttackDamage,
+                this,
                 null,
                 projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f
             );
