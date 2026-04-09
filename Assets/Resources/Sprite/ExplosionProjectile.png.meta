@@ -5,15 +5,6 @@ TextureImporter:
   - first:
       213: -5167012182052209245
     second: ExplosionProjectile_0
-  - first:
-      213: -2347687180514372376
-    second: ExplosionProjectile_1
-  - first:
-      213: 4961933097589002493
-    second: ExplosionProjectile_2
-  - first:
-      213: -8092677234805367489
-    second: ExplosionProjectile_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -139,7 +130,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 9
-        y: 136
+        y: 8
         width: 111
         height: 111
       alignment: 0
@@ -152,72 +143,6 @@ TextureImporter:
       bones: []
       spriteID: 3ad79a2ebc51b48b0800000000000000
       internalID: -5167012182052209245
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ExplosionProjectile_1
-      rect:
-        serializedVersion: 2
-        x: 136
-        y: 136
-        width: 112
-        height: 112
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8e4d3b9a2f65b6fd0800000000000000
-      internalID: -2347687180514372376
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ExplosionProjectile_2
-      rect:
-        serializedVersion: 2
-        x: 9
-        y: 8
-        width: 111
-        height: 112
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: df0db01ecd35cd440800000000000000
-      internalID: 4961933097589002493
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ExplosionProjectile_3
-      rect:
-        serializedVersion: 2
-        x: 137
-        y: 8
-        width: 110
-        height: 112
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f3d19898ee801bf80800000000000000
-      internalID: -8092677234805367489
       vertices: []
       indices: 
       edges: []
@@ -237,9 +162,6 @@ TextureImporter:
       entries: []
     nameFileIdTable:
       ExplosionProjectile_0: -5167012182052209245
-      ExplosionProjectile_1: -2347687180514372376
-      ExplosionProjectile_2: 4961933097589002493
-      ExplosionProjectile_3: -8092677234805367489
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
