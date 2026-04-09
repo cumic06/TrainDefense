@@ -50,7 +50,7 @@ namespace TrainDefense.Game.Manager
         private void Start()
         {
             _LoadStageDatas();
-            _currentStageIndex = 0;
+            _currentStageIndex = Random.Range(0, _stageDatas.Length);
             _ResetCurrentStageInfo();
             _SubscribeEvents();
         }
