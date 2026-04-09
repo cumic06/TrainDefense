@@ -1110,7 +1110,11 @@ MonoBehaviour:
   - id: 50001
     stageInspectionTime:
     - 10
-    stageEndTime: 180
+    - 20
+    - 30
+    - 40
+    - 50
+    stageEndTime: 60
     spawnInterval: 0.3
     spawnDatas:
     - MonsterId: 10001
