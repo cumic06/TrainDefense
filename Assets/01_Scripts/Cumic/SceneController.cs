@@ -1,11 +1,29 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TrainDefense.Game;
 
 namespace Cumic
 {
     public static class SceneController
     {
         private const string LoadingSceneName = "LoadingScene";
+
+        private static void PrepareForSceneChange()
+        {
+            if (TimeManager.Instance != null)
+            {
+                TimeManager.Instance.Resume();
+            }
+            else
+            {
+                Time.timeScale = 1f;
+            }
+
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.StopAllSFX();
+            }
+        }
 
         public static void LoadScene(int sceneIndex, bool isLoadingScene = true)
         {
@@ -14,6 +32,8 @@ namespace Cumic
                 Debug.LogError($"SceneController: Invalid scene index {sceneIndex}");
                 return;
             }
+
+            PrepareForSceneChange();
 
             if (isLoadingScene)
             {
@@ -36,6 +56,7 @@ namespace Cumic
             }
 
             int nextIndex = currentIndex + 1;
+            PrepareForSceneChange();
 
             if (isLoadingScene)
             {
@@ -51,6 +72,7 @@ namespace Cumic
         public static void ResetScene(bool isLoadingScene = true)
         {
             int currentIndex = SceneManager.GetActiveScene().buildIndex;
+            PrepareForSceneChange();
             if (isLoadingScene)
             {
                 LoadingSceneController.SetTargetSceneIndex(currentIndex);
@@ -72,6 +94,7 @@ namespace Cumic
             }
 
             int previousIndex = currentIndex - 1;
+            PrepareForSceneChange();
             if (isLoadingScene)
             {
                 LoadingSceneController.SetTargetSceneIndex(previousIndex);
