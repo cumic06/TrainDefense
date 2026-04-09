@@ -13548,6 +13548,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 214686401}
     m_Modifications:
+    - target: {fileID: 1220867696837417241, guid: b06d660baa70d5449961edb0a3fd09c5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220867696837417241, guid: b06d660baa70d5449961edb0a3fd09c5, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2930525748817147122, guid: b06d660baa70d5449961edb0a3fd09c5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -13626,6 +13634,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2930525748817147122, guid: b06d660baa70d5449961edb0a3fd09c5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3511537667825702950, guid: b06d660baa70d5449961edb0a3fd09c5, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5151394618779039500, guid: b06d660baa70d5449961edb0a3fd09c5, type: 3}
