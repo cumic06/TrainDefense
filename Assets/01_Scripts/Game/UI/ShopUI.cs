@@ -20,6 +20,8 @@ namespace TrainDefense.Game.UI
         private float shopMoveInterval = 1f;
         [SerializeField]
         private Image backgroundImage;
+        [SerializeField]
+        private ShopButtonUI shopButtonUI;
         #endregion
 
         private RectTransform _rectTransform;
@@ -38,12 +40,16 @@ namespace TrainDefense.Game.UI
         private void Start()
         {
             // 업그레이드가 실제로 적용된 이후에만 상점 UI를 갱신하기 위해 UpgradeAppliedEvent를 구독
+            shopButtonUI.OnClickShopButton += _ShopOpenHandler;
             GameEventSystem.Subscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
+            GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
         }
 
         private void OnDestroy()
         {
+            shopButtonUI.OnClickShopButton -= _ShopOpenHandler;
             GameEventSystem.Unsubscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
+            GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
         }
 
         private void OnUpgradeApplied(UpgradeAppliedEvent upgradeAppliedEvent)
@@ -55,7 +61,29 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        public async void OpenShop()
+        private void _OnInspectionStart(InspectionStartEvent inspectionStartEvent)
+        {
+            if (!isShopOpen)
+            {
+                _OpenShop();
+                shopButtonUI.gameObject.SetActive(true);
+            }
+        }
+
+        private void _ShopOpenHandler()
+        {
+            if (isShopOpen)
+            {
+                _CloseShop();
+                shopButtonUI.gameObject.SetActive(false);
+            }
+            else
+            {
+                _OpenShop();
+            }
+        }
+
+        private async void _OpenShop()
         {
             if (isShopOpen)
             {
@@ -85,7 +113,7 @@ namespace TrainDefense.Game.UI
             isShopOpen = true;
         }
 
-        public async void CloseShop()
+        private async void _CloseShop()
         {
             if (!isShopOpen)
             {
@@ -93,7 +121,7 @@ namespace TrainDefense.Game.UI
             }
 
             await _rectTransform.DOAnchorPosX(shopMoveXStartPos, shopMoveInterval).SetUpdate(true);
-            
+
             if (backgroundImage != null)
             {
                 backgroundImage.gameObject.SetActive(false);

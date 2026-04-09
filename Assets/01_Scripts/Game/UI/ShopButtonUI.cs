@@ -1,4 +1,5 @@
 using Cumic.Events;
+using System;
 using TrainDefense.Game.Events;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,81 +11,44 @@ namespace TrainDefense.Game.UI
         #region Fields
         [SerializeField]
         private Button shopButton;
-        [SerializeField]
-        private ShopUI shopUI;
         #endregion
+
+        public Action OnClickShopButton;
 
         private void Start()
         {
-            shopButton.onClick.AddListener(OnShopButtonClick);
-            GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
-            GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
-            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
-            GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
+            shopButton.onClick.AddListener(_OnShopButtonClick);
+            GameEventSystem.Subscribe<EngageStartEvent>(_OnEngageStart);
+            GameEventSystem.Subscribe<StageEndEvent>(_OnStageEnd);
+            GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
         }
 
         private void OnDestroy()
         {
-            GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
-            GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
-            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
-            GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
+            shopButton.onClick.RemoveAllListeners();
+            GameEventSystem.Unsubscribe<EngageStartEvent>(_OnEngageStart);
+            GameEventSystem.Unsubscribe<StageEndEvent>(_OnStageEnd);
+            GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
         }
 
-        private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
-        {
-            gameObject.SetActive(true);
-
-            if (shopUI == null)
-            {
-                Debug.LogWarning("ShopButtonUI: shopUI reference is null.");
-                return;
-            }
-
-            shopUI.gameObject.SetActive(true);
-            OnShopOpen();
-        }
-
-        private void OnEngageStart(EngageStartEvent engageStartEvent)
+        private void _OnEngageStart(EngageStartEvent engageStartEvent)
         {
             gameObject.SetActive(false);
         }
 
-        private void OnStageEnd(StageEndEvent stageEndEvent)
+        private void _OnStageEnd(StageEndEvent stageEndEvent)
         {
             gameObject.SetActive(false);
         }
 
-        private void OnGameEnd(GameEndEvent gameEndEvent)
+        private void _OnGameEnd(GameEndEvent gameEndEvent)
         {
             gameObject.SetActive(false);
         }
 
-        private void OnShopButtonClick()
+        private void _OnShopButtonClick()
         {
-            if (shopUI == null)
-            {
-                Debug.LogWarning("ShopButtonUI: shopUI reference is null.");
-                return;
-            }
-
-            if (shopUI.IsShopOpen)
-            {
-                shopUI.CloseShop();
-                return;
-            }
-            shopUI.OpenShop();
-        }
-
-        public void OnShopOpen()
-        {
-            if (shopUI == null)
-            {
-                Debug.LogWarning("ShopButtonUI: shopUI reference is null.");
-                return;
-            }
-
-            shopUI.OpenShop();
+            OnClickShopButton?.Invoke();
         }
     }
 }
