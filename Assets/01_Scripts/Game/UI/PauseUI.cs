@@ -8,10 +8,7 @@ namespace TrainDefense.Game.UI
     {
         #region Fields
         [SerializeField]
-        private Image backgroundImage;
-
-        [SerializeField]
-        private Image pauseImage;
+        private GameObject pausePanel;
 
         [SerializeField]
         private float uiActiveDelay;
@@ -41,14 +38,13 @@ namespace TrainDefense.Game.UI
 
             TimeManager.Instance.Pause();
 
-            pauseImage.gameObject.SetActive(true);
-            backgroundImage.gameObject.SetActive(true);
+            pausePanel.SetActive(true);
 
-            pauseImage.transform.localScale = Vector3.zero;
+            pausePanel.transform.localScale = Vector3.zero;
 
-            pauseImage.transform.DOScale(1, uiActiveDelay).SetEase(Ease.InBack).OnComplete(() =>
+            pausePanel.transform.DOScale(1, uiActiveDelay).SetEase(Ease.InBack).OnComplete(() =>
             {
-                pauseImage.transform.localScale = Vector3.one;
+                pausePanel.transform.localScale = Vector3.one;
             }).SetUpdate(true);
 
             _isPauseUIActive = true;
@@ -60,14 +56,13 @@ namespace TrainDefense.Game.UI
         /// </summary>
         private void HidePauseUI()
         {
-            pauseImage.transform.localScale = Vector3.one;
+            pausePanel.transform.localScale = Vector3.one;
 
-            pauseImage.transform.DOScale(0, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
+            pausePanel.transform.DOScale(0, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
             {
-                pauseImage.transform.localScale = Vector3.zero;
+                pausePanel.transform.localScale = Vector3.zero;
                 TimeManager.Instance.Resume();
-                pauseImage.gameObject.SetActive(false);
-                backgroundImage.gameObject.SetActive(false);
+                pausePanel.SetActive(false);
                 _isPauseUIActive = false;
             }).SetUpdate(true);
         }

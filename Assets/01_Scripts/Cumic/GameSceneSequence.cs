@@ -1,88 +1,95 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Cumic.Checker;
+using Cumic.Events;
+using Cumic.UI;
 using TrainDefense;
 using TrainDefense.Game;
-using TrainDefense.Game.Datas;
 
 namespace Cumic.Sequence
 {
-    public class GameSceneSequence : MonoBehaviour
-    {
-        private ISceneSequencer _currentSceneSequencer;
-        private UserDataManager _userDataManager;
+   public class GameSceneSequence : MonoBehaviour
+   {
+      private ISceneSequencer _currentSceneSequencer;
+      private UserDataManager _userDataManager;
 
-        private void Start()
-        {
-            DontDestroyOnLoad(gameObject);
+      private void Start()
+      {
+         DontDestroyOnLoad(gameObject);
 
-            AuthSceneSequence();
-        }
+#if !UNITY_EDITOR
+         Application.targetFrameRate = 60;
+#endif
 
-        #region AuthSceneSequence
-        private void AuthSceneSequence()
-        {
-            _currentSceneSequencer = new AuthSceneSequencer(this, new VersionChecker(), new AuthChecker());
-            _currentSceneSequencer.OnCompleted += OnAuthSceneCompleted;
-            _currentSceneSequencer.Run().Forget();
-        }
+         AuthSceneSequence();
+      }
 
-        private void OnAuthSceneCompleted(bool isCompleted)
-        {
-            _currentSceneSequencer.OnCompleted -= OnAuthSceneCompleted;
-            _currentSceneSequencer.Dispose();
+      #region AuthSceneSequence
+      private void AuthSceneSequence()
+      {
+         _currentSceneSequencer = new AuthSceneSequencer(this, new VersionChecker(), new AuthChecker());
+         _currentSceneSequencer.OnCompleted += OnAuthSceneCompleted;
+         _currentSceneSequencer.Run().Forget();
+      }
 
-            if (isCompleted)
+      private void OnAuthSceneCompleted(bool isCompleted)
+      {
+         _currentSceneSequencer.OnCompleted -= OnAuthSceneCompleted;
+         _currentSceneSequencer.Dispose();
+
+         if (isCompleted)
+         {
+            Debug.Log("AuthSceneCompleted");
+
+            SceneController.NextScene(false);
+
+            LobbySceneSequence();
+
+            if (_userDataManager == null)
             {
-                Debug.Log("AuthSceneCompleted");
-
-                SceneController.NextScene(false);
-
-                LobbySceneSequence();
-
-                if (_userDataManager == null)
-                {
-                    UserDataManager userDataManager = new GameObject("UserDataManager").AddComponent<UserDataManager>();
-                    _userDataManager = userDataManager;
-                }
-
-                if (DatabaseManager.Instance == null)
-                {
-                    Instantiate(Resources.Load<DatabaseManager>("Prefabs/DatabaseManager"));
-                }
-
-                if (SoundManager.Instance == null)
-                {
-                    SoundManager soundManager = Instantiate(Resources.Load<SoundManager>("Prefabs/SoundManager"));
-                    soundManager.PlayBGM(SoundType.BGM_Lobby);
-                }
+               UserDataManager userDataManager = new GameObject("UserDataManager").AddComponent<UserDataManager>();
+               _userDataManager = userDataManager;
             }
-        }
-        #endregion
 
-        #region LobbySceneSequence
-        private void LobbySceneSequence()
-        {
-            _currentSceneSequencer = new LobbySceneSequencer(this);
-            _currentSceneSequencer.OnCompleted += OnLobbySceneCompleted;
-            _currentSceneSequencer.Run().Forget();
-        }
-
-        private void OnLobbySceneCompleted(bool isCompleted)
-        {
-            _currentSceneSequencer.OnCompleted -= OnLobbySceneCompleted;
-            _currentSceneSequencer.Dispose();
-        }
-        #endregion
-
-        public void PopupUI(string uiName)
-        {
-            if (UIManager.Instance == null)
+            if (DatabaseManager.Instance == null)
             {
-                Canvas canvas = FindFirstObjectByType<Canvas>();
-                canvas.gameObject.AddComponent<UIManager>();
+               Instantiate(Resources.Load<DatabaseManager>("Prefabs/DatabaseManager"));
             }
-            UIManager.Instance.ShowPopup(uiName);
-        }
-    }
+
+            if (SoundManager.Instance == null)
+            {
+               SoundManager soundManager = Instantiate(Resources.Load<SoundManager>("Prefabs/SoundManager"));
+               soundManager.PlayBGMOnInit();
+            }
+
+            GameEventSystem.Publish(new LobbyEnterEvent());
+         }
+      }
+      #endregion
+
+      #region LobbySceneSequence
+      private void LobbySceneSequence()
+      {
+         _currentSceneSequencer = new LobbySceneSequencer(this);
+         _currentSceneSequencer.OnCompleted += OnLobbySceneCompleted;
+         _currentSceneSequencer.Run().Forget();
+      }
+
+      private void OnLobbySceneCompleted(bool isCompleted)
+      {
+         _currentSceneSequencer.OnCompleted -= OnLobbySceneCompleted;
+         _currentSceneSequencer.Dispose();
+      }
+      #endregion
+
+      public void PopupUI(string uiName)
+      {
+         if (UIManager.Instance == null)
+         {
+            Canvas canvas = FindFirstObjectByType<Canvas>();
+            canvas.gameObject.AddComponent<UIManager>();
+         }
+         UIManager.Instance.ShowPopup(uiName);
+      }
+   }
 }

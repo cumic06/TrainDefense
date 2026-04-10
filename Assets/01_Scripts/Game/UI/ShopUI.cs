@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Cumic.Events;
-using System;
 using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
@@ -21,6 +20,8 @@ namespace TrainDefense.Game.UI
         private float shopMoveInterval = 1f;
         [SerializeField]
         private Image backgroundImage;
+        [SerializeField]
+        private ShopButtonUI shopButtonUI;
         #endregion
 
         private RectTransform _rectTransform;
@@ -39,12 +40,16 @@ namespace TrainDefense.Game.UI
         private void Start()
         {
             // 업그레이드가 실제로 적용된 이후에만 상점 UI를 갱신하기 위해 UpgradeAppliedEvent를 구독
+            shopButtonUI.OnClickShopButton += _ShopOpenHandler;
             GameEventSystem.Subscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
+            GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
         }
 
         private void OnDestroy()
         {
+            shopButtonUI.OnClickShopButton -= _ShopOpenHandler;
             GameEventSystem.Unsubscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
+            GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
         }
 
         private void OnUpgradeApplied(UpgradeAppliedEvent upgradeAppliedEvent)
@@ -56,8 +61,42 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        public async void OpenShop()
+        private void _OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
+            if (!isShopOpen)
+            {
+                _OpenShop();
+                shopButtonUI.gameObject.SetActive(true);
+            }
+        }
+
+        private void _ShopOpenHandler()
+        {
+            if (isShopOpen)
+            {
+                _CloseShop();
+                shopButtonUI.gameObject.SetActive(false);
+            }
+            else
+            {
+                _OpenShop();
+            }
+        }
+
+        private async void _OpenShop()
+        {
+            if (isShopOpen)
+            {
+                return;
+            }
+
+            gameObject.SetActive(true);
+
+            if (_rectTransform == null)
+            {
+                _rectTransform = GetComponent<RectTransform>();
+            }
+
             foreach (var shopItemUI in _shopItemUIs)
             {
                 shopItemUI.SetUp();
@@ -65,18 +104,32 @@ namespace TrainDefense.Game.UI
             }
 
             await _rectTransform.DOAnchorPosX(shopMoveXEndPos, shopMoveInterval).SetUpdate(true);
-            backgroundImage.gameObject.SetActive(true);
+
+            if (backgroundImage != null)
+            {
+                backgroundImage.gameObject.SetActive(true);
+            }
 
             isShopOpen = true;
         }
 
-        public async void CloseShop()
+        private async void _CloseShop()
         {
+            if (!isShopOpen)
+            {
+                return;
+            }
+
             await _rectTransform.DOAnchorPosX(shopMoveXStartPos, shopMoveInterval).SetUpdate(true);
-            backgroundImage.gameObject.SetActive(false);
+
+            if (backgroundImage != null)
+            {
+                backgroundImage.gameObject.SetActive(false);
+            }
 
             isShopOpen = false;
 
+            GameEventSystem.Publish(new InspectionEndEvent());
             GameEventSystem.Publish(new EngageStartEvent());
         }
 

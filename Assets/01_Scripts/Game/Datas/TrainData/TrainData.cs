@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -16,7 +15,12 @@ namespace TrainDefense.Game.Datas
         private string name;
         [SerializeField]
         private string iconId;
+        [SerializeField]
         private Sprite icon;
+        [SerializeField]
+        private DamageType damageType;
+        [SerializeField]
+        private SoundType attackSoundType;
         [SerializeField]
         [TextArea(2, 4)]
         private string description;
@@ -25,6 +29,9 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private string prefabId;
         private GameObject prefab;
+        [SerializeField]
+        private TrainSkillData trainSkillData;
+        private Sprite skillIcon;
         [SerializeField]
         private bool isMainTrain;
         #endregion
@@ -40,14 +47,17 @@ namespace TrainDefense.Game.Datas
 
         #region IIconData
         public string IconId => iconId;
-        [ShowInInspector, ReadOnly]
         public Sprite Icon
         {
             get
             {
                 if (icon == null && !string.IsNullOrEmpty(iconId))
                 {
-                    icon = Resources.Load<Sprite>($"Sprite/{iconId}");
+                    // Resources.LoadAll은 지정된 경로의 모든 하위 폴더를 재귀적으로 검색합니다.
+                    // 전체 Resources 폴더를 검색하도록 빈 문자열("")을 사용합니다.
+                    icon = Resources.LoadAll<Sprite>("")
+                                    .FirstOrDefault(item => item.name == iconId);
+
                     if (icon == null)
                     {
                         Debug.LogWarning($"TrainData [{id}]: Icon not found at 'Sprite/{iconId}'");
@@ -61,7 +71,7 @@ namespace TrainDefense.Game.Datas
         #region IPrefabData
         public string PrefabId => prefabId;
         [ShowInInspector, ReadOnly]
-        public GameObject Prefab    
+        public GameObject Prefab
         {
             get
             {
@@ -79,8 +89,29 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         public string TrainName => name;
+        public DamageType DamageType => damageType;
+        public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
-        
+        public TrainSkillData TrainSkillData => trainSkillData ??= new TrainSkillData();
+        public Sprite SkillIcon
+        {
+            get
+            {
+                var skillIconId = TrainSkillData.SkillIconId;
+                if (skillIcon == null && !string.IsNullOrEmpty(skillIconId))
+                {
+                    skillIcon = Resources.LoadAll<Sprite>("")
+                                    .FirstOrDefault(item => item.name == skillIconId);
+
+                    if (skillIcon == null)
+                    {
+                        Debug.LogWarning($"TrainData [{id}]: SkillIcon not found for '{skillIconId}'");
+                    }
+                }
+                return skillIcon;
+            }
+        }
+
         [Obsolete("Use Prefab property instead")]
         public Train TrainPrefab => Prefab?.GetComponent<Train>();
         public bool IsMainTrain => isMainTrain;

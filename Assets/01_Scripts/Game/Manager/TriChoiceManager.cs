@@ -188,7 +188,8 @@ namespace TrainDefense.Game
             float totalWeight = filteredChoices.Sum(choice => choice.Weight);
             if (totalWeight <= 0)
             {
-                return filteredChoices[0];
+                int randomIndex = Random.Range(0, filteredChoices.Count);
+                return filteredChoices[randomIndex];
             }
 
             float randomValue = Random.Range(0f, totalWeight);
@@ -385,6 +386,14 @@ namespace TrainDefense.Game
             }
 
             return validUpgrades[^1].UpgradeData;
+        }
+
+        /// <summary>
+        /// 캐시된 업그레이드 선택을 모두 초기화합니다. (리롤 시 사용)
+        /// </summary>
+        public void ClearSelectedUpgrades()
+        {
+            _selectedUpgrades.Clear();
         }
 
         private Train GetTargetTrain(string targetTrainId)

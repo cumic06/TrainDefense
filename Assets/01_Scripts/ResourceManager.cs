@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace TrainDefense
+{
 public class ResourceManager : MonoBehaviour
 {
     private static ResourceManager _instance;
@@ -115,4 +117,5 @@ public class ResourceManager : MonoBehaviour
         }
         return spawnObject;
     }
+}
 }

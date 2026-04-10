@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cumic;
+using TrainDefense;
 using TrainDefense.Game.Datas;
 using Cumic.Events;
 using Unity.Cinemachine;
@@ -71,6 +72,20 @@ namespace TrainDefense.Game
       public int GetMaxUpgradeTrainCount()
       {
          return GetMaxUpgradeTrains().Length;
+      }
+
+      public bool TryUseTrainSkill(Train train)
+      {
+         if (mainTrain == null || train == null)
+            return false;
+
+         if (!mainTrain.CurrentAliveTrains.Contains(train))
+            return false;
+
+         if (!train.HasSkill || !train.CanUseSkill)
+            return false;
+
+         return train.TryUseSkill();
       }
 
       public Train GetNearTrain(Vector3 position)

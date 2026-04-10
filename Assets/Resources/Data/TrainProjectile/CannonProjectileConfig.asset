@@ -17,7 +17,7 @@ MonoBehaviour:
   destroyDelay: 0.25
   destroyOnTriggerEnter: 0
   isSpawnTriggerHandle: 1
-  triggerHandlePrefab: {fileID: 0}
+  triggerHandlePrefab: {fileID: 2703112127298443543, guid: 47ca7141d3cd2a344a5e6421d53813be, type: 3}
   scaleByAttackRange: 0
   isTargeting: 0
   damageType: 0

@@ -40,7 +40,12 @@ namespace TrainDefense.Game
 
         [BoxGroup("Scale")]
         [SerializeField]
-        private bool scaleByAttackRange = false;
+        private bool scaleByRange = false;
+
+        [BoxGroup("Scale")]
+        [ShowIf("scaleByRange")]
+        [SerializeField]
+        private ScaleByRangeType scaleRangeType;
 
         [BoxGroup("Targeting")]
         [SerializeField]
@@ -87,24 +92,6 @@ namespace TrainDefense.Game
         [SerializeField]
         private float stunDuration = 0.5f;
 
-        [BoxGroup("Warning")]
-        [SerializeField]
-        private bool hasWarning = false;
-
-        [BoxGroup("Warning")]
-        [ShowIf("hasWarning")]
-        [SerializeField]
-        private GameObject warningPrefab;
-
-        [BoxGroup("Warning")]
-        [ShowIf("hasWarning")]
-        [SerializeField]
-        private float warningDelaySeconds = 1f;
-        [BoxGroup("Warning")]
-        [ShowIf("hasWarning")]
-        [SerializeField]
-        private bool isScaleByAttackRange = false;
-
         #region Properties
 
         public MovementType MovementType => movementType;
@@ -113,7 +100,8 @@ namespace TrainDefense.Game
         public bool DestroyOnTriggerEnter => destroyOnTriggerEnter;
         public bool IsSpawnTriggerHandle => isSpawnTriggerHandle;
         public TriggerHandle TriggerHandlePrefab => triggerHandlePrefab;
-        public bool ScaleByAttackRange => scaleByAttackRange;
+        public bool ScaleByRange => scaleByRange;
+        public ScaleByRangeType ScaleRangeType => scaleRangeType;
         public bool IsTargeting => isTargeting;
         public DamageType DamageType => damageType;
         public float TickDamageInterval => tickDamageInterval;
@@ -124,10 +112,6 @@ namespace TrainDefense.Game
         public float ShoveDuration => shoveDuration;
         public bool HasStunEffect => hasStunEffect;
         public float StunDuration => stunDuration;
-        public bool HasWarning => hasWarning;
-        public GameObject WarningPrefab => warningPrefab;
-        public float WarningDelaySeconds => warningDelaySeconds;
-        public bool IsScaleByAttackRange => isScaleByAttackRange;
 
         #endregion
     }

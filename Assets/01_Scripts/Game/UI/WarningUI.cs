@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using System.Collections;
@@ -28,7 +26,7 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<MonsterRushEvent>(OnMonsterRush);
         }
 
-        private void OnMonsterRush(MonsterRushEvent spawnEvent)
+        private void OnMonsterRush(MonsterRushEvent _)
         {
             ShowWarning();
         }
@@ -53,7 +51,7 @@ namespace TrainDefense.Game.UI
 
         private IEnumerator BlinkCoroutine()
         {
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSecondsRealtime(3f);
             HideWarning();
         }
     }

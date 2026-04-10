@@ -19,7 +19,7 @@ MonoBehaviour:
     icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
     monsterStatusData:
       MaxHp: 10
-      Damage: 10
+      Damage: 5
       MoveSpeed: 5
       AttackDelay: 1
       DropExpMin: 10
@@ -36,7 +36,7 @@ MonoBehaviour:
     icon: {fileID: -8975192331532836980, guid: 5d9812acc860e45b4be3490475ec11ce, type: 3}
     monsterStatusData:
       MaxHp: 35
-      Damage: 10
+      Damage: 5
       MoveSpeed: 8
       AttackDelay: 0.5
       DropExpMin: 30
@@ -53,7 +53,7 @@ MonoBehaviour:
     icon: {fileID: -3602873763752426733, guid: c8770fe2a236a4dd4b51a7fa9eac9569, type: 3}
     monsterStatusData:
       MaxHp: 50
-      Damage: 20
+      Damage: 10
       MoveSpeed: 3
       AttackDelay: 3
       DropExpMin: 50
@@ -70,7 +70,7 @@ MonoBehaviour:
     icon: {fileID: -7218776650163668934, guid: 65602c0b9fc4f4152bc6802be7cd391c, type: 3}
     monsterStatusData:
       MaxHp: 60
-      Damage: 20
+      Damage: 10
       MoveSpeed: 4
       AttackDelay: 2
       DropExpMin: 50
@@ -87,7 +87,7 @@ MonoBehaviour:
     icon: {fileID: -7414083336469400027, guid: 231acd077d50441dc8c800208a8a508d, type: 3}
     monsterStatusData:
       MaxHp: 40
-      Damage: 20
+      Damage: 10
       MoveSpeed: 3
       AttackDelay: 3.5
       DropExpMin: 70
@@ -104,7 +104,7 @@ MonoBehaviour:
     icon: {fileID: 6240235003232040363, guid: 02a56956d819644e9ba1f5230f17be41, type: 3}
     monsterStatusData:
       MaxHp: 200
-      Damage: 30
+      Damage: 15
       MoveSpeed: 2.2
       AttackDelay: 4
       DropExpMin: 150
@@ -121,7 +121,7 @@ MonoBehaviour:
     icon: {fileID: -3625172091503848354, guid: 6b0643aaa67844e2aae806b506ebe8f5, type: 3}
     monsterStatusData:
       MaxHp: 40
-      Damage: 10
+      Damage: 5
       MoveSpeed: 5
       AttackDelay: 2
       DropExpMin: 30
@@ -138,7 +138,7 @@ MonoBehaviour:
     icon: {fileID: -3635613324321525249, guid: ef9ae9e2cb8b84e81b8c56aea546a281, type: 3}
     monsterStatusData:
       MaxHp: 70
-      Damage: 20
+      Damage: 10
       MoveSpeed: 6.4
       AttackDelay: 1
       DropExpMin: 70
@@ -155,7 +155,7 @@ MonoBehaviour:
     icon: {fileID: 3863950976592595061, guid: a9f259f952e5f4141a134eb245f1d344, type: 3}
     monsterStatusData:
       MaxHp: 100
-      Damage: 30
+      Damage: 15
       MoveSpeed: 4.3
       AttackDelay: 1
       DropExpMin: 100
@@ -172,7 +172,7 @@ MonoBehaviour:
     icon: {fileID: 8580189074808014292, guid: 3addccd9ed6334cf9b6fa384aba038d0, type: 3}
     monsterStatusData:
       MaxHp: 150
-      Damage: 40
+      Damage: 20
       MoveSpeed: 7
       AttackDelay: 4
       DropExpMin: 200
@@ -189,7 +189,7 @@ MonoBehaviour:
     icon: {fileID: -6557010917886046056, guid: 327caefdcf18245b58192e6d50fa930a, type: 3}
     monsterStatusData:
       MaxHp: 30
-      Damage: 10
+      Damage: 5
       MoveSpeed: 7
       AttackDelay: 0.5
       DropExpMin: 30
@@ -206,7 +206,7 @@ MonoBehaviour:
     icon: {fileID: -3068608994661831594, guid: ae483a7a0e01f492ab7488474a21b3e4, type: 3}
     monsterStatusData:
       MaxHp: 100
-      Damage: 30
+      Damage: 15
       MoveSpeed: 5
       AttackDelay: 3
       DropExpMin: 80
@@ -223,7 +223,7 @@ MonoBehaviour:
     icon: {fileID: 6790613064428419975, guid: c71a51d7fffe3487db08e462fa5be6e3, type: 3}
     monsterStatusData:
       MaxHp: 250
-      Damage: 40
+      Damage: 20
       MoveSpeed: 5
       AttackDelay: 4
       DropExpMin: 150
@@ -240,7 +240,7 @@ MonoBehaviour:
     icon: {fileID: 6527618186103422146, guid: 4eea2bd4e5d564b41a313f4ca7f40676, type: 3}
     monsterStatusData:
       MaxHp: 60
-      Damage: 20
+      Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
       DropExpMin: 40
@@ -257,7 +257,7 @@ MonoBehaviour:
     icon: {fileID: -3827772250807918378, guid: 1d9455a2d50d04d4380ccb041dbe4aea, type: 3}
     monsterStatusData:
       MaxHp: 60
-      Damage: 30
+      Damage: 15
       MoveSpeed: 4
       AttackDelay: 3
       DropExpMin: 60
@@ -274,7 +274,7 @@ MonoBehaviour:
     icon: {fileID: -5698702345733656577, guid: 5e42c47f439f04c37a62aec53dbbe7b9, type: 3}
     monsterStatusData:
       MaxHp: 300
-      Damage: 40
+      Damage: 20
       MoveSpeed: 2.5
       AttackDelay: 4
       DropExpMin: 150
@@ -323,119 +323,215 @@ MonoBehaviour:
   - id: 20001
     name: "\uBA54\uC778 \uAE30\uCC28"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 0
+    attackSoundType: 0
     description: "\uC81C\uC77C \uAE30\uBCF8\uC774 \uB418\uB294 \uAE30\uCC28\uC774\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: MainTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 1
   turretTrainDataList:
   - id: 30001
     name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_KMD_08_UI
+    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
+    damageType: 0
+    attackSoundType: 301
     description: "\uAE30\uAD00\uCD1D\uC73C\uB85C \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: NormalTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 10
+        range: 1
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 10
+      AttackRange: 10
       AttackCount: 1
-      AttackInterval: 0.25
+      AttackInterval: 0.3
       TargetCount: 0
     turretProjectilePrefabId: NormalProjectile
   - id: 30002
     name: "\uD654\uC5FC \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_MEL_05_UI
+    icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
+    damageType: 1
+    attackSoundType: 302
     description: "\uD654\uC5FC\uC73C\uB85C \uC9C0\uC18D\uC801\uC778 \uD53C\uD574\uB97C
       \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: FireTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 3
+        range: 1
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 3
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
     turretProjectilePrefabId: FireEffectProjectile
   - id: 30003
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
-    iconId: 
-    description: "\uBBF8\uC0AC\uC77C\uB85C \uAC15\uD55C \uD53C\uD574\uB97C \uC900\uB2E4.
-      \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
+    iconId: Weapon_KMD_10_UI
+    icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
+    damageType: 0
+    attackSoundType: 303
+    description: "\uBBF8\uC0AC\uC77C\uB85C <color=#FFDD52><shake>\uAC15\uD55C \uD53C\uD574</shake></color>\uB97C
+      \uC900\uB2E4. \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: MissileTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 25
+        range: 1
+        projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 25
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 0
     turretProjectilePrefabId: MissileProjectile
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
-    iconId: 
-    description: "\uB808\uC774\uC800\uB85C \uAC15\uD558\uAC8C \uC9C0\uC18D\uC801\uC778
+    iconId: Weapon_288_19_UI
+    icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
+    damageType: 0
+    attackSoundType: 304
+    description: "\uB808\uC774\uC800\uB85C <color=#FFDD52><shake>\uAC15\uD558\uAC8C</shake></color>
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: LaserTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 15
+        damage: 50
+        range: 1
+        projectileCount: 2
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 15
       AttackDamage: 50
+      AttackRange: 15
       AttackCount: 1
       AttackInterval: 2
       TargetCount: 0
     turretProjectilePrefabId: LaserProjectile
   - id: 30005
     name: "\uC804\uAE30 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_MEL_16_UI
+    icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
+    damageType: 0
+    attackSoundType: 305
     description: "\uD654\uBA74\uC5D0 \uC788\uB294 \uB2E4\uC218\uC758 \uC801\uB4E4\uC744
       \uC804\uAE30\uB85C \uACF5\uACA9\uD55C\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: ElectrickTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 10
+        range: 3
+        projectileCount: 2
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 10
-      AttackCount: 5
+      AttackRange: 10
+      AttackCount: 3
       AttackInterval: 2
       TargetCount: 5
     turretProjectilePrefabId: ElectrickProjectile
   - id: 30006
     name: "\uD3EC\uACA9 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_MEL_14_UI
+    icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
+    damageType: 0
+    attackSoundType: 306
     description: "\uAC70\uB300\uD55C \uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574
       \uBA87 \uCD08 \uD6C4 \uAD11\uC5ED \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: CannonTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 50
+        range: 1
+        projectileCount: 3
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 50
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
     turretProjectilePrefabId: CannonProjectile
   - id: 30007
     name: "\uC800\uACA9 \uD3EC\uD0D1"
-    iconId: 
-    description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uCD08 \uD6C4 \uAC15\uD55C
-      \uD53C\uD574\uB97C \uC900\uB2E4."
+    iconId: Weapon_KMD_12_UI
+    icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
+    damageType: 0
+    attackSoundType: 307
+    description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uCD08 \uD6C4 <color=#FFDD52><shake>\uAC15\uD55C
+      \uD53C\uD574</shake></color>\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: SniperTurretTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 50
+        range: 1
+        projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 50
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 0
@@ -443,14 +539,26 @@ MonoBehaviour:
   - id: 31001
     name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 0
+    attackSoundType: 0
     description: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteNormalTurretTrain
+    trainSkillData:
+      skillType: 1
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 50
+        range: 1
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 50
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
@@ -458,14 +566,26 @@ MonoBehaviour:
   - id: 31002
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 0
+    attackSoundType: 0
     description: "\uD654\uC5FC \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteFireTurretTrain
+    trainSkillData:
+      skillType: 1
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 25
+        range: 1
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 25
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
@@ -473,14 +593,26 @@ MonoBehaviour:
   - id: 31003
     name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 0
+    attackSoundType: 0
     description: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteMissileTurretTrain
+    trainSkillData:
+      skillType: 1
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 100
+        range: 1
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 100
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.5
       TargetCount: 0
@@ -488,14 +620,26 @@ MonoBehaviour:
   - id: 31004
     name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 0
+    attackSoundType: 0
     description: "\uB808\uC774\uC800 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteLaserTurretTrain
+    trainSkillData:
+      skillType: 1
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 300
+        range: 1
+        projectileCount: 3
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 300
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
@@ -503,14 +647,26 @@ MonoBehaviour:
   - id: 31005
     name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 0
+    attackSoundType: 0
     description: "\uC804\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteElectrickTurretTrain
+    trainSkillData:
+      skillType: 1
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 400
+        range: 1
+        projectileCount: 5
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 400
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 5
       TargetCount: 0
@@ -518,14 +674,26 @@ MonoBehaviour:
   - id: 31006
     name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 0
+    attackSoundType: 0
     description: "\uD3EC\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteCannonTurretTrain
+    trainSkillData:
+      skillType: 1
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 400
+        range: 1
+        projectileCount: 3
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 400
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
@@ -533,14 +701,26 @@ MonoBehaviour:
   - id: 31007
     name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 0
+    attackSoundType: 0
     description: "\uC800\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteSniperTurretTrain
+    trainSkillData:
+      skillType: 1
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 10
+        damage: 600
+        range: 1
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackRange: 10
       AttackDamage: 600
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 1.5
       TargetCount: 0
@@ -548,339 +728,403 @@ MonoBehaviour:
   rangeTrainDataList:
   - id: 40001
     name: "\uD3ED\uBC1C \uD3EC\uD0D1"
-    iconId: 
+    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
+    icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
+    damageType: 0
+    attackSoundType: 308
     description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC744 \uBC00\uCE58\uACE0
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: ExplosionRangeTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 5
+        damage: 100
+        range: 1
+        projectileCount: 4
     isMainTrain: 0
     rangeTrainStatus:
-      AttackRange: 5
       AttackDamage: 100
+      AttackRange: 5
       AttackCount: 1
       AttackInterval: 4
     rangeProjectilePrefabId: ExplosionProjectile
   - id: 40002
     name: "\uB0C9\uAE30 \uD3EC\uD0D1"
-    iconId: 
+    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
+    icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
+    damageType: 1
+    attackSoundType: 309
     description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC758 \uC774\uB3D9\uC18D\uB3C4\uAC00
       \uB290\uB824\uC9C0\uACE0 \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 100
     prefabId: ColdAirRangeTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 5
+        damage: 1
+        range: 1
+        projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
-      AttackRange: 5
       AttackDamage: 1
+      AttackRange: 5
       AttackCount: 1
       AttackInterval: 0.1
     rangeProjectilePrefabId: ColdAirProjectile
   - id: 41001
     name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 0
+    attackSoundType: 0
     description: "\uD3ED\uBC1C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteExplosionRangeTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 8
+        damage: 500
+        range: 1
+        projectileCount: 4
     isMainTrain: 0
     rangeTrainStatus:
-      AttackRange: 8
       AttackDamage: 500
+      AttackRange: 8
       AttackCount: 1
       AttackInterval: 4
     rangeProjectilePrefabId: ExplosionProjectile
   - id: 41002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: 
+    icon: {fileID: 0}
+    damageType: 1
+    attackSoundType: 0
     description: "\uB0C9\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteColdAirRangeTrain
+    trainSkillData:
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 13
+        damage: 15
+        range: 1
+        projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
-      AttackRange: 13
       AttackDamage: 15
+      AttackRange: 13
       AttackCount: 1
       AttackInterval: 0.1
     rangeProjectilePrefabId: ColdAirProjectile
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
   - id: 90001
-    iconId: 
+    iconId: Weapon_KMD_08_UI
+    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uACF5\uACA9\uB51C\uB808\uC774
-      {1} \uAC10\uC18C"
+    description: "\uACF5\uACA9\uB825 <bounce><color=#FF5851>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9\uB51C\uB808\uC774 <color=#5196FF><bounce>{1}\uAC10\uC18C</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 5
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 10
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 25
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
   - id: 90002
-    iconId: 
+    iconId: Weapon_MEL_05_UI
+    icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     name: "\uD654\uC5FC \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 2
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 5
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 10
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
   - id: 90003
-    iconId: 
+    iconId: Weapon_KMD_10_UI
+    icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uACF5\uACA9\uB51C\uB808\uC774
-      {1} \uAC10\uC18C"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9\uB51C\uB808\uC774 <color=#5196FF><bounce>{1} \uAC10\uC18C</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 15
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.15
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 20
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.15
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 40
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.2
         TargetCount: 0
   - id: 90004
-    iconId: 
+    iconId: Weapon_288_19_UI
+    icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 50
+        AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
+        AttackDamage: 50
         AttackRange: 0
-        AttackDamage: 150
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
+        AttackDamage: 100
         AttackRange: 0
-        AttackDamage: 250
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
   - id: 90005
-    iconId: 
+    iconId: Weapon_MEL_16_UI
+    icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     name: "\uC804\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uACF5\uACA9\uD558\uB294 \uC801
-      \uC218 {1} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9\uD558\uB294 \uC801 \uC218 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 3
-        AttackCount: 1
-        AttackInterval: 0
-        TargetCount: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
         AttackRange: 0
-        AttackDamage: 5
-        AttackCount: 1
-        AttackInterval: 0
-        TargetCount: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackRange: 0
-        AttackDamage: 7
         AttackCount: 2
         AttackInterval: 0
         TargetCount: 0
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 5
+        AttackRange: 0
+        AttackCount: 2
+        AttackInterval: 0
+        TargetCount: 0
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 7
+        AttackRange: 0
+        AttackCount: 3
+        AttackInterval: 0
+        TargetCount: 0
   - id: 90006
-    iconId: 
+    iconId: Weapon_MEL_14_UI
+    icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     name: "\uD3EC\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uACF5\uACA9 \uBC94\uC704 {1}
-      \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 1
-        AttackDamage: 50
+        AttackDamage: 10
+        AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 1
-        AttackDamage: 100
+        AttackDamage: 20
+        AttackRange: 3
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 1
-        AttackDamage: 200
+        AttackDamage: 20
+        AttackRange: 5
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
   - id: 90007
-    iconId: 
+    iconId: Weapon_KMD_12_UI
+    icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     name: "\uC800\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9\uB51C\uB808\uC774 <color=#5196FF><bounce>{1}\uAC10\uC18C</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackRange: 0
         AttackDamage: 50
+        AttackRange: 0
         AttackCount: 0
-        AttackInterval: 0
+        AttackInterval: 0.1
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
+        AttackDamage: 50
         AttackRange: 0
-        AttackDamage: 150
         AttackCount: 0
-        AttackInterval: 0
+        AttackInterval: 0.15
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
+        AttackDamage: 100
         AttackRange: 0
-        AttackDamage: 350
         AttackCount: 0
-        AttackInterval: 0
+        AttackInterval: 0.2
         TargetCount: 0
   rangeTrainUpgradeDataList:
   - id: 100001
-    iconId: 
+    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
+    icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     name: "\uD3ED\uBC1C \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uBC94\uC704 {1} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
+        AttackDamage: 15
         AttackRange: 1
+        AttackCount: 0
+        AttackInterval: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackDamage: 35
+        AttackRange: 2
+        AttackCount: 0
+        AttackInterval: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
         AttackDamage: 50
-        AttackCount: 0
-        AttackInterval: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackRange: 1
-        AttackDamage: 100
-        AttackCount: 0
-        AttackInterval: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackRange: 1
-        AttackDamage: 250
+        AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
   - id: 100002
-    iconId: 
+    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
+    icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     name: "\uB0C9\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 {0} \uC99D\uAC00 \uBC94\uC704 {1} \uC99D\uAC00"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 2
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 3
+        AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackRange: 1
         AttackDamage: 4
+        AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
   stageDataList:
   - id: 50001
     stageInspectionTime:
-    - 180
-    stageEndTime: 180
-    spawnInterval: 0.5
+    - 10
+    - 20
+    - 30
+    - 40
+    - 50
+    stageEndTime: 60
+    spawnInterval: 0.3
     spawnDatas:
     - MonsterId: 10001
-      Probability: 1
+      Probability: 5
       SpawnLevel: 1
     - MonsterId: 10002
-      Probability: 1
-      SpawnLevel: 5
+      Probability: 3
+      SpawnLevel: 3
     - MonsterId: 10003
-      Probability: 1
+      Probability: 2
       SpawnLevel: 5
     mapData:
       id: 
@@ -888,44 +1132,82 @@ MonoBehaviour:
     stageImage: {fileID: 7257567913506708742, guid: abc79d95ca2994e20b019ba42fccbcb9, type: 3}
   - id: 50002
     stageInspectionTime:
-    - 180
+    - 60
     stageEndTime: 180
-    spawnInterval: 0.5
+    spawnInterval: 0.8
     spawnDatas:
     - MonsterId: 10004
-      Probability: 1
+      Probability: 5
       SpawnLevel: 1
     - MonsterId: 10005
-      Probability: 1
-      SpawnLevel: 1
+      Probability: 4
+      SpawnLevel: 3
     - MonsterId: 10006
       Probability: 1
-      SpawnLevel: 1
+      SpawnLevel: 6
     mapData:
       id: 
       prefabId: Map2
     stageImage: {fileID: 0}
   - id: 50003
     stageInspectionTime:
-    - 180
+    - 60
     stageEndTime: 180
     spawnInterval: 0.5
     spawnDatas:
     - MonsterId: 10007
-      Probability: 1
+      Probability: 4
       SpawnLevel: 1
     - MonsterId: 10008
-      Probability: 1
+      Probability: 3
       SpawnLevel: 1
     - MonsterId: 10009
-      Probability: 1
-      SpawnLevel: 1
+      Probability: 2
+      SpawnLevel: 5
     - MonsterId: 10010
       Probability: 1
-      SpawnLevel: 1
+      SpawnLevel: 8
     mapData:
       id: 
       prefabId: Map3
+    stageImage: {fileID: 0}
+  - id: 50004
+    stageInspectionTime:
+    - 60
+    stageEndTime: 180
+    spawnInterval: 0.4
+    spawnDatas:
+    - MonsterId: 10011
+      Probability: 5
+      SpawnLevel: 1
+    - MonsterId: 10012
+      Probability: 4
+      SpawnLevel: 4
+    - MonsterId: 10013
+      Probability: 1
+      SpawnLevel: 8
+    mapData:
+      id: 
+      prefabId: Map4
+    stageImage: {fileID: 0}
+  - id: 50005
+    stageInspectionTime:
+    - 60
+    stageEndTime: 180
+    spawnInterval: 0.5
+    spawnDatas:
+    - MonsterId: 10014
+      Probability: 6
+      SpawnLevel: 1
+    - MonsterId: 10015
+      Probability: 3
+      SpawnLevel: 4
+    - MonsterId: 10016
+      Probability: 1
+      SpawnLevel: 8
+    mapData:
+      id: 
+      prefabId: Map5
     stageImage: {fileID: 0}
   upgradeDataList:
   - id: 110001

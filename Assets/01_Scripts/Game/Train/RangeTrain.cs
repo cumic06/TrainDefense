@@ -9,8 +9,6 @@ namespace TrainDefense.Game
     {
         #region Fields
         private RangeTrainData rangeTrainData => _trainData as RangeTrainData;
-        [SerializeField]
-        private bool isExplosionProjectile;
         #endregion
 
         private RangeTrainStatus _currentRangeTrainStatus;
@@ -24,8 +22,14 @@ namespace TrainDefense.Game
             // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
 
-            if (isExplosionProjectile) return;
+            if (TrainData.DamageType == DamageType.Direct) return;
+
             SpawnRangeProjectile();
+
+            if (rangeTrainData.AttackSoundType != SoundType.None)
+            {
+                SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType, true);
+            }
         }
 
         private void Update()
@@ -49,9 +53,14 @@ namespace TrainDefense.Game
                         SpawnRangeProjectile();
                     }
 
+                    if (rangeTrainData.AttackSoundType != SoundType.None && TrainData.DamageType == DamageType.Direct)
+                    {
+                        SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType);
+                    }
+
                     _currentRangeTrainStatus.AttackInterval = rangeTrainData.RangeTrainStatus.AttackInterval;
 
-                    if (isExplosionProjectile)
+                    if (TrainData.DamageType == DamageType.Direct)
                     {
                         if (_rangeAttackCoroutine != null)
                         {
@@ -64,7 +73,6 @@ namespace TrainDefense.Game
             else
             {
                 _currentRangeTrainStatus.AttackInterval -= Time.deltaTime;
-
             }
         }
 
@@ -82,6 +90,12 @@ namespace TrainDefense.Game
         {
             if (rangeTrainData.RangeProjectilePrefab != null)
             {
+                // 기존 Projectile 제거
+                if (_rangeProjectilePrefab != null)
+                {
+                    ResourceManager.Instance.Destroy(_rangeProjectilePrefab.gameObject);
+                    _rangeProjectilePrefab = null;
+                }
                 Projectile projectile = rangeTrainData.RangeProjectilePrefab?.GetComponent<Projectile>();
 
                 if (projectile != null)
@@ -91,7 +105,7 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.transform.localScale = new Vector3(rangeTrainData.RangeTrainStatus.AttackRange, rangeTrainData.RangeTrainStatus.AttackRange, 1);
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
-                    _rangeProjectilePrefab.Init(rangeTrainData.RangeTrainStatus.AttackDamage);
+                    _rangeProjectilePrefab.Init(rangeTrainData.RangeTrainStatus.AttackDamage, this, null, rangeTrainData.RangeTrainStatus.AttackRange);
                 }
             }
         }
@@ -118,6 +132,7 @@ namespace TrainDefense.Game
                 if (_rangeProjectilePrefab != null)
                 {
                     _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
+                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange);
                 }
             }
         }
@@ -132,6 +147,7 @@ namespace TrainDefense.Game
             if (_rangeProjectilePrefab != null)
             {
                 _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
+                _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange);
             }
         }
 
@@ -139,8 +155,6 @@ namespace TrainDefense.Game
         {
             base.ApplyStat(stat);
             if (stat == null) return;
-
-            Debug.Log($"ApplyStat: {stat.Type} {stat.Value}");
 
             switch (stat.Type)
             {
@@ -156,6 +170,10 @@ namespace TrainDefense.Game
 
                 case StatType.AttackDamage:
                     _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
+                    if (_rangeProjectilePrefab != null)
+                    {
+                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange);
+                    }
                     break;
 
                 case StatType.AttackCount:

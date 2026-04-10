@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ProjectileConfig
   movementType: 0
   speed: 10
-  destroyDelay: 0
+  destroyDelay: 3
   destroyOnTriggerEnter: 1
-  isSpawnTriggerHandle: 1
+  isSpawnTriggerHandle: 0
   triggerHandlePrefab: {fileID: 4234567116659896457, guid: aa2d0a71f665c6141b18ecab90da8cf2, type: 3}
-  scaleByAttackRange: 0
-  isTargeting: 0
+  scaleByRange: 0
+  scaleRangeType: 0
+  isTargeting: 1
   damageType: 0
   tickDamageInterval: 0.1
   hasSlowEffect: 0
@@ -29,7 +30,3 @@ MonoBehaviour:
   shoveDuration: 0.5
   hasStunEffect: 0
   stunDuration: 0.5
-  hasWarning: 0
-  warningPrefab: {fileID: 0}
-  warningDelaySeconds: 1
-  isScaleByAttackRange: 0

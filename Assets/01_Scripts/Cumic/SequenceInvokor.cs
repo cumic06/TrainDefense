@@ -2,6 +2,9 @@ using Cumic.Events;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
+namespace Cumic
+{
+
 public class SequenceInvokor : MonoBehaviour
 {
     [Button("Engage Ready")]
@@ -27,4 +30,5 @@ public class SequenceInvokor : MonoBehaviour
     {
         GameEventSystem.Publish(new GameEndEvent(true));
     }
+}
 }

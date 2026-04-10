@@ -151,6 +151,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.DamageUI
   damageText: {fileID: 7564822618610381177}
-  moveDuration: 0.5
+  moveDuration: 0.8
   moveVDistance: 100
-  fadeDuration: 0.5
+  fadeDuration: 0.8

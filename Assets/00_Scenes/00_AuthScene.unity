@@ -383,6 +383,7 @@ GameObject:
   m_Component:
   - component: {fileID: 701693630}
   - component: {fileID: 701693631}
+  - component: {fileID: 701693632}
   m_Layer: 0
   m_Name: GameSceneSequence
   m_TagString: Untagged
@@ -415,8 +416,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 055932cad9470b5498a5bdc617cfeb47, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::GameSceneSequence
+--- !u!114 &701693632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 701693629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c73b02091022d2418711f4ff4f4a5e3, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Manager.GameBootstrapper
 --- !u!1 &1491484638
 GameObject:
   m_ObjectHideFlags: 0

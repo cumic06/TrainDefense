@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Cumic.Events;
@@ -20,12 +21,15 @@ namespace TrainDefense.Game.UI
         private float uiActiveDelay;
         [SerializeField]
         private ParticleSystem coinParticleSystem;
+
+        [Header("Reroll")]
+        [SerializeField]
+        private Button rerollButton;
         #endregion
 
         private int _choiceLeftCount;
-
-        // 중복 선택 방지를 위한 플래그
         private bool _isSelecting = false;
+        private int _popupRequestId = 0;
 
         private void Awake()
         {
@@ -33,20 +37,60 @@ namespace TrainDefense.Game.UI
             {
                 choiceSelectUIs = GetComponentsInChildren<TriChoiceSelectUI>(true);
             }
+
+            if (rerollButton != null)
+            {
+                rerollButton.onClick.AddListener(OnRerollButtonClick);
+            }
+        }
+
+        private void Start()
+        {
+            GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
+            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
+            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
+            GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
+        }
+
+        private void OnGameEnter(GameEnterEvent gameEnterEvent)
+        {
+            OnInspectionEnter(1);
+        }
+
+        private void OnLevelUp(LevelUpEvent levelUpEvent)
+        {
+            OnInspectionEnter(levelUpEvent.LevelUpCount);
+        }
+
+        private void OnStageEnd(StageEndEvent stageEndEvent)
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void OnGameEnd(GameEndEvent gameEndEvent)
+        {
+            gameObject.SetActive(false);
         }
 
         public void OnInspectionEnter(int count)
         {
             backgroundImage.SetActive(true);
 
-            OnChoiceUIPopup(count).Forget();
+            int requestId = ++_popupRequestId;
+            OnChoiceUIPopup(count, requestId).Forget();
         }
 
-        private async UniTask OnChoiceUIPopup(int count)
+        private async UniTask OnChoiceUIPopup(int count, int requestId)
         {
             _choiceLeftCount = count;
-
-            // 팝업이 뜰 때 선택 가능 상태로 초기화 (약간의 딜레이 후 설정하거나 바로 설정)
             _isSelecting = false;
 
             var triChoiceManager = TriChoiceManager.Instance;
@@ -56,13 +100,16 @@ namespace TrainDefense.Game.UI
                 return;
             }
 
-            // 선택지 풀을 미리 생성 (중복 없이)
+            SoundManager.Instance.MuteSFX(true);
+
             List<ChoiceEntry> availableChoices = triChoiceManager.GetChoices(choiceSelectUIs.Length);
+
+            if (requestId != _popupRequestId) return;
 
             if (availableChoices.Count == 0)
             {
                 TriChoiceSelectEvent eventData = new(null, 0);
-                GameEventSystem.Publish(eventData); //우선 선택지 없으면 이벤트 쏴서 시작되게.
+                GameEventSystem.Publish(eventData);
                 backgroundImage.SetActive(false);
                 Debug.LogWarning("No available choices found");
                 return;
@@ -74,20 +121,18 @@ namespace TrainDefense.Game.UI
                 coinParticleSystem.Play();
             }
 
-            // 사용 가능한 선택지 수만큼만 UI 표시
             for (int i = 0; i < choiceSelectUIs.Length; i++)
             {
+                if (requestId != _popupRequestId) return;
+
                 var choiceSelectUI = choiceSelectUIs[i];
                 choiceSelectUI.SetSelected(false);
 
                 if (i < availableChoices.Count)
                 {
-                    // 선택지가 있으면 표시
                     IChoiceOption choiceOption = availableChoices[i].Option;
 
-                    // 처음 획득하는 ChoiceOption인지 확인
                     var userDataManager = UserDataManager.Instance;
-
                     if (userDataManager != null)
                     {
                         bool isFirstTime = userDataManager.IsFirstTimeSelected(choiceOption.Id);
@@ -130,16 +175,18 @@ namespace TrainDefense.Game.UI
                     choiceSelectUI.gameObject.SetActive(true);
                     choiceSelectUI.SetButtonInteractable(true);
 
+                    choiceSelectUI.transform.DOKill();
                     choiceSelectUI.transform.localScale = Vector3.zero;
 
                     await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
                     {
                         choiceSelectUI.transform.localScale = Vector3.one;
                     }).SetUpdate(true);
+
+                    if (requestId != _popupRequestId) return;
                 }
                 else
                 {
-                    // 선택지가 부족하면 해당 슬롯 비활성화
                     choiceSelectUI.gameObject.SetActive(false);
                 }
             }
@@ -149,6 +196,7 @@ namespace TrainDefense.Game.UI
         {
             if (_isSelecting) return;
             _isSelecting = true;
+            _popupRequestId++;
 
             _choiceLeftCount--;
 
@@ -156,12 +204,12 @@ namespace TrainDefense.Game.UI
 
             foreach (var choiceSelectUI in choiceSelectUIs)
             {
+                choiceSelectUI.transform.DOKill();
                 choiceSelectUI.transform.localScale = Vector3.one;
                 choiceSelectUI.SetButtonInteractable(false);
                 choiceSelectUI.SetSelected(true);
                 choiceSelectUI.SetNewText(false);
 
-                // DOTween을 비동기로 대기
                 tasks.Add(choiceSelectUI.transform.DOScale(0, uiActiveDelay)
                     .SetEase(Ease.InBack)
                     .SetUpdate(true)
@@ -172,11 +220,12 @@ namespace TrainDefense.Game.UI
                     .ToUniTask());
             }
 
-            // 모든 애니메이션이 끝날 때까지 대기
             await UniTask.WhenAll(tasks);
 
             TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
             GameEventSystem.Publish(eventData);
+
+            _isSelecting = false;
 
             if (_choiceLeftCount > 0)
             {
@@ -189,7 +238,30 @@ namespace TrainDefense.Game.UI
                 coinParticleSystem.gameObject.SetActive(false);
             }
 
+            SoundManager.Instance.MuteSFX(false);
+
             backgroundImage.SetActive(false);
+        }
+
+        private void OnRerollButtonClick()
+        {
+            if (_isSelecting) return;
+
+            var triChoiceManager = TriChoiceManager.Instance;
+            if (triChoiceManager != null)
+            {
+                triChoiceManager.ClearSelectedUpgrades();
+            }
+
+            // 현재 선택지 UI를 숨기고 새로운 선택지로 다시 표시
+            foreach (var choiceSelectUI in choiceSelectUIs)
+            {
+                choiceSelectUI.transform.DOKill();
+                choiceSelectUI.gameObject.SetActive(false);
+            }
+
+            int requestId = ++_popupRequestId;
+            OnChoiceUIPopup(_choiceLeftCount, requestId).Forget();
         }
     }
 }

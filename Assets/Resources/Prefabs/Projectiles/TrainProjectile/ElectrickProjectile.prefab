@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 1168509499182275413, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_LocalScale.y
@@ -113,12 +113,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -7636701915186941633, guid: 61ea8ff3fc9ec4b46b30f685a3afe034, type: 3}
+      objectReference: {fileID: 4409895422744502411, guid: 4e22abe836719084699423e9fcb048f9, type: 3}
     - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_Color.b
-      value: 0.9409985
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_Color.g
@@ -126,7 +134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_Color.r
-      value: 0.041778862
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8108164204123626478, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       propertyPath: m_Enabled
@@ -193,7 +201,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 2}
+    oldSize: {x: 1, y: 4}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 2

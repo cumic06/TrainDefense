@@ -1,4 +1,7 @@
-public interface IDamageable
+namespace TrainDefense.Game
 {
-    void TakeDamage(int damage);
+    public interface IDamageable
+    {
+        void TakeDamage(int damage);
+    }
 }

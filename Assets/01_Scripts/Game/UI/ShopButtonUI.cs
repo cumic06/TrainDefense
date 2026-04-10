@@ -1,3 +1,6 @@
+using Cumic.Events;
+using System;
+using TrainDefense.Game.Events;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,28 +11,44 @@ namespace TrainDefense.Game.UI
         #region Fields
         [SerializeField]
         private Button shopButton;
-        [SerializeField]
-        private ShopUI shopUI;
         #endregion
+
+        public Action OnClickShopButton;
 
         private void Start()
         {
-            shopButton.onClick.AddListener(OnShopButtonClick);
+            shopButton.onClick.AddListener(_OnShopButtonClick);
+            GameEventSystem.Subscribe<EngageStartEvent>(_OnEngageStart);
+            GameEventSystem.Subscribe<StageEndEvent>(_OnStageEnd);
+            GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
         }
 
-        private void OnShopButtonClick()
+        private void OnDestroy()
         {
-            if (shopUI.IsShopOpen)
-            {
-                shopUI.CloseShop();
-                return;
-            }
-            shopUI.OpenShop();
+            shopButton.onClick.RemoveAllListeners();
+            GameEventSystem.Unsubscribe<EngageStartEvent>(_OnEngageStart);
+            GameEventSystem.Unsubscribe<StageEndEvent>(_OnStageEnd);
+            GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
         }
 
-        public void OnShopOpen()
+        private void _OnEngageStart(EngageStartEvent engageStartEvent)
         {
-            shopUI.OpenShop();
+            gameObject.SetActive(false);
+        }
+
+        private void _OnStageEnd(StageEndEvent stageEndEvent)
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void _OnGameEnd(GameEndEvent gameEndEvent)
+        {
+            gameObject.SetActive(false);
+        }
+
+        private void _OnShopButtonClick()
+        {
+            OnClickShopButton?.Invoke();
         }
     }
 }

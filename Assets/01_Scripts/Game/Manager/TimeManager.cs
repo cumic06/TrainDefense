@@ -2,6 +2,7 @@ using UnityEngine;
 using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.Tutorial;
 
 namespace TrainDefense.Game
 {
@@ -9,14 +10,24 @@ namespace TrainDefense.Game
     {
         private void Start()
         {
-            Resume();
+            // Keep gameplay frozen until the intro/timeline explicitly starts the run.
+            Pause();
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
             GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
-            GameEventSystem.Subscribe<InspectionEvent>(OnInspection);
+            GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
+            GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
             GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
+
+            // 튜토리얼 시작/완료 시 시간 제어 (시퀀스 레벨에서만)
+            var tutorialManager = TutorialManager.Instance;
+            if (tutorialManager != null)
+            {
+                tutorialManager.OnTutorialStart += OnTutorialStart;
+                tutorialManager.OnTutorialComplete += OnTutorialComplete;
+            }
         }
 
         private void OnDestroy()
@@ -25,9 +36,17 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
             GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
-            GameEventSystem.Unsubscribe<InspectionEvent>(OnInspection);
+            GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
+            GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
             GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
+
+            var tutorialManager = TutorialManager.Instance;
+            if (tutorialManager != null)
+            {
+                tutorialManager.OnTutorialStart -= OnTutorialStart;
+                tutorialManager.OnTutorialComplete -= OnTutorialComplete;
+            }
         }
 
         private void OnGameEnter(GameEnterEvent gameEnterEvent)
@@ -60,9 +79,31 @@ namespace TrainDefense.Game
             Pause();
         }
 
-        private void OnInspection(InspectionEvent inspectionEvent)
+        private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
             Pause();
+        }
+
+        private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
+        {
+            Resume();
+        }
+
+        private void OnTutorialStart(string sequenceId)
+        {
+            Debug.Log($"[TimeManager] Tutorial started: {sequenceId}");
+
+            var tutorialManager = TutorialManager.Instance;
+            if (tutorialManager != null && tutorialManager.CurrentShouldPauseTime)
+            {
+                Pause();
+            }
+        }
+
+        private void OnTutorialComplete(string sequenceId)
+        {
+            Debug.Log($"[TimeManager] Tutorial completed: {sequenceId}");
+            Resume();
         }
 
         public void Pause()

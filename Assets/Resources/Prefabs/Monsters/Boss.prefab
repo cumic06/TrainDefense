@@ -136,7 +136,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 164818051339762677}
-  - component: {fileID: -5507549878785989661}
   - component: {fileID: 8967810716900712770}
   - component: {fileID: -452411931163683401}
   m_Layer: 6
@@ -162,20 +161,6 @@ Transform:
   - {fileID: 7835390160826455579}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-5507549878785989661
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2418233220438619890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5bb0e5f9869572428a1378822f0ceb3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Boss
-  id: 
-  model: {fileID: 24558831701991884}
 --- !u!61 &8967810716900712770
 BoxCollider2D:
   m_ObjectHideFlags: 0

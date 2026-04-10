@@ -1,25 +1,37 @@
 using Cumic;
+using TrainDefense.Game;
+using TrainDefense.Game.Datas;
 using UnityEngine;
 
-public class ChangeSceneButton : MonoBehaviour
+namespace Cumic.UI
 {
-    public void OnClickNextScene()
+    public class ChangeSceneButton : MonoBehaviour
     {
-        SceneController.NextScene(false);
-    }
+        private const int LobbySceneIndex = 1;
 
-    public void OnClickPreviousScene()
-    {
-        SceneController.PreviousScene();
-    }
+        public void OnClickNextScene()
+        {
+            SceneController.NextScene(false);
+        }
 
-    public void OnClickResetScene()
-    {
-        SceneController.ResetScene();
-    }
+        public void OnClickPreviousScene()
+        {
+            SceneController.PreviousScene();
+        }
 
-    public void OnClickLoadScene(int sceneIndex)
-    {
-        SceneController.LoadScene(sceneIndex, false);
+        public void OnClickResetScene()
+        {
+            SceneController.ResetScene();
+        }
+
+        public void OnClickLoadScene(int sceneIndex)
+        {
+            if (sceneIndex == LobbySceneIndex && SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlayBGM(SoundType.BGM_Lobby);
+            }
+
+            SceneController.LoadScene(sceneIndex, false);
+        }
     }
 }

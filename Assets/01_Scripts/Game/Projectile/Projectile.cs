@@ -8,22 +8,23 @@ namespace TrainDefense.Game
     {
         #region Field
         [SerializeField]
-        private ProjectileData data;
+        protected ProjectileData data;
         [SerializeField]
-        private GameObject model;
+        protected GameObject model;
         #endregion
 
-        private int _damage;
-        private IProjectileTarget _target;
-        private IMovementStrategy _movementStrategy;
-        private Coroutine _destroyCoroutine;
-        private Dictionary<IProjectileTarget, float> _damageTimers = new();
-        private float _age;
-        private bool _isSpawnedTrigger;
+        protected int _damage;
+        protected IProjectileTarget _target;
+        protected IProjectileTarget _owner;
+        protected IMovementStrategy _movementStrategy;
+        protected Coroutine _destroyCoroutine;
+        protected Dictionary<IProjectileTarget, float> _damageTimers = new();
+        protected float _age;
+        protected bool _isSpawnedTrigger;
 
         #region Enable/Disable
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             _age = 0f;
             _damageTimers.Clear();
@@ -37,9 +38,14 @@ namespace TrainDefense.Game
                 }
                 _destroyCoroutine = StartCoroutine(DestroyCoroutine());
             }
+
+            if (data.ScaleByRange && data.ScaleRangeType == ScaleByRangeType.TargetRange && _target != null)
+            {
+                ApplyScaleByTargetRange(_target.TargetTransform.position);
+            }
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             _damageTimers.Clear();
             _movementStrategy = null;
@@ -53,9 +59,10 @@ namespace TrainDefense.Game
         /// <param name="damage">데미지</param>
         /// <param name="target">타겟 (Monster 또는 null)</param>
         /// <param name="attackRange">공격 범위 (스케일 조정에 사용)</param>
-        public void Init(int damage, IProjectileTarget target = null, float attackRange = 0f)
+        public virtual void Init(int damage, IProjectileTarget owner, IProjectileTarget target = null, float attackRange = 0f)
         {
             _damage = damage;
+            _owner = owner;
             _target = target;
 
             if (data != null)
@@ -71,7 +78,7 @@ namespace TrainDefense.Game
             _movementStrategy?.Initialize(this, data, _target);
 
             // AttackRange에 따른 스케일 조정
-            if (data.ScaleByAttackRange && attackRange > 0f)
+            if (data.ScaleByRange && data.ScaleRangeType == ScaleByRangeType.AttackRange && attackRange > 0f)
             {
                 ApplyScaleByAttackRange(attackRange);
             }
@@ -79,14 +86,26 @@ namespace TrainDefense.Game
 
         private void ApplyScaleByAttackRange(float attackRange)
         {
-            if (model == null) return;
+            if (model == null)
+                return;
 
             Vector3 currentScale = model.transform.localScale;
 
             model.transform.localPosition = new Vector3(attackRange / 2, 0, 0);
-            //model.transform.localScale = new Vector3(attackRange, currentScale.y, currentScale.z);
             model.GetComponent<BoxCollider2D>().size = new Vector2(1, attackRange);
             model.GetComponent<SpriteRenderer>().size = new Vector2(1, attackRange);
+        }
+
+        private void ApplyScaleByTargetRange(Vector3 targetPos)
+        {
+            if (model == null)
+                return;
+
+            Vector3 currentScale = model.transform.localScale;
+            float distance = Vector2.Distance(transform.position, targetPos);
+            model.transform.localPosition = new Vector3(distance / 2, 0, 0);
+            model.GetComponent<BoxCollider2D>().size = new Vector2(1, distance);
+            model.GetComponent<SpriteRenderer>().size = new Vector2(1, distance);
         }
 
         private IMovementStrategy CreateMovementStrategy(MovementType movementType)
@@ -102,7 +121,8 @@ namespace TrainDefense.Game
 
         protected virtual void FixedUpdate()
         {
-            if (data == null || _movementStrategy == null) return;
+            if (data == null || _movementStrategy == null)
+                return;
 
             float deltaTime = Time.fixedDeltaTime;
             _age += deltaTime;
@@ -117,7 +137,6 @@ namespace TrainDefense.Game
         }
 
 
-
         #region Trigger Events
         private void OnTriggerEnter2D(Collider2D other)
         {
@@ -125,6 +144,8 @@ namespace TrainDefense.Game
             {
                 return;
             }
+
+            if (target == _owner) return;
 
             ProcessEnter(target);
         }
@@ -136,6 +157,8 @@ namespace TrainDefense.Game
                 return;
             }
 
+            if (target == _owner) return;
+
             ProcessStay(target);
         }
 
@@ -145,6 +168,8 @@ namespace TrainDefense.Game
             {
                 return;
             }
+
+            if (target == _owner) return;
 
             ProcessExit(target);
         }
@@ -158,7 +183,8 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (data == null) return;
+            if (data == null)
+                return;
 
             // 타겟팅 체크
             if (data != null && data.IsTargeting && _target != null)
@@ -167,6 +193,8 @@ namespace TrainDefense.Game
                 {
                     return;
                 }
+
+                if (target == _owner) return;
             }
 
             if (data.DamageType == DamageType.Tick)
@@ -180,8 +208,17 @@ namespace TrainDefense.Game
             }
             else
             {
-                // 직접 데미지
-                target.TakeDamage(_damage);
+                if (data.TriggerHandlePrefab != null)
+                {
+                    if (!data.TriggerHandlePrefab.HasTurretDamage)
+                    {
+                        target.TakeDamage(_damage);
+                    }
+                }
+                else
+                {
+                    target.TakeDamage(_damage);
+                }
 
                 if (data.DestroyOnTriggerEnter)
                 {
@@ -213,6 +250,8 @@ namespace TrainDefense.Game
             {
                 return;
             }
+
+            if (target == _owner) return;
 
             // 틱 데미지 처리
             if (data.DamageType == DamageType.Tick)
@@ -252,6 +291,8 @@ namespace TrainDefense.Game
                 return;
             }
 
+            if (target == _owner) return;
+
             // 틱 데미지 타이머 제거
             if (data.DamageType == DamageType.Tick)
             {
@@ -269,10 +310,13 @@ namespace TrainDefense.Game
         {
             // 타겟 위치에 도달했을 때 범위 내 모든 몬스터에 데미지
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1f);
+
             foreach (var col in colliders)
             {
                 if (col.TryGetComponent<IProjectileTarget>(out var target))
                 {
+                    if (target == _owner) return;
+
                     ProcessEnter(target);
                 }
             }
@@ -281,8 +325,10 @@ namespace TrainDefense.Game
 
         public bool IsScaleByAttackRange()
         {
-            if (data == null) return false;
-            return data.ScaleByAttackRange;
+            if (data == null)
+                return false;
+
+            return data.ScaleByRange;
         }
 
         public ProjectileData GetData()
@@ -298,11 +344,16 @@ namespace TrainDefense.Game
 
         private void TrySpawnTriggerHandle()
         {
-            if (_isSpawnedTrigger) return;
-            if (data == null || !data.IsSpawnTriggerHandle || data.TriggerHandlePrefab == null) return;
+            if (_isSpawnedTrigger)
+                return;
+
+            if (data == null || !data.IsSpawnTriggerHandle || data.TriggerHandlePrefab == null)
+                return;
 
             _isSpawnedTrigger = true;
-            ResourceManager.Instance.Spawn(data.TriggerHandlePrefab, transform.position, Quaternion.identity);
+
+            TriggerHandle triggerHandle = ResourceManager.Instance.Spawn(data.TriggerHandlePrefab, transform.position, Quaternion.identity);
+            triggerHandle.Init(_damage);
         }
 
         private IEnumerator DestroyCoroutine()

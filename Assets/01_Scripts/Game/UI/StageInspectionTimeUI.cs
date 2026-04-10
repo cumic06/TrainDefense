@@ -4,6 +4,8 @@ using TMPro;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 
+namespace TrainDefense.Game.UI
+{
 public class StageInspectionTimeUI : MonoBehaviour
 {
     #region Variable
@@ -27,16 +29,24 @@ public class StageInspectionTimeUI : MonoBehaviour
 
     private void Start()
     {
-        GameEventSystem.Subscribe<InspectionEvent>(SetMaxValue);
-        GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
-
+        _SubscribeEvents();
         ResetSliderValue();
-        SetMaxValue(null);
     }
 
     private void OnDestroy()
     {
-        GameEventSystem.Unsubscribe<InspectionEvent>(SetMaxValue);
+        _UnsubscribeEvents();
+    }
+
+    private void _SubscribeEvents()
+    {
+        GameEventSystem.Subscribe<InspectionStartEvent>(SetMaxValue);
+        GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
+    }
+
+    private void _UnsubscribeEvents()
+    {
+        GameEventSystem.Unsubscribe<InspectionStartEvent>(SetMaxValue);
         GameEventSystem.Unsubscribe<ChangeStageTimeEvent>(OnChangeStageTime);
     }
 
@@ -47,22 +57,40 @@ public class StageInspectionTimeUI : MonoBehaviour
 
     private void ResetMaxValue()
     {
+        _maxTime = 0f;
         _slider.maxValue = 1;
     }
 
-    private void SetMaxValue(InspectionEvent inspectionEvent)
+    private void SetMaxValue(InspectionStartEvent inspectionStartEvent)
     {
-        _maxTime = GameEventSystem.Query<GetNextInspectionRemainingTimeEvent, float>(new GetNextInspectionRemainingTimeEvent());
-        _slider.maxValue = 1;
+        RefreshMaxValue();
+    }
+
+    private void RefreshMaxValue()
+    {
+        _maxTime = GameEventSystem.Query<GetCurrentInspectionDurationEvent, float>(new GetCurrentInspectionDurationEvent());
+
+        if (_maxTime <= 0f)
+        {
+            ResetMaxValue();
+            ResetSliderValue();
+            return;
+        }
+
+        _slider.maxValue = 1f;
     }
 
     private void OnChangeStageTime(ChangeStageTimeEvent changeStageTimeEvent)
     {
-        // _nextInspectionTimeText.text = $"Next Inspection Time : {changeStageTimeEvent.StageTime:F1}";
+        if (_maxTime <= 0f)
+        {
+            RefreshMaxValue();
+        }
 
         if (_maxTime > 0)
         {
-            _slider.value = 1f - (changeStageTimeEvent.StageTime / _maxTime);
+            float remainingTime = 1f - (changeStageTimeEvent.StageTime / _maxTime);
+            _slider.value = Mathf.Clamp01(remainingTime);
         }
         else
         {
@@ -77,4 +105,5 @@ public class StageInspectionTimeUI : MonoBehaviour
             stationIcon.sprite = sprite;
         }
     }
+}
 }
