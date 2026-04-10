@@ -10,7 +10,8 @@ namespace TrainDefense.Game
     {
         private void Start()
         {
-            Resume();
+            // Keep gameplay frozen until the intro/timeline explicitly starts the run.
+            Pause();
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
