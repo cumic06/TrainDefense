@@ -227,7 +227,8 @@ namespace TrainDefense.Game
             {
                 case StatType.MaxHp:
                     {
-                        int deltaHp = Mathf.RoundToInt(stat.Value);
+                        int baseMaxHp = _trainData.TrainStatusData.MaxHp;
+                        int deltaHp = Mathf.RoundToInt(baseMaxHp * stat.Value / 100f);
                         _currentMaxHp += deltaHp;
                         _currentHp += deltaHp;
                         _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);

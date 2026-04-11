@@ -10,9 +10,35 @@ namespace TrainDefense.Editor
 {
 	public class DatabaseGeneratorWindow : EditorWindow
 	{
-		private string _excelPath;
+		private string _excelPath = "Assets/02_Resources/Data/TrainDefenseData.xlsx";
 		private string _databaseAssetPath = "Assets/Resources/Data/DB.asset";
 		private bool _debugMode = false;
+
+		private string ExcelAbsPath => ToAbsolutePath(_excelPath);
+
+		private static string ToAbsolutePath(string path)
+		{
+			if (string.IsNullOrEmpty(path)) return path;
+			path = path.Replace('\\', '/');
+			if (path.StartsWith("Assets/"))
+			{
+				string projectRoot = Path.GetDirectoryName(Application.dataPath)?.Replace('\\', '/') ?? string.Empty;
+				return $"{projectRoot}/{path}";
+			}
+			return path;
+		}
+
+		private static string ToProjectRelativePath(string absolutePath)
+		{
+			if (string.IsNullOrEmpty(absolutePath)) return absolutePath;
+			string normalized = absolutePath.Replace('\\', '/');
+			string projectRoot = Path.GetDirectoryName(Application.dataPath)?.Replace('\\', '/') ?? string.Empty;
+			if (!string.IsNullOrEmpty(projectRoot) && normalized.StartsWith(projectRoot + "/"))
+			{
+				return normalized[(projectRoot.Length + 1)..];
+			}
+			return normalized;
+		}
 
 		[MenuItem("Tools/Database Generator")]
 		public static void Open()
@@ -30,11 +56,15 @@ namespace TrainDefense.Editor
 			using (new EditorGUILayout.HorizontalScope())
 			{
 				EditorGUILayout.LabelField("엑셀 파일(.xlsx)", GUILayout.Width(120));
-				EditorGUILayout.SelectableLabel(_excelPath ?? string.Empty, GUILayout.Height(18));
+				_excelPath = EditorGUILayout.TextField(_excelPath ?? string.Empty);
 				if (GUILayout.Button("선택", GUILayout.Width(80)))
 				{
-					string p = EditorUtility.OpenFilePanel("데이터베이스 엑셀(.xlsx) 선택", Application.dataPath, "xlsx");
-					if (!string.IsNullOrEmpty(p)) _excelPath = p;
+					string abs = ExcelAbsPath;
+					string initDir = !string.IsNullOrEmpty(abs) && File.Exists(abs)
+						? Path.GetDirectoryName(abs)
+						: Path.Combine(Application.dataPath, "02_Resources/Data");
+					string p = EditorUtility.OpenFilePanel("데이터베이스 엑셀(.xlsx) 선택", initDir, "xlsx");
+					if (!string.IsNullOrEmpty(p)) _excelPath = ToProjectRelativePath(p);
 				}
 			}
 
@@ -151,9 +181,9 @@ namespace TrainDefense.Editor
 			{
 				try
 				{
-					bool existed = ExcelTemplate.SheetExists(_excelPath, importer.SheetName);
-					ExcelTemplate.EnsureSheetWithHeaders(_excelPath, importer.SheetName, importer.Headers, null);
-					bool hasData = ExcelTemplate.SheetHasData(_excelPath, importer.SheetName);
+					bool existed = ExcelTemplate.SheetExists(ExcelAbsPath, importer.SheetName);
+					ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, importer.SheetName, importer.Headers, null);
+					bool hasData = ExcelTemplate.SheetHasData(ExcelAbsPath, importer.SheetName);
 
 					if (!existed || !hasData)
 					{
@@ -162,7 +192,7 @@ namespace TrainDefense.Editor
 						continue;
 					}
 
-					int count = importer.Import(db, _excelPath);
+					int count = importer.Import(db, ExcelAbsPath);
 					totalRows += count;
 					successCount++;
 					Debug.Log($"[DatabaseGeneratorWindow] {importer.SheetName} 불러오기 완료 ({count}개 행)");
@@ -201,9 +231,9 @@ namespace TrainDefense.Editor
 			{
 				EnsureFolderForAsset(_databaseAssetPath);
 
-				bool existed = ExcelTemplate.SheetExists(_excelPath, importer.SheetName);
-				ExcelTemplate.EnsureSheetWithHeaders(_excelPath, importer.SheetName, importer.Headers, null);
-				bool hasData = ExcelTemplate.SheetHasData(_excelPath, importer.SheetName);
+				bool existed = ExcelTemplate.SheetExists(ExcelAbsPath, importer.SheetName);
+				ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, importer.SheetName, importer.Headers, null);
+				bool hasData = ExcelTemplate.SheetHasData(ExcelAbsPath, importer.SheetName);
 
 				if (!existed || !hasData)
 				{
@@ -229,7 +259,7 @@ namespace TrainDefense.Editor
 					AssetDatabase.Refresh();
 				}
 
-				int count = importer.Import(db, _excelPath);
+				int count = importer.Import(db, ExcelAbsPath);
 
 				// Persist DB changes reliably
 				EditorUtility.SetDirty(db);
@@ -290,8 +320,8 @@ namespace TrainDefense.Editor
 					stageEndTime = s.StageEndTime
 				});
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "stage_data", new[] { "id", "stage_inspection_time", "stage_end_time" });
-			ExcelWriter.WriteToSheet(_excelPath, "stage_data", rows);
+			ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, "stage_data", new[] { "id", "stage_inspection_time", "stage_end_time" });
+			ExcelWriter.WriteToSheet(ExcelAbsPath, "stage_data", rows);
 			EditorUtility.DisplayDialog("완료", "stage_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
@@ -308,8 +338,8 @@ namespace TrainDefense.Editor
 			{
 				rows.Add(new MonsterRow { id = m.Id, name = m.Name, description = m.Description });
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "monster_data", new[] { "id", "monster_name", "description" });
-			ExcelWriter.WriteToSheet(_excelPath, "monster_data", rows);
+			ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, "monster_data", new[] { "id", "monster_name", "description" });
+			ExcelWriter.WriteToSheet(ExcelAbsPath, "monster_data", rows);
 			EditorUtility.DisplayDialog("완료", "monster_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
@@ -326,8 +356,8 @@ namespace TrainDefense.Editor
 			{
 				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
-			ExcelWriter.WriteToSheet(_excelPath, "train_data", rows);
+			ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, "train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
+			ExcelWriter.WriteToSheet(ExcelAbsPath, "train_data", rows);
 			EditorUtility.DisplayDialog("완료", "train_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
@@ -344,8 +374,8 @@ namespace TrainDefense.Editor
 			{
 				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "range_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
-			ExcelWriter.WriteToSheet(_excelPath, "range_train_data", rows);
+			ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, "range_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
+			ExcelWriter.WriteToSheet(ExcelAbsPath, "range_train_data", rows);
 			EditorUtility.DisplayDialog("완료", "range_train_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
@@ -362,8 +392,8 @@ namespace TrainDefense.Editor
 			{
 				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "turret_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
-			ExcelWriter.WriteToSheet(_excelPath, "turret_train_data", rows);
+			ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, "turret_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
+			ExcelWriter.WriteToSheet(ExcelAbsPath, "turret_train_data", rows);
 			EditorUtility.DisplayDialog("완료", "turret_train_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
@@ -381,17 +411,17 @@ namespace TrainDefense.Editor
 				// 에디터에서는 레벨 0의 스탯을 사용 (첫 번째 업그레이드 레벨)
 				int level = 0;
 				var statusUpgrade = u.GetStatusUpgrade(level);
-				rows.Add(new TrainUpgradeRow 
-				{ 
-					id = u.Id, 
-					name = u.Name, 
-					description = u.Description, 
+				rows.Add(new TrainUpgradeRow
+				{
+					id = u.Id,
+					name = u.Name,
+					description = u.Description,
 					maxHp = statusUpgrade.MaxHp,
-					iconId = u.IconId 
+					iconId = u.IconId
 				});
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id" });
-			ExcelWriter.WriteToSheet(_excelPath, "train_upgrade_data", rows);
+			ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, "train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id" });
+			ExcelWriter.WriteToSheet(ExcelAbsPath, "train_upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
@@ -431,10 +461,10 @@ namespace TrainDefense.Editor
 				rows.Add(row);
 			}
 			ExcelTemplate.EnsureSheetWithHeaders(
-				_excelPath,
+				ExcelAbsPath,
 				"upgrade_data",
 				new[] { "id", "upgrade_name", "description", "need_money", "upgrade_value", "max_upgrade_count", "icon_id", "upgrade_type", "stat_type" });
-			ExcelWriter.WriteToSheet(_excelPath, "upgrade_data", rows);
+			ExcelWriter.WriteToSheet(ExcelAbsPath, "upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
@@ -466,8 +496,8 @@ namespace TrainDefense.Editor
 					attackInterval = turretStatus.AttackInterval
 				});
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_delay" });
-			ExcelWriter.WriteToSheet(_excelPath, "turret_train_upgrade_data", rows);
+			ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_delay" });
+			ExcelWriter.WriteToSheet(ExcelAbsPath, "turret_train_upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "turret_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
@@ -499,8 +529,8 @@ namespace TrainDefense.Editor
 					attackInterval = rangeStatus.AttackInterval
 				});
 			}
-			ExcelTemplate.EnsureSheetWithHeaders(_excelPath, "range_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_interval" });
-			ExcelWriter.WriteToSheet(_excelPath, "range_train_upgrade_data", rows);
+			ExcelTemplate.EnsureSheetWithHeaders(ExcelAbsPath, "range_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_interval" });
+			ExcelWriter.WriteToSheet(ExcelAbsPath, "range_train_upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "range_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 	}

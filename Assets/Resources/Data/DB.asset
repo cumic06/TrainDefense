@@ -1109,12 +1109,8 @@ MonoBehaviour:
   stageDataList:
   - id: 50001
     stageInspectionTime:
-    - 10
-    - 20
-    - 30
-    - 40
-    - 50
-    stageEndTime: 60
+    - 60
+    stageEndTime: 180
     spawnInterval: 0.3
     spawnDatas:
     - MonsterId: 10001
@@ -1222,18 +1218,20 @@ MonoBehaviour:
     stats:
     - <Type>k__BackingField: 2
       <Value>k__BackingField: 1
+    growthRate: 1.065
   - id: 110002
     iconId: 
-    name: "\uACF5\uACA9 \uB51C\uB808\uC774 {0}/-10 % \uAC10\uC18C"
+    name: "\uACF5\uACA9 \uB51C\uB808\uC774 {0}/-100 % \uAC10\uC18C"
     description: "\uD3EC\uD0D1\uB4E4\uC758 \uACF5\uACA9 \uB51C\uB808\uC774\uAC00
       {0}({1})\uB9CC\uD07C \uAC10\uC18C\uD569\uB2C8\uB2E4."
     needMoney: 200
     maxUpgradeCount: 100
     upgradeDataType: 0
-    upgradeValue: -0.1
+    upgradeValue: -1
     stats:
     - <Type>k__BackingField: 4
-      <Value>k__BackingField: -0.1
+      <Value>k__BackingField: -1
+    growthRate: 1.065
   - id: 110003
     iconId: 
     name: "\uCCB4\uB825 {0}/500 % \uC99D\uAC00"
@@ -1246,6 +1244,7 @@ MonoBehaviour:
     stats:
     - <Type>k__BackingField: 0
       <Value>k__BackingField: 10
+    growthRate: 1.065
   - id: 110004
     iconId: 
     name: "\uD68D\uB4DD\uD558\uB294 \uACE8\uB4DC {0}/100 % \uC99D\uAC00"
@@ -1256,6 +1255,7 @@ MonoBehaviour:
     upgradeDataType: 1
     upgradeValue: 10
     stats: []
+    growthRate: 1.065
   - id: 110005
     iconId: 
     name: "\uD68D\uB4DD\uD558\uB294 \uACBD\uD5D8\uCE58 {0}/100 % \uC99D\uAC00"
@@ -1266,6 +1266,7 @@ MonoBehaviour:
     upgradeDataType: 1
     upgradeValue: 10
     stats: []
+    growthRate: 1.065
   triChoiceDB:
     addTrainChoices:
     - Option:

@@ -31,6 +31,8 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         [ShowIf("upgradeDataType", UpgradeDataType.TrainUpgrade)]
         private SimpleStat[] stats;
+        [SerializeField]
+        private float growthRate = 1.065f;
         #endregion
 
         #region IData
@@ -67,6 +69,16 @@ namespace TrainDefense.Game.Datas
         public float UpgradeValue => upgradeValue;
         public int MaxUpgradeCount => maxUpgradeCount;
         public UpgradeDataType UpgradeDataType => upgradeDataType;
+        public float GrowthRate => growthRate > 0f ? growthRate : 1.065f;
+
+        /// <summary>
+        /// 현재 레벨 기준 실제 구매 비용: baseCost * GrowthRate^currentLevel
+        /// </summary>
+        public int GetCostAtLevel(int currentLevel)
+        {
+            if (currentLevel <= 0) return needMoney;
+            return Mathf.RoundToInt(needMoney * Mathf.Pow(GrowthRate, currentLevel));
+        }
 
         /// <summary>
         /// SimpleStat 기반 스탯 업그레이드

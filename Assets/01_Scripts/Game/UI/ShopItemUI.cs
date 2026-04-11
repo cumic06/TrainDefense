@@ -42,8 +42,14 @@ namespace TrainDefense.Game.UI
                 string description = GetUpgradeCountDescription();
 
                 itemDescriptionText.text = description;
-                needMoneyText.text = $"{_upgradeData.NeedMoney}$";
+                needMoneyText.text = $"{GetCurrentCost()}$";
             }
+        }
+
+        private int GetCurrentCost()
+        {
+            int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
+            return _upgradeData.GetCostAtLevel(currentLevel);
         }
 
         private float GetCurrentTotalValue()
@@ -111,7 +117,7 @@ namespace TrainDefense.Game.UI
 
         public void SetVaild(int currentMoney)
         {
-            if (currentMoney >= _upgradeData.NeedMoney)
+            if (currentMoney >= GetCurrentCost())
             {
                 buyButton.interactable = true;
             }
@@ -123,7 +129,7 @@ namespace TrainDefense.Game.UI
 
         private void OnBuyButtonClick()
         {
-            GameEventSystem.Publish(new BuyShopItemEvent(_upgradeData.NeedMoney, shopItemDataId));
+            GameEventSystem.Publish(new BuyShopItemEvent(GetCurrentCost(), shopItemDataId));
         }
     }
 }

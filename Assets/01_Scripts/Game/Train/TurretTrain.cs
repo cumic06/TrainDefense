@@ -570,10 +570,12 @@ namespace TrainDefense.Game
             base.ApplyStat(stat);
             if (stat == null) return;
 
+            var baseStatus = turretTrainData.TurretTrainStatus;
+            float percent = stat.Value / 100f;
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    _currentTurretTrainStatus.AttackRange += stat.Value;
+                    _currentTurretTrainStatus.AttackRange += baseStatus.AttackRange * percent;
 
                     // AttackRange 변경 시 NonMovement 프로젝타일도 업데이트
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
@@ -589,7 +591,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
+                    _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(baseStatus.AttackDamage * percent);
 
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
@@ -604,7 +606,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackCount:
-                    _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(stat.Value);
+                    _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(baseStatus.AttackCount * percent);
                     if (_useNonMovementProjectilePooling)
                     {
                         EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
@@ -612,11 +614,11 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackInterval:
-                    _currentTurretTrainStatus.AttackInterval += stat.Value;
+                    _currentTurretTrainStatus.AttackInterval += baseStatus.AttackInterval * percent;
                     break;
 
                 case StatType.TargetCount:
-                    _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(stat.Value);
+                    _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(baseStatus.TargetCount * percent);
                     if (_useNonMovementProjectilePooling)
                     {
                         EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
