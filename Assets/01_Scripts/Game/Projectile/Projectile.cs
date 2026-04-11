@@ -21,6 +21,7 @@ namespace TrainDefense.Game
         protected Dictionary<IProjectileTarget, float> _damageTimers = new();
         protected float _age;
         protected bool _isSpawnedTrigger;
+        protected float _attackRange;
 
         #region Enable/Disable
 
@@ -64,6 +65,7 @@ namespace TrainDefense.Game
             _damage = damage;
             _owner = owner;
             _target = target;
+            _attackRange = attackRange;
 
             if (data != null)
             {
@@ -353,6 +355,20 @@ namespace TrainDefense.Game
             _isSpawnedTrigger = true;
 
             TriggerHandle triggerHandle = ResourceManager.Instance.Spawn(data.TriggerHandlePrefab, transform.position, Quaternion.identity);
+
+            // ProjectileData.scaleByRange + AttackRange 타입이 켜졌으면 trigger의 effective 반경이 포탑 AttackRange와
+            // 일치하도록 base CircleCollider2D radius를 기준으로 비율 보정해 transform을 스케일한다.
+            if (data.ScaleByRange && data.ScaleRangeType == ScaleByRangeType.AttackRange && _attackRange > 0f)
+            {
+                var circle = triggerHandle.GetComponent<CircleCollider2D>();
+                float baseRadius = circle != null ? circle.radius : 1f;
+                if (baseRadius > 0f)
+                {
+                    float scale = _attackRange / baseRadius;
+                    triggerHandle.transform.localScale = new Vector3(scale, scale, 1f);
+                }
+            }
+
             triggerHandle.Init(_damage);
         }
 
