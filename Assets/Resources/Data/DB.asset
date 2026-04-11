@@ -328,7 +328,7 @@ MonoBehaviour:
     attackSoundType: 0
     description: "\uC81C\uC77C \uAE30\uBCF8\uC774 \uB418\uB294 \uAE30\uCC28\uC774\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: MainTrain
     trainSkillData:
       skillType: 0
@@ -349,7 +349,7 @@ MonoBehaviour:
     attackSoundType: 301
     description: "\uAE30\uAD00\uCD1D\uC73C\uB85C \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: NormalTurretTrain
     trainSkillData:
       skillType: 0
@@ -377,7 +377,7 @@ MonoBehaviour:
     description: "\uD654\uC5FC\uC73C\uB85C \uC9C0\uC18D\uC801\uC778 \uD53C\uD574\uB97C
       \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: FireTurretTrain
     trainSkillData:
       skillType: 0
@@ -385,12 +385,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 8
-        damage: 3
+        damage: 4
         range: 1
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 3
+      AttackDamage: 4
       AttackRange: 8
       AttackCount: 1
       AttackInterval: 0.15
@@ -405,7 +405,7 @@ MonoBehaviour:
     description: "\uBBF8\uC0AC\uC77C\uB85C <color=#FFDD52><shake>\uAC15\uD55C \uD53C\uD574</shake></color>\uB97C
       \uC900\uB2E4. \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: MissileTurretTrain
     trainSkillData:
       skillType: 0
@@ -433,7 +433,7 @@ MonoBehaviour:
     description: "\uB808\uC774\uC800\uB85C <color=#FFDD52><shake>\uAC15\uD558\uAC8C</shake></color>
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: LaserTurretTrain
     trainSkillData:
       skillType: 0
@@ -461,7 +461,7 @@ MonoBehaviour:
     description: "\uD654\uBA74\uC5D0 \uC788\uB294 \uB2E4\uC218\uC758 \uC801\uB4E4\uC744
       \uC804\uAE30\uB85C \uACF5\uACA9\uD55C\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: ElectrickTurretTrain
     trainSkillData:
       skillType: 0
@@ -489,21 +489,21 @@ MonoBehaviour:
     description: "\uAC70\uB300\uD55C \uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574
       \uBA87 \uCD08 \uD6C4 \uAD11\uC5ED \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: CannonTurretTrain
     trainSkillData:
       skillType: 0
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
+        projectilePrefabId: 3
         damage: 50
         range: 1
         projectileCount: 3
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 10
+      AttackRange: 3
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 1
@@ -517,7 +517,7 @@ MonoBehaviour:
     description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uCD08 \uD6C4 <color=#FFDD52><shake>\uAC15\uD55C
       \uD53C\uD574</shake></color>\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: SniperTurretTrain
     trainSkillData:
       skillType: 0
@@ -735,7 +735,7 @@ MonoBehaviour:
     description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC744 \uBC00\uCE58\uACE0
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: ExplosionRangeTrain
     trainSkillData:
       skillType: 0
@@ -762,7 +762,7 @@ MonoBehaviour:
     description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC758 \uC774\uB3D9\uC18D\uB3C4\uAC00
       \uB290\uB824\uC9C0\uACE0 \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 100
+      MaxHp: 250
     prefabId: ColdAirRangeTrain
     trainSkillData:
       skillType: 0
@@ -882,7 +882,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 4
+        AttackDamage: 3
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
@@ -998,7 +998,7 @@ MonoBehaviour:
         MaxHp: 0
       turretStatusUpgrade:
         AttackDamage: 20
-        AttackRange: 2
+        AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1006,7 +1006,7 @@ MonoBehaviour:
         MaxHp: 0
       turretStatusUpgrade:
         AttackDamage: 30
-        AttackRange: 4
+        AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1014,7 +1014,7 @@ MonoBehaviour:
         MaxHp: 0
       turretStatusUpgrade:
         AttackDamage: 50
-        AttackRange: 6
+        AttackRange: 4
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1060,6 +1060,13 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
+        AttackDamage: 10
+        AttackRange: 1
+        AttackCount: 0
+        AttackInterval: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
         AttackDamage: 15
         AttackRange: 2
         AttackCount: 0
@@ -1067,14 +1074,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 30
-        AttackRange: 3
-        AttackCount: 0
-        AttackInterval: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 55
+        AttackDamage: 25
         AttackRange: 4
         AttackCount: 0
         AttackInterval: 0
@@ -1088,27 +1088,29 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 2
-        AttackRange: 1
-        AttackCount: 0
-        AttackInterval: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 3
+        AttackDamage: 1
         AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 4
+        AttackDamage: 2
+        AttackRange: 3
+        AttackCount: 0
+        AttackInterval: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackDamage: 3
         AttackRange: 4
         AttackCount: 0
         AttackInterval: 0
   stageDataList:
   - id: 50001
     stageInspectionTime:
+    - 40
+    - 60
     - 60
     stageEndTime: 180
     spawnInterval: 0.26
@@ -1128,6 +1130,8 @@ MonoBehaviour:
     stageImage: {fileID: 7257567913506708742, guid: abc79d95ca2994e20b019ba42fccbcb9, type: 3}
   - id: 50002
     stageInspectionTime:
+    - 40
+    - 60
     - 60
     stageEndTime: 180
     spawnInterval: 0.6
@@ -1147,6 +1151,8 @@ MonoBehaviour:
     stageImage: {fileID: 0}
   - id: 50003
     stageInspectionTime:
+    - 40
+    - 60
     - 60
     stageEndTime: 180
     spawnInterval: 0.5
@@ -1169,6 +1175,8 @@ MonoBehaviour:
     stageImage: {fileID: 0}
   - id: 50004
     stageInspectionTime:
+    - 40
+    - 60
     - 60
     stageEndTime: 180
     spawnInterval: 0.33
@@ -1188,6 +1196,8 @@ MonoBehaviour:
     stageImage: {fileID: 0}
   - id: 50005
     stageInspectionTime:
+    - 40
+    - 60
     - 60
     stageEndTime: 180
     spawnInterval: 0.7
