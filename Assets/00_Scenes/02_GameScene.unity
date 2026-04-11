@@ -11149,9 +11149,9 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   changeInterval: 1
   mapSelectInterval: 3
-  hpScale: 0.5
-  attackScale: 0.2
-  goldScale: 0
+  hpScale: 0.15
+  attackScale: 0.07
+  goldScale: 0.05
 --- !u!1 &1433751803
 GameObject:
   m_ObjectHideFlags: 0
