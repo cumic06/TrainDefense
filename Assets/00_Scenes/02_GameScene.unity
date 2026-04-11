@@ -6115,7 +6115,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 32, y: 1, z: 1}
+    m_Scale: {x: 40, y: 1, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -12506,7 +12506,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7465439421838370984, guid: e75751315bac45c40954f25beab2621e, type: 3}
       propertyPath: m_SizeDelta.x
-      value: -40
+      value: -70
       objectReference: {fileID: 0}
     - target: {fileID: 7465439421838370984, guid: e75751315bac45c40954f25beab2621e, type: 3}
       propertyPath: m_SizeDelta.y
@@ -12546,7 +12546,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7465439421838370984, guid: e75751315bac45c40954f25beab2621e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -76
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 7465439421838370984, guid: e75751315bac45c40954f25beab2621e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -13020,7 +13020,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7847527546648961500, guid: 3f17b90de03e6f9448ad1e265d2a5750, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -123
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 7847527546648961500, guid: 3f17b90de03e6f9448ad1e265d2a5750, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -13233,7 +13233,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4701399315867174204, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 4701399315867174204, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
