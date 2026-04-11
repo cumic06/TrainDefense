@@ -249,8 +249,19 @@ namespace TrainDefense.Game.Manager
         {
             _currentStageTime += Time.deltaTime;
 
-            float nextInspectionRemainingtime = _GetCurrentStageInspectionTime() - _currentStageTime;
-            GameEventSystem.Publish(new ChangeStageTimeEvent(nextInspectionRemainingtime));
+            float remainingTime;
+            if (CurrentStageData != null
+                && CurrentStageData.StageInspectionTime != null
+                && _currentStageInspectionTimeIndex >= CurrentStageData.StageInspectionTime.Length)
+            {
+                remainingTime = CurrentStageData.StageEndTime - _currentStageTime;
+            }
+            else
+            {
+                remainingTime = _GetCurrentStageInspectionTime() - _currentStageTime;
+            }
+
+            GameEventSystem.Publish(new ChangeStageTimeEvent(remainingTime));
         }
 
 
@@ -275,7 +286,8 @@ namespace TrainDefense.Game.Manager
 
             if (_currentStageInspectionTimeIndex >= CurrentStageData.StageInspectionTime.Length)
             {
-                return 0f;
+                float lastInspectionTime = CurrentStageData.StageInspectionTime[^1];
+                return CurrentStageData.StageEndTime - lastInspectionTime;
             }
 
             float currentInspectionTime = CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex];
