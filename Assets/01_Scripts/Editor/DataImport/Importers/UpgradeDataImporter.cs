@@ -15,7 +15,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 		{
 			"id", "upgrade_name", "description", "need_money",
 			"upgrade_value", "max_upgrade_count", "icon_id",
-			"upgrade_type", "stat_type"
+			"upgrade_type", "stat_type", "growth_rate"
 		};
 
 		public int Import(DB db, string excelPath)
@@ -76,6 +76,10 @@ namespace TrainDefense.Editor.DataImport.Importers
 			SetPrivateField(t, target, "upgradeValue", r.upgradeValue);
 			SetPrivateField(t, target, "maxUpgradeCount", r.maxUpgradeCount);
 			SetPrivateField(t, target, "iconId", r.iconId);
+
+			// growthRate: 시트 값이 유효하지 않으면 기본값 1.065f 사용
+			float growthRate = r.growthRate > 0f ? r.growthRate : 1.065f;
+			SetPrivateField(t, target, "growthRate", growthRate);
 
 			// Upgrade 타입 결정
 			var upgradeType = ParseUpgradeType(r.upgradeType, r.statType);

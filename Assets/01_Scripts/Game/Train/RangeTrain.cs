@@ -156,10 +156,12 @@ namespace TrainDefense.Game
             base.ApplyStat(stat);
             if (stat == null) return;
 
+            var baseStatus = rangeTrainData.RangeTrainStatus;
+            float percent = stat.Value / 100f;
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    _currentRangeTrainStatus.AttackRange += stat.Value;
+                    _currentRangeTrainStatus.AttackRange += baseStatus.AttackRange * percent;
 
                     if (_rangeProjectilePrefab != null)
                     {
@@ -169,7 +171,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value);
+                    _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(baseStatus.AttackDamage * percent);
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange);
@@ -177,11 +179,11 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackCount:
-                    _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(stat.Value);
+                    _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(baseStatus.AttackCount * percent);
                     break;
 
                 case StatType.AttackInterval:
-                    _currentRangeTrainStatus.AttackInterval += stat.Value;
+                    _currentRangeTrainStatus.AttackInterval += baseStatus.AttackInterval * percent;
                     break;
             }
         }
