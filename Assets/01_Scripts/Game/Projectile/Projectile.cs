@@ -88,26 +88,32 @@ namespace TrainDefense.Game
 
         private void ApplyScaleByAttackRange(float attackRange)
         {
-            if (model == null)
-                return;
-
-            Vector3 currentScale = model.transform.localScale;
-
-            model.transform.localPosition = new Vector3(attackRange / 2, 0, 0);
-            model.GetComponent<BoxCollider2D>().size = new Vector2(1, attackRange);
-            model.GetComponent<SpriteRenderer>().size = new Vector2(1, attackRange);
+            StretchBeamModel(attackRange);
         }
 
         private void ApplyScaleByTargetRange(Vector3 targetPos)
         {
+            float distance = Vector2.Distance(transform.position, targetPos);
+            StretchBeamModel(distance);
+        }
+
+        // 빔/레이저형 투사체 전용: model에 BoxCollider2D가 있을 때만 세로 길이 늘리기.
+        // 캐논처럼 CircleCollider2D + 일반 SpriteRenderer 조합은 건드리지 않는다.
+        private void StretchBeamModel(float length)
+        {
             if (model == null)
                 return;
 
-            Vector3 currentScale = model.transform.localScale;
-            float distance = Vector2.Distance(transform.position, targetPos);
-            model.transform.localPosition = new Vector3(distance / 2, 0, 0);
-            model.GetComponent<BoxCollider2D>().size = new Vector2(1, distance);
-            model.GetComponent<SpriteRenderer>().size = new Vector2(1, distance);
+            if (!model.TryGetComponent<BoxCollider2D>(out var box))
+                return;
+
+            model.transform.localPosition = new Vector3(length / 2, 0, 0);
+            box.size = new Vector2(1, length);
+
+            if (model.TryGetComponent<SpriteRenderer>(out var sprite))
+            {
+                sprite.size = new Vector2(1, length);
+            }
         }
 
         private IMovementStrategy CreateMovementStrategy(MovementType movementType)
