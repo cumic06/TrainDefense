@@ -35,10 +35,10 @@ MonoBehaviour:
     description: "\uB3C4\uC801\uC774\uB2E4."
     icon: {fileID: -8975192331532836980, guid: 5d9812acc860e45b4be3490475ec11ce, type: 3}
     monsterStatusData:
-      MaxHp: 25
+      MaxHp: 35
       Damage: 5
       MoveSpeed: 8
-      AttackDelay: 0.7
+      AttackDelay: 0.5
       DropExpMin: 30
       DropExpMax: 30
       DropMoneyMin: 30
@@ -52,14 +52,14 @@ MonoBehaviour:
     description: "\uB180\uC774\uB2E4."
     icon: {fileID: -3602873763752426733, guid: c8770fe2a236a4dd4b51a7fa9eac9569, type: 3}
     monsterStatusData:
-      MaxHp: 40
-      Damage: 15
-      MoveSpeed: 4
-      AttackDelay: 2.7
-      DropExpMin: 40
-      DropExpMax: 40
-      DropMoneyMin: 40
-      DropMoneyMax: 40
+      MaxHp: 50
+      Damage: 10
+      MoveSpeed: 3
+      AttackDelay: 3
+      DropExpMin: 50
+      DropExpMax: 50
+      DropMoneyMin: 50
+      DropMoneyMax: 50
       AttackRange: 6
       AttackType: 1
     prefabId: Gnoll
@@ -69,14 +69,14 @@ MonoBehaviour:
     description: "\uADC0\uC0C1\uC5B4\uB2E4."
     icon: {fileID: -7218776650163668934, guid: 65602c0b9fc4f4152bc6802be7cd391c, type: 3}
     monsterStatusData:
-      MaxHp: 20
+      MaxHp: 60
       Damage: 10
       MoveSpeed: 4
       AttackDelay: 2
-      DropExpMin: 25
-      DropExpMax: 25
-      DropMoneyMin: 20
-      DropMoneyMax: 20
+      DropExpMin: 50
+      DropExpMax: 50
+      DropMoneyMin: 50
+      DropMoneyMax: 50
       AttackRange: 2
       AttackType: 0
     prefabId: Hammershark
@@ -86,14 +86,14 @@ MonoBehaviour:
     description: "\uC0C1\uC5B4\uB2E4 "
     icon: {fileID: -7414083336469400027, guid: 231acd077d50441dc8c800208a8a508d, type: 3}
     monsterStatusData:
-      MaxHp: 35
+      MaxHp: 40
       Damage: 10
       MoveSpeed: 3
-      AttackDelay: 3
-      DropExpMin: 60
-      DropExpMax: 60
-      DropMoneyMin: 45
-      DropMoneyMax: 45
+      AttackDelay: 3.5
+      DropExpMin: 70
+      DropExpMax: 70
+      DropMoneyMin: 100
+      DropMoneyMax: 100
       AttackRange: 5
       AttackType: 1
     prefabId: Shark
@@ -103,14 +103,14 @@ MonoBehaviour:
     description: "\uAC70\uBD81\uC774\uB2E4"
     icon: {fileID: 6240235003232040363, guid: 02a56956d819644e9ba1f5230f17be41, type: 3}
     monsterStatusData:
-      MaxHp: 120
+      MaxHp: 200
       Damage: 15
       MoveSpeed: 2.2
-      AttackDelay: 3
-      DropExpMin: 140
-      DropExpMax: 140
-      DropMoneyMin: 95
-      DropMoneyMax: 95
+      AttackDelay: 4
+      DropExpMin: 150
+      DropExpMax: 150
+      DropMoneyMin: 300
+      DropMoneyMax: 300
       AttackRange: 2
       AttackType: 0
     prefabId: Turtle
@@ -120,14 +120,14 @@ MonoBehaviour:
     description: "\uBC40\uC774\uB2E4"
     icon: {fileID: -3625172091503848354, guid: 6b0643aaa67844e2aae806b506ebe8f5, type: 3}
     monsterStatusData:
-      MaxHp: 20
+      MaxHp: 40
       Damage: 5
       MoveSpeed: 5
       AttackDelay: 2
-      DropExpMin: 18
-      DropExpMax: 18
-      DropMoneyMin: 18
-      DropMoneyMax: 18
+      DropExpMin: 30
+      DropExpMax: 30
+      DropMoneyMin: 30
+      DropMoneyMax: 30
       AttackRange: 3
       AttackType: 0
     prefabId: Snake
@@ -137,14 +137,14 @@ MonoBehaviour:
     description: "\uD310\uB2E4\uB2E4"
     icon: {fileID: -3635613324321525249, guid: ef9ae9e2cb8b84e81b8c56aea546a281, type: 3}
     monsterStatusData:
-      MaxHp: 50
+      MaxHp: 70
       Damage: 10
-      MoveSpeed: 6
-      AttackDelay: 1.5
-      DropExpMin: 45
-      DropExpMax: 45
-      DropMoneyMin: 45
-      DropMoneyMax: 45
+      MoveSpeed: 6.4
+      AttackDelay: 1
+      DropExpMin: 70
+      DropExpMax: 70
+      DropMoneyMin: 80
+      DropMoneyMax: 80
       AttackRange: 1.5
       AttackType: 0
     prefabId: Panda
@@ -154,14 +154,14 @@ MonoBehaviour:
     description: "\uB3C4\uB9C8\uBC40\uC774\uB2E4"
     icon: {fileID: 3863950976592595061, guid: a9f259f952e5f4141a134eb245f1d344, type: 3}
     monsterStatusData:
-      MaxHp: 80
-      Damage: 10
+      MaxHp: 100
+      Damage: 15
       MoveSpeed: 4.3
       AttackDelay: 1
-      DropExpMin: 75
-      DropExpMax: 75
-      DropMoneyMin: 75
-      DropMoneyMax: 75
+      DropExpMin: 100
+      DropExpMax: 100
+      DropMoneyMin: 100
+      DropMoneyMax: 100
       AttackRange: 1.5
       AttackType: 0
     prefabId: Lizard
@@ -171,14 +171,14 @@ MonoBehaviour:
     description: "\uACF0\uC774\uB2E4"
     icon: {fileID: 8580189074808014292, guid: 3addccd9ed6334cf9b6fa384aba038d0, type: 3}
     monsterStatusData:
-      MaxHp: 130
-      Damage: 30
+      MaxHp: 150
+      Damage: 20
       MoveSpeed: 7
-      AttackDelay: 2.5
-      DropExpMin: 150
-      DropExpMax: 150
-      DropMoneyMin: 150
-      DropMoneyMax: 150
+      AttackDelay: 4
+      DropExpMin: 200
+      DropExpMax: 200
+      DropMoneyMin: 300
+      DropMoneyMax: 300
       AttackRange: 2
       AttackType: 0
     prefabId: Bear
@@ -188,14 +188,14 @@ MonoBehaviour:
     description: "\uB09C\uC7C1\uC774\uB2E4"
     icon: {fileID: -6557010917886046056, guid: 327caefdcf18245b58192e6d50fa930a, type: 3}
     monsterStatusData:
-      MaxHp: 15
+      MaxHp: 30
       Damage: 5
       MoveSpeed: 7
-      AttackDelay: 0.8
-      DropExpMin: 13
-      DropExpMax: 13
-      DropMoneyMin: 15
-      DropMoneyMax: 15
+      AttackDelay: 0.5
+      DropExpMin: 30
+      DropExpMax: 30
+      DropMoneyMin: 30
+      DropMoneyMax: 30
       AttackRange: 2
       AttackType: 0
     prefabId: Dwarf
@@ -205,14 +205,14 @@ MonoBehaviour:
     description: "\uAC70\uBBF8\uB2E4"
     icon: {fileID: -3068608994661831594, guid: ae483a7a0e01f492ab7488474a21b3e4, type: 3}
     monsterStatusData:
-      MaxHp: 40
+      MaxHp: 100
       Damage: 15
       MoveSpeed: 5
-      AttackDelay: 1.4
-      DropExpMin: 30
-      DropExpMax: 30
-      DropMoneyMin: 40
-      DropMoneyMax: 40
+      AttackDelay: 3
+      DropExpMin: 80
+      DropExpMax: 80
+      DropMoneyMin: 80
+      DropMoneyMax: 80
       AttackRange: 3
       AttackType: 0
     prefabId: Spider
@@ -222,14 +222,14 @@ MonoBehaviour:
     description: "\uBBF8\uB178\uD0C0\uC6B0\uB85C\uC2A4\uB2E4"
     icon: {fileID: 6790613064428419975, guid: c71a51d7fffe3487db08e462fa5be6e3, type: 3}
     monsterStatusData:
-      MaxHp: 160
+      MaxHp: 250
       Damage: 20
       MoveSpeed: 5
-      AttackDelay: 2
-      DropExpMin: 80
-      DropExpMax: 80
-      DropMoneyMin: 95
-      DropMoneyMax: 95
+      AttackDelay: 4
+      DropExpMin: 150
+      DropExpMax: 150
+      DropMoneyMin: 150
+      DropMoneyMax: 150
       AttackRange: 2
       AttackType: 0
     prefabId: Minotaur
@@ -239,14 +239,14 @@ MonoBehaviour:
     description: "\uACE0\uBE14\uB9B0 \uCC3D\uBCD1\uC774\uB2E4"
     icon: {fileID: 6527618186103422146, guid: 4eea2bd4e5d564b41a313f4ca7f40676, type: 3}
     monsterStatusData:
-      MaxHp: 35
+      MaxHp: 60
       Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
-      DropExpMin: 26
-      DropExpMax: 26
-      DropMoneyMin: 26
-      DropMoneyMax: 26
+      DropExpMin: 40
+      DropExpMax: 40
+      DropMoneyMin: 40
+      DropMoneyMax: 40
       AttackRange: 2
       AttackType: 0
     prefabId: GoblinSpear
@@ -260,10 +260,10 @@ MonoBehaviour:
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 3
-      DropExpMin: 73
-      DropExpMax: 73
-      DropMoneyMin: 73
-      DropMoneyMax: 73
+      DropExpMin: 60
+      DropExpMax: 60
+      DropMoneyMin: 80
+      DropMoneyMax: 80
       AttackRange: 5
       AttackType: 1
     prefabId: GoblinSorcerer
@@ -273,14 +273,14 @@ MonoBehaviour:
     description: "\uACE0\uBE14\uB9B0 \uAC70\uC778"
     icon: {fileID: -5698702345733656577, guid: 5e42c47f439f04c37a62aec53dbbe7b9, type: 3}
     monsterStatusData:
-      MaxHp: 240
+      MaxHp: 300
       Damage: 20
       MoveSpeed: 2.5
       AttackDelay: 4
-      DropExpMin: 155
-      DropExpMax: 155
-      DropMoneyMin: 155
-      DropMoneyMax: 155
+      DropExpMin: 150
+      DropExpMax: 150
+      DropMoneyMin: 300
+      DropMoneyMax: 300
       AttackRange: 2
       AttackType: 0
     prefabId: GiantGoblin
@@ -366,7 +366,7 @@ MonoBehaviour:
       AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.3
-      TargetCount: 1
+      TargetCount: 0
     turretProjectilePrefabId: NormalProjectile
   - id: 30002
     name: "\uD654\uC5FC \uD3EC\uD0D1"
@@ -384,17 +384,17 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 8
+        projectilePrefabId: 10
         damage: 3
         range: 1
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 3
-      AttackRange: 8
+      AttackRange: 10
       AttackCount: 1
-      AttackInterval: 0.15
-      TargetCount: 1
+      AttackInterval: 0.1
+      TargetCount: 0
     turretProjectilePrefabId: FireEffectProjectile
   - id: 30003
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
@@ -415,14 +415,14 @@ MonoBehaviour:
         projectilePrefabId: 10
         damage: 25
         range: 1
-        projectileCount: 0
+        projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 25
       AttackRange: 10
       AttackCount: 1
-      AttackInterval: 1.25
-      TargetCount: 1
+      AttackInterval: 1
+      TargetCount: 0
     turretProjectilePrefabId: MissileProjectile
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
@@ -440,17 +440,17 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 30
+        projectilePrefabId: 15
         damage: 50
         range: 1
-        projectileCount: 0
+        projectileCount: 2
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 30
+      AttackRange: 15
       AttackCount: 1
-      AttackInterval: 2.5
-      TargetCount: 1
+      AttackInterval: 2
+      TargetCount: 0
     turretProjectilePrefabId: LaserProjectile
   - id: 30005
     name: "\uC804\uAE30 \uD3EC\uD0D1"
@@ -468,17 +468,17 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 20
+        projectilePrefabId: 10
         damage: 10
         range: 3
-        projectileCount: 1
+        projectileCount: 2
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
-      AttackRange: 20
+      AttackRange: 10
       AttackCount: 3
-      AttackInterval: 1
-      TargetCount: 3
+      AttackInterval: 2
+      TargetCount: 5
     turretProjectilePrefabId: ElectrickProjectile
   - id: 30006
     name: "\uD3EC\uACA9 \uD3EC\uD0D1"
@@ -506,7 +506,7 @@ MonoBehaviour:
       AttackRange: 10
       AttackCount: 1
       AttackInterval: 3
-      TargetCount: 1
+      TargetCount: 0
     turretProjectilePrefabId: CannonProjectile
   - id: 30007
     name: "\uC800\uACA9 \uD3EC\uD0D1"
@@ -524,17 +524,17 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 30
+        projectilePrefabId: 10
         damage: 50
         range: 1
         projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 30
+      AttackRange: 10
       AttackCount: 1
       AttackInterval: 1
-      TargetCount: 1
+      TargetCount: 0
     turretProjectilePrefabId: SniperProjectile
   - id: 31001
     name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
@@ -743,12 +743,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 5
-        damage: 50
+        damage: 100
         range: 1
         projectileCount: 4
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 100
       AttackRange: 5
       AttackCount: 1
       AttackInterval: 4
@@ -882,7 +882,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 4
+        AttackDamage: 5
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
@@ -890,7 +890,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 6
+        AttackDamage: 10
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
@@ -997,7 +997,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 20
+        AttackDamage: 10
         AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
@@ -1005,16 +1005,16 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 30
-        AttackRange: 4
+        AttackDamage: 20
+        AttackRange: 3
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 50
-        AttackRange: 6
+        AttackDamage: 20
+        AttackRange: 5
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1031,23 +1031,23 @@ MonoBehaviour:
         AttackDamage: 50
         AttackRange: 0
         AttackCount: 0
-        AttackInterval: 0.05
+        AttackInterval: 0.1
         TargetCount: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 75
-        AttackRange: 0
-        AttackCount: 0
-        AttackInterval: 0.05
-        TargetCount: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 125
+        AttackDamage: 50
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.15
+        TargetCount: 0
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 100
+        AttackRange: 0
+        AttackCount: 0
+        AttackInterval: 0.2
         TargetCount: 0
   rangeTrainUpgradeDataList:
   - id: 100001
@@ -1061,21 +1061,21 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 15
+        AttackRange: 1
+        AttackCount: 0
+        AttackInterval: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackDamage: 35
         AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 30
-        AttackRange: 3
-        AttackCount: 0
-        AttackInterval: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 55
-        AttackRange: 4
+        AttackDamage: 50
+        AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
   - id: 100002
@@ -1103,7 +1103,7 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 4
-        AttackRange: 4
+        AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
   stageDataList:
@@ -1111,7 +1111,7 @@ MonoBehaviour:
     stageInspectionTime:
     - 60
     stageEndTime: 180
-    spawnInterval: 0.26
+    spawnInterval: 0.3
     spawnDatas:
     - MonsterId: 10001
       Probability: 5
@@ -1130,16 +1130,16 @@ MonoBehaviour:
     stageInspectionTime:
     - 60
     stageEndTime: 180
-    spawnInterval: 0.6
+    spawnInterval: 0.8
     spawnDatas:
     - MonsterId: 10004
-      Probability: 4.5
+      Probability: 5
       SpawnLevel: 1
     - MonsterId: 10005
       Probability: 4
       SpawnLevel: 3
     - MonsterId: 10006
-      Probability: 1.5
+      Probability: 1
       SpawnLevel: 6
     mapData:
       id: 
@@ -1155,14 +1155,14 @@ MonoBehaviour:
       Probability: 4
       SpawnLevel: 1
     - MonsterId: 10008
-      Probability: 3.5
-      SpawnLevel: 3
+      Probability: 3
+      SpawnLevel: 1
     - MonsterId: 10009
       Probability: 2
       SpawnLevel: 5
     - MonsterId: 10010
-      Probability: 0.5
-      SpawnLevel: 9
+      Probability: 1
+      SpawnLevel: 8
     mapData:
       id: 
       prefabId: Map3
@@ -1171,17 +1171,17 @@ MonoBehaviour:
     stageInspectionTime:
     - 60
     stageEndTime: 180
-    spawnInterval: 0.33
+    spawnInterval: 0.4
     spawnDatas:
     - MonsterId: 10011
-      Probability: 5.5
+      Probability: 5
       SpawnLevel: 1
     - MonsterId: 10012
-      Probability: 3.5
+      Probability: 4
       SpawnLevel: 4
     - MonsterId: 10013
       Probability: 1
-      SpawnLevel: 6
+      SpawnLevel: 8
     mapData:
       id: 
       prefabId: Map4
@@ -1190,17 +1190,17 @@ MonoBehaviour:
     stageInspectionTime:
     - 60
     stageEndTime: 180
-    spawnInterval: 0.7
+    spawnInterval: 0.5
     spawnDatas:
     - MonsterId: 10014
-      Probability: 5
+      Probability: 6
       SpawnLevel: 1
     - MonsterId: 10015
-      Probability: 4
+      Probability: 3
       SpawnLevel: 4
     - MonsterId: 10016
       Probability: 1
-      SpawnLevel: 6
+      SpawnLevel: 8
     mapData:
       id: 
       prefabId: Map5
@@ -1218,18 +1218,20 @@ MonoBehaviour:
     stats:
     - <Type>k__BackingField: 2
       <Value>k__BackingField: 1
+    growthRate: 1.065
   - id: 110002
     iconId: 
-    name: "\uACF5\uACA9 \uB51C\uB808\uC774 {0}/-10 % \uAC10\uC18C"
+    name: "\uACF5\uACA9 \uB51C\uB808\uC774 {0}/-100 % \uAC10\uC18C"
     description: "\uD3EC\uD0D1\uB4E4\uC758 \uACF5\uACA9 \uB51C\uB808\uC774\uAC00
       {0}({1})\uB9CC\uD07C \uAC10\uC18C\uD569\uB2C8\uB2E4."
     needMoney: 200
     maxUpgradeCount: 100
     upgradeDataType: 0
-    upgradeValue: -0.1
+    upgradeValue: -1
     stats:
     - <Type>k__BackingField: 4
-      <Value>k__BackingField: -0.1
+      <Value>k__BackingField: -1
+    growthRate: 1.065
   - id: 110003
     iconId: 
     name: "\uCCB4\uB825 {0}/500 % \uC99D\uAC00"
@@ -1242,6 +1244,7 @@ MonoBehaviour:
     stats:
     - <Type>k__BackingField: 0
       <Value>k__BackingField: 10
+    growthRate: 1.065
   - id: 110004
     iconId: 
     name: "\uD68D\uB4DD\uD558\uB294 \uACE8\uB4DC {0}/100 % \uC99D\uAC00"
@@ -1252,6 +1255,7 @@ MonoBehaviour:
     upgradeDataType: 1
     upgradeValue: 10
     stats: []
+    growthRate: 1.065
   - id: 110005
     iconId: 
     name: "\uD68D\uB4DD\uD558\uB294 \uACBD\uD5D8\uCE58 {0}/100 % \uC99D\uAC00"
@@ -1262,6 +1266,7 @@ MonoBehaviour:
     upgradeDataType: 1
     upgradeValue: 10
     stats: []
+    growthRate: 1.065
   triChoiceDB:
     addTrainChoices:
     - Option:

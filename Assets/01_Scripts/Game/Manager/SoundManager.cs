@@ -45,6 +45,10 @@ namespace TrainDefense.Game
         public bool IsBgmMuted { get; private set; }
         public bool IsSfxMuted { get; private set; }
 
+        // 옵션 Mute와 독립된 일시 억제 플래그 (삼중택일 등 UI 중 SFX 차단용)
+        private bool _isSfxSuppressed = false;
+        private bool IsSfxSilenced => IsSfxMuted || _isSfxSuppressed;
+
         private readonly Stack<AudioSource> _sfxPool = new();
         private readonly List<AudioSource> _activeSfxSources = new();
         private readonly Dictionary<AudioSource, float> _sfxBaseVolumes = new();
@@ -262,7 +266,7 @@ namespace TrainDefense.Game
         {
             if (data == null || data.Clip == null)
                 return;
-            if (IsSfxMuted)
+            if (IsSfxSilenced)
                 return;
 
             var existing = FindActiveSfxSourceByClip(data.Clip);
@@ -316,7 +320,7 @@ namespace TrainDefense.Game
             source.clip = data.Clip;
             _sfxBaseVolumes[source] = data.Volume;
             source.volume = data.Volume * sfxVolume;
-            source.mute = IsSfxMuted;
+            source.mute = IsSfxSilenced;
         }
 
         private AudioSource FindActiveSfxSourceByClip(AudioClip clip)
@@ -428,6 +432,19 @@ namespace TrainDefense.Game
             SaveOptions();
         }
 
+        // 옵션 Mute 상태와 무관하게 일시적으로 SFX를 차단/복원한다.
+        // 옵션값을 덮어쓰지 않으므로 저장되지 않는다.
+        public void SuppressSFX(bool suppress)
+        {
+            _isSfxSuppressed = suppress;
+            foreach (var source in _activeSfxSources)
+            {
+                if (source == null)
+                    continue;
+                source.mute = IsSfxSilenced;
+            }
+        }
+
         private void Update()
         {
             // 재생이 끝난 SFX Source들을 풀로 반환
@@ -467,7 +484,7 @@ namespace TrainDefense.Game
 
             source.playOnAwake = false;
             source.loop = false;
-            source.mute = IsSfxMuted;
+            source.mute = IsSfxSilenced;
         }
 
         private void ResetSfxSource(AudioSource source)

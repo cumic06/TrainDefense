@@ -141,9 +141,6 @@ namespace TrainDefense.Game
                 return;
             }
 
-            foreach (var stat in upgradeData.Stats)
-            {
-            }
             TrainManager.Instance.ApplyUpgrade(upgradeData);
         }
 

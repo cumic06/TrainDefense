@@ -18,6 +18,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string upgradeType;
 		// statType: StatType 이름 (예: "AttackDamage", "MaxHp" ...)
 		public string statType;
+		// 업그레이드 레벨당 성장률 (value = baseValue * growthRate^currentLevel)
+		public float growthRate;
 
 		public void FromExcelRow(IRow row)
 		{
@@ -39,6 +41,11 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			{
 				statType = row.GetCell(8)?.ToString();
 			}
+
+			if (row.LastCellNum > 9)
+			{
+				float.TryParse(row.GetCell(9)?.ToString(), out growthRate);
+			}
 		}
 
 		public void ToExcelRow(IRow row)
@@ -52,6 +59,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			Set(row, 6, iconId);
 			Set(row, 7, upgradeType);
 			Set(row, 8, statType);
+			Set(row, 9, growthRate);
 		}
 
 		private static void Set(IRow row, int idx, object value)

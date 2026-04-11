@@ -62,6 +62,7 @@ namespace TrainDefense.Game.Manager
 
         private void _SubscribeEvents()
         {
+            GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Subscribe<GetCurrentInspectionDurationEvent, float>(_GetCurrentInspectionDuration);
             GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
             GameEventSystem.Subscribe<StageSelectEvent>(_OnStageSelected);
@@ -70,6 +71,7 @@ namespace TrainDefense.Game.Manager
 
         private void _UnsubscribeEvents()
         {
+            GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Unsubscribe<GetCurrentInspectionDurationEvent, float>(_GetCurrentInspectionDuration);
             GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
             GameEventSystem.Unsubscribe<StageSelectEvent>(_OnStageSelected);
@@ -99,6 +101,11 @@ namespace TrainDefense.Game.Manager
         }
 
         private void _OnLevelUp(LevelUpEvent levelUpEvent)
+        {
+            _UpdateSpawnRules();
+        }
+
+        private void _OnGameEnter(GameEnterEvent gameEnterEvent)
         {
             _UpdateSpawnRules();
         }
