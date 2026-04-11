@@ -2,6 +2,8 @@ using UnityEngine;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Stats;
 using System.Collections;
+using Cumic.Events;
+using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game
 {
@@ -26,10 +28,40 @@ namespace TrainDefense.Game
 
             SpawnRangeProjectile();
 
-            if (rangeTrainData.AttackSoundType != SoundType.None)
-            {
-                SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType, true);
-            }
+            PlayLoopSFX();
+
+            GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Subscribe<EngageStartEvent>(_OnEngageStart);
+        }
+
+        private void OnDestroy()
+        {
+            GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Unsubscribe<EngageStartEvent>(_OnEngageStart);
+
+            StopLoopSFX();
+        }
+
+        private void _OnInspectionStart(InspectionStartEvent _) => StopLoopSFX();
+
+        private void _OnEngageStart(EngageStartEvent _)
+        {
+            if (_isDead) return;
+            PlayLoopSFX();
+        }
+
+        private void PlayLoopSFX()
+        {
+            if (rangeTrainData.AttackSoundType == SoundType.None) return;
+            SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType, true);
+        }
+
+        private void StopLoopSFX()
+        {
+            if (TrainData == null) return;
+            if (TrainData.DamageType == DamageType.Direct) return;
+            if (rangeTrainData.AttackSoundType == SoundType.None) return;
+            SoundManager.Instance.StopSFX(rangeTrainData.AttackSoundType);
         }
 
         private void Update()
