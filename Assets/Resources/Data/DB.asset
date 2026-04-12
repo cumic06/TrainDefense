@@ -18,7 +18,7 @@ MonoBehaviour:
     description: "\uD574\uACE8 \uBCD1\uC0AC\uB2E4."
     icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
     monsterStatusData:
-      MaxHp: 10
+      MaxHp: 100
       Damage: 5
       MoveSpeed: 5
       AttackDelay: 1
@@ -35,7 +35,7 @@ MonoBehaviour:
     description: "\uB3C4\uC801\uC774\uB2E4."
     icon: {fileID: -8975192331532836980, guid: 5d9812acc860e45b4be3490475ec11ce, type: 3}
     monsterStatusData:
-      MaxHp: 25
+      MaxHp: 250
       Damage: 5
       MoveSpeed: 8
       AttackDelay: 0.7
@@ -52,7 +52,7 @@ MonoBehaviour:
     description: "\uB180\uC774\uB2E4."
     icon: {fileID: -3602873763752426733, guid: c8770fe2a236a4dd4b51a7fa9eac9569, type: 3}
     monsterStatusData:
-      MaxHp: 40
+      MaxHp: 400
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 2.7
@@ -69,7 +69,7 @@ MonoBehaviour:
     description: "\uADC0\uC0C1\uC5B4\uB2E4."
     icon: {fileID: -7218776650163668934, guid: 65602c0b9fc4f4152bc6802be7cd391c, type: 3}
     monsterStatusData:
-      MaxHp: 20
+      MaxHp: 200
       Damage: 10
       MoveSpeed: 4
       AttackDelay: 2
@@ -86,7 +86,7 @@ MonoBehaviour:
     description: "\uC0C1\uC5B4\uB2E4 "
     icon: {fileID: -7414083336469400027, guid: 231acd077d50441dc8c800208a8a508d, type: 3}
     monsterStatusData:
-      MaxHp: 35
+      MaxHp: 350
       Damage: 10
       MoveSpeed: 3
       AttackDelay: 3
@@ -103,7 +103,7 @@ MonoBehaviour:
     description: "\uAC70\uBD81\uC774\uB2E4"
     icon: {fileID: 6240235003232040363, guid: 02a56956d819644e9ba1f5230f17be41, type: 3}
     monsterStatusData:
-      MaxHp: 120
+      MaxHp: 1200
       Damage: 15
       MoveSpeed: 2.2
       AttackDelay: 3
@@ -120,7 +120,7 @@ MonoBehaviour:
     description: "\uBC40\uC774\uB2E4"
     icon: {fileID: -3625172091503848354, guid: 6b0643aaa67844e2aae806b506ebe8f5, type: 3}
     monsterStatusData:
-      MaxHp: 20
+      MaxHp: 200
       Damage: 5
       MoveSpeed: 5
       AttackDelay: 2
@@ -137,7 +137,7 @@ MonoBehaviour:
     description: "\uD310\uB2E4\uB2E4"
     icon: {fileID: -3635613324321525249, guid: ef9ae9e2cb8b84e81b8c56aea546a281, type: 3}
     monsterStatusData:
-      MaxHp: 50
+      MaxHp: 500
       Damage: 10
       MoveSpeed: 6
       AttackDelay: 1.5
@@ -154,7 +154,7 @@ MonoBehaviour:
     description: "\uB3C4\uB9C8\uBC40\uC774\uB2E4"
     icon: {fileID: 3863950976592595061, guid: a9f259f952e5f4141a134eb245f1d344, type: 3}
     monsterStatusData:
-      MaxHp: 80
+      MaxHp: 800
       Damage: 10
       MoveSpeed: 4.3
       AttackDelay: 1
@@ -171,7 +171,7 @@ MonoBehaviour:
     description: "\uACF0\uC774\uB2E4"
     icon: {fileID: 8580189074808014292, guid: 3addccd9ed6334cf9b6fa384aba038d0, type: 3}
     monsterStatusData:
-      MaxHp: 130
+      MaxHp: 1300
       Damage: 30
       MoveSpeed: 7
       AttackDelay: 2.5
@@ -188,7 +188,7 @@ MonoBehaviour:
     description: "\uB09C\uC7C1\uC774\uB2E4"
     icon: {fileID: -6557010917886046056, guid: 327caefdcf18245b58192e6d50fa930a, type: 3}
     monsterStatusData:
-      MaxHp: 15
+      MaxHp: 150
       Damage: 5
       MoveSpeed: 7
       AttackDelay: 0.8
@@ -205,7 +205,7 @@ MonoBehaviour:
     description: "\uAC70\uBBF8\uB2E4"
     icon: {fileID: -3068608994661831594, guid: ae483a7a0e01f492ab7488474a21b3e4, type: 3}
     monsterStatusData:
-      MaxHp: 40
+      MaxHp: 400
       Damage: 15
       MoveSpeed: 5
       AttackDelay: 1.4
@@ -222,7 +222,7 @@ MonoBehaviour:
     description: "\uBBF8\uB178\uD0C0\uC6B0\uB85C\uC2A4\uB2E4"
     icon: {fileID: 6790613064428419975, guid: c71a51d7fffe3487db08e462fa5be6e3, type: 3}
     monsterStatusData:
-      MaxHp: 160
+      MaxHp: 1600
       Damage: 20
       MoveSpeed: 5
       AttackDelay: 2
@@ -239,7 +239,7 @@ MonoBehaviour:
     description: "\uACE0\uBE14\uB9B0 \uCC3D\uBCD1\uC774\uB2E4"
     icon: {fileID: 6527618186103422146, guid: 4eea2bd4e5d564b41a313f4ca7f40676, type: 3}
     monsterStatusData:
-      MaxHp: 35
+      MaxHp: 350
       Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
@@ -256,7 +256,7 @@ MonoBehaviour:
     description: "\uACE0\uBE14\uB9B0 \uC8FC\uC220\uC0AC\uB2E4"
     icon: {fileID: -3827772250807918378, guid: 1d9455a2d50d04d4380ccb041dbe4aea, type: 3}
     monsterStatusData:
-      MaxHp: 60
+      MaxHp: 600
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 3
@@ -273,7 +273,7 @@ MonoBehaviour:
     description: "\uACE0\uBE14\uB9B0 \uAC70\uC778"
     icon: {fileID: -5698702345733656577, guid: 5e42c47f439f04c37a62aec53dbbe7b9, type: 3}
     monsterStatusData:
-      MaxHp: 240
+      MaxHp: 2200
       Damage: 20
       MoveSpeed: 2.5
       AttackDelay: 4
@@ -357,12 +357,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 10
-        damage: 10
+        damage: 100
         range: 1
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 10
+      AttackDamage: 100
       AttackRange: 10
       AttackCount: 1
       AttackInterval: 0.3
@@ -385,12 +385,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 8
-        damage: 4
+        damage: 40
         range: 1
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 4
+      AttackDamage: 40
       AttackRange: 8
       AttackCount: 1
       AttackInterval: 0.15
@@ -413,12 +413,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 10
-        damage: 25
+        damage: 250
         range: 1
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 25
+      AttackDamage: 250
       AttackRange: 10
       AttackCount: 1
       AttackInterval: 1.25
@@ -441,12 +441,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 30
-        damage: 50
+        damage: 500
         range: 1
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 500
       AttackRange: 30
       AttackCount: 1
       AttackInterval: 2.5
@@ -469,12 +469,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 20
-        damage: 10
+        damage: 100
         range: 3
         projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 10
+      AttackDamage: 100
       AttackRange: 20
       AttackCount: 3
       AttackInterval: 1
@@ -497,12 +497,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 3
-        damage: 50
+        damage: 500
         range: 1
         projectileCount: 3
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 500
       AttackRange: 3
       AttackCount: 1
       AttackInterval: 3
@@ -525,12 +525,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 30
-        damage: 50
+        damage: 500
         range: 1
         projectileCount: 1
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 500
       AttackRange: 30
       AttackCount: 1
       AttackInterval: 1
@@ -743,12 +743,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 5
-        damage: 50
+        damage: 500
         range: 1
         projectileCount: 4
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 500
       AttackRange: 5
       AttackCount: 1
       AttackInterval: 4
@@ -770,12 +770,12 @@ MonoBehaviour:
       skillIconId: 
       projectileData:
         projectilePrefabId: 5
-        damage: 1
+        damage: 10
         range: 1
         projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 1
+      AttackDamage: 10
       AttackRange: 5
       AttackCount: 1
       AttackInterval: 0.1
@@ -844,7 +844,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 5
+        AttackDamage: 50
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
@@ -852,7 +852,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 100
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
@@ -860,7 +860,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 25
+        AttackDamage: 250
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
@@ -874,7 +874,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 2
+        AttackDamage: 20
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
@@ -882,7 +882,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 3
+        AttackDamage: 30
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
@@ -890,7 +890,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 6
+        AttackDamage: 60
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
@@ -905,7 +905,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 15
+        AttackDamage: 150
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.15
@@ -913,7 +913,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 20
+        AttackDamage: 200
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.15
@@ -921,7 +921,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 40
+        AttackDamage: 400
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.2
@@ -935,7 +935,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 50
+        AttackDamage: 500
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
@@ -943,7 +943,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 50
+        AttackDamage: 500
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
@@ -951,7 +951,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 100
+        AttackDamage: 1000
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0
@@ -966,7 +966,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 3
+        AttackDamage: 30
         AttackRange: 0
         AttackCount: 2
         AttackInterval: 0
@@ -974,7 +974,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 5
+        AttackDamage: 50
         AttackRange: 0
         AttackCount: 2
         AttackInterval: 0
@@ -982,7 +982,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 7
+        AttackDamage: 70
         AttackRange: 0
         AttackCount: 3
         AttackInterval: 0
@@ -997,7 +997,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 20
+        AttackDamage: 200
         AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
@@ -1005,7 +1005,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 30
+        AttackDamage: 300
         AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
@@ -1013,7 +1013,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 50
+        AttackDamage: 500
         AttackRange: 4
         AttackCount: 0
         AttackInterval: 0
@@ -1028,7 +1028,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 50
+        AttackDamage: 500
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
@@ -1036,7 +1036,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 75
+        AttackDamage: 750
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.05
@@ -1044,7 +1044,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 125
+        AttackDamage: 1250
         AttackRange: 0
         AttackCount: 0
         AttackInterval: 0.15
@@ -1060,21 +1060,21 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 100
         AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 15
+        AttackDamage: 150
         AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 25
+        AttackDamage: 250
         AttackRange: 4
         AttackCount: 0
         AttackInterval: 0
@@ -1088,21 +1088,21 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 1
+        AttackDamage: 10
         AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 2
+        AttackDamage: 20
         AttackRange: 3
         AttackCount: 0
         AttackInterval: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 3
+        AttackDamage: 30
         AttackRange: 4
         AttackCount: 0
         AttackInterval: 0
@@ -1289,7 +1289,7 @@ MonoBehaviour:
       Tier: 0
     - Option:
         rid: 2066870334413602906
-      Weight: 1
+      Weight: 0
       Tier: 0
     - Option:
         rid: 2066870334413602907
