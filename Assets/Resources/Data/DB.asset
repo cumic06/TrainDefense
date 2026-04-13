@@ -367,9 +367,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.3
       TargetCount: 1
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: NormalProjectile
   - id: 30002
     name: "\uD654\uC5FC \uD3EC\uD0D1"
     iconId: Weapon_MEL_05_UI
@@ -397,9 +397,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.15
       TargetCount: 1
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: FireEffectProjectile
   - id: 30003
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: Weapon_KMD_10_UI
@@ -427,9 +427,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1.25
       TargetCount: 1
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: MissileProjectile
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: Weapon_288_19_UI
@@ -457,9 +457,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: LaserProjectile
   - id: 30005
     name: "\uC804\uAE30 \uD3EC\uD0D1"
     iconId: Weapon_MEL_16_UI
@@ -487,9 +487,9 @@ MonoBehaviour:
       AttackCount: 3
       AttackInterval: 1
       TargetCount: 3
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: ElectrickProjectile
   - id: 30006
     name: "\uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_MEL_14_UI
@@ -517,9 +517,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 1
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: CannonProjectile
   - id: 30007
     name: "\uC800\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_KMD_12_UI
@@ -547,9 +547,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: SniperProjectile
   - id: 31001
     name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
     iconId: 
@@ -576,9 +576,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: NormalProjectile
   - id: 31002
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
     iconId: 
@@ -605,9 +605,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: FireEffectProjectile
   - id: 31003
     name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: 
@@ -634,9 +634,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.5
       TargetCount: 0
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: MissileProjectile
   - id: 31004
     name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: 
@@ -663,9 +663,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: LaserProjectile
   - id: 31005
     name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
     iconId: 
@@ -692,9 +692,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 5
       TargetCount: 0
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: ElectrickProjectile
   - id: 31006
     name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: 
@@ -721,9 +721,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: CannonProjectile
   - id: 31007
     name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
     iconId: 
@@ -750,9 +750,9 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1.5
       TargetCount: 0
-      CriticalChance: 0
-      CriticalDamage: 0
-    turretProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: SniperProjectile
   rangeTrainDataList:
   - id: 40001
     name: "\uD3ED\uBC1C \uD3EC\uD0D1"
@@ -780,9 +780,9 @@ MonoBehaviour:
       AttackRange: 5
       AttackCount: 1
       AttackInterval: 4
-      CriticalChance: 0
-      CriticalDamage: 0
-    rangeProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    rangeProjectilePrefabId: ExplosionProjectile
   - id: 40002
     name: "\uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
@@ -809,9 +809,9 @@ MonoBehaviour:
       AttackRange: 5
       AttackCount: 1
       AttackInterval: 0.1
-      CriticalChance: 0
-      CriticalDamage: 0
-    rangeProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    rangeProjectilePrefabId: ColdAirProjectile
   - id: 41001
     name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
     iconId: 
@@ -837,9 +837,9 @@ MonoBehaviour:
       AttackRange: 8
       AttackCount: 1
       AttackInterval: 4
-      CriticalChance: 0
-      CriticalDamage: 0
-    rangeProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    rangeProjectilePrefabId: ExplosionProjectile
   - id: 41002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: 
@@ -865,9 +865,9 @@ MonoBehaviour:
       AttackRange: 13
       AttackCount: 1
       AttackInterval: 0.1
-      CriticalChance: 0
-      CriticalDamage: 0
-    rangeProjectilePrefabId: 
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    rangeProjectilePrefabId: ColdAirProjectile
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
   - id: 90001

@@ -45,7 +45,7 @@ namespace TrainDefense.Game.UI
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, _uiCamera, out Vector2 localPoint);
 
             spawnDamageUI.SetLocalPosition(localPoint);
-            spawnDamageUI.SetDamage(hitEvent.Damage);
+            spawnDamageUI.SetDamage(hitEvent.Damage, hitEvent.IsCritical);
         }
     }
 }

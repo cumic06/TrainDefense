@@ -39,9 +39,10 @@ namespace TrainDefense.Game.UI
             damageText.DOKill();
         }
 
-        public void SetDamage(int damage)
+        public void SetDamage(int damage, bool isCritical = false)
         {
             damageText.text = $"{damage}";
+            damageText.color = isCritical ? Color.red : Color.white;
         }
 
         public void SetPosition(Vector3 position)
