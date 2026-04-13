@@ -13,29 +13,29 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public float criticalChance;
 		public float criticalDamage;
 
-	public override void FromExcelRow(IRow row)
-	{
-		base.FromExcelRow(row);
-		float.TryParse(row.GetCell(10)?.ToString(), out attackRange);
-		int.TryParse(row.GetCell(11)?.ToString(), out attackDamage);
-		int.TryParse(row.GetCell(12)?.ToString(), out attackCount);
-		float.TryParse(row.GetCell(13)?.ToString(), out attackInterval);
-		rangeProjectilePrefabId = row.GetCell(14)?.ToString();
-		float.TryParse(row.GetCell(15)?.ToString(), out criticalChance);
-		float.TryParse(row.GetCell(16)?.ToString(), out criticalDamage);
-	}
+		public override void FromExcelRow(IRow row, HeaderMap map)
+		{
+			base.FromExcelRow(row, map);
+			attackRange = map.GetFloat(row, "attack_range");
+			attackDamage = map.GetInt(row, "attack_damage");
+			attackCount = map.GetInt(row, "attack_count");
+			attackInterval = map.GetFloat(row, "attack_interval");
+			rangeProjectilePrefabId = map.GetString(row, "range_projectile_prefab_id");
+			criticalChance = map.GetFloat(row, "critical_chance");
+			criticalDamage = map.GetFloat(row, "critical_damage");
+		}
 
-	public override void ToExcelRow(IRow row)
-	{
-		base.ToExcelRow(row);
-		Set(row, 10, attackRange);
-		Set(row, 11, attackDamage);
-		Set(row, 12, attackCount);
-		Set(row, 13, attackInterval);
-		Set(row, 14, rangeProjectilePrefabId);
-		Set(row, 15, criticalChance);
-		Set(row, 16, criticalDamage);
-	}
+		public override void ToExcelRow(IRow row, HeaderMap map)
+		{
+			base.ToExcelRow(row, map);
+			map.SetCell(row, "attack_range", attackRange);
+			map.SetCell(row, "attack_damage", attackDamage);
+			map.SetCell(row, "attack_count", attackCount);
+			map.SetCell(row, "attack_interval", attackInterval);
+			map.SetCell(row, "range_projectile_prefab_id", rangeProjectilePrefabId);
+			map.SetCell(row, "critical_chance", criticalChance);
+			map.SetCell(row, "critical_damage", criticalDamage);
+		}
 	}
 }
 #endif

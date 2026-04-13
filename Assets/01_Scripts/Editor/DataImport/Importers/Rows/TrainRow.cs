@@ -21,17 +21,17 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public float skillProjectileRange;
 		public int skillProjectileCount;
 
-		public virtual void FromExcelRow(IRow row)
+		public virtual void FromExcelRow(IRow row, HeaderMap map)
 		{
-			id = row.GetCell(0)?.ToString();
-			name = row.GetCell(1)?.ToString();
-			description = row.GetCell(2)?.ToString();
-			int.TryParse(row.GetCell(3)?.ToString(), out maxHp);
-			bool.TryParse(row.GetCell(4)?.ToString(), out isMainTrain);
-			prefabId = row.GetCell(5)?.ToString();
-			iconId = row.GetCell(6)?.ToString();
+			id = map.GetString(row, "id");
+			name = map.GetString(row, "train_name");
+			description = map.GetString(row, "description");
+			maxHp = map.GetInt(row, "max_hp");
+			isMainTrain = map.GetBool(row, "is_main_train");
+			prefabId = map.GetString(row, "prefab_id");
+			iconId = map.GetString(row, "icon_id");
 
-			var skillTypeValue = row.GetCell(7)?.ToString();
+			var skillTypeValue = map.GetString(row, "has_skill");
 			if (!System.Enum.TryParse(skillTypeValue, true, out skillType))
 			{
 				if (bool.TryParse(skillTypeValue, out bool hasSkill) && hasSkill)
@@ -40,43 +40,31 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 				}
 			}
 
-			float.TryParse(row.GetCell(8)?.ToString(), out skillCooldown);
-			skillIconId = row.GetCell(9)?.ToString();
-			skillProjectilePrefabId = row.GetCell(10)?.ToString();
-			int.TryParse(row.GetCell(11)?.ToString(), out skillProjectileDamage);
-			float.TryParse(row.GetCell(12)?.ToString(), out skillProjectileRange);
-			int.TryParse(row.GetCell(13)?.ToString(), out skillProjectileCount);
+			skillCooldown = map.GetFloat(row, "skill_cooldown");
+			skillIconId = map.GetString(row, "skill_icon_id");
+			skillProjectilePrefabId = map.GetString(row, "skill_projectile_prefab_id");
+			skillProjectileDamage = map.GetInt(row, "skill_projectile_damage");
+			skillProjectileRange = map.GetFloat(row, "skill_projectile_range");
+			skillProjectileCount = map.GetInt(row, "skill_projectile_count");
 		}
 
-		public virtual void ToExcelRow(IRow row)
+		public virtual void ToExcelRow(IRow row, HeaderMap map)
 		{
-			Set(row, 0, id);
-			Set(row, 1, name);
-			Set(row, 2, description);
-			Set(row, 3, maxHp);
-			Set(row, 4, isMainTrain);
-			Set(row, 5, prefabId);
-			Set(row, 6, iconId);
-			Set(row, 7, skillType.ToString());
-			Set(row, 8, skillCooldown);
-			Set(row, 9, skillIconId);
-			Set(row, 10, skillProjectilePrefabId);
-			Set(row, 11, skillProjectileDamage);
-			Set(row, 12, skillProjectileRange);
-			Set(row, 13, skillProjectileCount);
+			map.SetCell(row, "id", id);
+			map.SetCell(row, "train_name", name);
+			map.SetCell(row, "description", description);
+			map.SetCell(row, "max_hp", maxHp);
+			map.SetCell(row, "is_main_train", isMainTrain);
+			map.SetCell(row, "prefab_id", prefabId);
+			map.SetCell(row, "icon_id", iconId);
+			map.SetCell(row, "has_skill", skillType.ToString());
+			map.SetCell(row, "skill_cooldown", skillCooldown);
+			map.SetCell(row, "skill_icon_id", skillIconId);
+			map.SetCell(row, "skill_projectile_prefab_id", skillProjectilePrefabId);
+			map.SetCell(row, "skill_projectile_damage", skillProjectileDamage);
+			map.SetCell(row, "skill_projectile_range", skillProjectileRange);
+			map.SetCell(row, "skill_projectile_count", skillProjectileCount);
 		}
-
-	protected static void Set(IRow row, int idx, object value)
-	{
-		var cell = row.GetCell(idx) ?? row.CreateCell(idx);
-		if (value is null) cell.SetCellValue(string.Empty);
-		else if (value is int i) cell.SetCellValue(i);
-		else if (value is bool b) cell.SetCellValue(b);
-		else if (value is float f) cell.SetCellValue(f);
-		else cell.SetCellValue(value.ToString());
-	}
 	}
 }
 #endif
-
-

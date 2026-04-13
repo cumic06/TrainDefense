@@ -6,18 +6,20 @@ namespace TrainDefense.Editor.DataImport.Importers
 {
    public class StageImporter : IExcelSheetImporter
    {
+      public string ExcelFileName => "StageData.xlsx";
       public string SheetName => "stage_data";
       public string ButtonLabel => "Stage 데이터 가져오기";
-      public string[] Headers => new[] { "id", "stage_inspection_time", "stage_end_time" };
+      public string[] Headers => new[] { "id", "stage_inspection_time", "stage_end_time", "spawn_interval", "spawn_monsters", "spawn_monsters_probability", "spawn_monsters_level" };
 
       public int Import(DB db, string excelPath)
       {
+         var map = ExcelReadUtil.ReadHeaderMap(excelPath, SheetName);
          var rows = ExcelReadUtil.ReadRows(excelPath, SheetName);
          int imported = 0;
          foreach (var row in rows)
          {
             var r = new StageRow();
-            r.FromExcelRow(row);
+            r.FromExcelRow(row, map);
             if (string.IsNullOrEmpty(r.id))
                continue;
             var existing = db.stageDataList.Find(s => s.Id == r.id);

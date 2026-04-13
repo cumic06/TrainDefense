@@ -41,22 +41,25 @@ namespace TrainDefense.Editor.DataImport
 
 			// Header row
 			var headerRow = sheet.GetRow(0) ?? sheet.CreateRow(0);
+			var headerList = new List<string>();
 			int col = 0;
 			foreach (var h in headers)
 			{
 				var cell = headerRow.GetCell(col) ?? headerRow.CreateCell(col);
 				cell.SetCellValue(h);
+				headerList.Add(h);
 				col++;
 			}
 
 			// Optional example rows
 			if (exampleRows != null)
 			{
+				var map = new HeaderMap(headerList);
 				int r = 1;
 				foreach (var ex in exampleRows)
 				{
 					var row = sheet.GetRow(r) ?? sheet.CreateRow(r);
-					ex.ToExcelRow(row);
+					ex.ToExcelRow(row, map);
 					r++;
 				}
 			}

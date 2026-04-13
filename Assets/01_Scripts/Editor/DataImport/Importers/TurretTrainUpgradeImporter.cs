@@ -7,6 +7,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 {
 	public class TurretTrainUpgradeImporter : IExcelSheetImporter
 	{
+		public string ExcelFileName => "TrainUpgradeData.xlsx";
 		public string SheetName => "turret_train_upgrade_data";
 		public string ButtonLabel => "TurretTrainUpgrade 데이터 가져오기";
 		// RangeTrainUpgrade와 동일하게 attack_interval 명칭 사용
@@ -21,10 +22,11 @@ namespace TrainDefense.Editor.DataImport.Importers
 			// 같은 ID를 가진 행들을 그룹화
 			var groupedRows = new Dictionary<string, List<TurretTrainUpgradeRow>>();
 
+			var map = ExcelReadUtil.ReadHeaderMap(excelPath, SheetName);
 			foreach (var row in rows)
 			{
 				var r = new TurretTrainUpgradeRow();
-				r.FromExcelRow(row);
+				r.FromExcelRow(row, map);
 				if (string.IsNullOrEmpty(r.id) && string.IsNullOrEmpty(r.name)) continue;
 
 				string key = r.id ?? r.name;

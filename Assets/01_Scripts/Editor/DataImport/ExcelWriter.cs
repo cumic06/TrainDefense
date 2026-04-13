@@ -24,11 +24,21 @@ namespace TrainDefense.Editor.DataImport
 
 			var sheet = GetSheetCaseInsensitive(wb, sheetName) ?? wb.CreateSheet(sheetName);
 
+			// 헤더 행에서 HeaderMap 생성
+			var headerRow = sheet.GetRow(0);
+			var headers = new List<string>();
+			if (headerRow != null)
+			{
+				for (int i = 0; i < headerRow.LastCellNum; i++)
+					headers.Add(headerRow.GetCell(i)?.ToString() ?? string.Empty);
+			}
+			var map = new HeaderMap(headers);
+
 			int rowIndex = 1; // 0 is header, assumed ensured by ExcelTemplate
 			foreach (var r in rows)
 			{
 				var row = sheet.GetRow(rowIndex) ?? sheet.CreateRow(rowIndex);
-				r.ToExcelRow(row);
+				r.ToExcelRow(row, map);
 				rowIndex++;
 			}
 

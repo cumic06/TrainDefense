@@ -12,31 +12,27 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public float criticalChance;
 		public float criticalDamage;
 
-		public override void FromExcelRow(IRow row)
+		public override void FromExcelRow(IRow row, HeaderMap map)
 		{
-			base.FromExcelRow(row);
-			if (row.LastCellNum > 5)
-			{
-				int.TryParse(row.GetCell(5)?.ToString(), out attackDamage);
-				float.TryParse(row.GetCell(6)?.ToString(), out attackRange);
-				int.TryParse(row.GetCell(7)?.ToString(), out attackCount);
-				float.TryParse(row.GetCell(8)?.ToString(), out attackInterval);
-				float.TryParse(row.GetCell(9)?.ToString(), out criticalChance);
-				float.TryParse(row.GetCell(10)?.ToString(), out criticalDamage);
-			}
+			base.FromExcelRow(row, map);
+			attackDamage = map.GetInt(row, "attack_damage");
+			attackRange = map.GetFloat(row, "attack_range");
+			attackCount = map.GetInt(row, "attack_count");
+			attackInterval = map.GetFloat(row, "attack_interval");
+			criticalChance = map.GetFloat(row, "critical_chance");
+			criticalDamage = map.GetFloat(row, "critical_damage");
 		}
 
-		public override void ToExcelRow(IRow row)
+		public override void ToExcelRow(IRow row, HeaderMap map)
 		{
-			base.ToExcelRow(row);
-			Set(row, 5, attackDamage);
-			Set(row, 6, attackRange);
-			Set(row, 7, attackCount);
-			Set(row, 8, attackInterval);
-			Set(row, 9, criticalChance);
-			Set(row, 10, criticalDamage);
+			base.ToExcelRow(row, map);
+			map.SetCell(row, "attack_damage", attackDamage);
+			map.SetCell(row, "attack_range", attackRange);
+			map.SetCell(row, "attack_count", attackCount);
+			map.SetCell(row, "attack_interval", attackInterval);
+			map.SetCell(row, "critical_chance", criticalChance);
+			map.SetCell(row, "critical_damage", criticalDamage);
 		}
 	}
 }
 #endif
-

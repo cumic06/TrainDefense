@@ -8,6 +8,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 {
 	public class UpgradeDataImporter : IExcelSheetImporter
 	{
+		public string ExcelFileName => "UpgradeData.xlsx";
 		public string SheetName => "upgrade_data";
 		public string ButtonLabel => "Upgrade 데이터 가져오기";
 		// Excel 헤더 안내 (H: upgrade_type, I: stat_type)
@@ -20,12 +21,13 @@ namespace TrainDefense.Editor.DataImport.Importers
 
 		public int Import(DB db, string excelPath)
 		{
+			var map = ExcelReadUtil.ReadHeaderMap(excelPath, SheetName);
 			var rows = ExcelReadUtil.ReadRows(excelPath, SheetName);
 			int imported = 0;
 			foreach (var row in rows)
 			{
 				var r = new UpgradeRow();
-				r.FromExcelRow(row);
+				r.FromExcelRow(row, map);
 				if (string.IsNullOrEmpty(r.id) && string.IsNullOrEmpty(r.name)) continue;
 
 				var list = db.upgradeDataList;

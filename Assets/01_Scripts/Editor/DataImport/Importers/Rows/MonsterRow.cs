@@ -20,49 +20,41 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
         public MonsterAttackType attackType;
         public string prefabId;
 
-        public void FromExcelRow(IRow row)
+        public void FromExcelRow(IRow row, HeaderMap map)
         {
-            id = row.GetCell(0)?.ToString();
-            name = row.GetCell(1)?.ToString();
-            description = row.GetCell(2)?.ToString();
-            int.TryParse(row.GetCell(3)?.ToString(), out maxHp);
-            int.TryParse(row.GetCell(4)?.ToString(), out damage);
-            float.TryParse(row.GetCell(5)?.ToString(), out moveSpeed);
-            float.TryParse(row.GetCell(6)?.ToString(), out attackDelay);
-            int.TryParse(row.GetCell(7)?.ToString(), out dropExpMin);
-            int.TryParse(row.GetCell(8)?.ToString(), out dropExpMax);
-            int.TryParse(row.GetCell(9)?.ToString(), out dropMoneyMin);
-            int.TryParse(row.GetCell(10)?.ToString(), out dropMoneyMax);
-            float.TryParse(row.GetCell(11)?.ToString(), out attackRange);
-            System.Enum.TryParse(row.GetCell(12)?.ToString(), out attackType);
-            prefabId = row.GetCell(13)?.ToString();
+            id = map.GetString(row, "id");
+            name = map.GetString(row, "monster_name");
+            description = map.GetString(row, "description");
+            maxHp = map.GetInt(row, "max_hp");
+            damage = map.GetInt(row, "damage");
+            moveSpeed = map.GetFloat(row, "move_speed");
+            attackDelay = map.GetFloat(row, "attack_delay");
+            dropExpMin = map.GetInt(row, "drop_exp_min");
+            dropExpMax = map.GetInt(row, "drop_exp_max");
+            dropMoneyMin = map.GetInt(row, "drop_money_min");
+            dropMoneyMax = map.GetInt(row, "drop_money_max");
+            attackRange = map.GetFloat(row, "attack_range");
+            attackType = map.GetEnum<MonsterAttackType>(row, "attack_type");
+            prefabId = map.GetString(row, "prefab_id");
         }
 
-        public void ToExcelRow(IRow row)
+        public void ToExcelRow(IRow row, HeaderMap map)
         {
-            Set(row, 0, id);
-            Set(row, 1, name);
-            Set(row, 2, description);
-            Set(row, 3, maxHp);
-            Set(row, 4, damage);
-            Set(row, 5, moveSpeed);
-            Set(row, 6, attackDelay);
-            Set(row, 7, dropExpMin);
-            Set(row, 8, dropExpMax);
-            Set(row, 9, dropMoneyMin);
-            Set(row, 10, dropMoneyMax);
-            Set(row, 11, attackRange);
-            Set(row, 12, attackType);
-            Set(row, 13, prefabId);
-        }
-
-        private static void Set(IRow row, int idx, object value)
-        {
-            var cell = row.GetCell(idx) ?? row.CreateCell(idx);
-            if (value is null) cell.SetCellValue(string.Empty); else cell.SetCellValue(value.ToString());
+            map.SetCell(row, "id", id);
+            map.SetCell(row, "monster_name", name);
+            map.SetCell(row, "description", description);
+            map.SetCell(row, "max_hp", maxHp);
+            map.SetCell(row, "damage", damage);
+            map.SetCell(row, "move_speed", moveSpeed);
+            map.SetCell(row, "attack_delay", attackDelay);
+            map.SetCell(row, "drop_exp_min", dropExpMin);
+            map.SetCell(row, "drop_exp_max", dropExpMax);
+            map.SetCell(row, "drop_money_min", dropMoneyMin);
+            map.SetCell(row, "drop_money_max", dropMoneyMax);
+            map.SetCell(row, "attack_range", attackRange);
+            map.SetCell(row, "attack_type", attackType);
+            map.SetCell(row, "prefab_id", prefabId);
         }
     }
 }
 #endif
-
-

@@ -356,9 +356,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 100
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
@@ -369,7 +369,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: NormalProjectile
+    turretProjectilePrefabId: 
   - id: 30002
     name: "\uD654\uC5FC \uD3EC\uD0D1"
     iconId: Weapon_MEL_05_UI
@@ -386,9 +386,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 8
-        damage: 40
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
@@ -399,7 +399,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: FireEffectProjectile
+    turretProjectilePrefabId: 
   - id: 30003
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: Weapon_KMD_10_UI
@@ -416,9 +416,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 250
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
@@ -429,7 +429,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: MissileProjectile
+    turretProjectilePrefabId: 
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: Weapon_288_19_UI
@@ -446,9 +446,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 30
-        damage: 500
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
@@ -459,7 +459,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: LaserProjectile
+    turretProjectilePrefabId: 
   - id: 30005
     name: "\uC804\uAE30 \uD3EC\uD0D1"
     iconId: Weapon_MEL_16_UI
@@ -476,10 +476,10 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 20
-        damage: 100
-        range: 3
-        projectileCount: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 100
@@ -489,7 +489,7 @@ MonoBehaviour:
       TargetCount: 3
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: ElectrickProjectile
+    turretProjectilePrefabId: 
   - id: 30006
     name: "\uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_MEL_14_UI
@@ -506,10 +506,10 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 3
-        damage: 500
-        range: 1
-        projectileCount: 3
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 500
@@ -519,7 +519,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: CannonProjectile
+    turretProjectilePrefabId: 
   - id: 30007
     name: "\uC800\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_KMD_12_UI
@@ -536,10 +536,10 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 30
-        damage: 500
-        range: 1
-        projectileCount: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 500
@@ -549,7 +549,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: SniperProjectile
+    turretProjectilePrefabId: 
   - id: 31001
     name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
     iconId: 
@@ -565,9 +565,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 50
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
@@ -578,7 +578,7 @@ MonoBehaviour:
       TargetCount: 0
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: NormalProjectile
+    turretProjectilePrefabId: 
   - id: 31002
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
     iconId: 
@@ -594,9 +594,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 25
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
@@ -607,7 +607,7 @@ MonoBehaviour:
       TargetCount: 0
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: FireEffectProjectile
+    turretProjectilePrefabId: 
   - id: 31003
     name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: 
@@ -623,9 +623,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 100
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
@@ -636,7 +636,7 @@ MonoBehaviour:
       TargetCount: 0
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: MissileProjectile
+    turretProjectilePrefabId: 
   - id: 31004
     name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: 
@@ -652,10 +652,10 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 300
-        range: 1
-        projectileCount: 3
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 300
@@ -665,7 +665,7 @@ MonoBehaviour:
       TargetCount: 0
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: LaserProjectile
+    turretProjectilePrefabId: 
   - id: 31005
     name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
     iconId: 
@@ -681,10 +681,10 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 400
-        range: 1
-        projectileCount: 5
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 400
@@ -694,7 +694,7 @@ MonoBehaviour:
       TargetCount: 0
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: ElectrickProjectile
+    turretProjectilePrefabId: 
   - id: 31006
     name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: 
@@ -710,10 +710,10 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 400
-        range: 1
-        projectileCount: 3
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 400
@@ -723,7 +723,7 @@ MonoBehaviour:
       TargetCount: 0
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: CannonProjectile
+    turretProjectilePrefabId: 
   - id: 31007
     name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
     iconId: 
@@ -739,9 +739,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 10
-        damage: 600
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     turretTrainStatus:
@@ -752,7 +752,7 @@ MonoBehaviour:
       TargetCount: 0
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: SniperProjectile
+    turretProjectilePrefabId: 
   rangeTrainDataList:
   - id: 40001
     name: "\uD3ED\uBC1C \uD3EC\uD0D1"
@@ -770,10 +770,10 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 5
-        damage: 500
-        range: 1
-        projectileCount: 4
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 500
@@ -782,7 +782,7 @@ MonoBehaviour:
       AttackInterval: 4
       CriticalChance: 0
       CriticalDamage: 0
-    rangeProjectilePrefabId: ExplosionProjectile
+    rangeProjectilePrefabId: 
   - id: 40002
     name: "\uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
@@ -799,9 +799,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 5
-        damage: 10
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
@@ -811,7 +811,7 @@ MonoBehaviour:
       AttackInterval: 0.1
       CriticalChance: 0
       CriticalDamage: 0
-    rangeProjectilePrefabId: ColdAirProjectile
+    rangeProjectilePrefabId: 
   - id: 41001
     name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
     iconId: 
@@ -827,10 +827,10 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 8
-        damage: 500
-        range: 1
-        projectileCount: 4
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 500
@@ -839,7 +839,7 @@ MonoBehaviour:
       AttackInterval: 4
       CriticalChance: 0
       CriticalDamage: 0
-    rangeProjectilePrefabId: ExplosionProjectile
+    rangeProjectilePrefabId: 
   - id: 41002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: 
@@ -855,9 +855,9 @@ MonoBehaviour:
       skillCooldown: 0
       skillIconId: 
       projectileData:
-        projectilePrefabId: 13
-        damage: 15
-        range: 1
+        projectilePrefabId: 
+        damage: 0
+        range: 0
         projectileCount: 0
     isMainTrain: 0
     rangeTrainStatus:
@@ -867,7 +867,7 @@ MonoBehaviour:
       AttackInterval: 0.1
       CriticalChance: 0
       CriticalDamage: 0
-    rangeProjectilePrefabId: ColdAirProjectile
+    rangeProjectilePrefabId: 
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
   - id: 90001

@@ -11,32 +11,23 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public int tier;
 		public string replaceTrainId;
 
-		public void FromExcelRow(IRow row)
+		public void FromExcelRow(IRow row, HeaderMap map)
 		{
-			id = row.GetCell(0)?.ToString();
-			trainDataId = row.GetCell(1)?.ToString();
-			int.TryParse(row.GetCell(2)?.ToString(), out weight);
-			int.TryParse(row.GetCell(3)?.ToString(), out tier);
-			replaceTrainId = row.GetCell(4)?.ToString();
+			id = map.GetString(row, "id");
+			trainDataId = map.GetString(row, "train_data_id");
+			weight = map.GetInt(row, "weight");
+			tier = map.GetInt(row, "tier");
+			replaceTrainId = map.GetString(row, "replace_train_id");
 		}
 
-		public void ToExcelRow(IRow row)
+		public void ToExcelRow(IRow row, HeaderMap map)
 		{
-			Set(row, 0, id);
-			Set(row, 1, trainDataId);
-			Set(row, 2, weight);
-			Set(row, 3, tier);
-			Set(row, 4, replaceTrainId);
-		}
-
-		private static void Set(IRow row, int idx, object value)
-		{
-			var cell = row.GetCell(idx) ?? row.CreateCell(idx);
-			if (value is null) cell.SetCellValue(string.Empty);
-			else if (value is int i) cell.SetCellValue(i);
-			else cell.SetCellValue(value.ToString());
+			map.SetCell(row, "id", id);
+			map.SetCell(row, "train_data_id", trainDataId);
+			map.SetCell(row, "weight", weight);
+			map.SetCell(row, "tier", tier);
+			map.SetCell(row, "replace_train_id", replaceTrainId);
 		}
 	}
 }
 #endif
-
