@@ -1217,7 +1217,7 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map1
-    stageImage: {fileID: 7257567913506708742, guid: abc79d95ca2994e20b019ba42fccbcb9, type: 3}
+    stageImage: {fileID: 8598508764172064028, guid: 15a620789885c0e4785fe4b6ee084b5d, type: 3}
   - id: 50002
     stageInspectionTime:
     - 40
@@ -1238,7 +1238,7 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map2
-    stageImage: {fileID: 0}
+    stageImage: {fileID: -1470003385716402202, guid: 0fe6a754e47d94446aae565328af8451, type: 3}
   - id: 50003
     stageInspectionTime:
     - 40
@@ -1262,7 +1262,7 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map3
-    stageImage: {fileID: 0}
+    stageImage: {fileID: 8750756355730269390, guid: 36a96b526898ef64595432763c5436f6, type: 3}
   - id: 50004
     stageInspectionTime:
     - 40
@@ -1283,7 +1283,7 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map4
-    stageImage: {fileID: 0}
+    stageImage: {fileID: 8750756355730269390, guid: 36a96b526898ef64595432763c5436f6, type: 3}
   - id: 50005
     stageInspectionTime:
     - 40
@@ -1304,7 +1304,7 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map5
-    stageImage: {fileID: 0}
+    stageImage: {fileID: 9023624542499435072, guid: 0980d694155662c49bcb150ed8cb626b, type: 3}
   upgradeDataList:
   - id: 110001
     iconId: 
