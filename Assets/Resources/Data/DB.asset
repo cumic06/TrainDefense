@@ -1283,7 +1283,7 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map4
-    stageImage: {fileID: 8750756355730269390, guid: 36a96b526898ef64595432763c5436f6, type: 3}
+    stageImage: {fileID: -5933715298724706184, guid: cbb1a3d97c892a94f875b5f9da3ae9ae, type: 3}
   - id: 50005
     stageInspectionTime:
     - 40
