@@ -8,18 +8,20 @@ namespace TrainDefense.Editor.DataImport.Importers
 {
 	public class UpgradeTrainChoiceImporter : IExcelSheetImporter
 	{
+		public string ExcelFileName => "ChoiceData.xlsx";
 		public string SheetName => "upgrade_train_choice_data";
 		public string ButtonLabel => "UpgradeTrainChoice 데이터 가져오기";
-		public string[] Headers => new[] { "id", "target_train_id", "weighted_upgrades", "weight", "weight" };
+		public string[] Headers => new[] { "id", "target_train_id", "weighted_upgrades", "weight", "upgrade_weight" };
 
 		public int Import(DB db, string excelPath)
 		{
+			var map = ExcelReadUtil.ReadHeaderMap(excelPath, SheetName);
 			var rows = ExcelReadUtil.ReadRows(excelPath, SheetName);
 			int imported = 0;
 			foreach (var row in rows)
 			{
 				var r = new UpgradeTrainChoiceRow();
-				r.FromExcelRow(row);
+				r.FromExcelRow(row, map);
 				if (string.IsNullOrEmpty(r.id)) continue;
 
 				var list = db.TriChoiceDB.UpgradeTrainChoices;

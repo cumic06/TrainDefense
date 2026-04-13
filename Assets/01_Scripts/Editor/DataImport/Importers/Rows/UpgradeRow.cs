@@ -9,66 +9,45 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string name;
 		public string description;
 		public int needMoney;
-		public float upgradeValue;	// NonTrainUpgrade: 그대로 사용, TrainUpgrade: stat 값으로도 사용
+		public float upgradeValue;
 		public int maxUpgradeCount;
 		public string iconId;
-
-		// 새 필드들 (UpgradeData의 확장과 매핑)
-		// upgradeType: "TrainUpgrade" / "NonTrainUpgrade" 또는 0 / 1 등 문자열로 표기
 		public string upgradeType;
-		// statType: StatType 이름 (예: "AttackDamage", "MaxHp" ...)
 		public string statType;
-		// 업그레이드 레벨당 성장률 (value = baseValue * growthRate^currentLevel)
 		public float growthRate;
 
-		public void FromExcelRow(IRow row)
+		public void FromExcelRow(IRow row, HeaderMap map)
 		{
-			id = row.GetCell(0)?.ToString();
-			name = row.GetCell(1)?.ToString();
-			description = row.GetCell(2)?.ToString();
-			int.TryParse(row.GetCell(3)?.ToString(), out needMoney);
-			float.TryParse(row.GetCell(4)?.ToString(), out upgradeValue);
-			int.TryParse(row.GetCell(5)?.ToString(), out maxUpgradeCount);
-			iconId = row.GetCell(6)?.ToString();
+			id = map.GetString(row, "id");
+			name = map.GetString(row, "upgrade_name");
+			description = map.GetString(row, "description");
+			needMoney = map.GetInt(row, "need_money");
+			upgradeValue = map.GetFloat(row, "upgrade_value");
+			maxUpgradeCount = map.GetInt(row, "max_upgrade_count");
+			iconId = map.GetString(row, "icon_id");
 
-			// 선택 컬럼: 시트에 없으면 무시
-			if (row.LastCellNum > 7)
-			{
-				upgradeType = row.GetCell(7)?.ToString();
-			}
+			if (map.HasColumn("upgrade_type"))
+				upgradeType = map.GetString(row, "upgrade_type");
 
-			if (row.LastCellNum > 8)
-			{
-				statType = row.GetCell(8)?.ToString();
-			}
+			if (map.HasColumn("stat_type"))
+				statType = map.GetString(row, "stat_type");
 
-			if (row.LastCellNum > 9)
-			{
-				float.TryParse(row.GetCell(9)?.ToString(), out growthRate);
-			}
+			if (map.HasColumn("growth_rate"))
+				growthRate = map.GetFloat(row, "growth_rate");
 		}
 
-		public void ToExcelRow(IRow row)
+		public void ToExcelRow(IRow row, HeaderMap map)
 		{
-			Set(row, 0, id);
-			Set(row, 1, name);
-			Set(row, 2, description);
-			Set(row, 3, needMoney);
-			Set(row, 4, upgradeValue);
-			Set(row, 5, maxUpgradeCount);
-			Set(row, 6, iconId);
-			Set(row, 7, upgradeType);
-			Set(row, 8, statType);
-			Set(row, 9, growthRate);
-		}
-
-		private static void Set(IRow row, int idx, object value)
-		{
-			var cell = row.GetCell(idx) ?? row.CreateCell(idx);
-			if (value is null) cell.SetCellValue(string.Empty);
-			else if (value is int i) cell.SetCellValue(i);
-			else if (value is float f) cell.SetCellValue(f);
-			else cell.SetCellValue(value.ToString());
+			map.SetCell(row, "id", id);
+			map.SetCell(row, "upgrade_name", name);
+			map.SetCell(row, "description", description);
+			map.SetCell(row, "need_money", needMoney);
+			map.SetCell(row, "upgrade_value", upgradeValue);
+			map.SetCell(row, "max_upgrade_count", maxUpgradeCount);
+			map.SetCell(row, "icon_id", iconId);
+			map.SetCell(row, "upgrade_type", upgradeType);
+			map.SetCell(row, "stat_type", statType);
+			map.SetCell(row, "growth_rate", growthRate);
 		}
 	}
 }

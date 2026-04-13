@@ -343,11 +343,16 @@ namespace TrainDefense.Game
 
       public void TakeDamage(int damage)
       {
+         TakeDamage(damage, false);
+      }
+
+      public void TakeDamage(int damage, bool isCritical)
+      {
          if (_isDead)
             return;
 
          _currentHp -= damage;
-         GameEventSystem.Publish(new HitEvent(_currentHp, _currentMonsterStatus.MaxHp, this, transform.position, damage));
+         GameEventSystem.Publish(new HitEvent(_currentHp, _currentMonsterStatus.MaxHp, this, transform.position, damage, isCritical));
 
          if (_currentHp <= 0)
          {

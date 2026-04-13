@@ -7,9 +7,10 @@ namespace TrainDefense.Editor.DataImport.Importers
 {
 	public class RangeTrainUpgradeImporter : IExcelSheetImporter
 	{
+		public string ExcelFileName => "TrainUpgradeData.xlsx";
 		public string SheetName => "range_train_upgrade_data";
 		public string ButtonLabel => "RangeTrainUpgrade 데이터 가져오기";
-		public string[] Headers => new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_damage", "attack_range", "attack_count", "attack_interval" };
+		public string[] Headers => new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_damage", "attack_range", "attack_count", "attack_interval", "critical_chance", "critical_damage" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -20,10 +21,11 @@ namespace TrainDefense.Editor.DataImport.Importers
 			// 같은 ID를 가진 행들을 그룹화
 			var groupedRows = new Dictionary<string, List<RangeTrainUpgradeRow>>();
 
+			var map = ExcelReadUtil.ReadHeaderMap(excelPath, SheetName);
 			foreach (var row in rows)
 			{
 				var r = new RangeTrainUpgradeRow();
-				r.FromExcelRow(row);
+				r.FromExcelRow(row, map);
 				if (string.IsNullOrEmpty(r.id) && string.IsNullOrEmpty(r.name)) continue;
 
 				string key = r.id ?? r.name;
@@ -94,7 +96,9 @@ namespace TrainDefense.Editor.DataImport.Importers
 					AttackDamage = r.attackDamage,
 					AttackRange = r.attackRange,
 					AttackCount = r.attackCount,
-					AttackInterval = r.attackInterval
+					AttackInterval = r.attackInterval,
+					CriticalChance = r.criticalChance,
+					CriticalDamage = r.criticalDamage
 				};
 				SetPrivateField(statsType, upgradeStats, "rangeStatusUpgrade", rangeStatus);
 

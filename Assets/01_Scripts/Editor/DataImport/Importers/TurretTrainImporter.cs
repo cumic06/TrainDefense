@@ -7,20 +7,22 @@ namespace TrainDefense.Editor.DataImport.Importers
 {
 	public class TurretTrainImporter : IExcelSheetImporter
 	{
+		public string ExcelFileName => "TrainData.xlsx";
 		public string SheetName => "turret_train_data";
 		public string ButtonLabel => "TurretTrain 데이터 가져오기";
 		// RangeTrain과 동일하게 attack_interval 명칭 사용
-		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "prefab_id", "icon_id", "has_skill", "skill_cooldown", "skill_icon_id", "attack_range", "attack_damage", "attack_count", "attack_interval", "target_count", "projectile_prefab_id" };
+		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "prefab_id", "icon_id", "has_skill", "skill_cooldown", "skill_icon_id", "skill_projectile_prefab_id", "skill_projectile_damage", "skill_projectile_range", "skill_projectile_count", "attack_range", "attack_damage", "attack_count", "attack_interval", "target_count", "turret_projectile_prefab_id", "critical_chance", "critical_damage" };
 
 		public int Import(DB db, string excelPath)
 		{
+			var map = ExcelReadUtil.ReadHeaderMap(excelPath, SheetName);
 			var rows = ExcelReadUtil.ReadRows(excelPath, SheetName);
 			int imported = 0;
 			var refl = new TurretTrainDataReflector();
 			foreach (var row in rows)
 			{
 				var r = new TurretTrainRow();
-				r.FromExcelRow(row);
+				r.FromExcelRow(row, map);
 				if (string.IsNullOrEmpty(r.id)) continue;
 				var existing = db.turretTrainDataList.Find(t => t.Id == r.id);
 				if (existing == null)

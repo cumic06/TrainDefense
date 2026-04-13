@@ -112,12 +112,17 @@ namespace TrainDefense.Game
 
         public virtual void TakeDamage(int damage)
         {
+            TakeDamage(damage, false);
+        }
+
+        public virtual void TakeDamage(int damage, bool isCritical)
+        {
             if (_isDead) return;
 
             _currentHp -= damage;
             _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
 
-            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, damage));
+            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, damage, isCritical));
 
             if (_currentHp <= 0)
             {
