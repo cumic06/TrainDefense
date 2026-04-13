@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.Tutorial;
 using Cumic.Events;
 using Cumic;
 using UnityEngine;
@@ -10,8 +11,10 @@ namespace TrainDefense
     public class UserDataManager : Singleton<UserDataManager>
     {
         private const string DISCOVERED_MONSTERS_KEY = "DiscoveredMonsters";
+        private const string TUTORIAL_SAVE_KEY = "TutorialSaveData";
 
         private Dictionary<string, int> _triChoiceData = new();
+        private TutorialSaveData _tutorialSaveData;
 
         [ShowInInspector]
         private Dictionary<string, int> _upgradeLevels = new();
@@ -28,6 +31,7 @@ namespace TrainDefense
         public int CurrentLevel => _currentLevel;
         public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
         public UserOptionData UserOptionData => _userOptionData;
+        public TutorialSaveData TutorialSaveData => _tutorialSaveData;
 
         private void Start()
         {
@@ -35,6 +39,7 @@ namespace TrainDefense
 
             LoadDiscoveredMonsters();
             LoadUserOptionData();
+            LoadTutorialData();
             SubscribeEvents();
             _coin = 0;
         }
@@ -42,6 +47,8 @@ namespace TrainDefense
         private void OnDestroy()
         {
             UnsubscribeEvents();
+            if (_tutorialSaveData != null)
+                _tutorialSaveData.OnDataChanged -= SaveTutorialData;
         }
 
         #region Event   
@@ -120,6 +127,31 @@ namespace TrainDefense
         {
             _userOptionData = UserOptionDataParser.Load();
         }
+
+        #region Tutorial Data
+
+        private void LoadTutorialData()
+        {
+            string json = PlayerPrefs.GetString(TUTORIAL_SAVE_KEY, "");
+            _tutorialSaveData = TutorialSaveData.FromJson(json);
+            _tutorialSaveData.OnDataChanged += SaveTutorialData;
+        }
+
+        private void SaveTutorialData()
+        {
+            string json = _tutorialSaveData.ToJson();
+            PlayerPrefs.SetString(TUTORIAL_SAVE_KEY, json);
+            PlayerPrefs.Save();
+        }
+
+        [Button("튜토리얼 진행 초기화")]
+        private void ResetTutorialData()
+        {
+            _tutorialSaveData?.ResetAll();
+            Debug.Log("[UserDataManager] 튜토리얼 데이터가 초기화되었습니다.");
+        }
+
+        #endregion
 
         public void SetHapticEnabled(bool enabled)
         {
