@@ -20,7 +20,8 @@ namespace TrainDefense.Game.Tutorial
         /// <summary>
         /// 화살표를 표시하고 바운스 애니메이션을 시작합니다.
         /// </summary>
-        public void Show(TutorialArrowDirection direction, Vector2 targetCanvasPosition)
+        public void Show(TutorialArrowDirection direction, Vector2 targetCanvasPosition,
+            TutorialArrowLookDirection lookDirection = TutorialArrowLookDirection.Auto)
         {
             if (direction == TutorialArrowDirection.None)
             {
@@ -30,59 +31,96 @@ namespace TrainDefense.Game.Tutorial
 
             gameObject.SetActive(true);
 
-            // 방향에 따른 회전 및 위치 오프셋
-            float rotation;
-            Vector2 posOffset;
-
-            switch (direction)
-            {
-                case TutorialArrowDirection.Up:
-                    rotation = 0f;
-                    posOffset = new Vector2(0, _offset);
-                    break;
-                case TutorialArrowDirection.Down:
-                    rotation = 180f;
-                    posOffset = new Vector2(0, -_offset);
-                    break;
-                case TutorialArrowDirection.Left:
-                    rotation = 90f;
-                    posOffset = new Vector2(-_offset, 0);
-                    break;
-                case TutorialArrowDirection.Right:
-                    rotation = -90f;
-                    posOffset = new Vector2(_offset, 0);
-                    break;
-                default:
-                    Hide();
-                    return;
-            }
-
-            _arrowTransform.localEulerAngles = new Vector3(0, 0, rotation);
+            // 배치 방향에 따른 위치 오프셋
+            Vector2 posOffset = GetPositionOffset(direction);
             _arrowTransform.anchoredPosition = targetCanvasPosition + posOffset;
 
-            // 바운스 방향 결정
-            var bounceEndPos = _arrowTransform.anchoredPosition;
-            switch (direction)
-            {
-                case TutorialArrowDirection.Up:
-                    bounceEndPos.y += _bounceDistance;
-                    break;
-                case TutorialArrowDirection.Down:
-                    bounceEndPos.y -= _bounceDistance;
-                    break;
-                case TutorialArrowDirection.Left:
-                    bounceEndPos.x -= _bounceDistance;
-                    break;
-                case TutorialArrowDirection.Right:
-                    bounceEndPos.x += _bounceDistance;
-                    break;
-            }
+            // 바라보는 방향 회전 적용
+            float rotation = lookDirection == TutorialArrowLookDirection.Auto
+                ? GetAutoRotation(direction)
+                : GetLookRotation(lookDirection);
+            _arrowTransform.localEulerAngles = new Vector3(0, 0, rotation);
+
+            // 바운스: 배치 방향 기준으로 바운스
+            var bounceEndPos = _arrowTransform.anchoredPosition + GetBounceOffset(direction);
 
             _bounceTween?.Kill();
             _bounceTween = _arrowTransform.DOAnchorPos(bounceEndPos, _bounceDuration)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetUpdate(true);
+        }
+
+        private Vector2 GetPositionOffset(TutorialArrowDirection direction)
+        {
+            float diag = _offset * 0.707f;
+            return direction switch
+            {
+                TutorialArrowDirection.Up => new Vector2(0, _offset),
+                TutorialArrowDirection.Down => new Vector2(0, -_offset),
+                TutorialArrowDirection.Left => new Vector2(-_offset, 0),
+                TutorialArrowDirection.Right => new Vector2(_offset, 0),
+                TutorialArrowDirection.UpLeft => new Vector2(-diag, diag),
+                TutorialArrowDirection.UpRight => new Vector2(diag, diag),
+                TutorialArrowDirection.DownLeft => new Vector2(-diag, -diag),
+                TutorialArrowDirection.DownRight => new Vector2(diag, -diag),
+                _ => Vector2.zero
+            };
+        }
+
+        private Vector2 GetBounceOffset(TutorialArrowDirection direction)
+        {
+            float diag = _bounceDistance * 0.707f;
+            return direction switch
+            {
+                TutorialArrowDirection.Up => new Vector2(0, _bounceDistance),
+                TutorialArrowDirection.Down => new Vector2(0, -_bounceDistance),
+                TutorialArrowDirection.Left => new Vector2(-_bounceDistance, 0),
+                TutorialArrowDirection.Right => new Vector2(_bounceDistance, 0),
+                TutorialArrowDirection.UpLeft => new Vector2(-diag, diag),
+                TutorialArrowDirection.UpRight => new Vector2(diag, diag),
+                TutorialArrowDirection.DownLeft => new Vector2(-diag, -diag),
+                TutorialArrowDirection.DownRight => new Vector2(diag, -diag),
+                _ => Vector2.zero
+            };
+        }
+
+        /// <summary>
+        /// Auto 모드: 배치 방향의 반대(타겟)를 가리키는 회전값
+        /// </summary>
+        private float GetAutoRotation(TutorialArrowDirection direction)
+        {
+            return direction switch
+            {
+                TutorialArrowDirection.Up => 0f,
+                TutorialArrowDirection.Down => 180f,
+                TutorialArrowDirection.Left => 90f,
+                TutorialArrowDirection.Right => -90f,
+                TutorialArrowDirection.UpLeft => 45f,
+                TutorialArrowDirection.UpRight => -45f,
+                TutorialArrowDirection.DownLeft => 135f,
+                TutorialArrowDirection.DownRight => -135f,
+                _ => 0f
+            };
+        }
+
+        /// <summary>
+        /// 수동 LookDirection에 따른 회전값 (해당 방향을 가리킴)
+        /// </summary>
+        private float GetLookRotation(TutorialArrowLookDirection look)
+        {
+            return look switch
+            {
+                TutorialArrowLookDirection.Down => 0f,
+                TutorialArrowLookDirection.Up => 180f,
+                TutorialArrowLookDirection.Right => 90f,
+                TutorialArrowLookDirection.Left => -90f,
+                TutorialArrowLookDirection.DownRight => 45f,
+                TutorialArrowLookDirection.DownLeft => -45f,
+                TutorialArrowLookDirection.UpRight => 135f,
+                TutorialArrowLookDirection.UpLeft => -135f,
+                _ => 0f
+            };
         }
 
         public void Hide()

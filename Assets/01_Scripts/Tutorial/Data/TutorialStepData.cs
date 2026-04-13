@@ -26,10 +26,16 @@ namespace TrainDefense.Game.Tutorial
 
         [Header("연출")]
         [SerializeField] private TutorialArrowDirection _arrowDirection;
+        [Tooltip("화살표가 바라보는 방향 (Auto = 배치 방향에 따라 자동)")]
+        [SerializeField] private TutorialArrowLookDirection _arrowLookDirection = TutorialArrowLookDirection.Auto;
         [SerializeField] private bool _useDimming = true;
         [SerializeField] private bool _useHighlight = true;
         [SerializeField] private float _delayBefore;
         [SerializeField] private string _sfxKey;
+
+        [Header("메시지 위치 보정")]
+        [Tooltip("메시지 말풍선의 위치를 추가로 보정합니다 (캔버스 로컬 좌표 기준)")]
+        [SerializeField] private Vector2 _messageOffset;
 
         [Header("선행 조건")]
         [SerializeField] private string _prerequisiteStepId;
@@ -44,10 +50,12 @@ namespace TrainDefense.Game.Tutorial
         public UnityEvent CustomSkipEvent => _customSkipEvent;
         public string Message => _message;
         public TutorialArrowDirection ArrowDirection => _arrowDirection;
+        public TutorialArrowLookDirection ArrowLookDirection => _arrowLookDirection;
         public bool UseDimming => _useDimming;
         public bool UseHighlight => _useHighlight;
         public float DelayBefore => _delayBefore;
         public string SfxKey => _sfxKey;
+        public Vector2 MessageOffset => _messageOffset;
         public string PrerequisiteStepId => _prerequisiteStepId;
 
         #endregion

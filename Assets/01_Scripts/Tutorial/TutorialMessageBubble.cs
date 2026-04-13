@@ -15,6 +15,9 @@ namespace TrainDefense.Game.Tutorial
         [SerializeField] private float _typingSpeed = 0.03f;
         [SerializeField] private float _fadeDuration = 0.2f;
         [SerializeField] private float _verticalOffset = 80f;
+        [SerializeField] private Vector2 _padding = new Vector2(40f, 30f);
+        [SerializeField] private float _minWidth = 200f;
+        [SerializeField] private float _maxWidth = 600f;
 
         private Tween _typingTween;
         private Tween _fadeTween;
@@ -59,6 +62,9 @@ namespace TrainDefense.Game.Tutorial
 
             _bubbleRect.anchoredPosition = bubblePos;
 
+            // 텍스트 길이에 맞게 배경 크기 조정
+            ResizeBubble(message);
+
             // 타이핑 효과
             _messageText.text = "";
             float typingDuration = message.Length * _typingSpeed;
@@ -95,6 +101,28 @@ namespace TrainDefense.Game.Tutorial
             _fadeTween?.Kill();
             _fadeTween = null;
             gameObject.SetActive(false);
+        }
+
+        private void ResizeBubble(string message)
+        {
+            // 최대 너비 제한을 적용하여 preferred 크기 계산
+            float textMaxWidth = _maxWidth - _padding.x;
+            _messageText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textMaxWidth);
+            _messageText.text = message;
+            _messageText.ForceMeshUpdate();
+
+            float preferredWidth = Mathf.Min(_messageText.preferredWidth, textMaxWidth);
+            float preferredHeight = _messageText.preferredHeight;
+
+            float bubbleWidth = Mathf.Clamp(preferredWidth + _padding.x, _minWidth, _maxWidth);
+            float bubbleHeight = preferredHeight + _padding.y;
+
+            _bubbleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, bubbleWidth);
+            _bubbleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, bubbleHeight);
+
+            // 텍스트 영역도 맞춤
+            _messageText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, bubbleWidth - _padding.x);
+            _messageText.text = "";
         }
 
         private void OnDestroy()

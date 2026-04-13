@@ -5,15 +5,15 @@ using UnityEngine;
 namespace TrainDefense.Game.Tutorial
 {
     /// <summary>
-    /// 튜토리얼 완료 상태 저장 데이터 (PlayerPrefs 기반)
+    /// 튜토리얼 완료 상태 데이터 (순수 데이터, 저장은 UserDataManager에서 관리)
     /// </summary>
     [Serializable]
     public class TutorialSaveData
     {
-        private const string SaveKey = "TutorialSaveData";
-
         private HashSet<string> _completedSequenceIds = new();
         private HashSet<string> _completedStepIds = new();
+
+        public event Action OnDataChanged;
 
         public bool IsSequenceCompleted(string sequenceId)
         {
@@ -28,43 +28,40 @@ namespace TrainDefense.Game.Tutorial
         public void MarkSequenceCompleted(string sequenceId)
         {
             if (_completedSequenceIds.Add(sequenceId))
-                Save();
+                OnDataChanged?.Invoke();
         }
 
         public void MarkStepCompleted(string stepId)
         {
             if (_completedStepIds.Add(stepId))
-                Save();
+                OnDataChanged?.Invoke();
         }
 
         public void ResetAll()
         {
             _completedSequenceIds.Clear();
             _completedStepIds.Clear();
-            Save();
+            OnDataChanged?.Invoke();
         }
 
-        #region PlayerPrefs Persistence
+        #region Serialization
 
-        public void Save()
+        public string ToJson()
         {
             var data = new SerializableData
             {
                 completedSequenceIds = new List<string>(_completedSequenceIds),
                 completedStepIds = new List<string>(_completedStepIds)
             };
-            var json = JsonUtility.ToJson(data);
-            PlayerPrefs.SetString(SaveKey, json);
-            PlayerPrefs.Save();
+            return JsonUtility.ToJson(data);
         }
 
-        public static TutorialSaveData Load()
+        public static TutorialSaveData FromJson(string json)
         {
             var saveData = new TutorialSaveData();
 
-            if (PlayerPrefs.HasKey(SaveKey))
+            if (!string.IsNullOrEmpty(json))
             {
-                var json = PlayerPrefs.GetString(SaveKey);
                 var data = JsonUtility.FromJson<SerializableData>(json);
 
                 if (data.completedSequenceIds != null)

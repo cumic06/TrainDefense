@@ -17,7 +17,8 @@ namespace TrainDefense.Game.Tutorial
         void HideStep();
         void SetDimming(bool enabled);
         void SetHighlight(RectTransform target);
-        void SetArrow(TutorialArrowDirection direction, Vector2 targetPosition);
+        void SetArrow(TutorialArrowDirection direction, Vector2 targetPosition,
+            TutorialArrowLookDirection lookDirection = TutorialArrowLookDirection.Auto);
         void SetMessage(string text, Vector2 anchorPosition);
         void SetSkipButtonVisible(bool visible);
     }

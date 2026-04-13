@@ -67,27 +67,50 @@ namespace TrainDefense.Game.Tutorial
 
         private void Initialize()
         {
-            _saveData = TutorialSaveData.Load();
+            _saveData = UserDataManager.Instance.TutorialSaveData;
             _service = new TutorialService(_sequences, _saveData);
-            _presenter = new TutorialPresenter(_service, _overlayView);
 
             // Service 이벤트 -> Manager 이벤트 전달
             _service.OnTutorialStart += (id) => OnTutorialStart?.Invoke(id);
             _service.OnStepChanged += (index, step) => OnStepChanged?.Invoke(index, step);
             _service.OnTutorialComplete += HandleTutorialComplete;
 
-            // Presenter 이벤트 구독
+            BindView();
+        }
+
+        private void BindView()
+        {
+            // 기존 Presenter 정리
+            if (_presenter != null)
+            {
+                _presenter.OnStepPresented -= HandleStepPresented;
+                _presenter.OnSkipPopupRequested -= HandleSkipPopupRequested;
+                _presenter.Dispose();
+                _presenter = null;
+            }
+
+            if (_skipPopup != null)
+            {
+                _skipPopup.OnConfirmed -= HandleSkipConfirmed;
+                _skipPopup.OnCancelled -= HandleSkipCancelled;
+            }
+
+            // 항상 현재 씬에서 찾기 (씬 전환 시 이전 씬의 참조가 남아있을 수 있음)
+            _overlayView = FindAnyObjectByType<TutorialOverlayView>(FindObjectsInactive.Include);
+            _skipPopup = FindAnyObjectByType<TutorialSkipPopup>(FindObjectsInactive.Include);
+
+            if (_overlayView == null) return;
+
+            _presenter = new TutorialPresenter(_service, _overlayView);
             _presenter.OnStepPresented += HandleStepPresented;
             _presenter.OnSkipPopupRequested += HandleSkipPopupRequested;
 
-            // 스킵 팝업 이벤트 구독
             if (_skipPopup != null)
             {
                 _skipPopup.OnConfirmed += HandleSkipConfirmed;
                 _skipPopup.OnCancelled += HandleSkipCancelled;
             }
 
-            // 초기 상태: 오버레이 숨김
             _overlayView.Hide();
             if (_skipPopup != null)
                 _skipPopup.Hide();
@@ -95,7 +118,13 @@ namespace TrainDefense.Game.Tutorial
 
         private void OnDestroy()
         {
-            _presenter?.Dispose();
+            if (_presenter != null)
+            {
+                _presenter.OnStepPresented -= HandleStepPresented;
+                _presenter.OnSkipPopupRequested -= HandleSkipPopupRequested;
+                _presenter.Dispose();
+            }
+
             StopAllTutorialCoroutines();
             CleanupButtonTarget();
 
@@ -113,6 +142,7 @@ namespace TrainDefense.Game.Tutorial
         /// </summary>
         public bool StartTutorial(string sequenceId)
         {
+            BindView();
             return _service.TryStartSequence(sequenceId);
         }
 
@@ -131,16 +161,6 @@ namespace TrainDefense.Game.Tutorial
         {
             _saveData.ResetAll();
         }
-
-#if UNITY_EDITOR
-        [UnityEditor.MenuItem("Debug/Tutorial/Reset All Progress")]
-        private static void ResetAllProgressMenu()
-        {
-            PlayerPrefs.DeleteKey("TutorialSaveData");
-            PlayerPrefs.Save();
-            Debug.Log("[Tutorial] PlayerPrefs 초기화 완료");
-        }
-#endif
 
         #endregion
 

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887768309d325914b820c47a021cd2b0, type: 3}
+  m_Name: TrainInfoSlotTutorialSequence
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialSequenceData
+  _sequenceId: trainInfoSlotTutorial
+  _displayName: "\uAE30\uCC28 \uC815\uBCF4 \uC2AC\uB86F \uD29C\uD1A0\uB9AC\uC5BC"
+  _steps:
+  - _id: 20000
+    _targetObject: {fileID: 0}
+    _targetObjectName: TrainInfoSlotUI(Clone)
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "\uC774\uAC83\uC740 \uAE30\uCC28 \uC815\uBCF4 \uC2AC\uB86F\uC785\uB2C8\uB2E4.\n\uAE30\uCC28\uC758
+      \uCCB4\uB825 \uC0C1\uD0DC\uB97C \uC0C9\uC0C1\uC73C\uB85C \uD655\uC778\uD560
+      \uC218 \uC788\uC5B4\uC694!"
+    _arrowDirection: 1
+    _arrowLookDirection: 1
+    _useDimming: 1
+    _useHighlight: 1
+    _delayBefore: 0.5
+    _sfxKey: 
+    _messageOffset: {x: 0, y: 100}
+    _prerequisiteStepId: 
+  - _id: 20001
+    _targetObject: {fileID: 0}
+    _targetObjectName: TrainInfoSlotUI(Clone)
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "\uCCB4\uB825\uC5D0 \uB530\uB77C \uCD08\uB85D \u2192 \uB178\uB791 
+      \u2192 \uBE68\uAC15\uC73C\uB85C \uBCC0\uD569\uB2C8\uB2E4."
+    _arrowDirection: 1
+    _arrowLookDirection: 1
+    _useDimming: 1
+    _useHighlight: 1
+    _delayBefore: 0
+    _sfxKey: 
+    _messageOffset: {x: 0, y: 150}
+    _prerequisiteStepId: 
+  _canSkip: 1
+  _priority: 10
+  _shouldPauseTime: 1

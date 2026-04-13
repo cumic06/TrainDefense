@@ -10,6 +10,7 @@ namespace TrainDefense.Game
     public class TrainUpgradeManager : Singleton<TrainUpgradeManager>
     {
         private bool _skillTutorialStarted = false;
+        private bool _trainInfoSlotTutorialStarted = false;
 
         private void Start()
         {
@@ -25,6 +26,11 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<AddTrainEvent>(OnAddTrain);
             GameEventSystem.Unsubscribe<ReplaceTrainEvent>(OnReplaceTrain);
             GameEventSystem.Unsubscribe<UpgradeTrainEvent>(OnUpgradeTrain);
+
+            if (TutorialManager.Instance != null)
+            {
+                TutorialManager.Instance.OnTutorialComplete -= OnTrainInfoSlotTutorialComplete;
+            }
         }
 
         private void OnBuyShopItem(BuyShopItemEvent buyShopItemEvent)
@@ -72,6 +78,9 @@ namespace TrainDefense.Game
                 Debug.LogWarning("TrainUpgradeManager: AddTrainEvent Train is null");
                 return;
             }
+
+            // 첫 기차 추가 시 TrainInfoSlot → InspectionTime 튜토리얼 연쇄 시작
+            CheckAndStartTrainInfoSlotTutorial();
 
             // 추가된 기차가 스킬을 가지면 튜토리얼 시작
             if (addTrainEvent.Train.HasSkill)
@@ -151,6 +160,32 @@ namespace TrainDefense.Game
         {
             // NonTrainUpgrade 타입의 업그레이드 처리 로직 추가 가능
             Debug.Log($"UpgradeManager: NonTrainUpgrade applied for '{upgradeData.Id}'");
+        }
+
+        /// <summary>
+        /// 첫 기차 추가 시 TrainInfoSlot 튜토리얼을 시작합니다.
+        /// 완료 후 InspectionTime 튜토리얼로 연쇄 진행합니다.
+        /// </summary>
+        private void CheckAndStartTrainInfoSlotTutorial()
+        {
+            if (_trainInfoSlotTutorialStarted) return;
+            if (TutorialManager.Instance == null) return;
+
+            _trainInfoSlotTutorialStarted = true;
+            TutorialManager.Instance.OnTutorialComplete += OnTrainInfoSlotTutorialComplete;
+
+            Debug.Log("TrainUpgradeManager: Starting trainInfoSlot tutorial");
+            TutorialManager.Instance.StartTutorial("trainInfoSlotTutorial");
+        }
+
+        private void OnTrainInfoSlotTutorialComplete(string sequenceId)
+        {
+            if (sequenceId != "trainInfoSlotTutorial") return;
+
+            TutorialManager.Instance.OnTutorialComplete -= OnTrainInfoSlotTutorialComplete;
+
+            Debug.Log("TrainUpgradeManager: Starting inspectionTime tutorial");
+            TutorialManager.Instance.StartTutorial("inspectionTimeTutorial");
         }
 
         /// <summary>

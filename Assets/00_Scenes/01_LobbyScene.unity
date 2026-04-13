@@ -738,7 +738,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Any
+  m_text: Reset
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 34e4437151ad7ee48931a175758497c5, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 3da2f6285af99904591d79c5428cc1de, type: 2}
@@ -1868,7 +1868,7 @@ GameObject:
   - component: {fileID: 968503760}
   - component: {fileID: 968503758}
   m_Layer: 5
-  m_Name: AnyButton
+  m_Name: ResetButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2045,7 +2045,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 968503761}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7830497228965172277}
+        m_TargetAssemblyTypeName: TrainDefense.OptionUI, Assembly-CSharp
+        m_MethodName: DeleteAllPlayerPrefs
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &968503761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2066,7 +2078,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 74195b8c61865492fb1d0a56e808bec3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cb17f8006e32c48abaaec2c0383c0502, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3263,6 +3275,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 3684458376229620085, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
+      propertyPath: deletePlayerPrefsButton
+      value: 
+      objectReference: {fileID: 968503760}
     - target: {fileID: 5235449721300002412, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_Sprite
       value: 

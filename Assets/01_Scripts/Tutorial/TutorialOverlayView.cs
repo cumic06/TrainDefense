@@ -119,7 +119,7 @@ namespace TrainDefense.Game.Tutorial
             if (target != null)
             {
                 var targetCanvasPos = GetCanvasPosition(target);
-                SetArrow(step.ArrowDirection, targetCanvasPos);
+                SetArrow(step.ArrowDirection, targetCanvasPos, step.ArrowLookDirection);
             }
             else
             {
@@ -132,6 +132,7 @@ namespace TrainDefense.Game.Tutorial
                 var anchorPos = target != null
                     ? GetCanvasPosition(target)
                     : Vector2.zero;
+                anchorPos += step.MessageOffset;
                 SetMessage(step.Message, anchorPos);
             }
             else
@@ -164,9 +165,10 @@ namespace TrainDefense.Game.Tutorial
             _highlight.SetTarget(target);
         }
 
-        public void SetArrow(TutorialArrowDirection direction, Vector2 targetPosition)
+        public void SetArrow(TutorialArrowDirection direction, Vector2 targetPosition,
+            TutorialArrowLookDirection lookDirection = TutorialArrowLookDirection.Auto)
         {
-            _arrowGuide.Show(direction, targetPosition);
+            _arrowGuide.Show(direction, targetPosition, lookDirection);
         }
 
         public void SetMessage(string text, Vector2 anchorPosition)
