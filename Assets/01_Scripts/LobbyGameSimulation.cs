@@ -30,6 +30,7 @@ namespace TrainDefense
         private void SpawnTrain()
         {
             var main = TrainManager.Instance.MainTrain;
+            main.UndeadTrain();
             for (int i = 0; i < trains.Length; i++)
             {
                 main.SpawnTrain(trains[i]);
@@ -38,8 +39,8 @@ namespace TrainDefense
 
         private void SetSpawnRule()
         {
-            StageSpawnData[] spawnDatas = { _currentStageData.SpawnDatas[0]};
-            MonsterSpawner.Instance.SetSpawnRule(spawnDatas, 0.5f);
+            StageSpawnData[] spawnDatas = { _currentStageData.SpawnDatas[0] };
+            MonsterSpawner.Instance.SetSpawnRule(spawnDatas, _currentStageData.SpawnInterval);
             MonsterSpawner.Instance.StartSpawnMonster();
         }
 

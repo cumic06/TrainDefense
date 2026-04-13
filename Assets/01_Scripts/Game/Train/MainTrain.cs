@@ -397,6 +397,11 @@ namespace TrainDefense.Game
          }
       }
 
+      public void UndeadTrain()
+      {
+         isUnDead = true;
+      }
+
       protected override void OnDead()
       {
          if (isUnDead)
