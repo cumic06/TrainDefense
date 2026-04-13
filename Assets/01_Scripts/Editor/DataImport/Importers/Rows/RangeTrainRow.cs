@@ -10,6 +10,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public int attackCount;
 		public float attackInterval;
 		public string rangeProjectilePrefabId;
+		public float criticalChance;
+		public float criticalDamage;
 
 	public override void FromExcelRow(IRow row)
 	{
@@ -19,6 +21,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		int.TryParse(row.GetCell(12)?.ToString(), out attackCount);
 		float.TryParse(row.GetCell(13)?.ToString(), out attackInterval);
 		rangeProjectilePrefabId = row.GetCell(14)?.ToString();
+		float.TryParse(row.GetCell(15)?.ToString(), out criticalChance);
+		float.TryParse(row.GetCell(16)?.ToString(), out criticalDamage);
 	}
 
 	public override void ToExcelRow(IRow row)
@@ -29,6 +33,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		Set(row, 12, attackCount);
 		Set(row, 13, attackInterval);
 		Set(row, 14, rangeProjectilePrefabId);
+		Set(row, 15, criticalChance);
+		Set(row, 16, criticalDamage);
 	}
 	}
 }

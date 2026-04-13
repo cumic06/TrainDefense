@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cumic;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -14,6 +15,8 @@ namespace TrainDefense.Game
         #endregion
 
         protected int _damage;
+        protected float _criticalChance;
+        protected float _criticalDamage;
         protected IProjectileTarget _target;
         protected IProjectileTarget _owner;
         protected IMovementStrategy _movementStrategy;
@@ -60,12 +63,14 @@ namespace TrainDefense.Game
         /// <param name="damage">데미지</param>
         /// <param name="target">타겟 (Monster 또는 null)</param>
         /// <param name="attackRange">공격 범위 (스케일 조정에 사용)</param>
-        public virtual void Init(int damage, IProjectileTarget owner, IProjectileTarget target = null, float attackRange = 0f)
+        public virtual void Init(int damage, IProjectileTarget owner, IProjectileTarget target = null, float attackRange = 0f, float criticalChance = 0f, float criticalDamage = 0f)
         {
             _damage = damage;
             _owner = owner;
             _target = target;
             _attackRange = attackRange;
+            _criticalChance = criticalChance;
+            _criticalDamage = criticalDamage;
 
             if (data != null)
             {
@@ -183,6 +188,23 @@ namespace TrainDefense.Game
         }
         #endregion
 
+        /// <summary>
+        /// 치명타 판정 후 최종 데미지와 치명타 여부를 반환합니다.
+        /// </summary>
+        private const float BaseCriticalDamagePercent = 30f;
+
+        protected (int finalDamage, bool isCritical) CalculateCriticalDamage()
+        {
+            bool isCritical = _criticalChance > 0f && UtilMath.CheckProbability(_criticalChance);
+            int finalDamage = _damage;
+            if (isCritical)
+            {
+                // 기본 30% + 추가 치명타 피해량 스탯
+                finalDamage += Mathf.RoundToInt(_damage * (BaseCriticalDamagePercent + _criticalDamage) / 100f);
+            }
+            return (finalDamage, isCritical);
+        }
+
         #region Process
         internal void ProcessEnter(IProjectileTarget target)
         {
@@ -211,21 +233,23 @@ namespace TrainDefense.Game
                 if (!_damageTimers.ContainsKey(target))
                 {
                     _damageTimers[target] = _age;
-                    target.TakeDamage(_damage);
+                    var (finalDamage, isCritical) = CalculateCriticalDamage();
+                    target.TakeDamage(finalDamage, isCritical);
                 }
             }
             else
             {
+                var (finalDamage, isCritical) = CalculateCriticalDamage();
                 if (data.TriggerHandlePrefab != null)
                 {
                     if (!data.TriggerHandlePrefab.HasTurretDamage)
                     {
-                        target.TakeDamage(_damage);
+                        target.TakeDamage(finalDamage, isCritical);
                     }
                 }
                 else
                 {
-                    target.TakeDamage(_damage);
+                    target.TakeDamage(finalDamage, isCritical);
                 }
 
                 if (data.DestroyOnTriggerEnter)
@@ -268,7 +292,8 @@ namespace TrainDefense.Game
                 {
                     if (_age - lastTime >= data.TickDamageInterval)
                     {
-                        target.TakeDamage(_damage);
+                        var (finalDamage, isCritical) = CalculateCriticalDamage();
+                        target.TakeDamage(finalDamage, isCritical);
                         _damageTimers[target] = _age;
                     }
                 }

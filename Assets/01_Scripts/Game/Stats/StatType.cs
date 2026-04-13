@@ -14,5 +14,9 @@ namespace TrainDefense.Game.Stats
         AttackCount,
         AttackInterval,
         TargetCount,
+
+        // 치명타
+        CriticalChance,
+        CriticalDamage,
     }
 }

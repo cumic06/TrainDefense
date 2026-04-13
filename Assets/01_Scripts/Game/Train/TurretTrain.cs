@@ -449,7 +449,9 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackDamage,
                 this,
                 target,
-                projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f
+                projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f,
+                _currentTurretTrainStatus.CriticalChance,
+                _currentTurretTrainStatus.CriticalDamage
             );
         }
 
@@ -465,7 +467,9 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackDamage,
                 this,
                 null,
-                projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f
+                projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f,
+                _currentTurretTrainStatus.CriticalChance,
+                _currentTurretTrainStatus.CriticalDamage
             );
         }
 
@@ -518,6 +522,8 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackRange += turretStatus.AttackRange;
                 _currentTurretTrainStatus.AttackCount += turretStatus.AttackCount;
                 _currentTurretTrainStatus.AttackInterval += turretStatus.AttackInterval;
+                _currentTurretTrainStatus.CriticalChance += turretStatus.CriticalChance;
+                _currentTurretTrainStatus.CriticalDamage += turretStatus.CriticalDamage;
 
                 if (_useNonMovementProjectilePooling)
                 {
@@ -545,6 +551,8 @@ namespace TrainDefense.Game
             _currentTurretTrainStatus.AttackCount += upgradeData.AttackCount;
             _currentTurretTrainStatus.AttackInterval += upgradeData.AttackInterval;
             _currentTurretTrainStatus.TargetCount += upgradeData.TargetCount;
+            _currentTurretTrainStatus.CriticalChance += upgradeData.CriticalChance;
+            _currentTurretTrainStatus.CriticalDamage += upgradeData.CriticalDamage;
 
             if (_useNonMovementProjectilePooling)
             {
@@ -623,6 +631,14 @@ namespace TrainDefense.Game
                     {
                         EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
                     }
+                    break;
+
+                case StatType.CriticalChance:
+                    _currentTurretTrainStatus.CriticalChance += stat.Value;
+                    break;
+
+                case StatType.CriticalDamage:
+                    _currentTurretTrainStatus.CriticalDamage += stat.Value;
                     break;
             }
         }

@@ -10,5 +10,7 @@ namespace TrainDefense.Game.Datas
         public int AttackCount;
         public float AttackInterval;
         public int TargetCount;
+        public float CriticalChance;
+        public float CriticalDamage;
     }
 }

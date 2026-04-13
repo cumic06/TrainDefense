@@ -9,7 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 	{
 		public string SheetName => "range_train_data";
 		public string ButtonLabel => "RangeTrain 데이터 가져오기";
-		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "prefab_id", "icon_id", "has_skill", "skill_cooldown", "skill_icon_id", "attack_range", "attack_damage", "attack_count", "attack_interval", "projectile_prefab_id" };
+		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "prefab_id", "icon_id", "has_skill", "skill_cooldown", "skill_icon_id", "attack_range", "attack_damage", "attack_count", "attack_interval", "projectile_prefab_id", "critical_chance", "critical_damage" };
 
 		public int Import(DB db, string excelPath)
 		{
