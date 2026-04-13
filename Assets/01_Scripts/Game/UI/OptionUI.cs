@@ -17,6 +17,8 @@ namespace TrainDefense
       private Button sfxMuteButton;
       [SerializeField]
       private Toggle hapticToggle;
+      [SerializeField]
+      private Button deletePlayerPrefsButton;
 
       [SerializeField]
       private Sprite muteSprite;
@@ -56,6 +58,11 @@ namespace TrainDefense
          {
             hapticToggle.onValueChanged.AddListener(_OnHapticToggleChanged);
          }
+
+         if (deletePlayerPrefsButton != null)
+         {
+            deletePlayerPrefsButton.onClick.AddListener(DeleteAllPlayerPrefs);
+         }
       }
 
       private void _UnSubscribeListeners()
@@ -68,6 +75,11 @@ namespace TrainDefense
          if (hapticToggle != null)
          {
             hapticToggle.onValueChanged.RemoveListener(_OnHapticToggleChanged);
+         }
+
+         if (deletePlayerPrefsButton != null)
+         {
+            deletePlayerPrefsButton.onClick.RemoveAllListeners();
          }
       }
 
@@ -138,6 +150,16 @@ namespace TrainDefense
          {
             UserDataManager.Instance.SetHapticEnabled(isEnabled);
          }
+      }
+
+      public void DeleteAllPlayerPrefs()
+      {
+         PlayerPrefs.DeleteAll();
+         PlayerPrefs.Save();
+
+         UserDataManager.Instance.TutorialSaveData.ResetAll();
+
+         Debug.Log("[OptionUI] PlayerPrefs 전체 삭제 완료");
       }
 
       private void _RefreshHapticToggle()
