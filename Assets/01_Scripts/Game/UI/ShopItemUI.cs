@@ -39,7 +39,7 @@ namespace TrainDefense.Game.UI
                 itemNameText.text = string.Format(_upgradeData.Name, currentTotalValue);
 
                 itemDescriptionText.text = GetLevelDescription();
-                needMoneyText.text = $"{GetCurrentCost()}$";
+                needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost()}$";
             }
         }
 
