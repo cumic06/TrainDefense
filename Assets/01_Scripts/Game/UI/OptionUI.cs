@@ -1,4 +1,5 @@
 using TrainDefense.Game;
+using TrainDefense.Game.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,8 @@ namespace TrainDefense
       private Toggle hapticToggle;
       [SerializeField]
       private Button deletePlayerPrefsButton;
+      [SerializeField]
+      private ConfirmPopup resetConfirmPopup;
 
       [SerializeField]
       private Sprite muteSprite;
@@ -61,7 +64,12 @@ namespace TrainDefense
 
          if (deletePlayerPrefsButton != null)
          {
-            deletePlayerPrefsButton.onClick.AddListener(DeleteAllPlayerPrefs);
+            deletePlayerPrefsButton.onClick.AddListener(OnDeletePlayerPrefsClicked);
+         }
+
+         if (resetConfirmPopup != null)
+         {
+            resetConfirmPopup.OnConfirmed += _DeleteAllPlayerPrefs;
          }
       }
 
@@ -80,6 +88,21 @@ namespace TrainDefense
          if (deletePlayerPrefsButton != null)
          {
             deletePlayerPrefsButton.onClick.RemoveAllListeners();
+         }
+
+         if (resetConfirmPopup != null)
+         {
+            resetConfirmPopup.OnConfirmed -= _DeleteAllPlayerPrefs;
+         }
+      }
+
+      public void OnDeletePlayerPrefsClicked()
+      {
+         if (resetConfirmPopup != null)
+         {
+            resetConfirmPopup.ShowPopup();
+            resetConfirmPopup.OnConfirmed += _DeleteAllPlayerPrefs;
+            return;
          }
       }
 
@@ -106,6 +129,7 @@ namespace TrainDefense
       {
          SoundManager.Instance.SetSFXVolume(value);
       }
+
       private void _MuteBGM()
       {
          SoundManager.Instance.MuteBGM();
@@ -152,7 +176,7 @@ namespace TrainDefense
          }
       }
 
-      public void DeleteAllPlayerPrefs()
+      private void _DeleteAllPlayerPrefs()
       {
          PlayerPrefs.DeleteAll();
          PlayerPrefs.Save();

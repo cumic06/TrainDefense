@@ -10499,6 +10499,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 288a0eab5eb5046409802b68716e4d21, type: 2}
   - {fileID: 11400000, guid: eb63f3b76a46fc7488c5ac4bd3c8bee9, type: 2}
   - {fileID: 11400000, guid: ad012b01cab172c4bb97d5872c89d4ce, type: 2}
+  - {fileID: 11400000, guid: b59344bc07d34bba9163279222b8dee8, type: 2}
   _overlayView: {fileID: 1696234804}
   _skipPopup: {fileID: 1696234803}
 --- !u!224 &739713837 stripped
@@ -13744,6 +13745,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4673220469792938440, guid: b06d660baa70d5449961edb0a3fd09c5, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 3da2f6285af99904591d79c5428cc1de, type: 2}
     - target: {fileID: 5151394618779039500, guid: b06d660baa70d5449961edb0a3fd09c5, type: 3}
       propertyPath: m_Name
       value: WarningUI
@@ -13978,6 +13983,10 @@ PrefabInstance:
     - target: {fileID: 409639994930660694, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3887381243193986301, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
+      propertyPath: m_Color.a
+      value: 0.78431374
       objectReference: {fileID: 0}
     - target: {fileID: 5338356203091953872, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
       propertyPath: m_Name

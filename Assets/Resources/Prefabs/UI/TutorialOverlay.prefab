@@ -662,6 +662,9 @@ MonoBehaviour:
   _typingSpeed: 0.03
   _fadeDuration: 0.2
   _verticalOffset: 80
+  _padding: {x: 40, y: 30}
+  _minWidth: 200
+  _maxWidth: 600
 --- !u!1 &610000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1150,7 +1153,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &800000002
 RectTransform:
   m_ObjectHideFlags: 0
