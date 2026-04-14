@@ -18,6 +18,8 @@ namespace TrainDefense.Game
       private string id;
       [SerializeField]
       private GameObject model;
+      [SerializeField]
+      private GameObject eliteEffect;
       #endregion
 
       [ShowInInspector, ReadOnly]
@@ -29,6 +31,8 @@ namespace TrainDefense.Game
       protected bool _isShoved;
       protected bool _isStunned;
       protected bool _isDead;
+      [ShowInInspector, ReadOnly]
+      protected bool _isElite;
 
       protected Train _targetTrain;
 
@@ -46,14 +50,19 @@ namespace TrainDefense.Game
       public string Id => id;
       public bool IsActive => gameObject.activeInHierarchy;
       public Transform TargetTransform => transform;
+      public bool IsElite => _isElite;
       #endregion
+
+      private Vector2 _prefabScale;
 
       private void Awake()
       {
          _rigidbody2D = GetComponent<Rigidbody2D>();
-         _startScale = model.transform.localScale;
+         _prefabScale = model.transform.localScale;
+         _startScale = _prefabScale;
          _modelAnimator = model.GetComponentInChildren<MonsterAnimator>();
          _modelSpriteRenderer = model.GetComponent<SpriteRenderer>();
+         if (eliteEffect != null) eliteEffect.SetActive(false);
       }
 
       public void Initialize(MonsterData monsterData)
@@ -66,6 +75,10 @@ namespace TrainDefense.Game
       private void OnEnable()
       {
          _isDead = false;
+         _isElite = false;
+         _startScale = _prefabScale;
+         if (model != null) model.transform.localScale = _prefabScale;
+         if (eliteEffect != null) eliteEffect.SetActive(false);
 
          if (_modelAnimator != null)
          {
@@ -108,6 +121,29 @@ namespace TrainDefense.Game
          }
 
          _currentHp = _currentMonsterStatus.MaxHp;
+      }
+
+      public void ApplyElite(EliteData data)
+      {
+         if (_isDead || data == null) return;
+         _isElite = true;
+
+         _currentMonsterStatus.MaxHp = Mathf.RoundToInt(_currentMonsterStatus.MaxHp * data.hpMultiplier);
+         _currentMonsterStatus.Damage = Mathf.RoundToInt(_currentMonsterStatus.Damage * data.damageMultiplier);
+         _currentMonsterStatus.MoveSpeed *= data.moveSpeedMultiplier;
+         _currentMonsterStatus.DropExpMin = Mathf.RoundToInt(_currentMonsterStatus.DropExpMin * data.dropExpMultiplier);
+         _currentMonsterStatus.DropExpMax = Mathf.RoundToInt(_currentMonsterStatus.DropExpMax * data.dropExpMultiplier);
+         _currentMonsterStatus.DropMoneyMin = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMin * data.dropMoneyMultiplier);
+         _currentMonsterStatus.DropMoneyMax = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMax * data.dropMoneyMultiplier);
+         _currentHp = _currentMonsterStatus.MaxHp;
+
+         _startScale *= data.sizeScale;
+         model.transform.localScale = _startScale;
+
+         if (eliteEffect != null)
+         {
+            eliteEffect.SetActive(true);
+         }
       }
 
       private void FixedUpdate()
@@ -363,6 +399,8 @@ namespace TrainDefense.Game
       protected void OnDead()
       {
          _isDead = true;
+
+         GameEventSystem.Publish(new MonsterDeadEvent(_monsterData != null ? _monsterData.Id : id, _isElite));
 
          _DropExp();
          _DropMoney();

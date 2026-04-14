@@ -70,6 +70,36 @@ namespace TrainDefense.Game
       private void OnGameEnter(GameEnterEvent gameEnterEvent)
       {
          StartCoroutine(SpawnMonster());
+         StartCoroutine(EliteSpawnLoop());
+      }
+
+      private IEnumerator EliteSpawnLoop()
+      {
+         EliteData eliteData = DatabaseManager.Instance.GetEliteData();
+         if (eliteData == null) yield break;
+
+         while (true)
+         {
+            yield return new WaitForSeconds(eliteData.spawnInterval);
+
+            if (_stopSpawnMonster) continue;
+            if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0) continue;
+            if (Random.value * 100f >= eliteData.spawnChance) continue;
+
+            StageSpawnData selected = SelectMonsterData();
+            if (selected == null) continue;
+
+            MonsterData monsterData = DatabaseManager.Instance.GetMonsterData(selected.MonsterId);
+            if (monsterData == null) continue;
+
+            Vector3 spawnPos = RandomSpawnPos();
+            Monster eliteMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
+            eliteMonster.Initialize(monsterData);
+            eliteMonster.ApplyElite(eliteData);
+            _spawnedMonsters.Add(eliteMonster);
+
+            GameEventSystem.Publish(new MonsterSpawnedEvent(selected.MonsterId));
+         }
       }
 
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)

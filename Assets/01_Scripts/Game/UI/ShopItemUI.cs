@@ -38,10 +38,7 @@ namespace TrainDefense.Game.UI
                 float currentTotalValue = GetCurrentTotalValue();
                 itemNameText.text = string.Format(_upgradeData.Name, currentTotalValue);
 
-                // string description = GetLevelDescription();
-                string description = GetUpgradeCountDescription();
-
-                itemDescriptionText.text = description;
+                itemDescriptionText.text = GetLevelDescription();
                 needMoneyText.text = $"{GetCurrentCost()}$";
             }
         }
@@ -105,14 +102,7 @@ namespace TrainDefense.Game.UI
                 increaseAmountText = $"{increaseAmount}";
             }
 
-            string description = string.Format(_upgradeData.Description, nextTotalValue, increaseAmountText);
-            return description;
-        }
-
-        private string GetUpgradeCountDescription()
-        {
-            int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
-            return $"{currentLevel}/{_upgradeData.MaxUpgradeCount}";
+            return string.Format(_upgradeData.Description, nextTotalValue, increaseAmountText, currentLevel, _upgradeData.MaxUpgradeCount);
         }
 
         public void SetVaild(int currentMoney)

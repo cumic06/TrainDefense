@@ -69,6 +69,16 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private SoundDB soundDB;
 
+        [TabGroup("Elite Data")]
+        [InfoBox("엘리트 몬스터 스폰/스탯 설정")]
+        [SerializeField]
+        private EliteData eliteData = new();
+
+        [TabGroup("Score Data")]
+        [InfoBox("스코어 계수 설정")]
+        [SerializeField]
+        private ScoreData scoreData = new();
+
         #endregion
 
         #region Public Properties
@@ -84,6 +94,8 @@ namespace TrainDefense.Game.Datas
         public IReadOnlyList<UpgradeData> UpgradeDataList => upgradeDataList;
         public TriChoiceDB TriChoiceDB => triChoiceDB;
         public SoundDB SoundDB => soundDB;
+        public EliteData EliteData => eliteData;
+        public ScoreData ScoreData => scoreData;
         #endregion
     }
 }

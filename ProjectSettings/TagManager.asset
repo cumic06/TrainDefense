@@ -54,6 +54,9 @@ TagManager:
   - name: TurretBody
     uniqueID: 1883601083
     locked: 0
+  - name: UnitEffect
+    uniqueID: 2551255443
+    locked: 0
   - name: Unit
     uniqueID: 2816905793
     locked: 0

@@ -40,6 +40,10 @@ namespace TrainDefense.Game
         }
 
         public UpgradeData[] GetUpgradeDatas() => GetDB().UpgradeDataList.ToArray();
+
+        public EliteData GetEliteData() => GetDB().EliteData;
+
+        public ScoreData GetScoreData() => GetDB().ScoreData;
         #region TriChoiceDB
 
         public TriChoiceDB GetTriChoiceDB() => GetDB().TriChoiceDB;
