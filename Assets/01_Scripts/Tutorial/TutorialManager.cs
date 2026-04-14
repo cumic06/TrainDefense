@@ -155,6 +155,17 @@ namespace TrainDefense.Game.Tutorial
         }
 
         /// <summary>
+        /// 현재 진행 중인 튜토리얼을 강제 종료(완료 처리)합니다.
+        /// </summary>
+        public void SkipCurrent()
+        {
+            if (_service != null && _service.IsActive)
+            {
+                _service.SkipCurrentSequence();
+            }
+        }
+
+        /// <summary>
         /// 모든 튜토리얼 진행 상태를 초기화합니다. (디버그용)
         /// </summary>
         public void ResetAllProgress()

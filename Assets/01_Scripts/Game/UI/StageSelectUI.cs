@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Tutorial;
 
 namespace TrainDefense.Game.UI
 {
@@ -76,6 +77,11 @@ namespace TrainDefense.Game.UI
             {
                 stageSelectPanel.SetActive(true);
             }
+
+            if (TutorialManager.Instance != null)
+            {
+                TutorialManager.Instance.StartTutorial("stageSelectTutorial");
+            }
         }
 
         private void ApplyStageSprite(Button targetButton, StageData stageData)
@@ -94,6 +100,11 @@ namespace TrainDefense.Game.UI
             if (!_isSelecting || selectedStageData == null) return;
 
             _isSelecting = false;
+
+            if (TutorialManager.Instance != null)
+            {
+                TutorialManager.Instance.SkipCurrent();
+            }
 
             if (stageSelectPanel != null)
             {
