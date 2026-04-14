@@ -1028,9 +1028,9 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 3
         AttackRange: 0
-        AttackCount: 2
+        AttackCount: 0
         AttackInterval: 0
-        TargetCount: 0
+        TargetCount: 2
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
@@ -1038,9 +1038,9 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 5
         AttackRange: 0
-        AttackCount: 2
+        AttackCount: 0
         AttackInterval: 0
-        TargetCount: 0
+        TargetCount: 2
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
@@ -1048,9 +1048,9 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 7
         AttackRange: 0
-        AttackCount: 3
+        AttackCount: 0
         AttackInterval: 0
-        TargetCount: 0
+        TargetCount: 3
         CriticalChance: 0
         CriticalDamage: 0
   - id: 90006
@@ -1307,10 +1307,10 @@ MonoBehaviour:
     stageImage: {fileID: 9023624542499435072, guid: 0980d694155662c49bcb150ed8cb626b, type: 3}
   upgradeDataList:
   - id: 110001
-    iconId: 
-    name: "\uACF5\uACA9\uB825 {0}/100 % \uC99D\uAC00"
-    description: "\uD3EC\uD0D1\uB4E4\uC758 \uACF5\uACA9\uB825\uC774 {0}({1})\uB9CC\uD07C
-      \uC99D\uAC00\uD569\uB2C8\uB2E4."
+    iconId: sword
+    name: "\uACF5\uACA9\uB825<sprite name=\"sword\"> \uC99D\uAC00"
+    description: "\uD3EC\uD0D1\uB4E4\uC758 \uACF5\uACA9\uB825\uC774 {0}({1}) % \uB9CC\uD07C
+      \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
     needMoney: 60
     maxUpgradeCount: 100
     upgradeDataType: 0
@@ -1321,9 +1321,9 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110002
     iconId: 
-    name: "\uACF5\uACA9 \uB51C\uB808\uC774 {0}/-50 % \uAC10\uC18C"
+    name: "\uACF5\uACA9 \uB51C\uB808\uC774 \uAC10\uC18C"
     description: "\uD3EC\uD0D1\uB4E4\uC758 \uACF5\uACA9 \uB51C\uB808\uC774\uAC00
-      {0}({1})\uB9CC\uD07C \uAC10\uC18C\uD569\uB2C8\uB2E4."
+      {0}({1}) % \uB9CC\uD07C \uAC10\uC18C\uD569\uB2C8\uB2E4.\\n {2}/{3}"
     needMoney: 85
     maxUpgradeCount: 50
     upgradeDataType: 0
@@ -1334,9 +1334,9 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110003
     iconId: 
-    name: "\uCCB4\uB825 {0}/100 % \uC99D\uAC00"
-    description: "\uD3EC\uD0D1\uB4E4\uC758 \uCCB4\uB825\uC774 {0}({1})\uB9CC\uD07C
-      \uC99D\uAC00\uD569\uB2C8\uB2E4."
+    name: "\uCCB4\uB825 \uC99D\uAC00"
+    description: "\uD3EC\uD0D1\uB4E4\uC758 \uCCB4\uB825\uC774 {0}({1}) % \uB9CC\uD07C
+      \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
     needMoney: 120
     maxUpgradeCount: 100
     upgradeDataType: 0
@@ -1346,10 +1346,10 @@ MonoBehaviour:
       <Value>k__BackingField: 1
     growthRate: 1.065
   - id: 110004
-    iconId: 
-    name: "\uD68D\uB4DD\uD558\uB294 \uACE8\uB4DC {0}/100 % \uC99D\uAC00"
+    iconId: Coin
+    name: "\uACE8\uB4DC <sprite name=\"Coin\">\uD68D\uB4DD\uB7C9 \uC99D\uAC00"
     description: "\uC801 \uCC98\uCE58 \uC2DC \uD68D\uB4DD\uD558\uB294 \uACE8\uB4DC\uAC00
-      {0}({1})\uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4."
+      {0}({1}) % \uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
     needMoney: 140
     maxUpgradeCount: 100
     upgradeDataType: 1
@@ -1358,9 +1358,9 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110005
     iconId: 
-    name: "\uD68D\uB4DD\uD558\uB294 \uACBD\uD5D8\uCE58 {0}/100 % \uC99D\uAC00"
+    name: "\uACBD\uD5D8\uCE58 \uD68D\uB4DD\uB7C9  \uC99D\uAC00"
     description: "\uC801 \uCC98\uCE58 \uC2DC \uD68D\uB4DD\uD558\uB294 \uACBD\uD5D8\uCE58\uAC00
-      {0}({1})\uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4."
+      {0}({1}) % \uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
     needMoney: 140
     maxUpgradeCount: 100
     upgradeDataType: 1
@@ -1369,9 +1369,9 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110006
     iconId: 
-    name: "\uCE58\uBA85\uD0C0 \uD655\uB960 {0}/30 % \uC99D\uAC00"
+    name: "\uCE58\uBA85\uD0C0 \uD655\uB960 \uC99D\uAC00"
     description: "\uD3EC\uD0D1\uB4E4\uC758 \uCE58\uBA85\uD0C0 \uD655\uB960\uC774
-      {0}({1})\uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4."
+      {0}({1}) % \uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
     needMoney: 100
     maxUpgradeCount: 30
     upgradeDataType: 0
@@ -1382,9 +1382,9 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110007
     iconId: 
-    name: "\uCE58\uBA85\uD0C0 \uD53C\uD574\uB7C9 {0}/100 % \uC99D\uAC00"
+    name: "\uCE58\uBA85\uD0C0 \uD53C\uD574\uB7C9 \uC99D\uAC00"
     description: "\uD3EC\uD0D1\uB4E4\uC758 \uCE58\uBA85\uD0C0 \uD53C\uD574\uB7C9\uC774
-      {0}({1})\uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4."
+      {0}({1}) % \uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
     needMoney: 120
     maxUpgradeCount: 50
     upgradeDataType: 0
@@ -1473,6 +1473,18 @@ MonoBehaviour:
       Weight: 0
       Tier: 0
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
+  eliteData:
+    spawnInterval: 60
+    spawnChance: 5
+    hpMultiplier: 3
+    damageMultiplier: 2
+    moveSpeedMultiplier: 1
+    sizeScale: 1.5
+    dropExpMultiplier: 2
+    dropMoneyMultiplier: 2
+  scoreData:
+    normalKillScore: 10
+    eliteKillScore: 50
   references:
     version: 2
     RefIds:

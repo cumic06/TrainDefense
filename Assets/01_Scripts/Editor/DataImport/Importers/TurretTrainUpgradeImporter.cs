@@ -11,7 +11,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string SheetName => "turret_train_upgrade_data";
 		public string ButtonLabel => "TurretTrainUpgrade 데이터 가져오기";
 		// RangeTrainUpgrade와 동일하게 attack_interval 명칭 사용
-		public string[] Headers => new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_damage", "attack_range", "attack_count", "attack_interval", "critical_chance", "critical_damage" };
+		public string[] Headers => new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_damage", "attack_range", "attack_count", "attack_interval", "target_count", "critical_chance", "critical_damage" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -93,6 +93,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 					AttackRange = r.attackRange,
 					AttackCount = r.attackCount,
 					AttackInterval = r.attackInterval,
+					TargetCount = r.targetCount,
 					CriticalChance = r.criticalChance,
 					CriticalDamage = r.criticalDamage
 				};

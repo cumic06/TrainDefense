@@ -47,6 +47,11 @@ namespace TrainDefense.Game
 
       private float _originalSpawnInterval;
 
+      private EliteData _eliteData;
+      [ShowInInspector]
+      private float _currentEliteSpawnChance;
+      private float _eliteRampElapsed;
+
       #region UnityLifeCycle
       private void Start()
       {
@@ -69,6 +74,9 @@ namespace TrainDefense.Game
 
       private void OnGameEnter(GameEnterEvent gameEnterEvent)
       {
+         _eliteData = DatabaseManager.Instance.GetEliteData();
+         _currentEliteSpawnChance = 0f;
+         _eliteRampElapsed = 0f;
          StartCoroutine(SpawnMonster());
       }
 
@@ -146,6 +154,8 @@ namespace TrainDefense.Game
 
             WaitForSeconds spawnWait = new(spawnInterval);
 
+            UpdateEliteChance(spawnInterval);
+
             if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
             {
                yield return spawnWait;
@@ -164,6 +174,13 @@ namespace TrainDefense.Game
                {
                   Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
                   spawnMonster.Initialize(monsterData);
+
+                  bool isElite = _eliteData != null && Random.value * 100f < _currentEliteSpawnChance;
+                  if (isElite)
+                  {
+                     spawnMonster.ApplyElite(_eliteData);
+                  }
+
                   _spawnedMonsters.Add(spawnMonster);
 
                   // 몬스터 스폰 이벤트 발행
@@ -172,6 +189,20 @@ namespace TrainDefense.Game
             }
 
             yield return spawnWait;
+         }
+      }
+
+      private void UpdateEliteChance(float elapsed)
+      {
+         if (_eliteData == null || _eliteData.spawnInterval <= 0f) return;
+
+         _eliteRampElapsed += elapsed;
+         while (_eliteRampElapsed >= _eliteData.spawnInterval)
+         {
+            _currentEliteSpawnChance = Mathf.Min(
+               _currentEliteSpawnChance + _eliteData.chanceGrowthPerInterval,
+               _eliteData.spawnMaxChance);
+            _eliteRampElapsed -= _eliteData.spawnInterval;
          }
       }
 

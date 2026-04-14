@@ -522,12 +522,14 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackRange += turretStatus.AttackRange;
                 _currentTurretTrainStatus.AttackCount += turretStatus.AttackCount;
                 _currentTurretTrainStatus.AttackInterval += turretStatus.AttackInterval;
+                _currentTurretTrainStatus.TargetCount += turretStatus.TargetCount;
                 _currentTurretTrainStatus.CriticalChance += turretStatus.CriticalChance;
                 _currentTurretTrainStatus.CriticalDamage += turretStatus.CriticalDamage;
 
                 if (_useNonMovementProjectilePooling)
                 {
-                    EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
+                    int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
+                    EnsureNonMovementProjectileCount(maxCount);
 
                     // AttackDamage나 AttackRange 변경 시 기존 프로젝타일 업데이트
                     if (_nonMovementProjectiles.Count > 0 && (turretStatus.AttackDamage != 0 || turretStatus.AttackRange != 0))

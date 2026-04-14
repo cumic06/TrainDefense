@@ -37,14 +37,6 @@ namespace TrainDefense.Game.Controller
             _startFieldOfView = _camera.Lens.FieldOfView;
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                ShakeCamera(testShakeIntensity, testShakeDuration);
-            }
-        }
-
         [Button]
         public void ShakeCamera(float intensity, float duration)
         {

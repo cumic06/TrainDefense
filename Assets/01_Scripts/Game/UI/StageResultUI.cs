@@ -1,4 +1,7 @@
 using Cumic.Events;
+using DG.Tweening;
+using TMPro;
+using TrainDefense.Game.Manager;
 using UnityEngine;
 
 namespace TrainDefense.Game.UI
@@ -14,7 +17,13 @@ namespace TrainDefense.Game.UI
         private GameObject clearResultUI;
         [SerializeField]
         private GameObject failResultUI;
+        [SerializeField]
+        private TMP_Text scoreText;
+        [SerializeField]
+        private float scoreTweenDuration = 1.0f;
         #endregion
+
+        private Tween _scoreTween;
 
         private void Start()
         {
@@ -90,6 +99,25 @@ namespace TrainDefense.Game.UI
             {
                 failResultUI.SetActive(!isClear);
             }
+
+            _AnimateScore();
+        }
+
+        private void _AnimateScore()
+        {
+            if (scoreText == null || ScoreManager.Instance == null) return;
+
+            _scoreTween?.Kill();
+
+            int target = ScoreManager.Instance.CurrentScore;
+            int display = 0;
+            scoreText.text = $"Score: {display}";
+
+            _scoreTween = DOTween.To(() => display, v =>
+            {
+                display = v;
+                scoreText.text = $"Score: {display}";
+            }, target, scoreTweenDuration).SetEase(Ease.OutCubic).SetUpdate(true);
         }
     }
 }

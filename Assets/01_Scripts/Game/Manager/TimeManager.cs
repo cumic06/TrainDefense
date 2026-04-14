@@ -8,6 +8,33 @@ namespace TrainDefense.Game
 {
     public class TimeManager : Singleton<TimeManager>
     {
+        [SerializeField]
+        private float fastForwardScale = 3f;
+
+        private bool _isPaused;
+        private bool _isFastForward;
+
+        private void Update()
+        {
+            #if UNITY_EDITOR
+            if (_isPaused)
+            {
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _isFastForward = true;
+                Time.timeScale = fastForwardScale;
+            }
+            else if (Input.GetKeyUp(KeyCode.Space))
+            {
+                _isFastForward = false;
+                Time.timeScale = 1f;
+            }
+            #endif
+        }
+
         private void Start()
         {
             // Keep gameplay frozen until the intro/timeline explicitly starts the run.
@@ -108,12 +135,14 @@ namespace TrainDefense.Game
 
         public void Pause()
         {
+            _isPaused = true;
             Time.timeScale = 0;
         }
 
         public void Resume()
         {
-            Time.timeScale = 1;
+            _isPaused = false;
+            Time.timeScale = _isFastForward ? fastForwardScale : 1f;
         }
     }
 }
