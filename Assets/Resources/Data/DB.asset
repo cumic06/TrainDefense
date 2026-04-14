@@ -1028,9 +1028,9 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 3
         AttackRange: 0
-        AttackCount: 2
+        AttackCount: 0
         AttackInterval: 0
-        TargetCount: 0
+        TargetCount: 2
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
@@ -1038,9 +1038,9 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 5
         AttackRange: 0
-        AttackCount: 2
+        AttackCount: 0
         AttackInterval: 0
-        TargetCount: 0
+        TargetCount: 2
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
@@ -1048,9 +1048,9 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 7
         AttackRange: 0
-        AttackCount: 3
+        AttackCount: 0
         AttackInterval: 0
-        TargetCount: 0
+        TargetCount: 3
         CriticalChance: 0
         CriticalDamage: 0
   - id: 90006

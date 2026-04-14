@@ -9,6 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public float attackRange;
 		public int attackCount;
 		public float attackInterval;
+		public int targetCount;
 		public float criticalChance;
 		public float criticalDamage;
 
@@ -19,6 +20,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			attackRange = map.GetFloat(row, "attack_range");
 			attackCount = map.GetInt(row, "attack_count");
 			attackInterval = map.GetFloat(row, "attack_interval");
+			targetCount = map.GetInt(row, "target_count");
 			criticalChance = map.GetFloat(row, "critical_chance");
 			criticalDamage = map.GetFloat(row, "critical_damage");
 		}
@@ -30,6 +32,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "attack_range", attackRange);
 			map.SetCell(row, "attack_count", attackCount);
 			map.SetCell(row, "attack_interval", attackInterval);
+			map.SetCell(row, "target_count", targetCount);
 			map.SetCell(row, "critical_chance", criticalChance);
 			map.SetCell(row, "critical_damage", criticalDamage);
 		}
