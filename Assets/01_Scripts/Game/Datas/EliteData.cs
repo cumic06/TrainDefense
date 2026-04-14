@@ -8,7 +8,9 @@ namespace TrainDefense.Game.Datas
       [Header("스폰 타이밍")]
       public float spawnInterval = 60f;
       [Range(0f, 100f)]
-      public float spawnChance = 30f;
+      public float spawnMaxChance = 30f;
+      [Range(0f, 100f)]
+      public float chanceGrowthPerInterval = 5f;
 
       [Header("엘리트 스탯 배율")]
       public float hpMultiplier = 3f;

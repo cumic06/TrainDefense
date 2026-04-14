@@ -47,6 +47,11 @@ namespace TrainDefense.Game
 
       private float _originalSpawnInterval;
 
+      private EliteData _eliteData;
+      [ShowInInspector]
+      private float _currentEliteSpawnChance;
+      private float _eliteRampElapsed;
+
       #region UnityLifeCycle
       private void Start()
       {
@@ -69,37 +74,10 @@ namespace TrainDefense.Game
 
       private void OnGameEnter(GameEnterEvent gameEnterEvent)
       {
+         _eliteData = DatabaseManager.Instance.GetEliteData();
+         _currentEliteSpawnChance = 0f;
+         _eliteRampElapsed = 0f;
          StartCoroutine(SpawnMonster());
-         StartCoroutine(EliteSpawnLoop());
-      }
-
-      private IEnumerator EliteSpawnLoop()
-      {
-         EliteData eliteData = DatabaseManager.Instance.GetEliteData();
-         if (eliteData == null) yield break;
-
-         while (true)
-         {
-            yield return new WaitForSeconds(eliteData.spawnInterval);
-
-            if (_stopSpawnMonster) continue;
-            if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0) continue;
-            if (Random.value * 100f >= eliteData.spawnChance) continue;
-
-            StageSpawnData selected = SelectMonsterData();
-            if (selected == null) continue;
-
-            MonsterData monsterData = DatabaseManager.Instance.GetMonsterData(selected.MonsterId);
-            if (monsterData == null) continue;
-
-            Vector3 spawnPos = RandomSpawnPos();
-            Monster eliteMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
-            eliteMonster.Initialize(monsterData);
-            eliteMonster.ApplyElite(eliteData);
-            _spawnedMonsters.Add(eliteMonster);
-
-            GameEventSystem.Publish(new MonsterSpawnedEvent(selected.MonsterId));
-         }
       }
 
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
@@ -176,6 +154,8 @@ namespace TrainDefense.Game
 
             WaitForSeconds spawnWait = new(spawnInterval);
 
+            UpdateEliteChance(spawnInterval);
+
             if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
             {
                yield return spawnWait;
@@ -194,6 +174,13 @@ namespace TrainDefense.Game
                {
                   Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
                   spawnMonster.Initialize(monsterData);
+
+                  bool isElite = _eliteData != null && Random.value * 100f < _currentEliteSpawnChance;
+                  if (isElite)
+                  {
+                     spawnMonster.ApplyElite(_eliteData);
+                  }
+
                   _spawnedMonsters.Add(spawnMonster);
 
                   // 몬스터 스폰 이벤트 발행
@@ -202,6 +189,20 @@ namespace TrainDefense.Game
             }
 
             yield return spawnWait;
+         }
+      }
+
+      private void UpdateEliteChance(float elapsed)
+      {
+         if (_eliteData == null || _eliteData.spawnInterval <= 0f) return;
+
+         _eliteRampElapsed += elapsed;
+         while (_eliteRampElapsed >= _eliteData.spawnInterval)
+         {
+            _currentEliteSpawnChance = Mathf.Min(
+               _currentEliteSpawnChance + _eliteData.chanceGrowthPerInterval,
+               _eliteData.spawnMaxChance);
+            _eliteRampElapsed -= _eliteData.spawnInterval;
          }
       }
 
