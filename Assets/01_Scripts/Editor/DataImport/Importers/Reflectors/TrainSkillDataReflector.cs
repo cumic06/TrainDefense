@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
+using System.Collections.Generic;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Stats;
 using TrainDefense.Editor.DataImport.Importers.Rows;
 
 namespace TrainDefense.Editor.DataImport.Importers.Reflectors
@@ -30,8 +32,25 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(t, target, "projectileData", projectileData);
 
 			SetPrivateField(t, target, "buffDuration", r.skillBuffDuration);
-			SetPrivateField(t, target, "buffStatType", r.skillBuffStatType);
-			SetPrivateField(t, target, "buffPercent", r.skillBuffPercent);
+			SetPrivateField(t, target, "buffs", ParseBuffs(r.skillBuffsRaw));
+		}
+
+		private static List<TrainSkillBuffEntry> ParseBuffs(string raw)
+		{
+			var list = new List<TrainSkillBuffEntry>();
+			if (string.IsNullOrWhiteSpace(raw)) return list;
+
+			var entries = raw.Split('|');
+			foreach (var e in entries)
+			{
+				if (string.IsNullOrWhiteSpace(e)) continue;
+				var parts = e.Split(':');
+				if (parts.Length < 2) continue;
+				if (!System.Enum.TryParse<StatType>(parts[0].Trim(), true, out var stat)) continue;
+				if (!float.TryParse(parts[1].Trim(), out var percent)) continue;
+				list.Add(new TrainSkillBuffEntry(stat, percent));
+			}
+			return list;
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

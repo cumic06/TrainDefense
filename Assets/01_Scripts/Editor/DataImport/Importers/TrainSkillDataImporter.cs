@@ -21,8 +21,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 			"skill_projectile_range",
 			"skill_projectile_count",
 			"skill_buff_duration",
-			"skill_buff_stat_type",
-			"skill_buff_percent",
+			"skill_buffs",
 		};
 
 		public int Import(DB db, string excelPath)

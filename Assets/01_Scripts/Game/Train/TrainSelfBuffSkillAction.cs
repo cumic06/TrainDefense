@@ -10,10 +10,15 @@ namespace TrainDefense.Game
             if (trainSkillData.BuffDuration <= 0f)
                 return false;
 
-            owner.ApplyTimedStat(
-                trainSkillData.BuffStatType,
-                trainSkillData.BuffPercent,
-                trainSkillData.BuffDuration);
+            var buffs = trainSkillData.Buffs;
+            if (buffs == null || buffs.Count == 0)
+                return false;
+
+            for (int i = 0; i < buffs.Count; i++)
+            {
+                var entry = buffs[i];
+                owner.ApplyTimedStat(entry.StatType, entry.Percent, trainSkillData.BuffDuration);
+            }
             return true;
         }
     }

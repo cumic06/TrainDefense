@@ -321,25 +321,17 @@ MonoBehaviour:
     rangedProjectilePrefab: {fileID: 0}
   trainDataList:
   - id: 20001
-    name: "\uBA54\uC778 \uAE30\uCC28"
+    name: "\uAE30\uBCF8 \uAE30\uCC28"
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uC81C\uC77C \uAE30\uBCF8\uC774 \uB418\uB294 \uAE30\uCC28\uC774\uB2E4."
+    description: "\uAC00\uC7A5 \uAE30\uBCF8\uC774 \uB418\uB294 \uAE30\uCC28\uC774\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: MainTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
-    isMainTrain: 1
+    trainSkillDataId: 
+    isMainTrain: 0
   turretTrainDataList:
   - id: 30001
     name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1"
@@ -351,15 +343,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: NormalTurretTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
@@ -370,6 +354,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: NormalProjectile
+    passiveSkillsRaw: 
   - id: 30002
     name: "\uD654\uC5FC \uD3EC\uD0D1"
     iconId: Weapon_MEL_05_UI
@@ -381,15 +366,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: FireTurretTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 4
@@ -400,6 +377,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: FireEffectProjectile
+    passiveSkillsRaw: 
   - id: 30003
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: Weapon_KMD_10_UI
@@ -411,15 +389,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: MissileTurretTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 25
@@ -430,26 +400,19 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: MissileProjectile
+    passiveSkillsRaw: 
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     damageType: 0
     attackSoundType: 304
-    description: "\uB808\uC774\uC800\uB85C <color=#FFDD52><shake>\uAC15\uD558\uAC8C</shake></color>
+    description: "\uB808\uC774\uC800\uB85C <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: LaserTurretTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -460,6 +423,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: LaserProjectile
+    passiveSkillsRaw: 
   - id: 30005
     name: "\uC804\uAE30 \uD3EC\uD0D1"
     iconId: Weapon_MEL_16_UI
@@ -467,19 +431,11 @@ MonoBehaviour:
     damageType: 0
     attackSoundType: 305
     description: "\uD654\uBA74\uC5D0 \uC788\uB294 \uB2E4\uC218\uC758 \uC801\uB4E4\uC744
-      \uC804\uAE30\uB85C \uACF5\uACA9\uD55C\uB2E4."
+      \uD1B5\uC2DC\uC5D0 \uACF5\uACA9\uD55C\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: ElectrickTurretTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
@@ -490,6 +446,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: ElectrickProjectile
+    passiveSkillsRaw: 
   - id: 30006
     name: "\uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_MEL_14_UI
@@ -497,19 +454,11 @@ MonoBehaviour:
     damageType: 0
     attackSoundType: 306
     description: "\uAC70\uB300\uD55C \uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574
-      \uBA87 \uCD08 \uD6C4 \uAD11\uC5ED \uD53C\uD574\uB97C \uC900\uB2E4."
+      \uBA87 \uBC88 \uD070 \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: CannonTurretTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -520,26 +469,19 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: CannonProjectile
+    passiveSkillsRaw: 
   - id: 30007
     name: "\uC800\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     damageType: 0
     attackSoundType: 307
-    description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uCD08 \uD6C4 <color=#FFDD52><shake>\uAC15\uD55C
+    description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uBC88 \uD070 <color=#FFDD52><shake>\uAC15\uD55C
       \uD53C\uD574</shake></color>\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: SniperTurretTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -550,25 +492,18 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: SniperProjectile
+    passiveSkillsRaw: 
   - id: 31001
     name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteNormalTurretTrain
-    trainSkillData:
-      skillType: 1
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: skill_elite_machinegun
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -579,25 +514,18 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: NormalProjectile
+    passiveSkillsRaw: OverrideEveryN:5:ExplosionProjectile
   - id: 31002
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uD654\uC5FC \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: "\uD654\uC5FC \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteFireTurretTrain
-    trainSkillData:
-      skillType: 1
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: skill_elite_fire
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 25
@@ -608,25 +536,18 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: FireEffectProjectile
+    passiveSkillsRaw: 
   - id: 31003
     name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteMissileTurretTrain
-    trainSkillData:
-      skillType: 1
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: skill_elite_missile
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 100
@@ -637,25 +558,18 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: MissileProjectile
+    passiveSkillsRaw: 
   - id: 31004
     name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uB808\uC774\uC800 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: "\uB808\uC774\uC800 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteLaserTurretTrain
-    trainSkillData:
-      skillType: 1
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: skill_elite_laser
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 300
@@ -666,25 +580,18 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: LaserProjectile
+    passiveSkillsRaw: RepeatAfterAttack:0.2:2
   - id: 31005
     name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uC804\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: "\uC804\uAE30 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteElectrickTurretTrain
-    trainSkillData:
-      skillType: 1
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: skill_elite_electrick
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 400
@@ -695,25 +602,18 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: ElectrickProjectile
+    passiveSkillsRaw: 
   - id: 31006
     name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uD3EC\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: "\uD3EC\uACA9 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteCannonTurretTrain
-    trainSkillData:
-      skillType: 1
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: skill_elite_cannon
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 400
@@ -724,25 +624,18 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: CannonProjectile
+    passiveSkillsRaw: RandomPosBombard:1:10:5
   - id: 31007
     name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uC800\uACA9 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: "\uC800\uACA9 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteSniperTurretTrain
-    trainSkillData:
-      skillType: 1
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: skill_elite_sniper
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 600
@@ -753,27 +646,20 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: SniperProjectile
+    passiveSkillsRaw: ChainAttackChance:30
   rangeTrainDataList:
   - id: 40001
     name: "\uD3ED\uBC1C \uD3EC\uD0D1"
-    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
+    iconId: "\uD604\uB300\uBB34\uAE30_\uB300\uD3EC_\uD5E4\uB9AC\uCF65\uD130\uB9AC\uCF54\uB97C_\uC5B4\uC384\uC2E0"
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
     attackSoundType: 308
-    description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC744 \uBC00\uCE58\uACE0
+    description: "\uC801\uC774 \uAC00\uC7A5 \uB9CE\uC740 \uACF3\uC73C\uB85C \uC704\uCE58\uD574
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: ExplosionRangeTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: 
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 50
@@ -783,26 +669,19 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ExplosionProjectile
+    passiveSkillsRaw: 
   - id: 40002
     name: "\uB0C9\uAE30 \uD3EC\uD0D1"
-    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
+    iconId: "\uD604\uB300\uBB34\uAE30_\uB300\uD3EC_288\uC2A4\uB9C8"
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 1
     attackSoundType: 309
-    description: "\uBC94\uC704 \uB0B4\uC5D0 \uC788\uB294 \uC801\uB4E4\uC758 \uC774\uB3D9\uC18D\uB3C4\uAC00
-      \uB290\uB824\uC9C0\uACE0 \uD53C\uD574\uB97C \uC900\uB2E4."
+    description: "\uC801\uC774 \uAC00\uC7A5 \uB9CE\uC740 \uACF3\uC73C\uB85C \uC774\uB3D9\uC18D\uB3C4\uB97C
+      \uB5A8\uC5B4\uB728\uB824 \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: ColdAirRangeTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: 
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 1
@@ -812,25 +691,18 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
+    passiveSkillsRaw: 
   - id: 41001
     name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uD3ED\uBC1C \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: "\uD3ED\uBC1C \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteExplosionRangeTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: skill_elite_explosion
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 500
@@ -840,25 +712,18 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ExplosionProjectile
+    passiveSkillsRaw: FollowUpExplosion:0.2:ExplosionProjectile:3
   - id: 41002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 0}
     damageType: 1
     attackSoundType: 0
-    description: "\uB0C9\uAE30 \uD3EC\uD0D1\uC5D0 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: "\uB0C9\uAE30 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
     trainStatusData:
       MaxHp: 150
     prefabId: EliteColdAirRangeTrain
-    trainSkillData:
-      skillType: 0
-      skillCooldown: 0
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
+    trainSkillDataId: skill_elite_coldair
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 15
@@ -868,6 +733,115 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
+    passiveSkillsRaw: PeriodicSpawn:3:ColdAirProjectile:5
+  trainSkillDataList:
+  - id: skill_elite_machinegun
+    skillType: 2
+    skillCooldown: 20
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: 
+      damage: 0
+      range: 0
+      projectileCount: 0
+    buffDuration: 5
+    buffs:
+    - statType: 4
+      percent: -50
+  - id: skill_elite_fire
+    skillType: 0
+    skillCooldown: 0
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: 
+      damage: 0
+      range: 0
+      projectileCount: 0
+    buffDuration: 0
+    buffs: []
+  - id: skill_elite_missile
+    skillType: 0
+    skillCooldown: 0
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: 
+      damage: 0
+      range: 0
+      projectileCount: 0
+    buffDuration: 0
+    buffs: []
+  - id: skill_elite_laser
+    skillType: 0
+    skillCooldown: 0
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: 
+      damage: 0
+      range: 0
+      projectileCount: 0
+    buffDuration: 0
+    buffs: []
+  - id: skill_elite_electrick
+    skillType: 1
+    skillCooldown: 30
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: ElectrickProjectile
+      damage: 100
+      range: 30
+      projectileCount: 1
+    buffDuration: 0
+    buffs: []
+  - id: skill_elite_cannon
+    skillType: 2
+    skillCooldown: 30
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: 
+      damage: 0
+      range: 0
+      projectileCount: 0
+    buffDuration: 5
+    buffs:
+    - statType: 2
+      percent: 200
+    - statType: 4
+      percent: -50
+  - id: skill_elite_sniper
+    skillType: 0
+    skillCooldown: 0
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: 
+      damage: 0
+      range: 0
+      projectileCount: 0
+    buffDuration: 0
+    buffs: []
+  - id: skill_elite_explosion
+    skillType: 3
+    skillCooldown: 20
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: 
+      damage: 0
+      range: 0
+      projectileCount: 0
+    buffDuration: 0
+    buffs: []
+  - id: skill_elite_coldair
+    skillType: 2
+    skillCooldown: 30
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: 
+      damage: 0
+      range: 0
+      projectileCount: 0
+    buffDuration: 15
+    buffs:
+    - statType: 1
+      percent: 300
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
   - id: 90001
@@ -1475,7 +1449,8 @@ MonoBehaviour:
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     spawnInterval: 60
-    spawnChance: 5
+    spawnMaxChance: 30
+    chanceGrowthPerInterval: 5
     hpMultiplier: 3
     damageMultiplier: 2
     moveSpeedMultiplier: 1

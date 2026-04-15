@@ -1,9 +1,28 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game.Datas
 {
+    [Serializable]
+    public struct TrainSkillBuffEntry
+    {
+        [SerializeField]
+        private StatType statType;
+        [SerializeField]
+        private float percent;
+
+        public StatType StatType => statType;
+        public float Percent => percent;
+
+        public TrainSkillBuffEntry(StatType statType, float percent)
+        {
+            this.statType = statType;
+            this.percent = percent;
+        }
+    }
+
     [Serializable]
     public class TrainSkillData : IData
     {
@@ -21,9 +40,7 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private float buffDuration;
         [SerializeField]
-        private StatType buffStatType;
-        [SerializeField]
-        private float buffPercent;
+        private List<TrainSkillBuffEntry> buffs = new();
 
         public string Id => id;
         public bool HasSkill => skillType != TrainSkillType.None;
@@ -32,7 +49,6 @@ namespace TrainDefense.Game.Datas
         public string SkillIconId => skillIconId;
         public TrainSkillProjectileData ProjectileData => projectileData ??= new TrainSkillProjectileData();
         public float BuffDuration => buffDuration;
-        public StatType BuffStatType => buffStatType;
-        public float BuffPercent => buffPercent;
+        public IReadOnlyList<TrainSkillBuffEntry> Buffs => buffs ??= new List<TrainSkillBuffEntry>();
     }
 }
