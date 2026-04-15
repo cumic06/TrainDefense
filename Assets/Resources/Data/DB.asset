@@ -1409,6 +1409,38 @@ MonoBehaviour:
         rid: 1014497644963168333
       Weight: 0
       Tier: 1
+    - Option:
+        rid: 1014497644963168334
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 1014497644963168335
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 1014497644963168336
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 1014497644963168337
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 1014497644963168338
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 1014497644963168339
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 1014497644963168340
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 1014497644963168341
+      Weight: 0
+      Tier: 1
     upgradeTrainChoices:
     - Option:
         rid: 2066870334413602904
@@ -1519,6 +1551,54 @@ MonoBehaviour:
         id: 61001
         trainDataId: 31001
         replaceTrainId: 30001
+    - rid: 1014497644963168334
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61002
+        trainDataId: 31002
+        replaceTrainId: 30002
+    - rid: 1014497644963168335
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61003
+        trainDataId: 31003
+        replaceTrainId: 30003
+    - rid: 1014497644963168336
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61004
+        trainDataId: 31004
+        replaceTrainId: 30004
+    - rid: 1014497644963168337
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61005
+        trainDataId: 31005
+        replaceTrainId: 30005
+    - rid: 1014497644963168338
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61006
+        trainDataId: 31006
+        replaceTrainId: 30006
+    - rid: 1014497644963168339
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61007
+        trainDataId: 31007
+        replaceTrainId: 30007
+    - rid: 1014497644963168340
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61008
+        trainDataId: 41001
+        replaceTrainId: 40001
+    - rid: 1014497644963168341
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61009
+        trainDataId: 41002
+        replaceTrainId: 40002
     - rid: 2066870334413602903
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
