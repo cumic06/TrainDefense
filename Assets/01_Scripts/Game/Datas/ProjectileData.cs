@@ -92,6 +92,21 @@ namespace TrainDefense.Game
         [SerializeField]
         private float stunDuration = 0.5f;
 
+        [BoxGroup("Pierce")]
+        [SerializeField]
+        private bool pierce = false;
+
+        [BoxGroup("Pierce")]
+        [ShowIf("pierce")]
+        [SerializeField]
+        [Min(1)]
+        private int maxPenetration = 1;
+
+        [BoxGroup("Spread")]
+        [SerializeField]
+        [Min(0f)]
+        private float spreadAngle = 0f;
+
         #region Properties
 
         public MovementType MovementType => movementType;
@@ -112,6 +127,9 @@ namespace TrainDefense.Game
         public float ShoveDuration => shoveDuration;
         public bool HasStunEffect => hasStunEffect;
         public float StunDuration => stunDuration;
+        public bool Pierce => pierce;
+        public int MaxPenetration => maxPenetration;
+        public float SpreadAngle => spreadAngle;
 
         #endregion
     }

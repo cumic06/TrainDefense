@@ -37,6 +37,9 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(projectileType, projectileData, "range", r.skillProjectileRange);
 			SetPrivateField(projectileType, projectileData, "projectileCount", r.skillProjectileCount);
 			SetPrivateField(skillType, trainSkillData, "projectileData", projectileData);
+			SetPrivateField(skillType, trainSkillData, "buffDuration", r.skillBuffDuration);
+			SetPrivateField(skillType, trainSkillData, "buffStatType", r.skillBuffStatType);
+			SetPrivateField(skillType, trainSkillData, "buffPercent", r.skillBuffPercent);
 			SetPrivateField(t, target, "trainSkillData", trainSkillData);
 
 			var turretTrainType = typeof(TurretTrainData);
@@ -52,6 +55,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
             };
 			SetPrivateField(turretTrainType, target, "turretTrainStatus", turretTrainStatus);
 			SetPrivateField(turretTrainType, target, "turretProjectilePrefabId", r.turretProjectilePrefabId);
+			SetPrivateField(turretTrainType, target, "passiveSkillsRaw", r.passiveSkillsRaw);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

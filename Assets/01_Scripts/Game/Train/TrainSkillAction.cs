@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace TrainDefense.Game
 {
-    public abstract class TrainSkillAction
+    public abstract class TrainSkillAction : TrainSkill
     {
-        protected Train owner;
+        protected Train owner => Owner;
         protected TrainSkillData trainSkillData;
         protected float lastUseTime;
 
@@ -13,20 +13,21 @@ namespace TrainDefense.Game
         {
             get
             {
-                return owner != null
+                return Owner != null
                     && trainSkillData != null
                     && trainSkillData.HasSkill
-                    && !owner.IsDead
-                    && !owner.IsMainTrain
+                    && !Owner.IsDead
+                    && !Owner.IsMainTrain
                     && GetRemainingCooldown() <= 0f;
             }
         }
 
         public virtual void Initialize(Train owner, TrainSkillData trainSkillData)
         {
-            this.owner = owner;
+            Owner = owner;
             this.trainSkillData = trainSkillData;
             lastUseTime = float.NegativeInfinity;
+            Subscribe();
         }
 
         public bool TryUse()

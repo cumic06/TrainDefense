@@ -11,7 +11,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string SheetName => "turret_train_data";
 		public string ButtonLabel => "TurretTrain 데이터 가져오기";
 		// RangeTrain과 동일하게 attack_interval 명칭 사용
-		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "prefab_id", "icon_id", "has_skill", "skill_cooldown", "skill_icon_id", "skill_projectile_prefab_id", "skill_projectile_damage", "skill_projectile_range", "skill_projectile_count", "attack_range", "attack_damage", "attack_count", "attack_interval", "target_count", "turret_projectile_prefab_id", "critical_chance", "critical_damage" };
+		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "prefab_id", "icon_id", "has_skill", "skill_cooldown", "skill_icon_id", "skill_projectile_prefab_id", "skill_projectile_damage", "skill_projectile_range", "skill_projectile_count", "skill_buff_duration", "skill_buff_stat_type", "skill_buff_percent", "attack_range", "attack_damage", "attack_count", "attack_interval", "target_count", "turret_projectile_prefab_id", "critical_chance", "critical_damage", "passive_skills" };
 
 		public int Import(DB db, string excelPath)
 		{

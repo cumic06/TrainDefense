@@ -307,6 +307,29 @@ namespace TrainDefense.Game
          _resetMoveSpeedCoroutine = StartCoroutine(_ResetMoveSpeedCoroutine());
       }
 
+      /// <summary>
+      /// 즉발 슬로우 + duration 초 뒤 자동 복원 (냉기 눈덩이 전용).
+      /// </summary>
+      public void SlowForDuration(float slowValue, float duration)
+      {
+         if (!gameObject.activeInHierarchy)
+            return;
+
+         if (_slowCoroutine != null)
+         {
+            StopCoroutine(_slowCoroutine);
+         }
+         _slowCoroutine = StartCoroutine(_SlowForDurationCoroutine(slowValue, duration));
+      }
+
+      private IEnumerator _SlowForDurationCoroutine(float slowValue, float duration)
+      {
+         var slowSpeed = _currentMonsterStatus.MoveSpeed * slowValue;
+         _currentMonsterStatus.MoveSpeed = slowSpeed;
+         yield return new WaitForSeconds(duration);
+         ResetMoveSpeed();
+      }
+
       private IEnumerator _ResetMoveSpeedCoroutine()
       {
          var targetSpeed = _monsterData.MonsterStatusData.MoveSpeed;

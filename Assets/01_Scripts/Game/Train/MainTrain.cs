@@ -64,8 +64,9 @@ namespace TrainDefense.Game
          _currentTrains.Clear();
       }
 
-      private void OnDestroy()
+      protected override void OnDestroy()
       {
+         base.OnDestroy();
          GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
          GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);

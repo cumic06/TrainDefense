@@ -4,6 +4,7 @@ using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using Sirenix.OdinInspector;
 using TrainDefense.Game.Stats;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace TrainDefense.Game
@@ -28,7 +29,7 @@ namespace TrainDefense.Game
         protected int _currentHp;
         protected int _currentLevel;
         protected int _currentMaxHp;
-        protected TrainSkillAction _skillAction;
+        protected readonly TrainSkillModule _skillModule = new();
 
         [HideInInspector]
         public bool IsUnDead;
@@ -39,24 +40,11 @@ namespace TrainDefense.Game
 
         public bool IsDead => _isDead;
         public int CurrentLevel => _currentLevel;
-        public bool HasSkill => _trainData != null && _trainData.TrainSkillData.HasSkill;
-        public Sprite SkillIcon
-        {
-            get
-            {
-                if (_trainData == null) return null;
-                return _trainData.SkillIcon != null ? _trainData.SkillIcon : _trainData.Icon;
-            }
-        }
-        public float SkillCooldown => _trainData != null ? _trainData.TrainSkillData.SkillCooldown : 0f;
-        public bool CanUseSkill => _skillAction != null && _skillAction.CanUse;
-        public float SkillCooldownRatio
-        {
-            get
-            {
-                return _skillAction?.GetCooldownRatio() ?? 0f;
-            }
-        }
+        public bool HasSkill => _skillModule.HasSkill;
+        public Sprite SkillIcon => _skillModule.SkillIcon;
+        public float SkillCooldown => _skillModule.SkillCooldown;
+        public bool CanUseSkill => _skillModule.CanUse;
+        public float SkillCooldownRatio => _skillModule.CooldownRatio;
         #endregion
 
         protected virtual void Start()
@@ -75,14 +63,14 @@ namespace TrainDefense.Game
             _isDead = false;
             if (_trainData == null)
             {
-                _skillAction = null;
+                _skillModule.Initialize(this, null, ApplyStat);
                 return;
             }
 
             _currentMaxHp = _trainData.TrainStatusData.MaxHp;
             _currentHp = _currentMaxHp;
             _currentLevel = -1;
-            _skillAction = TrainSkillActionFactory.Create(this, _trainData.TrainSkillData);
+            _skillModule.Initialize(this, _trainData, ApplyStat);
         }
 
         public Transform TargetTransform => transform;
@@ -173,9 +161,19 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
         }
 
-        public virtual bool TryUseSkill()
+        public virtual bool TryUseSkill() => _skillModule.TryUse();
+
+        public void ApplyTimedStat(StatType type, float percent, float duration)
+            => _skillModule.ApplyTimedStat(type, percent, duration);
+
+        protected virtual void Update()
         {
-            return _skillAction != null && _skillAction.TryUse();
+            _skillModule.Tick(Time.deltaTime);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            _skillModule.Dispose();
         }
 
         public virtual void Upgrade(ITrainUpgradeData upgradeData)

@@ -12,10 +12,13 @@ namespace TrainDefense.Game.Datas
         private RangeTrainStatus rangeTrainStatus;
         [SerializeField]
         private string rangeProjectilePrefabId;
+        [SerializeField]
+        private string passiveSkillsRaw;
         private GameObject rangeProjectilePrefab;
         #endregion
 
         public RangeTrainStatus RangeTrainStatus => rangeTrainStatus;
+        public string PassiveSkillsRaw => passiveSkillsRaw;
 
         private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 

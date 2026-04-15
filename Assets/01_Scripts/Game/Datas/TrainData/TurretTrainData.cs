@@ -12,10 +12,13 @@ namespace TrainDefense.Game.Datas
         private TurretTrainStatus turretTrainStatus;
         [SerializeField]
         private string turretProjectilePrefabId;
+        [SerializeField]
+        private string passiveSkillsRaw;
         private GameObject turretProjectilePrefab;
         #endregion
 
         public TurretTrainStatus TurretTrainStatus => turretTrainStatus;
+        public string PassiveSkillsRaw => passiveSkillsRaw;
 
         private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 

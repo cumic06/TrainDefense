@@ -12,6 +12,8 @@ namespace TrainDefense.Game
             TrainSkillAction action = trainSkillData.SkillType switch
             {
                 TrainSkillType.Projectile => new TrainProjectileSkillAction(),
+                TrainSkillType.SelfBuff => new TrainSelfBuffSkillAction(),
+                TrainSkillType.InstantAttack => new TrainInstantAttackSkillAction(),
                 _ => null
             };
 
