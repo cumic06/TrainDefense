@@ -159,6 +159,11 @@ namespace TrainDefense.Game
         {
             // HP를 최대치로 복원하고 죽음 상태 해제
             _isDead = false;
+            RestoreHpToMax();
+        }
+
+        public virtual void RestoreHpToMax()
+        {
             _currentHp = _currentMaxHp;
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
         }

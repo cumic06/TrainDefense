@@ -96,14 +96,38 @@ namespace TrainDefense.Game
       [Button("SpawnTrain")]
       public void SpawnTrain(Train trainPrefab)
       {
+         if (trainPrefab == null)
+         {
+            Debug.LogError("SpawnTrain: Train prefab is null");
+            return;
+         }
+
+         SpawnTrain(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
+      }
+
+      public void SpawnTrain(TrainData trainData)
+      {
          if (_currentAliveTrains.Count >= maxTrainCount)
          {
             Debug.LogWarning("Train count is max");
             return;
          }
 
+         if (trainData == null || trainData.Prefab == null)
+         {
+            Debug.LogError("SpawnTrain: TrainData or prefab is null");
+            return;
+         }
+
+         Train trainPrefab = trainData.Prefab.GetComponent<Train>();
+         if (trainPrefab == null)
+         {
+            Debug.LogError($"SpawnTrain: Prefab for TrainData [{trainData.Id}] has no Train component");
+            return;
+         }
+
          Train trainObject = Instantiate(trainPrefab, transform);
-         trainObject.Initialize(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
+         trainObject.Initialize(trainData);
          trainObject.IsUnDead = isUnDead;
          _currentAliveTrains.Add(trainObject);
          _currentTrains.Add(trainObject);
@@ -113,8 +137,7 @@ namespace TrainDefense.Game
          // 새로 생성된 train에 기존 업그레이드 적용
          ApplyExistingUpgradesToTrain(trainObject);
 
-         var newTrainData = DatabaseManager.Instance.GetTrainData(trainObject.Id);
-         GameEventSystem.Publish(new AddTrainEvent(newTrainData.Icon, trainObject));
+         GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
 
          // 살아있는 기차 재정렬
          RearrangeTrains();
@@ -138,6 +161,17 @@ namespace TrainDefense.Game
       /// <param name="newTrainPrefab">새로운 Train 프리팹</param>
       public void ReplaceTrain(string oldTrainId, Train newTrainPrefab)
       {
+         if (newTrainPrefab == null)
+         {
+            Debug.LogError("ReplaceTrain: New Train prefab is null");
+            return;
+         }
+
+         ReplaceTrain(oldTrainId, DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
+      }
+
+      public void ReplaceTrain(string oldTrainId, TrainData newTrainData)
+      {
          // 대체할 기존 Train 찾기
          Train oldTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == oldTrainId);
          if (oldTrain == null)
@@ -151,16 +185,28 @@ namespace TrainDefense.Game
          int originalIndex = _trainOriginalIndexMap.ContainsKey(oldTrain) ? _trainOriginalIndexMap[oldTrain] : aliveIndex;
          Vector3 oldPosition = oldTrain.transform.localPosition;
 
+         if (newTrainData == null || newTrainData.Prefab == null)
+         {
+            Debug.LogError($"ReplaceTrain: New TrainData is invalid for replacing [{oldTrainId}]");
+            return;
+         }
+
+         Train newTrainPrefab = newTrainData.Prefab.GetComponent<Train>();
+         if (newTrainPrefab == null)
+         {
+            Debug.LogError($"ReplaceTrain: Prefab for TrainData [{newTrainData.Id}] has no Train component");
+            return;
+         }
+
          // 새로운 Train 생성 (기존 Train 제거 전에 생성하여 이벤트에서 참조 가능)
          Train newTrain = Instantiate(newTrainPrefab, transform);
-         newTrain.Initialize(DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
+         newTrain.Initialize(newTrainData);
          newTrain.IsUnDead = isUnDead;
 
          // 새로 생성된 train에 기존 업그레이드 적용
          ApplyExistingUpgradesToTrain(newTrain);
 
          // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
-         var newTrainData = DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id);
          GameEventSystem.Publish(new ReplaceTrainEvent(oldTrain, newTrain, newTrainData?.Icon));
 
          // 기존 Train 제거
@@ -268,6 +314,12 @@ namespace TrainDefense.Game
 
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
       {
+         // 살아있는 기차도 Inspection 시작 시 HP를 최대치로 회복
+         foreach (var train in _currentAliveTrains)
+         {
+            train.RestoreHpToMax();
+         }
+
          // 죽은 기차 복원
          foreach (var deadTrainInfo in _deadTrains.ToList())
          {
