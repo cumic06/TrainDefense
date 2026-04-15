@@ -25,10 +25,12 @@ MonoBehaviour:
         m_Calls: []
     _message: "\uC2A4\uD0AC\uC744 \uC0AC\uC6A9\uD574\uBCF4\uC138\uC694!"
     _arrowDirection: 0
+    _arrowLookDirection: 0
     _useDimming: 1
     _useHighlight: 0
     _delayBefore: 0
     _sfxKey: 
+    _messageOffset: {x: 0, y: 0}
     _prerequisiteStepId: 
   - _id: 10001
     _targetObject: {fileID: 0}
@@ -40,11 +42,13 @@ MonoBehaviour:
         m_Calls: []
     _message: "\uAE30\uCC28 \uC544\uC774\uCF58\uC744 \uB20C\uB7EC \uC2A4\uD0AC\uC744
       \uC0AC\uC6A9\uD558\uC138\uC694!"
-    _arrowDirection: 2
+    _arrowDirection: 1
+    _arrowLookDirection: 1
     _useDimming: 1
     _useHighlight: 1
     _delayBefore: 0
     _sfxKey: 
+    _messageOffset: {x: 0, y: 50}
     _prerequisiteStepId: 
   _canSkip: 1
   _priority: 0

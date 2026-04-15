@@ -495,7 +495,7 @@ MonoBehaviour:
     passiveSkillsRaw: 
   - id: 31001
     name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_KMD_08_UI
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
@@ -517,7 +517,7 @@ MonoBehaviour:
     passiveSkillsRaw: OverrideEveryN:5:ExplosionProjectile
   - id: 31002
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_MEL_05_UI
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
@@ -539,7 +539,7 @@ MonoBehaviour:
     passiveSkillsRaw: 
   - id: 31003
     name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_KMD_10_UI
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
@@ -561,7 +561,7 @@ MonoBehaviour:
     passiveSkillsRaw: 
   - id: 31004
     name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_288_19_UI
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
@@ -583,7 +583,7 @@ MonoBehaviour:
     passiveSkillsRaw: RepeatAfterAttack:0.2:2
   - id: 31005
     name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_MEL_16_UI
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
@@ -605,7 +605,7 @@ MonoBehaviour:
     passiveSkillsRaw: 
   - id: 31006
     name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_MEL_14_UI
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
@@ -627,7 +627,7 @@ MonoBehaviour:
     passiveSkillsRaw: RandomPosBombard:1:10:5
   - id: 31007
     name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
-    iconId: 
+    iconId: Weapon_KMD_12_UI
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
