@@ -25,22 +25,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			var trainStatusData = new TrainStatusData { MaxHp = r.maxHp };
 			SetPrivateField(t, target, "trainStatusData", trainStatusData);
 
-			var trainSkillData = (object)new TrainSkillData();
-			var skillType = typeof(TrainSkillData);
-			SetPrivateField(skillType, trainSkillData, "skillType", r.skillType);
-			SetPrivateField(skillType, trainSkillData, "skillCooldown", r.skillCooldown);
-			SetPrivateField(skillType, trainSkillData, "skillIconId", r.skillIconId);
-			var projectileData = new TrainSkillProjectileData();
-			var projectileType = typeof(TrainSkillProjectileData);
-			SetPrivateField(projectileType, projectileData, "projectilePrefabId", r.skillProjectilePrefabId);
-			SetPrivateField(projectileType, projectileData, "damage", r.skillProjectileDamage);
-			SetPrivateField(projectileType, projectileData, "range", r.skillProjectileRange);
-			SetPrivateField(projectileType, projectileData, "projectileCount", r.skillProjectileCount);
-			SetPrivateField(skillType, trainSkillData, "projectileData", projectileData);
-			SetPrivateField(skillType, trainSkillData, "buffDuration", r.skillBuffDuration);
-			SetPrivateField(skillType, trainSkillData, "buffStatType", r.skillBuffStatType);
-			SetPrivateField(skillType, trainSkillData, "buffPercent", r.skillBuffPercent);
-			SetPrivateField(t, target, "trainSkillData", trainSkillData);
+			SetPrivateField(t, target, "trainSkillDataId", r.trainSkillDataId);
 
 			var turretTrainType = typeof(TurretTrainData);
             var turretTrainStatus = new TurretTrainStatus

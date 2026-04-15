@@ -30,7 +30,11 @@ namespace TrainDefense.Game.Datas
         private string prefabId;
         private GameObject prefab;
         [SerializeField]
-        private TrainSkillData trainSkillData;
+        private string trainSkillDataId;
+        [NonSerialized]
+        private TrainSkillData trainSkillDataCache;
+        [NonSerialized]
+        private bool trainSkillDataResolved;
         private Sprite skillIcon;
         [SerializeField]
         private bool isMainTrain;
@@ -92,12 +96,34 @@ namespace TrainDefense.Game.Datas
         public DamageType DamageType => damageType;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
-        public TrainSkillData TrainSkillData => trainSkillData ??= new TrainSkillData();
+        public string TrainSkillDataId => trainSkillDataId;
+        public TrainSkillData TrainSkillData
+        {
+            get
+            {
+                if (trainSkillDataResolved) return trainSkillDataCache;
+                trainSkillDataResolved = true;
+                if (string.IsNullOrEmpty(trainSkillDataId))
+                {
+                    trainSkillDataCache = null;
+                    return null;
+                }
+                var dbm = TrainDefense.Game.DatabaseManager.Instance;
+                var db = dbm != null ? dbm.GetDB() : null;
+                if (db == null || db.trainSkillDataList == null)
+                {
+                    trainSkillDataCache = null;
+                    return null;
+                }
+                trainSkillDataCache = db.trainSkillDataList.Find(s => s != null && s.Id == trainSkillDataId);
+                return trainSkillDataCache;
+            }
+        }
         public Sprite SkillIcon
         {
             get
             {
-                var skillIconId = TrainSkillData.SkillIconId;
+                var skillIconId = TrainSkillData?.SkillIconId;
                 if (skillIcon == null && !string.IsNullOrEmpty(skillIconId))
                 {
                     skillIcon = Resources.LoadAll<Sprite>("")

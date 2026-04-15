@@ -56,6 +56,8 @@ namespace TrainDefense.Game
         public TurretTrainData[] GetTurretTrainDatas() => GetDB().TurretTrainDataList.ToArray();
 
         public RangeTrainData[] GetRangeTrainDatas() => GetDB().RangeTrainDataList.ToArray();
+        public TrainSkillData[] GetTrainSkillDatas() => GetDB().TrainSkillDataList.ToArray();
+        public TrainSkillData GetTrainSkillData(string id) => string.IsNullOrEmpty(id) ? null : GetDB().trainSkillDataList.Find(s => s != null && s.Id == id);
 
         public TrainUpgradeData[] GetTrainUpgradeDatas() => GetDB().TrainUpgradeDataList.ToArray();
 

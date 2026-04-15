@@ -5,8 +5,10 @@ using TrainDefense.Game.Stats;
 namespace TrainDefense.Game.Datas
 {
     [Serializable]
-    public class TrainSkillData
+    public class TrainSkillData : IData
     {
+        [SerializeField]
+        private string id;
         [SerializeField]
         private TrainSkillType skillType;
         [SerializeField]
@@ -23,6 +25,7 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private float buffPercent;
 
+        public string Id => id;
         public bool HasSkill => skillType != TrainSkillType.None;
         public TrainSkillType SkillType => skillType;
         public float SkillCooldown => skillCooldown;

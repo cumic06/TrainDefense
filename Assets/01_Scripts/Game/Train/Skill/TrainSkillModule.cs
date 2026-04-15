@@ -22,7 +22,7 @@ namespace TrainDefense.Game
 
         public TrainSkillAction ActiveSkill => _activeSkill;
 
-        public bool HasSkill => _trainData != null && _trainData.TrainSkillData.HasSkill;
+        public bool HasSkill => _trainData != null && _trainData.TrainSkillData != null && _trainData.TrainSkillData.HasSkill;
 
         public Sprite SkillIcon
         {
@@ -33,7 +33,7 @@ namespace TrainDefense.Game
             }
         }
 
-        public float SkillCooldown => _trainData != null ? _trainData.TrainSkillData.SkillCooldown : 0f;
+        public float SkillCooldown => _trainData?.TrainSkillData?.SkillCooldown ?? 0f;
         public bool CanUse => _activeSkill != null && _activeSkill.CanUse;
         public float CooldownRatio => _activeSkill?.GetCooldownRatio() ?? 0f;
 

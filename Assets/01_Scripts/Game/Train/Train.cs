@@ -12,6 +12,7 @@ namespace TrainDefense.Game
     public abstract class Train : MonoBehaviour, ITrainable, IProjectileTarget
     {
         #region Verialbes
+
         #region Field
         [SerializeField]
         protected string id;
@@ -45,6 +46,7 @@ namespace TrainDefense.Game
         public float SkillCooldown => _skillModule.SkillCooldown;
         public bool CanUseSkill => _skillModule.CanUse;
         public float SkillCooldownRatio => _skillModule.CooldownRatio;
+        
         #endregion
 
         protected virtual void Start()
