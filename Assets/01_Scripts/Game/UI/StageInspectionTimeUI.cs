@@ -42,12 +42,14 @@ public class StageInspectionTimeUI : MonoBehaviour
     {
         GameEventSystem.Subscribe<InspectionStartEvent>(SetMaxValue);
         GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
+        GameEventSystem.Subscribe<StageSelectEvent>(OnStageSelected);
     }
 
     private void _UnsubscribeEvents()
     {
         GameEventSystem.Unsubscribe<InspectionStartEvent>(SetMaxValue);
         GameEventSystem.Unsubscribe<ChangeStageTimeEvent>(OnChangeStageTime);
+        GameEventSystem.Unsubscribe<StageSelectEvent>(OnStageSelected);
     }
 
     private void ResetSliderValue()
@@ -64,6 +66,12 @@ public class StageInspectionTimeUI : MonoBehaviour
     private void SetMaxValue(InspectionStartEvent inspectionStartEvent)
     {
         RefreshMaxValue();
+    }
+
+    private void OnStageSelected(StageSelectEvent stageSelectEvent)
+    {
+        _maxTime = 0f;
+        ResetSliderValue();
     }
 
     private void RefreshMaxValue()
