@@ -54,7 +54,6 @@ namespace TrainDefense.Game.Tutorial
 
             if (_saveData.IsSequenceCompleted(sequenceId))
             {
-                Debug.Log($"[Tutorial] 이미 완료된 시퀀스: {sequenceId}");
                 return false;
             }
 

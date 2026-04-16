@@ -7,5 +7,7 @@ namespace TrainDefense.Game.Datas
       public Sprite Icon;
       public string Name;
       public string Description;
+      public string PassiveName;
+      public string PassiveDescription;
    }
 }

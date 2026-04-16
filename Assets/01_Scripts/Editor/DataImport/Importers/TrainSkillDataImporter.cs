@@ -13,6 +13,8 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string[] Headers => new[]
 		{
 			"id",
+			"name",
+			"description",
 			"skill_type",
 			"skill_cooldown",
 			"skill_icon_id",

@@ -21,6 +21,8 @@ namespace TrainDefense.Game.UI
       private Image newImage;
       [SerializeField]
       private Image upgradeImage;
+      [SerializeField]
+      private TextMeshProUGUI passiveNameText;
       #endregion
 
       private Button _selectButton;
@@ -63,6 +65,9 @@ namespace TrainDefense.Game.UI
 
          if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
          {
+            if (passiveNameText != null)
+               passiveNameText.gameObject.SetActive(false);
+
             var triChoiceManager = TriChoiceManager.Instance;
             if (triChoiceManager != null)
             {
@@ -96,6 +101,18 @@ namespace TrainDefense.Game.UI
          {
             descriptionText.text = choiceUIInfo.Description;
             upgradeImage.gameObject.SetActive(false);
+
+            if (passiveNameText != null)
+            {
+               bool hasPassiveName = !string.IsNullOrEmpty(choiceUIInfo.PassiveName);
+
+               passiveNameText.gameObject.SetActive(hasPassiveName);
+
+               if (hasPassiveName)
+                  passiveNameText.text = $"-{choiceUIInfo.PassiveName}-";
+            }
+            if (!string.IsNullOrEmpty(choiceUIInfo.PassiveDescription))
+               descriptionText.text = $"\n{choiceUIInfo.PassiveDescription}";
          }
       }
 

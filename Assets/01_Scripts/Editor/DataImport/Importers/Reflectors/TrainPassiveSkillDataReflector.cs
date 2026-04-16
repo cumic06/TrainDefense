@@ -17,10 +17,12 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 		{
 			var t = typeof(TrainPassiveSkillData);
 			SetPrivateField(t, target, "id", r.id);
+			SetPrivateField(t, target, "name", r.name);
 			SetPrivateField(t, target, "passiveType", r.passiveType);
 			SetPrivateField(t, target, "param1", r.param1);
 			SetPrivateField(t, target, "param2", r.param2);
 			SetPrivateField(t, target, "param3", r.param3);
+			SetPrivateField(t, target, "description", r.description);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

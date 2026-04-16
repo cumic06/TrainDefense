@@ -174,7 +174,6 @@ namespace TrainDefense.Game
             _trainInfoSlotTutorialStarted = true;
             TutorialManager.Instance.OnTutorialComplete += OnTrainInfoSlotTutorialComplete;
 
-            Debug.Log("TrainUpgradeManager: Starting trainInfoSlot tutorial");
             TutorialManager.Instance.StartTutorial("trainInfoSlotTutorial");
         }
 

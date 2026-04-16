@@ -19,6 +19,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 		{
 			var t = typeof(TrainSkillData);
 			SetPrivateField(t, target, "id", r.id);
+			SetPrivateField(t, target, "name", r.name);
+			SetPrivateField(t, target, "description", r.description);
 			SetPrivateField(t, target, "skillType", r.skillType);
 			SetPrivateField(t, target, "skillCooldown", r.skillCooldown);
 			SetPrivateField(t, target, "skillIconId", r.skillIconId);

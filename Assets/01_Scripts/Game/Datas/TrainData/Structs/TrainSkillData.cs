@@ -29,6 +29,10 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private string id;
         [SerializeField]
+        private string name;
+        [SerializeField]
+        private string description;
+        [SerializeField]
         private TrainSkillType skillType;
         [SerializeField]
         private float skillCooldown;
@@ -43,6 +47,8 @@ namespace TrainDefense.Game.Datas
         private List<TrainSkillBuffEntry> buffs = new();
 
         public string Id => id;
+        public string Name => name;
+        public string Description => description;
         public bool HasSkill => skillType != TrainSkillType.None;
         public TrainSkillType SkillType => skillType;
         public float SkillCooldown => skillCooldown;

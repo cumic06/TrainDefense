@@ -13,10 +13,12 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string[] Headers => new[]
 		{
 			"id",
+			"name",
 			"passive_type",
 			"param1",
 			"param2",
 			"param3",
+			"description",
 		};
 
 		public int Import(DB db, string excelPath)

@@ -7,6 +7,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 	public class TrainSkillDataRow : IExcelRow
 	{
 		public string id;
+		public string name;
+		public string description;
 		public TrainSkillType skillType;
 		public float skillCooldown;
 		public string skillIconId;
@@ -20,6 +22,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public void FromExcelRow(IRow row, HeaderMap map)
 		{
 			id = map.GetString(row, "id");
+			name = map.GetString(row, "name");
+			description = map.GetString(row, "description");
 
 			var skillTypeValue = map.GetString(row, "skill_type");
 			if (!System.Enum.TryParse(skillTypeValue, true, out skillType))
@@ -44,6 +48,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public void ToExcelRow(IRow row, HeaderMap map)
 		{
 			map.SetCell(row, "id", id);
+			map.SetCell(row, "name", name);
+			map.SetCell(row, "description", description);
 			map.SetCell(row, "skill_type", skillType.ToString());
 			map.SetCell(row, "skill_cooldown", skillCooldown);
 			map.SetCell(row, "skill_icon_id", skillIconId);
