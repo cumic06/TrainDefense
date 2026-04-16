@@ -354,7 +354,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: NormalProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 
   - id: 30002
     name: "\uD654\uC5FC \uD3EC\uD0D1"
     iconId: Weapon_MEL_05_UI
@@ -377,7 +377,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: FireEffectProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 
   - id: 30003
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: Weapon_KMD_10_UI
@@ -400,7 +400,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: MissileProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: Weapon_288_19_UI
@@ -423,7 +423,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: LaserProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 
   - id: 30005
     name: "\uC804\uAE30 \uD3EC\uD0D1"
     iconId: Weapon_MEL_16_UI
@@ -446,7 +446,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: ElectrickProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 
   - id: 30006
     name: "\uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_MEL_14_UI
@@ -469,7 +469,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: CannonProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 
   - id: 30007
     name: "\uC800\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_KMD_12_UI
@@ -492,7 +492,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: SniperProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 
   - id: 31001
     name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
     iconId: Weapon_KMD_08_UI
@@ -503,7 +503,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteNormalTurretTrain
-    trainSkillDataId: skill_elite_machinegun
+    trainSkillDataId: 50001
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -514,7 +514,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: NormalProjectile
-    passiveSkillsRaw: OverrideEveryN:5:ExplosionProjectile
+    passiveSkillDataId: 60001
   - id: 31002
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
     iconId: Weapon_MEL_05_UI
@@ -525,7 +525,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteFireTurretTrain
-    trainSkillDataId: skill_elite_fire
+    trainSkillDataId: 50002
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 25
@@ -536,7 +536,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: FireEffectProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 60002
   - id: 31003
     name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: Weapon_KMD_10_UI
@@ -547,7 +547,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteMissileTurretTrain
-    trainSkillDataId: skill_elite_missile
+    trainSkillDataId: 50003
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 100
@@ -558,7 +558,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: MissileProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 60003
   - id: 31004
     name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: Weapon_288_19_UI
@@ -569,7 +569,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteLaserTurretTrain
-    trainSkillDataId: skill_elite_laser
+    trainSkillDataId: 50004
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 300
@@ -580,7 +580,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: LaserProjectile
-    passiveSkillsRaw: RepeatAfterAttack:0.2:2
+    passiveSkillDataId: 60004
   - id: 31005
     name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
     iconId: Weapon_MEL_16_UI
@@ -591,7 +591,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteElectrickTurretTrain
-    trainSkillDataId: skill_elite_electrick
+    trainSkillDataId: 50005
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 400
@@ -602,7 +602,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: ElectrickProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 60005
   - id: 31006
     name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_MEL_14_UI
@@ -613,7 +613,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteCannonTurretTrain
-    trainSkillDataId: skill_elite_cannon
+    trainSkillDataId: 50006
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 400
@@ -624,7 +624,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: CannonProjectile
-    passiveSkillsRaw: RandomPosBombard:1:10:5
+    passiveSkillDataId: 60006
   - id: 31007
     name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_KMD_12_UI
@@ -635,7 +635,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteSniperTurretTrain
-    trainSkillDataId: skill_elite_sniper
+    trainSkillDataId: 50007
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 600
@@ -646,7 +646,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: SniperProjectile
-    passiveSkillsRaw: ChainAttackChance:30
+    passiveSkillDataId: 60007
   rangeTrainDataList:
   - id: 40001
     name: "\uD3ED\uBC1C \uD3EC\uD0D1"
@@ -669,7 +669,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ExplosionProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 
   - id: 40002
     name: "\uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: "\uD604\uB300\uBB34\uAE30_\uB300\uD3EC_288\uC2A4\uB9C8"
@@ -691,7 +691,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
-    passiveSkillsRaw: 
+    passiveSkillDataId: 
   - id: 41001
     name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
     iconId: 
@@ -702,7 +702,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteExplosionRangeTrain
-    trainSkillDataId: skill_elite_explosion
+    trainSkillDataId: 50008
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 500
@@ -712,7 +712,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ExplosionProjectile
-    passiveSkillsRaw: FollowUpExplosion:0.2:ExplosionProjectile:3
+    passiveSkillDataId: 60008
   - id: 41002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: 
@@ -723,7 +723,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteColdAirRangeTrain
-    trainSkillDataId: skill_elite_coldair
+    trainSkillDataId: 50009
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 15
@@ -733,9 +733,9 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
-    passiveSkillsRaw: PeriodicSpawn:3:ColdAirProjectile:5
+    passiveSkillDataId: 60009
   trainSkillDataList:
-  - id: skill_elite_machinegun
+  - id: 50001
     skillType: 2
     skillCooldown: 20
     skillIconId: 
@@ -748,40 +748,46 @@ MonoBehaviour:
     buffs:
     - statType: 4
       percent: -50
-  - id: skill_elite_fire
-    skillType: 0
-    skillCooldown: 0
+  - id: 50002
+    skillType: 2
+    skillCooldown: 25
     skillIconId: 
     projectileData:
       projectilePrefabId: 
       damage: 0
       range: 0
       projectileCount: 0
+    buffDuration: 6
+    buffs:
+    - statType: 2
+      percent: 100
+  - id: 50003
+    skillType: 1
+    skillCooldown: 20
+    skillIconId: 
+    projectileData:
+      projectilePrefabId: MissileProjectile
+      damage: 200
+      range: 15
+      projectileCount: 3
     buffDuration: 0
     buffs: []
-  - id: skill_elite_missile
-    skillType: 0
-    skillCooldown: 0
+  - id: 50004
+    skillType: 2
+    skillCooldown: 30
     skillIconId: 
     projectileData:
       projectilePrefabId: 
       damage: 0
       range: 0
       projectileCount: 0
-    buffDuration: 0
-    buffs: []
-  - id: skill_elite_laser
-    skillType: 0
-    skillCooldown: 0
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 0
-    buffs: []
-  - id: skill_elite_electrick
+    buffDuration: 5
+    buffs:
+    - statType: 6
+      percent: 50
+    - statType: 7
+      percent: 100
+  - id: 50005
     skillType: 1
     skillCooldown: 30
     skillIconId: 
@@ -792,7 +798,7 @@ MonoBehaviour:
       projectileCount: 1
     buffDuration: 0
     buffs: []
-  - id: skill_elite_cannon
+  - id: 50006
     skillType: 2
     skillCooldown: 30
     skillIconId: 
@@ -807,9 +813,9 @@ MonoBehaviour:
       percent: 200
     - statType: 4
       percent: -50
-  - id: skill_elite_sniper
-    skillType: 0
-    skillCooldown: 0
+  - id: 50007
+    skillType: 3
+    skillCooldown: 15
     skillIconId: 
     projectileData:
       projectilePrefabId: 
@@ -818,7 +824,7 @@ MonoBehaviour:
       projectileCount: 0
     buffDuration: 0
     buffs: []
-  - id: skill_elite_explosion
+  - id: 50008
     skillType: 3
     skillCooldown: 20
     skillIconId: 
@@ -829,7 +835,7 @@ MonoBehaviour:
       projectileCount: 0
     buffDuration: 0
     buffs: []
-  - id: skill_elite_coldair
+  - id: 50009
     skillType: 2
     skillCooldown: 30
     skillIconId: 
@@ -842,6 +848,52 @@ MonoBehaviour:
     buffs:
     - statType: 1
       percent: 300
+  trainPassiveSkillDataList:
+  - id: 60001
+    passiveType: OverrideEveryN
+    param1: 5
+    param2: ExplosionProjectile
+    param3: 
+  - id: 60002
+    passiveType: OverrideEveryN
+    param1: 3
+    param2: FireAreaProjectile
+    param3: 
+  - id: 60003
+    passiveType: RepeatAfterAttack
+    param1: 0.5
+    param2: 1
+    param3: 
+  - id: 60004
+    passiveType: RepeatAfterAttack
+    param1: 0.2
+    param2: 2
+    param3: 
+  - id: 60005
+    passiveType: ChainAttackChance
+    param1: 20
+    param2: 
+    param3: 
+  - id: 60006
+    passiveType: RandomPosBombard
+    param1: 1
+    param2: 10
+    param3: 5
+  - id: 60007
+    passiveType: ChainAttackChance
+    param1: 30
+    param2: 
+    param3: 
+  - id: 60008
+    passiveType: FollowUpExplosion
+    param1: 0.2
+    param2: ExplosionProjectile
+    param3: 3
+  - id: 60009
+    passiveType: PeriodicSpawn
+    param1: 3
+    param2: ColdAirProjectile
+    param3: 5
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
   - id: 90001

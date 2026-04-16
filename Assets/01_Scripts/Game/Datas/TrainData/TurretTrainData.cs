@@ -13,12 +13,37 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private string turretProjectilePrefabId;
         [SerializeField]
-        private string passiveSkillsRaw;
+        private string passiveSkillDataId;
         private GameObject turretProjectilePrefab;
+        [NonSerialized]
+        private TrainPassiveSkillData passiveSkillDataCache;
+        [NonSerialized]
+        private bool passiveSkillDataResolved;
         #endregion
 
         public TurretTrainStatus TurretTrainStatus => turretTrainStatus;
-        public string PassiveSkillsRaw => passiveSkillsRaw;
+        public TrainPassiveSkillData PassiveSkillData
+        {
+            get
+            {
+                if (passiveSkillDataResolved) return passiveSkillDataCache;
+                passiveSkillDataResolved = true;
+                if (string.IsNullOrEmpty(passiveSkillDataId))
+                {
+                    passiveSkillDataCache = null;
+                    return null;
+                }
+                var dbm = DatabaseManager.Instance;
+                var db = dbm?.GetDB();
+                if (db?.trainPassiveSkillDataList == null)
+                {
+                    passiveSkillDataCache = null;
+                    return null;
+                }
+                passiveSkillDataCache = db.trainPassiveSkillDataList.Find(s => s != null && s.Id == passiveSkillDataId);
+                return passiveSkillDataCache;
+            }
+        }
 
         private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 

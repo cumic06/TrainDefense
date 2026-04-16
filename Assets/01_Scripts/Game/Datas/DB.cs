@@ -34,9 +34,14 @@ namespace TrainDefense.Game.Datas
         public List<RangeTrainData> rangeTrainDataList = new();
 
         [TabGroup("Train Data")]
-        [InfoBox("기차 스킬 데이터 관리")]
+        [InfoBox("액티브 스킬 데이터 관리")]
         [SerializeField]
         public List<TrainSkillData> trainSkillDataList = new();
+
+        [TabGroup("Train Data")]
+        [InfoBox("패시브 스킬 데이터 관리")]
+        [SerializeField]
+        public List<TrainPassiveSkillData> trainPassiveSkillDataList = new();
         #endregion
 
         [TabGroup("Train Upgrade Data")]
@@ -92,6 +97,7 @@ namespace TrainDefense.Game.Datas
         public IReadOnlyList<TrainData> TrainDataList => trainDataList;
         public IReadOnlyList<RangeTrainData> RangeTrainDataList => rangeTrainDataList;
         public IReadOnlyList<TrainSkillData> TrainSkillDataList => trainSkillDataList;
+        public IReadOnlyList<TrainPassiveSkillData> TrainPassiveSkillDataList => trainPassiveSkillDataList;
         public IReadOnlyList<TurretTrainData> TurretTrainDataList => turretTrainDataList;
         public IReadOnlyList<TrainUpgradeData> TrainUpgradeDataList => trainUpgradeDataList;
         public IReadOnlyList<TurretTrainUpgradeData> TurretTrainUpgradeDataList => turretTrainUpgradeDataList;

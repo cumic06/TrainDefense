@@ -39,7 +39,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			};
 			SetPrivateField(rangeTrainType, target, "rangeTrainStatus", rangeTrainStatus);
 			SetPrivateField(rangeTrainType, target, "rangeProjectilePrefabId", r.rangeProjectilePrefabId);
-			SetPrivateField(rangeTrainType, target, "passiveSkillsRaw", r.passiveSkillsRaw);
+			SetPrivateField(rangeTrainType, target, "passiveSkillDataId", r.passiveSkillDataId);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

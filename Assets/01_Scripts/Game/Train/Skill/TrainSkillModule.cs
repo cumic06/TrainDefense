@@ -105,10 +105,12 @@ namespace TrainDefense.Game
             }
         }
 
-        /// <summary>
-        /// 엑셀 DSL 문자열에서 패시브 스킬을 파싱하여 등록·구독 시작.
-        /// TurretTrain/RangeTrain의 Setup에서 호출.
-        /// </summary>
+        public void RegisterPassiveFromData(Datas.TrainPassiveSkillData data)
+        {
+            if (data == null) return;
+            RegisterPassivesFromRaw(data.ToDsl());
+        }
+
         public void RegisterPassivesFromRaw(string raw)
         {
             var skills = TrainPassiveSkillFactory.ParseAll(raw);

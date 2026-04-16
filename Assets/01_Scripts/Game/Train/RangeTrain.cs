@@ -27,7 +27,7 @@ namespace TrainDefense.Game
             // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
 
-            _skillModule.RegisterPassivesFromRaw(rangeTrainData?.PassiveSkillsRaw);
+            _skillModule.RegisterPassiveFromData(rangeTrainData?.PassiveSkillData);
 
             if (TrainData.DamageType == DamageType.Direct) return;
 

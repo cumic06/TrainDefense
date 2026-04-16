@@ -40,7 +40,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
             };
 			SetPrivateField(turretTrainType, target, "turretTrainStatus", turretTrainStatus);
 			SetPrivateField(turretTrainType, target, "turretProjectilePrefabId", r.turretProjectilePrefabId);
-			SetPrivateField(turretTrainType, target, "passiveSkillsRaw", r.passiveSkillsRaw);
+			SetPrivateField(turretTrainType, target, "passiveSkillDataId", r.passiveSkillDataId);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

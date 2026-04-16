@@ -53,7 +53,7 @@ namespace TrainDefense.Game
                 _isStatusInitialized = true;
             }
 
-            _skillModule.RegisterPassivesFromRaw(turretTrainData?.PassiveSkillsRaw);
+            _skillModule.RegisterPassiveFromData(turretTrainData?.PassiveSkillData);
             InitializeProjectilePoolingMode();
         }
 
