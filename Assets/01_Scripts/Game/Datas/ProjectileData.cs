@@ -53,6 +53,11 @@ namespace TrainDefense.Game
 
         [BoxGroup("Damage")]
         [SerializeField]
+        [LabelText("포탑에서 직접 데미지 (이펙트 전용 프로젝타일)")]
+        private bool directDamage = false;
+
+        [BoxGroup("Damage")]
+        [SerializeField]
         private DamageType damageType = DamageType.Direct;
 
         [BoxGroup("Damage")]
@@ -94,6 +99,7 @@ namespace TrainDefense.Game
 
         #region Properties
 
+        public bool DirectDamage => directDamage;
         public MovementType MovementType => movementType;
         public float Speed => speed;
         public float DestroyDelay => destroyDelay;
