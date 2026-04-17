@@ -200,9 +200,13 @@ namespace TrainDefense.Game
             }
 
             ProjectileData projectileData = GetProjectile().GetData();
+
+            // 비주얼 먼저 소환 (DirectDamage로 적이 죽기 전에 방향 설정)
             if (projectileData != null && projectileData.MovementType == MovementType.TargetPos)
             {
                 TargetPosAttack();
+                if (projectileData == null || !projectileData.DirectDamage)
+                    return;
             }
             else if (isTargeting)
             {
@@ -213,8 +217,11 @@ namespace TrainDefense.Game
                 NormalAttack();
             }
 
-            TryTriggerFollowUp(nearTarget);
-            OnAttacked?.Invoke(nearTarget);
+            // DirectDamage: 비주얼 소환 후 즉석 데미지
+            if (projectileData != null && projectileData.DirectDamage)
+            {
+                DirectDamageAttack(projectileData);
+            }
         }
 
         /// <summary>
@@ -288,6 +295,48 @@ namespace TrainDefense.Game
                 }
             }
         }
+
+        #region DirectDamageAttack
+        private const float BaseCriticalDamagePercent = 30f;
+
+        private void DirectDamageAttack(ProjectileData projectileData)
+        {
+            int targetCount = Mathf.Max(_currentTurretTrainStatus.TargetCount, _currentTurretTrainStatus.AttackCount);
+
+            for (int i = 0; i < targetCount; i++)
+            {
+                if (i >= _targetMonsters.Count) break;
+
+                Monster target = _targetMonsters[i];
+                if (target == null || !target.IsActive) continue;
+
+                var (finalDamage, isCritical) = CalculateDirectDamage();
+                target.TakeDamage(finalDamage, isCritical);
+
+                if (projectileData.HasStunEffect)
+                    target.Stun(projectileData.StunDuration);
+                if (projectileData.HasShoveEffect)
+                    target.Shove(projectileData.ShovePower, projectileData.ShoveDuration);
+                if (projectileData.HasSlowEffect)
+                    target.Slow(projectileData.SlowValue);
+            }
+        }
+
+        private (int finalDamage, bool isCritical) CalculateDirectDamage()
+        {
+            bool isCritical = _currentTurretTrainStatus.CriticalChance > 0f
+                && UtilMath.CheckProbability(_currentTurretTrainStatus.CriticalChance);
+            int finalDamage = _currentTurretTrainStatus.AttackDamage;
+            if (isCritical)
+            {
+                finalDamage += Mathf.RoundToInt(
+                    _currentTurretTrainStatus.AttackDamage
+                    * (BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage) / 100f);
+            }
+            return (finalDamage, isCritical);
+        }
+
+        #endregion
 
         #region TargetPosAttack
         protected virtual void TargetPosAttack()

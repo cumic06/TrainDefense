@@ -11,8 +11,36 @@ namespace TrainDefense.Game
         [SerializeField]
         private float fastForwardScale = 3f;
 
+        [SerializeField]
+        [Tooltip("Time.deltaTime 최대값. 백그라운드 복귀 시 프레임 스파이크 방지")]
+        private float maxDeltaTime = 0.1f;
+
         private bool _isPaused;
         private bool _isFastForward;
+        private bool _wasPausedBeforeBackground;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            Time.maximumDeltaTime = maxDeltaTime;
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            if (pauseStatus)
+            {
+                _wasPausedBeforeBackground = _isPaused;
+                Pause();
+            }
+            else
+            {
+                Time.maximumDeltaTime = maxDeltaTime;
+                if (!_wasPausedBeforeBackground)
+                {
+                    Resume();
+                }
+            }
+        }
 
         private void Update()
         {
