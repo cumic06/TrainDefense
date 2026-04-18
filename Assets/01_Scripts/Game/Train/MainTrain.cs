@@ -22,6 +22,10 @@ namespace TrainDefense.Game
       [BoxGroup("TrainSetting")]
       private float trainOffset;
       [SerializeField]
+      [BoxGroup("TrainSetting")]
+      [Tooltip("MainTrain의 비주얼 모델. 편성 길이에 맞춰 오른쪽으로 밀어 형태 중앙이 카메라 타깃(=MainTrain transform)과 일치하게 한다.")]
+      private Transform trainModel;
+      [SerializeField]
       [Header("테스트용")]
       [BoxGroup("TrainSetting")]
       private Train startTrainablePrefab;
@@ -272,12 +276,27 @@ namespace TrainDefense.Game
 
       private void RearrangeTrains()
       {
-         // 살아있는 기차만 연속적으로 재정렬
-         for (int i = 0; i < _currentAliveTrains.Count; i++)
+         int count = _currentAliveTrains.Count;
+         float halfLength = count * trainOffset * 0.5f;
+
+         ApplyMainTrainModelOffset(halfLength);
+
+         // 살아있는 기차만 연속적으로 재정렬 (편성 중앙이 MainTrain transform에 오도록 오른쪽으로 halfLength 이동)
+         for (int i = 0; i < count; i++)
          {
-            Vector3 newPos = Vector3.left * trainOffset * (i + 1);
+            Vector3 newPos = new Vector3(halfLength - trainOffset * (i + 1), 0f, 0f);
             _currentAliveTrains[i].transform.localPosition = newPos;
          }
+      }
+
+      private void ApplyMainTrainModelOffset(float halfLength)
+      {
+         if (trainModel == null)
+            return;
+
+         Vector3 modelPos = trainModel.localPosition;
+         modelPos.x = halfLength;
+         trainModel.localPosition = modelPos;
       }
 
       private void RearrangeAllTrainsToOriginalOrder()
@@ -304,10 +323,15 @@ namespace TrainDefense.Game
          // 원래 인덱스 순서로 정렬
          allTrains.Sort((a, b) => a.originalIndex.CompareTo(b.originalIndex));
 
-         // 정렬된 순서대로 위치 재설정
-         for (int i = 0; i < allTrains.Count; i++)
+         int total = allTrains.Count;
+         float halfLength = total * trainOffset * 0.5f;
+
+         ApplyMainTrainModelOffset(halfLength);
+
+         // 정렬된 순서대로 위치 재설정 (편성 중앙이 MainTrain transform에 오도록 오른쪽으로 halfLength 이동)
+         for (int i = 0; i < total; i++)
          {
-            Vector3 newPos = (i + 1) * trainOffset * Vector3.left;
+            Vector3 newPos = new Vector3(halfLength - trainOffset * (i + 1), 0f, 0f);
             allTrains[i].train.transform.localPosition = newPos;
          }
       }
