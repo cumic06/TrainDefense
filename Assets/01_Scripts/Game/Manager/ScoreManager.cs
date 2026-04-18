@@ -35,8 +35,12 @@ namespace TrainDefense.Game.Manager
 
       private void _OnMonsterDead(MonsterDeadEvent monsterDeadEvent)
       {
-         if (_scoreData == null) return;
+         if (_scoreData == null)
+            return;
+         var beforeScore = CurrentScore;
          CurrentScore += monsterDeadEvent.IsElite ? _scoreData.eliteKillScore : _scoreData.normalKillScore;
+         var afterScore = CurrentScore;
+         GameEventSystem.Publish<ChangeScoreUIEvent>(new(beforeScore, afterScore));
       }
    }
 }
