@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using Cumic.Events;
 using TrainDefense.Game.Events;
-using TrainDefense;
 using DG.Tweening;
 
 namespace TrainDefense.Game.UI
