@@ -1578,8 +1578,8 @@ MonoBehaviour:
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     spawnInterval: 60
-    spawnMaxChance: 30
-    chanceGrowthPerInterval: 5
+    spawnMaxChance: 5
+    chanceGrowthPerInterval: 1
     hpMultiplier: 3
     damageMultiplier: 2
     moveSpeedMultiplier: 1
