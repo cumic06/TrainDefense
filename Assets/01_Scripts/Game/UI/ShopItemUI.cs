@@ -7,119 +7,137 @@ using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
 {
-    public class ShopItemUI : MonoBehaviour
-    {
-        #region Fields
-        [SerializeField]
-        private string shopItemDataId;
-        [SerializeField]
-        private Button buyButton;
-        [SerializeField]
-        private TextMeshProUGUI itemNameText;
-        [SerializeField]
-        private TextMeshProUGUI itemDescriptionText;
-        [SerializeField]
-        private TextMeshProUGUI needMoneyText;
-        #endregion
+   public class ShopItemUI : MonoBehaviour
+   {
+      #region Fields
+      [SerializeField]
+      private string shopItemDataId;
+      [SerializeField]
+      private Button buyButton;
+      [SerializeField]
+      private TextMeshProUGUI itemNameText;
+      [SerializeField]
+      private TextMeshProUGUI itemDescriptionText;
+      [SerializeField]
+      private TextMeshProUGUI needMoneyText;
+      #endregion
 
-        private UpgradeData _upgradeData;
+      private UpgradeData _upgradeData;
 
-        private void Start()
-        {
-            buyButton.onClick.AddListener(OnBuyButtonClick);
-            _upgradeData = DatabaseManager.Instance.GetUpgradeData(shopItemDataId);
-            SetUp();
-        }
+      private void Start()
+      {
+         buyButton.onClick.AddListener(OnBuyButtonClick);
+         _upgradeData = DatabaseManager.Instance.GetUpgradeData(shopItemDataId);
+         SetUp();
+      }
 
-        public void SetUp()
-        {
-            if (_upgradeData != null)
+      public void SetUp()
+      {
+         if (_upgradeData != null)
+         {
+            float currentTotalValue = GetCurrentTotalValue();
+            itemNameText.text = string.Format(_upgradeData.Name, currentTotalValue);
+
+            itemDescriptionText.text = GetLevelDescription();
+            needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost()}$";
+
+            if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
             {
-                float currentTotalValue = GetCurrentTotalValue();
-                itemNameText.text = string.Format(_upgradeData.Name, currentTotalValue);
-
-                itemDescriptionText.text = GetLevelDescription();
-                needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost()}$";
+               buyButton.interactable = false;
             }
-        }
+         }
+      }
 
-        private int GetCurrentCost()
-        {
-            int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
-            return _upgradeData.GetCostAtLevel(currentLevel);
-        }
+      private int GetCurrentCost()
+      {
+         int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
+         return _upgradeData.GetCostAtLevel(currentLevel);
+      }
 
-        private float GetCurrentTotalValue()
-        {
-            int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
-            float totalValue = 0;
+      private float GetCurrentTotalValue()
+      {
+         int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
+         float totalValue = 0;
 
-            if (_upgradeData.UpgradeDataType == UpgradeDataType.NonTrainUpgrade)
+         if (_upgradeData.UpgradeDataType == UpgradeDataType.NonTrainUpgrade)
+         {
+            totalValue = currentLevel * _upgradeData.UpgradeValue;
+         }
+         else if (_upgradeData.UpgradeDataType == UpgradeDataType.TrainUpgrade)
+         {
+            foreach (var stat in _upgradeData.Stats)
             {
-                totalValue = currentLevel * _upgradeData.UpgradeValue;
+               if (stat.Value == 0)
+                  continue;
+               totalValue += currentLevel * stat.Value;
             }
-            else if (_upgradeData.UpgradeDataType == UpgradeDataType.TrainUpgrade)
+         }
+         return totalValue;
+      }
+
+      private string GetLevelDescription()
+      {
+         int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
+
+         string increaseAmountText = "";
+         float nextTotalValue = 0;
+         float increaseAmount = 0;
+
+         if (_upgradeData.UpgradeDataType == UpgradeDataType.NonTrainUpgrade)
+         {
+            nextTotalValue = (currentLevel + 1) * _upgradeData.UpgradeValue;
+            increaseAmount = _upgradeData.UpgradeValue;
+         }
+         else if (_upgradeData.UpgradeDataType == UpgradeDataType.TrainUpgrade)
+         {
+            foreach (var stat in _upgradeData.Stats)
             {
-                foreach (var stat in _upgradeData.Stats)
-                {
-                    if (stat.Value == 0) continue;
-                    totalValue += currentLevel * stat.Value;
-                }
+               if (stat.Value == 0)
+                  continue;
+
+               nextTotalValue += (currentLevel + 1) * stat.Value;
+               increaseAmount += stat.Value;
             }
-            return totalValue;
-        }
+         }
 
-        private string GetLevelDescription()
-        {
-            int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
+         if (increaseAmount > 0)
+         {
+            increaseAmountText = $"+{increaseAmount}";
+         }
+         else if (increaseAmount < 0)
+         {
+            increaseAmountText = $"{increaseAmount}";
+         }
 
-            string increaseAmountText = "";
-            float nextTotalValue = 0;
-            float increaseAmount = 0;
+         if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
+         {
+            return string.Format(_upgradeData.Description, nextTotalValue, increaseAmountText, "Max", "Max");
+         }
 
-            if (_upgradeData.UpgradeDataType == UpgradeDataType.NonTrainUpgrade)
-            {
-                nextTotalValue = (currentLevel + 1) * _upgradeData.UpgradeValue;
-                increaseAmount = _upgradeData.UpgradeValue;
-            }
-            else if (_upgradeData.UpgradeDataType == UpgradeDataType.TrainUpgrade)
-            {
-                foreach (var stat in _upgradeData.Stats)
-                {
-                    if (stat.Value == 0) continue;
+         return string.Format(_upgradeData.Description, nextTotalValue, increaseAmountText, currentLevel, _upgradeData.MaxUpgradeCount);
+      }
 
-                    nextTotalValue += (currentLevel + 1) * stat.Value;
-                    increaseAmount += stat.Value;
-                }
-            }
+      public void SetVaild(int currentMoney)
+      {
+         if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
+         {
+            buyButton.interactable = false;
+            return;
+         }
 
-            if (increaseAmount > 0)
-            {
-                increaseAmountText = $"+{increaseAmount}";
-            }
-            else if (increaseAmount < 0)
-            {
-                increaseAmountText = $"{increaseAmount}";
-            }
+         if (currentMoney >= GetCurrentCost())
+         {
+            buyButton.interactable = true;
+         }
+         else
+         {
+            buyButton.interactable = false;
+         }
+      }
 
-            return string.Format(_upgradeData.Description, nextTotalValue, increaseAmountText, currentLevel, _upgradeData.MaxUpgradeCount);
-        }
-
-        public void SetVaild(int currentMoney)
-        {
-            if (currentMoney >= GetCurrentCost())
-            {
-                buyButton.interactable = true;
-            }
-            else
-            {
-                buyButton.interactable = false;
-            }
-        }
-
-        private void OnBuyButtonClick()
-        {
-            GameEventSystem.Publish(new BuyShopItemEvent(GetCurrentCost(), shopItemDataId));
-        }
-    }
+      private void OnBuyButtonClick()
+      {
+         GameEventSystem.Publish(new BuyShopItemEvent(GetCurrentCost(), shopItemDataId));
+      }
+   }
 }
