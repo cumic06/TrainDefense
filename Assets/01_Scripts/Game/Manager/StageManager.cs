@@ -78,7 +78,7 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<InspectionEndEvent>(_OnInspectionEnd);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             _CurrentStageTimeUp();
             _StageHandler();
@@ -247,8 +247,6 @@ namespace TrainDefense.Game.Manager
 
         private void _CurrentStageTimeUp()
         {
-            _currentStageTime += Time.deltaTime;
-
             float remainingTime;
             if (CurrentStageData != null
                 && CurrentStageData.StageInspectionTime != null
@@ -262,6 +260,8 @@ namespace TrainDefense.Game.Manager
             }
 
             GameEventSystem.Publish(new ChangeStageTimeEvent(remainingTime));
+
+            _currentStageTime += Time.deltaTime;
         }
 
 
