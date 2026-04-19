@@ -180,6 +180,7 @@ namespace TrainDefense.Game
             if (nearTarget == null) return;
 
             _attackCounter++;
+            OnAttacked?.Invoke(nearTarget);
 
             if (turretModel != null)
             {
