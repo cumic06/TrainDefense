@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using TrainDefense.Game.Datas;
+using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 
@@ -39,7 +40,7 @@ namespace TrainDefense.Game.UI
             itemNameText.text = string.Format(_upgradeData.Name, currentTotalValue);
 
             itemDescriptionText.text = GetLevelDescription();
-            needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost()}$";
+            needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost().ToCommaString()}$";
 
             if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
             {

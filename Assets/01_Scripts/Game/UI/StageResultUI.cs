@@ -1,3 +1,4 @@
+using Cumic;
 using Cumic.Events;
 using DG.Tweening;
 using TMPro;
@@ -111,12 +112,12 @@ namespace TrainDefense.Game.UI
 
             int target = ScoreManager.Instance.CurrentScore;
             int display = 0;
-            scoreText.text = $"Score: {display}";
+            scoreText.text = $"Score: {display.ToCommaString()}";
 
             _scoreTween = DOTween.To(() => display, v =>
             {
                 display = v;
-                scoreText.text = $"Score: {display}";
+                scoreText.text = $"Score: {display.ToCommaString()}";
             }, target, scoreTweenDuration).SetEase(Ease.OutCubic).SetUpdate(true);
         }
     }

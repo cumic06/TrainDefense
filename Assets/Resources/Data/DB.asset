@@ -328,7 +328,7 @@ MonoBehaviour:
     attackSoundType: 0
     description: "\uAC00\uC7A5 \uAE30\uBCF8\uC774 \uB418\uB294 \uAE30\uCC28\uC774\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: MainTrain
     trainSkillDataId: 
     isMainTrain: 0
@@ -341,7 +341,7 @@ MonoBehaviour:
     attackSoundType: 301
     description: "\uAE30\uAD00\uCD1D\uC73C\uB85C \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: NormalTurretTrain
     trainSkillDataId: 
     isMainTrain: 0
@@ -364,7 +364,7 @@ MonoBehaviour:
     description: "\uD654\uC5FC\uC73C\uB85C \uC9C0\uC18D\uC801\uC778 \uD53C\uD574\uB97C
       \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: FireTurretTrain
     trainSkillDataId: 
     isMainTrain: 0
@@ -387,7 +387,7 @@ MonoBehaviour:
     description: "\uBBF8\uC0AC\uC77C\uB85C <color=#FFDD52><shake>\uAC15\uD55C \uD53C\uD574</shake></color>\uB97C
       \uC900\uB2E4. \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: MissileTurretTrain
     trainSkillDataId: 
     isMainTrain: 0
@@ -410,7 +410,7 @@ MonoBehaviour:
     description: "\uB808\uC774\uC800\uB85C <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: LaserTurretTrain
     trainSkillDataId: 
     isMainTrain: 0
@@ -433,7 +433,7 @@ MonoBehaviour:
     description: "\uD654\uBA74\uC5D0 \uC788\uB294 \uB2E4\uC218\uC758 \uC801\uB4E4\uC744
       \uD1B5\uC2DC\uC5D0 \uACF5\uACA9\uD55C\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: ElectrickTurretTrain
     trainSkillDataId: 
     isMainTrain: 0
@@ -456,13 +456,13 @@ MonoBehaviour:
     description: "\uAC70\uB300\uD55C \uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574
       \uBA87 \uBC88 \uD070 \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: CannonTurretTrain
     trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 4
+      AttackRange: 3
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 1
@@ -479,7 +479,7 @@ MonoBehaviour:
     description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uBC88 \uD070 <color=#FFDD52><shake>\uAC15\uD55C
       \uD53C\uD574</shake></color>\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: SniperTurretTrain
     trainSkillDataId: 
     isMainTrain: 0
@@ -657,13 +657,13 @@ MonoBehaviour:
     description: "\uC801\uC774 \uAC00\uC7A5 \uB9CE\uC740 \uACF3\uC73C\uB85C \uC704\uCE58\uD574
       \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: ExplosionRangeTrain
     trainSkillDataId: 
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 50
-      AttackRange: 6
+      AttackRange: 5
       AttackCount: 1
       AttackInterval: 4
       CriticalChance: 30
@@ -679,13 +679,13 @@ MonoBehaviour:
     description: "\uC801\uC774 \uAC00\uC7A5 \uB9CE\uC740 \uACF3\uC73C\uB85C \uC774\uB3D9\uC18D\uB3C4\uB97C
       \uB5A8\uC5B4\uB728\uB824 \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
-      MaxHp: 350
+      MaxHp: 250
     prefabId: ColdAirRangeTrain
     trainSkillDataId: 
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 1
-      AttackRange: 6
+      AttackRange: 5
       AttackCount: 1
       AttackInterval: 0.1
       CriticalChance: 30
@@ -1145,7 +1145,7 @@ MonoBehaviour:
         MaxHp: 0
       turretStatusUpgrade:
         AttackDamage: 30
-        AttackRange: 1.5
+        AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1155,7 +1155,7 @@ MonoBehaviour:
         MaxHp: 0
       turretStatusUpgrade:
         AttackDamage: 50
-        AttackRange: 2
+        AttackRange: 4
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1210,15 +1210,6 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 10
-        AttackRange: 0.5
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 15
         AttackRange: 1
         AttackCount: 0
         AttackInterval: 0
@@ -1227,8 +1218,17 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
+        AttackDamage: 15
+        AttackRange: 2
+        AttackCount: 0
+        AttackInterval: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
         AttackDamage: 25
-        AttackRange: 1.5
+        AttackRange: 4
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1244,7 +1244,7 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 1
-        AttackRange: 1
+        AttackRange: 2
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1253,7 +1253,7 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 2
-        AttackRange: 1.5
+        AttackRange: 3
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1261,8 +1261,8 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 4
-        AttackRange: 2
+        AttackDamage: 3
+        AttackRange: 4
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1502,42 +1502,6 @@ MonoBehaviour:
         rid: 439508061413965932
       Weight: 0
       Tier: 0
-    - Option:
-        rid: 1014497644963168333
-      Weight: 0
-      Tier: 1
-    - Option:
-        rid: 1014497644963168334
-      Weight: 0
-      Tier: 1
-    - Option:
-        rid: 1014497644963168335
-      Weight: 0
-      Tier: 1
-    - Option:
-        rid: 1014497644963168336
-      Weight: 0
-      Tier: 1
-    - Option:
-        rid: 1014497644963168337
-      Weight: 0
-      Tier: 1
-    - Option:
-        rid: 1014497644963168338
-      Weight: 0
-      Tier: 1
-    - Option:
-        rid: 1014497644963168339
-      Weight: 0
-      Tier: 1
-    - Option:
-        rid: 1014497644963168340
-      Weight: 0
-      Tier: 1
-    - Option:
-        rid: 1014497644963168341
-      Weight: 0
-      Tier: 1
     upgradeTrainChoices:
     - Option:
         rid: 2066870334413602904
@@ -1642,60 +1606,6 @@ MonoBehaviour:
         weightedUpgrades:
         - upgradeDataId: 100002
           upgradeDataWeight: 1
-    - rid: 1014497644963168333
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 61001
-        trainDataId: 31001
-        replaceTrainId: 30001
-    - rid: 1014497644963168334
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 61002
-        trainDataId: 31002
-        replaceTrainId: 30002
-    - rid: 1014497644963168335
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 61003
-        trainDataId: 31003
-        replaceTrainId: 30003
-    - rid: 1014497644963168336
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 61004
-        trainDataId: 31004
-        replaceTrainId: 30004
-    - rid: 1014497644963168337
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 61005
-        trainDataId: 31005
-        replaceTrainId: 30005
-    - rid: 1014497644963168338
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 61006
-        trainDataId: 31006
-        replaceTrainId: 30006
-    - rid: 1014497644963168339
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 61007
-        trainDataId: 31007
-        replaceTrainId: 30007
-    - rid: 1014497644963168340
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 61008
-        trainDataId: 41001
-        replaceTrainId: 40001
-    - rid: 1014497644963168341
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 61009
-        trainDataId: 41002
-        replaceTrainId: 40002
     - rid: 2066870334413602903
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
