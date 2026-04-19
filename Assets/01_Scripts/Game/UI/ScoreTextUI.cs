@@ -1,3 +1,4 @@
+using Cumic;
 using Cumic.Events;
 using DG.Tweening;
 using TMPro;
@@ -33,7 +34,7 @@ namespace TrainDefense
 
       private void OnChangeScore(ChangeScoreUIEvent changeScoreEvent)
       {
-         DOTween.To(() => changeScoreEvent.BeforeScore, x => scoreText.text = $"{x}", changeScoreEvent.AfterScore, tweenDuration)
+         DOTween.To(() => changeScoreEvent.BeforeScore, x => scoreText.text = x.ToCommaString(), changeScoreEvent.AfterScore, tweenDuration)
          .SetEase(Ease.InOutSine)
          .SetUpdate(true);
       }
