@@ -12,6 +12,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string rangeProjectilePrefabId;
 		public float criticalChance;
 		public float criticalDamage;
+		public string passiveSkillDataId;
 
 		public override void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -23,6 +24,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			rangeProjectilePrefabId = map.GetString(row, "range_projectile_prefab_id");
 			criticalChance = map.GetFloat(row, "critical_chance");
 			criticalDamage = map.GetFloat(row, "critical_damage");
+			passiveSkillDataId = map.GetString(row, "passive_skill_data_id");
 		}
 
 		public override void ToExcelRow(IRow row, HeaderMap map)
@@ -35,6 +37,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "range_projectile_prefab_id", rangeProjectilePrefabId);
 			map.SetCell(row, "critical_chance", criticalChance);
 			map.SetCell(row, "critical_damage", criticalDamage);
+			map.SetCell(row, "passive_skill_data_id", passiveSkillDataId);
 		}
 	}
 }

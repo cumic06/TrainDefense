@@ -13,6 +13,8 @@ namespace TrainDefense.Editor.DataImport.Importers
 		{
 			ExcelImporterRegistry.Clear();
 			ExcelImporterRegistry.Register(new MonsterImporter());
+			ExcelImporterRegistry.Register(new TrainSkillDataImporter());
+			ExcelImporterRegistry.Register(new TrainPassiveSkillDataImporter());
 			ExcelImporterRegistry.Register(new TrainImporter());
 			ExcelImporterRegistry.Register(new RangeTrainImporter());
 			ExcelImporterRegistry.Register(new TurretTrainImporter());

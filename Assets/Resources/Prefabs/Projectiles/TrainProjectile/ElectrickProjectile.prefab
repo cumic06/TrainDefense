@@ -150,20 +150,39 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2442668853538529975}
-    - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1871575817538461105}
-    - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 9174033834170011941}
+    - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6061147246450117167}
   m_SourcePrefab: {fileID: 100100000, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
 --- !u!1 &4599933861158539560 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
   m_PrefabInstance: {fileID: 8324989994183266708}
   m_PrefabAsset: {fileID: 0}
---- !u!61 &2442668853538529975
+--- !u!95 &9174033834170011941
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4599933861158539560}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2156f0b6e3179714a859e397e7dc5ca6, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!61 &6061147246450117167
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -209,37 +228,3 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &1871575817538461105
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4599933861158539560}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d9d58d318f14614fa2184557df4d40c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ProjectileTriggerHelper
---- !u!95 &9174033834170011941
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4599933861158539560}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2156f0b6e3179714a859e397e7dc5ca6, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0

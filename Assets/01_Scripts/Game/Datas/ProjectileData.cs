@@ -53,6 +53,11 @@ namespace TrainDefense.Game
 
         [BoxGroup("Damage")]
         [SerializeField]
+        [LabelText("포탑에서 직접 데미지 (이펙트 전용 프로젝타일)")]
+        private bool directDamage = false;
+
+        [BoxGroup("Damage")]
+        [SerializeField]
         private DamageType damageType = DamageType.Direct;
 
         [BoxGroup("Damage")]
@@ -92,8 +97,24 @@ namespace TrainDefense.Game
         [SerializeField]
         private float stunDuration = 0.5f;
 
+        [BoxGroup("Pierce")]
+        [SerializeField]
+        private bool pierce = false;
+
+        [BoxGroup("Pierce")]
+        [ShowIf("pierce")]
+        [SerializeField]
+        [Min(1)]
+        private int maxPenetration = 1;
+
+        [BoxGroup("Spread")]
+        [SerializeField]
+        [Min(0f)]
+        private float spreadAngle = 0f;
+
         #region Properties
 
+        public bool DirectDamage => directDamage;
         public MovementType MovementType => movementType;
         public float Speed => speed;
         public float DestroyDelay => destroyDelay;
@@ -112,6 +133,9 @@ namespace TrainDefense.Game
         public float ShoveDuration => shoveDuration;
         public bool HasStunEffect => hasStunEffect;
         public float StunDuration => stunDuration;
+        public bool Pierce => pierce;
+        public int MaxPenetration => maxPenetration;
+        public float SpreadAngle => spreadAngle;
 
         #endregion
     }

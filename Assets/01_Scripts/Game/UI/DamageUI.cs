@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
+using Cumic;
 using TrainDefense;
 
 namespace TrainDefense.Game.UI
@@ -41,7 +42,7 @@ namespace TrainDefense.Game.UI
 
         public void SetDamage(int damage, bool isCritical = false)
         {
-            damageText.text = $"{damage}";
+            damageText.text = damage.ToCommaString();
             damageText.color = isCritical ? Color.red : Color.white;
         }
 

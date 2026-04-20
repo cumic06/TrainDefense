@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cumic;
@@ -27,12 +28,19 @@ namespace TrainDefense.Game
         private GameObject turretModel;
         #endregion
 
-        private List<Monster> _targetMonsters = new();
+        protected List<Monster> _targetMonsters = new();
 
-        private TurretTrainStatus _currentTurretTrainStatus;
+        protected TurretTrainStatus _currentTurretTrainStatus;
         private bool _isStatusInitialized = false; // Setup이 이미 호출되었는지 추적
         private readonly List<Projectile> _nonMovementProjectiles = new();
         private bool _useNonMovementProjectilePooling;
+        protected int _attackCounter;
+
+        public delegate Projectile ProjectileOverrideProvider(int attackIndex);
+        private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
+
+        public event Action<Monster> OnAttacked;
+        public event Action OnTargetPosAttacked;
 
         protected override void Setup()
         {
@@ -45,7 +53,43 @@ namespace TrainDefense.Game
                 _isStatusInitialized = true;
             }
 
+            _skillModule.RegisterPassiveFromData(turretTrainData?.PassiveSkillData);
             InitializeProjectilePoolingMode();
+        }
+
+        public void RegisterProjectileOverride(ProjectileOverrideProvider provider)
+        {
+            if (provider != null) _projectileOverrides.Add(provider);
+        }
+
+        public void UnregisterProjectileOverride(ProjectileOverrideProvider provider)
+        {
+            if (provider != null) _projectileOverrides.Remove(provider);
+        }
+
+        public Monster GetNearTargetMonsterPublic() => GetNearTargetMonster();
+
+        public void RepeatNormalAttack()
+        {
+            if (_isDead) return;
+            DetectTarget();
+            if (_targetMonsters.Count == 0) return;
+            NormalAttack();
+        }
+
+        public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius)
+        {
+            if (prefab == null) return;
+            var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
+            if (spawned == null) return;
+            float r = radius >= 0f ? radius : _currentTurretTrainStatus.AttackRange;
+            spawned.Init(
+                _currentTurretTrainStatus.AttackDamage,
+                this,
+                null,
+                r,
+                _currentTurretTrainStatus.CriticalChance,
+                _currentTurretTrainStatus.CriticalDamage);
         }
 
         private void FixedUpdate()
@@ -60,7 +104,7 @@ namespace TrainDefense.Game
             }
         }
 
-        private void DetectTarget()
+        protected void DetectTarget()
         {
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _currentTurretTrainStatus.AttackRange);
             _targetMonsters = colliders.Where(a => a.GetComponent<Monster>() != null)
@@ -69,7 +113,7 @@ namespace TrainDefense.Game
             .ToList();
         }
 
-        private Monster GetNearTargetMonster()
+        protected Monster GetNearTargetMonster()
         {
             if (_targetMonsters.Count == 0) return null;
 
@@ -85,7 +129,8 @@ namespace TrainDefense.Game
             }
             else
             {
-                _currentTurretTrainStatus.AttackInterval -= Time.deltaTime;
+                // FixedUpdate에서 호출되므로 fixedDeltaTime 사용
+                _currentTurretTrainStatus.AttackInterval -= Time.fixedDeltaTime;
                 return false;
             }
         }
@@ -122,10 +167,12 @@ namespace TrainDefense.Game
             }
         }
 
-        private void Attack()
+        protected virtual void Attack()
         {
             Monster nearTarget = GetNearTargetMonster();
             if (nearTarget == null) return;
+
+            _attackCounter++;
 
             if (turretModel != null)
             {
@@ -153,13 +200,15 @@ namespace TrainDefense.Game
             }
 
             ProjectileData projectileData = GetProjectile().GetData();
+
+            // 비주얼 먼저 소환 (DirectDamage로 적이 죽기 전에 방향 설정)
             if (projectileData != null && projectileData.MovementType == MovementType.TargetPos)
             {
                 TargetPosAttack();
-                return;
+                if (projectileData == null || !projectileData.DirectDamage)
+                    return;
             }
-
-            if (isTargeting)
+            else if (isTargeting)
             {
                 TargetedAttack();
             }
@@ -167,21 +216,65 @@ namespace TrainDefense.Game
             {
                 NormalAttack();
             }
+
+            // DirectDamage: 비주얼 소환 후 즉석 데미지
+            if (projectileData != null && projectileData.DirectDamage)
+            {
+                DirectDamageAttack(projectileData);
+            }
         }
 
-        private void NormalAttack()
+        /// <summary>
+        /// 기존 엘리트 서브클래스용 후속타 훅. 신규 패시브는 OnAttacked 이벤트 사용.
+        /// </summary>
+        protected virtual void TryTriggerFollowUp(Monster target) { }
+
+        /// <summary>
+        /// 등록된 ProjectileOverrideProvider 들을 순회. 첫 non-null 반환. 서브클래스가 추가 override 가능.
+        /// </summary>
+        protected virtual Projectile GetOverrideProjectile(int attackIndex)
+        {
+            for (int i = 0; i < _projectileOverrides.Count; i++)
+            {
+                var prefab = _projectileOverrides[i](attackIndex);
+                if (prefab != null) return prefab;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 스킬 InstantAttack용 외부 공개 래퍼.
+        /// </summary>
+        public bool ForceAttack()
+        {
+            if (_isDead) return false;
+            DetectTarget();
+            if (_targetMonsters.Count == 0) return false;
+            Attack();
+            return true;
+        }
+
+        protected virtual void NormalAttack()
         {
             Monster nearTarget = GetNearTargetMonster();
             if (nearTarget == null) return;
 
-            for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
-            {
-                if (i >= _targetMonsters.Count) break;
+            ProjectileData baseData = GetProjectile()?.GetData();
+            float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
+            int count = _currentTurretTrainStatus.AttackCount;
 
+            for (int i = 0; i < count; i++)
+            {
                 Projectile projectile = SpawnNormalProjectile(i);
                 if (projectile != null)
                 {
                     projectile.transform.LookAt2D(nearTarget.transform);
+
+                    if (spreadAngle > 0f && count > 1)
+                    {
+                        float offset = (i - (count - 1) * 0.5f) * spreadAngle;
+                        projectile.transform.Rotate(0f, 0f, offset);
+                    }
                 }
             }
         }
@@ -203,8 +296,50 @@ namespace TrainDefense.Game
             }
         }
 
+        #region DirectDamageAttack
+        private const float BaseCriticalDamagePercent = 30f;
+
+        private void DirectDamageAttack(ProjectileData projectileData)
+        {
+            int targetCount = Mathf.Max(_currentTurretTrainStatus.TargetCount, _currentTurretTrainStatus.AttackCount);
+
+            for (int i = 0; i < targetCount; i++)
+            {
+                if (i >= _targetMonsters.Count) break;
+
+                Monster target = _targetMonsters[i];
+                if (target == null || !target.IsActive) continue;
+
+                var (finalDamage, isCritical) = CalculateDirectDamage();
+                target.TakeDamage(finalDamage, isCritical);
+
+                if (projectileData.HasStunEffect)
+                    target.Stun(projectileData.StunDuration);
+                if (projectileData.HasShoveEffect)
+                    target.Shove(projectileData.ShovePower, projectileData.ShoveDuration);
+                if (projectileData.HasSlowEffect)
+                    target.Slow(projectileData.SlowValue);
+            }
+        }
+
+        private (int finalDamage, bool isCritical) CalculateDirectDamage()
+        {
+            bool isCritical = _currentTurretTrainStatus.CriticalChance > 0f
+                && UtilMath.CheckProbability(_currentTurretTrainStatus.CriticalChance);
+            int finalDamage = _currentTurretTrainStatus.AttackDamage;
+            if (isCritical)
+            {
+                finalDamage += Mathf.RoundToInt(
+                    _currentTurretTrainStatus.AttackDamage
+                    * (BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage) / 100f);
+            }
+            return (finalDamage, isCritical);
+        }
+
+        #endregion
+
         #region TargetPosAttack
-        private void TargetPosAttack()
+        protected virtual void TargetPosAttack()
         {
             // ProjectileData 가져오기
             Projectile projectilePrefab = GetProjectile();
@@ -224,6 +359,8 @@ namespace TrainDefense.Game
 
                 SpawnProjectileAtWorldPosition(currentTarget, targetPosition);
             }
+
+            OnTargetPosAttacked?.Invoke();
         }
 
         /// <summary>
@@ -473,11 +610,17 @@ namespace TrainDefense.Game
             );
         }
 
-        private Projectile SpawnNormalProjectile(int index, Monster target = null)
+        protected Projectile SpawnNormalProjectile(int index, Monster target = null)
         {
             Projectile projectile = null;
 
-            if (_useNonMovementProjectilePooling)
+            // 엘리트 오버라이드 프로젝타일이 있으면 우선 사용 (풀링 우회)
+            Projectile overridePrefab = GetOverrideProjectile(_attackCounter);
+            if (overridePrefab != null)
+            {
+                projectile = ResourceManager.Instance.Spawn(overridePrefab);
+            }
+            else if (_useNonMovementProjectilePooling)
             {
                 // NonMovement: 이미 생성된 프로젝타일 사용 (활성화만)
                 projectile = GetNonMovementProjectile(index);
@@ -645,9 +788,14 @@ namespace TrainDefense.Game
             }
         }
 
-        private Projectile GetProjectile()
+        protected virtual Projectile GetProjectile()
         {
             return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
+        }
+
+        public void SpawnProjectileAtWorldPositionPublic(Monster target, Vector3 worldPosition)
+        {
+            SpawnProjectileAtWorldPosition(target, worldPosition);
         }
 
         public override Transform GetSkillSpawnPoint(int index)

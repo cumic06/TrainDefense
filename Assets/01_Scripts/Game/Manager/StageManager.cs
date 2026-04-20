@@ -78,7 +78,7 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<InspectionEndEvent>(_OnInspectionEnd);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
             _CurrentStageTimeUp();
             _StageHandler();
@@ -173,11 +173,17 @@ namespace TrainDefense.Game.Manager
 
         private void _StageHandler()
         {
-            if (_currentStageTime >= _GetCurrentStageInspectionTime() && _currentStageInspectionTimeIndex < CurrentStageData.StageInspectionTime.Length)
+            if (CurrentStageData == null || CurrentStageData.StageInspectionTime == null) return;
+
+            var times = CurrentStageData.StageInspectionTime;
+            if (_currentStageInspectionTimeIndex < times.Length)
             {
-                _CurrentStageInspectionUp();
+                if (_currentStageTime >= times[_currentStageInspectionTimeIndex])
+                {
+                    _CurrentStageInspectionUp();
+                }
             }
-            else if (_currentStageTime >= CurrentStageData.StageEndTime)
+            else if (_currentStageTime >= _GetPostLastInspectionDuration())
             {
                 _StageEnd();
             }
@@ -197,6 +203,7 @@ namespace TrainDefense.Game.Manager
         private void _CurrentStageInspectionUp()
         {
             _currentStageInspectionTimeIndex++;
+            _currentStageTime = 0f;
             GameEventSystem.Publish(new InspectionStartEvent());
 
             _inspectionCount++;
@@ -247,55 +254,44 @@ namespace TrainDefense.Game.Manager
 
         private void _CurrentStageTimeUp()
         {
-            _currentStageTime += Time.deltaTime;
-
-            float remainingTime;
-            if (CurrentStageData != null
-                && CurrentStageData.StageInspectionTime != null
-                && _currentStageInspectionTimeIndex >= CurrentStageData.StageInspectionTime.Length)
-            {
-                remainingTime = CurrentStageData.StageEndTime - _currentStageTime;
-            }
-            else
-            {
-                remainingTime = _GetCurrentStageInspectionTime() - _currentStageTime;
-            }
+            float remainingTime = _GetCurrentSegmentDuration() - _currentStageTime;
 
             GameEventSystem.Publish(new ChangeStageTimeEvent(remainingTime));
+
+            _currentStageTime += Time.deltaTime;
         }
 
 
-        private float _GetCurrentStageInspectionTime()
-        {
-            bool islastInspectionIndex = _currentStageInspectionTimeIndex >= CurrentStageData.StageInspectionTime.Length;
-
-            if (islastInspectionIndex)
-            {
-                return CurrentStageData.StageInspectionTime[^1];
-            }
-
-            return CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex];
-        }
-
-        private float _GetCurrentInspectionDuration(GetCurrentInspectionDurationEvent getCurrentInspectionDurationEvent)
+        private float _GetCurrentSegmentDuration()
         {
             if (CurrentStageData == null || CurrentStageData.StageInspectionTime == null)
             {
                 return 0f;
             }
 
-            if (_currentStageInspectionTimeIndex >= CurrentStageData.StageInspectionTime.Length)
+            var times = CurrentStageData.StageInspectionTime;
+            if (_currentStageInspectionTimeIndex >= times.Length)
             {
-                float lastInspectionTime = CurrentStageData.StageInspectionTime[^1];
-                return CurrentStageData.StageEndTime - lastInspectionTime;
+                return _GetPostLastInspectionDuration();
             }
 
-            float currentInspectionTime = CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex];
-            float previousInspectionTime = _currentStageInspectionTimeIndex > 0
-                ? CurrentStageData.StageInspectionTime[_currentStageInspectionTimeIndex - 1]
-                : 0f;
+            return times[_currentStageInspectionTimeIndex];
+        }
 
-            return currentInspectionTime - previousInspectionTime;
+        private float _GetPostLastInspectionDuration()
+        {
+            var times = CurrentStageData.StageInspectionTime;
+            float sum = 0f;
+            for (int i = 0; i < times.Length; i++)
+            {
+                sum += times[i];
+            }
+            return CurrentStageData.StageEndTime - sum;
+        }
+
+        private float _GetCurrentInspectionDuration(GetCurrentInspectionDurationEvent getCurrentInspectionDurationEvent)
+        {
+            return _GetCurrentSegmentDuration();
         }
 
         private void _OnStageSelected(StageSelectEvent stageSelectedEvent)

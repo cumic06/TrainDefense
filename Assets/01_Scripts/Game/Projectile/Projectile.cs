@@ -25,6 +25,8 @@ namespace TrainDefense.Game
         protected float _age;
         protected bool _isSpawnedTrigger;
         protected float _attackRange;
+        protected int _hitCount;
+        protected readonly HashSet<IProjectileTarget> _hitSet = new();
 
         #region Enable/Disable
 
@@ -32,6 +34,8 @@ namespace TrainDefense.Game
         {
             _age = 0f;
             _damageTimers.Clear();
+            _hitSet.Clear();
+            _hitCount = 0;
             _isSpawnedTrigger = false;
 
             if (data != null && data.DestroyDelay > 0)
@@ -239,6 +243,12 @@ namespace TrainDefense.Game
             }
             else
             {
+                // 관통 모드: 동일 타겟 중복 히트 방지
+                if (data.Pierce && !_hitSet.Add(target))
+                {
+                    return;
+                }
+
                 var (finalDamage, isCritical) = CalculateCriticalDamage();
                 if (data.TriggerHandlePrefab != null)
                 {
@@ -252,7 +262,16 @@ namespace TrainDefense.Game
                     target.TakeDamage(finalDamage, isCritical);
                 }
 
-                if (data.DestroyOnTriggerEnter)
+                if (data.Pierce)
+                {
+                    _hitCount++;
+                    if (_hitCount >= data.MaxPenetration)
+                    {
+                        ReturnToPool();
+                        return;
+                    }
+                }
+                else if (data.DestroyOnTriggerEnter)
                 {
                     ReturnToPool();
                     return;

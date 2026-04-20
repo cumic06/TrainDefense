@@ -22,6 +22,10 @@ namespace TrainDefense.Game
       [BoxGroup("TrainSetting")]
       private float trainOffset;
       [SerializeField]
+      [BoxGroup("TrainSetting")]
+      [Tooltip("MainTrain의 비주얼 모델. 편성 길이에 맞춰 오른쪽으로 밀어 형태 중앙이 카메라 타깃(=MainTrain transform)과 일치하게 한다.")]
+      private Transform trainModel;
+      [SerializeField]
       [Header("테스트용")]
       [BoxGroup("TrainSetting")]
       private Train startTrainablePrefab;
@@ -64,8 +68,9 @@ namespace TrainDefense.Game
          _currentTrains.Clear();
       }
 
-      private void OnDestroy()
+      protected override void OnDestroy()
       {
+         base.OnDestroy();
          GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
          GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
@@ -95,14 +100,38 @@ namespace TrainDefense.Game
       [Button("SpawnTrain")]
       public void SpawnTrain(Train trainPrefab)
       {
+         if (trainPrefab == null)
+         {
+            Debug.LogError("SpawnTrain: Train prefab is null");
+            return;
+         }
+
+         SpawnTrain(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
+      }
+
+      public void SpawnTrain(TrainData trainData)
+      {
          if (_currentAliveTrains.Count >= maxTrainCount)
          {
             Debug.LogWarning("Train count is max");
             return;
          }
 
+         if (trainData == null || trainData.Prefab == null)
+         {
+            Debug.LogError("SpawnTrain: TrainData or prefab is null");
+            return;
+         }
+
+         Train trainPrefab = trainData.Prefab.GetComponent<Train>();
+         if (trainPrefab == null)
+         {
+            Debug.LogError($"SpawnTrain: Prefab for TrainData [{trainData.Id}] has no Train component");
+            return;
+         }
+
          Train trainObject = Instantiate(trainPrefab, transform);
-         trainObject.Initialize(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
+         trainObject.Initialize(trainData);
          trainObject.IsUnDead = isUnDead;
          _currentAliveTrains.Add(trainObject);
          _currentTrains.Add(trainObject);
@@ -112,8 +141,7 @@ namespace TrainDefense.Game
          // 새로 생성된 train에 기존 업그레이드 적용
          ApplyExistingUpgradesToTrain(trainObject);
 
-         var newTrainData = DatabaseManager.Instance.GetTrainData(trainObject.Id);
-         GameEventSystem.Publish(new AddTrainEvent(newTrainData.Icon, trainObject));
+         GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
 
          // 살아있는 기차 재정렬
          RearrangeTrains();
@@ -137,6 +165,17 @@ namespace TrainDefense.Game
       /// <param name="newTrainPrefab">새로운 Train 프리팹</param>
       public void ReplaceTrain(string oldTrainId, Train newTrainPrefab)
       {
+         if (newTrainPrefab == null)
+         {
+            Debug.LogError("ReplaceTrain: New Train prefab is null");
+            return;
+         }
+
+         ReplaceTrain(oldTrainId, DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
+      }
+
+      public void ReplaceTrain(string oldTrainId, TrainData newTrainData)
+      {
          // 대체할 기존 Train 찾기
          Train oldTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == oldTrainId);
          if (oldTrain == null)
@@ -150,16 +189,28 @@ namespace TrainDefense.Game
          int originalIndex = _trainOriginalIndexMap.ContainsKey(oldTrain) ? _trainOriginalIndexMap[oldTrain] : aliveIndex;
          Vector3 oldPosition = oldTrain.transform.localPosition;
 
+         if (newTrainData == null || newTrainData.Prefab == null)
+         {
+            Debug.LogError($"ReplaceTrain: New TrainData is invalid for replacing [{oldTrainId}]");
+            return;
+         }
+
+         Train newTrainPrefab = newTrainData.Prefab.GetComponent<Train>();
+         if (newTrainPrefab == null)
+         {
+            Debug.LogError($"ReplaceTrain: Prefab for TrainData [{newTrainData.Id}] has no Train component");
+            return;
+         }
+
          // 새로운 Train 생성 (기존 Train 제거 전에 생성하여 이벤트에서 참조 가능)
          Train newTrain = Instantiate(newTrainPrefab, transform);
-         newTrain.Initialize(DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
+         newTrain.Initialize(newTrainData);
          newTrain.IsUnDead = isUnDead;
 
          // 새로 생성된 train에 기존 업그레이드 적용
          ApplyExistingUpgradesToTrain(newTrain);
 
          // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
-         var newTrainData = DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id);
          GameEventSystem.Publish(new ReplaceTrainEvent(oldTrain, newTrain, newTrainData?.Icon));
 
          // 기존 Train 제거
@@ -225,12 +276,27 @@ namespace TrainDefense.Game
 
       private void RearrangeTrains()
       {
-         // 살아있는 기차만 연속적으로 재정렬
-         for (int i = 0; i < _currentAliveTrains.Count; i++)
+         int count = _currentAliveTrains.Count;
+         float halfLength = count * trainOffset * 0.5f;
+
+         ApplyMainTrainModelOffset(halfLength);
+
+         // 살아있는 기차만 연속적으로 재정렬 (편성 중앙이 MainTrain transform에 오도록 오른쪽으로 halfLength 이동)
+         for (int i = 0; i < count; i++)
          {
-            Vector3 newPos = Vector3.left * trainOffset * (i + 1);
+            Vector3 newPos = new Vector3(halfLength - trainOffset * (i + 1), 0f, 0f);
             _currentAliveTrains[i].transform.localPosition = newPos;
          }
+      }
+
+      private void ApplyMainTrainModelOffset(float halfLength)
+      {
+         if (trainModel == null)
+            return;
+
+         Vector3 modelPos = trainModel.localPosition;
+         modelPos.x = halfLength;
+         trainModel.localPosition = modelPos;
       }
 
       private void RearrangeAllTrainsToOriginalOrder()
@@ -257,16 +323,27 @@ namespace TrainDefense.Game
          // 원래 인덱스 순서로 정렬
          allTrains.Sort((a, b) => a.originalIndex.CompareTo(b.originalIndex));
 
-         // 정렬된 순서대로 위치 재설정
-         for (int i = 0; i < allTrains.Count; i++)
+         int total = allTrains.Count;
+         float halfLength = total * trainOffset * 0.5f;
+
+         ApplyMainTrainModelOffset(halfLength);
+
+         // 정렬된 순서대로 위치 재설정 (편성 중앙이 MainTrain transform에 오도록 오른쪽으로 halfLength 이동)
+         for (int i = 0; i < total; i++)
          {
-            Vector3 newPos = (i + 1) * trainOffset * Vector3.left;
+            Vector3 newPos = new Vector3(halfLength - trainOffset * (i + 1), 0f, 0f);
             allTrains[i].train.transform.localPosition = newPos;
          }
       }
 
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
       {
+         // 살아있는 기차도 Inspection 시작 시 HP를 최대치로 회복
+         foreach (var train in _currentAliveTrains)
+         {
+            train.RestoreHpToMax();
+         }
+
          // 죽은 기차 복원
          foreach (var deadTrainInfo in _deadTrains.ToList())
          {

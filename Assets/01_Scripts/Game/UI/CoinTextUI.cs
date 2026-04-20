@@ -1,8 +1,8 @@
 using UnityEngine;
 using TMPro;
+using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
-using TrainDefense;
 using DG.Tweening;
 
 namespace TrainDefense.Game.UI
@@ -42,7 +42,7 @@ namespace TrainDefense.Game.UI
 
       private void OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)
       {
-         DOTween.To(() => changeCoinEvent.BeforeCoin, x => coinText.text = $"{x}", changeCoinEvent.AfterCoin, tweenDuration)
+         DOTween.To(() => changeCoinEvent.BeforeCoin, x => coinText.text = x.ToCommaString(), changeCoinEvent.AfterCoin, tweenDuration)
          .SetEase(Ease.InOutSine)
          .SetUpdate(true);
       }

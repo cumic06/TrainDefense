@@ -1,0 +1,133 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using TrainDefense.Game.Datas;
+using TrainDefense.Game.Stats;
+using UnityEngine;
+
+namespace TrainDefense.Game
+{
+    /// <summary>
+    /// Train의 스킬/시한버프 책임을 분리한 컴포지션 모듈.
+    /// 액티브 스킬(TrainSkillAction)과 시한 스탯 버프(TimedStatModifier)를 보유·관리한다.
+    /// </summary>
+    public class TrainSkillModule
+    {
+        private Train _owner;
+        private TrainData _trainData;
+        private TrainSkillAction _activeSkill;
+        private Action<IStat> _applyStat;
+        private readonly List<TimedStatModifier> _timedModifiers = new();
+        private readonly List<TrainPassiveSkill> _passives = new();
+
+        public TrainSkillAction ActiveSkill => _activeSkill;
+
+        public bool HasSkill => _trainData != null && _trainData.TrainSkillData != null && _trainData.TrainSkillData.HasSkill;
+
+        public Sprite SkillIcon
+        {
+            get
+            {
+                if (_trainData == null) return null;
+                return _trainData.SkillIcon != null ? _trainData.SkillIcon : _trainData.Icon;
+            }
+        }
+
+        public float SkillCooldown => _trainData?.TrainSkillData?.SkillCooldown ?? 0f;
+        public bool CanUse => _activeSkill != null && _activeSkill.CanUse;
+        public float CooldownRatio => _activeSkill?.GetCooldownRatio() ?? 0f;
+
+        /// <summary>
+        /// 모듈 초기화. owner의 ApplyStat 콜백을 받아 시한 버프 만료 시 대칭 복원에 사용.
+        /// </summary>
+        public void Initialize(Train owner, TrainData trainData, Action<IStat> applyStatCallback)
+        {
+            // 재초기화 시 기존 구독 해제
+            for (int i = 0; i < _passives.Count; i++) _passives[i].Unsubscribe();
+            _passives.Clear();
+            _activeSkill?.Unsubscribe();
+
+            _owner = owner;
+            _trainData = trainData;
+            _applyStat = applyStatCallback;
+            _timedModifiers.Clear();
+
+            _activeSkill = trainData != null
+                ? TrainSkillActionFactory.Create(owner, trainData.TrainSkillData)
+                : null;
+        }
+
+        public bool TryUse() => _activeSkill != null && _activeSkill.TryUse();
+
+        /// <summary>
+        /// 시한 스탯 버프. 동일 StatType이 이미 활성 중이면 시간만 리프레시(중첩 방지).
+        /// </summary>
+        public void ApplyTimedStat(StatType type, float percent, float duration)
+        {
+            if (duration <= 0f) return;
+
+            var existing = _timedModifiers.FirstOrDefault(m => m.Type == type);
+            if (existing != null)
+            {
+                existing.RemainingTime = duration;
+                return;
+            }
+
+            _applyStat?.Invoke(new SimpleStat { Type = type, Value = percent });
+            _timedModifiers.Add(new TimedStatModifier
+            {
+                Type = type,
+                Value = percent,
+                RemainingTime = duration
+            });
+        }
+
+        public void Tick(float deltaTime)
+        {
+            if (_timedModifiers.Count > 0)
+            {
+                for (int i = _timedModifiers.Count - 1; i >= 0; i--)
+                {
+                    var mod = _timedModifiers[i];
+                    mod.RemainingTime -= deltaTime;
+                    if (mod.RemainingTime <= 0f)
+                    {
+                        // 대칭 복원: 음수 percent로 ApplyStat 재호출
+                        _applyStat?.Invoke(new SimpleStat { Type = mod.Type, Value = -mod.Value });
+                        _timedModifiers.RemoveAt(i);
+                    }
+                }
+            }
+
+            for (int i = 0; i < _passives.Count; i++)
+            {
+                _passives[i].Tick(deltaTime);
+            }
+        }
+
+        public void RegisterPassiveFromData(Datas.TrainPassiveSkillData data)
+        {
+            if (data == null) return;
+            RegisterPassivesFromRaw(data.ToDsl());
+        }
+
+        public void RegisterPassivesFromRaw(string raw)
+        {
+            var skills = TrainPassiveSkillFactory.ParseAll(raw);
+            foreach (var p in skills)
+            {
+                p.Initialize(_owner);
+                _passives.Add(p);
+            }
+        }
+
+        /// <summary>모든 스킬 Unsubscribe + 클리어. Train.OnDestroy에서 호출.</summary>
+        public void Dispose()
+        {
+            for (int i = 0; i < _passives.Count; i++) _passives[i].Unsubscribe();
+            _passives.Clear();
+            _activeSkill?.Unsubscribe();
+            _timedModifiers.Clear();
+        }
+    }
+}

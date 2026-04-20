@@ -332,7 +332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebb76fd958f50604298b091d72f4b3a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.RangeTrain
-  id: 
+  id: 41001
   explosionRadius: 5
   explosionForce: 10
   IsUnDead: 0

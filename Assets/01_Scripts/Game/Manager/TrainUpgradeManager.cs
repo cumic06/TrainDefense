@@ -60,12 +60,6 @@ namespace TrainDefense.Game
             UserDataManager.Instance.UpgradeLevel(upgradeId);
             ApplyUpgrade(upgradeData);
 
-            // 업그레이드된 기차 중 스킬이 있으면 튜토리얼 시작
-            if (upgradeData.UpgradeDataType == UpgradeDataType.TrainUpgrade)
-            {
-                CheckAndStartSkillTutorial();
-            }
-
             // 업그레이드 적용 이후 UI 및 기타 시스템에 알려주기 위한 이벤트 발행
             int newLevel = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
             GameEventSystem.Publish(new UpgradeAppliedEvent(upgradeId, newLevel));
@@ -174,7 +168,6 @@ namespace TrainDefense.Game
             _trainInfoSlotTutorialStarted = true;
             TutorialManager.Instance.OnTutorialComplete += OnTrainInfoSlotTutorialComplete;
 
-            Debug.Log("TrainUpgradeManager: Starting trainInfoSlot tutorial");
             TutorialManager.Instance.StartTutorial("trainInfoSlotTutorial");
         }
 

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Stats;
@@ -13,9 +14,11 @@ namespace TrainDefense.Game
         private RangeTrainData rangeTrainData => _trainData as RangeTrainData;
         #endregion
 
-        private RangeTrainStatus _currentRangeTrainStatus;
-        private Projectile _rangeProjectilePrefab;
+        protected RangeTrainStatus _currentRangeTrainStatus;
+        protected Projectile _rangeProjectilePrefab;
         private Coroutine _rangeAttackCoroutine;
+
+        public event Action OnAttacked;
 
         protected override void Setup()
         {
@@ -23,6 +26,8 @@ namespace TrainDefense.Game
 
             // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
+
+            _skillModule.RegisterPassiveFromData(rangeTrainData?.PassiveSkillData);
 
             if (TrainData.DamageType == DamageType.Direct) return;
 
@@ -34,8 +39,9 @@ namespace TrainDefense.Game
             GameEventSystem.Subscribe<EngageStartEvent>(_OnEngageStart);
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Unsubscribe<EngageStartEvent>(_OnEngageStart);
 
@@ -64,8 +70,9 @@ namespace TrainDefense.Game
             SoundManager.Instance.StopSFX(rangeTrainData.AttackSoundType);
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             if (_isDead) return;
             RangeAttackHandler();
         }
@@ -91,6 +98,7 @@ namespace TrainDefense.Game
                     }
 
                     _currentRangeTrainStatus.AttackInterval = rangeTrainData.RangeTrainStatus.AttackInterval;
+                    OnAttacked?.Invoke();
 
                     if (TrainData.DamageType == DamageType.Direct)
                     {
@@ -116,6 +124,21 @@ namespace TrainDefense.Game
             {
                 _rangeProjectilePrefab.gameObject.SetActive(false);
             }
+        }
+
+        public void SpawnExternalProjectile(Projectile prefab, float radius)
+        {
+            if (prefab == null) return;
+            var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
+            if (spawned == null) return;
+            float r = radius >= 0f ? radius : _currentRangeTrainStatus.AttackRange;
+            spawned.Init(
+                _currentRangeTrainStatus.AttackDamage,
+                this,
+                null,
+                r,
+                _currentRangeTrainStatus.CriticalChance,
+                _currentRangeTrainStatus.CriticalDamage);
         }
 
         private void SpawnRangeProjectile()

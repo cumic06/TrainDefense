@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TrainDefense.Game;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Tutorial;
 using Cumic.Events;
@@ -260,6 +261,14 @@ namespace TrainDefense
         public int GetUpgradeLevel(string upgradeId)
         {
             return _upgradeLevels.ContainsKey(upgradeId) ? _upgradeLevels[upgradeId] : 0;
+        }
+
+        public bool IsUpgradeMaxLevel(string upgradeId)
+        {
+            var upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
+            if (upgradeData == null || upgradeData.MaxUpgradeCount <= 0) return false;
+
+            return GetUpgradeLevel(upgradeId) >= upgradeData.MaxUpgradeCount;
         }
 
         public void UpgradeLevel(string upgradeId)

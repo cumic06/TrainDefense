@@ -25,6 +25,8 @@ namespace TrainDefense.Editor
 			{ "train_data", 2 },
 			{ "range_train_data", 2 },
 			{ "turret_train_data", 2 },
+			{ "active_skill_data", 2 },
+			{ "passive_skill_data", 2 },
 			{ "train_upgrade_data", 3 },
 			{ "turret_train_upgrade_data", 3 },
 			{ "range_train_upgrade_data", 3 },

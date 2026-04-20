@@ -148,6 +148,20 @@ namespace TrainDefense.Game.UI
                             choiceUIInfo.Icon = trainData.Icon;
                             choiceUIInfo.Name = trainData.Name;
                             choiceUIInfo.Description = trainData.Description;
+
+                            TrainPassiveSkillData passiveData = null;
+                            if (trainData is RangeTrainData rangeData)
+                                passiveData = rangeData.PassiveSkillData;
+                            else if (trainData is TurretTrainData turretData)
+                                passiveData = turretData.PassiveSkillData;
+
+                            if (passiveData != null)
+                            {
+                                if (!string.IsNullOrEmpty(passiveData.Name))
+                                    choiceUIInfo.PassiveName = passiveData.Name;
+                                if (!string.IsNullOrEmpty(passiveData.Description))
+                                    choiceUIInfo.PassiveDescription = passiveData.Description;
+                            }
                         }
                     }
                     else if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
