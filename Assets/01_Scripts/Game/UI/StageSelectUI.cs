@@ -4,6 +4,7 @@ using Cumic.Events;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Tutorial;
+using TrainDefense.Game.Manager;
 
 namespace TrainDefense.Game.UI
 {
@@ -12,6 +13,9 @@ namespace TrainDefense.Game.UI
         #region Fields
         [SerializeField]
         private GameObject stageSelectPanel;
+
+        [SerializeField]
+        private Image currentStageImage;
 
         [SerializeField]
         private Button stage1Button;
@@ -70,10 +74,12 @@ namespace TrainDefense.Game.UI
             _isSelecting = true;
 
             // 스테이지 이미지 적용 (버튼의 Image 컴포넌트에 스프라이트 적용)
-            ApplyStageSprite(stage1Button, _stageData1);
-            ApplyStageSprite(stage2Button, _stageData2);
-            ShowMonsterIconImage(stage1Button, _stageData1);
-            ShowMonsterIconImage(stage2Button, _stageData2);
+            ApplyStageSprite(stage1Button.image, _stageData1);
+            ApplyStageSprite(stage2Button.image, _stageData2);
+            ApplyStageSprite(currentStageImage, StageManager.Instance.CurrentStageData);
+            ShowMonsterIconImage(stage1Button.transform, _stageData1);
+            ShowMonsterIconImage(stage2Button.transform, _stageData2);
+            ShowMonsterIconImage(currentStageImage.transform, StageManager.Instance.CurrentStageData);
 
             if (stageSelectPanel != null)
             {
@@ -86,24 +92,23 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        private void ApplyStageSprite(Button targetButton, StageData stageData)
+        private void ApplyStageSprite(Image target, StageData stageData)
         {
-            if (targetButton == null || stageData == null) return;
+            if (target == null || stageData == null) return;
 
-            var buttonImage = targetButton.GetComponent<Image>();
-            if (buttonImage != null && stageData.StageImage != null)
+            if (stageData.StageImage != null)
             {
-                buttonImage.sprite = stageData.StageImage;
+                target.sprite = stageData.StageImage;
             }
         }
 
-        private void ShowMonsterIconImage(Button targetButton, StageData stageData)
+        private void ShowMonsterIconImage(Transform target, StageData stageData)
         {
-            if (targetButton == null || stageData == null) return;
+            if (target == null || stageData == null) return;
 
             for (int i = 0; i < stageData.SpawnDatas.Length; i++)
             {
-                var monsterIconImage = targetButton.transform.GetChild(i);
+                var monsterIconImage = target.GetChild(i);
                 var monsterId = stageData.SpawnDatas[i].MonsterId;
                 monsterIconImage.GetComponent<Image>().sprite = DatabaseManager.Instance.GetMonsterData(monsterId).Icon;
                 monsterIconImage.gameObject.SetActive(true);
