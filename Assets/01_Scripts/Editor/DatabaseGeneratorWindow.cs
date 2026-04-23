@@ -369,16 +369,23 @@ namespace TrainDefense.Editor
 			var rows = new System.Collections.Generic.List<StageRow>(db.stageDataList.Count);
 			foreach (var s in db.stageDataList)
 			{
+				var spawnIds   = string.Join(";", System.Array.ConvertAll(s.SpawnDatas, d => d.MonsterId)) + ";";
+				var spawnProbs = string.Join(";", System.Array.ConvertAll(s.SpawnDatas, d => d.Probability.ToString(System.Globalization.CultureInfo.InvariantCulture))) + ";";
+				var spawnLevels = string.Join(";", System.Array.ConvertAll(s.SpawnDatas, d => d.SpawnLevel.ToString())) + ";";
 				rows.Add(new StageRow
 				{
 					id = s.Id,
 					baseInspectionTime = s.BaseInspectionTime,
 					stationCount = s.StationCount,
-					stageEndTime = s.StageEndTime
+					stageEndTime = s.StageEndTime,
+					spawnInterval = s.SpawnInterval,
+					spawnMonsters = spawnIds,
+					spawnMonstersProbability = spawnProbs,
+					spawnMonstersLevel = spawnLevels,
 				});
 			}
 			string excelPath = GetExcelAbsPath("StageData.xlsx");
-			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "stage_data", new[] { "id", "base_inspection_time", "station_count", "stage_end_time" });
+			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "stage_data", new[] { "id", "base_inspection_time", "station_count", "stage_end_time", "spawn_interval", "spawn_monsters", "spawn_monsters_probability", "spawn_monsters_level" });
 			ExcelWriter.WriteToSheet(excelPath, "stage_data", rows);
 			EditorUtility.DisplayDialog("완료", "stage_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
