@@ -121,7 +121,7 @@ namespace TrainDefense.Game
         public bool DestroyOnTriggerEnter => destroyOnTriggerEnter;
         public bool IsSpawnTriggerHandle => isSpawnTriggerHandle;
         public TriggerHandle TriggerHandlePrefab => triggerHandlePrefab;
-        public bool ScaleByRange => scaleByRange;
+        public bool ScaleByArea => scaleByRange;
         public ScaleByRangeType ScaleRangeType => scaleRangeType;
         public bool IsTargeting => isTargeting;
         public DamageType DamageType => damageType;

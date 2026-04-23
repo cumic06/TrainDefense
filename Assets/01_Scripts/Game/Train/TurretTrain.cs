@@ -82,7 +82,7 @@ namespace TrainDefense.Game
             if (prefab == null) return;
             var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
             if (spawned == null) return;
-            float r = radius >= 0f ? radius : _currentTurretTrainStatus.AttackRange;
+            float r = radius >= 0f ? radius : _currentTurretTrainStatus.AttackArea;
             spawned.Init(
                 _currentTurretTrainStatus.AttackDamage,
                 this,
@@ -586,14 +586,14 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackDamage,
                 this,
                 target,
-                projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f,
+                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
                 _currentTurretTrainStatus.CriticalChance,
                 _currentTurretTrainStatus.CriticalDamage
             );
         }
 
         /// <summary>
-        /// Projectile의 AttackDamage와 AttackRange만 초기화 (타겟 없이)
+        /// Projectile의 AttackDamage와 AttackArea만 초기화 (타겟 없이)
         /// NonMovement 프로젝타일 생성 시점에 사용
         /// </summary>
         private void InitializeProjectileDamage(Projectile projectile)
@@ -604,7 +604,7 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackDamage,
                 this,
                 null,
-                projectile.IsScaleByAttackRange() ? _currentTurretTrainStatus.AttackRange : 0f,
+                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
                 _currentTurretTrainStatus.CriticalChance,
                 _currentTurretTrainStatus.CriticalDamage
             );
@@ -663,6 +663,7 @@ namespace TrainDefense.Game
                 var turretStatus = turretUpgradeData.GetTurretStatusUpgrade(upgradeLevelIndex);
                 _currentTurretTrainStatus.AttackDamage += turretStatus.AttackDamage;
                 _currentTurretTrainStatus.AttackRange += turretStatus.AttackRange;
+                _currentTurretTrainStatus.AttackArea += turretStatus.AttackArea;
                 _currentTurretTrainStatus.AttackCount += turretStatus.AttackCount;
                 _currentTurretTrainStatus.AttackInterval += turretStatus.AttackInterval;
                 _currentTurretTrainStatus.TargetCount += turretStatus.TargetCount;
@@ -674,8 +675,8 @@ namespace TrainDefense.Game
                     int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
                     EnsureNonMovementProjectileCount(maxCount);
 
-                    // AttackDamage나 AttackRange 변경 시 기존 프로젝타일 업데이트
-                    if (_nonMovementProjectiles.Count > 0 && (turretStatus.AttackDamage != 0 || turretStatus.AttackRange != 0))
+                    // AttackDamage나 AttackArea 변경 시 기존 프로젝타일 업데이트
+                    if (_nonMovementProjectiles.Count > 0 && (turretStatus.AttackDamage != 0 || turretStatus.AttackArea != 0))
                     {
                         foreach (var projectile in _nonMovementProjectiles)
                         {
@@ -693,6 +694,7 @@ namespace TrainDefense.Game
         {
             _currentTurretTrainStatus.AttackDamage += upgradeData.AttackDamage;
             _currentTurretTrainStatus.AttackRange += upgradeData.AttackRange;
+            _currentTurretTrainStatus.AttackArea += upgradeData.AttackArea;
             _currentTurretTrainStatus.AttackCount += upgradeData.AttackCount;
             _currentTurretTrainStatus.AttackInterval += upgradeData.AttackInterval;
             _currentTurretTrainStatus.TargetCount += upgradeData.TargetCount;
@@ -704,8 +706,8 @@ namespace TrainDefense.Game
                 int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
                 EnsureNonMovementProjectileCount(maxCount);
 
-                // AttackDamage나 AttackRange 변경 시 기존 프로젝타일 업데이트
-                if (_nonMovementProjectiles.Count > 0 && (upgradeData.AttackDamage != 0 || upgradeData.AttackRange != 0))
+                // AttackDamage나 AttackArea 변경 시 기존 프로젝타일 업데이트
+                if (_nonMovementProjectiles.Count > 0 && (upgradeData.AttackDamage != 0 || upgradeData.AttackArea != 0))
                 {
                     foreach (var projectile in _nonMovementProjectiles)
                     {
@@ -729,8 +731,12 @@ namespace TrainDefense.Game
             {
                 case StatType.AttackRange:
                     _currentTurretTrainStatus.AttackRange += baseStatus.AttackRange * percent;
+                    break;
 
-                    // AttackRange 변경 시 NonMovement 프로젝타일도 업데이트
+                case StatType.AttackArea:
+                    _currentTurretTrainStatus.AttackArea += baseStatus.AttackArea * percent;
+
+                    // AttackArea 변경 시 NonMovement 프로젝타일도 업데이트
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
                         foreach (var projectile in _nonMovementProjectiles)

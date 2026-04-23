@@ -436,13 +436,22 @@ namespace TrainDefense.Editor
 				EditorUtility.DisplayDialog("오류", "Database 또는 RangeTrain 데이터가 없습니다.", "확인");
 				return;
 			}
-			var rows = new System.Collections.Generic.List<TrainRow>(db.rangeTrainDataList.Count);
+			var rows = new System.Collections.Generic.List<RangeTrainRow>(db.rangeTrainDataList.Count);
 			foreach (var t in db.rangeTrainDataList)
 			{
-				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
+				var s = t.RangeTrainStatus;
+				rows.Add(new RangeTrainRow
+				{
+					id = t.Id, name = t.Name, description = t.Description,
+					maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain,
+					attackRange = s.AttackRange, attackArea = s.AttackArea,
+					attackDamage = s.AttackDamage, attackCount = s.AttackCount,
+					attackInterval = s.AttackInterval,
+					criticalChance = s.CriticalChance, criticalDamage = s.CriticalDamage
+				});
 			}
 			string excelPath = GetExcelAbsPath("TrainData.xlsx");
-			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "range_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
+			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "range_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train", "attack_range", "attack_area", "attack_damage", "attack_count", "attack_interval", "critical_chance", "critical_damage" });
 			ExcelWriter.WriteToSheet(excelPath, "range_train_data", rows);
 			EditorUtility.DisplayDialog("완료", "range_train_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
@@ -455,13 +464,22 @@ namespace TrainDefense.Editor
 				EditorUtility.DisplayDialog("오류", "Database 또는 TurretTrain 데이터가 없습니다.", "확인");
 				return;
 			}
-			var rows = new System.Collections.Generic.List<TrainRow>(db.turretTrainDataList.Count);
+			var rows = new System.Collections.Generic.List<TurretTrainRow>(db.turretTrainDataList.Count);
 			foreach (var t in db.turretTrainDataList)
 			{
-				rows.Add(new TrainRow { id = t.Id, name = t.Name, description = t.Description, maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain });
+				var s = t.TurretTrainStatus;
+				rows.Add(new TurretTrainRow
+				{
+					id = t.Id, name = t.Name, description = t.Description,
+					maxHp = t.TrainStatusData.MaxHp, isMainTrain = t.IsMainTrain,
+					attackRange = s.AttackRange, attackArea = s.AttackArea,
+					attackDamage = s.AttackDamage, attackCount = s.AttackCount,
+					attackInterval = s.AttackInterval, targetCount = s.TargetCount,
+					criticalChance = s.CriticalChance, criticalDamage = s.CriticalDamage
+				});
 			}
 			string excelPath = GetExcelAbsPath("TrainData.xlsx");
-			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "turret_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train" });
+			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "turret_train_data", new[] { "id", "train_name", "description", "max_hp", "is_main_train", "attack_range", "attack_area", "attack_damage", "attack_count", "attack_interval", "target_count", "critical_chance", "critical_damage" });
 			ExcelWriter.WriteToSheet(excelPath, "turret_train_data", rows);
 			EditorUtility.DisplayDialog("완료", "turret_train_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
@@ -562,13 +580,14 @@ namespace TrainDefense.Editor
 					maxHp = statusUpgrade.MaxHp,
 					iconId = u.IconId,
 					attackRange = turretStatus.AttackRange,
+					attackArea = turretStatus.AttackArea,
 					attackDamage = turretStatus.AttackDamage,
 					attackCount = turretStatus.AttackCount,
 					attackInterval = turretStatus.AttackInterval
 				});
 			}
 			string excelPath = GetExcelAbsPath("TrainUpgradeData.xlsx");
-			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_delay" });
+			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_area", "attack_damage", "attack_count", "attack_delay" });
 			ExcelWriter.WriteToSheet(excelPath, "turret_train_upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "turret_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
@@ -596,13 +615,14 @@ namespace TrainDefense.Editor
 					maxHp = statusUpgrade.MaxHp,
 					iconId = u.IconId,
 					attackRange = rangeStatus.AttackRange,
+					attackArea = rangeStatus.AttackArea,
 					attackDamage = rangeStatus.AttackDamage,
 					attackCount = rangeStatus.AttackCount,
 					attackInterval = rangeStatus.AttackInterval
 				});
 			}
 			string excelPath = GetExcelAbsPath("TrainUpgradeData.xlsx");
-			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "range_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_damage", "attack_count", "attack_interval" });
+			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "range_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_area", "attack_damage", "attack_count", "attack_interval" });
 			ExcelWriter.WriteToSheet(excelPath, "range_train_upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "range_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
