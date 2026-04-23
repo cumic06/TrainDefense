@@ -173,12 +173,11 @@ namespace TrainDefense.Game.Manager
 
         private void _StageHandler()
         {
-            if (CurrentStageData == null || CurrentStageData.StageInspectionTime == null) return;
+            if (CurrentStageData == null) return;
 
-            var times = CurrentStageData.StageInspectionTime;
-            if (_currentStageInspectionTimeIndex < times.Length)
+            if (_currentStageInspectionTimeIndex < CurrentStageData.StationCount)
             {
-                if (_currentStageTime >= times[_currentStageInspectionTimeIndex])
+                if (_currentStageTime >= GetInspectionDurationForIndex(_currentStageInspectionTimeIndex))
                 {
                     _CurrentStageInspectionUp();
                 }
@@ -187,6 +186,12 @@ namespace TrainDefense.Game.Manager
             {
                 _StageEnd();
             }
+        }
+
+        private float GetInspectionDurationForIndex(int i)
+        {
+            // TODO: 역마다 최대 3배까지 길어지는 공식 확정 시 여기에 적용
+            return CurrentStageData.BaseInspectionTime;
         }
 
         private void _StageEnd()
@@ -264,28 +269,19 @@ namespace TrainDefense.Game.Manager
 
         private float _GetCurrentSegmentDuration()
         {
-            if (CurrentStageData == null || CurrentStageData.StageInspectionTime == null)
-            {
-                return 0f;
-            }
+            if (CurrentStageData == null) return 0f;
 
-            var times = CurrentStageData.StageInspectionTime;
-            if (_currentStageInspectionTimeIndex >= times.Length)
-            {
+            if (_currentStageInspectionTimeIndex >= CurrentStageData.StationCount)
                 return _GetPostLastInspectionDuration();
-            }
 
-            return times[_currentStageInspectionTimeIndex];
+            return GetInspectionDurationForIndex(_currentStageInspectionTimeIndex);
         }
 
         private float _GetPostLastInspectionDuration()
         {
-            var times = CurrentStageData.StageInspectionTime;
             float sum = 0f;
-            for (int i = 0; i < times.Length; i++)
-            {
-                sum += times[i];
-            }
+            for (int i = 0; i < CurrentStageData.StationCount; i++)
+                sum += GetInspectionDurationForIndex(i);
             return CurrentStageData.StageEndTime - sum;
         }
 
