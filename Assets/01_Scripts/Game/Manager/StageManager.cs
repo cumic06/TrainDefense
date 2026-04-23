@@ -28,6 +28,9 @@ namespace TrainDefense.Game.Manager
 
         [SerializeField]
         private float goldScale;
+
+        [SerializeField]
+        private float stationInspectionTimeIncrement;
         #endregion
 
         private StageData[] _stageDatas;
@@ -190,8 +193,7 @@ namespace TrainDefense.Game.Manager
 
         private float GetInspectionDurationForIndex(int i)
         {
-            // TODO: 역마다 최대 3배까지 길어지는 공식 확정 시 여기에 적용
-            return CurrentStageData.BaseInspectionTime;
+            return CurrentStageData.BaseInspectionTime + stationInspectionTimeIncrement * i;
         }
 
         private void _StageEnd()
