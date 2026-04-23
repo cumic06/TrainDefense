@@ -372,12 +372,13 @@ namespace TrainDefense.Editor
 				rows.Add(new StageRow
 				{
 					id = s.Id,
-					stageInspectionTime = s.StageInspectionTime != null ? string.Join(",", s.StageInspectionTime) : string.Empty,
+					baseInspectionTime = s.BaseInspectionTime,
+					stationCount = s.StationCount,
 					stageEndTime = s.StageEndTime
 				});
 			}
 			string excelPath = GetExcelAbsPath("StageData.xlsx");
-			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "stage_data", new[] { "id", "stage_inspection_time", "stage_end_time" });
+			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "stage_data", new[] { "id", "base_inspection_time", "station_count", "stage_end_time" });
 			ExcelWriter.WriteToSheet(excelPath, "stage_data", rows);
 			EditorUtility.DisplayDialog("완료", "stage_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
