@@ -84,13 +84,6 @@ namespace TrainDefense.Game.Manager
             _StageHandler();
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.K))
-            {
-                _ShowStageSelection();
-            }
-        }
         private void _LoadStageDatas()
         {
             _stageDatas = DatabaseManager.Instance.GetStageDatas();
