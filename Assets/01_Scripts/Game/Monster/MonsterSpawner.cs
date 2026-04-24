@@ -21,6 +21,12 @@ namespace TrainDefense.Game
       private float spawnRange;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
+      private float stationSpawnAccelPercent = 5f;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
+      private float maxSpawnAccelPercent = 50f;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
       private MonsterSpawnType spawnMode = MonsterSpawnType.CameraBased;
 
       [SerializeField]
@@ -46,6 +52,7 @@ namespace TrainDefense.Game
       private readonly List<Monster> _spawnedMonsters = new();
 
       private float _originalSpawnInterval;
+      private int _stationPassedCount = 0;
 
       private EliteData _eliteData;
       [ShowInInspector]
@@ -83,6 +90,8 @@ namespace TrainDefense.Game
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
       {
          DestroyAllMonsters();
+         _stationPassedCount++;
+         spawnInterval = _GetAcceleratedInterval();
       }
 
       private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
@@ -97,6 +106,7 @@ namespace TrainDefense.Game
       {
          _currentSpawnDatas = spawnDatas;
          _originalSpawnInterval = monsterSpawnInterval;
+         _stationPassedCount = 0;
          spawnInterval = _originalSpawnInterval;
       }
 
@@ -112,7 +122,14 @@ namespace TrainDefense.Game
 
       private void OnMonsterRush(MonsterRushEvent monsterRushEvent)
       {
-         spawnInterval = _originalSpawnInterval * monsterRushEvent.SpawnTimeMultiplier;
+         spawnInterval = _GetAcceleratedInterval() * monsterRushEvent.SpawnTimeMultiplier;
+      }
+
+      private float _GetAcceleratedInterval()
+      {
+         float totalAccel = Mathf.Min(_stationPassedCount * stationSpawnAccelPercent / 100f,
+                                       maxSpawnAccelPercent / 100f);
+         return _originalSpawnInterval * (1f - totalAccel);
       }
 
       //private void SpawnBoss(string bossMonsterId)

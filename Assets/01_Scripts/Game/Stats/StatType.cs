@@ -10,6 +10,7 @@ namespace TrainDefense.Game.Stats
 
         // TurretTrain / RangeTrain 공통
         AttackRange,
+        AttackArea,
         AttackDamage,
         AttackCount,
         AttackInterval,

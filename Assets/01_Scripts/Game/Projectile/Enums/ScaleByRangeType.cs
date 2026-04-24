@@ -1,11 +1,11 @@
 namespace TrainDefense.Game
 {
     /// <summary>
-    /// °Å¸® ºñ·Ê ½ºÄÉÀÏ Á¶Á¤ Å¸ÀÔ
+    /// ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½
     /// </summary>
     public enum ScaleByRangeType
     {
-        AttackRange,         // ³» »ç°Å¸® ±âÁØ
-        TargetRange          // ÀûÀÇ °Å¸® ±âÁØ
+        Area,           // AttackArea ê¸°ë°˜ ìŠ¤ì¼€ì¼
+        TargetRange     // íƒ€ê²Ÿ ê±°ë¦¬ ê¸°ë°˜ ìŠ¤ì¼€ì¼
     }
 }

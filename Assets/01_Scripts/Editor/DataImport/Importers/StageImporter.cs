@@ -9,7 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers
       public string ExcelFileName => "StageData.xlsx";
       public string SheetName => "stage_data";
       public string ButtonLabel => "Stage 데이터 가져오기";
-      public string[] Headers => new[] { "id", "stage_inspection_time", "stage_end_time", "spawn_interval", "spawn_monsters", "spawn_monsters_probability", "spawn_monsters_level" };
+      public string[] Headers => new[] { "id", "base_inspection_time", "station_count", "stage_end_time", "spawn_interval", "spawn_monsters", "spawn_monsters_probability", "spawn_monsters_level" };
 
       public int Import(DB db, string excelPath)
       {
@@ -42,28 +42,11 @@ namespace TrainDefense.Editor.DataImport.Importers
       {
          var t = typeof(StageData);
          SetPrivateField(t, target, "id", r.id);
-         SetPrivateField(t, target, "stageInspectionTime", ParseFloatArray(r.stageInspectionTime));
+         SetPrivateField(t, target, "baseInspectionTime", r.baseInspectionTime);
+         SetPrivateField(t, target, "stationCount", r.stationCount);
          SetPrivateField(t, target, "stageEndTime", r.stageEndTime);
          SetPrivateField(t, target, "spawnInterval", r.spawnInterval);
          SetPrivateField(t, target, "spawnDatas", ParseSpawnData(r.spawnMonsters, r.spawnMonstersProbability, r.spawnMonstersLevel));
-      }
-
-      private static float[] ParseFloatArray(string csv)
-      {
-         if (string.IsNullOrEmpty(csv))
-            return System.Array.Empty<float>();
-         var parts = csv.Split(';');
-         var list = new System.Collections.Generic.List<float>();
-         foreach (var part in parts)
-         {
-            if (string.IsNullOrWhiteSpace(part))
-               continue;
-            if (float.TryParse(part.Trim(), out float val))
-            {
-               list.Add(val);
-            }
-         }
-         return list.ToArray();
       }
 
       private static StageSpawnData[] ParseSpawnData(string idsCsv, string probsCsv, string levelCsv)

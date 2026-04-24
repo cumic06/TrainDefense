@@ -31,6 +31,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
             var turretTrainStatus = new TurretTrainStatus
             {
                 AttackRange = r.attackRange,
+                AttackArea = r.attackArea,
                 AttackDamage = r.attackDamage,
                 AttackCount = r.attackCount,
                 AttackInterval = r.attackInterval,

@@ -148,6 +148,8 @@ namespace TrainDefense.Game.UI
                args.Add(turretStatus.AttackDamage);
             if (turretStatus.AttackRange != 0)
                args.Add(turretStatus.AttackRange);
+            if (turretStatus.AttackArea != 0)
+               args.Add(turretStatus.AttackArea);
             if (turretStatus.AttackCount != 0)
                args.Add(turretStatus.AttackCount);
             if (turretStatus.AttackInterval != 0)
@@ -162,6 +164,8 @@ namespace TrainDefense.Game.UI
                args.Add(rangeStatus.AttackDamage);
             if (rangeStatus.AttackRange != 0)
                args.Add(rangeStatus.AttackRange);
+            if (rangeStatus.AttackArea != 0)
+               args.Add(rangeStatus.AttackArea);
             if (rangeStatus.AttackCount != 0)
                args.Add(rangeStatus.AttackCount);
             if (rangeStatus.AttackInterval != 0)

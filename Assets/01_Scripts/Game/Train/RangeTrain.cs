@@ -131,7 +131,7 @@ namespace TrainDefense.Game
             if (prefab == null) return;
             var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
             if (spawned == null) return;
-            float r = radius >= 0f ? radius : _currentRangeTrainStatus.AttackRange;
+            float r = radius >= 0f ? radius : _currentRangeTrainStatus.AttackArea;
             spawned.Init(
                 _currentRangeTrainStatus.AttackDamage,
                 this,
@@ -157,10 +157,10 @@ namespace TrainDefense.Game
                 {
                     _rangeProjectilePrefab = ResourceManager.Instance.Spawn(projectile);
                     _rangeProjectilePrefab.transform.SetParent(transform);
-                    _rangeProjectilePrefab.transform.localScale = new Vector3(rangeTrainData.RangeTrainStatus.AttackRange, rangeTrainData.RangeTrainStatus.AttackRange, 1);
+                    _rangeProjectilePrefab.transform.localScale = new Vector3(rangeTrainData.RangeTrainStatus.AttackArea, rangeTrainData.RangeTrainStatus.AttackArea, 1);
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
-                    _rangeProjectilePrefab.Init(rangeTrainData.RangeTrainStatus.AttackDamage, this, null, rangeTrainData.RangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                    _rangeProjectilePrefab.Init(rangeTrainData.RangeTrainStatus.AttackDamage, this, null, rangeTrainData.RangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
         }
@@ -180,6 +180,7 @@ namespace TrainDefense.Game
                 int upgradeLevelIndex = currentLevel + 1;
                 var rangeStatus = rangeUpgradeData.GetRangeStatusUpgrade(upgradeLevelIndex);
                 _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange;
+                _currentRangeTrainStatus.AttackArea += rangeStatus.AttackArea;
                 _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage;
                 _currentRangeTrainStatus.AttackCount += rangeStatus.AttackCount;
                 _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval;
@@ -188,8 +189,8 @@ namespace TrainDefense.Game
 
                 if (_rangeProjectilePrefab != null)
                 {
-                    _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
-                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                    _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1);
+                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
         }
@@ -197,6 +198,7 @@ namespace TrainDefense.Game
         public override void StatusUpgrade(RangeTrainStatus upgradeData)
         {
             _currentRangeTrainStatus.AttackRange += upgradeData.AttackRange;
+            _currentRangeTrainStatus.AttackArea += upgradeData.AttackArea;
             _currentRangeTrainStatus.AttackDamage += upgradeData.AttackDamage;
             _currentRangeTrainStatus.AttackCount += upgradeData.AttackCount;
             _currentRangeTrainStatus.AttackInterval += upgradeData.AttackInterval;
@@ -205,8 +207,8 @@ namespace TrainDefense.Game
 
             if (_rangeProjectilePrefab != null)
             {
-                _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1);
-                _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1);
+                _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
             }
         }
 
@@ -221,16 +223,20 @@ namespace TrainDefense.Game
             {
                 case StatType.AttackRange:
                     _currentRangeTrainStatus.AttackRange += baseStatus.AttackRange * percent;
+                    break;
+
+                case StatType.AttackArea:
+                    _currentRangeTrainStatus.AttackArea += baseStatus.AttackArea * percent;
 
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.transform.localScale =
-                            new Vector3(_currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.AttackRange, 1f);
+                            new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
                     }
                     break;
 
                 case StatType.AttackDamage:
-                    _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(baseStatus.AttackDamage * percent);
+                    _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value * rangeTrainData.AttackDamageMultiplier);
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);

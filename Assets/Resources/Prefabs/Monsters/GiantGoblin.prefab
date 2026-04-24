@@ -48,6 +48,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2086065296002715689, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2086065296002715689, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.8
+      objectReference: {fileID: 0}
     - target: {fileID: 2418233220438619890, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
       propertyPath: m_Name
       value: GiantGoblin
@@ -60,6 +68,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 6950911746183540349, guid: eb695fa12294d4db9a8b235b90742268, type: 3}
+    - target: {fileID: 7699133565621818308, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8967810716900712770, guid: 73d744cee73d2f54f9d8b51c2b5b1acf, type: 3}
       propertyPath: m_Size.x
       value: 0.82919765

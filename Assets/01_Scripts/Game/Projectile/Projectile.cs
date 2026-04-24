@@ -24,7 +24,7 @@ namespace TrainDefense.Game
         protected Dictionary<IProjectileTarget, float> _damageTimers = new();
         protected float _age;
         protected bool _isSpawnedTrigger;
-        protected float _attackRange;
+        protected float _scaleRadius;
         protected int _hitCount;
         protected readonly HashSet<IProjectileTarget> _hitSet = new();
 
@@ -47,7 +47,7 @@ namespace TrainDefense.Game
                 _destroyCoroutine = StartCoroutine(DestroyCoroutine());
             }
 
-            if (data.ScaleByRange && data.ScaleRangeType == ScaleByRangeType.TargetRange && _target != null)
+            if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.TargetRange && _target != null)
             {
                 ApplyScaleByTargetRange(_target.TargetTransform.position);
             }
@@ -66,38 +66,38 @@ namespace TrainDefense.Game
         /// </summary>
         /// <param name="damage">데미지</param>
         /// <param name="target">타겟 (Monster 또는 null)</param>
-        /// <param name="attackRange">공격 범위 (스케일 조정에 사용)</param>
-        public virtual void Init(int damage, IProjectileTarget owner, IProjectileTarget target = null, float attackRange = 0f, float criticalChance = 0f, float criticalDamage = 0f)
+        /// <param name="scaleRadius">AoE/스케일 반경 (AttackArea 값)</param>
+        public virtual void Init(int damage, IProjectileTarget owner, IProjectileTarget target = null, float scaleRadius = 0f, float criticalChance = 0f, float criticalDamage = 0f)
         {
             _damage = damage;
             _owner = owner;
             _target = target;
-            _attackRange = attackRange;
+            _scaleRadius = scaleRadius;
             _criticalChance = criticalChance;
             _criticalDamage = criticalDamage;
 
             if (data != null)
             {
-                InitializeWithConfig(attackRange);
+                InitializeWithConfig(scaleRadius);
             }
         }
 
-        private void InitializeWithConfig(float attackRange = 0f)
+        private void InitializeWithConfig(float scaleRadius = 0f)
         {
             // 이동 전략 초기화
             _movementStrategy = CreateMovementStrategy(data.MovementType);
             _movementStrategy?.Initialize(this, data, _target);
 
-            // AttackRange에 따른 스케일 조정
-            if (data.ScaleByRange && data.ScaleRangeType == ScaleByRangeType.AttackRange && attackRange > 0f)
+            // AttackArea에 따른 스케일 조정
+            if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && scaleRadius > 0f)
             {
-                ApplyScaleByAttackRange(attackRange);
+                ApplyScaleByArea(scaleRadius);
             }
         }
 
-        private void ApplyScaleByAttackRange(float attackRange)
+        private void ApplyScaleByArea(float scaleRadius)
         {
-            StretchBeamModel(attackRange);
+            StretchBeamModel(scaleRadius);
         }
 
         private void ApplyScaleByTargetRange(Vector3 targetPos)
@@ -375,12 +375,12 @@ namespace TrainDefense.Game
         }
         #endregion
 
-        public bool IsScaleByAttackRange()
+        public bool IsScaleByArea()
         {
             if (data == null)
                 return false;
 
-            return data.ScaleByRange;
+            return data.ScaleByArea;
         }
 
         public ProjectileData GetData()
@@ -406,15 +406,14 @@ namespace TrainDefense.Game
 
             TriggerHandle triggerHandle = ResourceManager.Instance.Spawn(data.TriggerHandlePrefab, transform.position, Quaternion.identity);
 
-            // ProjectileData.scaleByRange + AttackRange 타입이 켜졌으면 trigger의 effective 반경이 포탑 AttackRange와
-            // 일치하도록 base CircleCollider2D radius를 기준으로 비율 보정해 transform을 스케일한다.
-            if (data.ScaleByRange && data.ScaleRangeType == ScaleByRangeType.AttackRange && _attackRange > 0f)
+            // ScaleByArea + Area 타입이면 TriggerHandle의 반경을 AttackArea 기준으로 보정
+            if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && _scaleRadius > 0f)
             {
                 var circle = triggerHandle.GetComponent<CircleCollider2D>();
                 float baseRadius = circle != null ? circle.radius : 1f;
                 if (baseRadius > 0f)
                 {
-                    float scale = _attackRange / baseRadius;
+                    float scale = _scaleRadius / baseRadius;
                     triggerHandle.transform.localScale = new Vector3(scale, scale, 1f);
                 }
             }

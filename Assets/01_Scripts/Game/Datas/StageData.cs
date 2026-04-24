@@ -10,7 +10,9 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private string id;
         [SerializeField]
-        private float[] stageInspectionTime;
+        private float baseInspectionTime;
+        [SerializeField]
+        private int stationCount;
         [SerializeField]
         private float stageEndTime;
         [SerializeField]
@@ -27,7 +29,8 @@ namespace TrainDefense.Game.Datas
         public string Id => id;
         #endregion
 
-        public float[] StageInspectionTime => stageInspectionTime;
+        public float BaseInspectionTime => baseInspectionTime;
+        public int StationCount => stationCount;
         public float StageEndTime => stageEndTime;
         public float SpawnInterval => spawnInterval;
         public StageSpawnData[] SpawnDatas => spawnDatas;

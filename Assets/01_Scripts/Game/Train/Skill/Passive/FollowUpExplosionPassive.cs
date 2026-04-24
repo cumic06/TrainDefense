@@ -6,7 +6,7 @@ namespace TrainDefense.Game
     /// <summary>
     /// 공격 직후 delay초 후 owner 위치에 투사체 발사. (엘리트 폭발: 0.2s 후 ExpandingWave)
     /// DSL: "FollowUpExplosion:delay:projectile_prefab_id[:radius]"
-    /// radius 생략 시 owner의 AttackRange 사용 (음수로 전달).
+    /// radius 생략 시 owner의 AttackArea 사용 (음수로 전달).
     /// </summary>
     public class FollowUpExplosionPassive : TrainPassiveSkill
     {
