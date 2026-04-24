@@ -348,6 +348,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 10
       AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 0.3
       TargetCount: 1
@@ -372,6 +373,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 4
       AttackRange: 8
+      AttackArea: 8
       AttackCount: 1
       AttackInterval: 0.15
       TargetCount: 1
@@ -396,6 +398,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 25
       AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 1.25
       TargetCount: 1
@@ -420,6 +423,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 30
+      AttackArea: 30
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -444,6 +448,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 10
       AttackRange: 20
+      AttackArea: 20
       AttackCount: 3
       AttackInterval: 1
       TargetCount: 3
@@ -468,6 +473,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 3
+      AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 1
@@ -492,6 +498,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 30
+      AttackArea: 30
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
@@ -515,6 +522,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
@@ -538,6 +546,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 25
       AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 0
@@ -561,6 +570,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 100
       AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 0.5
       TargetCount: 0
@@ -584,6 +594,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 300
       AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
@@ -607,6 +618,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 400
       AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 5
       TargetCount: 0
@@ -630,6 +642,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 400
       AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 0
@@ -653,6 +666,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 600
       AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 1.5
       TargetCount: 0
@@ -678,6 +692,7 @@ MonoBehaviour:
     rangeTrainStatus:
       AttackDamage: 50
       AttackRange: 5
+      AttackArea: 5
       AttackCount: 1
       AttackInterval: 4
       CriticalChance: 30
@@ -701,6 +716,7 @@ MonoBehaviour:
     rangeTrainStatus:
       AttackDamage: 1
       AttackRange: 5
+      AttackArea: 5
       AttackCount: 1
       AttackInterval: 0.1
       CriticalChance: 30
@@ -723,6 +739,7 @@ MonoBehaviour:
     rangeTrainStatus:
       AttackDamage: 500
       AttackRange: 8
+      AttackArea: 8
       AttackCount: 1
       AttackInterval: 4
       CriticalChance: 30
@@ -745,6 +762,7 @@ MonoBehaviour:
     rangeTrainStatus:
       AttackDamage: 15
       AttackRange: 13
+      AttackArea: 13
       AttackCount: 1
       AttackInterval: 0.1
       CriticalChance: 30
@@ -971,6 +989,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 5
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
@@ -981,6 +1000,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 10
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
@@ -991,6 +1011,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 25
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
@@ -1007,6 +1028,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 2
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1017,6 +1039,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 3
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1027,6 +1050,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 6
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1044,6 +1068,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 15
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0.15
         TargetCount: 0
@@ -1054,6 +1079,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 20
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0.15
         TargetCount: 0
@@ -1064,6 +1090,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 40
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0.2
         TargetCount: 0
@@ -1080,6 +1107,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 50
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1090,6 +1118,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 50
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1100,6 +1129,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 100
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1117,6 +1147,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 3
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 2
@@ -1127,6 +1158,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 5
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 2
@@ -1137,6 +1169,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 7
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 3
@@ -1154,6 +1187,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 20
         AttackRange: 1
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1164,6 +1198,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 30
         AttackRange: 2
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1174,6 +1209,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 50
         AttackRange: 4
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1191,6 +1227,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 50
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
@@ -1201,6 +1238,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 75
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0.05
         TargetCount: 0
@@ -1211,6 +1249,7 @@ MonoBehaviour:
       turretStatusUpgrade:
         AttackDamage: 125
         AttackRange: 0
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0.15
         TargetCount: 0
@@ -1229,6 +1268,7 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackDamage: 10
         AttackRange: 1
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1238,6 +1278,7 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackDamage: 15
         AttackRange: 2
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1247,6 +1288,7 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackDamage: 25
         AttackRange: 4
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1263,6 +1305,7 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackDamage: 1
         AttackRange: 2
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1272,6 +1315,7 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackDamage: 2
         AttackRange: 3
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1281,6 +1325,7 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackDamage: 3
         AttackRange: 4
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
