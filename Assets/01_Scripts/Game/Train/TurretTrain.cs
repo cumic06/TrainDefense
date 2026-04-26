@@ -720,6 +720,9 @@ namespace TrainDefense.Game
             }
         }
 
+        public override string GetStatSummary() =>
+            $"DMG={_currentTurretTrainStatus.AttackDamage} | RANGE={_currentTurretTrainStatus.AttackRange} | AREA={_currentTurretTrainStatus.AttackArea} | CNT={_currentTurretTrainStatus.AttackCount} | TGT={_currentTurretTrainStatus.TargetCount} | MaxHp={_currentMaxHp}";
+
         protected override void ApplyStat(IStat stat)
         {
             base.ApplyStat(stat);

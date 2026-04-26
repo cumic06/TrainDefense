@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using Cumic;
 using Cumic.Events;
+using Sirenix.OdinInspector;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Tutorial;
@@ -11,6 +14,30 @@ namespace TrainDefense.Game
     {
         private bool _skillTutorialStarted = false;
         private bool _trainInfoSlotTutorialStarted = false;
+
+        [ShowInInspector, ReadOnly, FoldoutGroup("디버그 - 상점 업그레이드")]
+        private Dictionary<string, int> ShopUpgrades
+        {
+            get
+            {
+                if (UserDataManager.Instance == null) return null;
+                return UserDataManager.Instance.GetAllUpgradeIds()
+                    .ToDictionary(id => id, id => UserDataManager.Instance.GetUpgradeLevel(id));
+            }
+        }
+
+        [ShowInInspector, ReadOnly, FoldoutGroup("디버그 - 기차 스탯")]
+        private List<string> TrainStats
+        {
+            get
+            {
+                if (TrainManager.Instance == null) return null;
+                return TrainManager.Instance.GetTrains()
+                    .Where(t => t != null)
+                    .Select(t => $"[{t.name}] Lv{t.CurrentLevel} | {t.GetStatSummary()}")
+                    .ToList();
+            }
+        }
 
         private void Start()
         {
