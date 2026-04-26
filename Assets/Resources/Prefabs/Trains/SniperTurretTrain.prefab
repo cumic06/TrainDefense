@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4742846827080450473}
   - component: {fileID: 6561611825348552956}
   m_Layer: 8
-  m_Name: TurretBody
+  m_Name: TurretModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,8 +29,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3529707877163048822}
+  m_Children: []
   m_Father: {fileID: 7171937046627540702}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!212 &6561611825348552956
@@ -103,7 +102,7 @@ GameObject:
   - component: {fileID: 3529707877163048822}
   - component: {fileID: 8336688787089942386}
   m_Layer: 8
-  m_Name: TurretHead (1)
+  m_Name: ProjectileSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -117,12 +116,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6028759719694746238}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 1.0500001, y: 0, z: 0}
+  m_LocalScale: {x: 0.14, y: 0.14, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4742846827080450473}
+  m_Father: {fileID: 7171937046627540702}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8336688787089942386
 SpriteRenderer:
@@ -213,6 +212,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4742846827080450473}
+  - {fileID: 3529707877163048822}
   m_Father: {fileID: 3802654949415311762}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &4522908200880538997
@@ -323,12 +323,14 @@ MonoBehaviour:
   id: 30007
   explosionRadius: 5
   explosionForce: 10
+  isRotateTurret: 1
   IsUnDead: 0
   turretProjectileSpawnPoints:
   - {fileID: 3529707877163048822}
   useParticleProjectile: 0
   isTargeting: 0
-  turretModel: {fileID: 7436325860553494596}
+  turret: {fileID: 7436325860553494596}
+  turretModel: {fileID: 2720132824318672025}
 --- !u!4 &3802654949415311762 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 720900901604711655, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
