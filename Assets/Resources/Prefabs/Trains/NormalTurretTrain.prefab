@@ -30,6 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7372760562790509435}
+  - {fileID: 2020121147355014587}
   m_Father: {fileID: 3802654949415311762}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3414748216662234724
@@ -43,7 +44,7 @@ GameObject:
   - component: {fileID: 2020121147355014587}
   - component: {fileID: 5544764496340837410}
   m_Layer: 0
-  m_Name: TurretHead
+  m_Name: ProjectileSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,12 +58,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3414748216662234724}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.3, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 1.0400001, y: -0, z: 0}
+  m_LocalScale: {x: 0.40000004, y: 0.40000004, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7372760562790509435}
+  m_Father: {fileID: 1320086736712645910}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5544764496340837410
 SpriteRenderer:
@@ -152,8 +153,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2020121147355014587}
+  m_Children: []
   m_Father: {fileID: 1320086736712645910}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!212 &3553420226458691729
@@ -347,13 +347,14 @@ MonoBehaviour:
   id: 30001
   explosionRadius: 5
   explosionForce: 10
-  isRotateModel: 1
+  isRotateTurret: 1
   IsUnDead: 0
   turretProjectileSpawnPoints:
   - {fileID: 2020121147355014587}
   useParticleProjectile: 0
   isTargeting: 0
-  turretModel: {fileID: 2696154796265608953}
+  turret: {fileID: 2696154796265608953}
+  turretModel: {fileID: 4806629692508095199}
 --- !u!4 &3802654949415311762 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 720900901604711655, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}

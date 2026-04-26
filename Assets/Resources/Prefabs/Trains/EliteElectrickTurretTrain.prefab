@@ -335,11 +335,13 @@ MonoBehaviour:
   id: 31002
   explosionRadius: 5
   explosionForce: 10
+  isRotateTurret: 0
   IsUnDead: 0
   turretProjectileSpawnPoints:
   - {fileID: 0}
   useParticleProjectile: 0
   isTargeting: 0
+  turret: {fileID: 0}
   turretModel: {fileID: 0}
 --- !u!4 &3802654949415311762 stripped
 Transform:

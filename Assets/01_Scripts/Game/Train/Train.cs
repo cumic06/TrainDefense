@@ -21,7 +21,7 @@ namespace TrainDefense.Game
         [SerializeField]
         protected float explosionForce = 10f;
         [SerializeField]
-        protected bool isRotateModel = true;
+        protected bool isRotateTurret = true;
         #endregion
 
         [ShowInInspector, ReadOnly]

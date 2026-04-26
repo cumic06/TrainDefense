@@ -25,6 +25,9 @@ namespace TrainDefense.Game
         private bool isTargeting = false;
 
         [SerializeField]
+        private GameObject turret;
+
+        [SerializeField]
         private GameObject turretModel;
         #endregion
 
@@ -35,6 +38,7 @@ namespace TrainDefense.Game
         private readonly List<Projectile> _nonMovementProjectiles = new();
         private bool _useNonMovementProjectilePooling;
         protected int _attackCounter;
+        private Vector3 _turretmodelScale;
 
         public delegate Projectile ProjectileOverrideProvider(int attackIndex);
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
@@ -55,6 +59,9 @@ namespace TrainDefense.Game
 
             _skillModule.RegisterPassiveFromData(turretTrainData?.PassiveSkillData);
             InitializeProjectilePoolingMode();
+
+            if (turretModel != null)
+                _turretmodelScale = turretModel.transform.localScale;
         }
 
         public void RegisterProjectileOverride(ProjectileOverrideProvider provider)
@@ -176,14 +183,15 @@ namespace TrainDefense.Game
 
             if (turretModel != null)
             {
-                if (isRotateModel)
+                if (isRotateTurret)
                 {
-                    turretModel.transform.LookAt2D(nearTarget.transform);
+                    turret.transform.LookAt2D(nearTarget.transform);
                 }
 
-                turretModel.transform.DOScale(Vector3.one * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
+
+                turretModel.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
                 {
-                    turretModel.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.InBack);
+                    turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack);
                 });
             }
 
