@@ -6,18 +6,20 @@ namespace TrainDefense.Game.Stats
     public enum StatType
     {
         // 공통
-        MaxHp,
+        MaxHp = 0,
 
         // TurretTrain / RangeTrain 공통
-        AttackRange,
-        AttackArea,
-        AttackDamage,
-        AttackCount,
-        AttackInterval,
-        TargetCount,
+        AttackRange = 1,
+        AttackDamage = 2,
+        AttackCount = 3,
+        AttackInterval = 4,
+        TargetCount = 5,
 
         // 치명타
-        CriticalChance,
-        CriticalDamage,
+        CriticalChance = 6,
+        CriticalDamage = 7,
+
+        // 공격 범위 (855f466에서 중간 삽입되어 기존 값 밀림 방지 — 맨 뒤 고정)
+        AttackArea = 8,
     }
 }
