@@ -82,7 +82,7 @@ namespace TrainDefense.Game
          if (!mainTrain.CurrentAliveTrains.Contains(train))
             return false;
 
-         if (!train.HasSkill || !train.CanUseSkill)
+         if (!train.HasActiveSkill || !train.CanUseSkill)
             return false;
 
          return train.TryUseSkill();

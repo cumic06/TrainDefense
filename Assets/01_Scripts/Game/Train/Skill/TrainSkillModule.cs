@@ -22,7 +22,7 @@ namespace TrainDefense.Game
 
         public TrainSkillAction ActiveSkill => _activeSkill;
 
-        public bool HasSkill => _trainData != null && _trainData.TrainSkillData != null && _trainData.TrainSkillData.HasSkill;
+        public bool HasActiveSkill => _trainData != null && _trainData.TrainSkillData != null && _trainData.TrainSkillData.HasActiveSkill;
 
         public Sprite SkillIcon
         {

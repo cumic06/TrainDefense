@@ -15,7 +15,7 @@ namespace TrainDefense.Game
             {
                 return Owner != null
                     && trainSkillData != null
-                    && trainSkillData.HasSkill
+                    && trainSkillData.HasActiveSkill
                     && !Owner.IsDead
                     && !Owner.IsMainTrain
                     && GetRemainingCooldown() <= 0f;

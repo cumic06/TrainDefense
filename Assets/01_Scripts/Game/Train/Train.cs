@@ -41,7 +41,7 @@ namespace TrainDefense.Game
 
         public bool IsDead => _isDead;
         public int CurrentLevel => _currentLevel;
-        public bool HasSkill => _skillModule.HasSkill;
+        public bool HasActiveSkill => _skillModule.HasActiveSkill;
         public Sprite SkillIcon => _skillModule.SkillIcon;
         public float SkillCooldown => _skillModule.SkillCooldown;
         public bool CanUseSkill => _skillModule.CanUse;

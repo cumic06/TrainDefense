@@ -49,7 +49,7 @@ namespace TrainDefense.Game.Datas
         public string Id => id;
         public string Name => name;
         public string Description => description;
-        public bool HasSkill => skillType != TrainSkillType.None;
+        public bool HasActiveSkill => skillType != TrainSkillType.None;
         public TrainSkillType SkillType => skillType;
         public float SkillCooldown => skillCooldown;
         public string SkillIconId => skillIconId;

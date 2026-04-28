@@ -104,7 +104,7 @@ namespace TrainDefense.Game
             CheckAndStartTrainInfoSlotTutorial();
 
             // 추가된 기차가 스킬을 가지면 튜토리얼 시작
-            if (addTrainEvent.Train.HasSkill)
+            if (addTrainEvent.Train.HasActiveSkill)
             {
                 CheckAndStartSkillTutorial(addTrainEvent.Train);
             }
@@ -118,10 +118,10 @@ namespace TrainDefense.Game
                 return;
             }
 
-            Debug.Log($"TrainUpgradeManager: ReplaceTrain - {replaceTrainEvent.NewTrain.name}, HasSkill: {replaceTrainEvent.NewTrain.HasSkill}");
+            Debug.Log($"TrainUpgradeManager: ReplaceTrain - {replaceTrainEvent.NewTrain.name}, HasActiveSkill: {replaceTrainEvent.NewTrain.HasActiveSkill}");
 
             // 대체된 새 기차가 스킬을 가지면 튜토리얼 시작
-            if (replaceTrainEvent.NewTrain.HasSkill)
+            if (replaceTrainEvent.NewTrain.HasActiveSkill)
             {
                 CheckAndStartSkillTutorial(replaceTrainEvent.NewTrain);
             }
@@ -136,7 +136,7 @@ namespace TrainDefense.Game
             }
 
             // 업그레이드된 기차가 스킬을 가지면 튜토리얼 시작
-            if (upgradeTrainEvent.Train.HasSkill)
+            if (upgradeTrainEvent.Train.HasActiveSkill)
             {
                 CheckAndStartSkillTutorial(upgradeTrainEvent.Train);
             }
@@ -221,7 +221,7 @@ namespace TrainDefense.Game
             }
 
             // 1. 전달된 기차가 스킬을 가지면 튜토리얼 시작
-            if (trainToCheck != null && trainToCheck.HasSkill)
+            if (trainToCheck != null && trainToCheck.HasActiveSkill)
             {
                 StartSkillTutorial();
                 return;
@@ -244,7 +244,7 @@ namespace TrainDefense.Game
             // 스킬을 가진 기차가 있는지 확인
             foreach (var train in trains)
             {
-                if (train != null && train.HasSkill)
+                if (train != null && train.HasActiveSkill)
                 {
                     StartSkillTutorial();
                     return;

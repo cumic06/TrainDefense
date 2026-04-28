@@ -6,7 +6,7 @@ namespace TrainDefense.Game
     {
         public static TrainSkillAction Create(Train owner, TrainSkillData trainSkillData)
         {
-            if (owner == null || trainSkillData == null || !trainSkillData.HasSkill)
+            if (owner == null || trainSkillData == null || !trainSkillData.HasActiveSkill)
                 return null;
 
             TrainSkillAction action = trainSkillData.SkillType switch

@@ -23,6 +23,7 @@ namespace TrainDefense.Game
         protected override void Setup()
         {
             base.Setup();
+            if (rangeTrainData == null) return;
 
             // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
