@@ -31,6 +31,7 @@ namespace TrainDefense.Game
         protected int _currentLevel;
         protected int _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
+        protected AddTrainChoiceSkillType _skillTypeMask = AddTrainChoiceSkillType.None;
 
         [HideInInspector]
         public bool IsUnDead;
@@ -54,9 +55,10 @@ namespace TrainDefense.Game
             Setup();
         }
 
-        public virtual void Initialize(TrainData trainData)
+        public virtual void Initialize(TrainData trainData, AddTrainChoiceSkillType skillType = AddTrainChoiceSkillType.None)
         {
             _trainData = trainData;
+            _skillTypeMask = skillType;
             Setup();
         }
 
@@ -72,7 +74,7 @@ namespace TrainDefense.Game
             _currentMaxHp = _trainData.TrainStatusData.MaxHp;
             _currentHp = _currentMaxHp;
             _currentLevel = -1;
-            _skillModule.Initialize(this, _trainData, ApplyStat);
+            _skillModule.Initialize(this, _trainData, ApplyStat, _skillTypeMask);
         }
 
         public Transform TargetTransform => transform;

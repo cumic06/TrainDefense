@@ -81,12 +81,11 @@ namespace TrainDefense.Game.Datas
             // 대체 모드인 경우: 기존 Train을 새 Train으로 대체
             if (IsReplaceMode)
             {
-                main.ReplaceTrain(replaceTrainId, trainData);
+                main.ReplaceTrain(replaceTrainId, trainData, skillType);
             }
             else
             {
-                // 일반 추가 모드
-                main.SpawnTrain(trainData);
+                main.SpawnTrain(trainData, skillType);
             }
         }
     }

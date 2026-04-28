@@ -172,6 +172,13 @@ namespace TrainDefense.Game
                 if (excludeResult != null && excludeResult.Any(r => r?.Option?.Id == x.Option.Id))
                     return false;
 
+                // 같은 trainDataId를 가진 AddTrainChoice가 이미 결과에 있으면 제외
+                if (x.Option is AddTrainChoice addChoice && excludeResult != null)
+                {
+                    if (excludeResult.Any(r => r?.Option is AddTrainChoice existing && existing.TrainDataId == addChoice.TrainDataId))
+                        return false;
+                }
+
                 // UpgradeTrainChoice는 레벨업 후 다시 선택 가능하므로 제외하지 않음
                 if (x.Option is UpgradeTrainChoice)
                     return true;

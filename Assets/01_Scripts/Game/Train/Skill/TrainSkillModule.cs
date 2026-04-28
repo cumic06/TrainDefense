@@ -40,7 +40,7 @@ namespace TrainDefense.Game
         /// <summary>
         /// 모듈 초기화. owner의 ApplyStat 콜백을 받아 시한 버프 만료 시 대칭 복원에 사용.
         /// </summary>
-        public void Initialize(Train owner, TrainData trainData, Action<IStat> applyStatCallback)
+        public void Initialize(Train owner, TrainData trainData, Action<IStat> applyStatCallback, AddTrainChoiceSkillType skillTypeMask = AddTrainChoiceSkillType.None)
         {
             // 재초기화 시 기존 구독 해제
             for (int i = 0; i < _passives.Count; i++) _passives[i].Unsubscribe();
@@ -52,7 +52,8 @@ namespace TrainDefense.Game
             _applyStat = applyStatCallback;
             _timedModifiers.Clear();
 
-            _activeSkill = trainData != null
+            bool createActive = skillTypeMask != AddTrainChoiceSkillType.Passive;
+            _activeSkill = (trainData != null && createActive)
                 ? TrainSkillActionFactory.Create(owner, trainData.TrainSkillData)
                 : null;
         }
