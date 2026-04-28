@@ -4,6 +4,8 @@ using UnityEngine;
 
 namespace TrainDefense.Game.Datas
 {
+    public enum AddTrainChoiceSkillType { None, Passive, Active }
+
     [Serializable]
     public class AddTrainChoice : IChoiceOption
     {
@@ -18,11 +20,16 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         [Tooltip("대체할 기존 Train 데이터 ID (0이면 대체 없이 추가)")]
         private string replaceTrainId;
+
+        [SerializeField]
+        [Tooltip("표시할 스킬 타입 (None=기본, Passive=패시브만, Active=액티브만)")]
+        private AddTrainChoiceSkillType skillType;
         #endregion
 
         public string Id => id;
         public string TrainDataId => trainDataId;
         public string ReplaceTrainId => replaceTrainId;
+        public AddTrainChoiceSkillType SkillType => skillType;
 
         /// <summary>
         /// 대체 로직이 필요한지 확인

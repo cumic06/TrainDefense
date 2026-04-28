@@ -335,12 +335,14 @@ MonoBehaviour:
   id: 31001
   explosionRadius: 5
   explosionForce: 10
+  isRotateTurret: 1
   IsUnDead: 0
   turretProjectileSpawnPoints:
-  - {fileID: 0}
+  - {fileID: 2991044897033039510}
   useParticleProjectile: 0
   isTargeting: 0
-  turretModel: {fileID: 0}
+  turret: {fileID: 4525560065753348798}
+  turretModel: {fileID: 7228819700525876489}
 --- !u!4 &3802654949415311762 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 720900901604711655, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}

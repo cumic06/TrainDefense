@@ -22,7 +22,7 @@ namespace TrainDefense.Game.UI
       [SerializeField]
       private Image upgradeImage;
       [SerializeField]
-      private TextMeshProUGUI passiveNameText;
+      private TextMeshProUGUI skillNameText;
       #endregion
 
       private Button _selectButton;
@@ -65,8 +65,8 @@ namespace TrainDefense.Game.UI
 
          if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
          {
-            if (passiveNameText != null)
-               passiveNameText.gameObject.SetActive(false);
+            if (skillNameText != null)
+               skillNameText.gameObject.SetActive(false);
 
             var triChoiceManager = TriChoiceManager.Instance;
             if (triChoiceManager != null)
@@ -102,15 +102,20 @@ namespace TrainDefense.Game.UI
             descriptionText.text = choiceUIInfo.Description;
             upgradeImage.gameObject.SetActive(false);
 
-            if (passiveNameText != null)
+            if (skillNameText != null)
             {
-               bool hasPassiveName = !string.IsNullOrEmpty(choiceUIInfo.PassiveName);
+               var parts = new System.Collections.Generic.List<string>();
+               if (!string.IsNullOrEmpty(choiceUIInfo.PassiveName))
+                  parts.Add($"-{choiceUIInfo.PassiveName}-");
+               if (!string.IsNullOrEmpty(choiceUIInfo.ActiveSkillName))
+                  parts.Add($"-{choiceUIInfo.ActiveSkillName}-");
 
-               passiveNameText.gameObject.SetActive(hasPassiveName);
-
-               if (hasPassiveName)
-                  passiveNameText.text = $"-{choiceUIInfo.PassiveName}-";
+               bool hasContent = parts.Count > 0;
+               skillNameText.gameObject.SetActive(hasContent);
+               if (hasContent)
+                  skillNameText.text = string.Join("\n", parts);
             }
+
             if (!string.IsNullOrEmpty(choiceUIInfo.PassiveDescription))
                descriptionText.text = $"\n{choiceUIInfo.PassiveDescription}";
          }

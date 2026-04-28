@@ -9,7 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string ExcelFileName => "ChoiceData.xlsx";
 		public string SheetName => "add_train_choice_data";
 		public string ButtonLabel => "AddTrainChoice 데이터 가져오기";
-		public string[] Headers => new[] { "id", "train_data_id", "weight", "tier", "replace_train_id" };
+		public string[] Headers => new[] { "id", "train_data_id", "weight", "tier", "replace_train_id", "skill_type" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -97,6 +97,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 			SetPrivateField(t, target, "id", r.id);
 			SetPrivateField(t, target, "trainDataId", r.trainDataId);
 			SetPrivateField(t, target, "replaceTrainId", r.replaceTrainId);
+			SetPrivateField(t, target, "skillType", (TrainDefense.Game.Datas.AddTrainChoiceSkillType)r.skillType);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

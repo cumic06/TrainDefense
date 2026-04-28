@@ -155,12 +155,36 @@ namespace TrainDefense.Game.UI
                             else if (trainData is TurretTrainData turretData)
                                 passiveData = turretData.PassiveSkillData;
 
-                            if (passiveData != null)
+                            switch (addTrainChoice.SkillType)
                             {
-                                if (!string.IsNullOrEmpty(passiveData.Name))
-                                    choiceUIInfo.PassiveName = passiveData.Name;
-                                if (!string.IsNullOrEmpty(passiveData.Description))
-                                    choiceUIInfo.PassiveDescription = passiveData.Description;
+                                case AddTrainChoiceSkillType.Passive:
+                                    if (passiveData != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(passiveData.Name))
+                                            choiceUIInfo.PassiveName = passiveData.Name;
+                                        if (!string.IsNullOrEmpty(passiveData.Description))
+                                            choiceUIInfo.PassiveDescription = passiveData.Description;
+                                    }
+                                    break;
+                                case AddTrainChoiceSkillType.Active:
+                                    var skillData = trainData.TrainSkillData;
+                                    if (skillData != null && skillData.HasActiveSkill)
+                                    {
+                                        if (!string.IsNullOrEmpty(skillData.Name))
+                                            choiceUIInfo.ActiveSkillName = skillData.Name;
+                                        if (!string.IsNullOrEmpty(skillData.Description))
+                                            choiceUIInfo.PassiveDescription = skillData.Description;
+                                    }
+                                    break;
+                                default:
+                                    if (passiveData != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(passiveData.Name))
+                                            choiceUIInfo.PassiveName = passiveData.Name;
+                                        if (!string.IsNullOrEmpty(passiveData.Description))
+                                            choiceUIInfo.PassiveDescription = passiveData.Description;
+                                    }
+                                    break;
                             }
                         }
                     }

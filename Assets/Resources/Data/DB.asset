@@ -910,7 +910,7 @@ MonoBehaviour:
     name: "\uD3ED\uBC1C\uD0C4"
     passiveType: OverrideEveryN
     param1: 5
-    param2: ExplosionProjectile
+    param2: MissileProjectile
     param3: 
     description: "5\uD68C \uACF5\uACA9\uB9C8\uB2E4 \uD3ED\uBC1C \uD22C\uC0AC\uCCB4
       \uBC1C\uC0AC"
@@ -1591,6 +1591,50 @@ MonoBehaviour:
         rid: 3319472319078334568
       Weight: 0
       Tier: 1
+    - Option:
+        rid: 3319472431904325753
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325754
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325755
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325756
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325757
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325758
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325759
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325760
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325761
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325762
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 3319472431904325763
+      Weight: 1
+      Tier: 1
     upgradeTrainChoices:
     - Option:
         rid: 2066870334413602904
@@ -1651,18 +1695,21 @@ MonoBehaviour:
         id: 60007
         trainDataId: 30007
         replaceTrainId: 
+        skillType: 0
     - rid: 439507899332690073
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60008
         trainDataId: 40001
         replaceTrainId: 
+        skillType: 0
     - rid: 439508061413965932
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60009
         trainDataId: 40002
         replaceTrainId: 
+        skillType: 0
     - rid: 439508238012514411
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -1701,6 +1748,7 @@ MonoBehaviour:
         id: 60001
         trainDataId: 30001
         replaceTrainId: 
+        skillType: 0
     - rid: 2066870334413602904
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -1715,24 +1763,28 @@ MonoBehaviour:
         id: 60002
         trainDataId: 30002
         replaceTrainId: 
+        skillType: 0
     - rid: 2066870334413602906
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60003
         trainDataId: 30003
         replaceTrainId: 
+        skillType: 0
     - rid: 2066870334413602907
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60004
         trainDataId: 30004
         replaceTrainId: 
+        skillType: 0
     - rid: 2066870334413602908
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60005
         trainDataId: 30005
         replaceTrainId: 
+        skillType: 0
     - rid: 2066870334413602909
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -1771,57 +1823,144 @@ MonoBehaviour:
         id: 60006
         trainDataId: 30006
         replaceTrainId: 
+        skillType: 0
     - rid: 3319472319078334560
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61001
         trainDataId: 31001
         replaceTrainId: 30001
+        skillType: 0
     - rid: 3319472319078334561
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61002
         trainDataId: 31002
         replaceTrainId: 30002
+        skillType: 0
     - rid: 3319472319078334562
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61003
         trainDataId: 31003
         replaceTrainId: 30003
+        skillType: 0
     - rid: 3319472319078334563
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61004
         trainDataId: 31004
         replaceTrainId: 30004
+        skillType: 0
     - rid: 3319472319078334564
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61005
         trainDataId: 31005
         replaceTrainId: 30005
+        skillType: 0
     - rid: 3319472319078334565
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61006
         trainDataId: 31006
         replaceTrainId: 30006
+        skillType: 0
     - rid: 3319472319078334566
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61007
         trainDataId: 31007
         replaceTrainId: 30007
+        skillType: 0
     - rid: 3319472319078334567
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61008
         trainDataId: 41001
         replaceTrainId: 40001
+        skillType: 0
     - rid: 3319472319078334568
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61009
         trainDataId: 41002
         replaceTrainId: 40002
+        skillType: 0
+    - rid: 3319472431904325753
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71001
+        trainDataId: 32001
+        replaceTrainId: 30001
+        skillType: 0
+    - rid: 3319472431904325754
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71002
+        trainDataId: 32002
+        replaceTrainId: 30002
+        skillType: 0
+    - rid: 3319472431904325755
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71003
+        trainDataId: 32003
+        replaceTrainId: 30003
+        skillType: 0
+    - rid: 3319472431904325756
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71004
+        trainDataId: 32004
+        replaceTrainId: 30004
+        skillType: 0
+    - rid: 3319472431904325757
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71005
+        trainDataId: 32005
+        replaceTrainId: 30005
+        skillType: 0
+    - rid: 3319472431904325758
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71006
+        trainDataId: 32006
+        replaceTrainId: 30006
+        skillType: 0
+    - rid: 3319472431904325759
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71007
+        trainDataId: 32007
+        replaceTrainId: 30007
+        skillType: 0
+    - rid: 3319472431904325760
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71008
+        trainDataId: 42001
+        replaceTrainId: 40001
+        skillType: 0
+    - rid: 3319472431904325761
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71009
+        trainDataId: 42002
+        replaceTrainId: 40002
+        skillType: 0
+    - rid: 3319472431904325762
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61001
+        trainDataId: 31001
+        replaceTrainId: 30001
+        skillType: 1
+    - rid: 3319472431904325763
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61001a
+        trainDataId: 31001
+        replaceTrainId: 30001
+        skillType: 2
