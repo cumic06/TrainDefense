@@ -26,7 +26,14 @@ namespace TrainDefense.Game.UI
 
         private StageData _stageData1;
         private StageData _stageData2;
+        private StageData _selectedStageData;
+        private Animator animator;
         private bool _isSelecting = false;
+
+        private void Awake()
+        {
+            animator = GetComponent<Animator>();           
+        }
 
         private void Start()
         {
@@ -34,12 +41,12 @@ namespace TrainDefense.Game.UI
 
             if (stage1Button != null)
             {
-                stage1Button.onClick.AddListener(() => OnStageSelected(_stageData1));
+                stage1Button.onClick.AddListener(() => StageSelected(_stageData1));
             }
 
             if (stage2Button != null)
             {
-                stage2Button.onClick.AddListener(() => OnStageSelected(_stageData2));
+                stage2Button.onClick.AddListener(() => StageSelected(_stageData2));
             }
 
             if (stageSelectPanel != null)
@@ -124,11 +131,26 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        private void OnStageSelected(StageData selectedStageData)
+        private void StageSelected(StageData selectedStageData)
         {
             if (!_isSelecting || selectedStageData == null) return;
 
             _isSelecting = false;
+
+            _selectedStageData = selectedStageData;
+            if(_selectedStageData == _stageData1)
+            {
+                animator.SetTrigger("FirstStage");
+            }
+            else
+            {
+                animator.SetTrigger("SecondStage");
+            }
+        }
+
+        // 애니메이션에서 실행
+        private void OnStageSelected()
+        {
 
             if (TutorialManager.Instance != null)
             {
@@ -142,7 +164,7 @@ namespace TrainDefense.Game.UI
             }
 
             // 선택 결과 전달 (UI -> StageManager)
-            GameEventSystem.Publish(new StageSelectEvent(selectedStageData));
+            GameEventSystem.Publish(new StageSelectEvent(_selectedStageData));
         }
     }
 }
