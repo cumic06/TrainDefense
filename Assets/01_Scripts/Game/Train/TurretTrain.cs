@@ -84,7 +84,18 @@ namespace TrainDefense.Game
             if (_isDead) return;
             DetectTarget();
             if (_targetMonsters.Count == 0) return;
+            PlayAttackAnimation();
             NormalAttack();
+        }
+
+        private void PlayAttackAnimation()
+        {
+            if (turretModel == null) return;
+            turretModel.transform.DOKill();
+            turretModel.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
+            {
+                turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack);
+            });
         }
 
         public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius)
@@ -192,11 +203,7 @@ namespace TrainDefense.Game
                     turret.transform.LookAt2D(nearTarget.transform);
                 }
 
-
-                turretModel.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
-                {
-                    turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack);
-                });
+                PlayAttackAnimation();
             }
 
             if (turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
