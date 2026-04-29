@@ -17,6 +17,7 @@ namespace TrainDefense.Game
         protected RangeTrainStatus _currentRangeTrainStatus;
         protected Projectile _rangeProjectilePrefab;
         private Coroutine _rangeAttackCoroutine;
+        private float _attackCountdown;
 
         public event Action OnAttacked;
 
@@ -27,6 +28,7 @@ namespace TrainDefense.Game
 
             // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
+            _attackCountdown = _currentRangeTrainStatus.AttackInterval;
 
             _skillModule.RegisterPassiveFromData(rangeTrainData?.PassiveSkillData);
 
@@ -80,7 +82,7 @@ namespace TrainDefense.Game
 
         private void RangeAttackHandler()
         {
-            if (_currentRangeTrainStatus.AttackInterval <= 0)
+            if (_attackCountdown <= 0)
             {
                 if (rangeTrainData.RangeProjectilePrefab != null)
                 {
@@ -98,7 +100,7 @@ namespace TrainDefense.Game
                         SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType);
                     }
 
-                    _currentRangeTrainStatus.AttackInterval = rangeTrainData.RangeTrainStatus.AttackInterval;
+                    _attackCountdown = _currentRangeTrainStatus.AttackInterval;
                     OnAttacked?.Invoke();
 
                     if (TrainData.DamageType == DamageType.Direct)
@@ -113,7 +115,7 @@ namespace TrainDefense.Game
             }
             else
             {
-                _currentRangeTrainStatus.AttackInterval -= Time.deltaTime;
+                _attackCountdown -= Time.deltaTime;
             }
         }
 

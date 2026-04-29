@@ -42,6 +42,7 @@ namespace TrainDefense.Game
 
         public delegate Projectile ProjectileOverrideProvider(int attackIndex);
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
+        private float _attackCountdown;
 
         public event Action<Monster> OnAttacked;
         public event Action OnTargetPosAttacked;
@@ -54,6 +55,7 @@ namespace TrainDefense.Game
             if (!_isStatusInitialized)
             {
                 _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
+                _attackCountdown = _currentTurretTrainStatus.AttackInterval;
                 _isStatusInitialized = true;
             }
 
@@ -130,15 +132,15 @@ namespace TrainDefense.Game
 
         private bool IsAttackDelayZero()
         {
-            if (_currentTurretTrainStatus.AttackInterval <= 0)
+            if (_attackCountdown <= 0)
             {
-                _currentTurretTrainStatus.AttackInterval = turretTrainData.TurretTrainStatus.AttackInterval;
+                _attackCountdown = _currentTurretTrainStatus.AttackInterval;
                 return true;
             }
             else
             {
                 // FixedUpdate에서 호출되므로 fixedDeltaTime 사용
-                _currentTurretTrainStatus.AttackInterval -= Time.fixedDeltaTime;
+                _attackCountdown -= Time.fixedDeltaTime;
                 return false;
             }
         }
@@ -161,7 +163,7 @@ namespace TrainDefense.Game
         private void ResetTarget()
         {
             _targetMonsters.Clear();
-            _currentTurretTrainStatus.AttackInterval = turretTrainData.TurretTrainStatus.AttackInterval;
+            _attackCountdown = _currentTurretTrainStatus.AttackInterval;
 
             if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
             {
