@@ -30,7 +30,7 @@ namespace TrainDefense.Game.Datas
         private string prefabId;
         private GameObject prefab;
         [SerializeField]
-        private string[] activeSkillDataIds;
+        private string activeSkillDataId;
         [NonSerialized]
         private TrainSkillData activeSkillDataCache;
         [NonSerialized]
@@ -102,15 +102,14 @@ namespace TrainDefense.Game.Datas
         public DamageType DamageType => damageType;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
-        public string[] ActiveSkillDataIds => activeSkillDataIds;
-        public string ActiveSkillDataId => activeSkillDataIds != null && activeSkillDataIds.Length > 0 ? activeSkillDataIds[0] : null;
+        public string ActiveSkillDataId => activeSkillDataId;
         public TrainSkillData TrainSkillData
         {
             get
             {
                 if (activeSkillDataResolved) return activeSkillDataCache;
                 activeSkillDataResolved = true;
-                var firstId = ActiveSkillDataId;
+                var firstId = activeSkillDataId;
                 if (string.IsNullOrEmpty(firstId))
                 {
                     activeSkillDataCache = null;
