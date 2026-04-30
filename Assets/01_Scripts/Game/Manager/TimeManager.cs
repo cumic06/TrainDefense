@@ -60,6 +60,11 @@ namespace TrainDefense.Game
                 _isFastForward = false;
                 Time.timeScale = 1f;
             }
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                GameEventSystem.Publish(new LevelUpEvent(1));
+            }
             #endif
         }
 
