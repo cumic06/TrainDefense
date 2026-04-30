@@ -124,6 +124,8 @@ namespace TrainDefense.Game.Datas
                     return null;
                 }
                 activeSkillDataCache = db.trainSkillDataList.Find(s => s != null && s.Id == firstId);
+                if (activeSkillDataCache == null)
+                    Debug.LogWarning($"TrainData [{id}]: ActiveSkillData '{firstId}' not found in DB");
                 return activeSkillDataCache;
             }
         }
@@ -150,6 +152,7 @@ namespace TrainDefense.Game.Datas
                     if (string.IsNullOrEmpty(skillId)) continue;
                     var data = db.trainPassiveSkillDataList.Find(s => s != null && s.Id == skillId);
                     if (data != null) result.Add(data);
+                    else Debug.LogWarning($"TrainData [{id}]: PassiveSkillData '{skillId}' not found in DB");
                 }
                 passiveSkillDatasCache = result.ToArray();
                 return passiveSkillDatasCache;

@@ -47,9 +47,21 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			{
 				if (string.IsNullOrWhiteSpace(e)) continue;
 				var parts = e.Split(':');
-				if (parts.Length < 2) continue;
-				if (!System.Enum.TryParse<StatType>(parts[0].Trim(), true, out var stat)) continue;
-				if (!float.TryParse(parts[1].Trim(), out var percent)) continue;
+				if (parts.Length < 2)
+				{
+					UnityEngine.Debug.LogWarning($"TrainSkillDataReflector.ParseBuffs: invalid entry '{e}' (expected 'StatType:percent')");
+					continue;
+				}
+				if (!System.Enum.TryParse<StatType>(parts[0].Trim(), true, out var stat))
+				{
+					UnityEngine.Debug.LogWarning($"TrainSkillDataReflector.ParseBuffs: unknown StatType '{parts[0].Trim()}' in '{e}'");
+					continue;
+				}
+				if (!float.TryParse(parts[1].Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var percent))
+				{
+					UnityEngine.Debug.LogWarning($"TrainSkillDataReflector.ParseBuffs: invalid percent '{parts[1].Trim()}' in '{e}'");
+					continue;
+				}
 				list.Add(new TrainSkillBuffEntry(stat, percent));
 			}
 			return list;
