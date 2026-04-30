@@ -30,11 +30,17 @@ namespace TrainDefense.Game.Datas
         private string prefabId;
         private GameObject prefab;
         [SerializeField]
-        private string[] trainSkillDataIds;
+        private string[] activeSkillDataIds;
         [NonSerialized]
-        private TrainSkillData trainSkillDataCache;
+        private TrainSkillData activeSkillDataCache;
         [NonSerialized]
-        private bool trainSkillDataResolved;
+        private bool activeSkillDataResolved;
+        [SerializeField]
+        private string[] passiveSkillDataIds;
+        [NonSerialized]
+        private TrainPassiveSkillData[] passiveSkillDatasCache;
+        [NonSerialized]
+        private bool passiveSkillDatasResolved;
         private Sprite skillIcon;
         [SerializeField]
         private bool isMainTrain;
@@ -96,31 +102,60 @@ namespace TrainDefense.Game.Datas
         public DamageType DamageType => damageType;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
-        public string[] TrainSkillDataIds => trainSkillDataIds;
-        public string TrainSkillDataId => trainSkillDataIds != null && trainSkillDataIds.Length > 0 ? trainSkillDataIds[0] : null;
+        public string[] ActiveSkillDataIds => activeSkillDataIds;
+        public string ActiveSkillDataId => activeSkillDataIds != null && activeSkillDataIds.Length > 0 ? activeSkillDataIds[0] : null;
         public TrainSkillData TrainSkillData
         {
             get
             {
-                if (trainSkillDataResolved) return trainSkillDataCache;
-                trainSkillDataResolved = true;
-                var firstId = TrainSkillDataId;
+                if (activeSkillDataResolved) return activeSkillDataCache;
+                activeSkillDataResolved = true;
+                var firstId = ActiveSkillDataId;
                 if (string.IsNullOrEmpty(firstId))
                 {
-                    trainSkillDataCache = null;
+                    activeSkillDataCache = null;
                     return null;
                 }
                 var dbm = TrainDefense.Game.DatabaseManager.Instance;
                 var db = dbm != null ? dbm.GetDB() : null;
                 if (db == null || db.trainSkillDataList == null)
                 {
-                    trainSkillDataCache = null;
+                    activeSkillDataCache = null;
                     return null;
                 }
-                trainSkillDataCache = db.trainSkillDataList.Find(s => s != null && s.Id == firstId);
-                return trainSkillDataCache;
+                activeSkillDataCache = db.trainSkillDataList.Find(s => s != null && s.Id == firstId);
+                return activeSkillDataCache;
             }
         }
+        public TrainPassiveSkillData[] PassiveSkillDatas
+        {
+            get
+            {
+                if (passiveSkillDatasResolved) return passiveSkillDatasCache;
+                passiveSkillDatasResolved = true;
+                if (passiveSkillDataIds == null || passiveSkillDataIds.Length == 0)
+                {
+                    passiveSkillDatasCache = System.Array.Empty<TrainPassiveSkillData>();
+                    return passiveSkillDatasCache;
+                }
+                var db = DatabaseManager.Instance?.GetDB();
+                if (db?.trainPassiveSkillDataList == null)
+                {
+                    passiveSkillDatasCache = System.Array.Empty<TrainPassiveSkillData>();
+                    return passiveSkillDatasCache;
+                }
+                var result = new System.Collections.Generic.List<TrainPassiveSkillData>();
+                foreach (var skillId in passiveSkillDataIds)
+                {
+                    if (string.IsNullOrEmpty(skillId)) continue;
+                    var data = db.trainPassiveSkillDataList.Find(s => s != null && s.Id == skillId);
+                    if (data != null) result.Add(data);
+                }
+                passiveSkillDatasCache = result.ToArray();
+                return passiveSkillDatasCache;
+            }
+        }
+        public TrainPassiveSkillData PassiveSkillData => PassiveSkillDatas.Length > 0 ? PassiveSkillDatas[0] : null;
         public Sprite SkillIcon
         {
             get
