@@ -5,6 +5,7 @@ using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Tutorial;
 using TrainDefense.Game.Manager;
+using System.Collections.Generic;
 
 namespace TrainDefense.Game.UI
 {
@@ -28,11 +29,17 @@ namespace TrainDefense.Game.UI
         private StageData _stageData2;
         private StageData _selectedStageData;
         private Animator animator;
+        private Dictionary<Transform, Image[]> monsterIconImages = new();
+
         private bool _isSelecting = false;
+
+        private const string firstStageSelectAniTrigger = "FirstStage";
+        private const string secondStageSelectAniTrigger = "SecondStage";
 
         private void Awake()
         {
-            animator = GetComponent<Animator>();           
+            animator = GetComponent<Animator>();
+            CacheMonsterIconImages();
         }
 
         private void Start()
@@ -60,6 +67,23 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<RandomStageOptionsEvent>(OnStageSelect);
         }
 
+        private void CacheMonsterIconImages()
+        {
+            CacheMonsterIconImage(stage1Button.transform);
+            CacheMonsterIconImage(stage2Button.transform);
+            CacheMonsterIconImage(currentStageImage.transform);
+        }
+
+        private void CacheMonsterIconImage(Transform parent)
+        {
+            Image[] images = new Image[parent.childCount];
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                images[i] = parent.GetChild(i).GetComponent<Image>();
+            }
+            monsterIconImages.Add(parent, images);
+        }
+
         private void OnStageSelect(RandomStageOptionsEvent stageSelectEvent)
         {
             if (_isSelecting) return;
@@ -81,12 +105,9 @@ namespace TrainDefense.Game.UI
             _isSelecting = true;
 
             // 스테이지 이미지 적용 (버튼의 Image 컴포넌트에 스프라이트 적용)
-            ApplyStageSprite(stage1Button.image, _stageData1);
-            ApplyStageSprite(stage2Button.image, _stageData2);
-            ApplyStageSprite(currentStageImage, StageManager.Instance.CurrentStageData);
-            ShowMonsterIconImage(stage1Button.transform, _stageData1);
-            ShowMonsterIconImage(stage2Button.transform, _stageData2);
-            ShowMonsterIconImage(currentStageImage.transform, StageManager.Instance.CurrentStageData);
+
+            ApplyStageSprites();
+            ShowMonsterIconImages();
 
             if (stageSelectPanel != null)
             {
@@ -99,35 +120,60 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        private void ApplyStageSprite(Image target, StageData stageData)
+        private void ApplyStageSprites()
         {
-            if (target == null || stageData == null) return;
+            ApplyStageSprite(stage1Button.image, _stageData1);
+            ApplyStageSprite(stage2Button.image, _stageData2);
+            ApplyStageSprite(currentStageImage, StageManager.Instance.CurrentStageData);
+        }
+
+        private void ApplyStageSprite(Image image, StageData stageData)
+        {
+            if (image == null || stageData == null) return;
 
             if (stageData.StageImage != null)
             {
-                target.sprite = stageData.StageImage;
+                image.sprite = stageData.StageImage;
             }
         }
 
-        private void ShowMonsterIconImage(Transform target, StageData stageData)
+        private void ShowMonsterIconImages()
         {
-            if (target == null || stageData == null) return;
+            ShowMonsterIconImage(stage1Button.transform, _stageData1);
+            ShowMonsterIconImage(stage2Button.transform, _stageData2);
+            ShowMonsterIconImage(currentStageImage.transform, StageManager.Instance.CurrentStageData);
+        }
 
-            for (int i = 0; i < stageData.SpawnDatas.Length; i++)
+        private void ShowMonsterIconImage(Transform parent, StageData stageData)
+        {
+            if (parent == null || stageData == null) return;
+
+            if (monsterIconImages.TryGetValue(parent, out Image[] images))
             {
-                var monsterIconImage = target.GetChild(i);
-                var monsterId = stageData.SpawnDatas[i].MonsterId;
-                monsterIconImage.GetComponent<Image>().sprite = DatabaseManager.Instance.GetMonsterData(monsterId).Icon;
-                monsterIconImage.gameObject.SetActive(true);
+                for (int i = 0; i < stageData.SpawnDatas.Length; i++)
+                {
+                    var monsterId = stageData.SpawnDatas[i].MonsterId;
+                    images[i].sprite = DatabaseManager.Instance.GetMonsterData(monsterId).Icon;
+                    images[i].gameObject.SetActive(true);
+                }
             }
         }
 
-        private void HideMonsterIconImage()
+        private void HideMonsterIconImages()
         {
-            for (int i = 0; i < stage1Button.transform.childCount; i++)
+            HideMonsterIconImage(stage1Button.transform);
+            HideMonsterIconImage(stage2Button.transform);
+            HideMonsterIconImage(currentStageImage.transform);
+        }
+
+        private void HideMonsterIconImage(Transform parent)
+        {
+            if (monsterIconImages.TryGetValue(parent, out Image[] images))
             {
-                stage1Button.transform.GetChild(i).gameObject.SetActive(false);
-                stage2Button.transform.GetChild(i).gameObject.SetActive(false);
+                for (int i = 0; i < images.Length; i++)
+                {
+                    images[i].gameObject.SetActive(false);
+                }
             }
         }
 
@@ -138,13 +184,13 @@ namespace TrainDefense.Game.UI
             _isSelecting = false;
 
             _selectedStageData = selectedStageData;
-            if(_selectedStageData == _stageData1)
+            if (_selectedStageData == _stageData1)
             {
-                animator.SetTrigger("FirstStage");
+                animator.SetTrigger(firstStageSelectAniTrigger);
             }
             else
             {
-                animator.SetTrigger("SecondStage");
+                animator.SetTrigger(secondStageSelectAniTrigger);
             }
         }
 
@@ -160,7 +206,7 @@ namespace TrainDefense.Game.UI
             if (stageSelectPanel != null)
             {
                 stageSelectPanel.SetActive(false);
-                HideMonsterIconImage();
+                HideMonsterIconImages();
             }
 
             // 선택 결과 전달 (UI -> StageManager)
