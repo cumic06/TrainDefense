@@ -60,7 +60,12 @@ namespace TrainDefense.Game
             }
 
             if (_skillTypeMask != AddTrainChoiceSkillType.Active)
-                _skillModule.RegisterPassiveFromData(turretTrainData?.PassiveSkillData);
+            {
+                var passives = turretTrainData?.PassiveSkillDatas;
+                if (passives != null)
+                    foreach (var p in passives)
+                        _skillModule.RegisterPassiveFromData(p);
+            }
             InitializeProjectilePoolingMode();
 
             if (turretModel != null)
@@ -688,6 +693,14 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.TargetCount += turretStatus.TargetCount;
                 _currentTurretTrainStatus.CriticalChance += turretStatus.CriticalChance;
                 _currentTurretTrainStatus.CriticalDamage += turretStatus.CriticalDamage;
+
+                var passiveId = turretUpgradeData.GetPassiveSkillDataId(upgradeLevelIndex);
+                if (!string.IsNullOrEmpty(passiveId))
+                {
+                    var passiveData = DatabaseManager.Instance.GetDB().trainPassiveSkillDataList
+                        .Find(s => s != null && s.Id == passiveId);
+                    _skillModule.RegisterPassiveFromData(passiveData);
+                }
 
                 if (_useNonMovementProjectilePooling)
                 {

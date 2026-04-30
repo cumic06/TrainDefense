@@ -12,7 +12,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public bool isMainTrain;
 		public string prefabId;
 		public string iconId;
-		public string trainSkillDataId;
+		public string[] trainSkillDataIds;
 
 		public virtual void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -23,7 +23,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			isMainTrain = map.GetBool(row, "is_main_train");
 			prefabId = map.GetString(row, "prefab_id");
 			iconId = map.GetString(row, "icon_id");
-			trainSkillDataId = map.GetString(row, "train_skill_data_id");
+			trainSkillDataIds = ParseIds(map.GetString(row, "train_skill_data_id"));
 		}
 
 		public virtual void ToExcelRow(IRow row, HeaderMap map)
@@ -35,7 +35,20 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "is_main_train", isMainTrain);
 			map.SetCell(row, "prefab_id", prefabId);
 			map.SetCell(row, "icon_id", iconId);
-			map.SetCell(row, "train_skill_data_id", trainSkillDataId);
+			map.SetCell(row, "train_skill_data_id", trainSkillDataIds != null ? string.Join(";", trainSkillDataIds) : "");
+		}
+
+		protected static string[] ParseIds(string raw)
+		{
+			if (string.IsNullOrEmpty(raw)) return System.Array.Empty<string>();
+			var parts = raw.Split(';');
+			var list = new System.Collections.Generic.List<string>();
+			foreach (var p in parts)
+			{
+				var t = p.Trim();
+				if (!string.IsNullOrEmpty(t)) list.Add(t);
+			}
+			return list.ToArray();
 		}
 	}
 }

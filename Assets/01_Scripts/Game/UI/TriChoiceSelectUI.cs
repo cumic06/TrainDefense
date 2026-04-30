@@ -54,9 +54,9 @@ namespace TrainDefense.Game.UI
 
       private void SetUI(IChoiceOption choiceOption, ChoiceUIInfo choiceUIInfo)
       {
-         if (string.IsNullOrEmpty(choiceUIInfo.Name) || string.IsNullOrEmpty(choiceUIInfo.Description))
+         if (string.IsNullOrEmpty(choiceUIInfo.Name))
          {
-            Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Name or Description is null");
+            Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Name is null");
             return;
          }
 
@@ -117,7 +117,12 @@ namespace TrainDefense.Game.UI
             }
 
             if (!string.IsNullOrEmpty(choiceUIInfo.PassiveDescription))
-               descriptionText.text = $"\n{choiceUIInfo.PassiveDescription}";
+            {
+               if (!string.IsNullOrEmpty(choiceUIInfo.Description))
+                  descriptionText.text = $"{choiceUIInfo.Description}\n{choiceUIInfo.PassiveDescription}";
+               else
+                  descriptionText.text = choiceUIInfo.PassiveDescription;
+            }
          }
       }
 

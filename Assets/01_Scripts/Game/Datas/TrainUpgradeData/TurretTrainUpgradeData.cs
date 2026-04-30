@@ -76,6 +76,11 @@ namespace TrainDefense.Game.Datas
          return stats?.TurretStatusUpgrade ?? default;
       }
 
+      public string GetPassiveSkillDataId(int level)
+      {
+         return GetStatsForLevel(level)?.PassiveSkillDataId;
+      }
+
       private TurretTrainUpgradeStats GetStatsForLevel(int targetLevel)
       {
          if (upgradeStats == null || upgradeStats.Length == 0)

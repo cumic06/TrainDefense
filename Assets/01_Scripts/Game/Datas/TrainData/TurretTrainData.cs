@@ -13,40 +13,47 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private string turretProjectilePrefabId;
         [SerializeField]
-        private string passiveSkillDataId;
+        private string[] passiveSkillDataIds;
         private GameObject turretProjectilePrefab;
         [NonSerialized]
-        private TrainPassiveSkillData passiveSkillDataCache;
+        private TrainPassiveSkillData[] passiveSkillDatasCache;
         [NonSerialized]
-        private bool passiveSkillDataResolved;
+        private bool passiveSkillDatasResolved;
         [SerializeField]
         private float attackDamageMultiplier = 1f;
         #endregion
 
         public TurretTrainStatus TurretTrainStatus => turretTrainStatus;
         public float AttackDamageMultiplier => attackDamageMultiplier;
-        public TrainPassiveSkillData PassiveSkillData
+        public TrainPassiveSkillData[] PassiveSkillDatas
         {
             get
             {
-                if (passiveSkillDataResolved) return passiveSkillDataCache;
-                passiveSkillDataResolved = true;
-                if (string.IsNullOrEmpty(passiveSkillDataId))
+                if (passiveSkillDatasResolved) return passiveSkillDatasCache;
+                passiveSkillDatasResolved = true;
+                if (passiveSkillDataIds == null || passiveSkillDataIds.Length == 0)
                 {
-                    passiveSkillDataCache = null;
-                    return null;
+                    passiveSkillDatasCache = System.Array.Empty<TrainPassiveSkillData>();
+                    return passiveSkillDatasCache;
                 }
-                var dbm = DatabaseManager.Instance;
-                var db = dbm?.GetDB();
+                var db = DatabaseManager.Instance?.GetDB();
                 if (db?.trainPassiveSkillDataList == null)
                 {
-                    passiveSkillDataCache = null;
-                    return null;
+                    passiveSkillDatasCache = System.Array.Empty<TrainPassiveSkillData>();
+                    return passiveSkillDatasCache;
                 }
-                passiveSkillDataCache = db.trainPassiveSkillDataList.Find(s => s != null && s.Id == passiveSkillDataId);
-                return passiveSkillDataCache;
+                var result = new System.Collections.Generic.List<TrainPassiveSkillData>();
+                foreach (var id in passiveSkillDataIds)
+                {
+                    if (string.IsNullOrEmpty(id)) continue;
+                    var data = db.trainPassiveSkillDataList.Find(s => s != null && s.Id == id);
+                    if (data != null) result.Add(data);
+                }
+                passiveSkillDatasCache = result.ToArray();
+                return passiveSkillDatasCache;
             }
         }
+        public TrainPassiveSkillData PassiveSkillData => PassiveSkillDatas.Length > 0 ? PassiveSkillDatas[0] : null;
 
         private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 

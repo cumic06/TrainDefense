@@ -107,6 +107,13 @@ namespace TrainDefense.Game
                 }
             }
 
+            // 엘리트 트레인이 항상 0번 슬롯에 고정되지 않도록 셔플
+            for (int i = result.Count - 1; i > 0; i--)
+            {
+                int j = Random.Range(0, i + 1);
+                (result[i], result[j]) = (result[j], result[i]);
+            }
+
             return result;
         }
 
@@ -176,6 +183,11 @@ namespace TrainDefense.Game
                 if (x.Option is AddTrainChoice addChoice && excludeResult != null)
                 {
                     if (excludeResult.Any(r => r?.Option is AddTrainChoice existing && existing.TrainDataId == addChoice.TrainDataId))
+                        return false;
+
+                    // 같은 replaceTrainId를 가진 선택지가 이미 결과에 있으면 제외
+                    // (같은 트레인을 대체하는 엘리트 variant가 두 개 나오지 않도록)
+                    if (addChoice.IsReplaceMode && excludeResult.Any(r => r?.Option is AddTrainChoice existing && existing.ReplaceTrainId == addChoice.ReplaceTrainId))
                         return false;
                 }
 
