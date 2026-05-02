@@ -27,6 +27,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(t, target, "trainStatusData", trainStatusData);
 
 			SetPrivateField(t, target, "activeSkillDataId", r.activeSkillDataId);
+			SetPrivateField(t, target, "passiveSkillDataIds", r.passiveSkillDataIds);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)
