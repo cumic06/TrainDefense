@@ -21,6 +21,7 @@ namespace TrainDefense.Game
         private float _attackCountdown;
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
+        private float _statAttackDamageAccum;
         private float _statAttackCountAccum;
 
         public event Action OnAttacked;
@@ -249,7 +250,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value * rangeTrainData.AttackDamageMultiplier);
+                    _currentRangeTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, stat.Value * rangeTrainData.AttackDamageMultiplier);
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);

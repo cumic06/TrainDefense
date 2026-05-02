@@ -41,6 +41,7 @@ namespace TrainDefense.Game
         private Vector3 _turretmodelScale;
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
+        private float _statAttackDamageAccum;
         private float _statAttackCountAccum;
         private float _statTargetCountAccum;
 
@@ -789,7 +790,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value * turretTrainData.AttackDamageMultiplier);
+                    _currentTurretTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, stat.Value * turretTrainData.AttackDamageMultiplier);
 
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {

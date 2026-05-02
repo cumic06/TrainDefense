@@ -121,6 +121,8 @@ namespace TrainDefense.Game.UI
                 coinParticleSystem.Play();
             }
 
+            int activatedCount = 0;
+
             for (int i = 0; i < choiceSelectUIs.Length; i++)
             {
                 if (requestId != _popupRequestId) return;
@@ -213,6 +215,7 @@ namespace TrainDefense.Game.UI
                     choiceSelectUI.SetData(choiceOption, choiceUIInfo, this);
                     choiceSelectUI.gameObject.SetActive(true);
                     choiceSelectUI.SetButtonInteractable(true);
+                    activatedCount++;
 
                     choiceSelectUI.transform.DOKill();
                     choiceSelectUI.transform.localScale = Vector3.zero;
@@ -228,6 +231,16 @@ namespace TrainDefense.Game.UI
                 {
                     choiceSelectUI.gameObject.SetActive(false);
                 }
+            }
+
+            // 활성화된 카드가 하나도 없으면 사용자가 클릭할 대상이 없어 영구 pause 상태가 됨.
+            // availableChoices가 비어있는 경우(상단 분기) 외에도 모든 항목이 unknown/null로 걸러진 케이스에서 발생 가능.
+            if (activatedCount == 0)
+            {
+                Debug.LogWarning("TriChoiceUI: no choices activated, publishing fallback select event to release pause");
+                TriChoiceSelectEvent fallback = new(null, 0);
+                GameEventSystem.Publish(fallback);
+                backgroundImage.SetActive(false);
             }
         }
 
