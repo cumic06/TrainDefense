@@ -64,7 +64,7 @@ namespace TrainDefense.Game
                 _isStatusInitialized = true;
             }
 
-            if (_skillTypeMask != AddTrainChoiceSkillType.Active)
+            if (_skillTypeMask != TrainChoiceSkillType.Active)
             {
                 var passives = turretTrainData?.PassiveSkillDatas;
                 if (passives != null)

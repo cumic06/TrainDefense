@@ -116,12 +116,19 @@ namespace TrainDefense.Game.UI
                   skillNameText.text = string.Join("\n", parts);
             }
 
+            var skillDescriptions = new System.Collections.Generic.List<string>();
             if (!string.IsNullOrEmpty(choiceUIInfo.PassiveDescription))
+               skillDescriptions.Add(choiceUIInfo.PassiveDescription);
+            if (!string.IsNullOrEmpty(choiceUIInfo.ActiveSkillDescription))
+               skillDescriptions.Add(choiceUIInfo.ActiveSkillDescription);
+
+            if (skillDescriptions.Count > 0)
             {
+               string skillDescription = string.Join("\n", skillDescriptions);
                if (!string.IsNullOrEmpty(choiceUIInfo.Description))
-                  descriptionText.text = $"{choiceUIInfo.Description}\n{choiceUIInfo.PassiveDescription}";
+                  descriptionText.text = $"{choiceUIInfo.Description}\n{skillDescription}";
                else
-                  descriptionText.text = choiceUIInfo.PassiveDescription;
+                  descriptionText.text = skillDescription;
             }
          }
       }

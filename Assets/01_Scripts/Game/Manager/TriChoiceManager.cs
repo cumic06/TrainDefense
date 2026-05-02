@@ -179,29 +179,27 @@ namespace TrainDefense.Game
                 if (excludeResult != null && excludeResult.Any(r => r?.Option?.Id == x.Option.Id))
                     return false;
 
-                // 같은 trainDataId를 가진 AddTrainChoice가 이미 결과에 있으면 제외
-                if (x.Option is AddTrainChoice addChoice && excludeResult != null)
-                {
-                    if (excludeResult.Any(r => r?.Option is AddTrainChoice existing && existing.TrainDataId == addChoice.TrainDataId))
-                        return false;
-
-                    // 같은 replaceTrainId를 가진 선택지가 이미 결과에 있으면 제외
-                    // (같은 트레인을 대체하는 엘리트 variant가 두 개 나오지 않도록)
-                    if (addChoice.IsReplaceMode && excludeResult.Any(r => r?.Option is AddTrainChoice existing && existing.ReplaceTrainId == addChoice.ReplaceTrainId))
-                        return false;
-                }
+                // 같은 Train ID를 참조하는 선택지는 한 화면에 같이 노출하지 않음.
+                if (HasChoiceReferenceConflict(x.Option, excludeResult))
+                    return false;
 
                 // UpgradeTrainChoice는 레벨업 후 다시 선택 가능하므로 제외하지 않음
                 if (x.Option is UpgradeTrainChoice)
                     return true;
 
-                // AddTrainChoice는 한 번만 선택 가능하므로 제외
-                return !userDataManager.HasSelectedChoice(x.Option.Id);
+                // Add/EliteTrainChoice는 한 번만 선택 가능하므로 제외
+                return userDataManager == null || !userDataManager.HasSelectedChoice(x.Option.Id);
             }).ToList();
 
             if (filteredChoices.Count == 0)
             {
                 return null;
+            }
+
+            var positiveWeightChoices = filteredChoices.Where(choice => choice.Weight > 0).ToList();
+            if (positiveWeightChoices.Count > 0)
+            {
+                filteredChoices = positiveWeightChoices;
             }
 
             float totalWeight = filteredChoices.Sum(choice => choice.Weight);
@@ -224,10 +222,52 @@ namespace TrainDefense.Game
             return filteredChoices[^1];
         }
 
+        private bool HasChoiceReferenceConflict(IChoiceOption option, List<ChoiceEntry> excludeResult)
+        {
+            if (option == null || excludeResult == null || excludeResult.Count == 0)
+                return false;
+
+            var optionRefs = GetChoiceReferenceIds(option);
+            if (optionRefs.Count == 0)
+                return false;
+
+            return excludeResult
+                .Where(entry => entry?.Option != null)
+                .SelectMany(entry => GetChoiceReferenceIds(entry.Option))
+                .Any(optionRefs.Contains);
+        }
+
+        private HashSet<string> GetChoiceReferenceIds(IChoiceOption option)
+        {
+            var refs = new HashSet<string>();
+
+            if (option is AddTrainChoice addChoice)
+            {
+                AddReferenceId(refs, addChoice.TrainDataId);
+                AddReferenceId(refs, addChoice.ReplaceTrainId);
+            }
+            else if (option is EliteTrainChoice eliteChoice)
+            {
+                AddReferenceId(refs, eliteChoice.BaseTrainId);
+                AddReferenceId(refs, eliteChoice.EliteTrainDataId);
+            }
+            else if (option is UpgradeTrainChoice upgradeChoice)
+            {
+                AddReferenceId(refs, upgradeChoice.TargetTrainId);
+            }
+
+            return refs;
+        }
+
+        private void AddReferenceId(HashSet<string> refs, string trainId)
+        {
+            if (!string.IsNullOrEmpty(trainId) && trainId != "0")
+                refs.Add(trainId);
+        }
+
         private List<ChoiceEntry> GetAddTrainChoices()//AddTrainChoice 목록을 반환한다.
         {
-            var addDatas = DatabaseManager.Instance.GetTriChoiceDB().AddTrainChoices;
-            var userDataManager = UserDataManager.Instance;
+            var addDatas = DatabaseManager.Instance.GetTriChoiceDB().TrainChoiceEntries;
 
             // 엘리트 트레인으로 업그레이드가 가능한지 확인
             bool hasUpgradedTrain = CanUpgradeToEliteTrain();
@@ -236,7 +276,7 @@ namespace TrainDefense.Game
             return addDatas
                 .Where(entry =>
                 {
-                    if (entry.Option == null || !entry.Option.IsValid())
+                    if (entry.Option is not AddTrainChoice || !entry.Option.IsValid())
                         return false;
 
                     // Tier 0은 항상 포함
@@ -258,10 +298,10 @@ namespace TrainDefense.Game
         /// </summary>
         private List<ChoiceEntry> GetEliteTrainChoices()
         {
-            var addDatas = DatabaseManager.Instance.GetTriChoiceDB().AddTrainChoices;
+            var addDatas = DatabaseManager.Instance.GetTriChoiceDB().TrainChoiceEntries;
 
             return addDatas
-                .Where(entry => entry.Option != null && entry.Option.IsValid() && entry.Tier == 1)
+                .Where(entry => entry.Option is EliteTrainChoice && entry.Option.IsValid() && entry.Tier == 1)
                 .ToList();
         }
 

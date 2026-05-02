@@ -32,7 +32,8 @@ namespace TrainDefense.Game
         protected int _currentLevel;
         protected int _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
-        protected AddTrainChoiceSkillType _skillTypeMask = AddTrainChoiceSkillType.None;
+        protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
+        private bool _initialized;
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statMaxHpAccum;
@@ -56,14 +57,18 @@ namespace TrainDefense.Game
 
         protected virtual void Start()
         {
+            if (_initialized)
+                return;
+
             Setup();
         }
 
-        public virtual void Initialize(TrainData trainData, AddTrainChoiceSkillType skillType = AddTrainChoiceSkillType.None)
+        public virtual void Initialize(TrainData trainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None)
         {
             _trainData = trainData;
             _skillTypeMask = skillType;
             Setup();
+            _initialized = true;
         }
 
         protected virtual void Setup()

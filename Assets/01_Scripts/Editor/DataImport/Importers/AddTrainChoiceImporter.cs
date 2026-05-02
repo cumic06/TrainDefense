@@ -22,12 +22,12 @@ namespace TrainDefense.Editor.DataImport.Importers
 				r.FromExcelRow(row, map);
 				if (string.IsNullOrEmpty(r.id)) continue;
 
-				var list = db.TriChoiceDB.AddTrainChoices;
+				var list = db.TriChoiceDB.TrainChoiceEntries;
 				var existing = FindChoiceEntry(list, r.id);
 
 				if (existing == null)
 				{
-					var choice = CreateAddTrainChoice(r);
+					var choice = CreateChoice(r);
 					var entry = new ChoiceEntry
 					{
 						Option = choice,
@@ -38,7 +38,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 				}
 				else
 				{
-					UpdateAddTrainChoice(existing.Option as AddTrainChoice, r);
+					UpdateChoice(existing, r);
 					SetChoiceEntryWeight(existing, r.weight);
 					SetChoiceEntryTier(existing, r.tier);
 				}
@@ -66,17 +66,50 @@ namespace TrainDefense.Editor.DataImport.Importers
 			list?.Add(entry);
 		}
 
+		private IChoiceOption CreateChoice(AddTrainChoiceRow r)
+		{
+			return IsEliteChoice(r)
+				? CreateEliteTrainChoice(r)
+				: CreateAddTrainChoice(r);
+		}
+
 		private AddTrainChoice CreateAddTrainChoice(AddTrainChoiceRow r)
 		{
 			var obj = (AddTrainChoice)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(AddTrainChoice));
-			Copy(r, obj);
+			CopyAdd(r, obj);
 			return obj;
 		}
 
-		private void UpdateAddTrainChoice(AddTrainChoice target, AddTrainChoiceRow r)
+		private EliteTrainChoice CreateEliteTrainChoice(AddTrainChoiceRow r)
 		{
-			if (target == null) return;
-			Copy(r, target);
+			var obj = (EliteTrainChoice)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(EliteTrainChoice));
+			CopyElite(r, obj);
+			return obj;
+		}
+
+		private void UpdateChoice(ChoiceEntry entry, AddTrainChoiceRow r)
+		{
+			if (entry == null) return;
+
+			if (IsEliteChoice(r))
+			{
+				if (entry.Option is not EliteTrainChoice eliteChoice)
+				{
+					entry.Option = CreateEliteTrainChoice(r);
+					return;
+				}
+
+				CopyElite(r, eliteChoice);
+				return;
+			}
+
+			if (entry.Option is not AddTrainChoice addChoice)
+			{
+				entry.Option = CreateAddTrainChoice(r);
+				return;
+			}
+
+			CopyAdd(r, addChoice);
 		}
 
 		private void SetChoiceEntryWeight(ChoiceEntry entry, int weight)
@@ -91,13 +124,27 @@ namespace TrainDefense.Editor.DataImport.Importers
 			field?.SetValue(entry, tier);
 		}
 
-		private static void Copy(AddTrainChoiceRow r, AddTrainChoice target)
+		private static bool IsEliteChoice(AddTrainChoiceRow r)
+		{
+			return !string.IsNullOrEmpty(r.replaceTrainId) && r.replaceTrainId != "0";
+		}
+
+		private static void CopyAdd(AddTrainChoiceRow r, AddTrainChoice target)
 		{
 			var t = typeof(AddTrainChoice);
 			SetPrivateField(t, target, "id", r.id);
 			SetPrivateField(t, target, "trainDataId", r.trainDataId);
 			SetPrivateField(t, target, "replaceTrainId", r.replaceTrainId);
-			SetPrivateField(t, target, "skillType", (TrainDefense.Game.Datas.AddTrainChoiceSkillType)r.skillType);
+			SetPrivateField(t, target, "skillType", (TrainChoiceSkillType)r.skillType);
+		}
+
+		private static void CopyElite(AddTrainChoiceRow r, EliteTrainChoice target)
+		{
+			var t = typeof(EliteTrainChoice);
+			SetPrivateField(t, target, "id", r.id);
+			SetPrivateField(t, target, "baseTrainId", r.replaceTrainId);
+			SetPrivateField(t, target, "eliteTrainDataId", r.trainDataId);
+			SetPrivateField(t, target, "skillType", (TrainChoiceSkillType)r.skillType);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

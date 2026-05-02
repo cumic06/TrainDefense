@@ -35,10 +35,13 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
             _attackCountdown = _currentRangeTrainStatus.AttackInterval;
 
-            var passives = rangeTrainData?.PassiveSkillDatas;
-            if (passives != null)
-                foreach (var p in passives)
-                    _skillModule.RegisterPassiveFromData(p);
+            if (_skillTypeMask != TrainChoiceSkillType.Active)
+            {
+                var passives = rangeTrainData?.PassiveSkillDatas;
+                if (passives != null)
+                    foreach (var p in passives)
+                        _skillModule.RegisterPassiveFromData(p);
+            }
 
             if (TrainData.DamageType == DamageType.Direct) return;
 

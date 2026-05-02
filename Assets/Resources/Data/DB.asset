@@ -2201,144 +2201,144 @@ MonoBehaviour:
         replaceTrainId: 
         skillType: 0
     - rid: 3319472319078334560
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61001
-        trainDataId: 31001
-        replaceTrainId: 30001
+        baseTrainId: 30001
+        eliteTrainDataId: 31001
         skillType: 0
     - rid: 3319472319078334561
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61002
-        trainDataId: 31002
-        replaceTrainId: 30002
+        baseTrainId: 30002
+        eliteTrainDataId: 31002
         skillType: 0
     - rid: 3319472319078334562
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61003
-        trainDataId: 31003
-        replaceTrainId: 30003
+        baseTrainId: 30003
+        eliteTrainDataId: 31003
         skillType: 0
     - rid: 3319472319078334563
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61004
-        trainDataId: 31004
-        replaceTrainId: 30004
+        baseTrainId: 30004
+        eliteTrainDataId: 31004
         skillType: 0
     - rid: 3319472319078334564
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61005
-        trainDataId: 31005
-        replaceTrainId: 30005
+        baseTrainId: 30005
+        eliteTrainDataId: 31005
         skillType: 0
     - rid: 3319472319078334565
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61006
-        trainDataId: 31006
-        replaceTrainId: 30006
+        baseTrainId: 30006
+        eliteTrainDataId: 31006
         skillType: 0
     - rid: 3319472319078334566
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61007
-        trainDataId: 31007
-        replaceTrainId: 30007
+        baseTrainId: 30007
+        eliteTrainDataId: 31007
         skillType: 0
     - rid: 3319472319078334567
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61008
-        trainDataId: 41001
-        replaceTrainId: 40001
+        baseTrainId: 40001
+        eliteTrainDataId: 41001
         skillType: 0
     - rid: 3319472319078334568
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61009
-        trainDataId: 41002
-        replaceTrainId: 40002
+        baseTrainId: 40002
+        eliteTrainDataId: 41002
         skillType: 0
     - rid: 3319472431904325753
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71001
-        trainDataId: 32001
-        replaceTrainId: 30001
+        baseTrainId: 30001
+        eliteTrainDataId: 32001
         skillType: 0
     - rid: 3319472431904325754
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71002
-        trainDataId: 32002
-        replaceTrainId: 30002
+        baseTrainId: 30002
+        eliteTrainDataId: 32002
         skillType: 0
     - rid: 3319472431904325755
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71003
-        trainDataId: 32003
-        replaceTrainId: 30003
+        baseTrainId: 30003
+        eliteTrainDataId: 32003
         skillType: 0
     - rid: 3319472431904325756
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71004
-        trainDataId: 32004
-        replaceTrainId: 30004
+        baseTrainId: 30004
+        eliteTrainDataId: 32004
         skillType: 0
     - rid: 3319472431904325757
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71005
-        trainDataId: 32005
-        replaceTrainId: 30005
+        baseTrainId: 30005
+        eliteTrainDataId: 32005
         skillType: 0
     - rid: 3319472431904325758
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71006
-        trainDataId: 32006
-        replaceTrainId: 30006
+        baseTrainId: 30006
+        eliteTrainDataId: 32006
         skillType: 0
     - rid: 3319472431904325759
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71007
-        trainDataId: 32007
-        replaceTrainId: 30007
+        baseTrainId: 30007
+        eliteTrainDataId: 32007
         skillType: 0
     - rid: 3319472431904325760
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71008
-        trainDataId: 42001
-        replaceTrainId: 40001
+        baseTrainId: 40001
+        eliteTrainDataId: 42001
         skillType: 0
     - rid: 3319472431904325761
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71009
-        trainDataId: 42002
-        replaceTrainId: 40002
+        baseTrainId: 40002
+        eliteTrainDataId: 42002
         skillType: 0
     - rid: 3319472431904325762
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61001
-        trainDataId: 31001
-        replaceTrainId: 30001
+        baseTrainId: 30001
+        eliteTrainDataId: 31001
         skillType: 1
     - rid: 3319472431904325763
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61001a
-        trainDataId: 31001
-        replaceTrainId: 30001
+        baseTrainId: 30001
+        eliteTrainDataId: 31001
         skillType: 2
     - rid: 5100000000000000001
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
@@ -2357,86 +2357,86 @@ MonoBehaviour:
         - upgradeDataId: 90009
           upgradeDataWeight: 1
     - rid: 6103417219460104299
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61002
-        trainDataId: 31002
-        replaceTrainId: 30002
+        baseTrainId: 30002
+        eliteTrainDataId: 31002
         skillType: 0
     - rid: 6103417219460104300
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61003
-        trainDataId: 31003
-        replaceTrainId: 30003
+        baseTrainId: 30003
+        eliteTrainDataId: 31003
         skillType: 1
     - rid: 6103417219460104301
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61004
-        trainDataId: 31004
-        replaceTrainId: 30004
+        baseTrainId: 30004
+        eliteTrainDataId: 31004
         skillType: 0
     - rid: 6103417219460104302
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61005
-        trainDataId: 31005
-        replaceTrainId: 30005
+        baseTrainId: 30005
+        eliteTrainDataId: 31005
         skillType: 0
     - rid: 6103417219460104303
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61005a
-        trainDataId: 31005
-        replaceTrainId: 30005
+        baseTrainId: 30005
+        eliteTrainDataId: 31005
         skillType: 2
     - rid: 6103417219460104304
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61006
-        trainDataId: 31006
-        replaceTrainId: 30006
+        baseTrainId: 30006
+        eliteTrainDataId: 31006
         skillType: 0
     - rid: 6103417219460104305
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61006a
-        trainDataId: 31006
-        replaceTrainId: 30006
+        baseTrainId: 30006
+        eliteTrainDataId: 31006
         skillType: 2
     - rid: 6103417219460104306
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61007
-        trainDataId: 31007
-        replaceTrainId: 30007
+        baseTrainId: 30007
+        eliteTrainDataId: 31007
         skillType: 1
     - rid: 6103417219460104307
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62001
-        trainDataId: 42001
-        replaceTrainId: 40001
+        baseTrainId: 40001
+        eliteTrainDataId: 42001
         skillType: 1
     - rid: 6103417219460104308
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62001a
-        trainDataId: 42001
-        replaceTrainId: 40001
+        baseTrainId: 40001
+        eliteTrainDataId: 42001
         skillType: 2
     - rid: 6103417219460104309
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62002
-        trainDataId: 42002
-        replaceTrainId: 40002
+        baseTrainId: 40002
+        eliteTrainDataId: 42002
         skillType: 1
     - rid: 6103417219460104310
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62002a
-        trainDataId: 42002
-        replaceTrainId: 40002
+        baseTrainId: 40002
+        eliteTrainDataId: 42002
         skillType: 2

@@ -47,7 +47,8 @@ namespace TrainDefense.Game
         #region TriChoiceDB
 
         public TriChoiceDB GetTriChoiceDB() => GetDB().TriChoiceDB;
-        public IChoiceOption[] GetAddTrainChoices() => GetDB().TriChoiceDB.AddTrainChoices.Select(x => x.Option).ToArray();
+        public IChoiceOption[] GetAddTrainChoices() => GetDB().TriChoiceDB.TrainChoiceEntries.Select(x => x.Option).OfType<AddTrainChoice>().Cast<IChoiceOption>().ToArray();
+        public IChoiceOption[] GetEliteTrainChoices() => GetDB().TriChoiceDB.TrainChoiceEntries.Select(x => x.Option).OfType<EliteTrainChoice>().Cast<IChoiceOption>().ToArray();
         public IChoiceOption[] GetUpgradeTrainChoices() => GetDB().TriChoiceDB.UpgradeTrainChoices.Select(x => x.Option).ToArray();
         #endregion
 

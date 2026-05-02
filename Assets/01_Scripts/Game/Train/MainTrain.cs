@@ -34,7 +34,7 @@ namespace TrainDefense.Game
       private bool isUnDead = false;
       #endregion
 
-      private AddTrainChoiceSkillType _pendingSkillType = AddTrainChoiceSkillType.None;
+      private TrainChoiceSkillType _pendingSkillType = TrainChoiceSkillType.None;
       private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
       public List<Train> CurrentAliveTrains => _currentAliveTrains;
       public int MaxTrainCount => maxTrainCount;
@@ -66,12 +66,16 @@ namespace TrainDefense.Game
          GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
          GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
 
+         _currentAliveTrains.Clear();
+         _currentTrains.Clear();
+         _deadTrains.Clear();
+         _trainOriginalIndexMap.Clear();
+         _replacedTrainIds.Clear();
+
          if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
          {
             SpawnTrain(startTrainablePrefab);
          }
-
-         _currentTrains.Clear();
       }
 
       protected override void OnDestroy()
@@ -115,9 +119,8 @@ namespace TrainDefense.Game
          SpawnTrain(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
       }
 
-      public void SpawnTrain(TrainData trainData, AddTrainChoiceSkillType skillType = AddTrainChoiceSkillType.None)
+      public void SpawnTrain(TrainData trainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None)
       {
-         _pendingSkillType = skillType;
          if (_currentAliveTrains.Count >= maxTrainCount)
          {
             Debug.LogWarning("Train count is max");
@@ -137,9 +140,10 @@ namespace TrainDefense.Game
             return;
          }
 
+         _pendingSkillType = skillType;
          Train trainObject = Instantiate(trainPrefab, transform);
          trainObject.Initialize(trainData, _pendingSkillType);
-         _pendingSkillType = AddTrainChoiceSkillType.None;
+         _pendingSkillType = TrainChoiceSkillType.None;
          trainObject.IsUnDead = isUnDead;
          _currentAliveTrains.Add(trainObject);
          _currentTrains.Add(trainObject);
@@ -182,9 +186,8 @@ namespace TrainDefense.Game
          ReplaceTrain(oldTrainId, DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
       }
 
-      public void ReplaceTrain(string oldTrainId, TrainData newTrainData, AddTrainChoiceSkillType skillType = AddTrainChoiceSkillType.None)
+      public void ReplaceTrain(string oldTrainId, TrainData newTrainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None)
       {
-         _pendingSkillType = skillType;
          // 대체할 기존 Train 찾기
          Train oldTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == oldTrainId);
          if (oldTrain == null)
@@ -211,10 +214,11 @@ namespace TrainDefense.Game
             return;
          }
 
+         _pendingSkillType = skillType;
          // 새로운 Train 생성 (기존 Train 제거 전에 생성하여 이벤트에서 참조 가능)
          Train newTrain = Instantiate(newTrainPrefab, transform);
          newTrain.Initialize(newTrainData, _pendingSkillType);
-         _pendingSkillType = AddTrainChoiceSkillType.None;
+         _pendingSkillType = TrainChoiceSkillType.None;
          newTrain.IsUnDead = isUnDead;
 
          // 기존 트레인의 누적 강화(영구 상점 + 카드)를 새 인스턴스에 통째로 승계.

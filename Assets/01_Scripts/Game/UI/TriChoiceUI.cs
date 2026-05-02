@@ -159,7 +159,7 @@ namespace TrainDefense.Game.UI
 
                             switch (addTrainChoice.SkillType)
                             {
-                                case AddTrainChoiceSkillType.Passive:
+                                case TrainChoiceSkillType.Passive:
                                     if (passiveData != null)
                                     {
                                         if (!string.IsNullOrEmpty(passiveData.Name))
@@ -168,14 +168,14 @@ namespace TrainDefense.Game.UI
                                             choiceUIInfo.PassiveDescription = passiveData.Description;
                                     }
                                     break;
-                                case AddTrainChoiceSkillType.Active:
+                                case TrainChoiceSkillType.Active:
                                     var skillData = trainData.TrainSkillData;
                                     if (skillData != null && skillData.HasActiveSkill)
                                     {
                                         if (!string.IsNullOrEmpty(skillData.Name))
                                             choiceUIInfo.ActiveSkillName = skillData.Name;
                                         if (!string.IsNullOrEmpty(skillData.Description))
-                                            choiceUIInfo.PassiveDescription = skillData.Description;
+                                            choiceUIInfo.ActiveSkillDescription = skillData.Description;
                                     }
                                     break;
                                 default:
@@ -185,6 +185,45 @@ namespace TrainDefense.Game.UI
                                             choiceUIInfo.PassiveName = passiveData.Name;
                                         if (!string.IsNullOrEmpty(passiveData.Description))
                                             choiceUIInfo.PassiveDescription = passiveData.Description;
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if (choiceOption is EliteTrainChoice eliteTrainChoice)
+                    {
+                        var trainData = DatabaseManager.Instance.GetTrainData(eliteTrainChoice.EliteTrainDataId);
+                        if (trainData != null)
+                        {
+                            choiceUIInfo.Icon = trainData.Icon;
+                            choiceUIInfo.Name = trainData.Name;
+                            choiceUIInfo.Description = trainData.Description;
+
+                            TrainPassiveSkillData passiveData = null;
+                            if (trainData is RangeTrainData rangeData)
+                                passiveData = rangeData.PassiveSkillData;
+                            else if (trainData is TurretTrainData turretData)
+                                passiveData = turretData.PassiveSkillData;
+
+                            switch (eliteTrainChoice.EffectiveSkillType)
+                            {
+                                case TrainChoiceSkillType.Passive:
+                                    if (passiveData != null)
+                                    {
+                                        if (!string.IsNullOrEmpty(passiveData.Name))
+                                            choiceUIInfo.PassiveName = passiveData.Name;
+                                        if (!string.IsNullOrEmpty(passiveData.Description))
+                                            choiceUIInfo.PassiveDescription = passiveData.Description;
+                                    }
+                                    break;
+                                case TrainChoiceSkillType.Active:
+                                    var skillData = trainData.TrainSkillData;
+                                    if (skillData != null && skillData.HasActiveSkill)
+                                    {
+                                        if (!string.IsNullOrEmpty(skillData.Name))
+                                            choiceUIInfo.ActiveSkillName = skillData.Name;
+                                        if (!string.IsNullOrEmpty(skillData.Description))
+                                            choiceUIInfo.ActiveSkillDescription = skillData.Description;
                                     }
                                     break;
                             }

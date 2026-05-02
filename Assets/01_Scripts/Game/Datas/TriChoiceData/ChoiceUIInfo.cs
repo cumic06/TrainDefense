@@ -10,5 +10,6 @@ namespace TrainDefense.Game.Datas
       public string PassiveName;
       public string PassiveDescription;
       public string ActiveSkillName;
+      public string ActiveSkillDescription;
    }
 }
