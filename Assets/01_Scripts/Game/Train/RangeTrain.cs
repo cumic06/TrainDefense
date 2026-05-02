@@ -3,6 +3,7 @@ using UnityEngine;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Stats;
 using System.Collections;
+using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 
@@ -18,6 +19,9 @@ namespace TrainDefense.Game
         protected Projectile _rangeProjectilePrefab;
         private Coroutine _rangeAttackCoroutine;
         private float _attackCountdown;
+
+        // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
+        private float _statAttackCountAccum;
 
         public event Action OnAttacked;
 
@@ -253,7 +257,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackCount:
-                    _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(baseStatus.AttackCount * percent);
+                    _currentRangeTrainStatus.AttackCount += UtilMath.AccumulateIntDelta(ref _statAttackCountAccum, baseStatus.AttackCount * percent);
                     break;
 
                 case StatType.AttackInterval:

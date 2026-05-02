@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
@@ -32,6 +33,9 @@ namespace TrainDefense.Game
         protected int _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
         protected AddTrainChoiceSkillType _skillTypeMask = AddTrainChoiceSkillType.None;
+
+        // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
+        private float _statMaxHpAccum;
 
         [HideInInspector]
         public bool IsUnDead;
@@ -242,7 +246,7 @@ namespace TrainDefense.Game
                 case StatType.MaxHp:
                     {
                         int baseMaxHp = _trainData.TrainStatusData.MaxHp;
-                        int deltaHp = Mathf.RoundToInt(baseMaxHp * stat.Value / 100f);
+                        int deltaHp = UtilMath.AccumulateIntDelta(ref _statMaxHpAccum, baseMaxHp * stat.Value / 100f);
                         _currentMaxHp += deltaHp;
                         _currentHp += deltaHp;
                         _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);

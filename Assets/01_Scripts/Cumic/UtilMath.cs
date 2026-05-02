@@ -120,5 +120,21 @@ namespace Cumic
         }
 
         #endregion
+
+        #region Accumulation
+
+        // base * (작은 percent) 가 1 미만일 때 RoundToInt가 0으로 라운딩되어
+        // 누적이 통째로 사라지는 것을 막기 위한 fractional accumulator.
+        // accumulator에 delta를 더하고 0 방향 truncate한 정수만 반환,
+        // 잔여 소수는 다음 호출까지 보존. 음수 delta(대칭 복원) 시에도 +/- 호출이 정확히 상쇄됨.
+        public static int AccumulateIntDelta(ref float accumulator, float delta)
+        {
+            accumulator += delta;
+            int intDelta = (int)accumulator;
+            accumulator -= intDelta;
+            return intDelta;
+        }
+
+        #endregion
     }
 }

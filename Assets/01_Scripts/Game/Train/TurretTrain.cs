@@ -40,6 +40,10 @@ namespace TrainDefense.Game
         protected int _attackCounter;
         private Vector3 _turretmodelScale;
 
+        // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
+        private float _statAttackCountAccum;
+        private float _statTargetCountAccum;
+
         public delegate Projectile ProjectileOverrideProvider(int attackIndex);
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
         private float _attackCountdown;
@@ -800,7 +804,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackCount:
-                    _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(baseStatus.AttackCount * percent);
+                    _currentTurretTrainStatus.AttackCount += UtilMath.AccumulateIntDelta(ref _statAttackCountAccum, baseStatus.AttackCount * percent);
                     if (_useNonMovementProjectilePooling)
                     {
                         EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
@@ -812,7 +816,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.TargetCount:
-                    _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(baseStatus.TargetCount * percent);
+                    _currentTurretTrainStatus.TargetCount += UtilMath.AccumulateIntDelta(ref _statTargetCountAccum, baseStatus.TargetCount * percent);
                     if (_useNonMovementProjectilePooling)
                     {
                         EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);

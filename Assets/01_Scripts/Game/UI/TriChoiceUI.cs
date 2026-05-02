@@ -206,7 +206,8 @@ namespace TrainDefense.Game.UI
                     else
                     {
                         Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Unknown choice type");
-                        return;
+                        choiceSelectUI.gameObject.SetActive(false);
+                        continue;
                     }
 
                     choiceSelectUI.SetData(choiceOption, choiceUIInfo, this);
