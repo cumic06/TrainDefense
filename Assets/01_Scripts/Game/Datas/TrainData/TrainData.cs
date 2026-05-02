@@ -31,8 +31,6 @@ namespace TrainDefense.Game.Datas
         private GameObject prefab;
         [SerializeField]
         private string activeSkillDataId;
-        [SerializeField]
-        private string[] trainSkillDataIds;
         [NonSerialized]
         private TrainSkillData activeSkillDataCache;
         [NonSerialized]
@@ -104,15 +102,14 @@ namespace TrainDefense.Game.Datas
         public DamageType DamageType => damageType;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
-        public string ActiveSkillDataId => GetResolvedActiveSkillDataId();
+        public string ActiveSkillDataId => activeSkillDataId;
         public TrainSkillData TrainSkillData
         {
             get
             {
                 if (activeSkillDataResolved) return activeSkillDataCache;
                 activeSkillDataResolved = true;
-                var firstId = GetResolvedActiveSkillDataId();
-                if (string.IsNullOrEmpty(firstId))
+                if (string.IsNullOrEmpty(activeSkillDataId))
                 {
                     activeSkillDataCache = null;
                     return null;
@@ -124,19 +121,11 @@ namespace TrainDefense.Game.Datas
                     activeSkillDataCache = null;
                     return null;
                 }
-                activeSkillDataCache = db.trainSkillDataList.Find(s => s != null && s.Id == firstId);
+                activeSkillDataCache = db.trainSkillDataList.Find(s => s != null && s.Id == activeSkillDataId);
                 if (activeSkillDataCache == null)
-                    Debug.LogWarning($"TrainData [{id}]: ActiveSkillData '{firstId}' not found in DB");
+                    Debug.LogWarning($"TrainData [{id}]: ActiveSkillData '{activeSkillDataId}' not found in DB");
                 return activeSkillDataCache;
             }
-        }
-
-        private string GetResolvedActiveSkillDataId()
-        {
-            if (!string.IsNullOrEmpty(activeSkillDataId))
-                return activeSkillDataId;
-
-            return trainSkillDataIds?.FirstOrDefault(skillId => !string.IsNullOrEmpty(skillId));
         }
 
         public TrainPassiveSkillData[] PassiveSkillDatas

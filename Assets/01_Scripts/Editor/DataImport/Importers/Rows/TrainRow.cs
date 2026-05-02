@@ -13,6 +13,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string prefabId;
 		public string iconId;
 		public string activeSkillDataId;
+		public string[] passiveSkillDataIds;
 
 		public virtual void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -23,7 +24,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			isMainTrain = map.GetBool(row, "is_main_train");
 			prefabId = map.GetString(row, "prefab_id");
 			iconId = map.GetString(row, "icon_id");
-			activeSkillDataId = map.GetString(row, "train_skill_data_id")?.Trim();
+			activeSkillDataId = map.GetString(row, "active_skill_data_id")?.Trim();
+			passiveSkillDataIds = ParseIds(map.GetString(row, "passive_skill_data_id"));
 		}
 
 		public virtual void ToExcelRow(IRow row, HeaderMap map)
@@ -35,7 +37,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "is_main_train", isMainTrain);
 			map.SetCell(row, "prefab_id", prefabId);
 			map.SetCell(row, "icon_id", iconId);
-			map.SetCell(row, "train_skill_data_id", activeSkillDataId ?? "");
+			map.SetCell(row, "active_skill_data_id", activeSkillDataId ?? "");
+			map.SetCell(row, "passive_skill_data_id", passiveSkillDataIds != null ? string.Join(";", passiveSkillDataIds) : "");
 		}
 
 		protected static string[] ParseIds(string raw)
