@@ -40,13 +40,19 @@ namespace TrainDefense.Game.Datas
         {
             if (string.IsNullOrEmpty(trainDataId)) return false;
 
+            var trainManager = TrainManager.Instance;
+
             // 이미 해당 Train을 보유하고 있으면 유효하지 않음
-            if (TrainManager.Instance.CheckHasTrainById(trainDataId)) return false;
+            if (trainManager.CheckHasTrainById(trainDataId)) return false;
+
+            // 이 카드가 추가/대체하려는 ID 중 하나라도 Elite 교체로 소비된 base ID면 영구 차단
+            if (trainManager.IsTrainIdReplaced(trainDataId)) return false;
+            if (IsReplaceMode && trainManager.IsTrainIdReplaced(replaceTrainId)) return false;
 
             // 대체 모드인 경우: 대체할 Train이 존재하고 레벨 조건 충족 필요
             if (IsReplaceMode)
             {
-                var mainTrain = TrainManager.Instance.MainTrain;
+                var mainTrain = trainManager.MainTrain;
                 if (mainTrain == null) return false;
 
                 // 대체할 Train 찾기

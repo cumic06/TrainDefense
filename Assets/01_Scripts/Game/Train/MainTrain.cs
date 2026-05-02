@@ -53,6 +53,11 @@ namespace TrainDefense.Game
       private readonly List<DeadTrainInfo> _deadTrains = new();//죽은 Train 목록
       private readonly Dictionary<Train, int> _trainOriginalIndexMap = new();//Train의 원래 인덱스 매핑
 
+      // Elite 교체로 소비된 base train ID. 한 번 들어가면 게임 세션 동안 영구.
+      // TriChoice가 이 ID를 targetTrainId/replaceTrainId/trainDataId로 참조하는 카드는 모두 노출 차단.
+      private readonly HashSet<string> _replacedTrainIds = new();
+      public bool IsTrainIdReplaced(string trainId) => !string.IsNullOrEmpty(trainId) && _replacedTrainIds.Contains(trainId);
+
       protected override void Start()
       {
          base.Start();
@@ -216,6 +221,9 @@ namespace TrainDefense.Game
          // ApplyExistingUpgradesToTrain은 호출하지 않는다 — oldTrain의 currentStat에 이미 영구 업그레이드가 반영되어 있어
          // CopyProgressFrom의 delta가 영구 + 카드를 모두 옮긴다. 둘 다 호출하면 영구분이 중복 적용된다.
          newTrain.CopyProgressFrom(oldTrain);
+
+         // Elite 생성에 소비된 base ID는 이후 TriChoice에서 영구 차단 (다른 Elite 변형 / base 업그레이드 / 재추가 모두 금지).
+         _replacedTrainIds.Add(oldTrainId);
 
          // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
          GameEventSystem.Publish(new ReplaceTrainEvent(oldTrain, newTrain, newTrainData?.Icon));

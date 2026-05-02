@@ -51,6 +51,11 @@ namespace TrainDefense.Game
          return mainTrain.CheckHasTrainById(trainId);
       }
 
+      public bool IsTrainIdReplaced(string trainId)
+      {
+         return mainTrain != null && mainTrain.IsTrainIdReplaced(trainId);
+      }
+
       public bool IsMaxTrainCountReached()
       {
          if (mainTrain.CurrentTrainCount == 0)
