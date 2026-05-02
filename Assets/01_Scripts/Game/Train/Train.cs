@@ -254,5 +254,24 @@ namespace TrainDefense.Game
                     }
             }
         }
+
+        // Elite 교체(MainTrain.ReplaceTrain) 시 기존 트레인의 누적 강화(영구 + 카드)를 새 인스턴스에 승계.
+        // delta 방식: newCurrent = newBase + (oldCurrent - oldBase). HP는 비율 보존.
+        // 서브클래스는 base 호출 후 자기 status struct delta를 직접 옮긴다.
+        public virtual void CopyProgressFrom(Train source)
+        {
+            if (source == null || source._trainData == null || _trainData == null) return;
+
+            _currentLevel = source._currentLevel;
+
+            int oldBaseMaxHp = source._trainData.TrainStatusData.MaxHp;
+            int maxHpDelta = source._currentMaxHp - oldBaseMaxHp;
+            float hpRatio = source._currentMaxHp > 0 ? (float)source._currentHp / source._currentMaxHp : 1f;
+
+            _currentMaxHp += maxHpDelta;
+            _currentHp = Mathf.Clamp(Mathf.RoundToInt(_currentMaxHp * hpRatio), 0, _currentMaxHp);
+
+            _statMaxHpAccum = source._statMaxHpAccum;
+        }
     }
 }

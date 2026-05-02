@@ -283,6 +283,41 @@ namespace TrainDefense.Game
             }
         }
 
+        public override void CopyProgressFrom(Train source)
+        {
+            base.CopyProgressFrom(source);
+            if (source is not RangeTrain srcRange) return;
+            if (srcRange.rangeTrainData == null || rangeTrainData == null) return;
+
+            var srcBase = srcRange.rangeTrainData.RangeTrainStatus;
+            var srcCurrent = srcRange._currentRangeTrainStatus;
+            var newBase = rangeTrainData.RangeTrainStatus;
+
+            _currentRangeTrainStatus.AttackRange = newBase.AttackRange + (srcCurrent.AttackRange - srcBase.AttackRange);
+            _currentRangeTrainStatus.AttackArea = newBase.AttackArea + (srcCurrent.AttackArea - srcBase.AttackArea);
+            _currentRangeTrainStatus.AttackDamage = newBase.AttackDamage + (srcCurrent.AttackDamage - srcBase.AttackDamage);
+            _currentRangeTrainStatus.AttackCount = newBase.AttackCount + (srcCurrent.AttackCount - srcBase.AttackCount);
+            _currentRangeTrainStatus.AttackInterval = newBase.AttackInterval + (srcCurrent.AttackInterval - srcBase.AttackInterval);
+            _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
+            _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
+
+            _statAttackDamageAccum = srcRange._statAttackDamageAccum;
+            _statAttackCountAccum = srcRange._statAttackCountAccum;
+
+            if (_rangeProjectilePrefab != null)
+            {
+                _rangeProjectilePrefab.transform.localScale =
+                    new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
+                _rangeProjectilePrefab.Init(
+                    _currentRangeTrainStatus.AttackDamage,
+                    this,
+                    null,
+                    _currentRangeTrainStatus.AttackArea,
+                    _currentRangeTrainStatus.CriticalChance,
+                    _currentRangeTrainStatus.CriticalDamage);
+            }
+        }
+
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;

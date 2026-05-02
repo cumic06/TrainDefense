@@ -212,8 +212,10 @@ namespace TrainDefense.Game
          _pendingSkillType = AddTrainChoiceSkillType.None;
          newTrain.IsUnDead = isUnDead;
 
-         // 새로 생성된 train에 기존 업그레이드 적용
-         ApplyExistingUpgradesToTrain(newTrain);
+         // 기존 트레인의 누적 강화(영구 상점 + 카드)를 새 인스턴스에 통째로 승계.
+         // ApplyExistingUpgradesToTrain은 호출하지 않는다 — oldTrain의 currentStat에 이미 영구 업그레이드가 반영되어 있어
+         // CopyProgressFrom의 delta가 영구 + 카드를 모두 옮긴다. 둘 다 호출하면 영구분이 중복 적용된다.
+         newTrain.CopyProgressFrom(oldTrain);
 
          // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
          GameEventSystem.Publish(new ReplaceTrainEvent(oldTrain, newTrain, newTrainData?.Icon));

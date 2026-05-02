@@ -834,6 +834,40 @@ namespace TrainDefense.Game
             }
         }
 
+        public override void CopyProgressFrom(Train source)
+        {
+            base.CopyProgressFrom(source);
+            if (source is not TurretTrain srcTurret) return;
+            if (srcTurret.turretTrainData == null || turretTrainData == null) return;
+
+            var srcBase = srcTurret.turretTrainData.TurretTrainStatus;
+            var srcCurrent = srcTurret._currentTurretTrainStatus;
+            var newBase = turretTrainData.TurretTrainStatus;
+
+            _currentTurretTrainStatus.AttackDamage = newBase.AttackDamage + (srcCurrent.AttackDamage - srcBase.AttackDamage);
+            _currentTurretTrainStatus.AttackRange = newBase.AttackRange + (srcCurrent.AttackRange - srcBase.AttackRange);
+            _currentTurretTrainStatus.AttackArea = newBase.AttackArea + (srcCurrent.AttackArea - srcBase.AttackArea);
+            _currentTurretTrainStatus.AttackCount = newBase.AttackCount + (srcCurrent.AttackCount - srcBase.AttackCount);
+            _currentTurretTrainStatus.AttackInterval = newBase.AttackInterval + (srcCurrent.AttackInterval - srcBase.AttackInterval);
+            _currentTurretTrainStatus.TargetCount = newBase.TargetCount + (srcCurrent.TargetCount - srcBase.TargetCount);
+            _currentTurretTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
+            _currentTurretTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
+
+            _statAttackDamageAccum = srcTurret._statAttackDamageAccum;
+            _statAttackCountAccum = srcTurret._statAttackCountAccum;
+            _statTargetCountAccum = srcTurret._statTargetCountAccum;
+
+            if (_useNonMovementProjectilePooling)
+            {
+                int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
+                EnsureNonMovementProjectileCount(maxCount);
+                foreach (var projectile in _nonMovementProjectiles)
+                {
+                    if (projectile != null) InitializeProjectileDamage(projectile);
+                }
+            }
+        }
+
         protected virtual Projectile GetProjectile()
         {
             return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
