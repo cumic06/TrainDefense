@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using NPOI.SS.UserModel;
+using System.Linq;
 
 namespace TrainDefense.Editor.DataImport.Importers.Rows
 {
@@ -24,7 +25,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			isMainTrain = map.GetBool(row, "is_main_train");
 			prefabId = map.GetString(row, "prefab_id");
 			iconId = map.GetString(row, "icon_id");
-			activeSkillDataId = map.GetString(row, "active_skill_data_id")?.Trim();
+			activeSkillDataId = ParseIds(map.GetString(row, "active_skill_data_id")).FirstOrDefault();
 			passiveSkillDataIds = ParseIds(map.GetString(row, "passive_skill_data_id"));
 		}
 
