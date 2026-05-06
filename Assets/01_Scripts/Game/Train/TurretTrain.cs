@@ -761,7 +761,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(stat.Value * turretTrainData.AttackDamageMultiplier);
+                    _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(baseStatus.AttackDamage * percent);
 
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
