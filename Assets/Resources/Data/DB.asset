@@ -330,7 +330,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: MainTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
   turretTrainDataList:
@@ -344,7 +344,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: NormalTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -369,7 +369,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: FireTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -394,7 +394,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: MissileTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -419,7 +419,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: LaserTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -444,7 +444,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: ElectrickTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -469,7 +469,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: CannonTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -494,7 +494,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: SniperTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -518,7 +518,8 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteNormalTurretTrain
-    activeSkillDataId: 50001
+    activeSkillDataIds:
+    - 50001
     passiveSkillDataIds:
     - 60001
     isMainTrain: 0
@@ -543,7 +544,8 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteFireTurretTrain
-    activeSkillDataId: 50002
+    activeSkillDataIds:
+    - 50002
     passiveSkillDataIds:
     - 60002
     - 60003
@@ -569,7 +571,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteMissileTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60008
     - 60009
@@ -596,7 +598,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteLaserTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60011
     - 60012
@@ -622,7 +624,8 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteElectrickTurretTrain
-    activeSkillDataId: 50005
+    activeSkillDataIds:
+    - 50005
     passiveSkillDataIds:
     - 60013
     isMainTrain: 0
@@ -647,7 +650,8 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteCannonTurretTrain
-    activeSkillDataId: 50006
+    activeSkillDataIds:
+    - 50006
     passiveSkillDataIds:
     - 60014
     - 60015
@@ -673,7 +677,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteSniperTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60016
     - 60017
@@ -700,7 +704,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteNormalTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60001
     isMainTrain: 0
@@ -725,7 +729,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteFireTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60002
     isMainTrain: 0
@@ -750,7 +754,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteMissileTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60003
     isMainTrain: 0
@@ -775,7 +779,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteLaserTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60004
     isMainTrain: 0
@@ -800,7 +804,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteElectrickTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60005
     isMainTrain: 0
@@ -825,7 +829,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteCannonTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60006
     isMainTrain: 0
@@ -850,7 +854,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteSniperTurretTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60007
     isMainTrain: 0
@@ -877,7 +881,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: ExplosionRangeTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
@@ -901,7 +905,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: ColdAirRangeTrain
-    activeSkillDataId: 
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
@@ -924,7 +928,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteExplosionRangeTrain
-    activeSkillDataId: 50008
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
@@ -947,7 +951,7 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteColdAirRangeTrain
-    activeSkillDataId: 50009
+    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
@@ -970,7 +974,8 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteExplosionRangeTrain
-    activeSkillDataId: 50004
+    activeSkillDataIds:
+    - 50004
     passiveSkillDataIds:
     - 60006
     - 60007
@@ -995,7 +1000,8 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteColdAirRangeTrain
-    activeSkillDataId: 50003
+    activeSkillDataIds:
+    - 50003
     passiveSkillDataIds:
     - 60004
     - 60005

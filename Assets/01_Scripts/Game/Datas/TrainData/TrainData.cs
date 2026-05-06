@@ -30,11 +30,11 @@ namespace TrainDefense.Game.Datas
         private string prefabId;
         private GameObject prefab;
         [SerializeField]
-        private string activeSkillDataId;
+        private string[] activeSkillDataIds;
         [NonSerialized]
-        private TrainSkillData activeSkillDataCache;
+        private TrainSkillData[] activeSkillDatasCache;
         [NonSerialized]
-        private bool activeSkillDataResolved;
+        private bool activeSkillDatasResolved;
         [SerializeField]
         private string[] passiveSkillDataIds;
         [NonSerialized]
@@ -102,29 +102,37 @@ namespace TrainDefense.Game.Datas
         public DamageType DamageType => damageType;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
-        public string ActiveSkillDataId => activeSkillDataId;
-        public TrainSkillData TrainSkillData
+        public string ActiveSkillDataId => activeSkillDataIds != null && activeSkillDataIds.Length > 0 ? activeSkillDataIds[0] : null;
+        public string[] ActiveSkillDataIds => activeSkillDataIds;
+        public TrainSkillData TrainSkillData => TrainSkillDatas.Length > 0 ? TrainSkillDatas[0] : null;
+        public TrainSkillData[] TrainSkillDatas
         {
             get
             {
-                if (activeSkillDataResolved) return activeSkillDataCache;
-                activeSkillDataResolved = true;
-                if (string.IsNullOrEmpty(activeSkillDataId))
+                if (activeSkillDatasResolved) return activeSkillDatasCache;
+                activeSkillDatasResolved = true;
+                if (activeSkillDataIds == null || activeSkillDataIds.Length == 0)
                 {
-                    activeSkillDataCache = null;
-                    return null;
+                    activeSkillDatasCache = System.Array.Empty<TrainSkillData>();
+                    return activeSkillDatasCache;
                 }
                 var dbm = TrainDefense.Game.DatabaseManager.Instance;
                 var db = dbm != null ? dbm.GetDB() : null;
                 if (db == null || db.trainSkillDataList == null)
                 {
-                    activeSkillDataCache = null;
-                    return null;
+                    activeSkillDatasCache = System.Array.Empty<TrainSkillData>();
+                    return activeSkillDatasCache;
                 }
-                activeSkillDataCache = db.trainSkillDataList.Find(s => s != null && s.Id == activeSkillDataId);
-                if (activeSkillDataCache == null)
-                    Debug.LogWarning($"TrainData [{id}]: ActiveSkillData '{activeSkillDataId}' not found in DB");
-                return activeSkillDataCache;
+                var result = new System.Collections.Generic.List<TrainSkillData>();
+                foreach (var skillId in activeSkillDataIds)
+                {
+                    if (string.IsNullOrEmpty(skillId)) continue;
+                    var data = db.trainSkillDataList.Find(s => s != null && s.Id == skillId);
+                    if (data != null) result.Add(data);
+                    else Debug.LogWarning($"TrainData [{id}]: ActiveSkillData '{skillId}' not found in DB");
+                }
+                activeSkillDatasCache = result.ToArray();
+                return activeSkillDatasCache;
             }
         }
 

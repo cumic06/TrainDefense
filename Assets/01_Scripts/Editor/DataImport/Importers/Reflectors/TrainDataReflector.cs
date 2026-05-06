@@ -26,8 +26,10 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			var trainStatusData = new TrainStatusData { MaxHp = r.maxHp };
 			SetPrivateField(t, target, "trainStatusData", trainStatusData);
 
-			SetPrivateField(t, target, "activeSkillDataId", r.activeSkillDataId);
+			SetPrivateField(t, target, "activeSkillDataIds", r.activeSkillDataIds);
+			SetPrivateField(t, target, "activeSkillDatasResolved", false);
 			SetPrivateField(t, target, "passiveSkillDataIds", r.passiveSkillDataIds);
+			SetPrivateField(t, target, "passiveSkillDatasResolved", false);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)
