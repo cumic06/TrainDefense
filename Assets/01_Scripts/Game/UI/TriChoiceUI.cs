@@ -151,43 +151,8 @@ namespace TrainDefense.Game.UI
                             choiceUIInfo.Name = trainData.Name;
                             choiceUIInfo.Description = trainData.Description;
 
-                            TrainPassiveSkillData passiveData = null;
-                            if (trainData is RangeTrainData rangeData)
-                                passiveData = rangeData.PassiveSkillData;
-                            else if (trainData is TurretTrainData turretData)
-                                passiveData = turretData.PassiveSkillData;
-
-                            switch (addTrainChoice.SkillType)
-                            {
-                                case TrainChoiceSkillType.Passive:
-                                    if (passiveData != null)
-                                    {
-                                        if (!string.IsNullOrEmpty(passiveData.Name))
-                                            choiceUIInfo.PassiveName = passiveData.Name;
-                                        if (!string.IsNullOrEmpty(passiveData.Description))
-                                            choiceUIInfo.PassiveDescription = passiveData.Description;
-                                    }
-                                    break;
-                                case TrainChoiceSkillType.Active:
-                                    var skillData = trainData.TrainSkillData;
-                                    if (skillData != null && skillData.HasActiveSkill)
-                                    {
-                                        if (!string.IsNullOrEmpty(skillData.Name))
-                                            choiceUIInfo.ActiveSkillName = skillData.Name;
-                                        if (!string.IsNullOrEmpty(skillData.Description))
-                                            choiceUIInfo.ActiveSkillDescription = skillData.Description;
-                                    }
-                                    break;
-                                default:
-                                    if (passiveData != null)
-                                    {
-                                        if (!string.IsNullOrEmpty(passiveData.Name))
-                                            choiceUIInfo.PassiveName = passiveData.Name;
-                                        if (!string.IsNullOrEmpty(passiveData.Description))
-                                            choiceUIInfo.PassiveDescription = passiveData.Description;
-                                    }
-                                    break;
-                            }
+                            var (skillData, skillType) = triChoiceManager.GetSelectedAddSkill(addTrainChoice);
+                            ApplySkillInfoToUI(choiceUIInfo, skillData, skillType);
                         }
                     }
                     else if (choiceOption is EliteTrainChoice eliteTrainChoice)
@@ -199,34 +164,8 @@ namespace TrainDefense.Game.UI
                             choiceUIInfo.Name = trainData.Name;
                             choiceUIInfo.Description = trainData.Description;
 
-                            TrainPassiveSkillData passiveData = null;
-                            if (trainData is RangeTrainData rangeData)
-                                passiveData = rangeData.PassiveSkillData;
-                            else if (trainData is TurretTrainData turretData)
-                                passiveData = turretData.PassiveSkillData;
-
-                            switch (eliteTrainChoice.EffectiveSkillType)
-                            {
-                                case TrainChoiceSkillType.Passive:
-                                    if (passiveData != null)
-                                    {
-                                        if (!string.IsNullOrEmpty(passiveData.Name))
-                                            choiceUIInfo.PassiveName = passiveData.Name;
-                                        if (!string.IsNullOrEmpty(passiveData.Description))
-                                            choiceUIInfo.PassiveDescription = passiveData.Description;
-                                    }
-                                    break;
-                                case TrainChoiceSkillType.Active:
-                                    var skillData = trainData.TrainSkillData;
-                                    if (skillData != null && skillData.HasActiveSkill)
-                                    {
-                                        if (!string.IsNullOrEmpty(skillData.Name))
-                                            choiceUIInfo.ActiveSkillName = skillData.Name;
-                                        if (!string.IsNullOrEmpty(skillData.Description))
-                                            choiceUIInfo.ActiveSkillDescription = skillData.Description;
-                                    }
-                                    break;
-                            }
+                            var (skillData, skillType) = triChoiceManager.GetSelectedEliteSkill(eliteTrainChoice);
+                            ApplySkillInfoToUI(choiceUIInfo, skillData, skillType);
                         }
                     }
                     else if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
@@ -334,6 +273,26 @@ namespace TrainDefense.Game.UI
             backgroundImage.SetActive(false);
         }
 
+        private void ApplySkillInfoToUI(ChoiceUIInfo choiceUIInfo, IData skillData, TrainChoiceSkillType skillType)
+        {
+            if (skillData == null) return;
+
+            if (skillType == TrainChoiceSkillType.Active && skillData is TrainSkillData activeSkill)
+            {
+                if (!string.IsNullOrEmpty(activeSkill.Name))
+                    choiceUIInfo.ActiveSkillName = activeSkill.Name;
+                if (!string.IsNullOrEmpty(activeSkill.Description))
+                    choiceUIInfo.ActiveSkillDescription = activeSkill.Description;
+            }
+            else if (skillType == TrainChoiceSkillType.Passive && skillData is TrainPassiveSkillData passiveSkill)
+            {
+                if (!string.IsNullOrEmpty(passiveSkill.Name))
+                    choiceUIInfo.PassiveName = passiveSkill.Name;
+                if (!string.IsNullOrEmpty(passiveSkill.Description))
+                    choiceUIInfo.PassiveDescription = passiveSkill.Description;
+            }
+        }
+
         private void OnRerollButtonClick()
         {
             if (_isSelecting) return;
@@ -341,7 +300,7 @@ namespace TrainDefense.Game.UI
             var triChoiceManager = TriChoiceManager.Instance;
             if (triChoiceManager != null)
             {
-                triChoiceManager.ClearSelectedUpgrades();
+                triChoiceManager.ClearSelectedChoiceData();
             }
 
             // 현재 선택지 UI를 숨기고 새로운 선택지로 다시 표시

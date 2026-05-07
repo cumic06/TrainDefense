@@ -18,20 +18,11 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         [Tooltip("전환 후 사용할 Elite Train 데이터 ID")]
         private string eliteTrainDataId;
-
-        [SerializeField]
-        [Tooltip("적용할 스킬 분기 (None은 기존 데이터 호환을 위해 Passive로 처리)")]
-        private TrainChoiceSkillType skillType;
         #endregion
 
         public string Id => id;
         public string BaseTrainId => baseTrainId;
         public string EliteTrainDataId => eliteTrainDataId;
-        public TrainChoiceSkillType SkillType => skillType;
-        public TrainChoiceSkillType EffectiveSkillType =>
-            skillType == TrainChoiceSkillType.None
-                ? TrainChoiceSkillType.Passive
-                : skillType;
 
         public bool IsValid()
         {
@@ -57,22 +48,8 @@ namespace TrainDefense.Game.Datas
             if (baseTrain == null) return false;
             if (baseTrain.CurrentLevel < 2) return false;
 
-            return HasRequiredSkill(eliteTrainData);
-        }
-
-        private bool HasRequiredSkill(TrainData eliteTrainData)
-        {
-            if (eliteTrainData == null) return false;
-
-            switch (EffectiveSkillType)
-            {
-                case TrainChoiceSkillType.Passive:
-                    return eliteTrainData.PassiveSkillDatas != null && eliteTrainData.PassiveSkillDatas.Length > 0;
-                case TrainChoiceSkillType.Active:
-                    return eliteTrainData.TrainSkillData != null && eliteTrainData.TrainSkillData.HasActiveSkill;
-                default:
-                    return true;
-            }
+            // 스킬이 하나라도 있어야 엘리트 카드로 유효
+            return databaseManager.GetTrainSkillDataDB().HasSkillForTrain(eliteTrainDataId);
         }
 
         public void Execute()
@@ -92,7 +69,12 @@ namespace TrainDefense.Game.Datas
                 return;
             }
 
-            main.ReplaceTrain(baseTrainId, eliteTrainData, EffectiveSkillType);
+            // TriChoiceManager 캐시에서 결정된 skillType 사용
+            var skillType = TriChoiceManager.Instance != null
+                ? TriChoiceManager.Instance.GetCachedEliteSkillType(id)
+                : TrainChoiceSkillType.None;
+
+            main.ReplaceTrain(baseTrainId, eliteTrainData, skillType);
         }
     }
 }

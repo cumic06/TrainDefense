@@ -32,11 +32,11 @@ namespace TrainDefense.Editor.DataImport.Importers
 				var r = new TrainPassiveSkillDataRow();
 				r.FromExcelRow(row, map);
 				if (string.IsNullOrEmpty(r.id)) continue;
-				var existing = db.trainPassiveSkillDataList.Find(s => s != null && s.Id == r.id);
+				var existing = db.TrainSkillDataDB.trainPassiveSkillDataList.Find(s => s != null && s.Id == r.id);
 				if (existing == null)
 				{
 					var obj = refl.Create(r);
-					db.trainPassiveSkillDataList.Add(obj);
+					db.TrainSkillDataDB.trainPassiveSkillDataList.Add(obj);
 				}
 				else
 				{

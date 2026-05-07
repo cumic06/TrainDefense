@@ -702,7 +702,7 @@ namespace TrainDefense.Game
                 var passiveId = turretUpgradeData.GetPassiveSkillDataId(upgradeLevelIndex);
                 if (!string.IsNullOrEmpty(passiveId))
                 {
-                    var passiveData = DatabaseManager.Instance.GetDB().trainPassiveSkillDataList
+                    var passiveData = DatabaseManager.Instance.GetDB().TrainSkillDataDB.trainPassiveSkillDataList
                         .Find(s => s != null && s.Id == passiveId);
                     _skillModule.RegisterPassiveFromData(passiveData);
                 }

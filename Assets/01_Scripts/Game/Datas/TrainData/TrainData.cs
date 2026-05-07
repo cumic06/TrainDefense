@@ -104,6 +104,7 @@ namespace TrainDefense.Game.Datas
         public TrainStatusData TrainStatusData => trainStatusData;
         public string ActiveSkillDataId => activeSkillDataIds != null && activeSkillDataIds.Length > 0 ? activeSkillDataIds[0] : null;
         public string[] ActiveSkillDataIds => activeSkillDataIds;
+        public string[] PassiveSkillDataIds => passiveSkillDataIds;
         public TrainSkillData TrainSkillData => TrainSkillDatas.Length > 0 ? TrainSkillDatas[0] : null;
         public TrainSkillData[] TrainSkillDatas
         {
@@ -118,7 +119,7 @@ namespace TrainDefense.Game.Datas
                 }
                 var dbm = TrainDefense.Game.DatabaseManager.Instance;
                 var db = dbm != null ? dbm.GetDB() : null;
-                if (db == null || db.trainSkillDataList == null)
+                if (db == null || db.TrainSkillDataDB == null)
                 {
                     activeSkillDatasCache = System.Array.Empty<TrainSkillData>();
                     return activeSkillDatasCache;
@@ -127,7 +128,7 @@ namespace TrainDefense.Game.Datas
                 foreach (var skillId in activeSkillDataIds)
                 {
                     if (string.IsNullOrEmpty(skillId)) continue;
-                    var data = db.trainSkillDataList.Find(s => s != null && s.Id == skillId);
+                    var data = db.TrainSkillDataDB.trainActiveSkillDataList.Find(s => s != null && s.Id == skillId);
                     if (data != null) result.Add(data);
                     else Debug.LogWarning($"TrainData [{id}]: ActiveSkillData '{skillId}' not found in DB");
                 }
@@ -148,7 +149,7 @@ namespace TrainDefense.Game.Datas
                     return passiveSkillDatasCache;
                 }
                 var db = DatabaseManager.Instance?.GetDB();
-                if (db?.trainPassiveSkillDataList == null)
+                if (db?.TrainSkillDataDB == null)
                 {
                     passiveSkillDatasCache = System.Array.Empty<TrainPassiveSkillData>();
                     return passiveSkillDatasCache;
@@ -157,7 +158,7 @@ namespace TrainDefense.Game.Datas
                 foreach (var skillId in passiveSkillDataIds)
                 {
                     if (string.IsNullOrEmpty(skillId)) continue;
-                    var data = db.trainPassiveSkillDataList.Find(s => s != null && s.Id == skillId);
+                    var data = db.TrainSkillDataDB.trainPassiveSkillDataList.Find(s => s != null && s.Id == skillId);
                     if (data != null) result.Add(data);
                     else Debug.LogWarning($"TrainData [{id}]: PassiveSkillData '{skillId}' not found in DB");
                 }

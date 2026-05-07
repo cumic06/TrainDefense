@@ -19,6 +19,11 @@ namespace TrainDefense.Game
         // 선택된 업그레이드를 런타임 상태로 관리
         private Dictionary<string, ITrainUpgradeData> _selectedUpgrades = new();
 
+        // EliteTrainChoice별 랜덤 선택된 스킬 캐시 (choiceId → (skillData, skillType))
+        private Dictionary<string, (IData skillData, TrainChoiceSkillType skillType)> _selectedEliteSkills = new();
+        // AddTrainChoice별 랜덤 선택된 스킬 캐시 (choiceId → (skillData, skillType))
+        private Dictionary<string, (IData skillData, TrainChoiceSkillType skillType)> _selectedAddSkills = new();
+
         /// <summary>
         /// 삼중택일 선택지를 반환합니다.
         /// </summary>
@@ -448,12 +453,81 @@ namespace TrainDefense.Game
         }
 
         /// <summary>
-        /// 캐시된 업그레이드 선택을 모두 초기화합니다. (리롤 시 사용)
+        /// EliteTrainChoice에 대한 랜덤 스킬을 반환합니다.
+        /// 캐시에 없으면 TrainSkillDataDB에서 랜덤 선택 후 저장합니다.
         /// </summary>
-        public void ClearSelectedUpgrades()
+        public (IData skillData, TrainChoiceSkillType skillType) GetSelectedEliteSkill(EliteTrainChoice choice)
+        {
+            if (choice == null) return (null, TrainChoiceSkillType.None);
+
+            if (_selectedEliteSkills.TryGetValue(choice.Id, out var cached))
+                return cached;
+
+            var db = DatabaseManager.Instance?.GetTrainSkillDataDB();
+            if (db == null) return (null, TrainChoiceSkillType.None);
+
+            var picked = db.GetRandomSkillForTrain(choice.EliteTrainDataId);
+            if (picked.skillData != null)
+                _selectedEliteSkills[choice.Id] = picked;
+
+            return picked;
+        }
+
+        /// <summary>
+        /// EliteTrainChoice에 캐시된 skillType만 반환합니다. (Execute 시 사용)
+        /// </summary>
+        public TrainChoiceSkillType GetCachedEliteSkillType(string choiceId)
+        {
+            if (_selectedEliteSkills.TryGetValue(choiceId, out var cached))
+                return cached.skillType;
+            return TrainChoiceSkillType.None;
+        }
+
+        /// <summary>
+        /// AddTrainChoice에 대한 랜덤 스킬을 반환합니다.
+        /// 캐시에 없으면 TrainSkillDataDB에서 랜덤 선택 후 저장합니다.
+        /// </summary>
+        public (IData skillData, TrainChoiceSkillType skillType) GetSelectedAddSkill(AddTrainChoice choice)
+        {
+            if (choice == null) return (null, TrainChoiceSkillType.None);
+
+            if (_selectedAddSkills.TryGetValue(choice.Id, out var cached))
+                return cached;
+
+            var db = DatabaseManager.Instance?.GetTrainSkillDataDB();
+            if (db == null) return (null, TrainChoiceSkillType.None);
+
+            var picked = db.GetRandomSkillForTrain(choice.TrainDataId);
+            if (picked.skillData != null)
+                _selectedAddSkills[choice.Id] = picked;
+
+            return picked;
+        }
+
+        /// <summary>
+        /// AddTrainChoice에 캐시된 skillType만 반환합니다. (Execute 시 사용)
+        /// </summary>
+        public TrainChoiceSkillType GetCachedAddSkillType(string choiceId)
+        {
+            if (_selectedAddSkills.TryGetValue(choiceId, out var cached))
+                return cached.skillType;
+            return TrainChoiceSkillType.None;
+        }
+
+        /// <summary>
+        /// 캐시된 선택 데이터(업그레이드 + 스킬)를 모두 초기화합니다. (리롤 시 사용)
+        /// </summary>
+        public void ClearSelectedChoiceData()
         {
             _selectedUpgrades.Clear();
+            _selectedEliteSkills.Clear();
+            _selectedAddSkills.Clear();
         }
+
+        /// <summary>
+        /// 캐시된 업그레이드 선택을 모두 초기화합니다. (하위 호환)
+        /// </summary>
+        public void ClearSelectedUpgrades() => ClearSelectedChoiceData();
 
         private Train GetTargetTrain(string targetTrainId)
         {

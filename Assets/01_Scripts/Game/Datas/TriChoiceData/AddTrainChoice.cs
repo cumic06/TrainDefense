@@ -18,15 +18,11 @@ namespace TrainDefense.Game.Datas
         [Tooltip("대체할 기존 Train 데이터 ID (0이면 대체 없이 추가)")]
         private string replaceTrainId;
 
-        [SerializeField]
-        [Tooltip("표시할 스킬 타입 (None=기본, Passive=패시브만, Active=액티브만)")]
-        private TrainChoiceSkillType skillType;
         #endregion
 
         public string Id => id;
         public string TrainDataId => trainDataId;
         public string ReplaceTrainId => replaceTrainId;
-        public TrainChoiceSkillType SkillType => skillType;
 
         /// <summary>
         /// 대체 로직이 필요한지 확인
@@ -78,6 +74,10 @@ namespace TrainDefense.Game.Datas
                 Debug.LogError($"AddTrainChoice [{id}]: replaceTrainId is set. Use EliteTrainChoice for replacements.");
                 return;
             }
+
+            var skillType = TriChoiceManager.Instance != null
+                ? TriChoiceManager.Instance.GetCachedAddSkillType(id)
+                : TrainChoiceSkillType.None;
 
             main.SpawnTrain(trainData, skillType);
         }

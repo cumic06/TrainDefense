@@ -135,7 +135,6 @@ namespace TrainDefense.Editor.DataImport.Importers
 			SetPrivateField(t, target, "id", r.id);
 			SetPrivateField(t, target, "trainDataId", r.trainDataId);
 			SetPrivateField(t, target, "replaceTrainId", r.replaceTrainId);
-			SetPrivateField(t, target, "skillType", (TrainChoiceSkillType)r.skillType);
 		}
 
 		private static void CopyElite(AddTrainChoiceRow r, EliteTrainChoice target)
@@ -144,7 +143,6 @@ namespace TrainDefense.Editor.DataImport.Importers
 			SetPrivateField(t, target, "id", r.id);
 			SetPrivateField(t, target, "baseTrainId", r.replaceTrainId);
 			SetPrivateField(t, target, "eliteTrainDataId", r.trainDataId);
-			SetPrivateField(t, target, "skillType", (TrainChoiceSkillType)r.skillType);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)
