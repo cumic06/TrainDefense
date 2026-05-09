@@ -229,6 +229,35 @@ namespace TrainDefense.Game
             }
         }
 
+        // 레벨 누적 방식: RoundToInt(base * percent * N) - RoundToInt(base * percent * prevN)
+        // per-call 반올림 대신 누적 값 기준으로 delta를 계산해 소수 퍼센트도 정확히 적용
+        public virtual void ApplyStatsLevelAware(IStat[] stats, int newLevel, int prevLevel = 0)
+        {
+            if (stats == null || stats.Length == 0) return;
+            foreach (var stat in stats)
+                ApplyStatLevelAware(stat, newLevel, prevLevel);
+        }
+
+        protected virtual void ApplyStatLevelAware(IStat stat, int newLevel, int prevLevel)
+        {
+            if (stat == null) return;
+            switch (stat.Type)
+            {
+                case StatType.MaxHp:
+                {
+                    int baseMaxHp = _trainData.TrainStatusData.MaxHp;
+                    float percent = stat.Value / 100f;
+                    int newTot = Mathf.RoundToInt(baseMaxHp * percent * newLevel);
+                    int oldTot = Mathf.RoundToInt(baseMaxHp * percent * prevLevel);
+                    int delta = newTot - oldTot;
+                    _currentMaxHp += delta;
+                    _currentHp += delta;
+                    _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+                    break;
+                }
+            }
+        }
+
         public virtual string GetStatSummary() => $"MaxHp={_currentMaxHp}";
 
         protected virtual void ApplyStat(IStat stat)

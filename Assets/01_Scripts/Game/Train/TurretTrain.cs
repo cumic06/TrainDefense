@@ -805,6 +805,85 @@ namespace TrainDefense.Game
             }
         }
 
+        public override void ApplyStatsLevelAware(IStat[] stats, int newLevel, int prevLevel = 0)
+        {
+            if (stats == null || stats.Length == 0) return;
+            foreach (var stat in stats)
+                ApplyStatLevelAware(stat, newLevel, prevLevel);
+        }
+
+        protected override void ApplyStatLevelAware(IStat stat, int newLevel, int prevLevel)
+        {
+            if (stat == null) return;
+
+            var baseStatus = turretTrainData.TurretTrainStatus;
+            float percent = stat.Value / 100f;
+            int times = newLevel - prevLevel;
+
+            switch (stat.Type)
+            {
+                case StatType.AttackRange:
+                    _currentTurretTrainStatus.AttackRange += baseStatus.AttackRange * percent * times;
+                    break;
+
+                case StatType.AttackArea:
+                    _currentTurretTrainStatus.AttackArea += baseStatus.AttackArea * percent * times;
+                    if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+                        foreach (var p in _nonMovementProjectiles)
+                            if (p != null) InitializeProjectileDamage(p);
+                    break;
+
+                case StatType.AttackDamage:
+                {
+                    int newTot = Mathf.RoundToInt(baseStatus.AttackDamage * percent * newLevel);
+                    int oldTot = Mathf.RoundToInt(baseStatus.AttackDamage * percent * prevLevel);
+                    int dmgDelta = newTot - oldTot;
+                    Debug.Log($"[Shop DMG] base={baseStatus.AttackDamage} val={stat.Value} new={newLevel} prev={prevLevel} delta={dmgDelta} → {_currentTurretTrainStatus.AttackDamage + dmgDelta}");
+                    _currentTurretTrainStatus.AttackDamage += dmgDelta;
+                    if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+                        foreach (var p in _nonMovementProjectiles)
+                            if (p != null) InitializeProjectileDamage(p);
+                    break;
+                }
+
+                case StatType.AttackCount:
+                {
+                    int newTot = Mathf.RoundToInt(baseStatus.AttackCount * percent * newLevel);
+                    int oldTot = Mathf.RoundToInt(baseStatus.AttackCount * percent * prevLevel);
+                    _currentTurretTrainStatus.AttackCount += newTot - oldTot;
+                    if (_useNonMovementProjectilePooling)
+                        EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
+                    break;
+                }
+
+                case StatType.AttackInterval:
+                    _currentTurretTrainStatus.AttackInterval += baseStatus.AttackInterval * percent * times;
+                    break;
+
+                case StatType.TargetCount:
+                {
+                    int newTot = Mathf.RoundToInt(baseStatus.TargetCount * percent * newLevel);
+                    int oldTot = Mathf.RoundToInt(baseStatus.TargetCount * percent * prevLevel);
+                    _currentTurretTrainStatus.TargetCount += newTot - oldTot;
+                    if (_useNonMovementProjectilePooling)
+                        EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
+                    break;
+                }
+
+                case StatType.CriticalChance:
+                    _currentTurretTrainStatus.CriticalChance += stat.Value * times;
+                    break;
+
+                case StatType.CriticalDamage:
+                    _currentTurretTrainStatus.CriticalDamage += stat.Value * times;
+                    break;
+
+                default:
+                    base.ApplyStatLevelAware(stat, newLevel, prevLevel);
+                    break;
+            }
+        }
+
         protected virtual Projectile GetProjectile()
         {
             return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
