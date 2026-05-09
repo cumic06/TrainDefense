@@ -61,6 +61,7 @@ namespace TrainDefense.Game.UI
          }
 
          iconImage.sprite = choiceUIInfo.Icon;
+         iconImage.gameObject.SetActive(choiceUIInfo.Icon != null);
          nameText.text = choiceUIInfo.Name;
 
          if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)

@@ -1016,273 +1016,276 @@ MonoBehaviour:
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 0
-  trainSkillDataList:
-  - id: 50001
-    name: "\uC18D\uC0AC \uBAA8\uB4DC"
-    description: "5\uCD08\uAC04 \uACF5\uACA9 \uAC04\uACA9 50% \uAC10\uC18C"
-    skillType: 2
-    skillCooldown: 20
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 5
-    buffs:
-    - statType: 4
-      percent: -50
-  - id: 50002
-    name: "\uD654\uB825 \uC9D1\uC911"
-    description: "6\uCD08\uAC04 \uACF5\uACA9\uB825 100% \uC99D\uAC00"
-    skillType: 2
-    skillCooldown: 25
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 6
-    buffs:
-    - statType: 2
-      percent: 100
-  - id: 50003
-    name: "\uBE14\uB9AC\uC790\uB4DC"
-    description: "15\uCD08 \uB3D9\uC548 \uBC94\uC704\uAC00 \uB9F5\uC744 \uB36E\uC744
-      \uC815\uB3C4\uB85C \uB113\uC5B4\uC9D0"
-    skillType: 0
-    skillCooldown: 30
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 15
-    buffs: []
-  - id: 50004
-    name: "\uC989\uBC1C \uD3ED\uBC1C"
-    description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
-    skillType: 3
-    skillCooldown: 20
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 0
-    buffs: []
-  - id: 50005
-    name: "\uC804\uAE30 \uCDA9\uACA9"
-    description: "\uD558\uB298\uC5D0\uC11C \uBC88\uAC1C\uAC00 \uB5A8\uC5B4\uC838
-      \uB113\uC740 \uC6D0\uD615 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C \uC900\uB2E4."
-    skillType: 1
-    skillCooldown: 30
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 100
-      range: 30
-      projectileCount: 1
-    buffDuration: 0
-    buffs: []
-  - id: 50006
-    name: "\uD3ED\uACA9 \uBBF8\uC0AC\uC77C"
-    description: "5\uCD08 \uB3D9\uC548 \uAC15\uB825\uD55C \uD3EC\uACA9\uC744 \uD37C\uBD93\uC2B5\uB2C8\uB2E4."
-    skillType: 0
-    skillCooldown: 0
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 5
-    buffs: []
-  - id: 50007
-    name: "\uC989\uBC1C \uC0AC\uACA9"
-    description: "\uC989\uC2DC \uAC15\uB825\uD55C \uC77C\uACA9\uC744 \uAC00\uD55C\uB2E4"
-    skillType: 3
-    skillCooldown: 15
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 0
-    buffs: []
-  - id: 50008
-    name: "\uC989\uBC1C \uD3ED\uBC1C"
-    description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
-    skillType: 3
-    skillCooldown: 20
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 0
-    buffs: []
-  - id: 50009
-    name: "\uAD11\uC5ED \uD0D0\uC9C0"
-    description: "15\uCD08\uAC04 \uACF5\uACA9 \uBC94\uC704 300% \uC99D\uAC00"
-    skillType: 2
-    skillCooldown: 30
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 15
-    buffs:
-    - statType: 1
-      percent: 300
-  trainPassiveSkillDataList:
-  - id: 60001
-    name: "\uD3ED\uBC1C\uD0C4"
-    passiveType: OverrideEveryN
-    param1: 5
-    param2: ExplosionProjectile
-    param3: 
-    description: "5\uD68C \uACF5\uACA9\uB9C8\uB2E4 \uD3ED\uBC1C \uD22C\uC0AC\uCCB4
-      \uBC1C\uC0AC."
-  - id: 60002
-    name: "\uBC94\uC704 \uD654\uC5FC"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uC0AC\uAC70\uB9AC\uAC00 \uAE38\uC5B4\uC9C0\uACE0 \uBC94\uC704\uAC00
-      \uB113\uC5B4\uC9D0."
-  - id: 60003
-    name: "\uD65C\uD65C \uD654\uC5FC"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uC0AC\uAC70\uB9AC\uC640 \uBC94\uC704\uAC00 \uC881\uC544\uC9C0\uC9C0\uB9CC
-      \uACF5\uACA9\uB825\uC774 \uD06C\uAC8C \uC0C1\uC2B9."
-  - id: 60004
-    name: "\uBC94\uC704 \uB0C9\uAE30"
-    passiveType: 
-    param1: 3
-    param2: 
-    param3: 1
-    description: "\uBC94\uC704\uAC00 \uB113\uC5B4\uC9C0\uACE0 \uACF5\uACA9\uB825\uC774
-      \uB192\uC544\uC9D0"
-  - id: 60005
-    name: "\uB208\uB369\uC774"
-    passiveType: OverrideEveryN
-    param1: 
-    param2: 
-    param3: 
-    description: "3\uCD08\uB9C8\uB2E4 \uC801\uC5D0\uAC8C \uBC94\uC704 \uD53C\uD574\uB97C
-      \uC8FC\uACE0 1 \uCD08 \uB3D9\uC548 \uB454\uD654 \uC2DC\uD0A4\uB294 \uB208\uB369\uC774\uB97C
-      \uBC1C\uC0AC"
-  - id: 60006
-    name: "\uD6C4\uD3ED\uBC1C"
-    passiveType: FollowUpExplosion
-    param1: 0.2
-    param2: ExplosionProjectile
-    param3: 3
-    description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uB4A4 \uBC18\uACBD 3\uC758 \uD3ED\uBC1C
-      \uC0DD\uC131"
-  - id: 60007
-    name: "\uAC15\uD55C \uD3ED\uBC1C"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uB109\uBC31\uC774 \uC5C6\uC5B4\uC9C0\uC9C0\uB9CC \uACF5\uACA9\uB825\uC774
-      \uD06C\uAC8C \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
-  - id: 60008
-    name: "\uBD80\uCC44 \uBC1C\uC0AC"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uBD80\uCC44\uAF34\uB85C 3 \uBC1C \uB3D9\uC2DC \uBC1C\uC0AC"
-  - id: 60009
-    name: "\uBE60\uB978 \uBBF8\uC0AC\uC77C"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00 \uC801 \uB9DE\uC73C\uBA74
-      \uC57D\uD55C \uB109\uBC31"
-  - id: 60010
-    name: "\uAC15\uD654 \uBBF8\uC0AC\uC77C"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uACF5\uACA9\uB825 \uC99D\uAC00, \uBC94\uC704 \uC99D\uAC00, \uBBF8\uC0AC\uC77C
-      \uD06C\uAE30 \uC99D\uAC00"
-  - id: 60011
-    name: "\uC5F0\uC18D \uB808\uC774\uC800"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uACF5\uACA9\uD560 \uB54C 0.2\uCD08 \uB51C\uB808\uC774\uB85C 3\uBC88
-      \uC5F0\uC18D \uACF5\uACA9"
-  - id: 60012
-    name: "\uAC15\uD55C \uB808\uC774\uC800"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uBC94\uC704 \uC5C4\uCCAD \uB113\uC5B4\uC9C0\uACE0 \uACF5\uACA9\uB825
-      \uC99D\uAC00"
-  - id: 60013
-    name: "\uB354 \uBE60\uB978 \uC804\uAE30"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uC99D\uAC00"
-  - id: 60014
-    name: "\uBC94\uC704 \uD3EC\uACA9"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uD3EC\uACA9 \uBBF8\uC0AC\uC77C\uC758 \uBC94\uC704 \uC99D\uAC00"
-  - id: 60015
-    name: "\uD3ED\uACA9"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uB9E4\uC6B0 \uBE68\uB77C\uC9C0\uC9C0\uB9CC
-      \uBC94\uC704\uAC00 \uC881\uC544\uC9C0\uACE0 \uD654\uBA74 \uB0B4\uC5D0\uC11C
-      \uBB34\uC791\uC704 \uC704\uCE58\uC5D0 \uD3ED\uACA9"
-  - id: 60016
-    name: "\uAD00\uD1B5 \uC800\uACA9"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uCD1D\uC54C\uC774 \uC801\uC744 \uAD00\uD1B5\uD568."
-  - id: 60017
-    name: "\uD589\uC6B4 \uC800\uACA9"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "30%\uC758 \uD655\uB960\uB85C \uC5F0\uC18D \uACF5\uACA9"
-  - id: 60018
-    name: "\uC774\uAC8C \uC800\uACA9?"
-    passiveType: 
-    param1: 
-    param2: 
-    param3: 
-    description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00"
+  trainSkillDataDB:
+    trainActiveSkillDataList:
+    - id: 50001
+      name: "\uC18D\uC0AC \uBAA8\uB4DC"
+      description: "5\uCD08\uAC04 \uACF5\uACA9 \uAC04\uACA9 50% \uAC10\uC18C"
+      skillType: 2
+      skillCooldown: 20
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 5
+      buffs:
+      - statType: 4
+        percent: -50
+    - id: 50002
+      name: "\uD654\uB825 \uC9D1\uC911"
+      description: "6\uCD08\uAC04 \uACF5\uACA9\uB825 100% \uC99D\uAC00"
+      skillType: 2
+      skillCooldown: 25
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 6
+      buffs:
+      - statType: 2
+        percent: 100
+    - id: 50003
+      name: "\uBE14\uB9AC\uC790\uB4DC"
+      description: "15\uCD08 \uB3D9\uC548 \uBC94\uC704\uAC00 \uB9F5\uC744 \uB36E\uC744
+        \uC815\uB3C4\uB85C \uB113\uC5B4\uC9D0"
+      skillType: 0
+      skillCooldown: 30
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 15
+      buffs: []
+    - id: 50004
+      name: "\uC989\uBC1C \uD3ED\uBC1C"
+      description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
+      skillType: 3
+      skillCooldown: 20
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 0
+      buffs: []
+    - id: 50005
+      name: "\uC804\uAE30 \uCDA9\uACA9"
+      description: "\uD558\uB298\uC5D0\uC11C \uBC88\uAC1C\uAC00 \uB5A8\uC5B4\uC838
+        \uB113\uC740 \uC6D0\uD615 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C \uC900\uB2E4."
+      skillType: 1
+      skillCooldown: 30
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 100
+        range: 30
+        projectileCount: 1
+      buffDuration: 0
+      buffs: []
+    - id: 50006
+      name: "\uD3ED\uACA9 \uBBF8\uC0AC\uC77C"
+      description: "5\uCD08 \uB3D9\uC548 \uAC15\uB825\uD55C \uD3EC\uACA9\uC744 \uD37C\uBD93\uC2B5\uB2C8\uB2E4."
+      skillType: 0
+      skillCooldown: 0
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 5
+      buffs: []
+    - id: 50007
+      name: "\uC989\uBC1C \uC0AC\uACA9"
+      description: "\uC989\uC2DC \uAC15\uB825\uD55C \uC77C\uACA9\uC744 \uAC00\uD55C\uB2E4"
+      skillType: 3
+      skillCooldown: 15
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 0
+      buffs: []
+    - id: 50008
+      name: "\uC989\uBC1C \uD3ED\uBC1C"
+      description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
+      skillType: 3
+      skillCooldown: 20
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 0
+      buffs: []
+    - id: 50009
+      name: "\uAD11\uC5ED \uD0D0\uC9C0"
+      description: "15\uCD08\uAC04 \uACF5\uACA9 \uBC94\uC704 300% \uC99D\uAC00"
+      skillType: 2
+      skillCooldown: 30
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 15
+      buffs:
+      - statType: 1
+        percent: 300
+    trainPassiveSkillDataList:
+    - id: 60001
+      name: "\uD3ED\uBC1C\uD0C4"
+      passiveType: OverrideEveryN
+      param1: 5
+      param2: ExplosionProjectile
+      param3: 
+      description: "5\uD68C \uACF5\uACA9\uB9C8\uB2E4 \uD3ED\uBC1C \uD22C\uC0AC\uCCB4
+        \uBC1C\uC0AC."
+    - id: 60002
+      name: "\uBC94\uC704 \uD654\uC5FC"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uC0AC\uAC70\uB9AC\uAC00 \uAE38\uC5B4\uC9C0\uACE0 \uBC94\uC704\uAC00
+        \uB113\uC5B4\uC9D0."
+    - id: 60003
+      name: "\uD65C\uD65C \uD654\uC5FC"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uC0AC\uAC70\uB9AC\uC640 \uBC94\uC704\uAC00 \uC881\uC544\uC9C0\uC9C0\uB9CC
+        \uACF5\uACA9\uB825\uC774 \uD06C\uAC8C \uC0C1\uC2B9."
+    - id: 60004
+      name: "\uBC94\uC704 \uB0C9\uAE30"
+      passiveType: 
+      param1: 3
+      param2: 
+      param3: 1
+      description: "\uBC94\uC704\uAC00 \uB113\uC5B4\uC9C0\uACE0 \uACF5\uACA9\uB825\uC774
+        \uB192\uC544\uC9D0"
+    - id: 60005
+      name: "\uB208\uB369\uC774"
+      passiveType: OverrideEveryN
+      param1: 
+      param2: 
+      param3: 
+      description: "3\uCD08\uB9C8\uB2E4 \uC801\uC5D0\uAC8C \uBC94\uC704 \uD53C\uD574\uB97C
+        \uC8FC\uACE0 1 \uCD08 \uB3D9\uC548 \uB454\uD654 \uC2DC\uD0A4\uB294 \uB208\uB369\uC774\uB97C
+        \uBC1C\uC0AC"
+    - id: 60006
+      name: "\uD6C4\uD3ED\uBC1C"
+      passiveType: FollowUpExplosion
+      param1: 0.2
+      param2: ExplosionProjectile
+      param3: 3
+      description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uB4A4 \uBC18\uACBD 3\uC758 \uD3ED\uBC1C
+        \uC0DD\uC131"
+    - id: 60007
+      name: "\uAC15\uD55C \uD3ED\uBC1C"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uB109\uBC31\uC774 \uC5C6\uC5B4\uC9C0\uC9C0\uB9CC \uACF5\uACA9\uB825\uC774
+        \uD06C\uAC8C \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
+    - id: 60008
+      name: "\uBD80\uCC44 \uBC1C\uC0AC"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uBD80\uCC44\uAF34\uB85C 3 \uBC1C \uB3D9\uC2DC \uBC1C\uC0AC"
+    - id: 60009
+      name: "\uBE60\uB978 \uBBF8\uC0AC\uC77C"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00 \uC801 \uB9DE\uC73C\uBA74
+        \uC57D\uD55C \uB109\uBC31"
+    - id: 60010
+      name: "\uAC15\uD654 \uBBF8\uC0AC\uC77C"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uACF5\uACA9\uB825 \uC99D\uAC00, \uBC94\uC704 \uC99D\uAC00, \uBBF8\uC0AC\uC77C
+        \uD06C\uAE30 \uC99D\uAC00"
+    - id: 60011
+      name: "\uC5F0\uC18D \uB808\uC774\uC800"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uACF5\uACA9\uD560 \uB54C 0.2\uCD08 \uB51C\uB808\uC774\uB85C
+        3\uBC88 \uC5F0\uC18D \uACF5\uACA9"
+    - id: 60012
+      name: "\uAC15\uD55C \uB808\uC774\uC800"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uBC94\uC704 \uC5C4\uCCAD \uB113\uC5B4\uC9C0\uACE0 \uACF5\uACA9\uB825
+        \uC99D\uAC00"
+    - id: 60013
+      name: "\uB354 \uBE60\uB978 \uC804\uAE30"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uC99D\uAC00"
+    - id: 60014
+      name: "\uBC94\uC704 \uD3EC\uACA9"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uD3EC\uACA9 \uBBF8\uC0AC\uC77C\uC758 \uBC94\uC704 \uC99D\uAC00"
+    - id: 60015
+      name: "\uD3ED\uACA9"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uB9E4\uC6B0 \uBE68\uB77C\uC9C0\uC9C0\uB9CC
+        \uBC94\uC704\uAC00 \uC881\uC544\uC9C0\uACE0 \uD654\uBA74 \uB0B4\uC5D0\uC11C
+        \uBB34\uC791\uC704 \uC704\uCE58\uC5D0 \uD3ED\uACA9"
+    - id: 60016
+      name: "\uAD00\uD1B5 \uC800\uACA9"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uCD1D\uC54C\uC774 \uC801\uC744 \uAD00\uD1B5\uD568."
+    - id: 60017
+      name: "\uD589\uC6B4 \uC800\uACA9"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "30%\uC758 \uD655\uB960\uB85C \uC5F0\uC18D \uACF5\uACA9"
+    - id: 60018
+      name: "\uC774\uAC8C \uC800\uACA9?"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00"
+  _legacyTrainSkillDataList: []
+  _legacyTrainPassiveSkillDataList: []
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
   - id: 90001
@@ -2142,21 +2145,18 @@ MonoBehaviour:
         id: 60007
         trainDataId: 30007
         replaceTrainId: 
-        skillType: 0
     - rid: 439507899332690073
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60008
         trainDataId: 40001
         replaceTrainId: 
-        skillType: 0
     - rid: 439508061413965932
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60009
         trainDataId: 40002
         replaceTrainId: 
-        skillType: 0
     - rid: 439508238012514411
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -2195,7 +2195,6 @@ MonoBehaviour:
         id: 60001
         trainDataId: 30001
         replaceTrainId: 
-        skillType: 0
     - rid: 2066870334413602904
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -2210,28 +2209,24 @@ MonoBehaviour:
         id: 60002
         trainDataId: 30002
         replaceTrainId: 
-        skillType: 0
     - rid: 2066870334413602906
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60003
         trainDataId: 30003
         replaceTrainId: 
-        skillType: 0
     - rid: 2066870334413602907
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60004
         trainDataId: 30004
         replaceTrainId: 
-        skillType: 0
     - rid: 2066870334413602908
       type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 60005
         trainDataId: 30005
         replaceTrainId: 
-        skillType: 0
     - rid: 2066870334413602909
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -2270,147 +2265,126 @@ MonoBehaviour:
         id: 60006
         trainDataId: 30006
         replaceTrainId: 
-        skillType: 0
     - rid: 3319472319078334560
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61001
         baseTrainId: 30001
         eliteTrainDataId: 31001
-        skillType: 0
     - rid: 3319472319078334561
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61002
         baseTrainId: 30002
         eliteTrainDataId: 31002
-        skillType: 0
     - rid: 3319472319078334562
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61003
         baseTrainId: 30003
         eliteTrainDataId: 31003
-        skillType: 0
     - rid: 3319472319078334563
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61004
         baseTrainId: 30004
         eliteTrainDataId: 31004
-        skillType: 0
     - rid: 3319472319078334564
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61005
         baseTrainId: 30005
         eliteTrainDataId: 31005
-        skillType: 0
     - rid: 3319472319078334565
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61006
         baseTrainId: 30006
         eliteTrainDataId: 31006
-        skillType: 0
     - rid: 3319472319078334566
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61007
         baseTrainId: 30007
         eliteTrainDataId: 31007
-        skillType: 0
     - rid: 3319472319078334567
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61008
         baseTrainId: 40001
         eliteTrainDataId: 41001
-        skillType: 0
     - rid: 3319472319078334568
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61009
         baseTrainId: 40002
         eliteTrainDataId: 41002
-        skillType: 0
     - rid: 3319472431904325753
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71001
         baseTrainId: 30001
         eliteTrainDataId: 32001
-        skillType: 0
     - rid: 3319472431904325754
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71002
         baseTrainId: 30002
         eliteTrainDataId: 32002
-        skillType: 0
     - rid: 3319472431904325755
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71003
         baseTrainId: 30003
         eliteTrainDataId: 32003
-        skillType: 0
     - rid: 3319472431904325756
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71004
         baseTrainId: 30004
         eliteTrainDataId: 32004
-        skillType: 0
     - rid: 3319472431904325757
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71005
         baseTrainId: 30005
         eliteTrainDataId: 32005
-        skillType: 0
     - rid: 3319472431904325758
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71006
         baseTrainId: 30006
         eliteTrainDataId: 32006
-        skillType: 0
     - rid: 3319472431904325759
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71007
         baseTrainId: 30007
         eliteTrainDataId: 32007
-        skillType: 0
     - rid: 3319472431904325760
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71008
         baseTrainId: 40001
         eliteTrainDataId: 42001
-        skillType: 0
     - rid: 3319472431904325761
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71009
         baseTrainId: 40002
         eliteTrainDataId: 42002
-        skillType: 0
     - rid: 3319472431904325762
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61001
         baseTrainId: 30001
         eliteTrainDataId: 31001
-        skillType: 1
     - rid: 3319472431904325763
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61001a
         baseTrainId: 30001
         eliteTrainDataId: 31001
-        skillType: 2
     - rid: 5100000000000000001
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -2433,81 +2407,69 @@ MonoBehaviour:
         id: 61002
         baseTrainId: 30002
         eliteTrainDataId: 31002
-        skillType: 0
     - rid: 6103417219460104300
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61003
         baseTrainId: 30003
         eliteTrainDataId: 31003
-        skillType: 1
     - rid: 6103417219460104301
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61004
         baseTrainId: 30004
         eliteTrainDataId: 31004
-        skillType: 0
     - rid: 6103417219460104302
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61005
         baseTrainId: 30005
         eliteTrainDataId: 31005
-        skillType: 0
     - rid: 6103417219460104303
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61005a
         baseTrainId: 30005
         eliteTrainDataId: 31005
-        skillType: 2
     - rid: 6103417219460104304
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61006
         baseTrainId: 30006
         eliteTrainDataId: 31006
-        skillType: 0
     - rid: 6103417219460104305
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61006a
         baseTrainId: 30006
         eliteTrainDataId: 31006
-        skillType: 2
     - rid: 6103417219460104306
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 61007
         baseTrainId: 30007
         eliteTrainDataId: 31007
-        skillType: 1
     - rid: 6103417219460104307
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62001
         baseTrainId: 40001
         eliteTrainDataId: 42001
-        skillType: 1
     - rid: 6103417219460104308
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62001a
         baseTrainId: 40001
         eliteTrainDataId: 42001
-        skillType: 2
     - rid: 6103417219460104309
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62002
         baseTrainId: 40002
         eliteTrainDataId: 42002
-        skillType: 1
     - rid: 6103417219460104310
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62002a
         baseTrainId: 40002
         eliteTrainDataId: 42002
-        skillType: 2

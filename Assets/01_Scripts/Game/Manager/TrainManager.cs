@@ -31,14 +31,20 @@ namespace TrainDefense.Game
 
       private void OnGameEnter(GameEnterEvent gameEnterEvent)
       {
-         if (mainTrain != null)
+         if (mainTrain == null || DatabaseManager.Instance == null)
+            return;
+
+         var trainData = DatabaseManager.Instance.GetTrainData(mainTrain.Id);
+         if (trainData == null)
          {
-            var trainData = DatabaseManager.Instance.GetTrainData(mainTrain.Id);
-            var trainObject = ResourceManager.Instance.Spawn(trainData.Prefab).GetComponent<MainTrain>();
-            mainTrain = trainObject;
-            mainTrain.Initialize(trainData);
-            cinemachineCamera.Target.TrackingTarget = mainTrain.transform;
+            Debug.LogWarning($"TrainManager: TrainData not found for id '{mainTrain.Id}'");
+            return;
          }
+
+         var trainObject = ResourceManager.Instance.Spawn(trainData.Prefab).GetComponent<MainTrain>();
+         mainTrain = trainObject;
+         mainTrain.Initialize(trainData);
+         cinemachineCamera.Target.TrackingTarget = mainTrain.transform;
       }
 
       public bool CheckHasTrain(TrainData trainData)
