@@ -25,7 +25,7 @@ namespace TrainDefense.Game
       [ShowInInspector, ReadOnly]
       protected MonsterData _monsterData;
       protected MonsterStatusInfo _currentMonsterStatus;
-      protected int _currentHp;
+      protected float _currentHp;
       protected Vector2 _startScale;
 
       protected bool _isShoved;
@@ -114,8 +114,8 @@ namespace TrainDefense.Game
             float hpScale = StageManager.Instance.GetHPScale();
             float attackScale = StageManager.Instance.GetAttackScale();
 
-            _currentMonsterStatus.MaxHp = Mathf.RoundToInt(_currentMonsterStatus.MaxHp * hpScale);
-            _currentMonsterStatus.Damage = Mathf.RoundToInt(_currentMonsterStatus.Damage * attackScale);
+            _currentMonsterStatus.MaxHp = _currentMonsterStatus.MaxHp * hpScale;
+            _currentMonsterStatus.Damage = _currentMonsterStatus.Damage * attackScale;
 
             Debug.Log($"[Monster] Init Stats Scaled - HP: {_monsterData.MonsterStatusData.MaxHp} -> {_currentMonsterStatus.MaxHp} (x{hpScale}), DMG: {_monsterData.MonsterStatusData.Damage} -> {_currentMonsterStatus.Damage} (x{attackScale})");
          }
@@ -128,8 +128,8 @@ namespace TrainDefense.Game
          if (_isDead || data == null) return;
          _isElite = true;
 
-         _currentMonsterStatus.MaxHp = Mathf.RoundToInt(_currentMonsterStatus.MaxHp * data.hpMultiplier);
-         _currentMonsterStatus.Damage = Mathf.RoundToInt(_currentMonsterStatus.Damage * data.damageMultiplier);
+         _currentMonsterStatus.MaxHp = _currentMonsterStatus.MaxHp * data.hpMultiplier;
+         _currentMonsterStatus.Damage = _currentMonsterStatus.Damage * data.damageMultiplier;
          _currentMonsterStatus.MoveSpeed *= data.moveSpeedMultiplier;
          _currentMonsterStatus.DropExpMin = Mathf.RoundToInt(_currentMonsterStatus.DropExpMin * data.dropExpMultiplier);
          _currentMonsterStatus.DropExpMax = Mathf.RoundToInt(_currentMonsterStatus.DropExpMax * data.dropExpMultiplier);
@@ -400,12 +400,12 @@ namespace TrainDefense.Game
       }
       #endregion
 
-      public void TakeDamage(int damage)
+      public void TakeDamage(float damage)
       {
          TakeDamage(damage, false);
       }
 
-      public void TakeDamage(int damage, bool isCritical)
+      public void TakeDamage(float damage, bool isCritical)
       {
          if (_isDead)
             return;

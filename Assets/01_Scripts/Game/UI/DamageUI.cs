@@ -40,9 +40,9 @@ namespace TrainDefense.Game.UI
             damageText.DOKill();
         }
 
-        public void SetDamage(int damage, bool isCritical = false)
+        public void SetDamage(float damage, bool isCritical = false)
         {
-            damageText.text = damage.ToCommaString();
+            damageText.text = $"{damage:N1}";
             damageText.color = isCritical ? Color.red : Color.white;
         }
 

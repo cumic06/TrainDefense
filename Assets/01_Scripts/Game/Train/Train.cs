@@ -27,9 +27,9 @@ namespace TrainDefense.Game
         [ShowInInspector, ReadOnly]
         protected TrainData _trainData;
         protected bool _isDead;
-        protected int _currentHp;
+        protected float _currentHp;
         protected int _currentLevel;
-        protected int _currentMaxHp;
+        protected float _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
 
         [HideInInspector]
@@ -100,12 +100,12 @@ namespace TrainDefense.Game
 
         }
 
-        public virtual void TakeDamage(int damage)
+        public virtual void TakeDamage(float damage)
         {
             TakeDamage(damage, false);
         }
 
-        public virtual void TakeDamage(int damage, bool isCritical)
+        public virtual void TakeDamage(float damage, bool isCritical)
         {
             if (_isDead) return;
 
@@ -245,11 +245,9 @@ namespace TrainDefense.Game
             {
                 case StatType.MaxHp:
                 {
-                    int baseMaxHp = _trainData.TrainStatusData.MaxHp;
+                    float baseMaxHp = _trainData.TrainStatusData.MaxHp;
                     float percent = stat.Value / 100f;
-                    int newTot = Mathf.RoundToInt(baseMaxHp * percent * newLevel);
-                    int oldTot = Mathf.RoundToInt(baseMaxHp * percent * prevLevel);
-                    int delta = newTot - oldTot;
+                    float delta = baseMaxHp * percent * (newLevel - prevLevel);
                     _currentMaxHp += delta;
                     _currentHp += delta;
                     _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
@@ -268,8 +266,8 @@ namespace TrainDefense.Game
             {
                 case StatType.MaxHp:
                     {
-                        int baseMaxHp = _trainData.TrainStatusData.MaxHp;
-                        int deltaHp = Mathf.RoundToInt(baseMaxHp * stat.Value / 100f);
+                        float baseMaxHp = _trainData.TrainStatusData.MaxHp;
+                        float deltaHp = baseMaxHp * stat.Value / 100f;
                         _currentMaxHp += deltaHp;
                         _currentHp += deltaHp;
                         _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);

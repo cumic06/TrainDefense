@@ -8,8 +8,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
         public string id;
         public string name;
         public string description;
-        public int maxHp;
-        public int damage;
+        public float maxHp;
+        public float damage;
         public float moveSpeed;
         public float attackDelay;
         public int dropExpMin;
@@ -25,8 +25,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
             id = map.GetString(row, "id");
             name = map.GetString(row, "monster_name");
             description = map.GetString(row, "description");
-            maxHp = map.GetInt(row, "max_hp");
-            damage = map.GetInt(row, "damage");
+            maxHp = map.GetFloat(row, "max_hp");
+            damage = map.GetFloat(row, "damage");
             moveSpeed = map.GetFloat(row, "move_speed");
             attackDelay = map.GetFloat(row, "attack_delay");
             dropExpMin = map.GetInt(row, "drop_exp_min");

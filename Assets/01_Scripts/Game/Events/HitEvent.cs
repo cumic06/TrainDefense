@@ -5,22 +5,22 @@ namespace TrainDefense.Game.Events
 {
     public class HitEvent
     {
-        private int _currentHp;
-        private int _maxHp;
+        private float _currentHp;
+        private float _maxHp;
         private IDamageable _damageable;
         private Vector3 _position;
-        private int _damage;
+        private float _damage;
         private bool _isCritical;
 
-        public int CurrentHp => _currentHp;
-        public int MaxHp => _maxHp;
-        public float CurrentHpRatio => (float)_currentHp / _maxHp;
+        public float CurrentHp => _currentHp;
+        public float MaxHp => _maxHp;
+        public float CurrentHpRatio => _currentHp / _maxHp;
         public IDamageable Damageable => _damageable;
         public Vector3 Position => _position;
-        public int Damage => _damage;
+        public float Damage => _damage;
         public bool IsCritical => _isCritical;
 
-        public HitEvent(int currentHp, int maxHp, IDamageable damageable, Vector3 position, int damage, bool isCritical = false)
+        public HitEvent(float currentHp, float maxHp, IDamageable damageable, Vector3 position, float damage, bool isCritical = false)
         {
             _currentHp = currentHp;
             _maxHp = maxHp;

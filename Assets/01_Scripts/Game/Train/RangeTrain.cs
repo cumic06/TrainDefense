@@ -239,7 +239,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    _currentRangeTrainStatus.AttackDamage += Mathf.RoundToInt(baseStatus.AttackDamage * percent);
+                    _currentRangeTrainStatus.AttackDamage += baseStatus.AttackDamage * percent;
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
@@ -302,9 +302,8 @@ namespace TrainDefense.Game
 
                 case StatType.AttackDamage:
                 {
-                    int newTot = Mathf.RoundToInt(baseStatus.AttackDamage * percent * newLevel);
-                    int oldTot = Mathf.RoundToInt(baseStatus.AttackDamage * percent * prevLevel);
-                    _currentRangeTrainStatus.AttackDamage += newTot - oldTot;
+                    float dmgDelta = baseStatus.AttackDamage * percent * (newLevel - prevLevel);
+                    _currentRangeTrainStatus.AttackDamage += dmgDelta;
                     if (_rangeProjectilePrefab != null)
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
                             _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,

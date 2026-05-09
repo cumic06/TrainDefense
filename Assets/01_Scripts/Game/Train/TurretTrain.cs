@@ -330,16 +330,15 @@ namespace TrainDefense.Game
             }
         }
 
-        private (int finalDamage, bool isCritical) CalculateDirectDamage()
+        private (float finalDamage, bool isCritical) CalculateDirectDamage()
         {
             bool isCritical = _currentTurretTrainStatus.CriticalChance > 0f
                 && UtilMath.CheckProbability(_currentTurretTrainStatus.CriticalChance);
-            int finalDamage = _currentTurretTrainStatus.AttackDamage;
+            float finalDamage = _currentTurretTrainStatus.AttackDamage;
             if (isCritical)
             {
-                finalDamage += Mathf.RoundToInt(
-                    _currentTurretTrainStatus.AttackDamage
-                    * (BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage) / 100f);
+                finalDamage += _currentTurretTrainStatus.AttackDamage
+                    * (BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage) / 100f;
             }
             return (finalDamage, isCritical);
         }
@@ -761,7 +760,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    _currentTurretTrainStatus.AttackDamage += Mathf.RoundToInt(baseStatus.AttackDamage * percent);
+                    _currentTurretTrainStatus.AttackDamage += baseStatus.AttackDamage * percent;
 
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
@@ -835,9 +834,7 @@ namespace TrainDefense.Game
 
                 case StatType.AttackDamage:
                 {
-                    int newTot = Mathf.RoundToInt(baseStatus.AttackDamage * percent * newLevel);
-                    int oldTot = Mathf.RoundToInt(baseStatus.AttackDamage * percent * prevLevel);
-                    int dmgDelta = newTot - oldTot;
+                    float dmgDelta = baseStatus.AttackDamage * percent * (newLevel - prevLevel);
                     Debug.Log($"[Shop DMG] base={baseStatus.AttackDamage} val={stat.Value} new={newLevel} prev={prevLevel} delta={dmgDelta} → {_currentTurretTrainStatus.AttackDamage + dmgDelta}");
                     _currentTurretTrainStatus.AttackDamage += dmgDelta;
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
