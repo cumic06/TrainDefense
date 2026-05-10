@@ -483,6 +483,13 @@ namespace TrainDefense.Game
             return TrainChoiceSkillType.None;
         }
 
+        public string GetCachedEliteSkillId(string choiceId)
+        {
+            if (_selectedEliteSkills.TryGetValue(choiceId, out var cached))
+                return cached.skillData?.Id;
+            return null;
+        }
+
         /// <summary>
         /// AddTrainChoice에 대한 랜덤 스킬을 반환합니다.
         /// 캐시에 없으면 TrainSkillDataDB에서 랜덤 선택 후 저장합니다.

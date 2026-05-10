@@ -25,6 +25,8 @@ namespace TrainDefense.Game
             { "PeriodicSpawn",                       PeriodicSpawnPassive.From },
             { nameof(FollowUpExplosionPassive),      FollowUpExplosionPassive.From },
             { "FollowUpExplosion",                   FollowUpExplosionPassive.From },
+            { nameof(StatModifierPassive),           StatModifierPassive.From },
+            { "StatModifier",                        StatModifierPassive.From },
         };
 
         public static void Register(string typeKey, Func<string[], TrainPassiveSkill> parser)

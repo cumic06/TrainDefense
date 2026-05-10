@@ -35,14 +35,6 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
             _attackCountdown = _currentRangeTrainStatus.AttackInterval;
 
-            if (_skillTypeMask != TrainChoiceSkillType.Active)
-            {
-                var passives = rangeTrainData?.PassiveSkillDatas;
-                if (passives != null)
-                    foreach (var p in passives)
-                        _skillModule.RegisterPassiveFromData(p);
-            }
-
             if (TrainData.DamageType == DamageType.Direct) return;
 
             SpawnRangeProjectile();
@@ -228,6 +220,45 @@ namespace TrainDefense.Game
 
         public override string GetStatSummary() =>
             $"DMG={_currentRangeTrainStatus.AttackDamage} | RANGE={_currentRangeTrainStatus.AttackRange} | AREA={_currentRangeTrainStatus.AttackArea} | MaxHp={_currentMaxHp}";
+
+        public override void ApplyPassiveSkills()
+        {
+            if (_skillTypeMask == TrainChoiceSkillType.Active) return;
+            var passives = rangeTrainData?.PassiveSkillDatas;
+            if (passives == null) return;
+            foreach (var p in passives)
+                if (string.IsNullOrEmpty(_selectedSkillId) || p.Id == _selectedSkillId)
+                    _skillModule.RegisterPassiveFromData(p);
+        }
+
+        public override void ApplyStatsByCurrentValue(IStat[] stats)
+        {
+            if (stats == null || stats.Length == 0) return;
+            foreach (var stat in stats)
+            {
+                if (stat == null) continue;
+                float percent = stat.Value / 100f;
+                switch (stat.Type)
+                {
+                    case StatType.AttackRange:
+                        _currentRangeTrainStatus.AttackRange += _currentRangeTrainStatus.AttackRange * percent;
+                        break;
+                    case StatType.AttackArea:
+                        _currentRangeTrainStatus.AttackArea += _currentRangeTrainStatus.AttackArea * percent;
+                        if (_rangeProjectilePrefab != null)
+                            _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
+                        break;
+                    case StatType.AttackDamage:
+                        _currentRangeTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentRangeTrainStatus.AttackDamage * percent);
+                        if (_rangeProjectilePrefab != null)
+                            _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                        break;
+                    default:
+                        ApplyStat(stat);
+                        break;
+                }
+            }
+        }
 
         protected override void ApplyStat(IStat stat)
         {

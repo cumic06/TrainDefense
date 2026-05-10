@@ -69,12 +69,16 @@ namespace TrainDefense.Game.Datas
                 return;
             }
 
-            // TriChoiceManager 캐시에서 결정된 skillType 사용
-            var skillType = TriChoiceManager.Instance != null
-                ? TriChoiceManager.Instance.GetCachedEliteSkillType(id)
-                : TrainChoiceSkillType.None;
+            // TriChoiceManager 캐시에서 결정된 skillType과 선택된 스킬 ID 사용
+            var skillType = TrainChoiceSkillType.None;
+            string selectedSkillId = null;
+            if (TriChoiceManager.Instance != null)
+            {
+                skillType = TriChoiceManager.Instance.GetCachedEliteSkillType(id);
+                selectedSkillId = TriChoiceManager.Instance.GetCachedEliteSkillId(id);
+            }
 
-            main.ReplaceTrain(baseTrainId, eliteTrainData, skillType);
+            main.ReplaceTrain(baseTrainId, eliteTrainData, skillType, selectedSkillId);
         }
     }
 }

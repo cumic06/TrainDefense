@@ -35,6 +35,7 @@ namespace TrainDefense.Game
       #endregion
 
       private TrainChoiceSkillType _pendingSkillType = TrainChoiceSkillType.None;
+      private string _pendingSelectedSkillId = null;
       private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
       public List<Train> CurrentAliveTrains => _currentAliveTrains;
       public int MaxTrainCount => maxTrainCount;
@@ -152,6 +153,7 @@ namespace TrainDefense.Game
 
          // 새로 생성된 train에 기존 업그레이드 적용
          ApplyExistingUpgradesToTrain(trainObject);
+         trainObject.ApplyPassiveSkills();
 
          GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
 
@@ -186,7 +188,7 @@ namespace TrainDefense.Game
          ReplaceTrain(oldTrainId, DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
       }
 
-      public void ReplaceTrain(string oldTrainId, TrainData newTrainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None)
+      public void ReplaceTrain(string oldTrainId, TrainData newTrainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None, string selectedSkillId = null)
       {
          // 대체할 기존 Train 찾기
          Train oldTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == oldTrainId);
@@ -215,16 +217,19 @@ namespace TrainDefense.Game
          }
 
          _pendingSkillType = skillType;
+         _pendingSelectedSkillId = selectedSkillId;
          // 새로운 Train 생성 (기존 Train 제거 전에 생성하여 이벤트에서 참조 가능)
          Train newTrain = Instantiate(newTrainPrefab, transform);
-         newTrain.Initialize(newTrainData, _pendingSkillType);
+         newTrain.Initialize(newTrainData, _pendingSkillType, _pendingSelectedSkillId);
          _pendingSkillType = TrainChoiceSkillType.None;
+         _pendingSelectedSkillId = null;
          newTrain.IsUnDead = isUnDead;
 
          // 기존 트레인의 누적 강화(영구 상점 + 카드)를 새 인스턴스에 통째로 승계.
          // ApplyExistingUpgradesToTrain은 호출하지 않는다 — oldTrain의 currentStat에 이미 영구 업그레이드가 반영되어 있어
          // CopyProgressFrom의 delta가 영구 + 카드를 모두 옮긴다. 둘 다 호출하면 영구분이 중복 적용된다.
          newTrain.CopyProgressFrom(oldTrain);
+         newTrain.ApplyPassiveSkills();
 
          // Elite 생성에 소비된 base ID는 이후 TriChoice에서 영구 차단 (다른 Elite 변형 / base 업그레이드 / 재추가 모두 금지).
          _replacedTrainIds.Add(oldTrainId);

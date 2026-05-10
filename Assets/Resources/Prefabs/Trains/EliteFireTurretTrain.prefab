@@ -339,7 +339,7 @@ MonoBehaviour:
   IsUnDead: 0
   turretProjectileSpawnPoints:
   - {fileID: 8032442708516252321}
-  useParticleProjectile: 0
+  useParticleProjectile: 1
   isTargeting: 0
   turret: {fileID: 2316201438183666217}
   turretModel: {fileID: 4047760823597189843}

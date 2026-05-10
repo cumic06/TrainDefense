@@ -64,13 +64,6 @@ namespace TrainDefense.Game
                 _isStatusInitialized = true;
             }
 
-            if (_skillTypeMask != TrainChoiceSkillType.Active)
-            {
-                var passives = turretTrainData?.PassiveSkillDatas;
-                if (passives != null)
-                    foreach (var p in passives)
-                        _skillModule.RegisterPassiveFromData(p);
-            }
             InitializeProjectilePoolingMode();
 
             if (turretModel != null)
@@ -759,6 +752,45 @@ namespace TrainDefense.Game
 
         public override string GetStatSummary() =>
             $"DMG={_currentTurretTrainStatus.AttackDamage} | RANGE={_currentTurretTrainStatus.AttackRange} | AREA={_currentTurretTrainStatus.AttackArea} | CNT={_currentTurretTrainStatus.AttackCount} | TGT={_currentTurretTrainStatus.TargetCount} | MaxHp={_currentMaxHp}";
+
+        public override void ApplyPassiveSkills()
+        {
+            if (_skillTypeMask == TrainChoiceSkillType.Active) return;
+            var passives = turretTrainData?.PassiveSkillDatas;
+            if (passives == null) return;
+            foreach (var p in passives)
+                if (string.IsNullOrEmpty(_selectedSkillId) || p.Id == _selectedSkillId)
+                    _skillModule.RegisterPassiveFromData(p);
+        }
+
+        public override void ApplyStatsByCurrentValue(IStat[] stats)
+        {
+            if (stats == null || stats.Length == 0) return;
+            foreach (var stat in stats)
+            {
+                if (stat == null) continue;
+                float percent = stat.Value / 100f;
+                switch (stat.Type)
+                {
+                    case StatType.AttackRange:
+                        _currentTurretTrainStatus.AttackRange += _currentTurretTrainStatus.AttackRange * percent;
+                        break;
+                    case StatType.AttackArea:
+                        _currentTurretTrainStatus.AttackArea += _currentTurretTrainStatus.AttackArea * percent;
+                        if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+                            foreach (var p in _nonMovementProjectiles) { if (p != null) InitializeProjectileDamage(p); }
+                        break;
+                    case StatType.AttackDamage:
+                        _currentTurretTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentTurretTrainStatus.AttackDamage * percent);
+                        if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+                            foreach (var p in _nonMovementProjectiles) { if (p != null) InitializeProjectileDamage(p); }
+                        break;
+                    default:
+                        ApplyStat(stat);
+                        break;
+                }
+            }
+        }
 
         protected override void ApplyStat(IStat stat)
         {
