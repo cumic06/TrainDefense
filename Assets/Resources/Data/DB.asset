@@ -991,11 +991,11 @@ MonoBehaviour:
     attackDamageMultiplier: 0
   - id: 42002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
-    iconId: 
+    iconId:
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 0
     attackSoundType: 0
-    description: 
+    description:
     trainStatusData:
       MaxHp: 150
     prefabId: EliteColdAirRangeTrain
@@ -1007,8 +1007,8 @@ MonoBehaviour:
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 15
-      AttackRange: 13
-      AttackArea: 13
+      AttackRange: 5
+      AttackArea: 5
       AttackCount: 1
       AttackInterval: 0.1
       CriticalChance: 30
@@ -1172,9 +1172,9 @@ MonoBehaviour:
       passiveType: StatModifier
       param1: AttackRange
       param2: "100"
-      param3: AttackDamage:30
-      description: "\uBC94\uC704\uAC00 \uB113\uC5B4\uC9C0\uACE0 \uACF5\uACA9\uB825\uC774
-        \uB192\uC544\uC9D0"
+      param3: AttackArea:100:AttackDamage:30
+      description: "\uC0AC\uAC70\uB9AC\uC640 \uBC94\uC704\uAC00 \uB113\uC5B4\uC9C0\uACE0
+        \uACF5\uACA9\uB825\uC774 \uB192\uC544\uC9D0"
     - id: 60005
       name: "\uB208\uB369\uC774"
       passiveType: PeriodicSpawn
