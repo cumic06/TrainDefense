@@ -22,7 +22,7 @@ MonoBehaviour:
     clipId: 
     soundType: 101
     clip: {fileID: 8300000, guid: e023b1165d71b4edb94fca9b8106ebc1, type: 3}
-    volume: 0.5
+    volume: 0.4
   - id: 
     clipId: 
     soundType: 301
@@ -32,7 +32,7 @@ MonoBehaviour:
     clipId: 
     soundType: 302
     clip: {fileID: 8300000, guid: 43c9f1fcd965b324fadf0fcfad4b9286, type: 3}
-    volume: 0.4
+    volume: 1
   - id: 
     clipId: 
     soundType: 303
