@@ -163,10 +163,10 @@ namespace TrainDefense.Game
                 {
                     _rangeProjectilePrefab = ResourceManager.Instance.Spawn(projectile);
                     _rangeProjectilePrefab.transform.SetParent(transform);
-                    _rangeProjectilePrefab.transform.localScale = new Vector3(rangeTrainData.RangeTrainStatus.AttackArea, rangeTrainData.RangeTrainStatus.AttackArea, 1);
+                    _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1);
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
-                    _rangeProjectilePrefab.Init(rangeTrainData.RangeTrainStatus.AttackDamage, this, null, rangeTrainData.RangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
         }
