@@ -988,7 +988,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ExplosionProjectile
-    attackDamageMultiplier: 0
+    attackDamageMultiplier: 1
   - id: 42002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
     iconId:
@@ -1006,7 +1006,7 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 15
+      AttackDamage: 1
       AttackRange: 5
       AttackArea: 5
       AttackCount: 1
@@ -1051,16 +1051,20 @@ MonoBehaviour:
       name: "\uBE14\uB9AC\uC790\uB4DC"
       description: "15\uCD08 \uB3D9\uC548 \uBC94\uC704\uAC00 \uB9F5\uC744 \uB36E\uC744
         \uC815\uB3C4\uB85C \uB113\uC5B4\uC9D0"
-      skillType: 0
+      skillType: 2
       skillCooldown: 30
-      skillIconId: 
+      skillIconId:
       projectileData:
-        projectilePrefabId: 
+        projectilePrefabId:
         damage: 0
         range: 0
         projectileCount: 0
       buffDuration: 15
-      buffs: []
+      buffs:
+      - statType: 1
+        percent: 200
+      - statType: 8
+        percent: 200
     - id: 50004
       name: "\uC989\uBC1C \uD3ED\uBC1C"
       description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
@@ -1068,9 +1072,9 @@ MonoBehaviour:
       skillCooldown: 20
       skillIconId: 
       projectileData:
-        projectilePrefabId: 
+        projectilePrefabId: ExplosionProjectile
         damage: 0
-        range: 0
+        range: 20
         projectileCount: 0
       buffDuration: 0
       buffs: []
@@ -1194,10 +1198,10 @@ MonoBehaviour:
         \uC0DD\uC131"
     - id: 60007
       name: "\uAC15\uD55C \uD3ED\uBC1C"
-      passiveType: 
-      param1: 
-      param2: 
-      param3: 
+      passiveType: Strengthen
+      param1: 100
+      param2:
+      param3:
       description: "\uB109\uBC31\uC774 \uC5C6\uC5B4\uC9C0\uC9C0\uB9CC \uACF5\uACA9\uB825\uC774
         \uD06C\uAC8C \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
     - id: 60008
