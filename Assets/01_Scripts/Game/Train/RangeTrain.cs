@@ -24,6 +24,8 @@ namespace TrainDefense.Game
         private float _statAttackDamageAccum;
         private float _statAttackCountAccum;
 
+        private bool _suppressMainProjectileShove;
+
         public event Action OnAttacked;
 
         protected override void Setup()
@@ -92,6 +94,7 @@ namespace TrainDefense.Game
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.gameObject.SetActive(true);
+                        _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
                     }
                     else
                     {
@@ -132,16 +135,24 @@ namespace TrainDefense.Game
             }
         }
 
-        public void SpawnExternalProjectile(Projectile prefab, float radius)
+        public void SetSuppressMainProjectileShove(bool suppress)
+        {
+            _suppressMainProjectileShove = suppress;
+            if (_rangeProjectilePrefab != null)
+                _rangeProjectilePrefab.SuppressShoveEffect = suppress;
+        }
+
+        public void SpawnExternalProjectile(Projectile prefab, float radius, IProjectileTarget target = null)
         {
             if (prefab == null) return;
             var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
             if (spawned == null) return;
             float r = radius >= 0f ? radius : _currentRangeTrainStatus.AttackArea;
+            if (target != null) spawned.transform.LookAt2D(target.TargetTransform);
             spawned.Init(
                 _currentRangeTrainStatus.AttackDamage,
                 this,
-                null,
+                target,
                 r,
                 _currentRangeTrainStatus.CriticalChance,
                 _currentRangeTrainStatus.CriticalDamage);
@@ -166,6 +177,7 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1);
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
+                    _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
                     _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
@@ -217,6 +229,8 @@ namespace TrainDefense.Game
                 _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
             }
         }
+
+        public float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
 
         public override string GetStatSummary() =>
             $"DMG={_currentRangeTrainStatus.AttackDamage} | RANGE={_currentRangeTrainStatus.AttackRange} | AREA={_currentRangeTrainStatus.AttackArea} | MaxHp={_currentMaxHp}";
