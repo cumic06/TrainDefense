@@ -142,15 +142,17 @@ namespace TrainDefense.Game
                 _rangeProjectilePrefab.SuppressShoveEffect = suppress;
         }
 
-        public void SpawnExternalProjectile(Projectile prefab, float radius, IProjectileTarget target = null)
+        public void SpawnExternalProjectile(Projectile prefab, float radius, IProjectileTarget target = null, float damageMul = 1f, float shoveScale = 1f)
         {
             if (prefab == null) return;
             var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
             if (spawned == null) return;
             float r = radius >= 0f ? radius : _currentRangeTrainStatus.AttackArea;
             if (target != null) spawned.transform.LookAt2D(target.TargetTransform);
+            int damage = Mathf.RoundToInt(_currentRangeTrainStatus.AttackDamage * damageMul);
+            spawned.ShoveScale = shoveScale;
             spawned.Init(
-                _currentRangeTrainStatus.AttackDamage,
+                damage,
                 this,
                 target,
                 r,

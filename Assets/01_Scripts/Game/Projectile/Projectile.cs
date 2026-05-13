@@ -22,6 +22,7 @@ namespace TrainDefense.Game
         protected IMovementStrategy _movementStrategy;
 
         public bool SuppressShoveEffect { get; set; }
+        public float ShoveScale { get; set; } = 1f;
         protected Coroutine _destroyCoroutine;
         protected Dictionary<IProjectileTarget, float> _damageTimers = new();
         protected float _age;
@@ -40,6 +41,7 @@ namespace TrainDefense.Game
             _hitCount = 0;
             _isSpawnedTrigger = false;
             SuppressShoveEffect = false;
+            ShoveScale = 1f;
 
             if (data != null && data.DestroyDelay > 0)
             {
@@ -284,7 +286,7 @@ namespace TrainDefense.Game
             // 상태 효과 적용
             if (data.HasShoveEffect && !SuppressShoveEffect)
             {
-                target.Shove(data.ShovePower, data.ShoveDuration);
+                target.Shove(data.ShovePower * ShoveScale, data.ShoveDuration);
             }
 
             if (data.HasStunEffect)
@@ -330,7 +332,7 @@ namespace TrainDefense.Game
             // 넉백 효과 (Stay 중에도 적용)
             if (data.HasShoveEffect && !SuppressShoveEffect)
             {
-                target.Shove(data.ShovePower, data.ShoveDuration);
+                target.Shove(data.ShovePower * ShoveScale, data.ShoveDuration);
             }
         }
 

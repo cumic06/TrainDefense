@@ -101,14 +101,16 @@ namespace TrainDefense.Game
             });
         }
 
-        public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius)
+        public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius, float damageMul = 1f, float shoveScale = 1f)
         {
             if (prefab == null) return;
             var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
             if (spawned == null) return;
             float r = radius >= 0f ? radius : _currentTurretTrainStatus.AttackArea;
+            int damage = Mathf.RoundToInt(_currentTurretTrainStatus.AttackDamage * damageMul);
+            spawned.ShoveScale = shoveScale;
             spawned.Init(
-                _currentTurretTrainStatus.AttackDamage,
+                damage,
                 this,
                 null,
                 r,
