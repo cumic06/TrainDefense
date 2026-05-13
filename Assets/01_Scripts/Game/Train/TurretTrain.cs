@@ -49,6 +49,10 @@ namespace TrainDefense.Game
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
         private float _attackCountdown;
 
+        public float ProjectileModelScale { get; set; } = 1f;
+        public float ProjectileKnockbackPower { get; set; }
+        public float ProjectileKnockbackDuration { get; set; }
+
         public event Action<Monster> OnAttacked;
         public event Action OnTargetPosAttacked;
 
@@ -666,6 +670,12 @@ namespace TrainDefense.Game
             {
                 projectile.gameObject.SetActive(true);
             }
+
+            if (ProjectileModelScale != 1f)
+                projectile.SetModelScale(ProjectileModelScale);
+
+            if (ProjectileKnockbackPower > 0f)
+                projectile.SetRuntimeShove(ProjectileKnockbackPower, ProjectileKnockbackDuration);
 
             return projectile;
         }

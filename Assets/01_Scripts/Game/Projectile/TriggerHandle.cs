@@ -24,6 +24,15 @@ namespace TrainDefense.Game
         [SerializeField]
         private float tickInterval = 0.5f;
 
+        [BoxGroup("Status Effects")]
+        [SerializeField]
+        private bool hasStunEffect = false;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasStunEffect")]
+        [SerializeField]
+        private float stunDuration = 1f;
+
         [SerializeField]
         private bool destroyOnTriggerEnter = false;
 
@@ -127,6 +136,11 @@ namespace TrainDefense.Game
                         Destroy(gameObject);
                     }
                 }
+            }
+
+            if (hasStunEffect)
+            {
+                target.Stun(stunDuration);
             }
         }
 

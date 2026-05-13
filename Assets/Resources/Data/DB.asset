@@ -1084,9 +1084,9 @@ MonoBehaviour:
         \uB113\uC740 \uC6D0\uD615 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C \uC900\uB2E4."
       skillType: 1
       skillCooldown: 30
-      skillIconId: 
+      skillIconId:
       projectileData:
-        projectilePrefabId: 
+        projectilePrefabId: EliteLightningProjectile
         damage: 100
         range: 30
         projectileCount: 1
@@ -1245,10 +1245,10 @@ MonoBehaviour:
         \uC99D\uAC00"
     - id: 60013
       name: "\uB354 \uBE60\uB978 \uC804\uAE30"
-      passiveType: 
-      param1: 
-      param2: 
-      param3: 
+      passiveType: StatModifier
+      param1: AttackInterval
+      param2: -30
+      param3:
       description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uC99D\uAC00"
     - id: 60014
       name: "\uBC94\uC704 \uD3EC\uACA9"

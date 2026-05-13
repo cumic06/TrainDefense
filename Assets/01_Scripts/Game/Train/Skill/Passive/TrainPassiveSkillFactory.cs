@@ -29,6 +29,10 @@ namespace TrainDefense.Game
             { "StatModifier",                        StatModifierPassive.From },
             { nameof(StrengthenPassive),             StrengthenPassive.From },
             { "Strengthen",                          StrengthenPassive.From },
+            { nameof(KnockbackOnHitPassive),         KnockbackOnHitPassive.From },
+            { "KnockbackOnHit",                      KnockbackOnHitPassive.From },
+            { nameof(ScaleProjectilePassive),        ScaleProjectilePassive.From },
+            { "ScaleProjectile",                     ScaleProjectilePassive.From },
         };
 
         public static void Register(string typeKey, Func<string[], TrainPassiveSkill> parser)

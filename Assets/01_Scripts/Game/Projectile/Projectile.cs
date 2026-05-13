@@ -31,6 +31,11 @@ namespace TrainDefense.Game
         protected int _hitCount;
         protected readonly HashSet<IProjectileTarget> _hitSet = new();
 
+        // 런타임 넉백 오버라이드 (KnockbackOnHitPassive 등 패시브가 주입)
+        private bool _runtimeHasShove;
+        private float _runtimeShovePower;
+        private float _runtimeShoveDuration;
+
         #region Enable/Disable
 
         protected virtual void OnEnable()
@@ -42,6 +47,9 @@ namespace TrainDefense.Game
             _isSpawnedTrigger = false;
             SuppressShoveEffect = false;
             ShoveScale = 1f;
+            _runtimeHasShove = false;
+            _runtimeShovePower = 0f;
+            _runtimeShoveDuration = 0f;
 
             if (data != null && data.DestroyDelay > 0)
             {
@@ -289,6 +297,11 @@ namespace TrainDefense.Game
                 target.Shove(data.ShovePower * ShoveScale, data.ShoveDuration);
             }
 
+            if (_runtimeHasShove && !SuppressShoveEffect)
+            {
+                target.Shove(_runtimeShovePower * ShoveScale, _runtimeShoveDuration);
+            }
+
             if (data.HasStunEffect)
             {
                 target.Stun(data.StunDuration);
@@ -379,6 +392,18 @@ namespace TrainDefense.Game
             }
         }
         #endregion
+
+        public void SetModelScale(float scale)
+        {
+            if (model != null) model.transform.localScale = UnityEngine.Vector3.one * scale;
+        }
+
+        public void SetRuntimeShove(float power, float duration)
+        {
+            _runtimeHasShove = true;
+            _runtimeShovePower = power;
+            _runtimeShoveDuration = duration;
+        }
 
         public bool IsScaleByArea()
         {
