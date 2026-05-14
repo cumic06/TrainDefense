@@ -12515,6 +12515,7 @@ MonoBehaviour:
   hpScale: 0.15
   attackScale: 0.07
   goldScale: 0.05
+  stationInspectionTimeIncrement: 0
 --- !u!1 &1398835984
 GameObject:
   m_ObjectHideFlags: 0
@@ -13270,6 +13271,8 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   spawnInterval: 2
   spawnRange: 2
+  stationSpawnAccelPercent: 5
+  maxSpawnAccelPercent: 50
   spawnMode: 1
   customSpawnAreas:
   - Offset: {x: 0, y: 10}
@@ -15190,6 +15193,10 @@ PrefabInstance:
       propertyPath: m_Interactable
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3598641817902828018, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1956671473215551861, guid: cecee883c579226418b1f85ff4064ec6, type: 3}
     - target: {fileID: 4464143324520739034, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -15285,6 +15292,22 @@ PrefabInstance:
     - target: {fileID: 4718382812715901533, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -12.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5124413733538112722, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 5124413733538112722, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 5124413733538112722, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 5124413733538112722, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 6657354639661050422, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_Name
