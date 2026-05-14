@@ -12,6 +12,8 @@ namespace TrainDefense.Game
             { TrainSkillType.Projectile,    () => new TrainProjectileSkillAction() },
             { TrainSkillType.SelfBuff,      () => new TrainSelfBuffSkillAction() },
             { TrainSkillType.InstantAttack, () => new TrainInstantAttackSkillAction() },
+            { TrainSkillType.AreaStrike,    () => new TrainLightningStrikeSkillAction() },
+            { TrainSkillType.Bombard,       () => new TrainBombardSkillAction() },
         };
 
         public static void Register(TrainSkillType type, Func<TrainSkillAction> creator)
