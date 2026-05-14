@@ -20,6 +20,8 @@ namespace TrainDefense.Game
       private GameObject model;
       [SerializeField]
       private GameObject eliteEffect;
+      [SerializeField]
+      private Color slowColor = new Color(0.5f, 0.85f, 1f, 1f);
       #endregion
 
       [ShowInInspector, ReadOnly]
@@ -39,6 +41,7 @@ namespace TrainDefense.Game
       protected Rigidbody2D _rigidbody2D;
       protected MonsterAnimator _modelAnimator;
       protected SpriteRenderer _modelSpriteRenderer;
+      protected Color _originalColor = Color.white;
 
       protected Coroutine _slowCoroutine;
       protected Coroutine _resetMoveSpeedCoroutine;
@@ -62,6 +65,7 @@ namespace TrainDefense.Game
          _startScale = _prefabScale;
          _modelAnimator = model.GetComponentInChildren<MonsterAnimator>();
          _modelSpriteRenderer = model.GetComponent<SpriteRenderer>();
+         if (_modelSpriteRenderer != null) _originalColor = _modelSpriteRenderer.color;
          if (eliteEffect != null) eliteEffect.SetActive(false);
       }
 
@@ -78,6 +82,7 @@ namespace TrainDefense.Game
          _isElite = false;
          _startScale = _prefabScale;
          if (model != null) model.transform.localScale = _prefabScale;
+         if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
          if (eliteEffect != null) eliteEffect.SetActive(false);
 
          if (_modelAnimator != null)
@@ -275,6 +280,7 @@ namespace TrainDefense.Game
             StopCoroutine(_slowCoroutine);
          }
          _slowCoroutine = StartCoroutine(_SlowCoroutine(slowValue));
+         if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = slowColor;
       }
 
       private IEnumerator _SlowCoroutine(float slowValue)
@@ -305,6 +311,7 @@ namespace TrainDefense.Game
             StopCoroutine(_resetMoveSpeedCoroutine);
          }
          _resetMoveSpeedCoroutine = StartCoroutine(_ResetMoveSpeedCoroutine());
+         if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
       }
 
       /// <summary>
@@ -320,6 +327,7 @@ namespace TrainDefense.Game
             StopCoroutine(_slowCoroutine);
          }
          _slowCoroutine = StartCoroutine(_SlowForDurationCoroutine(slowValue, duration));
+         if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = slowColor;
       }
 
       private IEnumerator _SlowForDurationCoroutine(float slowValue, float duration)
