@@ -396,11 +396,11 @@ MonoBehaviour:
     trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 25
+      AttackDamage: 30
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 1.25
+      AttackInterval: 0.9
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -450,7 +450,7 @@ MonoBehaviour:
       AttackRange: 20
       AttackArea: 20
       AttackCount: 3
-      AttackInterval: 1
+      AttackInterval: 1.2
       TargetCount: 3
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -714,11 +714,11 @@ MonoBehaviour:
     trainSkillDataId: 
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 1
+      AttackDamage: 2
       AttackRange: 5
       AttackArea: 5
       AttackCount: 1
-      AttackInterval: 0.1
+      AttackInterval: 0.15
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
@@ -1070,18 +1070,18 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.15
+        AttackInterval: 0.05
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 20
+        AttackDamage: 25
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.15
+        AttackInterval: 0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
