@@ -1,5 +1,6 @@
 using TrainDefense.Game.Datas;
 using TrainDefense.Editor.DataImport.Importers.Rows;
+using TrainDefense.Game;
 
 namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 {
@@ -44,6 +45,19 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(turretTrainType, target, "turretProjectilePrefabId", r.turretProjectilePrefabId);
 			SetPrivateField(t, target, "passiveSkillDataIds", r.passiveSkillDataIds);
 			SetPrivateField(t, target, "passiveSkillDatasResolved", false);
+
+			var soundType = r.turretProjectilePrefabId switch
+			{
+				"NormalProjectile"      => SoundType.NormalTurretTrainAttack,
+				"FireEffectProjectile"  => SoundType.FireTurretTrainAttack,
+				"MissileProjectile"     => SoundType.MissileTurretTrainAttack,
+				"LaserProjectile"       => SoundType.LaserTurretTrainAttack,
+				"ElectrickProjectile"   => SoundType.ElectrickTurretTrainAttack,
+				"CannonProjectile"      => SoundType.CannonTurretTrainAttack,
+				"SniperProjectile"      => SoundType.SniperTurretTrainAttack,
+				_                       => SoundType.None
+			};
+			SetPrivateField(t, target, "attackSoundType", soundType);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

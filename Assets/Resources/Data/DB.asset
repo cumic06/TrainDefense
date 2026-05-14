@@ -513,7 +513,7 @@ MonoBehaviour:
     iconId: Weapon_KMD_08_UI
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     damageType: 0
-    attackSoundType: 0
+    attackSoundType: 301
     description: 
     trainStatusData:
       MaxHp: 150
@@ -539,7 +539,7 @@ MonoBehaviour:
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     damageType: 0
-    attackSoundType: 0
+    attackSoundType: 302
     description: 
     trainStatusData:
       MaxHp: 150
@@ -565,7 +565,7 @@ MonoBehaviour:
     iconId: Weapon_KMD_10_UI
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     damageType: 0
-    attackSoundType: 0
+    attackSoundType: 303
     description: 
     trainStatusData:
       MaxHp: 150
@@ -592,7 +592,7 @@ MonoBehaviour:
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     damageType: 0
-    attackSoundType: 0
+    attackSoundType: 304
     description: 
     trainStatusData:
       MaxHp: 150
@@ -618,7 +618,7 @@ MonoBehaviour:
     iconId: Weapon_MEL_16_UI
     icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     damageType: 0
-    attackSoundType: 0
+    attackSoundType: 305
     description: 
     trainStatusData:
       MaxHp: 150
@@ -644,7 +644,7 @@ MonoBehaviour:
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     damageType: 0
-    attackSoundType: 0
+    attackSoundType: 306
     description: 
     trainStatusData:
       MaxHp: 150
@@ -671,7 +671,7 @@ MonoBehaviour:
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     damageType: 0
-    attackSoundType: 0
+    attackSoundType: 307
     description: 
     trainStatusData:
       MaxHp: 150
