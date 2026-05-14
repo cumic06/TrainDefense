@@ -633,7 +633,7 @@ MonoBehaviour:
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 5
+      AttackInterval: 1
       TargetCount: 0
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -1246,7 +1246,7 @@ MonoBehaviour:
       param1: AttackInterval
       param2: -30
       param3: 
-      description: ?? ?? 30% ??
+      description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uC99D\uAC00"
     - id: 60014
       name: "\uBC94\uC704 \uD3EC\uACA9"
       passiveType: StatModifier
