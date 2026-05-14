@@ -339,7 +339,8 @@ MonoBehaviour:
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     damageType: 0
     attackSoundType: 301
-    description: "\uAE30\uAD00\uCD1D\uC73C\uB85C \uD53C\uD574\uB97C \uC900\uB2E4."
+    description: "\uBE60\uB978 \uC18D\uB3C4\uB85C \uC801\uC5D0\uAC8C \uD53C\uD574\uB97C
+      \uC90D\uB2C8\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: NormalTurretTrain
@@ -363,8 +364,7 @@ MonoBehaviour:
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     damageType: 1
     attackSoundType: 302
-    description: "\uD654\uC5FC\uC73C\uB85C \uC9C0\uC18D\uC801\uC778 \uD53C\uD574\uB97C
-      \uC900\uB2E4."
+    description: "\uC9C0\uC18D\uC801\uC778 \uBC94\uC704 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: FireTurretTrain
@@ -388,8 +388,8 @@ MonoBehaviour:
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     damageType: 0
     attackSoundType: 303
-    description: "\uBBF8\uC0AC\uC77C\uB85C <color=#FFDD52><shake>\uAC15\uD55C \uD53C\uD574</shake></color>\uB97C
-      \uC900\uB2E4. \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
+    description: "\uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574 \uBC94\uC704 \uD53C\uD574\uB97C
+      \uC90D\uB2C8\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: MissileTurretTrain
@@ -413,8 +413,8 @@ MonoBehaviour:
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     damageType: 0
     attackSoundType: 304
-    description: "\uB808\uC774\uC800\uB85C <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>
-      \uD53C\uD574\uB97C \uC900\uB2E4."
+    description: "\uB808\uC774\uC800\uB97C \uBC1C\uC0AC\uD574 <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>
+      \uBC94\uC704 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: LaserTurretTrain
@@ -439,7 +439,7 @@ MonoBehaviour:
     damageType: 0
     attackSoundType: 305
     description: "\uD654\uBA74\uC5D0 \uC788\uB294 \uB2E4\uC218\uC758 \uC801\uB4E4\uC744
-      \uD1B5\uC2DC\uC5D0 \uACF5\uACA9\uD55C\uB2E4."
+      \uD1B5\uC2DC\uC5D0 \uACF5\uACA9\uD558\uACE0 \uAE30\uC808 \uC2DC\uD0B5\uB2C8\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: ElectrickTurretTrain
@@ -464,7 +464,7 @@ MonoBehaviour:
     damageType: 0
     attackSoundType: 306
     description: "\uAC70\uB300\uD55C \uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574
-      \uBA87 \uBC88 \uD070 \uD53C\uD574\uB97C \uC900\uB2E4."
+      \uB113\uC740 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: CannonTurretTrain
@@ -488,8 +488,8 @@ MonoBehaviour:
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     damageType: 0
     attackSoundType: 307
-    description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uBC88 \uD070 <color=#FFDD52><shake>\uAC15\uD55C
-      \uD53C\uD574</shake></color>\uB97C \uC900\uB2E4."
+    description: "\uC801\uC73C \uAD00\uD1B5\uD558\uB294 \uD0C4\uC744 \uBC1C\uC0AC\uD574
+      <color=#FFDD52><shake>\uAC15\uD55C \uD53C\uD574</shake></color>\uB97C \uC90D\uB2C8\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: SniperTurretTrain
