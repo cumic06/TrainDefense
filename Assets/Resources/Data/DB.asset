@@ -524,12 +524,12 @@ MonoBehaviour:
     - 60001
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 10
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 0.1
-      TargetCount: 0
+      AttackInterval: 0.3
+      TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: NormalProjectile
@@ -550,12 +550,12 @@ MonoBehaviour:
     - 60003
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 25
-      AttackRange: 10
-      AttackArea: 10
+      AttackDamage: 4
+      AttackRange: 8
+      AttackArea: 8
       AttackCount: 1
-      AttackInterval: 0.1
-      TargetCount: 0
+      AttackInterval: 0.15
+      TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: FireEffectProjectile
@@ -577,12 +577,12 @@ MonoBehaviour:
     - 60010
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 100
+      AttackDamage: 25
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 0.5
-      TargetCount: 0
+      AttackInterval: 1.25
+      TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: MissileProjectile
@@ -603,12 +603,12 @@ MonoBehaviour:
     - 60012
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 300
+      AttackDamage: 50
       AttackRange: 30
-      AttackArea: 10
+      AttackArea: 30
       AttackCount: 1
-      AttackInterval: 3
-      TargetCount: 0
+      AttackInterval: 2.5
+      TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: LaserProjectile
@@ -629,12 +629,12 @@ MonoBehaviour:
     - 60013
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 400
-      AttackRange: 10
-      AttackArea: 10
-      AttackCount: 1
+      AttackDamage: 10
+      AttackRange: 20
+      AttackArea: 20
+      AttackCount: 3
       AttackInterval: 1
-      TargetCount: 0
+      TargetCount: 3
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: ElectrickProjectile
@@ -656,12 +656,12 @@ MonoBehaviour:
     - 60015
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 400
-      AttackRange: 10
-      AttackArea: 10
+      AttackDamage: 50
+      AttackRange: 3
+      AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
-      TargetCount: 0
+      TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: CannonProjectile
@@ -683,12 +683,12 @@ MonoBehaviour:
     - 60018
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 600
-      AttackRange: 10
-      AttackArea: 10
+      AttackDamage: 50
+      AttackRange: 30
+      AttackArea: 30
       AttackCount: 1
-      AttackInterval: 1.5
-      TargetCount: 0
+      AttackInterval: 1
+      TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: SniperProjectile
@@ -980,9 +980,9 @@ MonoBehaviour:
     - 60007
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 500
-      AttackRange: 8
-      AttackArea: 8
+      AttackDamage: 50
+      AttackRange: 5
+      AttackArea: 5
       AttackCount: 1
       AttackInterval: 4
       CriticalChance: 30
@@ -1006,7 +1006,7 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 15
+      AttackDamage: 1
       AttackRange: 5
       AttackArea: 5
       AttackCount: 1
