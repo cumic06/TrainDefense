@@ -118,7 +118,6 @@ namespace TrainDefense.Game
                 return;
             }
 
-            Debug.Log($"TrainUpgradeManager: ReplaceTrain - {replaceTrainEvent.NewTrain.name}, HasActiveSkill: {replaceTrainEvent.NewTrain.HasActiveSkill}");
 
             // 대체된 새 기차가 스킬을 가지면 튜토리얼 시작
             if (replaceTrainEvent.NewTrain.HasActiveSkill)

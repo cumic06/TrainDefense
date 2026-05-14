@@ -991,11 +991,11 @@ MonoBehaviour:
     attackDamageMultiplier: 1
   - id: 42002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
-    iconId:
+    iconId: 
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 0
     attackSoundType: 0
-    description:
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteColdAirRangeTrain
@@ -1006,7 +1006,7 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 1
+      AttackDamage: 15
       AttackRange: 5
       AttackArea: 5
       AttackCount: 1
@@ -1051,20 +1051,16 @@ MonoBehaviour:
       name: "\uBE14\uB9AC\uC790\uB4DC"
       description: "15\uCD08 \uB3D9\uC548 \uBC94\uC704\uAC00 \uB9F5\uC744 \uB36E\uC744
         \uC815\uB3C4\uB85C \uB113\uC5B4\uC9D0"
-      skillType: 2
+      skillType: 0
       skillCooldown: 30
-      skillIconId:
+      skillIconId: 
       projectileData:
-        projectilePrefabId:
+        projectilePrefabId: 
         damage: 0
         range: 0
         projectileCount: 0
       buffDuration: 15
-      buffs:
-      - statType: 1
-        percent: 200
-      - statType: 8
-        percent: 200
+      buffs: []
     - id: 50004
       name: "\uC989\uBC1C \uD3ED\uBC1C"
       description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
@@ -1072,9 +1068,9 @@ MonoBehaviour:
       skillCooldown: 20
       skillIconId: 
       projectileData:
-        projectilePrefabId: ExplosionProjectile
+        projectilePrefabId: 
         damage: 0
-        range: 20
+        range: 0
         projectileCount: 0
       buffDuration: 0
       buffs: []
@@ -1084,9 +1080,9 @@ MonoBehaviour:
         \uB113\uC740 \uC6D0\uD615 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C \uC900\uB2E4."
       skillType: 4
       skillCooldown: 30
-      skillIconId:
+      skillIconId: 
       projectileData:
-        projectilePrefabId:
+        projectilePrefabId: 
         damage: 100
         range: 30
         projectileCount: 1
@@ -1175,16 +1171,16 @@ MonoBehaviour:
       name: "\uBC94\uC704 \uB0C9\uAE30"
       passiveType: StatModifier
       param1: AttackRange
-      param2: "100"
+      param2: 100
       param3: AttackArea:100:AttackDamage:30
       description: "\uC0AC\uAC70\uB9AC\uC640 \uBC94\uC704\uAC00 \uB113\uC5B4\uC9C0\uACE0
         \uACF5\uACA9\uB825\uC774 \uB192\uC544\uC9D0"
     - id: 60005
       name: "\uB208\uB369\uC774"
       passiveType: PeriodicSpawn
-      param1: "3"
+      param1: 3
       param2: SnowballProjectile
-      param3: "3"
+      param3: 3
       description: "3\uCD08\uB9C8\uB2E4 \uC801\uC5D0\uAC8C \uBC94\uC704 \uD53C\uD574\uB97C
         \uC8FC\uACE0 1 \uCD08 \uB3D9\uC548 \uB454\uD654 \uC2DC\uD0A4\uB294 \uB208\uB369\uC774\uB97C
         \uBC1C\uC0AC"
@@ -1193,22 +1189,23 @@ MonoBehaviour:
       passiveType: FollowUpExplosion
       param1: 0.2
       param2: ExplosionProjectile
-      param3: "-1:0.5:0.3"
+      param3: -1:0.5:0.3
       description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uB4A4 \uB3D9\uC77C \uBC94\uC704\uC758
-        \uC57D\uD55C \uD3ED\uBC1C \uC0DD\uC131 (\uB370\uBBF8\uC9C0 50%, \uB109\uBC31 30%)"
+        \uC57D\uD55C \uD3ED\uBC1C \uC0DD\uC131 (\uB370\uBBF8\uC9C0 50%, \uB109\uBC31
+        30%)"
     - id: 60007
       name: "\uAC15\uD55C \uD3ED\uBC1C"
-      passiveType: Strengthen
-      param1: 100
-      param2:
-      param3:
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
       description: "\uB109\uBC31\uC774 \uC5C6\uC5B4\uC9C0\uC9C0\uB9CC \uACF5\uACA9\uB825\uC774
         \uD06C\uAC8C \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
     - id: 60008
       name: "\uBD80\uCC44 \uBC1C\uC0AC"
-      passiveType: 
-      param1: 
-      param2: 
+      passiveType: StatModifier
+      param1: AttackCount
+      param2: 200
       param3: 
       description: "\uBD80\uCC44\uAF34\uB85C 3 \uBC1C \uB3D9\uC2DC \uBC1C\uC0AC"
     - id: 60009
@@ -1221,8 +1218,8 @@ MonoBehaviour:
         \uC57D\uD55C \uB109\uBC31"
     - id: 60010
       name: "\uAC15\uD654 \uBBF8\uC0AC\uC77C"
-      passiveType: 
-      param1: 
+      passiveType: StatModifier:AttackDamage:50:AttackArea:50|ScaleProjectile
+      param1: 1.5
       param2: 
       param3: 
       description: "\uACF5\uACA9\uB825 \uC99D\uAC00, \uBC94\uC704 \uC99D\uAC00, \uBBF8\uC0AC\uC77C
@@ -1232,7 +1229,7 @@ MonoBehaviour:
       passiveType: RepeatAfterAttack
       param1: 0.2
       param2: 3
-      param3:
+      param3: 
       description: "\uACF5\uACA9\uD560 \uB54C 0.2\uCD08 \uB51C\uB808\uC774\uB85C
         3\uBC88 \uC5F0\uC18D \uACF5\uACA9"
     - id: 60012
@@ -1247,45 +1244,45 @@ MonoBehaviour:
       name: "\uB354 \uBE60\uB978 \uC804\uAE30"
       passiveType: StatModifier
       param1: AttackInterval
-      param2: "-30"
-      param3:
-      description: "\uACF5\uACA9 \uC18D\uB3C4 30% \uC99D\uAC00"
+      param2: -30
+      param3: 
+      description: ?? ?? 30% ??
     - id: 60014
       name: "\uBC94\uC704 \uD3EC\uACA9"
       passiveType: StatModifier
       param1: AttackArea
       param2: 300
-      param3:
+      param3: 
       description: "\uD3EC\uACA9 \uBBF8\uC0AC\uC77C\uC758 \uBC94\uC704 \uC99D\uAC00"
     - id: 60015
       name: "\uD3ED\uACA9"
       passiveType: RapidBombard
-      param1: "-50"
-      param2: "-50"
+      param1: -50
+      param2: -50
       param3: 2:10:7
       description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uB9E4\uC6B0 \uBE68\uB77C\uC9C0\uC9C0\uB9CC
         \uBC94\uC704\uAC00 \uC881\uC544\uC9C0\uACE0 \uD654\uBA74 \uB0B4\uC5D0\uC11C
         \uBB34\uC791\uC704 \uC704\uCE58\uC5D0 \uD3ED\uACA9"
     - id: 60016
       name: "\uAD00\uD1B5 \uC800\uACA9"
-      passiveType: PierceProjectile
-      param1: EliteSniperProjectile
-      param2:
-      param3:
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
       description: "\uCD1D\uC54C\uC774 \uC801\uC744 \uAD00\uD1B5\uD568."
     - id: 60017
       name: "\uD589\uC6B4 \uC800\uACA9"
-      passiveType: ChainAttackChance
-      param1: "30"
-      param2:
-      param3:
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
       description: "30%\uC758 \uD655\uB960\uB85C \uC5F0\uC18D \uACF5\uACA9"
     - id: 60018
       name: "\uC774\uAC8C \uC800\uACA9?"
-      passiveType: StatModifier
-      param1: AttackInterval
-      param2: "-20"
-      param3:
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
       description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00"
   _legacyTrainSkillDataList: []
   _legacyTrainPassiveSkillDataList: []
