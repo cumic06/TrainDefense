@@ -93,7 +93,28 @@ namespace TrainDefense.Game
             if (_isDead) return;
             DetectTarget();
             if (_targetMonsters.Count == 0) return;
-            PlayAttackAnimation();
+
+            Monster nearTarget = GetNearTargetMonster();
+
+            if (turretModel != null && nearTarget != null)
+            {
+                if (isRotateTurret)
+                    turret.transform.LookAt2D(nearTarget.transform);
+                PlayAttackAnimation();
+            }
+
+            if (turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
+            {
+                if (TrainData.DamageType == DamageType.Direct)
+                {
+                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
+                }
+                else if (_nonMovementProjectiles.Count > 0 && !_nonMovementProjectiles[0].gameObject.activeSelf)
+                {
+                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
+                }
+            }
+
             NormalAttack();
         }
 

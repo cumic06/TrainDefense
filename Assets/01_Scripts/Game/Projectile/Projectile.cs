@@ -175,7 +175,7 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (target == _owner) return;
+            if (_owner is Train && target is Train) return;
 
             ProcessEnter(target);
         }
@@ -187,7 +187,7 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (target == _owner) return;
+            if (_owner is Train && target is Train) return;
 
             ProcessStay(target);
         }
@@ -199,7 +199,7 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (target == _owner) return;
+            if (_owner is Train && target is Train) return;
 
             ProcessExit(target);
         }
@@ -385,7 +385,7 @@ namespace TrainDefense.Game
             {
                 if (col.TryGetComponent<IProjectileTarget>(out var target))
                 {
-                    if (target == _owner) return;
+                    if (target == _owner) continue;
 
                     ProcessEnter(target);
                 }
@@ -448,7 +448,7 @@ namespace TrainDefense.Game
                 }
             }
 
-            triggerHandle.Init(_damage);
+            triggerHandle.Init(_damage, _owner);
         }
 
         private IEnumerator DestroyCoroutine()

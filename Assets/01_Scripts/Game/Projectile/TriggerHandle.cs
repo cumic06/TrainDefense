@@ -44,11 +44,14 @@ namespace TrainDefense.Game
         private ExpandingWave expandingWave;
 
         private Dictionary<IProjectileTarget, float> _damageTimers = new();
+        private IProjectileTarget _owner;
 
         public bool HasTurretDamage => hasTurretDamage;
 
         private void OnEnable()
         {
+            _owner = null;
+
             float lifetime = destroyDelay;
 
             if (expandingWave != null)
@@ -64,12 +67,13 @@ namespace TrainDefense.Game
             _damageTimers.Clear();
         }
 
-        public void Init(int damage)
+        public void Init(int damage, IProjectileTarget owner = null)
         {
             if (hasTurretDamage)
             {
                 this.damage = damage;
             }
+            _owner = owner;
         }
 
         public void ApplyWaveHit(IProjectileTarget target)
@@ -110,6 +114,7 @@ namespace TrainDefense.Game
         private void ProcessEnter(IProjectileTarget target)
         {
             if (target == null || !target.IsActive) return;
+            if (_owner is Train && target is Train) return;
 
             if (damageType == DamageType.Tick)
             {
