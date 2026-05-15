@@ -19,12 +19,10 @@ namespace TrainDefense.Game.Datas
         private TrainPassiveSkillData passiveSkillDataCache;
         [NonSerialized]
         private bool passiveSkillDataResolved;
-        [SerializeField]
-        private float attackDamageMultiplier = 1f;
         #endregion
 
         public RangeTrainStatus RangeTrainStatus => rangeTrainStatus;
-        public float AttackDamageMultiplier => attackDamageMultiplier;
+
         public TrainPassiveSkillData PassiveSkillData
         {
             get

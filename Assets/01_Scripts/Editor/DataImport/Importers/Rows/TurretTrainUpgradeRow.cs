@@ -5,7 +5,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 {
 	public class TurretTrainUpgradeRow : TrainUpgradeRow
 	{
-		public int attackDamage;
+		public float attackDamage;
 		public float attackRange;
 		public float attackArea;
 		public int attackCount;
@@ -17,7 +17,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public override void FromExcelRow(IRow row, HeaderMap map)
 		{
 			base.FromExcelRow(row, map);
-			attackDamage = map.GetInt(row, "attack_damage");
+			attackDamage = map.GetFloat(row, "attack_damage");
 			attackRange = map.GetFloat(row, "attack_range");
 			attackArea = map.GetFloat(row, "attack_area");
 			attackCount = map.GetInt(row, "attack_count");

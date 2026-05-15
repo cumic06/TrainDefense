@@ -13,7 +13,7 @@ namespace TrainDefense.Game
         [BoxGroup("Damage Settings")]
         [HideIf("hasTurretDamage")]
         [SerializeField]
-        private int damage = 10;
+        private float damage = 10f;
 
         [BoxGroup("Damage Settings")]
         [SerializeField]
@@ -55,7 +55,7 @@ namespace TrainDefense.Game
             _damageTimers.Clear();
         }
 
-        public void Init(int damage)
+        public void Init(float damage)
         {
             if (hasTurretDamage)
             {

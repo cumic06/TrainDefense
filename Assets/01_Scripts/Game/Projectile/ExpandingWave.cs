@@ -65,7 +65,7 @@ namespace TrainDefense.Game
             _hitTargets.Clear();
         }
 
-        public override void Init(int damage, IProjectileTarget owner, IProjectileTarget target = null, float attackRange = 0f, float criticalChance = 0f, float criticalDamage = 0f)
+        public override void Init(float damage, IProjectileTarget owner, IProjectileTarget target = null, float attackRange = 0f, float criticalChance = 0f, float criticalDamage = 0f)
         {
             if (attackRange > 0f)
             {

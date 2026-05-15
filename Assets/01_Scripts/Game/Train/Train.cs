@@ -27,9 +27,9 @@ namespace TrainDefense.Game
         [ShowInInspector, ReadOnly]
         protected TrainData _trainData;
         protected bool _isDead;
-        protected int _currentHp;
+        protected float _currentHp;
         protected int _currentLevel;
-        protected int _currentMaxHp;
+        protected float _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
 
         [HideInInspector]
@@ -100,12 +100,12 @@ namespace TrainDefense.Game
 
         }
 
-        public virtual void TakeDamage(int damage)
+        public virtual void TakeDamage(float damage)
         {
             TakeDamage(damage, false);
         }
 
-        public virtual void TakeDamage(int damage, bool isCritical)
+        public virtual void TakeDamage(float damage, bool isCritical)
         {
             if (_isDead) return;
 
@@ -229,6 +229,33 @@ namespace TrainDefense.Game
             }
         }
 
+        // 레벨 누적 방식: RoundToInt(base * percent * N) - RoundToInt(base * percent * prevN)
+        // per-call 반올림 대신 누적 값 기준으로 delta를 계산해 소수 퍼센트도 정확히 적용
+        public virtual void ApplyStatsLevelAware(IStat[] stats, int newLevel, int prevLevel = 0)
+        {
+            if (stats == null || stats.Length == 0) return;
+            foreach (var stat in stats)
+                ApplyStatLevelAware(stat, newLevel, prevLevel);
+        }
+
+        protected virtual void ApplyStatLevelAware(IStat stat, int newLevel, int prevLevel)
+        {
+            if (stat == null) return;
+            switch (stat.Type)
+            {
+                case StatType.MaxHp:
+                {
+                    float baseMaxHp = _trainData.TrainStatusData.MaxHp;
+                    float percent = stat.Value / 100f;
+                    float delta = baseMaxHp * percent * (newLevel - prevLevel);
+                    _currentMaxHp += delta;
+                    _currentHp += delta;
+                    _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+                    break;
+                }
+            }
+        }
+
         public virtual string GetStatSummary() => $"MaxHp={_currentMaxHp}";
 
         protected virtual void ApplyStat(IStat stat)
@@ -239,8 +266,8 @@ namespace TrainDefense.Game
             {
                 case StatType.MaxHp:
                     {
-                        int baseMaxHp = _trainData.TrainStatusData.MaxHp;
-                        int deltaHp = Mathf.RoundToInt(baseMaxHp * stat.Value / 100f);
+                        float baseMaxHp = _trainData.TrainStatusData.MaxHp;
+                        float deltaHp = baseMaxHp * stat.Value / 100f;
                         _currentMaxHp += deltaHp;
                         _currentHp += deltaHp;
                         _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);

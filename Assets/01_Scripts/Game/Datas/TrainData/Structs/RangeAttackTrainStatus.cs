@@ -8,7 +8,7 @@ namespace TrainDefense.Game.Datas
     [Serializable]
     public struct RangeTrainStatus
     {
-        public int AttackDamage;
+        public float AttackDamage;
         public float AttackRange;
         public float AttackArea;
         public int AttackCount;
