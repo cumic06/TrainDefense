@@ -27,8 +27,6 @@ namespace TrainDefense.Game.Datas
         {
             _index = new Dictionary<string, List<(IData, TrainChoiceSkillType)>>();
 
-            UnityEngine.Debug.Log($"[TrainSkillDataDB] BuildIndex 시작 — Active:{trainActiveSkillDataList.Count}, Passive:{trainPassiveSkillDataList.Count}");
-
             foreach (var trainData in allTrains)
             {
                 if (trainData == null) continue;
@@ -66,8 +64,6 @@ namespace TrainDefense.Game.Datas
                 if (skills.Count > 0)
                     _index[trainData.Id] = skills;
             }
-
-            UnityEngine.Debug.Log($"[TrainSkillDataDB] BuildIndex 완료 — 인덱스된 TrainData 수: {_index.Count}");
         }
 
         /// <summary>
