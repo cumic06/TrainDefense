@@ -239,7 +239,7 @@ MonoBehaviour:
     description: "\uACE0\uBE14\uB9B0 \uCC3D\uBCD1\uC774\uB2E4"
     icon: {fileID: 6527618186103422146, guid: 4eea2bd4e5d564b41a313f4ca7f40676, type: 3}
     monsterStatusData:
-      MaxHp: 35
+      MaxHp: 28
       Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
@@ -350,7 +350,7 @@ MonoBehaviour:
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 0.3
+      AttackInterval: 0.25
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -371,11 +371,11 @@ MonoBehaviour:
     trainSkillDataId: 
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 4
+      AttackDamage: 2
       AttackRange: 8
       AttackArea: 8
       AttackCount: 1
-      AttackInterval: 0.15
+      AttackInterval: 0.1
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -400,7 +400,7 @@ MonoBehaviour:
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 0.9
+      AttackInterval: 1
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -450,7 +450,7 @@ MonoBehaviour:
       AttackRange: 20
       AttackArea: 20
       AttackCount: 3
-      AttackInterval: 1.2
+      AttackInterval: 1
       TargetCount: 3
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -472,7 +472,7 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 3
+      AttackRange: 20
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
@@ -987,33 +987,33 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 5
+        AttackDamage: 4
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.05
+        AttackInterval: 0.015
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 6
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.05
+        AttackInterval: 0.35
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 25
+        AttackDamage: 0
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.05
+        AttackInterval: 0.75
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1023,6 +1023,17 @@ MonoBehaviour:
     name: "\uD654\uC5FC \uD3EC\uD0D1 \uAC15\uD654"
     description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 1
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
@@ -1038,17 +1049,6 @@ MonoBehaviour:
         MaxHp: 0
       turretStatusUpgrade:
         AttackDamage: 3
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 6
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1066,18 +1066,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 15
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0.05
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 25
+        AttackDamage: 10
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1088,11 +1077,22 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 40
+        AttackDamage: 10
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.2
+        AttackInterval: 0.24
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 20
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1105,7 +1105,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 50
+        AttackDamage: 25
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1127,7 +1127,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 100
+        AttackDamage: 75
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1145,29 +1145,29 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 3
+        AttackDamage: 1
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
-        TargetCount: 2
+        TargetCount: 1
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 5
+        AttackDamage: 4
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
-        TargetCount: 2
+        TargetCount: 1
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 7
+        AttackDamage: 0
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1179,37 +1179,36 @@ MonoBehaviour:
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     name: "\uD3EC\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
-      \uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
+    description: "\uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
+        AttackDamage: 0
+        AttackRange: 0
+        AttackArea: 1
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 0
+        AttackRange: 0
+        AttackArea: 2
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
         AttackDamage: 20
-        AttackRange: 1
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 30
-        AttackRange: 2
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 50
-        AttackRange: 4
-        AttackArea: 0
+        AttackRange: 0
+        AttackArea: 3
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1225,33 +1224,33 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 50
+        AttackDamage: 25
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.05
+        AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 75
+        AttackDamage: 35
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.05
+        AttackInterval: 0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 125
+        AttackDamage: 45
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.15
+        AttackInterval: 0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1267,8 +1266,8 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 10
-        AttackRange: 1
-        AttackArea: 0
+        AttackRange: 0
+        AttackArea: 1
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1276,9 +1275,9 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 15
-        AttackRange: 2
-        AttackArea: 0
+        AttackDamage: 10
+        AttackRange: 0
+        AttackArea: 2
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1286,9 +1285,9 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 25
-        AttackRange: 4
-        AttackArea: 0
+        AttackDamage: 0
+        AttackRange: 0
+        AttackArea: 4
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1303,9 +1302,19 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 1
-        AttackRange: 2
-        AttackArea: 0
+        AttackDamage: 0
+        AttackRange: 0
+        AttackArea: 1
+        AttackCount: 0
+        AttackInterval: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackDamage: 0
+        AttackRange: 0
+        AttackArea: 2
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1314,18 +1323,8 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 2
-        AttackRange: 3
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 3
-        AttackRange: 4
-        AttackArea: 0
+        AttackRange: 0
+        AttackArea: 4
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
