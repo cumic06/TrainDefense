@@ -1265,23 +1265,23 @@ MonoBehaviour:
         \uBB34\uC791\uC704 \uC704\uCE58\uC5D0 \uD3ED\uACA9"
     - id: 60016
       name: "\uAD00\uD1B5 \uC800\uACA9"
-      passiveType: 
-      param1: 
+      passiveType: PierceProjectile
+      param1: EliteSniperProjectile
       param2: 
       param3: 
       description: "\uCD1D\uC54C\uC774 \uC801\uC744 \uAD00\uD1B5\uD568."
     - id: 60017
       name: "\uD589\uC6B4 \uC800\uACA9"
-      passiveType: 
-      param1: 
-      param2: 
+      passiveType: ChainAttackChance
+      param1: 30
+      param2: 0.25
       param3: 
       description: "30%\uC758 \uD655\uB960\uB85C \uC5F0\uC18D \uACF5\uACA9"
     - id: 60018
       name: "\uC774\uAC8C \uC800\uACA9?"
-      passiveType: 
-      param1: 
-      param2: 
+      passiveType: StatModifier
+      param1: AttackInterval
+      param2: -80
       param3: 
       description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00"
   _legacyTrainSkillDataList: []
