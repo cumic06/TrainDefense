@@ -56,6 +56,8 @@ namespace TrainDefense.Game
         public event Action<Monster> OnAttacked;
         public event Action OnTargetPosAttacked;
 
+        public Func<Vector3?> TargetPosOverride { get; set; }
+
         protected override void Setup()
         {
             base.Setup();
@@ -383,9 +385,15 @@ namespace TrainDefense.Game
                 Monster currentTarget = _targetMonsters[i];
                 if (currentTarget == null) continue;
 
-                Vector3 targetPosition = currentTarget.transform.position;
-
-                SpawnProjectileAtWorldPosition(currentTarget, targetPosition);
+                Vector3? overridePos = TargetPosOverride?.Invoke();
+                if (overridePos.HasValue)
+                {
+                    SpawnProjectileAtWorldPosition(null, overridePos.Value);
+                }
+                else
+                {
+                    SpawnProjectileAtWorldPosition(currentTarget, currentTarget.transform.position);
+                }
             }
 
             OnTargetPosAttacked?.Invoke();
@@ -396,7 +404,7 @@ namespace TrainDefense.Game
         /// </summary>
         private void SpawnProjectileAtWorldPosition(Monster target, Vector3 worldPosition)
         {
-            if (target == null || !target.IsActive) return;
+            if (target != null && !target.IsActive) return;
 
             Projectile projectile = null;
 
@@ -431,7 +439,10 @@ namespace TrainDefense.Game
             if (projectile == null) return;
 
             SetupProjectileTransform(projectile, 0, worldPosition);
-            InitializeProjectile(projectile, target);
+            if (target != null)
+                InitializeProjectile(projectile, target);
+            else
+                InitializeProjectileDamage(projectile);
 
             if (_useNonMovementProjectilePooling)
             {

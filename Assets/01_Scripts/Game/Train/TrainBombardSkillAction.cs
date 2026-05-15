@@ -29,14 +29,12 @@ namespace TrainDefense.Game
                 elapsed += ShotInterval;
                 if (turret == null || turret.IsDead) yield break;
 
-                var target = turret.GetNearTargetMonsterPublic();
-                if (target == null) continue;
-
+                Vector3 center = Camera.main != null ? Camera.main.transform.position : Vector3.zero;
                 var pos = new Vector3(
-                    Random.Range(-HalfX, HalfX),
-                    Random.Range(-HalfY, HalfY),
+                    center.x + Random.Range(-HalfX, HalfX),
+                    center.y + Random.Range(-HalfY, HalfY),
                     0f);
-                turret.SpawnProjectileAtWorldPositionPublic(target, pos);
+                turret.SpawnProjectileAtWorldPositionPublic(null, pos);
             }
         }
     }
