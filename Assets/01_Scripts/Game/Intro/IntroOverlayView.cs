@@ -14,6 +14,9 @@ namespace TrainDefense.Game.Intro
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Image _characterPortrait;
 
+        [Header("Dialogue Box")]
+        [SerializeField] private GameObject _dialoguePanel;
+
         [Header("Text")]
         [SerializeField] private TextMeshProUGUI _speakerNameText;
         [SerializeField] private TextMeshProUGUI _dialogueText;
@@ -51,6 +54,8 @@ namespace TrainDefense.Game.Intro
 
         public void ShowSlide(IntroSlideData slide, int index, int total)
         {
+            _dialoguePanel?.SetActive(true);
+
             if (_backgroundImage != null)
             {
                 _backgroundImage.sprite = slide.BackgroundImage;

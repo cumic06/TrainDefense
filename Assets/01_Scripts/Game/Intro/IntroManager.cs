@@ -1,26 +1,33 @@
 using System.Collections;
 using Cumic;
 using Sirenix.OdinInspector;
+using TrainDefense.Game;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace TrainDefense.Game.Intro
 {
     public class IntroManager : Singleton<IntroManager>
     {
+        #region Fields
         [Header("Data")]
-        [SerializeField] private IntroSequenceData _introData;
+        [SerializeField, FormerlySerializedAs("_introData")] private IntroSequenceData introData;
 
         [Header("Audio")]
-        [SerializeField] private AudioSource _bgmSource;
-        [SerializeField] private AudioSource _voiceSource;
+        [SerializeField, FormerlySerializedAs("_bgmSource")] private AudioSource bgmSource;
+        [SerializeField, FormerlySerializedAs("_voiceSource")] private AudioSource voiceSource;
+        #endregion
 
+        #region Variables
         private IntroService _service;
         private IntroPresenter _presenter;
         private IntroInputHandler _inputHandler;
         private Coroutine _autoAdvanceCoroutine;
+        #endregion
 
         public bool IsActive => _service?.IsActive ?? false;
 
+        #region LifeCycle
         protected override void Awake()
         {
             base.Awake();
@@ -31,31 +38,40 @@ namespace TrainDefense.Game.Intro
 
         private void Start()
         {
-            StartCoroutine(TryStartIntroRoutine());
+            StartCoroutine(_TryStartIntroRoutine());
         }
 
         private void OnDestroy()
         {
             _presenter?.Dispose();
-            StopAutoAdvance();
+            _StopAutoAdvance();
 
             if (_inputHandler != null)
                 _inputHandler.OnFullSkipRequested -= RequestFullSkip;
         }
+        #endregion
 
-        // LobbyEnterEvent는 씬 로드 이전 프레임에 발행되므로 직접 코루틴으로 시작
-        private IEnumerator TryStartIntroRoutine()
+        #region Sub/UnSub
+        // _EnsureService / ResetIntro에서 동적 구독 관리
+        #endregion
+
+        private IEnumerator _TryStartIntroRoutine()
         {
             yield return new WaitUntil(() => UserDataManager.Instance?.TutorialSaveData != null);
 
-            EnsureService();
-            BindView();
+            _EnsureService();
+            _BindView();
 
-            if (_introData != null)
-                _service?.TryStart(_introData);
+            if (introData != null)
+            {
+                bool started = _service?.TryStart(introData) ?? false;
+                Debug.Log($"[IntroManager] TryStart 결과={started}, timeScale={Time.timeScale}");
+                if (started)
+                    TimeManager.Instance?.Pause();
+            }
         }
 
-        private void EnsureService()
+        private void _EnsureService()
         {
             if (_service != null) return;
 
@@ -67,11 +83,11 @@ namespace TrainDefense.Game.Intro
             }
 
             _service = new IntroService(saveData);
-            _service.OnSlideChanged += HandleSlideChanged;
-            _service.OnIntroComplete += HandleIntroComplete;
+            _service.OnSlideChanged += _HandleSlideChanged;
+            _service.OnIntroComplete += _HandleIntroComplete;
         }
 
-        private void BindView()
+        private void _BindView()
         {
             _presenter?.Dispose();
 
@@ -85,50 +101,53 @@ namespace TrainDefense.Game.Intro
 
         public void AdvanceSlide()
         {
-            StopAutoAdvance();
+            _StopAutoAdvance();
             _service?.AdvanceSlide();
         }
 
         public void RequestFullSkip()
         {
-            StopAutoAdvance();
+            _StopAutoAdvance();
             _inputHandler?.Disable();
             _service?.Skip();
         }
 
         #region Service Event Handlers
 
-        private void HandleSlideChanged(int index, IntroSlideData slide)
+        private void _HandleSlideChanged(int index, IntroSlideData slide)
         {
-            StopAutoAdvance();
-            PlaySlideAudio(slide);
+            Debug.Log($"[IntroManager] 슬라이드 [{index}/{(introData?.Slides.Count ?? 0) - 1}] timeScale={Time.timeScale}");
+            _StopAutoAdvance();
+            _PlaySlideAudio(slide);
 
-            var config = _introData?.SkipConfig;
+            var config = introData?.SkipConfig;
             if (config != null && config.CanSkip)
                 _inputHandler?.Enable(config.PcHoldDuration);
 
             if (slide.IsAutoAdvance)
-                _autoAdvanceCoroutine = StartCoroutine(AutoAdvanceRoutine(slide.AutoAdvanceDuration));
+                _autoAdvanceCoroutine = StartCoroutine(_AutoAdvanceRoutine(slide.AutoAdvanceDuration));
         }
 
-        private void HandleIntroComplete()
+        private void _HandleIntroComplete()
         {
-            StopAutoAdvance();
+            Debug.Log($"[IntroManager] 인트로 완료 — Resume 직전 timeScale={Time.timeScale}");
+            _StopAutoAdvance();
             _inputHandler?.Disable();
-            StopAudio();
+            _StopAudio();
+            TimeManager.Instance?.Resume();
         }
 
         #endregion
 
         #region Coroutine
 
-        private IEnumerator AutoAdvanceRoutine(float delay)
+        private IEnumerator _AutoAdvanceRoutine(float delay)
         {
             yield return new WaitForSecondsRealtime(delay);
             AdvanceSlide();
         }
 
-        private void StopAutoAdvance()
+        private void _StopAutoAdvance()
         {
             if (_autoAdvanceCoroutine != null)
             {
@@ -141,35 +160,52 @@ namespace TrainDefense.Game.Intro
 
         #region Audio
 
-        private void PlaySlideAudio(IntroSlideData slide)
+        private void _PlaySlideAudio(IntroSlideData slide)
         {
-            if (_bgmSource != null && slide.BgmClip != null && _bgmSource.clip != slide.BgmClip)
+            if (bgmSource != null && slide.BgmClip != null && bgmSource.clip != slide.BgmClip)
             {
-                _bgmSource.clip = slide.BgmClip;
-                _bgmSource.loop = true;
-                _bgmSource.Play();
+                bgmSource.clip = slide.BgmClip;
+                bgmSource.loop = true;
+                bgmSource.Play();
             }
 
-            if (_voiceSource != null && slide.VoiceClip != null)
+            if (voiceSource != null && slide.VoiceClip != null)
             {
-                _voiceSource.Stop();
-                _voiceSource.clip = slide.VoiceClip;
-                _voiceSource.Play();
+                voiceSource.Stop();
+                voiceSource.clip = slide.VoiceClip;
+                voiceSource.Play();
             }
         }
 
-        private void StopAudio()
+        private void _StopAudio()
         {
-            if (_bgmSource != null) _bgmSource.Stop();
-            if (_voiceSource != null) _voiceSource.Stop();
+            if (bgmSource != null) bgmSource.Stop();
+            if (voiceSource != null) voiceSource.Stop();
         }
 
         #endregion
 
         [Button("인트로 초기화 (디버그)")]
-        private void ResetIntro()
+        private void _ResetIntro()
         {
             UserDataManager.Instance?.TutorialSaveData?.ResetAll();
+
+            if (_service != null)
+            {
+                _service.OnSlideChanged -= _HandleSlideChanged;
+                _service.OnIntroComplete -= _HandleIntroComplete;
+                _service = null;
+            }
+
+            _presenter?.Dispose();
+            _presenter = null;
+
+            _StopAutoAdvance();
+            _inputHandler?.Disable();
+            _StopAudio();
+
+            StartCoroutine(_TryStartIntroRoutine());
+
             Debug.Log("[IntroManager] 인트로 진행 상태가 초기화되었습니다.");
         }
     }
