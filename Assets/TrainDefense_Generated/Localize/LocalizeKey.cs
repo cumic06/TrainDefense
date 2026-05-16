@@ -185,5 +185,9 @@ namespace TrainDefense.Localize
         Tutorial_TrainInfo_Title = 175,
         Tutorial_TrainInfo_Msg1 = 176,
         Tutorial_TrainInfo_Msg2 = 177,
+        UI_Next = 178,
+        UI_Start = 179,
+        UI_Quit = 180,
+        UI_Reset = 181,
     }
 }

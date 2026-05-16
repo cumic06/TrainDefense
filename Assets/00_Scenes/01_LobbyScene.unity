@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!29 &1
 OcclusionCullingSettings:
@@ -1134,6 +1134,7 @@ GameObject:
   - component: {fileID: 210000066}
   - component: {fileID: 210000068}
   - component: {fileID: 210000067}
+  - component: {fileID: 999990004}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -1260,6 +1261,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 210000065}
   m_CullTransparentMesh: 1
+--- !u!114 &999990004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210000065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _key: 178
 --- !u!1 &210000070
 GameObject:
   m_ObjectHideFlags: 0
@@ -1392,6 +1406,7 @@ GameObject:
   - component: {fileID: 210000076}
   - component: {fileID: 210000078}
   - component: {fileID: 210000077}
+  - component: {fileID: 999990005}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -1518,6 +1533,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 210000075}
   m_CullTransparentMesh: 1
+--- !u!114 &999990005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210000075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _key: 6
 --- !u!1 &211117476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1529,6 +1557,7 @@ GameObject:
   - component: {fileID: 211117477}
   - component: {fileID: 211117479}
   - component: {fileID: 211117478}
+  - component: {fileID: 999990001}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1655,6 +1684,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 211117476}
   m_CullTransparentMesh: 1
+--- !u!114 &999990001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211117476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _key: 179
 --- !u!1 &271215454
 GameObject:
   m_ObjectHideFlags: 0
@@ -1839,6 +1881,7 @@ GameObject:
   - component: {fileID: 372542955}
   - component: {fileID: 372542957}
   - component: {fileID: 372542956}
+  - component: {fileID: 999990002}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1965,6 +2008,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 372542954}
   m_CullTransparentMesh: 1
+--- !u!114 &999990002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372542954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _key: 181
 --- !u!1 &421220174
 GameObject:
   m_ObjectHideFlags: 0
@@ -4179,6 +4235,7 @@ GameObject:
   - component: {fileID: 2050801380}
   - component: {fileID: 2050801382}
   - component: {fileID: 2050801381}
+  - component: {fileID: 999990003}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -4305,6 +4362,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050801379}
   m_CullTransparentMesh: 1
+--- !u!114 &999990003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050801379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _key: 180
 --- !u!1 &2137557630
 GameObject:
   m_ObjectHideFlags: 0
