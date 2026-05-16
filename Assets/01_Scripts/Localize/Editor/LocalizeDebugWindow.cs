@@ -1,4 +1,4 @@
-#if UNITY_EDITOR && HAS_UNITASK
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;
 

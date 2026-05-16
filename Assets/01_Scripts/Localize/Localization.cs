@@ -1,4 +1,3 @@
-#if HAS_UNITASK
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -18,6 +17,7 @@ namespace TrainDefense.Localize
 
         public static void SetLanguage(SystemLanguage language) => _languageOverride = language;
         public static void ClearLanguageOverride() => _languageOverride = null;
+        public static bool IsInitialized => _isInitialized;
 
         public static async UniTask InitializeAsync()
         {
@@ -102,8 +102,6 @@ namespace TrainDefense.Localize
             }
         }
 
-        public static bool IsInitialized => _isInitialized;
-
         public static string Get(int key)
         {
             if (!_isInitialized)
@@ -128,10 +126,9 @@ namespace TrainDefense.Localize
         public static string GetByKey(string keyName)
         {
             if (!_isInitialized) return null;
-            if (System.Enum.TryParse<LocalizeKey>(keyName, out var key))
+            if (Enum.TryParse<LocalizeKey>(keyName, out var key))
                 return Get((int)key);
             return null;
         }
     }
 }
-#endif

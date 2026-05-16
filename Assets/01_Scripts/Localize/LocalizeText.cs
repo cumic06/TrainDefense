@@ -22,13 +22,10 @@ namespace TrainDefense.Localize
 
         public void Refresh()
         {
-            if (_text == null) return;
-#if HAS_UNITASK
-            if (!Localization.IsInitialized) return;
+            if (_text == null || !Localization.IsInitialized) return;
             string localized = Localization.Get((int)_key);
             if (!string.IsNullOrEmpty(localized))
                 _text.text = localized;
-#endif
         }
     }
 }

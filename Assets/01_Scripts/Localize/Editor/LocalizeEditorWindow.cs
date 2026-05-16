@@ -1,7 +1,7 @@
-#if HAS_UNITASK
+#if UNITY_EDITOR
+using Cysharp.Threading.Tasks;
 using System.IO;
 using System.Text;
-using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -169,7 +169,7 @@ namespace TrainDefense.Localize
             sb.AppendLine("{");
             sb.AppendLine("    public static class LocalizeKeyExtension");
             sb.AppendLine("    {");
-            sb.AppendLine("        public static string ToLocalizeString(this LocalizeKey key) => Localization.Get((int)key);");
+            sb.AppendLine("        public static string ToLocalizeString(this LocalizeKey key) => LocalizeHelper.GetByKey(key.ToString(), key.ToString());");
             sb.AppendLine("    }");
             sb.AppendLine();
             sb.AppendLine("    public enum LocalizeKey");
