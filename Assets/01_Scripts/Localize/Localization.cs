@@ -14,6 +14,10 @@ namespace TrainDefense.Localize
         // <행 번호(int), <언어, 텍스트>>
         private static Dictionary<int, Dictionary<SystemLanguage, string>> _cache = new();
         private static bool _isInitialized = false;
+        private static SystemLanguage? _languageOverride = null;
+
+        public static void SetLanguage(SystemLanguage language) => _languageOverride = language;
+        public static void ClearLanguageOverride() => _languageOverride = null;
 
         public static async UniTask InitializeAsync()
         {
@@ -108,7 +112,7 @@ namespace TrainDefense.Localize
                 return key.ToString();
             }
 
-            SystemLanguage currentLang = Application.systemLanguage;
+            SystemLanguage currentLang = _languageOverride ?? Application.systemLanguage;
 
             if (_cache.TryGetValue(key, out var languages))
             {
