@@ -14,20 +14,18 @@ namespace TrainDefense.Localize
 
         private void OnGUI()
         {
-            GUILayout.Label("언어 강제 설정 (플레이 중에만 적용)", EditorStyles.boldLabel);
+            GUILayout.Label("언어 강제 설정", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
 
-            if (!Application.isPlaying)
-            {
-                EditorGUILayout.HelpBox("플레이 모드에서만 사용 가능합니다.", MessageType.Info);
-                return;
-            }
+            bool isPlaying = Application.isPlaying;
+            bool isInitialized = isPlaying && Localization.IsInitialized;
 
-            if (!Localization.IsInitialized)
-            {
-                EditorGUILayout.HelpBox("Localization이 아직 초기화되지 않았습니다.", MessageType.Warning);
-                return;
-            }
+            if (isPlaying && !isInitialized)
+                EditorGUILayout.HelpBox("Localization 초기화 중...", MessageType.Warning);
+            else if (!isPlaying)
+                EditorGUILayout.HelpBox("에디터 모드: 설정만 저장됩니다. 플레이 시 적용됩니다.", MessageType.Info);
+
+            EditorGUILayout.Space(3);
 
             DrawLanguageButton("한국어 (Korean)", SystemLanguage.Korean);
             DrawLanguageButton("English", SystemLanguage.English);
@@ -35,14 +33,23 @@ namespace TrainDefense.Localize
             DrawLanguageButton("中文 (Chinese Simplified)", SystemLanguage.ChineseSimplified);
 
             EditorGUILayout.Space(10);
-            if (GUILayout.Button("OS 언어로 초기화"))
+            if (GUILayout.Button("OS 언어로 초기화", GUILayout.Height(30)))
                 Localization.ClearLanguageOverride();
+
+            EditorGUILayout.Space(10);
+            string current = Localization.CurrentOverride.HasValue
+                ? Localization.CurrentOverride.Value.ToString()
+                : $"OS ({Application.systemLanguage})";
+            EditorGUILayout.LabelField("현재 언어:", current, EditorStyles.boldLabel);
         }
 
         private void DrawLanguageButton(string label, SystemLanguage lang)
         {
+            bool isCurrent = Localization.CurrentOverride == lang;
+            GUI.backgroundColor = isCurrent ? Color.green : Color.white;
             if (GUILayout.Button(label, GUILayout.Height(35)))
                 Localization.SetLanguage(lang);
+            GUI.backgroundColor = Color.white;
         }
     }
 }

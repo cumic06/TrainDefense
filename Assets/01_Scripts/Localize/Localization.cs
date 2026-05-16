@@ -15,9 +15,21 @@ namespace TrainDefense.Localize
         private static bool _isInitialized = false;
         private static SystemLanguage? _languageOverride = null;
 
-        public static void SetLanguage(SystemLanguage language) => _languageOverride = language;
-        public static void ClearLanguageOverride() => _languageOverride = null;
         public static bool IsInitialized => _isInitialized;
+        public static SystemLanguage? CurrentOverride => _languageOverride;
+        public static event System.Action OnLanguageChanged;
+
+        public static void SetLanguage(SystemLanguage language)
+        {
+            _languageOverride = language;
+            OnLanguageChanged?.Invoke();
+        }
+
+        public static void ClearLanguageOverride()
+        {
+            _languageOverride = null;
+            OnLanguageChanged?.Invoke();
+        }
 
         public static async UniTask InitializeAsync()
         {

@@ -15,9 +15,15 @@ namespace TrainDefense.Localize
             _text = GetComponent<TextMeshProUGUI>();
         }
 
-        private void Start()
+        private void OnEnable()
         {
+            Localization.OnLanguageChanged += Refresh;
             Refresh();
+        }
+
+        private void OnDisable()
+        {
+            Localization.OnLanguageChanged -= Refresh;
         }
 
         public void Refresh()
