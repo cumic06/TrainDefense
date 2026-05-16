@@ -40,8 +40,8 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         #region IDescribableData
-        public string Name => name;
-        public string Description => description;
+        public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey($"Upgrade_{id}_Name", name);
+        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey($"Upgrade_{id}_Desc", description);
         #endregion
 
         #region IIconData
@@ -65,7 +65,7 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         public int NeedMoney => needMoney;
-        public string UpgradeName => name;
+        public string UpgradeName => Name;
         public float UpgradeValue => upgradeValue;
         public int MaxUpgradeCount => maxUpgradeCount;
         public UpgradeDataType UpgradeDataType => upgradeDataType;

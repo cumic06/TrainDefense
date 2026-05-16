@@ -98,6 +98,8 @@ namespace TrainDefense.Localize
             }
         }
 
+        public static bool IsInitialized => _isInitialized;
+
         public static string Get(int key)
         {
             if (!_isInitialized)
@@ -111,11 +113,20 @@ namespace TrainDefense.Localize
             if (_cache.TryGetValue(key, out var languages))
             {
                 if (languages.TryGetValue(currentLang, out string text)) return text;
+                if (languages.TryGetValue(SystemLanguage.Korean, out string koreanText)) return koreanText;
                 if (languages.TryGetValue(SystemLanguage.English, out string englishText)) return englishText;
                 foreach (var val in languages.Values) return val;
             }
 
             return key.ToString();
+        }
+
+        public static string GetByKey(string keyName)
+        {
+            if (!_isInitialized) return null;
+            if (System.Enum.TryParse<LocalizeKey>(keyName, out var key))
+                return Get((int)key);
+            return null;
         }
     }
 }

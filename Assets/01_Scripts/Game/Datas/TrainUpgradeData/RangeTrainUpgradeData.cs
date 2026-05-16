@@ -33,8 +33,8 @@ namespace TrainDefense.Game.Datas
       #endregion
 
       #region IDescribableData
-      public string Name => name;
-      public string Description => description;
+      public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey($"RUpgrade_{id}_Name", name);
+      public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey($"RUpgrade_{id}_Desc", description);
       #endregion
 
       #region IIconData
@@ -58,7 +58,7 @@ namespace TrainDefense.Game.Datas
       #endregion
 
       #region ITrainUpgradeData
-      public string UpgradeName => name;
+      public string UpgradeName => Name;
       public TrainStatusData GetStatusUpgrade(int level)
       {
          var stats = GetStatsForLevel(level);
