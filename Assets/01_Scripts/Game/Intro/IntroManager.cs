@@ -94,6 +94,8 @@ namespace TrainDefense.Game.Intro
             var view = FindAnyObjectByType<IntroOverlayView>(FindObjectsInactive.Include);
             if (view == null) return;
 
+            view.Hide();
+
             _presenter = new IntroPresenter(_service, view);
             _presenter.OnNextRequested += AdvanceSlide;
             _presenter.OnSkipRequested += RequestFullSkip;
