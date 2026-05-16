@@ -30,7 +30,6 @@ namespace TrainDefense.Localize
             DrawLanguageButton("한국어 (Korean)", SystemLanguage.Korean);
             DrawLanguageButton("English", SystemLanguage.English);
             DrawLanguageButton("日本語 (Japanese)", SystemLanguage.Japanese);
-            DrawLanguageButton("中文 (Chinese Simplified)", SystemLanguage.ChineseSimplified);
 
             EditorGUILayout.Space(10);
             if (GUILayout.Button("OS 언어로 초기화", GUILayout.Height(30)))

@@ -30,6 +30,66 @@ namespace TrainDefense.Game.UI
         private int _choiceLeftCount;
         private bool _isSelecting = false;
         private int _popupRequestId = 0;
+        private readonly List<(IChoiceOption option, int slotIndex)> _activeChoices = new();
+
+        private void OnEnable() => TrainDefense.Localize.Localization.OnLanguageChanged += RefreshLanguage;
+        private void OnDisable() => TrainDefense.Localize.Localization.OnLanguageChanged -= RefreshLanguage;
+
+        private void RefreshLanguage()
+        {
+            if (!backgroundImage.activeSelf) return;
+            foreach (var (option, slotIndex) in _activeChoices)
+            {
+                var info = BuildChoiceUIInfo(option);
+                if (info != null)
+                    choiceSelectUIs[slotIndex].SetData(option, info, this);
+            }
+        }
+
+        private ChoiceUIInfo BuildChoiceUIInfo(IChoiceOption choiceOption)
+        {
+            var triChoiceManager = TriChoiceManager.Instance;
+            var info = new ChoiceUIInfo();
+
+            if (choiceOption is AddTrainChoice addTrainChoice)
+            {
+                var trainData = DatabaseManager.Instance.GetTrainData(addTrainChoice.TrainDataId);
+                if (trainData == null) return null;
+                info.Icon = trainData.Icon;
+                info.Name = trainData.Name;
+                info.Description = trainData.Description;
+                if (triChoiceManager != null)
+                {
+                    var (skillData, skillType) = triChoiceManager.GetSelectedAddSkill(addTrainChoice);
+                    ApplySkillInfoToUI(info, skillData, skillType);
+                }
+            }
+            else if (choiceOption is EliteTrainChoice eliteTrainChoice)
+            {
+                var trainData = DatabaseManager.Instance.GetTrainData(eliteTrainChoice.EliteTrainDataId);
+                if (trainData == null) return null;
+                info.Icon = trainData.Icon;
+                info.Name = trainData.Name;
+                info.Description = trainData.Description;
+                if (triChoiceManager != null)
+                {
+                    var (skillData, skillType) = triChoiceManager.GetSelectedEliteSkill(eliteTrainChoice);
+                    ApplySkillInfoToUI(info, skillData, skillType);
+                }
+            }
+            else if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
+            {
+                if (triChoiceManager == null) return null;
+                var upgradeData = triChoiceManager.GetSelectedUpgrade(upgradeTrainChoice);
+                if (upgradeData == null) return null;
+                info.Icon = upgradeData.Icon;
+                info.Name = upgradeData.Name;
+                info.Description = upgradeData.Description;
+            }
+            else return null;
+
+            return info;
+        }
 
         private void Awake()
         {
@@ -92,6 +152,7 @@ namespace TrainDefense.Game.UI
         {
             _choiceLeftCount = count;
             _isSelecting = false;
+            _activeChoices.Clear();
 
             var triChoiceManager = TriChoiceManager.Instance;
             if (triChoiceManager == null)
@@ -141,56 +202,16 @@ namespace TrainDefense.Game.UI
                         choiceSelectUI.SetNewText(isFirstTime);
                     }
 
-                    ChoiceUIInfo choiceUIInfo = new();
-                    if (choiceOption is AddTrainChoice addTrainChoice)
+                    ChoiceUIInfo choiceUIInfo = BuildChoiceUIInfo(choiceOption);
+                    if (choiceUIInfo == null)
                     {
-                        var trainData = DatabaseManager.Instance.GetTrainData(addTrainChoice.TrainDataId);
-                        if (trainData != null)
-                        {
-                            choiceUIInfo.Icon = trainData.Icon;
-                            choiceUIInfo.Name = trainData.Name;
-                            choiceUIInfo.Description = trainData.Description;
-
-                            var (skillData, skillType) = triChoiceManager.GetSelectedAddSkill(addTrainChoice);
-                            ApplySkillInfoToUI(choiceUIInfo, skillData, skillType);
-                        }
-                    }
-                    else if (choiceOption is EliteTrainChoice eliteTrainChoice)
-                    {
-                        var trainData = DatabaseManager.Instance.GetTrainData(eliteTrainChoice.EliteTrainDataId);
-                        if (trainData != null)
-                        {
-                            choiceUIInfo.Icon = trainData.Icon;
-                            choiceUIInfo.Name = trainData.Name;
-                            choiceUIInfo.Description = trainData.Description;
-
-                            var (skillData, skillType) = triChoiceManager.GetSelectedEliteSkill(eliteTrainChoice);
-                            ApplySkillInfoToUI(choiceUIInfo, skillData, skillType);
-                        }
-                    }
-                    else if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
-                    {
-                        var upgradeData = triChoiceManager.GetSelectedUpgrade(upgradeTrainChoice);
-
-                        if (upgradeData == null)
-                        {
-                            Debug.LogError($"UpgradeTrainChoice [{upgradeTrainChoice.Id}]: SelectedUpgrade is null");
-                            choiceSelectUI.gameObject.SetActive(false);
-                            continue;
-                        }
-
-                        choiceUIInfo.Icon = upgradeData.Icon;
-                        choiceUIInfo.Name = upgradeData.Name;
-                        choiceUIInfo.Description = upgradeData.Description;
-                    }
-                    else
-                    {
-                        Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Unknown choice type");
+                        Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Failed to build ChoiceUIInfo");
                         choiceSelectUI.gameObject.SetActive(false);
                         continue;
                     }
 
                     choiceSelectUI.SetData(choiceOption, choiceUIInfo, this);
+                    _activeChoices.Add((choiceOption, i));
                     choiceSelectUI.gameObject.SetActive(true);
                     choiceSelectUI.SetButtonInteractable(true);
                     activatedCount++;
