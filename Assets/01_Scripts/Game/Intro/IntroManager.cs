@@ -1,7 +1,6 @@
 using System.Collections;
 using Cumic;
 using Sirenix.OdinInspector;
-using TrainDefense.Game;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -25,13 +24,12 @@ namespace TrainDefense.Game.Intro
         private Coroutine _autoAdvanceCoroutine;
         #endregion
 
-        public bool IsActive => _service?.IsActive ?? false;
-
         #region LifeCycle
         protected override void Awake()
         {
             base.Awake();
             _inputHandler = GetComponent<IntroInputHandler>();
+
             if (_inputHandler != null)
                 _inputHandler.OnFullSkipRequested += RequestFullSkip;
         }
@@ -49,10 +47,6 @@ namespace TrainDefense.Game.Intro
             if (_inputHandler != null)
                 _inputHandler.OnFullSkipRequested -= RequestFullSkip;
         }
-        #endregion
-
-        #region Sub/UnSub
-        // _EnsureService / ResetIntro에서 동적 구독 관리
         #endregion
 
         private IEnumerator _TryStartIntroRoutine()
