@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,37 @@ namespace TrainDefense.Game
     /// </summary>
     public static class TrainPassiveSkillFactory
     {
+        private static readonly Dictionary<string, Func<string[], TrainPassiveSkill>> _parsers = new(StringComparer.OrdinalIgnoreCase)
+        {
+            { nameof(OverrideEveryNAttacksPassive), OverrideEveryNAttacksPassive.From },
+            { "OverrideEveryN",                     OverrideEveryNAttacksPassive.From },
+            { nameof(RepeatAfterAttackPassive),      RepeatAfterAttackPassive.From },
+            { "RepeatAfterAttack",                   RepeatAfterAttackPassive.From },
+            { nameof(ChainAttackChancePassive),      ChainAttackChancePassive.From },
+            { "ChainAttackChance",                   ChainAttackChancePassive.From },
+            { nameof(RandomPosBombardPassive),       RandomPosBombardPassive.From },
+            { "RandomPosBombard",                    RandomPosBombardPassive.From },
+            { nameof(PeriodicSpawnPassive),          PeriodicSpawnPassive.From },
+            { "PeriodicSpawn",                       PeriodicSpawnPassive.From },
+            { nameof(FollowUpExplosionPassive),      FollowUpExplosionPassive.From },
+            { "FollowUpExplosion",                   FollowUpExplosionPassive.From },
+            { nameof(StatModifierPassive),           StatModifierPassive.From },
+            { "StatModifier",                        StatModifierPassive.From },
+            { nameof(StrengthenPassive),             StrengthenPassive.From },
+            { "Strengthen",                          StrengthenPassive.From },
+            { nameof(PierceProjectilePassive),       PierceProjectilePassive.From },
+            { "PierceProjectile",                    PierceProjectilePassive.From },
+            { nameof(RapidBombardPassive),           RapidBombardPassive.From },
+            { "RapidBombard",                        RapidBombardPassive.From },
+            { nameof(KnockbackOnHitPassive),         KnockbackOnHitPassive.From },
+            { "KnockbackOnHit",                      KnockbackOnHitPassive.From },
+            { nameof(ScaleProjectilePassive),        ScaleProjectilePassive.From },
+            { "ScaleProjectile",                     ScaleProjectilePassive.From },
+        };
+
+        public static void Register(string typeKey, Func<string[], TrainPassiveSkill> parser)
+            => _parsers[typeKey] = parser;
+
         public static List<TrainPassiveSkill> ParseAll(string raw)
         {
             var result = new List<TrainPassiveSkill>();
@@ -31,36 +63,16 @@ namespace TrainDefense.Game
             if (parts.Length == 0) return null;
 
             var typeKey = parts[0].Trim();
-            switch (typeKey)
+            if (!_parsers.TryGetValue(typeKey, out var parser))
             {
-                case nameof(OverrideEveryNAttacksPassive):
-                case "OverrideEveryN":
-                    return OverrideEveryNAttacksPassive.From(parts);
-
-                case nameof(RepeatAfterAttackPassive):
-                case "RepeatAfterAttack":
-                    return RepeatAfterAttackPassive.From(parts);
-
-                case nameof(ChainAttackChancePassive):
-                case "ChainAttackChance":
-                    return ChainAttackChancePassive.From(parts);
-
-                case nameof(RandomPosBombardPassive):
-                case "RandomPosBombard":
-                    return RandomPosBombardPassive.From(parts);
-
-                case nameof(PeriodicSpawnPassive):
-                case "PeriodicSpawn":
-                    return PeriodicSpawnPassive.From(parts);
-
-                case nameof(FollowUpExplosionPassive):
-                case "FollowUpExplosion":
-                    return FollowUpExplosionPassive.From(parts);
-
-                default:
-                    Debug.LogWarning($"TrainPassiveSkillFactory: unknown passive type '{typeKey}' in '{entry}'");
-                    return null;
+                Debug.LogWarning($"TrainPassiveSkillFactory: unknown passive type '{typeKey}' in '{entry}'");
+                return null;
             }
+
+            var skill = parser(parts);
+            if (skill == null)
+                Debug.LogWarning($"TrainPassiveSkillFactory: failed to parse '{entry}'");
+            return skill;
         }
     }
 }

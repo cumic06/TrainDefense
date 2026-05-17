@@ -16,7 +16,8 @@ namespace TrainDefense.Game.Manager
 
       private void Start()
       {
-         _scoreData = DatabaseManager.Instance.GetScoreData();
+         if (DatabaseManager.Instance != null)
+            _scoreData = DatabaseManager.Instance.GetScoreData();
 
          GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
          GameEventSystem.Subscribe<MonsterDeadEvent>(_OnMonsterDead);

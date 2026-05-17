@@ -22,25 +22,25 @@ namespace TrainDefense.Game
 
         public TrainSkillAction ActiveSkill => _activeSkill;
 
-        public bool HasSkill => _trainData != null && _trainData.TrainSkillData != null && _trainData.TrainSkillData.HasSkill;
+        public bool HasActiveSkill => _activeSkill != null;
 
         public Sprite SkillIcon
         {
             get
             {
-                if (_trainData == null) return null;
+                if (_trainData == null || _activeSkill == null) return null;
                 return _trainData.SkillIcon != null ? _trainData.SkillIcon : _trainData.Icon;
             }
         }
 
-        public float SkillCooldown => _trainData?.TrainSkillData?.SkillCooldown ?? 0f;
+        public float SkillCooldown => _activeSkill != null ? _trainData?.TrainSkillData?.SkillCooldown ?? 0f : 0f;
         public bool CanUse => _activeSkill != null && _activeSkill.CanUse;
         public float CooldownRatio => _activeSkill?.GetCooldownRatio() ?? 0f;
 
         /// <summary>
         /// 모듈 초기화. owner의 ApplyStat 콜백을 받아 시한 버프 만료 시 대칭 복원에 사용.
         /// </summary>
-        public void Initialize(Train owner, TrainData trainData, Action<IStat> applyStatCallback)
+        public void Initialize(Train owner, TrainData trainData, Action<IStat> applyStatCallback, TrainChoiceSkillType skillTypeMask = TrainChoiceSkillType.None)
         {
             // 재초기화 시 기존 구독 해제
             for (int i = 0; i < _passives.Count; i++) _passives[i].Unsubscribe();
@@ -52,7 +52,8 @@ namespace TrainDefense.Game
             _applyStat = applyStatCallback;
             _timedModifiers.Clear();
 
-            _activeSkill = trainData != null
+            bool createActive = skillTypeMask != TrainChoiceSkillType.Passive;
+            _activeSkill = (trainData != null && createActive)
                 ? TrainSkillActionFactory.Create(owner, trainData.TrainSkillData)
                 : null;
         }

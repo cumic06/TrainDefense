@@ -64,7 +64,7 @@ MonoBehaviour:
   iconImage: {fileID: 3558454197624870530}
   newImage: {fileID: 8890260102272059900}
   upgradeImage: {fileID: 8023327746665546210}
-  passiveNameText: {fileID: 1875584013805568614}
+  skillNameText: {fileID: 1875584013805568614}
 --- !u!222 &4832810585675717907
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -46,16 +46,15 @@ namespace TrainDefense.Game
         private void HandleTargetPosAttacked()
         {
             if (Owner is not TurretTrain turret) return;
-            var target = turret.GetNearTargetMonsterPublic();
-            if (target == null) return;
 
+            Vector3 center = Camera.main != null ? Camera.main.transform.position : Vector3.zero;
             for (int i = 0; i < Count; i++)
             {
                 var pos = new Vector3(
-                    Random.Range(Area.min.x, Area.max.x),
-                    Random.Range(Area.min.y, Area.max.y),
+                    center.x + Random.Range(Area.min.x, Area.max.x),
+                    center.y + Random.Range(Area.min.y, Area.max.y),
                     0f);
-                turret.SpawnProjectileAtWorldPositionPublic(target, pos);
+                turret.SpawnProjectileAtWorldPositionPublic(null, pos);
             }
         }
     }

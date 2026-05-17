@@ -10,7 +10,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string ExcelFileName => "TrainData.xlsx";
 		public string SheetName => "train_data";
 		public string ButtonLabel => "Train 데이터 가져오기";
-		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "prefab_id", "icon_id", "train_skill_data_id" };
+		public string[] Headers => new[] { "id", "train_name", "description", "max_hp", "is_main_train", "prefab_id", "icon_id", "passive_skill_data_id", "active_skill_data_id" };
 
 		public int Import(DB db, string excelPath)
 		{

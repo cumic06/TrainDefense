@@ -1,5 +1,6 @@
 using TrainDefense.Game.Datas;
 using TrainDefense.Editor.DataImport.Importers.Rows;
+using TrainDefense.Game;
 
 namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 {
@@ -25,7 +26,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			var trainStatusData = new TrainStatusData { MaxHp = r.maxHp };
 			SetPrivateField(t, target, "trainStatusData", trainStatusData);
 
-			SetPrivateField(t, target, "trainSkillDataId", r.trainSkillDataId);
+			SetPrivateField(t, target, "activeSkillDataIds", r.activeSkillDataIds);
+			SetPrivateField(t, target, "activeSkillDatasResolved", false);
 
 			var turretTrainType = typeof(TurretTrainData);
             var turretTrainStatus = new TurretTrainStatus
@@ -41,7 +43,21 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
             };
 			SetPrivateField(turretTrainType, target, "turretTrainStatus", turretTrainStatus);
 			SetPrivateField(turretTrainType, target, "turretProjectilePrefabId", r.turretProjectilePrefabId);
-			SetPrivateField(turretTrainType, target, "passiveSkillDataId", r.passiveSkillDataId);
+			SetPrivateField(t, target, "passiveSkillDataIds", r.passiveSkillDataIds);
+			SetPrivateField(t, target, "passiveSkillDatasResolved", false);
+
+			var soundType = r.turretProjectilePrefabId switch
+			{
+				"NormalProjectile"      => SoundType.NormalTurretTrainAttack,
+				"FireEffectProjectile"  => SoundType.FireTurretTrainAttack,
+				"MissileProjectile"     => SoundType.MissileTurretTrainAttack,
+				"LaserProjectile"       => SoundType.LaserTurretTrainAttack,
+				"ElectrickProjectile"   => SoundType.ElectrickTurretTrainAttack,
+				"CannonProjectile"      => SoundType.CannonTurretTrainAttack,
+				"SniperProjectile"      => SoundType.SniperTurretTrainAttack,
+				_                       => SoundType.None
+			};
+			SetPrivateField(t, target, "attackSoundType", soundType);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

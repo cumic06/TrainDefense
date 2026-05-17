@@ -34,6 +34,8 @@ namespace TrainDefense.Game
       private bool isUnDead = false;
       #endregion
 
+      private TrainChoiceSkillType _pendingSkillType = TrainChoiceSkillType.None;
+      private string _pendingSelectedSkillId = null;
       private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
       public List<Train> CurrentAliveTrains => _currentAliveTrains;
       public int MaxTrainCount => maxTrainCount;
@@ -52,6 +54,11 @@ namespace TrainDefense.Game
       private readonly List<DeadTrainInfo> _deadTrains = new();//죽은 Train 목록
       private readonly Dictionary<Train, int> _trainOriginalIndexMap = new();//Train의 원래 인덱스 매핑
 
+      // Elite 교체로 소비된 base train ID. 한 번 들어가면 게임 세션 동안 영구.
+      // TriChoice가 이 ID를 targetTrainId/replaceTrainId/trainDataId로 참조하는 카드는 모두 노출 차단.
+      private readonly HashSet<string> _replacedTrainIds = new();
+      public bool IsTrainIdReplaced(string trainId) => !string.IsNullOrEmpty(trainId) && _replacedTrainIds.Contains(trainId);
+
       protected override void Start()
       {
          base.Start();
@@ -60,12 +67,16 @@ namespace TrainDefense.Game
          GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
          GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
 
+         _currentAliveTrains.Clear();
+         _currentTrains.Clear();
+         _deadTrains.Clear();
+         _trainOriginalIndexMap.Clear();
+         _replacedTrainIds.Clear();
+
          if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
          {
             SpawnTrain(startTrainablePrefab);
          }
-
-         _currentTrains.Clear();
       }
 
       protected override void OnDestroy()
@@ -109,7 +120,7 @@ namespace TrainDefense.Game
          SpawnTrain(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
       }
 
-      public void SpawnTrain(TrainData trainData)
+      public void SpawnTrain(TrainData trainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None)
       {
          if (_currentAliveTrains.Count >= maxTrainCount)
          {
@@ -130,8 +141,10 @@ namespace TrainDefense.Game
             return;
          }
 
+         _pendingSkillType = skillType;
          Train trainObject = Instantiate(trainPrefab, transform);
-         trainObject.Initialize(trainData);
+         trainObject.Initialize(trainData, _pendingSkillType);
+         _pendingSkillType = TrainChoiceSkillType.None;
          trainObject.IsUnDead = isUnDead;
          _currentAliveTrains.Add(trainObject);
          _currentTrains.Add(trainObject);
@@ -140,6 +153,7 @@ namespace TrainDefense.Game
 
          // 새로 생성된 train에 기존 업그레이드 적용
          ApplyExistingUpgradesToTrain(trainObject);
+         trainObject.ApplyPassiveSkills();
 
          GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
 
@@ -174,7 +188,7 @@ namespace TrainDefense.Game
          ReplaceTrain(oldTrainId, DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
       }
 
-      public void ReplaceTrain(string oldTrainId, TrainData newTrainData)
+      public void ReplaceTrain(string oldTrainId, TrainData newTrainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None, string selectedSkillId = null)
       {
          // 대체할 기존 Train 찾기
          Train oldTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == oldTrainId);
@@ -202,13 +216,23 @@ namespace TrainDefense.Game
             return;
          }
 
+         _pendingSkillType = skillType;
+         _pendingSelectedSkillId = selectedSkillId;
          // 새로운 Train 생성 (기존 Train 제거 전에 생성하여 이벤트에서 참조 가능)
          Train newTrain = Instantiate(newTrainPrefab, transform);
-         newTrain.Initialize(newTrainData);
+         newTrain.Initialize(newTrainData, _pendingSkillType, _pendingSelectedSkillId);
+         _pendingSkillType = TrainChoiceSkillType.None;
+         _pendingSelectedSkillId = null;
          newTrain.IsUnDead = isUnDead;
 
-         // 새로 생성된 train에 기존 업그레이드 적용
-         ApplyExistingUpgradesToTrain(newTrain);
+         // 기존 트레인의 누적 강화(영구 상점 + 카드)를 새 인스턴스에 통째로 승계.
+         // ApplyExistingUpgradesToTrain은 호출하지 않는다 — oldTrain의 currentStat에 이미 영구 업그레이드가 반영되어 있어
+         // CopyProgressFrom의 delta가 영구 + 카드를 모두 옮긴다. 둘 다 호출하면 영구분이 중복 적용된다.
+         newTrain.CopyProgressFrom(oldTrain);
+         newTrain.ApplyPassiveSkills();
+
+         // Elite 생성에 소비된 base ID는 이후 TriChoice에서 영구 차단 (다른 Elite 변형 / base 업그레이드 / 재추가 모두 금지).
+         _replacedTrainIds.Add(oldTrainId);
 
          // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
          GameEventSystem.Publish(new ReplaceTrainEvent(oldTrain, newTrain, newTrainData?.Icon));

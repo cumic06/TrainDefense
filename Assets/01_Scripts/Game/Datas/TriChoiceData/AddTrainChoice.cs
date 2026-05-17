@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace TrainDefense.Game.Datas
@@ -18,6 +17,7 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         [Tooltip("대체할 기존 Train 데이터 ID (0이면 대체 없이 추가)")]
         private string replaceTrainId;
+
         #endregion
 
         public string Id => id;
@@ -33,21 +33,19 @@ namespace TrainDefense.Game.Datas
         {
             if (string.IsNullOrEmpty(trainDataId)) return false;
 
-            // 이미 해당 Train을 보유하고 있으면 유효하지 않음
-            if (TrainManager.Instance.CheckHasTrainById(trainDataId)) return false;
+            var trainManager = TrainManager.Instance;
+            if (trainManager == null) return false;
 
-            // 대체 모드인 경우: 대체할 Train이 존재하고 레벨 조건 충족 필요
+            // 이미 해당 Train을 보유하고 있으면 유효하지 않음
+            if (trainManager.CheckHasTrainById(trainDataId)) return false;
+
+            // Elite 교체로 소비된 base ID는 다시 추가하지 않음.
+            if (trainManager.IsTrainIdReplaced(trainDataId)) return false;
+
             if (IsReplaceMode)
             {
-                var mainTrain = TrainManager.Instance.MainTrain;
-                if (mainTrain == null) return false;
-
-                // 대체할 Train 찾기
-                var targetTrain = mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == replaceTrainId);
-                if (targetTrain == null) return false;
-
-                // 레벨 조건: CurrentLevel >= 2 (3번 업그레이드 완료)
-                return targetTrain.CurrentLevel >= 2;
+                Debug.LogWarning($"AddTrainChoice [{id}]: replaceTrainId is set. Use EliteTrainChoice for replacements.");
+                return false;
             }
 
             // 일반 추가 모드
@@ -71,16 +69,17 @@ namespace TrainDefense.Game.Datas
                 return;
             }
 
-            // 대체 모드인 경우: 기존 Train을 새 Train으로 대체
             if (IsReplaceMode)
             {
-                main.ReplaceTrain(replaceTrainId, trainData);
+                Debug.LogError($"AddTrainChoice [{id}]: replaceTrainId is set. Use EliteTrainChoice for replacements.");
+                return;
             }
-            else
-            {
-                // 일반 추가 모드
-                main.SpawnTrain(trainData);
-            }
+
+            var skillType = TriChoiceManager.Instance != null
+                ? TriChoiceManager.Instance.GetCachedAddSkillType(id)
+                : TrainChoiceSkillType.None;
+
+            main.SpawnTrain(trainData, skillType);
         }
     }
 }

@@ -31,14 +31,20 @@ namespace TrainDefense.Game
 
       private void OnGameEnter(GameEnterEvent gameEnterEvent)
       {
-         if (mainTrain != null)
+         if (mainTrain == null || DatabaseManager.Instance == null)
+            return;
+
+         var trainData = DatabaseManager.Instance.GetTrainData(mainTrain.Id);
+         if (trainData == null)
          {
-            var trainData = DatabaseManager.Instance.GetTrainData(mainTrain.Id);
-            var trainObject = ResourceManager.Instance.Spawn(trainData.Prefab).GetComponent<MainTrain>();
-            mainTrain = trainObject;
-            mainTrain.Initialize(trainData);
-            cinemachineCamera.Target.TrackingTarget = mainTrain.transform;
+            Debug.LogWarning($"TrainManager: TrainData not found for id '{mainTrain.Id}'");
+            return;
          }
+
+         var trainObject = ResourceManager.Instance.Spawn(trainData.Prefab).GetComponent<MainTrain>();
+         mainTrain = trainObject;
+         mainTrain.Initialize(trainData);
+         cinemachineCamera.Target.TrackingTarget = mainTrain.transform;
       }
 
       public bool CheckHasTrain(TrainData trainData)
@@ -49,6 +55,11 @@ namespace TrainDefense.Game
       public bool CheckHasTrainById(string trainId)
       {
          return mainTrain.CheckHasTrainById(trainId);
+      }
+
+      public bool IsTrainIdReplaced(string trainId)
+      {
+         return mainTrain != null && mainTrain.IsTrainIdReplaced(trainId);
       }
 
       public bool IsMaxTrainCountReached()
@@ -82,7 +93,7 @@ namespace TrainDefense.Game
          if (!mainTrain.CurrentAliveTrains.Contains(train))
             return false;
 
-         if (!train.HasSkill || !train.CanUseSkill)
+         if (!train.HasActiveSkill || !train.CanUseSkill)
             return false;
 
          return train.TryUseSkill();

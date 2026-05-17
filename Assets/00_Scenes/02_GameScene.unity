@@ -5410,6 +5410,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 457945049}
+  - {fileID: 1923945388}
   - {fileID: 1643387769}
   - {fileID: 2057298133}
   - {fileID: 323823268}
@@ -12515,6 +12516,7 @@ MonoBehaviour:
   hpScale: 0.15
   attackScale: 0.07
   goldScale: 0.05
+  stationInspectionTimeIncrement: 0
 --- !u!1 &1398835984
 GameObject:
   m_ObjectHideFlags: 0
@@ -13270,6 +13272,8 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   spawnInterval: 2
   spawnRange: 2
+  stationSpawnAccelPercent: 5
+  maxSpawnAccelPercent: 50
   spawnMode: 1
   customSpawnAreas:
   - Offset: {x: 0, y: 10}
@@ -13678,6 +13682,56 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 409639994930660694, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
   m_PrefabInstance: {fileID: 8373318151808286563}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1923945387
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1923945388}
+  - component: {fileID: 1923945389}
+  m_Layer: 5
+  m_Name: LuckyUISpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1923945388
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923945387}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 214686401}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1923945389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1923945387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5157a008857c7094fa78d73ef625557a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.LuckyUISpawner
+  luckyUI: {fileID: 5844055752239488208, guid: b84ff669a2ff2ae4abe9743e0f5be4f6, type: 3}
+  canvasRect: {fileID: 214686401}
 --- !u!1 &1935487580
 GameObject:
   m_ObjectHideFlags: 0

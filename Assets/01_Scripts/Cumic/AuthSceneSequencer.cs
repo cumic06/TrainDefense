@@ -26,6 +26,7 @@ namespace Cumic.Sequence
 
         public async UniTask Run()
         {
+            await TrainDefense.Localize.Localization.InitializeAsync();
             _isVersionMatched = await VersionCheck();
 
             if (!_isVersionMatched) return;

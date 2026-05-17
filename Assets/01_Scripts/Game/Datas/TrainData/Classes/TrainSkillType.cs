@@ -5,6 +5,8 @@ namespace TrainDefense.Game.Datas
         None = 0,
         Projectile = 1,
         SelfBuff = 2,
-        InstantAttack = 3
+        InstantAttack = 3,
+        AreaStrike = 4,
+        Bombard = 5
     }
 }

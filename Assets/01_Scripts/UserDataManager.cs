@@ -236,12 +236,9 @@ namespace TrainDefense
             }
         }
 
-        /// <summary>
-        /// 선택된 ChoiceOption ID 목록을 반환합니다.
-        /// </summary>
-        public HashSet<string> GetSelectedChoiceIds()
+        public bool HasSelectedChoice(string choiceId)
         {
-            return new HashSet<string>(_triChoiceData.Keys);
+            return _triChoiceData.ContainsKey(choiceId);
         }
 
         public bool IsFirstTimeSelected(string choiceId)

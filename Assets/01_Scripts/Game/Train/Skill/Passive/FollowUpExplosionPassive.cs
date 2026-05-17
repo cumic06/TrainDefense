@@ -1,12 +1,14 @@
 using System.Collections;
+using System.Globalization;
 using UnityEngine;
 
 namespace TrainDefense.Game
 {
     /// <summary>
     /// 공격 직후 delay초 후 owner 위치에 투사체 발사. (엘리트 폭발: 0.2s 후 ExpandingWave)
-    /// DSL: "FollowUpExplosion:delay:projectile_prefab_id[:radius]"
+    /// DSL: "FollowUpExplosion:delay:projectile_prefab_id[:radius[:damage_mul[:shove_scale]]]"
     /// radius 생략 시 owner의 AttackArea 사용 (음수로 전달).
+    /// damage_mul/shove_scale 생략 시 1.0 (메인 공격과 동일).
     /// </summary>
     public class FollowUpExplosionPassive : TrainPassiveSkill
     {
@@ -15,6 +17,8 @@ namespace TrainDefense.Game
         public float Delay { get; private set; } = 0.2f;
         public string ProjectilePrefabId { get; private set; }
         public float Radius { get; private set; } = -1f;
+        public float DamageMul { get; private set; } = 1f;
+        public float ShoveScale { get; private set; } = 1f;
 
         private Projectile _cachedPrefab;
         private bool _loadAttempted;
@@ -22,16 +26,25 @@ namespace TrainDefense.Game
         public static FollowUpExplosionPassive From(string[] parts)
         {
             if (parts.Length < 3) return null;
-            if (!float.TryParse(parts[1], out float delay) || delay < 0f) return null;
+            if (!TryParseFloat(parts[1], out float delay) || delay < 0f) return null;
             float radius = -1f;
-            if (parts.Length >= 4) float.TryParse(parts[3], out radius);
+            if (parts.Length >= 4 && !TryParseFloat(parts[3], out radius)) radius = -1f;
+            float damageMul = 1f;
+            if (parts.Length >= 5 && !TryParseFloat(parts[4], out damageMul)) damageMul = 1f;
+            float shoveScale = 1f;
+            if (parts.Length >= 6 && !TryParseFloat(parts[5], out shoveScale)) shoveScale = 1f;
             return new FollowUpExplosionPassive
             {
                 Delay = delay,
                 ProjectilePrefabId = parts[2].Trim(),
-                Radius = radius
+                Radius = radius,
+                DamageMul = damageMul,
+                ShoveScale = shoveScale
             };
         }
+
+        private static bool TryParseFloat(string s, out float value)
+            => float.TryParse(s?.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out value);
 
         public override void Subscribe()
         {
@@ -68,8 +81,8 @@ namespace TrainDefense.Game
             var prefab = LoadPrefab();
             if (prefab == null) yield break;
 
-            if (Owner is RangeTrain range) range.SpawnExternalProjectile(prefab, Radius);
-            else if (Owner is TurretTrain turret) turret.SpawnExternalProjectileAtSelf(prefab, Radius);
+            if (Owner is RangeTrain range) range.SpawnExternalProjectile(prefab, Radius, null, DamageMul, ShoveScale);
+            else if (Owner is TurretTrain turret) turret.SpawnExternalProjectileAtSelf(prefab, Radius, DamageMul, ShoveScale);
         }
 
         private Projectile LoadPrefab()

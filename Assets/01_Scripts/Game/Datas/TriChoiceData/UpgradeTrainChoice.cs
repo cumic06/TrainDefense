@@ -30,7 +30,12 @@ namespace TrainDefense.Game.Datas
             if (string.IsNullOrEmpty(targetTrainId)) return false;
 
             var trainManager = TrainManager.Instance;
-            if (trainManager == null || !trainManager.CheckHasTrainById(targetTrainId)) return false;
+            if (trainManager == null) return false;
+
+            // Elite 교체로 소비된 base ID 대상 업그레이드는 영구 차단
+            if (trainManager.IsTrainIdReplaced(targetTrainId)) return false;
+
+            if (!trainManager.CheckHasTrainById(targetTrainId)) return false;
 
             // 현재 Train의 레벨에 해당하는 업그레이드 데이터가 있는지 확인
             var train = trainManager.MainTrain?.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == targetTrainId);
