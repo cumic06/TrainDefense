@@ -19,7 +19,7 @@ namespace TrainDefense.Game
             float strikeRadius = projectileSkillData.Range;
             if (strikeRadius <= 0f) return false;
 
-            int damage = projectileSkillData.Damage;
+            float damage = projectileSkillData.Damage;
 
             var nearest = Physics2D.OverlapCircleAll(owner.transform.position, strikeRadius)
                 .Select(c => c.TryGetComponent(out Monster m) ? m : null)
