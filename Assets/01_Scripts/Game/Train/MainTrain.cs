@@ -398,7 +398,7 @@ namespace TrainDefense.Game
          return _currentAliveTrains.Any(train => train.TrainData.Id == trainId);
       }
 
-      public void ApplyUpgrade(UpgradeData upgradeData)
+      public void ApplyUpgrade(UpgradeData upgradeData, int newLevel, int prevLevel)
       {
          if (upgradeData == null)
             return;
@@ -408,7 +408,7 @@ namespace TrainDefense.Game
 
          foreach (var train in _currentAliveTrains)
          {
-            train.ApplyStats(upgradeData.Stats);
+            train.ApplyStatsLevelAware(upgradeData.Stats, newLevel, prevLevel);
          }
       }
 
@@ -483,12 +483,8 @@ namespace TrainDefense.Game
                continue;
             }
 
-            // 업그레이드 레벨만큼 스탯 적용
-            // UpgradeManager.ApplyTrainUpgrade와 동일한 방식: upgradeData.Stats를 train에 적용
-            for (int i = 0; i < upgradeLevel; i++)
-            {
-               train.ApplyStats(upgradeData.Stats);
-            }
+            // 레벨 누적 방식으로 적용: per-call 반올림 오차 방지
+            train.ApplyStatsLevelAware(upgradeData.Stats, upgradeLevel);
 
             totalAppliedCount++;
          }

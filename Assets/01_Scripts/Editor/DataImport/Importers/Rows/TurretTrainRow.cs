@@ -7,7 +7,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 	{
 		public float attackRange;
 		public float attackArea;
-		public int attackDamage;
+		public float attackDamage;
 		public int attackCount;
 		public float attackInterval;
 		public int targetCount;
@@ -20,7 +20,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			base.FromExcelRow(row, map);
 			attackRange = map.GetFloat(row, "attack_range");
 			attackArea = map.GetFloat(row, "attack_area");
-			attackDamage = map.GetInt(row, "attack_damage");
+			attackDamage = map.GetFloat(row, "attack_damage");
 			attackCount = map.GetInt(row, "attack_count");
 			attackInterval = map.GetFloat(row, "attack_interval");
 			targetCount = map.GetInt(row, "target_count");

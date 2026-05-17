@@ -9,7 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string id;
 		public string name;
 		public string description;
-		public int maxHp;
+		public float maxHp;
 		public bool isMainTrain;
 		public string prefabId;
 		public string iconId;
@@ -21,7 +21,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			id = map.GetString(row, "id");
 			name = map.GetString(row, "train_name");
 			description = map.GetString(row, "description");
-			maxHp = map.GetInt(row, "max_hp");
+			maxHp = map.GetFloat(row, "max_hp");
 			isMainTrain = map.GetBool(row, "is_main_train");
 			prefabId = map.GetString(row, "prefab_id");
 			iconId = map.GetString(row, "icon_id");

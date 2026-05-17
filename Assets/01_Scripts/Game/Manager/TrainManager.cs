@@ -153,7 +153,7 @@ namespace TrainDefense.Game
          return mainTrain.CurrentTrains.Where(train => allUpgradeData.Any(upgrade => upgrade.MaxLevel == train.CurrentLevel)).ToArray();
       }
 
-      public void ApplyUpgrade(UpgradeData upgradeData)
+      public void ApplyUpgrade(UpgradeData upgradeData, int newLevel, int prevLevel)
       {
          if (mainTrain == null)
          {
@@ -161,7 +161,7 @@ namespace TrainDefense.Game
             return;
          }
 
-         mainTrain.ApplyUpgrade(upgradeData);
+         mainTrain.ApplyUpgrade(upgradeData, newLevel, prevLevel);
       }
    }
 }

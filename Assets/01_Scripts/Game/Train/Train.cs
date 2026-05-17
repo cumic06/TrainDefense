@@ -28,9 +28,9 @@ namespace TrainDefense.Game
         [ShowInInspector, ReadOnly]
         protected TrainData _trainData;
         protected bool _isDead;
-        protected int _currentHp;
+        protected float _currentHp;
         protected int _currentLevel;
-        protected int _currentMaxHp;
+        protected float _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
         protected string _selectedSkillId = null;
@@ -113,12 +113,12 @@ namespace TrainDefense.Game
 
         }
 
-        public virtual void TakeDamage(int damage)
+        public virtual void TakeDamage(float damage)
         {
             TakeDamage(damage, false);
         }
 
-        public virtual void TakeDamage(int damage, bool isCritical)
+        public virtual void TakeDamage(float damage, bool isCritical)
         {
             if (_isDead) return;
 
@@ -242,6 +242,31 @@ namespace TrainDefense.Game
             }
         }
 
+        public virtual void ApplyStatsLevelAware(IStat[] stats, int newLevel, int prevLevel = 0)
+        {
+            if (stats == null || stats.Length == 0) return;
+            foreach (var stat in stats)
+                ApplyStatLevelAware(stat, newLevel, prevLevel);
+        }
+
+        protected virtual void ApplyStatLevelAware(IStat stat, int newLevel, int prevLevel)
+        {
+            if (stat == null) return;
+            switch (stat.Type)
+            {
+                case StatType.MaxHp:
+                {
+                    float baseMaxHp = _trainData.TrainStatusData.MaxHp;
+                    float percent = stat.Value / 100f;
+                    float delta = baseMaxHp * percent * (newLevel - prevLevel);
+                    _currentMaxHp += delta;
+                    _currentHp += delta;
+                    _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+                    break;
+                }
+            }
+        }
+
         public virtual void ApplyStatsByCurrentValue(IStat[] stats)
         {
             ApplyStats(stats);
@@ -259,8 +284,8 @@ namespace TrainDefense.Game
             {
                 case StatType.MaxHp:
                     {
-                        int baseMaxHp = _trainData.TrainStatusData.MaxHp;
-                        int deltaHp = UtilMath.AccumulateIntDelta(ref _statMaxHpAccum, baseMaxHp * stat.Value / 100f);
+                        float baseMaxHp = _trainData.TrainStatusData.MaxHp;
+                        float deltaHp = UtilMath.AccumulateIntDelta(ref _statMaxHpAccum, baseMaxHp * stat.Value / 100f);
                         _currentMaxHp += deltaHp;
                         _currentHp += deltaHp;
                         _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
@@ -278,12 +303,12 @@ namespace TrainDefense.Game
 
             _currentLevel = source._currentLevel;
 
-            int oldBaseMaxHp = source._trainData.TrainStatusData.MaxHp;
-            int maxHpDelta = source._currentMaxHp - oldBaseMaxHp;
-            float hpRatio = source._currentMaxHp > 0 ? (float)source._currentHp / source._currentMaxHp : 1f;
+            float oldBaseMaxHp = source._trainData.TrainStatusData.MaxHp;
+            float maxHpDelta = source._currentMaxHp - oldBaseMaxHp;
+            float hpRatio = source._currentMaxHp > 0 ? source._currentHp / source._currentMaxHp : 1f;
 
             _currentMaxHp += maxHpDelta;
-            _currentHp = Mathf.Clamp(Mathf.RoundToInt(_currentMaxHp * hpRatio), 0, _currentMaxHp);
+            _currentHp = Mathf.Clamp(_currentMaxHp * hpRatio, 0, _currentMaxHp);
 
             _statMaxHpAccum = source._statMaxHpAccum;
         }

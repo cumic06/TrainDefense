@@ -14,7 +14,7 @@ namespace TrainDefense.Game
         protected GameObject model;
         #endregion
 
-        protected int _damage;
+        protected float _damage;
         protected float _criticalChance;
         protected float _criticalDamage;
         protected IProjectileTarget _target;
@@ -80,7 +80,7 @@ namespace TrainDefense.Game
         /// <param name="damage">데미지</param>
         /// <param name="target">타겟 (Monster 또는 null)</param>
         /// <param name="scaleRadius">AoE/스케일 반경 (AttackArea 값)</param>
-        public virtual void Init(int damage, IProjectileTarget owner, IProjectileTarget target = null, float scaleRadius = 0f, float criticalChance = 0f, float criticalDamage = 0f)
+        public virtual void Init(float damage, IProjectileTarget owner, IProjectileTarget target = null, float scaleRadius = 0f, float criticalChance = 0f, float criticalDamage = 0f)
         {
             _damage = damage;
             _owner = owner;
@@ -210,14 +210,13 @@ namespace TrainDefense.Game
         /// </summary>
         private const float BaseCriticalDamagePercent = 30f;
 
-        protected (int finalDamage, bool isCritical) CalculateCriticalDamage()
+        protected (float finalDamage, bool isCritical) CalculateCriticalDamage()
         {
             bool isCritical = _criticalChance > 0f && UtilMath.CheckProbability(_criticalChance);
-            int finalDamage = _damage;
+            float finalDamage = _damage;
             if (isCritical)
             {
-                // 기본 30% + 추가 치명타 피해량 스탯
-                finalDamage += Mathf.RoundToInt(_damage * (BaseCriticalDamagePercent + _criticalDamage) / 100f);
+                finalDamage += _damage * (BaseCriticalDamagePercent + _criticalDamage) / 100f;
             }
             return (finalDamage, isCritical);
         }

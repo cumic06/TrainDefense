@@ -8,7 +8,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string id;
 		public string name;
 		public string description;
-		public int maxHp;
+		public float maxHp;
 		public string iconId;
 
 		public virtual void FromExcelRow(IRow row, HeaderMap map)
@@ -16,7 +16,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			id = map.GetString(row, "id");
 			name = map.GetString(row, "upgrade_name");
 			description = map.GetString(row, "description");
-			maxHp = map.GetInt(row, "max_hp");
+			maxHp = map.GetFloat(row, "max_hp");
 			iconId = map.GetString(row, "icon_id");
 		}
 

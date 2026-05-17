@@ -12,7 +12,7 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private string projectilePrefabId;
         [SerializeField]
-        private int damage;
+        private float damage;
         [SerializeField]
         private float range;
         [SerializeField]
@@ -22,7 +22,7 @@ namespace TrainDefense.Game.Datas
         private GameObject projectilePrefab;
 
         public string ProjectilePrefabId => projectilePrefabId;
-        public int Damage => damage;
+        public float Damage => damage;
         public float Range => range;
         public int ProjectileCount => projectileCount;
         public GameObject ProjectilePrefabObject

@@ -9,6 +9,6 @@ namespace TrainDefense.Game.Datas
     [Serializable]
     public struct TrainStatusData
     {
-        public int MaxHp;
+        public float MaxHp;
     }
 }

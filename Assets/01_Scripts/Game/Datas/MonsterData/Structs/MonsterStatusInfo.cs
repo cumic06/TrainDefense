@@ -8,8 +8,8 @@ namespace TrainDefense.Game.Datas
     [Serializable]
     public struct MonsterStatusInfo
     {
-        public int MaxHp;
-        public int Damage;
+        public float MaxHp;
+        public float Damage;
         public float MoveSpeed;
         public float AttackDelay;
         public int DropExpMin;

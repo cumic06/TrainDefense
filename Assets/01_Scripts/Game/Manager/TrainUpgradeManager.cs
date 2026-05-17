@@ -85,10 +85,10 @@ namespace TrainDefense.Game
             }
 
             UserDataManager.Instance.UpgradeLevel(upgradeId);
-            ApplyUpgrade(upgradeData);
+            int newLevel = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
+            ApplyUpgrade(upgradeData, newLevel);
 
             // 업그레이드 적용 이후 UI 및 기타 시스템에 알려주기 위한 이벤트 발행
-            int newLevel = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
             GameEventSystem.Publish(new UpgradeAppliedEvent(upgradeId, newLevel));
         }
 
@@ -141,14 +141,14 @@ namespace TrainDefense.Game
             }
         }
 
-        private void ApplyUpgrade(UpgradeData upgradeData)
+        private void ApplyUpgrade(UpgradeData upgradeData, int newLevel)
         {
             if (upgradeData == null) return;
 
             switch (upgradeData.UpgradeDataType)
             {
                 case UpgradeDataType.TrainUpgrade:
-                    ApplyTrainUpgrade(upgradeData);
+                    ApplyTrainUpgrade(upgradeData, newLevel);
                     break;
                 case UpgradeDataType.NonTrainUpgrade:
                     ApplyNonTrainUpgrade(upgradeData);
@@ -162,7 +162,7 @@ namespace TrainDefense.Game
         /// <summary>
         /// Train 관련 업그레이드 적용
         /// </summary>
-        private void ApplyTrainUpgrade(UpgradeData upgradeData)
+        private void ApplyTrainUpgrade(UpgradeData upgradeData, int newLevel)
         {
             if (TrainManager.Instance == null || TrainManager.Instance.MainTrain == null)
             {
@@ -170,7 +170,7 @@ namespace TrainDefense.Game
                 return;
             }
 
-            TrainManager.Instance.ApplyUpgrade(upgradeData);
+            TrainManager.Instance.ApplyUpgrade(upgradeData, newLevel, newLevel - 1);
         }
 
         /// <summary>
