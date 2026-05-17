@@ -37,11 +37,11 @@ namespace TrainDefense.Editor.DataImport.Importers
 				var r = new TrainSkillDataRow();
 				r.FromExcelRow(row, map);
 				if (string.IsNullOrEmpty(r.id)) continue;
-				var existing = db.trainSkillDataList.Find(s => s != null && s.Id == r.id);
+				var existing = db.TrainSkillDataDB.trainActiveSkillDataList.Find(s => s != null && s.Id == r.id);
 				if (existing == null)
 				{
 					var obj = refl.Create(r);
-					db.trainSkillDataList.Add(obj);
+					db.TrainSkillDataDB.trainActiveSkillDataList.Add(obj);
 				}
 				else
 				{

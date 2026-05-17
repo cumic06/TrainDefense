@@ -10,6 +10,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public int weight;
 		public int tier;
 		public string replaceTrainId;
+		public int skillType;
 
 		public void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -18,6 +19,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			weight = map.GetInt(row, "weight");
 			tier = map.GetInt(row, "tier");
 			replaceTrainId = map.GetString(row, "replace_train_id");
+			skillType = map.GetInt(row, "skill_type");
 		}
 
 		public void ToExcelRow(IRow row, HeaderMap map)
@@ -27,6 +29,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "weight", weight);
 			map.SetCell(row, "tier", tier);
 			map.SetCell(row, "replace_train_id", replaceTrainId);
+			map.SetCell(row, "skill_type", skillType);
 		}
 	}
 }

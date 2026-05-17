@@ -11,7 +11,7 @@ namespace TrainDefense.Game.Datas
     public class TriChoiceDB
     {
         #region Fields
-        [Header("Train 추가 선택지")]
+        [Header("Train 추가/엘리트 선택지")]
         [SerializeField]
         private List<ChoiceEntry> addTrainChoices = new();
 
@@ -20,6 +20,7 @@ namespace TrainDefense.Game.Datas
         private List<ChoiceEntry> upgradeTrainChoices = new();
         #endregion
 
+        public IReadOnlyList<ChoiceEntry> TrainChoiceEntries => addTrainChoices;
         public IReadOnlyList<ChoiceEntry> AddTrainChoices => addTrainChoices;
         public IReadOnlyList<ChoiceEntry> UpgradeTrainChoices => upgradeTrainChoices;
     }

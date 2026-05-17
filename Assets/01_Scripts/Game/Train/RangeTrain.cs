@@ -3,6 +3,7 @@ using UnityEngine;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Stats;
 using System.Collections;
+using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 
@@ -17,17 +18,24 @@ namespace TrainDefense.Game
         protected RangeTrainStatus _currentRangeTrainStatus;
         protected Projectile _rangeProjectilePrefab;
         private Coroutine _rangeAttackCoroutine;
+        private float _attackCountdown;
+
+        // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
+        private float _statAttackDamageAccum;
+        private float _statAttackCountAccum;
+
+        private bool _suppressMainProjectileShove;
 
         public event Action OnAttacked;
 
         protected override void Setup()
         {
             base.Setup();
+            if (rangeTrainData == null) return;
 
             // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
-
-            _skillModule.RegisterPassiveFromData(rangeTrainData?.PassiveSkillData);
+            _attackCountdown = _currentRangeTrainStatus.AttackInterval;
 
             if (TrainData.DamageType == DamageType.Direct) return;
 
@@ -79,13 +87,14 @@ namespace TrainDefense.Game
 
         private void RangeAttackHandler()
         {
-            if (_currentRangeTrainStatus.AttackInterval <= 0)
+            if (_attackCountdown <= 0)
             {
                 if (rangeTrainData.RangeProjectilePrefab != null)
                 {
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.gameObject.SetActive(true);
+                        _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
                     }
                     else
                     {
@@ -97,7 +106,7 @@ namespace TrainDefense.Game
                         SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType);
                     }
 
-                    _currentRangeTrainStatus.AttackInterval = rangeTrainData.RangeTrainStatus.AttackInterval;
+                    _attackCountdown = _currentRangeTrainStatus.AttackInterval;
                     OnAttacked?.Invoke();
 
                     if (TrainData.DamageType == DamageType.Direct)
@@ -112,7 +121,7 @@ namespace TrainDefense.Game
             }
             else
             {
-                _currentRangeTrainStatus.AttackInterval -= Time.deltaTime;
+                _attackCountdown -= Time.deltaTime;
             }
         }
 
@@ -126,16 +135,26 @@ namespace TrainDefense.Game
             }
         }
 
-        public void SpawnExternalProjectile(Projectile prefab, float radius)
+        public void SetSuppressMainProjectileShove(bool suppress)
+        {
+            _suppressMainProjectileShove = suppress;
+            if (_rangeProjectilePrefab != null)
+                _rangeProjectilePrefab.SuppressShoveEffect = suppress;
+        }
+
+        public void SpawnExternalProjectile(Projectile prefab, float radius, IProjectileTarget target = null, float damageMul = 1f, float shoveScale = 1f)
         {
             if (prefab == null) return;
             var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
             if (spawned == null) return;
             float r = radius >= 0f ? radius : _currentRangeTrainStatus.AttackArea;
+            if (target != null) spawned.transform.LookAt2D(target.TargetTransform);
+            int damage = Mathf.RoundToInt(_currentRangeTrainStatus.AttackDamage * damageMul);
+            spawned.ShoveScale = shoveScale;
             spawned.Init(
-                _currentRangeTrainStatus.AttackDamage,
+                damage,
                 this,
-                null,
+                target,
                 r,
                 _currentRangeTrainStatus.CriticalChance,
                 _currentRangeTrainStatus.CriticalDamage);
@@ -157,10 +176,11 @@ namespace TrainDefense.Game
                 {
                     _rangeProjectilePrefab = ResourceManager.Instance.Spawn(projectile);
                     _rangeProjectilePrefab.transform.SetParent(transform);
-                    _rangeProjectilePrefab.transform.localScale = new Vector3(rangeTrainData.RangeTrainStatus.AttackArea, rangeTrainData.RangeTrainStatus.AttackArea, 1);
+                    _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1);
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
-                    _rangeProjectilePrefab.Init(rangeTrainData.RangeTrainStatus.AttackDamage, this, null, rangeTrainData.RangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                    _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
+                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
         }
@@ -212,8 +232,49 @@ namespace TrainDefense.Game
             }
         }
 
+        public float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
+
         public override string GetStatSummary() =>
             $"DMG={_currentRangeTrainStatus.AttackDamage} | RANGE={_currentRangeTrainStatus.AttackRange} | AREA={_currentRangeTrainStatus.AttackArea} | MaxHp={_currentMaxHp}";
+
+        public override void ApplyPassiveSkills()
+        {
+            if (_skillTypeMask == TrainChoiceSkillType.Active) return;
+            var passives = rangeTrainData?.PassiveSkillDatas;
+            if (passives == null) return;
+            foreach (var p in passives)
+                if (string.IsNullOrEmpty(_selectedSkillId) || p.Id == _selectedSkillId)
+                    _skillModule.RegisterPassiveFromData(p);
+        }
+
+        public override void ApplyStatsByCurrentValue(IStat[] stats)
+        {
+            if (stats == null || stats.Length == 0) return;
+            foreach (var stat in stats)
+            {
+                if (stat == null) continue;
+                float percent = stat.Value / 100f;
+                switch (stat.Type)
+                {
+                    case StatType.AttackRange:
+                        _currentRangeTrainStatus.AttackRange += _currentRangeTrainStatus.AttackRange * percent;
+                        break;
+                    case StatType.AttackArea:
+                        _currentRangeTrainStatus.AttackArea += _currentRangeTrainStatus.AttackArea * percent;
+                        if (_rangeProjectilePrefab != null)
+                            _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
+                        break;
+                    case StatType.AttackDamage:
+                        _currentRangeTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentRangeTrainStatus.AttackDamage * percent);
+                        if (_rangeProjectilePrefab != null)
+                            _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                        break;
+                    default:
+                        ApplyStat(stat);
+                        break;
+                }
+            }
+        }
 
         protected override void ApplyStat(IStat stat)
         {
@@ -239,7 +300,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    _currentRangeTrainStatus.AttackDamage += baseStatus.AttackDamage * percent;
+                    _currentRangeTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, stat.Value * rangeTrainData.AttackDamageMultiplier);
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
@@ -247,7 +308,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackCount:
-                    _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(baseStatus.AttackCount * percent);
+                    _currentRangeTrainStatus.AttackCount += UtilMath.AccumulateIntDelta(ref _statAttackCountAccum, baseStatus.AttackCount * percent);
                     break;
 
                 case StatType.AttackInterval:
@@ -342,6 +403,41 @@ namespace TrainDefense.Game
                 default:
                     base.ApplyStatLevelAware(stat, newLevel, prevLevel);
                     break;
+            }
+        }
+
+        public override void CopyProgressFrom(Train source)
+        {
+            base.CopyProgressFrom(source);
+            if (source is not RangeTrain srcRange) return;
+            if (srcRange.rangeTrainData == null || rangeTrainData == null) return;
+
+            var srcBase = srcRange.rangeTrainData.RangeTrainStatus;
+            var srcCurrent = srcRange._currentRangeTrainStatus;
+            var newBase = rangeTrainData.RangeTrainStatus;
+
+            _currentRangeTrainStatus.AttackRange = newBase.AttackRange + (srcCurrent.AttackRange - srcBase.AttackRange);
+            _currentRangeTrainStatus.AttackArea = newBase.AttackArea + (srcCurrent.AttackArea - srcBase.AttackArea);
+            _currentRangeTrainStatus.AttackDamage = newBase.AttackDamage + (srcCurrent.AttackDamage - srcBase.AttackDamage);
+            _currentRangeTrainStatus.AttackCount = newBase.AttackCount + (srcCurrent.AttackCount - srcBase.AttackCount);
+            _currentRangeTrainStatus.AttackInterval = newBase.AttackInterval + (srcCurrent.AttackInterval - srcBase.AttackInterval);
+            _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
+            _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
+
+            _statAttackDamageAccum = srcRange._statAttackDamageAccum;
+            _statAttackCountAccum = srcRange._statAttackCountAccum;
+
+            if (_rangeProjectilePrefab != null)
+            {
+                _rangeProjectilePrefab.transform.localScale =
+                    new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
+                _rangeProjectilePrefab.Init(
+                    _currentRangeTrainStatus.AttackDamage,
+                    this,
+                    null,
+                    _currentRangeTrainStatus.AttackArea,
+                    _currentRangeTrainStatus.CriticalChance,
+                    _currentRangeTrainStatus.CriticalDamage);
             }
         }
 

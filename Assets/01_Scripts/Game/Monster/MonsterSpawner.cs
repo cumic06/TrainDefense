@@ -81,6 +81,8 @@ namespace TrainDefense.Game
 
       private void OnGameEnter(GameEnterEvent gameEnterEvent)
       {
+         if (DatabaseManager.Instance == null) return;
+
          _eliteData = DatabaseManager.Instance.GetEliteData();
          _currentEliteSpawnChance = 0f;
          _eliteRampElapsed = 0f;

@@ -22,12 +22,12 @@ namespace TrainDefense.Game.Datas
         private string description;
 
         public string Id => id;
-        public string Name => name;
+        public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey($"Passive_{id}_Name", name);
         public string PassiveType => passiveType;
         public string Param1 => param1;
         public string Param2 => param2;
         public string Param3 => param3;
-        public string Description => description;
+        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey($"Passive_{id}_Desc", description);
 
         public string ToDsl()
         {

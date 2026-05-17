@@ -24,6 +24,15 @@ namespace TrainDefense.Game
         [SerializeField]
         private float tickInterval = 0.5f;
 
+        [BoxGroup("Status Effects")]
+        [SerializeField]
+        private bool hasStunEffect = false;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasStunEffect")]
+        [SerializeField]
+        private float stunDuration = 1f;
+
         [SerializeField]
         private bool destroyOnTriggerEnter = false;
 
@@ -35,11 +44,14 @@ namespace TrainDefense.Game
         private ExpandingWave expandingWave;
 
         private Dictionary<IProjectileTarget, float> _damageTimers = new();
+        private IProjectileTarget _owner;
 
         public bool HasTurretDamage => hasTurretDamage;
 
         private void OnEnable()
         {
+            _owner = null;
+
             float lifetime = destroyDelay;
 
             if (expandingWave != null)
@@ -55,12 +67,13 @@ namespace TrainDefense.Game
             _damageTimers.Clear();
         }
 
-        public void Init(float damage)
+        public void Init(float damage, IProjectileTarget owner = null)
         {
             if (hasTurretDamage)
             {
                 this.damage = damage;
             }
+            _owner = owner;
         }
 
         public void ApplyWaveHit(IProjectileTarget target)
@@ -101,6 +114,7 @@ namespace TrainDefense.Game
         private void ProcessEnter(IProjectileTarget target)
         {
             if (target == null || !target.IsActive) return;
+            if (_owner is Train && target is Train) return;
 
             if (damageType == DamageType.Tick)
             {
@@ -127,6 +141,11 @@ namespace TrainDefense.Game
                         Destroy(gameObject);
                     }
                 }
+            }
+
+            if (hasStunEffect)
+            {
+                target.Stun(stunDuration);
             }
         }
 

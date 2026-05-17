@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
@@ -31,6 +32,12 @@ namespace TrainDefense.Game
         protected int _currentLevel;
         protected float _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
+        protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
+        protected string _selectedSkillId = null;
+        private bool _initialized;
+
+        // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
+        private float _statMaxHpAccum;
 
         [HideInInspector]
         public bool IsUnDead;
@@ -41,7 +48,7 @@ namespace TrainDefense.Game
 
         public bool IsDead => _isDead;
         public int CurrentLevel => _currentLevel;
-        public bool HasSkill => _skillModule.HasSkill;
+        public bool HasActiveSkill => _skillModule.HasActiveSkill;
         public Sprite SkillIcon => _skillModule.SkillIcon;
         public float SkillCooldown => _skillModule.SkillCooldown;
         public bool CanUseSkill => _skillModule.CanUse;
@@ -51,13 +58,19 @@ namespace TrainDefense.Game
 
         protected virtual void Start()
         {
+            if (_initialized)
+                return;
+
             Setup();
         }
 
-        public virtual void Initialize(TrainData trainData)
+        public virtual void Initialize(TrainData trainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None, string selectedSkillId = null)
         {
             _trainData = trainData;
+            _skillTypeMask = skillType;
+            _selectedSkillId = selectedSkillId;
             Setup();
+            _initialized = true;
         }
 
         protected virtual void Setup()
@@ -72,7 +85,7 @@ namespace TrainDefense.Game
             _currentMaxHp = _trainData.TrainStatusData.MaxHp;
             _currentHp = _currentMaxHp;
             _currentLevel = -1;
-            _skillModule.Initialize(this, _trainData, ApplyStat);
+            _skillModule.Initialize(this, _trainData, ApplyStat, _skillTypeMask);
         }
 
         public Transform TargetTransform => transform;
@@ -229,8 +242,6 @@ namespace TrainDefense.Game
             }
         }
 
-        // 레벨 누적 방식: RoundToInt(base * percent * N) - RoundToInt(base * percent * prevN)
-        // per-call 반올림 대신 누적 값 기준으로 delta를 계산해 소수 퍼센트도 정확히 적용
         public virtual void ApplyStatsLevelAware(IStat[] stats, int newLevel, int prevLevel = 0)
         {
             if (stats == null || stats.Length == 0) return;
@@ -256,6 +267,13 @@ namespace TrainDefense.Game
             }
         }
 
+        public virtual void ApplyStatsByCurrentValue(IStat[] stats)
+        {
+            ApplyStats(stats);
+        }
+
+        public virtual void ApplyPassiveSkills() { }
+
         public virtual string GetStatSummary() => $"MaxHp={_currentMaxHp}";
 
         protected virtual void ApplyStat(IStat stat)
@@ -267,13 +285,32 @@ namespace TrainDefense.Game
                 case StatType.MaxHp:
                     {
                         float baseMaxHp = _trainData.TrainStatusData.MaxHp;
-                        float deltaHp = baseMaxHp * stat.Value / 100f;
+                        float deltaHp = UtilMath.AccumulateIntDelta(ref _statMaxHpAccum, baseMaxHp * stat.Value / 100f);
                         _currentMaxHp += deltaHp;
                         _currentHp += deltaHp;
                         _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
                         break;
                     }
             }
+        }
+
+        // Elite 교체(MainTrain.ReplaceTrain) 시 기존 트레인의 누적 강화(영구 + 카드)를 새 인스턴스에 승계.
+        // delta 방식: newCurrent = newBase + (oldCurrent - oldBase). HP는 비율 보존.
+        // 서브클래스는 base 호출 후 자기 status struct delta를 직접 옮긴다.
+        public virtual void CopyProgressFrom(Train source)
+        {
+            if (source == null || source._trainData == null || _trainData == null) return;
+
+            _currentLevel = source._currentLevel;
+
+            float oldBaseMaxHp = source._trainData.TrainStatusData.MaxHp;
+            float maxHpDelta = source._currentMaxHp - oldBaseMaxHp;
+            float hpRatio = source._currentMaxHp > 0 ? source._currentHp / source._currentMaxHp : 1f;
+
+            _currentMaxHp += maxHpDelta;
+            _currentHp = Mathf.Clamp(_currentMaxHp * hpRatio, 0, _currentMaxHp);
+
+            _statMaxHpAccum = source._statMaxHpAccum;
         }
     }
 }

@@ -36,8 +36,8 @@ namespace TrainDefense.Game.Datas
       #endregion
 
       #region IDescribableData
-      public string Name => name;
-      public string Description => description;
+      public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey($"TUpgrade_{id}_Name", name);
+      public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey($"TUpgrade_{id}_Desc", description);
       #endregion
 
       #region IIconData
@@ -74,6 +74,11 @@ namespace TrainDefense.Game.Datas
       {
          var stats = GetStatsForLevel(level);
          return stats?.TurretStatusUpgrade ?? default;
+      }
+
+      public string GetPassiveSkillDataId(int level)
+      {
+         return GetStatsForLevel(level)?.PassiveSkillDataId;
       }
 
       private TurretTrainUpgradeStats GetStatsForLevel(int targetLevel)

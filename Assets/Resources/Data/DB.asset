@@ -239,7 +239,7 @@ MonoBehaviour:
     description: "\uACE0\uBE14\uB9B0 \uCC3D\uBCD1\uC774\uB2E4"
     icon: {fileID: 6527618186103422146, guid: 4eea2bd4e5d564b41a313f4ca7f40676, type: 3}
     monsterStatusData:
-      MaxHp: 28
+      MaxHp: 35
       Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
@@ -330,7 +330,8 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: MainTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
   turretTrainDataList:
   - id: 30001
@@ -339,83 +340,87 @@ MonoBehaviour:
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     damageType: 0
     attackSoundType: 301
-    description: "\uB192\uC740 \uACF5\uACA9 \uC18D\uB3C4\uB85C \uC801\uC744 \uACF5\uACA9\uD569\uB2C8\uB2E4."
+    description: "\uAE30\uAD00\uCD1D\uC73C\uB85C \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: NormalTurretTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 0.25
+      AttackInterval: 0.3
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: NormalProjectile
-    passiveSkillDataId: 
+    attackDamageMultiplier: 1
   - id: 30002
     name: "\uD654\uC5FC \uD3EC\uD0D1"
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     damageType: 1
     attackSoundType: 302
-    description: "\uBC94\uC704\uC5D0 \uC9C0\uC18D\uC801\uC73C\uB85C \uD53C\uD574\uB97C
-      \uC90D\uB2C8\uB2E4."
+    description: "\uD654\uC5FC\uC73C\uB85C \uC9C0\uC18D\uC801\uC778 \uD53C\uD574\uB97C
+      \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: FireTurretTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 4
       AttackRange: 8
       AttackArea: 8
       AttackCount: 1
-      AttackInterval: 0.1
+      AttackInterval: 0.15
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: FireEffectProjectile
-    passiveSkillDataId: 
+    attackDamageMultiplier: 1
   - id: 30003
     name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: Weapon_KMD_10_UI
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     damageType: 0
     attackSoundType: 303
-    description: "\uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574 \uBC94\uC704 \uD53C\uD574\uB97C
-      \uC90D\uB2C8\uB2E4,"
+    description: "\uBBF8\uC0AC\uC77C\uB85C <color=#FFDD52><shake>\uAC15\uD55C \uD53C\uD574</shake></color>\uB97C
+      \uC900\uB2E4. \uACF5\uACA9\uC18D\uB3C4\uB294 \uB290\uB9AC\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: MissileTurretTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 30
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 1
+      AttackInterval: 0.9
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: MissileProjectile
-    passiveSkillDataId: 
+    attackDamageMultiplier: 1
   - id: 30004
     name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     damageType: 0
     attackSoundType: 304
-    description: "\uB808\uC774\uC800\uB97C \uBC1C\uC0AC\uD574 <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>\uBC94\uC704
-      \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
+    description: "\uB808\uC774\uC800\uB85C <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>
+      \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: LaserTurretTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -427,47 +432,49 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: LaserProjectile
-    passiveSkillDataId: 
+    attackDamageMultiplier: 1
   - id: 30005
     name: "\uC804\uAE30 \uD3EC\uD0D1"
     iconId: Weapon_MEL_16_UI
     icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     damageType: 0
     attackSoundType: 305
-    description: "\uB2E4\uC218\uC758 \uC801\uC744 \uACF5\uACA9\uD558\uACE0 \uAC10\uC804
-      \uC2DC\uD0B5\uB2C8\uB2E4."
+    description: "\uD654\uBA74\uC5D0 \uC788\uB294 \uB2E4\uC218\uC758 \uC801\uB4E4\uC744
+      \uD1B5\uC2DC\uC5D0 \uACF5\uACA9\uD55C\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: ElectrickTurretTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
       AttackRange: 20
       AttackArea: 20
       AttackCount: 3
-      AttackInterval: 1
+      AttackInterval: 1.2
       TargetCount: 3
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: ElectrickProjectile
-    passiveSkillDataId: 
+    attackDamageMultiplier: 1
   - id: 30006
     name: "\uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     damageType: 0
     attackSoundType: 306
-    description: "\uB113\uC740 \uBC94\uC704\uC5D0 <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>
-      \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
+    description: "\uAC70\uB300\uD55C \uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574
+      \uBA87 \uBC88 \uD070 \uD53C\uD574\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: CannonTurretTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 20
+      AttackRange: 3
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
@@ -475,19 +482,20 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: CannonProjectile
-    passiveSkillDataId: 
+    attackDamageMultiplier: 1
   - id: 30007
     name: "\uC800\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     damageType: 0
     attackSoundType: 307
-    description: "\uC801\uC744 \uAD00\uD1B5\uD558\uBA70 <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>
-      \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
+    description: "\uC800\uACA9\uC744 \uBC1C\uC0AC\uD574 \uBA87 \uBC88 \uD070 <color=#FFDD52><shake>\uAC15\uD55C
+      \uD53C\uD574</shake></color>\uB97C \uC900\uB2E4."
     trainStatusData:
       MaxHp: 250
     prefabId: SniperTurretTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -499,18 +507,205 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: SniperProjectile
-    passiveSkillDataId: 
+    attackDamageMultiplier: 1
   - id: 31001
     name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
     iconId: Weapon_KMD_08_UI
-    icon: {fileID: 0}
+    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     damageType: 0
-    attackSoundType: 0
-    description: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    attackSoundType: 301
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteNormalTurretTrain
-    trainSkillDataId: 50001
+    activeSkillDataIds:
+    - 50001
+    passiveSkillDataIds:
+    - 60001
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 10
+      AttackRange: 10
+      AttackArea: 10
+      AttackCount: 1
+      AttackInterval: 0.3
+      TargetCount: 1
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: NormalProjectile
+    attackDamageMultiplier: 1
+  - id: 31002
+    name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
+    iconId: Weapon_MEL_05_UI
+    icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
+    damageType: 0
+    attackSoundType: 302
+    description: 
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteFireTurretTrain
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60002
+    - 60003
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 4
+      AttackRange: 8
+      AttackArea: 8
+      AttackCount: 1
+      AttackInterval: 0.15
+      TargetCount: 1
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: FireEffectProjectile
+    attackDamageMultiplier: 1
+  - id: 31003
+    name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
+    iconId: Weapon_KMD_10_UI
+    icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
+    damageType: 0
+    attackSoundType: 303
+    description: 
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteMissileTurretTrain
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60008
+    - 60009
+    - 60010
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 25
+      AttackRange: 10
+      AttackArea: 10
+      AttackCount: 1
+      AttackInterval: 1.25
+      TargetCount: 1
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: MissileProjectile
+    attackDamageMultiplier: 1
+  - id: 31004
+    name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
+    iconId: Weapon_288_19_UI
+    icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
+    damageType: 0
+    attackSoundType: 304
+    description: 
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteLaserTurretTrain
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60011
+    - 60012
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 50
+      AttackRange: 30
+      AttackArea: 30
+      AttackCount: 1
+      AttackInterval: 2.5
+      TargetCount: 1
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: LaserProjectile
+    attackDamageMultiplier: 1
+  - id: 31005
+    name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
+    iconId: Weapon_MEL_16_UI
+    icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
+    damageType: 0
+    attackSoundType: 305
+    description: 
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteElectrickTurretTrain
+    activeSkillDataIds:
+    - 50005
+    passiveSkillDataIds:
+    - 60013
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 10
+      AttackRange: 20
+      AttackArea: 20
+      AttackCount: 3
+      AttackInterval: 1
+      TargetCount: 3
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: ElectrickProjectile
+    attackDamageMultiplier: 1
+  - id: 31006
+    name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
+    iconId: Weapon_MEL_14_UI
+    icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
+    damageType: 0
+    attackSoundType: 306
+    description: 
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteCannonTurretTrain
+    activeSkillDataIds:
+    - 50006
+    passiveSkillDataIds:
+    - 60014
+    - 60015
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 50
+      AttackRange: 3
+      AttackArea: 3
+      AttackCount: 1
+      AttackInterval: 3
+      TargetCount: 1
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: CannonProjectile
+    attackDamageMultiplier: 1
+  - id: 31007
+    name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
+    iconId: Weapon_KMD_12_UI
+    icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
+    damageType: 0
+    attackSoundType: 307
+    description: 
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteSniperTurretTrain
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60016
+    - 60017
+    - 60018
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 50
+      AttackRange: 30
+      AttackArea: 30
+      AttackCount: 1
+      AttackInterval: 1
+      TargetCount: 1
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    turretProjectilePrefabId: SniperProjectile
+    attackDamageMultiplier: 1
+  - id: 32001
+    name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
+    iconId: Weapon_KMD_08_UI
+    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
+    damageType: 0
+    attackSoundType: 0
+    description: 
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteNormalTurretTrain
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60001
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -522,18 +717,20 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: NormalProjectile
-    passiveSkillDataId: 60001
-  - id: 31002
+    attackDamageMultiplier: 0
+  - id: 32002
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
     iconId: Weapon_MEL_05_UI
-    icon: {fileID: 0}
+    icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     damageType: 0
     attackSoundType: 0
-    description: "\uD654\uC5FC \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteFireTurretTrain
-    trainSkillDataId: 50002
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60002
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 25
@@ -545,18 +742,20 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: FireEffectProjectile
-    passiveSkillDataId: 60002
-  - id: 31003
+    attackDamageMultiplier: 0
+  - id: 32003
     name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
     iconId: Weapon_KMD_10_UI
-    icon: {fileID: 0}
+    icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     damageType: 0
     attackSoundType: 0
-    description: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteMissileTurretTrain
-    trainSkillDataId: 50003
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60003
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 100
@@ -568,18 +767,20 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: MissileProjectile
-    passiveSkillDataId: 60003
-  - id: 31004
+    attackDamageMultiplier: 0
+  - id: 32004
     name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
     iconId: Weapon_288_19_UI
-    icon: {fileID: 0}
+    icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     damageType: 0
     attackSoundType: 0
-    description: "\uB808\uC774\uC800 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteLaserTurretTrain
-    trainSkillDataId: 50004
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60004
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 300
@@ -591,18 +792,20 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: LaserProjectile
-    passiveSkillDataId: 60004
-  - id: 31005
+    attackDamageMultiplier: 0
+  - id: 32005
     name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
     iconId: Weapon_MEL_16_UI
-    icon: {fileID: 0}
+    icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     damageType: 0
     attackSoundType: 0
-    description: "\uC804\uAE30 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteElectrickTurretTrain
-    trainSkillDataId: 50005
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60005
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 400
@@ -614,18 +817,20 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: ElectrickProjectile
-    passiveSkillDataId: 60005
-  - id: 31006
+    attackDamageMultiplier: 0
+  - id: 32006
     name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_MEL_14_UI
-    icon: {fileID: 0}
+    icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     damageType: 0
     attackSoundType: 0
-    description: "\uD3EC\uACA9 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteCannonTurretTrain
-    trainSkillDataId: 50006
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60006
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 400
@@ -637,18 +842,20 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: CannonProjectile
-    passiveSkillDataId: 60006
-  - id: 31007
+    attackDamageMultiplier: 0
+  - id: 32007
     name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
     iconId: Weapon_KMD_12_UI
-    icon: {fileID: 0}
+    icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     damageType: 0
     attackSoundType: 0
-    description: "\uC800\uACA9 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteSniperTurretTrain
-    trainSkillDataId: 50007
+    activeSkillDataIds: []
+    passiveSkillDataIds:
+    - 60007
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 600
@@ -660,7 +867,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: SniperProjectile
-    passiveSkillDataId: 60007
+    attackDamageMultiplier: 0
   rangeTrainDataList:
   - id: 40001
     name: "\uD3ED\uBC1C \uD3EC\uD0D1"
@@ -673,7 +880,8 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: ExplosionRangeTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 50
@@ -684,7 +892,7 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ExplosionProjectile
-    passiveSkillDataId: 
+    attackDamageMultiplier: 1
   - id: 40002
     name: "\uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: "\uD604\uB300\uBB34\uAE30_\uB300\uD3EC_288\uC2A4\uB9C8"
@@ -696,7 +904,8 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: ColdAirRangeTrain
-    trainSkillDataId: 
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 2
@@ -707,18 +916,19 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
-    passiveSkillDataId: 
+    attackDamageMultiplier: 1
   - id: 41001
     name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
     iconId: 
-    icon: {fileID: 0}
+    icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
     attackSoundType: 0
-    description: "\uD3ED\uBC1C \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteExplosionRangeTrain
-    trainSkillDataId: 50008
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 500
@@ -729,18 +939,19 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ExplosionProjectile
-    passiveSkillDataId: 60008
+    attackDamageMultiplier: 1
   - id: 41002
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: 
-    icon: {fileID: 0}
+    icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 1
     attackSoundType: 0
-    description: "\uB0C9\uAE30 \uD3EC\uD0D1\uC758 \uAC15\uD654 \uBC84\uC804\uC774\uB2E4."
+    description: 
     trainStatusData:
       MaxHp: 150
     prefabId: EliteColdAirRangeTrain
-    trainSkillDataId: 50009
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 15
@@ -751,212 +962,330 @@ MonoBehaviour:
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
-    passiveSkillDataId: 60009
-  trainSkillDataList:
-  - id: 50001
-    name: "\uC18D\uC0AC \uBAA8\uB4DC"
-    description: "5\uCD08\uAC04 \uACF5\uACA9 \uAC04\uACA9 50% \uAC10\uC18C"
-    skillType: 2
-    skillCooldown: 20
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 5
-    buffs:
-    - statType: 4
-      percent: -50
-  - id: 50002
-    name: "\uD654\uB825 \uC9D1\uC911"
-    description: "6\uCD08\uAC04 \uACF5\uACA9\uB825 100% \uC99D\uAC00"
-    skillType: 2
-    skillCooldown: 25
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 6
-    buffs:
-    - statType: 2
-      percent: 100
-  - id: 50003
-    name: "\uBBF8\uC0AC\uC77C \uD3ED\uACA9"
-    description: "\uBBF8\uC0AC\uC77C 3\uBC1C \uBC1C\uC0AC (\uD53C\uD574 200)"
-    skillType: 1
-    skillCooldown: 20
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: MissileProjectile
-      damage: 200
-      range: 15
-      projectileCount: 3
-    buffDuration: 0
-    buffs: []
-  - id: 50004
-    name: "\uCE58\uBA85 \uC0AC\uACA9"
-    description: "5\uCD08\uAC04 \uCE58\uBA85\uD0C0 \uD655\uB960 50%, \uCE58\uBA85\uD0C0
-      \uD53C\uD574 100% \uC99D\uAC00"
-    skillType: 2
-    skillCooldown: 30
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 5
-    buffs:
-    - statType: 6
-      percent: 50
-    - statType: 7
-      percent: 100
-  - id: 50005
-    name: "\uC804\uAE30 \uCDA9\uACA9"
-    description: "\uC804\uAE30 \uD22C\uC0AC\uCCB4 \uBC1C\uC0AC (\uD53C\uD574 100,
-      \uBC94\uC704 30)"
-    skillType: 1
-    skillCooldown: 30
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: ElectrickProjectile
-      damage: 100
-      range: 30
-      projectileCount: 1
-    buffDuration: 0
-    buffs: []
-  - id: 50006
-    name: "\uAD11\uD3ED\uD654"
-    description: "5\uCD08\uAC04 \uACF5\uACA9\uB825 200% \uC99D\uAC00, \uACF5\uACA9
-      \uAC04\uACA9 50% \uAC10\uC18C"
-    skillType: 2
-    skillCooldown: 30
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 5
-    buffs:
-    - statType: 2
-      percent: 200
-    - statType: 4
-      percent: -50
-  - id: 50007
-    name: "\uC989\uBC1C \uC0AC\uACA9"
-    description: "\uC989\uC2DC \uAC15\uB825\uD55C \uC77C\uACA9\uC744 \uAC00\uD55C\uB2E4"
-    skillType: 3
-    skillCooldown: 15
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 0
-    buffs: []
-  - id: 50008
-    name: "\uC989\uBC1C \uD3ED\uBC1C"
-    description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
-    skillType: 3
-    skillCooldown: 20
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 0
-    buffs: []
-  - id: 50009
-    name: "\uAD11\uC5ED \uD0D0\uC9C0"
-    description: "15\uCD08\uAC04 \uACF5\uACA9 \uBC94\uC704 300% \uC99D\uAC00"
-    skillType: 2
-    skillCooldown: 30
-    skillIconId: 
-    projectileData:
-      projectilePrefabId: 
-      damage: 0
-      range: 0
-      projectileCount: 0
-    buffDuration: 15
-    buffs:
-    - statType: 1
-      percent: 300
-  trainPassiveSkillDataList:
-  - id: 60001
-    name: "\uD3ED\uBC1C\uD0C4"
-    passiveType: OverrideEveryN
-    param1: 5
-    param2: ExplosionProjectile
-    param3: 
-    description: "5\uD68C \uACF5\uACA9\uB9C8\uB2E4 \uD3ED\uBC1C \uD22C\uC0AC\uCCB4
-      \uBC1C\uC0AC"
-  - id: 60002
-    name: "\uD654\uC5FC \uC7A5\uD310"
-    passiveType: OverrideEveryN
-    param1: 3
-    param2: FireAreaProjectile
-    param3: 
-    description: "3\uD68C \uACF5\uACA9\uB9C8\uB2E4 \uD654\uC5FC \uC7A5\uD310 \uD22C\uC0AC\uCCB4
-      \uBC1C\uC0AC"
-  - id: 60003
-    name: "\uC5F0\uC0AC"
-    passiveType: RepeatAfterAttack
-    param1: 0.5
-    param2: 1
-    param3: 
-    description: "\uACF5\uACA9 \uD6C4 0.5\uCD08 \uB4A4 1\uD68C \uCD94\uAC00 \uBC1C\uC0AC"
-  - id: 60004
-    name: "\uC18D\uC0AC"
-    passiveType: RepeatAfterAttack
-    param1: 0.2
-    param2: 2
-    param3: 
-    description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uAC04\uACA9\uC73C\uB85C 2\uD68C
-      \uCD94\uAC00 \uBC1C\uC0AC"
-  - id: 60005
-    name: "\uC5F0\uC1C4 \uACF5\uACA9"
-    passiveType: ChainAttackChance
-    param1: 20
-    param2: 
-    param3: 
-    description: "20% \uD655\uB960\uB85C \uCD94\uAC00 \uACF5\uACA9"
-  - id: 60006
-    name: "\uBB34\uCC28\uBCC4 \uD3ED\uACA9"
-    passiveType: RandomPosBombard
-    param1: 1
-    param2: 10
-    param3: 5
-    description: "\uACF5\uACA9 \uC2DC \uBB34\uC791\uC704 \uC704\uCE58\uC5D0 1\uBC1C
-      \uCD94\uAC00 \uD3ED\uACA9"
-  - id: 60007
-    name: "\uAC15\uD654 \uC5F0\uC1C4 \uACF5\uACA9"
-    passiveType: ChainAttackChance
-    param1: 30
-    param2: 
-    param3: 
-    description: "30% \uD655\uB960\uB85C \uCD94\uAC00 \uACF5\uACA9"
-  - id: 60008
-    name: "\uD6C4\uD3ED\uBC1C"
-    passiveType: FollowUpExplosion
-    param1: 0.2
-    param2: ExplosionProjectile
-    param3: 3
-    description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uB4A4 \uBC18\uACBD 3\uC758 \uD3ED\uBC1C
-      \uC0DD\uC131"
-  - id: 60009
-    name: "\uB0C9\uAE30 \uBC29\uCD9C"
-    passiveType: PeriodicSpawn
-    param1: 3
-    param2: ColdAirProjectile
-    param3: 5
-    description: "3\uCD08\uB9C8\uB2E4 \uBC18\uACBD 5\uC758 \uB0C9\uAE30 \uD22C\uC0AC\uCCB4
-      \uBC1C\uC0AC"
+    attackDamageMultiplier: 1
+  - id: 42001
+    name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
+    iconId: 
+    icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
+    damageType: 0
+    attackSoundType: 0
+    description: 
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteExplosionRangeTrain
+    activeSkillDataIds:
+    - 50004
+    passiveSkillDataIds:
+    - 60006
+    - 60007
+    isMainTrain: 0
+    rangeTrainStatus:
+      AttackDamage: 50
+      AttackRange: 5
+      AttackArea: 5
+      AttackCount: 1
+      AttackInterval: 4
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    rangeProjectilePrefabId: ExplosionProjectile
+    attackDamageMultiplier: 1
+  - id: 42002
+    name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
+    iconId: 
+    icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
+    damageType: 0
+    attackSoundType: 0
+    description: 
+    trainStatusData:
+      MaxHp: 150
+    prefabId: EliteColdAirRangeTrain
+    activeSkillDataIds:
+    - 50003
+    passiveSkillDataIds:
+    - 60004
+    - 60005
+    isMainTrain: 0
+    rangeTrainStatus:
+      AttackDamage: 1
+      AttackRange: 5
+      AttackArea: 5
+      AttackCount: 1
+      AttackInterval: 0.1
+      CriticalChance: 30
+      CriticalDamage: 0.3
+    rangeProjectilePrefabId: ColdAirProjectile
+    attackDamageMultiplier: 0
+  trainSkillDataDB:
+    trainActiveSkillDataList:
+    - id: 50001
+      name: "\uC18D\uC0AC \uBAA8\uB4DC"
+      description: "5\uCD08\uAC04 \uACF5\uACA9 \uAC04\uACA9 50% \uAC10\uC18C"
+      skillType: 2
+      skillCooldown: 20
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 5
+      buffs:
+      - statType: 4
+        percent: -50
+    - id: 50002
+      name: "\uD654\uB825 \uC9D1\uC911"
+      description: "6\uCD08\uAC04 \uACF5\uACA9\uB825 100% \uC99D\uAC00"
+      skillType: 2
+      skillCooldown: 25
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 6
+      buffs:
+      - statType: 2
+        percent: 100
+    - id: 50003
+      name: "\uBE14\uB9AC\uC790\uB4DC"
+      description: "15\uCD08 \uB3D9\uC548 \uBC94\uC704\uAC00 \uB9F5\uC744 \uB36E\uC744
+        \uC815\uB3C4\uB85C \uB113\uC5B4\uC9D0"
+      skillType: 0
+      skillCooldown: 30
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 15
+      buffs: []
+    - id: 50004
+      name: "\uC989\uBC1C \uD3ED\uBC1C"
+      description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
+      skillType: 3
+      skillCooldown: 20
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 0
+      buffs: []
+    - id: 50005
+      name: "\uC804\uAE30 \uCDA9\uACA9"
+      description: "\uD558\uB298\uC5D0\uC11C \uBC88\uAC1C\uAC00 \uB5A8\uC5B4\uC838
+        \uB113\uC740 \uC6D0\uD615 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C \uC900\uB2E4."
+      skillType: 4
+      skillCooldown: 30
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 100
+        range: 30
+        projectileCount: 1
+      buffDuration: 0
+      buffs: []
+    - id: 50006
+      name: "\uD3ED\uACA9 \uBBF8\uC0AC\uC77C"
+      description: "5\uCD08 \uB3D9\uC548 \uAC15\uB825\uD55C \uD3EC\uACA9\uC744 \uD37C\uBD93\uC2B5\uB2C8\uB2E4."
+      skillType: 5
+      skillCooldown: 30
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 5
+      buffs: []
+    - id: 50007
+      name: "\uC989\uBC1C \uC0AC\uACA9"
+      description: "\uC989\uC2DC \uAC15\uB825\uD55C \uC77C\uACA9\uC744 \uAC00\uD55C\uB2E4"
+      skillType: 3
+      skillCooldown: 15
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 0
+      buffs: []
+    - id: 50008
+      name: "\uC989\uBC1C \uD3ED\uBC1C"
+      description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
+      skillType: 3
+      skillCooldown: 20
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 0
+      buffs: []
+    - id: 50009
+      name: "\uAD11\uC5ED \uD0D0\uC9C0"
+      description: "15\uCD08\uAC04 \uACF5\uACA9 \uBC94\uC704 300% \uC99D\uAC00"
+      skillType: 2
+      skillCooldown: 30
+      skillIconId: 
+      projectileData:
+        projectilePrefabId: 
+        damage: 0
+        range: 0
+        projectileCount: 0
+      buffDuration: 15
+      buffs:
+      - statType: 1
+        percent: 300
+    trainPassiveSkillDataList:
+    - id: 60001
+      name: "\uD3ED\uBC1C\uD0C4"
+      passiveType: OverrideEveryN
+      param1: 5
+      param2: ExplosionProjectile
+      param3: 
+      description: "5\uD68C \uACF5\uACA9\uB9C8\uB2E4 \uD3ED\uBC1C \uD22C\uC0AC\uCCB4
+        \uBC1C\uC0AC."
+    - id: 60002
+      name: "\uBC94\uC704 \uD654\uC5FC"
+      passiveType: StatModifier
+      param1: AttackRange
+      param2: 50
+      param3: AttackArea:50
+      description: "\uC0AC\uAC70\uB9AC\uAC00 \uAE38\uC5B4\uC9C0\uACE0 \uBC94\uC704\uAC00
+        \uB113\uC5B4\uC9D0."
+    - id: 60003
+      name: "\uD65C\uD65C \uD654\uC5FC"
+      passiveType: StatModifier
+      param1: AttackRange
+      param2: -30
+      param3: AttackArea:-30:AttackDamage:150
+      description: "\uC0AC\uAC70\uB9AC\uC640 \uBC94\uC704\uAC00 \uC881\uC544\uC9C0\uC9C0\uB9CC
+        \uACF5\uACA9\uB825\uC774 \uD06C\uAC8C \uC0C1\uC2B9."
+    - id: 60004
+      name: "\uBC94\uC704 \uB0C9\uAE30"
+      passiveType: StatModifier
+      param1: AttackRange
+      param2: 100
+      param3: AttackArea:100:AttackDamage:30
+      description: "\uC0AC\uAC70\uB9AC\uC640 \uBC94\uC704\uAC00 \uB113\uC5B4\uC9C0\uACE0
+        \uACF5\uACA9\uB825\uC774 \uB192\uC544\uC9D0"
+    - id: 60005
+      name: "\uB208\uB369\uC774"
+      passiveType: PeriodicSpawn
+      param1: 3
+      param2: SnowballProjectile
+      param3: 3
+      description: "3\uCD08\uB9C8\uB2E4 \uC801\uC5D0\uAC8C \uBC94\uC704 \uD53C\uD574\uB97C
+        \uC8FC\uACE0 1 \uCD08 \uB3D9\uC548 \uB454\uD654 \uC2DC\uD0A4\uB294 \uB208\uB369\uC774\uB97C
+        \uBC1C\uC0AC"
+    - id: 60006
+      name: "\uD6C4\uD3ED\uBC1C"
+      passiveType: FollowUpExplosion
+      param1: 0.2
+      param2: ExplosionProjectile
+      param3: -1:0.5:0.3
+      description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uB4A4 \uB3D9\uC77C \uBC94\uC704\uC758
+        \uC57D\uD55C \uD3ED\uBC1C \uC0DD\uC131 (\uB370\uBBF8\uC9C0 50%, \uB109\uBC31
+        30%)"
+    - id: 60007
+      name: "\uAC15\uD55C \uD3ED\uBC1C"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uB109\uBC31\uC774 \uC5C6\uC5B4\uC9C0\uC9C0\uB9CC \uACF5\uACA9\uB825\uC774
+        \uD06C\uAC8C \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
+    - id: 60008
+      name: "\uBD80\uCC44 \uBC1C\uC0AC"
+      passiveType: StatModifier
+      param1: AttackCount
+      param2: 200
+      param3: 
+      description: "\uBD80\uCC44\uAF34\uB85C 3 \uBC1C \uB3D9\uC2DC \uBC1C\uC0AC"
+    - id: 60009
+      name: "\uBE60\uB978 \uBBF8\uC0AC\uC77C"
+      passiveType: 
+      param1: 
+      param2: 
+      param3: 
+      description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00 \uC801 \uB9DE\uC73C\uBA74
+        \uC57D\uD55C \uB109\uBC31"
+    - id: 60010
+      name: "\uAC15\uD654 \uBBF8\uC0AC\uC77C"
+      passiveType: StatModifier:AttackDamage:50:AttackArea:50|ScaleProjectile
+      param1: 1.5
+      param2: 
+      param3: 
+      description: "\uACF5\uACA9\uB825 \uC99D\uAC00, \uBC94\uC704 \uC99D\uAC00, \uBBF8\uC0AC\uC77C
+        \uD06C\uAE30 \uC99D\uAC00"
+    - id: 60011
+      name: "\uC5F0\uC18D \uB808\uC774\uC800"
+      passiveType: RepeatAfterAttack
+      param1: 0.2
+      param2: 3
+      param3: 
+      description: "\uACF5\uACA9\uD560 \uB54C 0.2\uCD08 \uB51C\uB808\uC774\uB85C
+        3\uBC88 \uC5F0\uC18D \uACF5\uACA9"
+    - id: 60012
+      name: "\uAC15\uD55C \uB808\uC774\uC800"
+      passiveType: StatModifier
+      param1: AttackArea
+      param2: 100
+      param3: AttackDamage:50
+      description: "\uBC94\uC704 \uC5C4\uCCAD \uB113\uC5B4\uC9C0\uACE0 \uACF5\uACA9\uB825
+        \uC99D\uAC00"
+    - id: 60013
+      name: "\uB354 \uBE60\uB978 \uC804\uAE30"
+      passiveType: StatModifier
+      param1: AttackInterval
+      param2: -30
+      param3: 
+      description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uC99D\uAC00"
+    - id: 60014
+      name: "\uBC94\uC704 \uD3EC\uACA9"
+      passiveType: StatModifier
+      param1: AttackArea
+      param2: 300
+      param3: 
+      description: "\uD3EC\uACA9 \uBBF8\uC0AC\uC77C\uC758 \uBC94\uC704 \uC99D\uAC00"
+    - id: 60015
+      name: "\uD3ED\uACA9"
+      passiveType: RapidBombard
+      param1: -50
+      param2: -50
+      param3: 2:10:7
+      description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uB9E4\uC6B0 \uBE68\uB77C\uC9C0\uC9C0\uB9CC
+        \uBC94\uC704\uAC00 \uC881\uC544\uC9C0\uACE0 \uD654\uBA74 \uB0B4\uC5D0\uC11C
+        \uBB34\uC791\uC704 \uC704\uCE58\uC5D0 \uD3ED\uACA9"
+    - id: 60016
+      name: "\uAD00\uD1B5 \uC800\uACA9"
+      passiveType: PierceProjectile
+      param1: EliteSniperProjectile
+      param2: 
+      param3: 
+      description: "\uCD1D\uC54C\uC774 \uC801\uC744 \uAD00\uD1B5\uD568."
+    - id: 60017
+      name: "\uD589\uC6B4 \uC800\uACA9"
+      passiveType: ChainAttackChance
+      param1: 30
+      param2: 0.25
+      param3: 
+      description: "30%\uC758 \uD655\uB960\uB85C \uC5F0\uC18D \uACF5\uACA9"
+    - id: 60018
+      name: "\uC774\uAC8C \uC800\uACA9?"
+      passiveType: StatModifier
+      param1: AttackInterval
+      param2: -80
+      param3: 
+      description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00"
+  _legacyTrainSkillDataList: []
+  _legacyTrainPassiveSkillDataList: []
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
   - id: 90001
@@ -969,53 +1298,45 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 4
+        AttackDamage: 5
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.015
+        AttackInterval: 0.05
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 6
+        AttackDamage: 10
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.35
+        AttackInterval: 0.05
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 25
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.75
+        AttackInterval: 0.05
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
   - id: 90002
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     name: "\uD654\uC5FC \uD3EC\uD0D1 \uAC15\uD654"
     description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
     upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 1
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
@@ -1027,6 +1348,7 @@ MonoBehaviour:
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
@@ -1038,6 +1360,19 @@ MonoBehaviour:
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 6
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
   - id: 90003
     iconId: Weapon_KMD_10_UI
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
@@ -1048,42 +1383,15 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 15
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: 0.05
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 10
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0.24
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 20
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-  - id: 90004
-    iconId: Weapon_288_19_UI
-    icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
-    name: "\uB808\uC774\uC800 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
-    upgradeStats:
+      passiveSkillDataId: 
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
@@ -1091,10 +1399,29 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0
+        AttackInterval: 0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 40
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0.2
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
+  - id: 90004
+    iconId: Weapon_288_19_UI
+    icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
+    name: "\uB808\uC774\uC800 \uD3EC\uD0D1 \uAC15\uD654"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
+    upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
@@ -1106,10 +1433,11 @@ MonoBehaviour:
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 75
+        AttackDamage: 50
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1117,6 +1445,19 @@ MonoBehaviour:
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 100
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
   - id: 90005
     iconId: Weapon_MEL_16_UI
     icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
@@ -1127,29 +1468,31 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 1
+        AttackDamage: 3
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
-        TargetCount: 1
+        TargetCount: 2
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 4
+        AttackDamage: 5
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
-        TargetCount: 1
+        TargetCount: 2
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 7
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1157,45 +1500,50 @@ MonoBehaviour:
         TargetCount: 3
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
   - id: 90006
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     name: "\uD3EC\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 1
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 2
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
         AttackDamage: 20
-        AttackRange: 0
-        AttackArea: 3
+        AttackRange: 1
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 30
+        AttackRange: 2
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 50
+        AttackRange: 4
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
   - id: 90007
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
@@ -1206,7 +1554,50 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 25
+        AttackDamage: 50
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0.05
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 75
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0.05
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 125
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0.15
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
+  - id: 90008
+    iconId: Weapon_288_19_UI
+    icon: {fileID: 0}
+    name: "\uB808\uC774\uC800 \uC18D\uC0AC"
+    description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uAC04\uACA9\uC73C\uB85C 3\uD68C
+      \uCD94\uAC00 \uBC1C\uC0AC"
+    upgradeStats:
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 0
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1214,28 +1605,50 @@ MonoBehaviour:
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 60004
+  - id: 90009
+    iconId: Weapon_288_19_UI
+    icon: {fileID: 0}
+    name: "\uB808\uC774\uC800 \uAD11\uC5ED \uAC15\uD654"
+    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
+    upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 35
-        AttackRange: 0
+        AttackDamage: 150
+        AttackRange: 15
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 45
-        AttackRange: 0
+        AttackDamage: 200
+        AttackRange: 10
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 300
+        AttackRange: 10
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
   rangeTrainUpgradeDataList:
   - id: 100001
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
@@ -1248,8 +1661,8 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 10
-        AttackRange: 0
-        AttackArea: 1
+        AttackRange: 1
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1257,9 +1670,9 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 10
-        AttackRange: 0
-        AttackArea: 2
+        AttackDamage: 15
+        AttackRange: 2
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1267,9 +1680,9 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 4
+        AttackDamage: 25
+        AttackRange: 4
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1284,19 +1697,9 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 1
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 2
+        AttackDamage: 1
+        AttackRange: 2
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1305,8 +1708,18 @@ MonoBehaviour:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 2
-        AttackRange: 0
-        AttackArea: 4
+        AttackRange: 3
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+    - statusUpgrade:
+        MaxHp: 0
+      rangeStatusUpgrade:
+        AttackDamage: 3
+        AttackRange: 4
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1572,6 +1985,98 @@ MonoBehaviour:
         rid: 3319472319078334568
       Weight: 0
       Tier: 1
+    - Option:
+        rid: 3319472431904325753
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325754
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325755
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325756
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325757
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325758
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325759
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325760
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325761
+      Weight: 0
+      Tier: 1
+    - Option:
+        rid: 3319472431904325762
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 3319472431904325763
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104299
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104300
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104301
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104302
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104303
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104304
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104305
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104306
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104307
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104308
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104309
+      Weight: 1
+      Tier: 1
+    - Option:
+        rid: 6103417219460104310
+      Weight: 1
+      Tier: 1
     upgradeTrainChoices:
     - Option:
         rid: 2066870334413602904
@@ -1608,6 +2113,14 @@ MonoBehaviour:
     - Option:
         rid: 439508238012514414
       Weight: 0
+      Tier: 0
+    - Option:
+        rid: 5100000000000000001
+      Weight: 1
+      Tier: 0
+    - Option:
+        rid: 5100000000000000002
+      Weight: 1
       Tier: 0
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
@@ -1753,56 +2266,210 @@ MonoBehaviour:
         trainDataId: 30006
         replaceTrainId: 
     - rid: 3319472319078334560
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61001
-        trainDataId: 31001
-        replaceTrainId: 30001
+        baseTrainId: 30001
+        eliteTrainDataId: 31001
     - rid: 3319472319078334561
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61002
-        trainDataId: 31002
-        replaceTrainId: 30002
+        baseTrainId: 30002
+        eliteTrainDataId: 31002
     - rid: 3319472319078334562
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61003
-        trainDataId: 31003
-        replaceTrainId: 30003
+        baseTrainId: 30003
+        eliteTrainDataId: 31003
     - rid: 3319472319078334563
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61004
-        trainDataId: 31004
-        replaceTrainId: 30004
+        baseTrainId: 30004
+        eliteTrainDataId: 31004
     - rid: 3319472319078334564
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61005
-        trainDataId: 31005
-        replaceTrainId: 30005
+        baseTrainId: 30005
+        eliteTrainDataId: 31005
     - rid: 3319472319078334565
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61006
-        trainDataId: 31006
-        replaceTrainId: 30006
+        baseTrainId: 30006
+        eliteTrainDataId: 31006
     - rid: 3319472319078334566
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61007
-        trainDataId: 31007
-        replaceTrainId: 30007
+        baseTrainId: 30007
+        eliteTrainDataId: 31007
     - rid: 3319472319078334567
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61008
-        trainDataId: 41001
-        replaceTrainId: 40001
+        baseTrainId: 40001
+        eliteTrainDataId: 41001
     - rid: 3319472319078334568
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow61009
-        trainDataId: 41002
-        replaceTrainId: 40002
+        baseTrainId: 40002
+        eliteTrainDataId: 41002
+    - rid: 3319472431904325753
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71001
+        baseTrainId: 30001
+        eliteTrainDataId: 32001
+    - rid: 3319472431904325754
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71002
+        baseTrainId: 30002
+        eliteTrainDataId: 32002
+    - rid: 3319472431904325755
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71003
+        baseTrainId: 30003
+        eliteTrainDataId: 32003
+    - rid: 3319472431904325756
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71004
+        baseTrainId: 30004
+        eliteTrainDataId: 32004
+    - rid: 3319472431904325757
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71005
+        baseTrainId: 30005
+        eliteTrainDataId: 32005
+    - rid: 3319472431904325758
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71006
+        baseTrainId: 30006
+        eliteTrainDataId: 32006
+    - rid: 3319472431904325759
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71007
+        baseTrainId: 30007
+        eliteTrainDataId: 32007
+    - rid: 3319472431904325760
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71008
+        baseTrainId: 40001
+        eliteTrainDataId: 42001
+    - rid: 3319472431904325761
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: NotNow71009
+        baseTrainId: 40002
+        eliteTrainDataId: 42002
+    - rid: 3319472431904325762
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61001
+        baseTrainId: 30001
+        eliteTrainDataId: 31001
+    - rid: 3319472431904325763
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61001a
+        baseTrainId: 30001
+        eliteTrainDataId: 31001
+    - rid: 5100000000000000001
+      type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 70010
+        targetTrainId: 31004
+        weightedUpgrades:
+        - upgradeDataId: 90008
+          upgradeDataWeight: 1
+    - rid: 5100000000000000002
+      type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 70011
+        targetTrainId: 31004
+        weightedUpgrades:
+        - upgradeDataId: 90009
+          upgradeDataWeight: 1
+    - rid: 6103417219460104299
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61002
+        baseTrainId: 30002
+        eliteTrainDataId: 31002
+    - rid: 6103417219460104300
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61003
+        baseTrainId: 30003
+        eliteTrainDataId: 31003
+    - rid: 6103417219460104301
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61004
+        baseTrainId: 30004
+        eliteTrainDataId: 31004
+    - rid: 6103417219460104302
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61005
+        baseTrainId: 30005
+        eliteTrainDataId: 31005
+    - rid: 6103417219460104303
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61005a
+        baseTrainId: 30005
+        eliteTrainDataId: 31005
+    - rid: 6103417219460104304
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61006
+        baseTrainId: 30006
+        eliteTrainDataId: 31006
+    - rid: 6103417219460104305
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61006a
+        baseTrainId: 30006
+        eliteTrainDataId: 31006
+    - rid: 6103417219460104306
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61007
+        baseTrainId: 30007
+        eliteTrainDataId: 31007
+    - rid: 6103417219460104307
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 62001
+        baseTrainId: 40001
+        eliteTrainDataId: 42001
+    - rid: 6103417219460104308
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 62001a
+        baseTrainId: 40001
+        eliteTrainDataId: 42001
+    - rid: 6103417219460104309
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 62002
+        baseTrainId: 40002
+        eliteTrainDataId: 42002
+    - rid: 6103417219460104310
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 62002a
+        baseTrainId: 40002
+        eliteTrainDataId: 42002

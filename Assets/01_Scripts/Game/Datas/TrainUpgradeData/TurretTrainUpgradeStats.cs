@@ -17,8 +17,13 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private TurretTrainStatus turretStatusUpgrade;
 
+        [Header("Passive Skill (Optional)")]
+        [SerializeField]
+        private string passiveSkillDataId;
+
         public TrainStatusData StatusUpgrade => statusUpgrade;
         public TurretTrainStatus TurretStatusUpgrade => turretStatusUpgrade;
+        public string PassiveSkillDataId => passiveSkillDataId;
     }
 }
 

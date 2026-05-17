@@ -43,8 +43,26 @@ namespace TrainDefense.Game
             var prefab = LoadPrefab();
             if (prefab == null) return;
 
-            if (Owner is RangeTrain range) range.SpawnExternalProjectile(prefab, Radius);
+            if (Owner is RangeTrain range)
+            {
+                Monster nearest = FindNearestMonster(range.CurrentAttackRange);
+                range.SpawnExternalProjectile(prefab, Radius, nearest);
+            }
             else if (Owner is TurretTrain turret) turret.SpawnExternalProjectileAtSelf(prefab, Radius);
+        }
+
+        private Monster FindNearestMonster(float radius)
+        {
+            var colliders = Physics2D.OverlapCircleAll(Owner.transform.position, radius);
+            Monster nearest = null;
+            float minSqrDist = float.MaxValue;
+            foreach (var col in colliders)
+            {
+                if (!col.TryGetComponent<Monster>(out var m) || !m.IsActive) continue;
+                float sqrDist = (Owner.transform.position - m.transform.position).sqrMagnitude;
+                if (sqrDist < minSqrDist) { minSqrDist = sqrDist; nearest = m; }
+            }
+            return nearest;
         }
 
         private Projectile LoadPrefab()

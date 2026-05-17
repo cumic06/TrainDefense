@@ -9,273 +9,310 @@ using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
 {
-    public class TriChoiceUI : MonoBehaviour
-    {
-        #region Fields
-        [SerializeField]
-        private TriChoiceSelectUI[] choiceSelectUIs;
-        [SerializeField]
-        private GameObject backgroundImage;
+   public class TriChoiceUI : MonoBehaviour
+   {
+      #region Fields
+      [SerializeField]
+      private TriChoiceSelectUI[] choiceSelectUIs;
+      [SerializeField]
+      private GameObject backgroundImage;
 
-        [SerializeField]
-        private float uiActiveDelay;
-        [SerializeField]
-        private ParticleSystem coinParticleSystem;
+      [SerializeField]
+      private float uiActiveDelay;
+      [SerializeField]
+      private ParticleSystem coinParticleSystem;
 
-        [Header("Reroll")]
-        [SerializeField]
-        private Button rerollButton;
-        #endregion
+      [Header("Reroll")]
+      [SerializeField]
+      private Button rerollButton;
+      #endregion
 
-        private int _choiceLeftCount;
-        private bool _isSelecting = false;
-        private int _popupRequestId = 0;
+      #region Variables
+      private int _choiceLeftCount;
+      private bool _isSelecting = false;
+      private int _popupRequestId = 0;
+      private readonly List<(IChoiceOption option, int slotIndex)> _activeChoices = new();
+      #endregion
 
-        private void Awake()
-        {
-            if (choiceSelectUIs.Length == 0)
-            {
-                choiceSelectUIs = GetComponentsInChildren<TriChoiceSelectUI>(true);
-            }
+      #region LifeCycle
+      private void OnEnable() => Localize.Localization.OnLanguageChanged += _RefreshLanguage;
+      private void OnDisable() => Localize.Localization.OnLanguageChanged -= _RefreshLanguage;
 
-            if (rerollButton != null)
-            {
-                rerollButton.onClick.AddListener(OnRerollButtonClick);
-            }
-        }
+      private void Awake()
+      {
+         if (choiceSelectUIs.Length == 0)
+         {
+            choiceSelectUIs = GetComponentsInChildren<TriChoiceSelectUI>(true);
+         }
 
-        private void Start()
-        {
-            GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
-            GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
-            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
-            GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
-        }
+         if (rerollButton != null)
+         {
+            rerollButton.onClick.AddListener(_OnRerollButtonClick);
+         }
+      }
 
-        private void OnDestroy()
-        {
-            GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
-            GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
-            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
-            GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
-        }
+      private void Start() => _SubscribeEvents();
 
-        private void OnGameEnter(GameEnterEvent gameEnterEvent)
-        {
-            OnInspectionEnter(1);
-        }
+      private void OnDestroy() => _UnsubscribeEvents();
+      #endregion
 
-        private void OnLevelUp(LevelUpEvent levelUpEvent)
-        {
-            OnInspectionEnter(levelUpEvent.LevelUpCount);
-        }
+      #region Sub/UnSub
+      private void _SubscribeEvents()
+      {
+         GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
+         GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
+         GameEventSystem.Subscribe<StageEndEvent>(_OnStageEnd);
+         GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
+      }
 
-        private void OnStageEnd(StageEndEvent stageEndEvent)
-        {
-            gameObject.SetActive(false);
-        }
+      private void _UnsubscribeEvents()
+      {
+         GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
+         GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
+         GameEventSystem.Unsubscribe<StageEndEvent>(_OnStageEnd);
+         GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
+      }
+      #endregion
 
-        private void OnGameEnd(GameEndEvent gameEndEvent)
-        {
-            gameObject.SetActive(false);
-        }
+      private void _RefreshLanguage()
+      {
+         if (!backgroundImage.activeSelf)
+            return;
 
-        public void OnInspectionEnter(int count)
-        {
-            backgroundImage.SetActive(true);
+         foreach (var (option, slotIndex) in _activeChoices)
+         {
+            var info = TriChoiceManager.Instance?.GetChoiceUIInfo(option);
 
-            int requestId = ++_popupRequestId;
-            OnChoiceUIPopup(count, requestId).Forget();
-        }
+            if (info != null)
+               choiceSelectUIs[slotIndex].SetData(option, info, this);
+         }
+      }
 
-        private async UniTask OnChoiceUIPopup(int count, int requestId)
-        {
-            _choiceLeftCount = count;
-            _isSelecting = false;
+      private void _OnGameEnter(GameEnterEvent gameEnterEvent)
+      {
+         OnInspectionEnter(1);
+      }
 
-            var triChoiceManager = TriChoiceManager.Instance;
-            if (triChoiceManager == null)
-            {
-                Debug.LogError("TriChoiceManager not found");
-                return;
-            }
+      private void _OnLevelUp(LevelUpEvent levelUpEvent)
+      {
+         OnInspectionEnter(levelUpEvent.LevelUpCount);
+      }
 
-            SoundManager.Instance.SuppressSFX(true);
+      private void _OnStageEnd(StageEndEvent stageEndEvent)
+      {
+         gameObject.SetActive(false);
+      }
 
-            List<ChoiceEntry> availableChoices = triChoiceManager.GetChoices(choiceSelectUIs.Length);
+      private void _OnGameEnd(GameEndEvent gameEndEvent)
+      {
+         gameObject.SetActive(false);
+      }
 
-            if (requestId != _popupRequestId) return;
+      public void OnInspectionEnter(int count)
+      {
+         backgroundImage.SetActive(true);
 
-            if (availableChoices.Count == 0)
-            {
-                TriChoiceSelectEvent eventData = new(null, 0);
-                GameEventSystem.Publish(eventData);
-                backgroundImage.SetActive(false);
-                Debug.LogWarning("No available choices found");
-                return;
-            }
+         int requestId = ++_popupRequestId;
+         _OnChoiceUIPopup(count, requestId).Forget();
+      }
 
-            if (coinParticleSystem != null)
-            {
-                coinParticleSystem.gameObject.SetActive(true);
-                coinParticleSystem.Play();
-            }
+      private async UniTask _OnChoiceUIPopup(int count, int requestId)
+      {
+         _choiceLeftCount = count;
+         _isSelecting = false;
+         _activeChoices.Clear();
 
-            for (int i = 0; i < choiceSelectUIs.Length; i++)
-            {
-                if (requestId != _popupRequestId) return;
+         var triChoiceManager = TriChoiceManager.Instance;
 
-                var choiceSelectUI = choiceSelectUIs[i];
-                choiceSelectUI.SetSelected(false);
+         if (triChoiceManager == null)
+         {
+            Debug.LogError("TriChoiceManager not found");
 
-                if (i < availableChoices.Count)
-                {
-                    IChoiceOption choiceOption = availableChoices[i].Option;
+            return;
+         }
 
-                    var userDataManager = UserDataManager.Instance;
-                    if (userDataManager != null)
-                    {
-                        bool isFirstTime = userDataManager.IsFirstTimeSelected(choiceOption.Id);
-                        choiceSelectUI.SetNewText(isFirstTime);
-                    }
+         SoundManager.Instance.SuppressSFX(true);
 
-                    ChoiceUIInfo choiceUIInfo = new();
-                    if (choiceOption is AddTrainChoice addTrainChoice)
-                    {
-                        var trainData = DatabaseManager.Instance.GetTrainData(addTrainChoice.TrainDataId);
-                        if (trainData != null)
-                        {
-                            choiceUIInfo.Icon = trainData.Icon;
-                            choiceUIInfo.Name = trainData.Name;
-                            choiceUIInfo.Description = trainData.Description;
+         List<ChoiceEntry> availableChoices = triChoiceManager.GetChoices(choiceSelectUIs.Length);
 
-                            TrainPassiveSkillData passiveData = null;
-                            if (trainData is RangeTrainData rangeData)
-                                passiveData = rangeData.PassiveSkillData;
-                            else if (trainData is TurretTrainData turretData)
-                                passiveData = turretData.PassiveSkillData;
+         if (_IsPopupOutdated(requestId))
+            return;
 
-                            if (passiveData != null)
-                            {
-                                if (!string.IsNullOrEmpty(passiveData.Name))
-                                    choiceUIInfo.PassiveName = passiveData.Name;
-                                if (!string.IsNullOrEmpty(passiveData.Description))
-                                    choiceUIInfo.PassiveDescription = passiveData.Description;
-                            }
-                        }
-                    }
-                    else if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
-                    {
-                        var upgradeData = triChoiceManager.GetSelectedUpgrade(upgradeTrainChoice);
-
-                        if (upgradeData == null)
-                        {
-                            Debug.LogError($"UpgradeTrainChoice [{upgradeTrainChoice.Id}]: SelectedUpgrade is null");
-                            choiceSelectUI.gameObject.SetActive(false);
-                            continue;
-                        }
-
-                        choiceUIInfo.Icon = upgradeData.Icon;
-                        choiceUIInfo.Name = upgradeData.Name;
-                        choiceUIInfo.Description = upgradeData.Description;
-                    }
-                    else
-                    {
-                        Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Unknown choice type");
-                        return;
-                    }
-
-                    choiceSelectUI.SetData(choiceOption, choiceUIInfo, this);
-                    choiceSelectUI.gameObject.SetActive(true);
-                    choiceSelectUI.SetButtonInteractable(true);
-
-                    choiceSelectUI.transform.DOKill();
-                    choiceSelectUI.transform.localScale = Vector3.zero;
-
-                    await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
-                    {
-                        choiceSelectUI.transform.localScale = Vector3.one;
-                    }).SetUpdate(true);
-
-                    if (requestId != _popupRequestId) return;
-                }
-                else
-                {
-                    choiceSelectUI.gameObject.SetActive(false);
-                }
-            }
-        }
-
-        public async UniTaskVoid OnChoiceSelected(IChoiceOption choiceOption)
-        {
-            if (_isSelecting) return;
-            _isSelecting = true;
-            _popupRequestId++;
-
-            _choiceLeftCount--;
-
-            var tasks = new List<UniTask>();
-
-            foreach (var choiceSelectUI in choiceSelectUIs)
-            {
-                choiceSelectUI.transform.DOKill();
-                choiceSelectUI.transform.localScale = Vector3.one;
-                choiceSelectUI.SetButtonInteractable(false);
-                choiceSelectUI.SetSelected(true);
-                choiceSelectUI.SetNewText(false);
-
-                tasks.Add(choiceSelectUI.transform.DOScale(0, uiActiveDelay)
-                    .SetEase(Ease.InBack)
-                    .SetUpdate(true)
-                    .OnComplete(() =>
-                    {
-                        choiceSelectUI.transform.localScale = Vector3.zero;
-                    })
-                    .ToUniTask());
-            }
-
-            await UniTask.WhenAll(tasks);
-
-            TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
+         if (availableChoices.Count == 0)
+         {
+            TriChoiceSelectEvent eventData = new(null, 0);
             GameEventSystem.Publish(eventData);
-
-            _isSelecting = false;
-
-            if (_choiceLeftCount > 0)
-            {
-                OnInspectionEnter(_choiceLeftCount);
-                return;
-            }
-
-            if (coinParticleSystem != null)
-            {
-                coinParticleSystem.gameObject.SetActive(false);
-            }
-
-            SoundManager.Instance.SuppressSFX(false);
-
             backgroundImage.SetActive(false);
-        }
+            Debug.LogWarning("No available choices found");
 
-        private void OnRerollButtonClick()
-        {
-            if (_isSelecting) return;
+            return;
+         }
 
-            var triChoiceManager = TriChoiceManager.Instance;
-            if (triChoiceManager != null)
+         if (coinParticleSystem != null)
+         {
+            coinParticleSystem.gameObject.SetActive(true);
+            coinParticleSystem.Play();
+         }
+
+         int activatedCount = 0;
+
+         for (int i = 0; i < choiceSelectUIs.Length; i++)
+         {
+            if (_IsPopupOutdated(requestId))
+               return;
+
+            var choiceSelectUI = choiceSelectUIs[i];
+            choiceSelectUI.SetSelected(false);
+
+            if (i < availableChoices.Count)
             {
-                triChoiceManager.ClearSelectedUpgrades();
-            }
+               IChoiceOption choiceOption = availableChoices[i].Option;
+               bool? result = await _ActivateChoiceCardAsync(choiceSelectUI, choiceOption, i, requestId);
 
-            // 현재 선택지 UI를 숨기고 새로운 선택지로 다시 표시
-            foreach (var choiceSelectUI in choiceSelectUIs)
+               if (result == null)
+                  return;
+
+               if (result == true)
+                  activatedCount++;
+            }
+            else
             {
-                choiceSelectUI.transform.DOKill();
-                choiceSelectUI.gameObject.SetActive(false);
+               choiceSelectUI.gameObject.SetActive(false);
             }
+         }
 
-            int requestId = ++_popupRequestId;
-            OnChoiceUIPopup(_choiceLeftCount, requestId).Forget();
-        }
-    }
+         // 활성화된 카드가 하나도 없으면 사용자가 클릭할 대상이 없어 영구 pause 상태가 됨.
+         // availableChoices가 비어있는 경우(상단 분기) 외에도 모든 항목이 unknown/null로 걸러진 케이스에서 발생 가능.
+         if (activatedCount == 0)
+         {
+            Debug.LogWarning("TriChoiceUI: no choices activated, publishing fallback select event to release pause");
+            TriChoiceSelectEvent fallback = new(null, 0);
+            GameEventSystem.Publish(fallback);
+            backgroundImage.SetActive(false);
+         }
+      }
+
+      // null=요청 취소됨, true=활성화 성공, false=InfoBuild 실패(스킵)
+      private async UniTask<bool?> _ActivateChoiceCardAsync(TriChoiceSelectUI choiceSelectUI, IChoiceOption choiceOption, int slotIndex, int requestId)
+      {
+         var userDataManager = UserDataManager.Instance;
+
+         if (userDataManager != null)
+         {
+            bool isFirstTime = userDataManager.IsFirstTimeSelected(choiceOption.Id);
+            choiceSelectUI.SetNewText(isFirstTime);
+         }
+
+         ChoiceUIInfo choiceUIInfo = TriChoiceManager.Instance.GetChoiceUIInfo(choiceOption);
+
+         if (choiceUIInfo == null)
+         {
+            Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Failed to build ChoiceUIInfo");
+            choiceSelectUI.gameObject.SetActive(false);
+
+            return false;
+         }
+
+         choiceSelectUI.SetData(choiceOption, choiceUIInfo, this);
+         _activeChoices.Add((choiceOption, slotIndex));
+         choiceSelectUI.gameObject.SetActive(true);
+         choiceSelectUI.SetButtonInteractable(true);
+
+         choiceSelectUI.transform.DOKill();
+         choiceSelectUI.transform.localScale = Vector3.zero;
+
+         await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
+         {
+            choiceSelectUI.transform.localScale = Vector3.one;
+         }).SetUpdate(true);
+
+         if (_IsPopupOutdated(requestId))
+            return null;
+
+         return true;
+      }
+
+      private bool _IsPopupOutdated(int requestId) => requestId != _popupRequestId;
+
+      public async UniTaskVoid OnChoiceSelected(IChoiceOption choiceOption)
+      {
+         if (_isSelecting)
+            return;
+
+         _isSelecting = true;
+         _popupRequestId++;
+         _choiceLeftCount--;
+
+         await _HideAllCardsAsync();
+
+         TriChoiceSelectEvent eventData = new(choiceOption, _choiceLeftCount);
+         GameEventSystem.Publish(eventData);
+
+         _isSelecting = false;
+
+         if (_choiceLeftCount > 0)
+         {
+            OnInspectionEnter(_choiceLeftCount);
+
+            return;
+         }
+
+         if (coinParticleSystem != null)
+         {
+            coinParticleSystem.gameObject.SetActive(false);
+         }
+
+         SoundManager.Instance.SuppressSFX(false);
+
+         backgroundImage.SetActive(false);
+      }
+
+      private async UniTask _HideAllCardsAsync()
+      {
+         var tasks = new List<UniTask>();
+
+         foreach (var choiceSelectUI in choiceSelectUIs)
+         {
+            choiceSelectUI.transform.DOKill();
+            choiceSelectUI.transform.localScale = Vector3.one;
+            choiceSelectUI.SetButtonInteractable(false);
+            choiceSelectUI.SetSelected(true);
+            choiceSelectUI.SetNewText(false);
+
+            tasks.Add(choiceSelectUI.transform.DOScale(0, uiActiveDelay)
+                .SetEase(Ease.InBack)
+                .SetUpdate(true)
+                .OnComplete(() =>
+                {
+                   choiceSelectUI.transform.localScale = Vector3.zero;
+                })
+                .ToUniTask());
+         }
+
+         await UniTask.WhenAll(tasks);
+      }
+
+      private void _OnRerollButtonClick()
+      {
+         if (_isSelecting)
+            return;
+
+         var triChoiceManager = TriChoiceManager.Instance;
+
+         if (triChoiceManager != null)
+         {
+            triChoiceManager.ClearSelectedChoiceData();
+         }
+
+         // 현재 선택지 UI를 숨기고 새로운 선택지로 다시 표시
+         foreach (var choiceSelectUI in choiceSelectUIs)
+         {
+            choiceSelectUI.transform.DOKill();
+            choiceSelectUI.gameObject.SetActive(false);
+         }
+
+         int requestId = ++_popupRequestId;
+         _OnChoiceUIPopup(_choiceLeftCount, requestId).Forget();
+      }
+   }
 }

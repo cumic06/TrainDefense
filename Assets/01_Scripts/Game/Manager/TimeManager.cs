@@ -60,6 +60,11 @@ namespace TrainDefense.Game
                 _isFastForward = false;
                 Time.timeScale = 1f;
             }
+
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                GameEventSystem.Publish(new LevelUpEvent(1));
+            }
             #endif
         }
 
@@ -163,14 +168,17 @@ namespace TrainDefense.Game
 
         public void Pause()
         {
+            Debug.Log($"[TimeManager] Pause — timeScale {Time.timeScale}→0");
             _isPaused = true;
             Time.timeScale = 0;
         }
 
         public void Resume()
         {
+            float next = _isFastForward ? fastForwardScale : 1f;
+            Debug.Log($"[TimeManager] Resume — timeScale {Time.timeScale}→{next}");
             _isPaused = false;
-            Time.timeScale = _isFastForward ? fastForwardScale : 1f;
+            Time.timeScale = next;
         }
     }
 }

@@ -25,7 +25,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			var trainStatusData = new TrainStatusData { MaxHp = r.maxHp };
 			SetPrivateField(t, target, "trainStatusData", trainStatusData);
 
-			SetPrivateField(t, target, "trainSkillDataId", r.trainSkillDataId);
+			SetPrivateField(t, target, "activeSkillDataIds", r.activeSkillDataIds);
+			SetPrivateField(t, target, "activeSkillDatasResolved", false);
 
 			var rangeTrainType = typeof(RangeTrainData);
 			var rangeTrainStatus = new RangeTrainStatus
@@ -40,7 +41,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			};
 			SetPrivateField(rangeTrainType, target, "rangeTrainStatus", rangeTrainStatus);
 			SetPrivateField(rangeTrainType, target, "rangeProjectilePrefabId", r.rangeProjectilePrefabId);
-			SetPrivateField(rangeTrainType, target, "passiveSkillDataId", r.passiveSkillDataId);
+			SetPrivateField(t, target, "passiveSkillDataIds", r.passiveSkillDataIds);
+			SetPrivateField(t, target, "passiveSkillDatasResolved", false);
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

@@ -40,11 +40,23 @@ namespace TrainDefense.Game
         protected int _attackCounter;
         private Vector3 _turretmodelScale;
 
+        // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
+        private float _statAttackDamageAccum;
+        private float _statAttackCountAccum;
+        private float _statTargetCountAccum;
+
         public delegate Projectile ProjectileOverrideProvider(int attackIndex);
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
+        private float _attackCountdown;
+
+        public float ProjectileModelScale { get; set; } = 1f;
+        public float ProjectileKnockbackPower { get; set; }
+        public float ProjectileKnockbackDuration { get; set; }
 
         public event Action<Monster> OnAttacked;
         public event Action OnTargetPosAttacked;
+
+        public Func<Vector3?> TargetPosOverride { get; set; }
 
         protected override void Setup()
         {
@@ -54,10 +66,10 @@ namespace TrainDefense.Game
             if (!_isStatusInitialized)
             {
                 _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
+                _attackCountdown = _currentTurretTrainStatus.AttackInterval;
                 _isStatusInitialized = true;
             }
 
-            _skillModule.RegisterPassiveFromData(turretTrainData?.PassiveSkillData);
             InitializeProjectilePoolingMode();
 
             if (turretModel != null)
@@ -81,17 +93,51 @@ namespace TrainDefense.Game
             if (_isDead) return;
             DetectTarget();
             if (_targetMonsters.Count == 0) return;
+
+            Monster nearTarget = GetNearTargetMonster();
+
+            if (turretModel != null && nearTarget != null)
+            {
+                if (isRotateTurret)
+                    turret.transform.LookAt2D(nearTarget.transform);
+                PlayAttackAnimation();
+            }
+
+            if (turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
+            {
+                if (TrainData.DamageType == DamageType.Direct)
+                {
+                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
+                }
+                else if (_nonMovementProjectiles.Count > 0 && !_nonMovementProjectiles[0].gameObject.activeSelf)
+                {
+                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
+                }
+            }
+
             NormalAttack();
         }
 
-        public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius)
+        private void PlayAttackAnimation()
+        {
+            if (turretModel == null) return;
+            turretModel.transform.DOKill();
+            turretModel.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
+            {
+                turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack);
+            });
+        }
+
+        public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius, float damageMul = 1f, float shoveScale = 1f)
         {
             if (prefab == null) return;
             var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
             if (spawned == null) return;
             float r = radius >= 0f ? radius : _currentTurretTrainStatus.AttackArea;
+            int damage = Mathf.RoundToInt(_currentTurretTrainStatus.AttackDamage * damageMul);
+            spawned.ShoveScale = shoveScale;
             spawned.Init(
-                _currentTurretTrainStatus.AttackDamage,
+                damage,
                 this,
                 null,
                 r,
@@ -129,15 +175,15 @@ namespace TrainDefense.Game
 
         private bool IsAttackDelayZero()
         {
-            if (_currentTurretTrainStatus.AttackInterval <= 0)
+            if (_attackCountdown <= 0)
             {
-                _currentTurretTrainStatus.AttackInterval = turretTrainData.TurretTrainStatus.AttackInterval;
+                _attackCountdown = _currentTurretTrainStatus.AttackInterval;
                 return true;
             }
             else
             {
                 // FixedUpdate에서 호출되므로 fixedDeltaTime 사용
-                _currentTurretTrainStatus.AttackInterval -= Time.fixedDeltaTime;
+                _attackCountdown -= Time.fixedDeltaTime;
                 return false;
             }
         }
@@ -160,7 +206,7 @@ namespace TrainDefense.Game
         private void ResetTarget()
         {
             _targetMonsters.Clear();
-            _currentTurretTrainStatus.AttackInterval = turretTrainData.TurretTrainStatus.AttackInterval;
+            _attackCountdown = _currentTurretTrainStatus.AttackInterval;
 
             if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
             {
@@ -180,6 +226,7 @@ namespace TrainDefense.Game
             if (nearTarget == null) return;
 
             _attackCounter++;
+            OnAttacked?.Invoke(nearTarget);
 
             if (turretModel != null)
             {
@@ -188,11 +235,7 @@ namespace TrainDefense.Game
                     turret.transform.LookAt2D(nearTarget.transform);
                 }
 
-
-                turretModel.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
-                {
-                    turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack);
-                });
+                PlayAttackAnimation();
             }
 
             if (turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
@@ -362,9 +405,15 @@ namespace TrainDefense.Game
                 Monster currentTarget = _targetMonsters[i];
                 if (currentTarget == null) continue;
 
-                Vector3 targetPosition = currentTarget.transform.position;
-
-                SpawnProjectileAtWorldPosition(currentTarget, targetPosition);
+                Vector3? overridePos = TargetPosOverride?.Invoke();
+                if (overridePos.HasValue)
+                {
+                    SpawnProjectileAtWorldPosition(null, overridePos.Value);
+                }
+                else
+                {
+                    SpawnProjectileAtWorldPosition(currentTarget, currentTarget.transform.position);
+                }
             }
 
             OnTargetPosAttacked?.Invoke();
@@ -375,7 +424,7 @@ namespace TrainDefense.Game
         /// </summary>
         private void SpawnProjectileAtWorldPosition(Monster target, Vector3 worldPosition)
         {
-            if (target == null || !target.IsActive) return;
+            if (target != null && !target.IsActive) return;
 
             Projectile projectile = null;
 
@@ -410,7 +459,10 @@ namespace TrainDefense.Game
             if (projectile == null) return;
 
             SetupProjectileTransform(projectile, 0, worldPosition);
-            InitializeProjectile(projectile, target);
+            if (target != null)
+                InitializeProjectile(projectile, target);
+            else
+                InitializeProjectileDamage(projectile);
 
             if (_useNonMovementProjectilePooling)
             {
@@ -650,6 +702,12 @@ namespace TrainDefense.Game
                 projectile.gameObject.SetActive(true);
             }
 
+            if (ProjectileModelScale != 1f)
+                projectile.SetModelScale(ProjectileModelScale);
+
+            if (ProjectileKnockbackPower > 0f)
+                projectile.SetRuntimeShove(ProjectileKnockbackPower, ProjectileKnockbackDuration);
+
             return projectile;
         }
         #endregion
@@ -676,6 +734,14 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.TargetCount += turretStatus.TargetCount;
                 _currentTurretTrainStatus.CriticalChance += turretStatus.CriticalChance;
                 _currentTurretTrainStatus.CriticalDamage += turretStatus.CriticalDamage;
+
+                var passiveId = turretUpgradeData.GetPassiveSkillDataId(upgradeLevelIndex);
+                if (!string.IsNullOrEmpty(passiveId))
+                {
+                    var passiveData = DatabaseManager.Instance.GetDB().TrainSkillDataDB.trainPassiveSkillDataList
+                        .Find(s => s != null && s.Id == passiveId);
+                    _skillModule.RegisterPassiveFromData(passiveData);
+                }
 
                 if (_useNonMovementProjectilePooling)
                 {
@@ -730,6 +796,45 @@ namespace TrainDefense.Game
         public override string GetStatSummary() =>
             $"DMG={_currentTurretTrainStatus.AttackDamage} | RANGE={_currentTurretTrainStatus.AttackRange} | AREA={_currentTurretTrainStatus.AttackArea} | CNT={_currentTurretTrainStatus.AttackCount} | TGT={_currentTurretTrainStatus.TargetCount} | MaxHp={_currentMaxHp}";
 
+        public override void ApplyPassiveSkills()
+        {
+            if (_skillTypeMask == TrainChoiceSkillType.Active) return;
+            var passives = turretTrainData?.PassiveSkillDatas;
+            if (passives == null) return;
+            foreach (var p in passives)
+                if (string.IsNullOrEmpty(_selectedSkillId) || p.Id == _selectedSkillId)
+                    _skillModule.RegisterPassiveFromData(p);
+        }
+
+        public override void ApplyStatsByCurrentValue(IStat[] stats)
+        {
+            if (stats == null || stats.Length == 0) return;
+            foreach (var stat in stats)
+            {
+                if (stat == null) continue;
+                float percent = stat.Value / 100f;
+                switch (stat.Type)
+                {
+                    case StatType.AttackRange:
+                        _currentTurretTrainStatus.AttackRange += _currentTurretTrainStatus.AttackRange * percent;
+                        break;
+                    case StatType.AttackArea:
+                        _currentTurretTrainStatus.AttackArea += _currentTurretTrainStatus.AttackArea * percent;
+                        if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+                            foreach (var p in _nonMovementProjectiles) { if (p != null) InitializeProjectileDamage(p); }
+                        break;
+                    case StatType.AttackDamage:
+                        _currentTurretTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentTurretTrainStatus.AttackDamage * percent);
+                        if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+                            foreach (var p in _nonMovementProjectiles) { if (p != null) InitializeProjectileDamage(p); }
+                        break;
+                    default:
+                        ApplyStat(stat);
+                        break;
+                }
+            }
+        }
+
         protected override void ApplyStat(IStat stat)
         {
             base.ApplyStat(stat);
@@ -760,7 +865,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    _currentTurretTrainStatus.AttackDamage += baseStatus.AttackDamage * percent;
+                    _currentTurretTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, stat.Value * turretTrainData.AttackDamageMultiplier);
 
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
@@ -775,7 +880,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackCount:
-                    _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(baseStatus.AttackCount * percent);
+                    _currentTurretTrainStatus.AttackCount += UtilMath.AccumulateIntDelta(ref _statAttackCountAccum, baseStatus.AttackCount * percent);
                     if (_useNonMovementProjectilePooling)
                     {
                         EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
@@ -787,7 +892,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.TargetCount:
-                    _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(baseStatus.TargetCount * percent);
+                    _currentTurretTrainStatus.TargetCount += UtilMath.AccumulateIntDelta(ref _statTargetCountAccum, baseStatus.TargetCount * percent);
                     if (_useNonMovementProjectilePooling)
                     {
                         EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
@@ -878,6 +983,40 @@ namespace TrainDefense.Game
                 default:
                     base.ApplyStatLevelAware(stat, newLevel, prevLevel);
                     break;
+            }
+        }
+
+        public override void CopyProgressFrom(Train source)
+        {
+            base.CopyProgressFrom(source);
+            if (source is not TurretTrain srcTurret) return;
+            if (srcTurret.turretTrainData == null || turretTrainData == null) return;
+
+            var srcBase = srcTurret.turretTrainData.TurretTrainStatus;
+            var srcCurrent = srcTurret._currentTurretTrainStatus;
+            var newBase = turretTrainData.TurretTrainStatus;
+
+            _currentTurretTrainStatus.AttackDamage = newBase.AttackDamage + (srcCurrent.AttackDamage - srcBase.AttackDamage);
+            _currentTurretTrainStatus.AttackRange = newBase.AttackRange + (srcCurrent.AttackRange - srcBase.AttackRange);
+            _currentTurretTrainStatus.AttackArea = newBase.AttackArea + (srcCurrent.AttackArea - srcBase.AttackArea);
+            _currentTurretTrainStatus.AttackCount = newBase.AttackCount + (srcCurrent.AttackCount - srcBase.AttackCount);
+            _currentTurretTrainStatus.AttackInterval = newBase.AttackInterval + (srcCurrent.AttackInterval - srcBase.AttackInterval);
+            _currentTurretTrainStatus.TargetCount = newBase.TargetCount + (srcCurrent.TargetCount - srcBase.TargetCount);
+            _currentTurretTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
+            _currentTurretTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
+
+            _statAttackDamageAccum = srcTurret._statAttackDamageAccum;
+            _statAttackCountAccum = srcTurret._statAttackCountAccum;
+            _statTargetCountAccum = srcTurret._statTargetCountAccum;
+
+            if (_useNonMovementProjectilePooling)
+            {
+                int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
+                EnsureNonMovementProjectileCount(maxCount);
+                foreach (var projectile in _nonMovementProjectiles)
+                {
+                    if (projectile != null) InitializeProjectileDamage(projectile);
+                }
             }
         }
 

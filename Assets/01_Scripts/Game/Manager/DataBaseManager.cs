@@ -15,6 +15,12 @@ namespace TrainDefense.Game
             base.Awake();
 
             _db = Resources.Load<DB>("Data/DB");
+
+            if (_db != null)
+            {
+                var allTrains = GetAllTrainData();
+                _db.TrainSkillDataDB.BuildIndex(allTrains);
+            }
         }
 
         public DB GetDB()
@@ -47,7 +53,8 @@ namespace TrainDefense.Game
         #region TriChoiceDB
 
         public TriChoiceDB GetTriChoiceDB() => GetDB().TriChoiceDB;
-        public IChoiceOption[] GetAddTrainChoices() => GetDB().TriChoiceDB.AddTrainChoices.Select(x => x.Option).ToArray();
+        public IChoiceOption[] GetAddTrainChoices() => GetDB().TriChoiceDB.TrainChoiceEntries.Select(x => x.Option).OfType<AddTrainChoice>().Cast<IChoiceOption>().ToArray();
+        public IChoiceOption[] GetEliteTrainChoices() => GetDB().TriChoiceDB.TrainChoiceEntries.Select(x => x.Option).OfType<EliteTrainChoice>().Cast<IChoiceOption>().ToArray();
         public IChoiceOption[] GetUpgradeTrainChoices() => GetDB().TriChoiceDB.UpgradeTrainChoices.Select(x => x.Option).ToArray();
         #endregion
 
@@ -56,8 +63,9 @@ namespace TrainDefense.Game
         public TurretTrainData[] GetTurretTrainDatas() => GetDB().TurretTrainDataList.ToArray();
 
         public RangeTrainData[] GetRangeTrainDatas() => GetDB().RangeTrainDataList.ToArray();
-        public TrainSkillData[] GetTrainSkillDatas() => GetDB().TrainSkillDataList.ToArray();
-        public TrainSkillData GetTrainSkillData(string id) => string.IsNullOrEmpty(id) ? null : GetDB().trainSkillDataList.Find(s => s != null && s.Id == id);
+        public TrainSkillDataDB GetTrainSkillDataDB() => GetDB().TrainSkillDataDB;
+        public TrainSkillData[] GetTrainSkillDatas() => GetDB().TrainSkillDataDB.TrainActiveSkillDataList.ToArray();
+        public TrainSkillData GetTrainSkillData(string id) => string.IsNullOrEmpty(id) ? null : GetDB().TrainSkillDataDB.trainActiveSkillDataList.Find(s => s != null && s.Id == id);
 
         public TrainUpgradeData[] GetTrainUpgradeDatas() => GetDB().TrainUpgradeDataList.ToArray();
 

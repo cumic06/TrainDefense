@@ -22,7 +22,7 @@ namespace TrainDefense.Game.UI
       [SerializeField]
       private Image upgradeImage;
       [SerializeField]
-      private TextMeshProUGUI passiveNameText;
+      private TextMeshProUGUI skillNameText;
       #endregion
 
       private Button _selectButton;
@@ -54,19 +54,20 @@ namespace TrainDefense.Game.UI
 
       private void SetUI(IChoiceOption choiceOption, ChoiceUIInfo choiceUIInfo)
       {
-         if (string.IsNullOrEmpty(choiceUIInfo.Name) || string.IsNullOrEmpty(choiceUIInfo.Description))
+         if (string.IsNullOrEmpty(choiceUIInfo.Name))
          {
-            Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Name or Description is null");
+            Debug.LogError($"ChoiceOption [{choiceOption.Id}]: Name is null");
             return;
          }
 
          iconImage.sprite = choiceUIInfo.Icon;
+         iconImage.gameObject.SetActive(choiceUIInfo.Icon != null);
          nameText.text = choiceUIInfo.Name;
 
          if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
          {
-            if (passiveNameText != null)
-               passiveNameText.gameObject.SetActive(false);
+            if (skillNameText != null)
+               skillNameText.gameObject.SetActive(false);
 
             var triChoiceManager = TriChoiceManager.Instance;
             if (triChoiceManager != null)
@@ -102,17 +103,34 @@ namespace TrainDefense.Game.UI
             descriptionText.text = choiceUIInfo.Description;
             upgradeImage.gameObject.SetActive(false);
 
-            if (passiveNameText != null)
+            if (skillNameText != null)
             {
-               bool hasPassiveName = !string.IsNullOrEmpty(choiceUIInfo.PassiveName);
+               var parts = new System.Collections.Generic.List<string>();
+               if (!string.IsNullOrEmpty(choiceUIInfo.PassiveName))
+                  parts.Add($"-{choiceUIInfo.PassiveName}-");
+               if (!string.IsNullOrEmpty(choiceUIInfo.ActiveSkillName))
+                  parts.Add($"-{choiceUIInfo.ActiveSkillName}-");
 
-               passiveNameText.gameObject.SetActive(hasPassiveName);
-
-               if (hasPassiveName)
-                  passiveNameText.text = $"-{choiceUIInfo.PassiveName}-";
+               bool hasContent = parts.Count > 0;
+               skillNameText.gameObject.SetActive(hasContent);
+               if (hasContent)
+                  skillNameText.text = string.Join("\n", parts);
             }
+
+            var skillDescriptions = new System.Collections.Generic.List<string>();
             if (!string.IsNullOrEmpty(choiceUIInfo.PassiveDescription))
-               descriptionText.text = $"\n{choiceUIInfo.PassiveDescription}";
+               skillDescriptions.Add(choiceUIInfo.PassiveDescription);
+            if (!string.IsNullOrEmpty(choiceUIInfo.ActiveSkillDescription))
+               skillDescriptions.Add(choiceUIInfo.ActiveSkillDescription);
+
+            if (skillDescriptions.Count > 0)
+            {
+               string skillDescription = string.Join("\n", skillDescriptions);
+               if (!string.IsNullOrEmpty(choiceUIInfo.Description))
+                  descriptionText.text = $"{choiceUIInfo.Description}\n{skillDescription}";
+               else
+                  descriptionText.text = skillDescription;
+            }
          }
       }
 

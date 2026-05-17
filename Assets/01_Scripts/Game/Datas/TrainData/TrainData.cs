@@ -30,11 +30,17 @@ namespace TrainDefense.Game.Datas
         private string prefabId;
         private GameObject prefab;
         [SerializeField]
-        private string trainSkillDataId;
+        private string[] activeSkillDataIds;
         [NonSerialized]
-        private TrainSkillData trainSkillDataCache;
+        private TrainSkillData[] activeSkillDatasCache;
         [NonSerialized]
-        private bool trainSkillDataResolved;
+        private bool activeSkillDatasResolved;
+        [SerializeField]
+        private string[] passiveSkillDataIds;
+        [NonSerialized]
+        private TrainPassiveSkillData[] passiveSkillDatasCache;
+        [NonSerialized]
+        private bool passiveSkillDatasResolved;
         private Sprite skillIcon;
         [SerializeField]
         private bool isMainTrain;
@@ -45,31 +51,13 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         #region IDescribableData
-        public string Name => name;
-        public string Description => description;
+        public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey($"Train_{id}_Name", name);
+        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey($"Train_{id}_Desc", description);
         #endregion
 
         #region IIconData
         public string IconId => iconId;
-        public Sprite Icon
-        {
-            get
-            {
-                if (icon == null && !string.IsNullOrEmpty(iconId))
-                {
-                    // Resources.LoadAll은 지정된 경로의 모든 하위 폴더를 재귀적으로 검색합니다.
-                    // 전체 Resources 폴더를 검색하도록 빈 문자열("")을 사용합니다.
-                    icon = Resources.LoadAll<Sprite>("")
-                                    .FirstOrDefault(item => item.name == iconId);
-
-                    if (icon == null)
-                    {
-                        Debug.LogWarning($"TrainData [{id}]: Icon not found at 'Sprite/{iconId}'");
-                    }
-                }
-                return icon;
-            }
-        }
+        public Sprite Icon => icon;
         #endregion
 
         #region IPrefabData
@@ -92,33 +80,75 @@ namespace TrainDefense.Game.Datas
         }
         #endregion
 
-        public string TrainName => name;
+        public string TrainName => Name;
         public DamageType DamageType => damageType;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
-        public string TrainSkillDataId => trainSkillDataId;
-        public TrainSkillData TrainSkillData
+        public string ActiveSkillDataId => activeSkillDataIds != null && activeSkillDataIds.Length > 0 ? activeSkillDataIds[0] : null;
+        public string[] ActiveSkillDataIds => activeSkillDataIds;
+        public string[] PassiveSkillDataIds => passiveSkillDataIds;
+        public TrainSkillData TrainSkillData => TrainSkillDatas.Length > 0 ? TrainSkillDatas[0] : null;
+        public TrainSkillData[] TrainSkillDatas
         {
             get
             {
-                if (trainSkillDataResolved) return trainSkillDataCache;
-                trainSkillDataResolved = true;
-                if (string.IsNullOrEmpty(trainSkillDataId))
+                if (activeSkillDatasResolved) return activeSkillDatasCache;
+                activeSkillDatasResolved = true;
+                if (activeSkillDataIds == null || activeSkillDataIds.Length == 0)
                 {
-                    trainSkillDataCache = null;
-                    return null;
+                    activeSkillDatasCache = System.Array.Empty<TrainSkillData>();
+                    return activeSkillDatasCache;
                 }
                 var dbm = TrainDefense.Game.DatabaseManager.Instance;
                 var db = dbm != null ? dbm.GetDB() : null;
-                if (db == null || db.trainSkillDataList == null)
+                if (db == null || db.TrainSkillDataDB == null)
                 {
-                    trainSkillDataCache = null;
-                    return null;
+                    activeSkillDatasCache = System.Array.Empty<TrainSkillData>();
+                    return activeSkillDatasCache;
                 }
-                trainSkillDataCache = db.trainSkillDataList.Find(s => s != null && s.Id == trainSkillDataId);
-                return trainSkillDataCache;
+                var result = new System.Collections.Generic.List<TrainSkillData>();
+                foreach (var skillId in activeSkillDataIds)
+                {
+                    if (string.IsNullOrEmpty(skillId)) continue;
+                    var data = db.TrainSkillDataDB.trainActiveSkillDataList.Find(s => s != null && s.Id == skillId);
+                    if (data != null) result.Add(data);
+                    else Debug.LogWarning($"TrainData [{id}]: ActiveSkillData '{skillId}' not found in DB");
+                }
+                activeSkillDatasCache = result.ToArray();
+                return activeSkillDatasCache;
             }
         }
+
+        public TrainPassiveSkillData[] PassiveSkillDatas
+        {
+            get
+            {
+                if (passiveSkillDatasResolved) return passiveSkillDatasCache;
+                passiveSkillDatasResolved = true;
+                if (passiveSkillDataIds == null || passiveSkillDataIds.Length == 0)
+                {
+                    passiveSkillDatasCache = System.Array.Empty<TrainPassiveSkillData>();
+                    return passiveSkillDatasCache;
+                }
+                var db = DatabaseManager.Instance?.GetDB();
+                if (db?.TrainSkillDataDB == null)
+                {
+                    passiveSkillDatasCache = System.Array.Empty<TrainPassiveSkillData>();
+                    return passiveSkillDatasCache;
+                }
+                var result = new System.Collections.Generic.List<TrainPassiveSkillData>();
+                foreach (var skillId in passiveSkillDataIds)
+                {
+                    if (string.IsNullOrEmpty(skillId)) continue;
+                    var data = db.TrainSkillDataDB.trainPassiveSkillDataList.Find(s => s != null && s.Id == skillId);
+                    if (data != null) result.Add(data);
+                    else Debug.LogWarning($"TrainData [{id}]: PassiveSkillData '{skillId}' not found in DB");
+                }
+                passiveSkillDatasCache = result.ToArray();
+                return passiveSkillDatasCache;
+            }
+        }
+        public TrainPassiveSkillData PassiveSkillData => PassiveSkillDatas.Length > 0 ? PassiveSkillDatas[0] : null;
         public Sprite SkillIcon
         {
             get

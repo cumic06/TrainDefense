@@ -95,7 +95,7 @@ namespace TrainDefense.Game.UI
 
       private void _RefreshSkillUI()
       {
-         bool hasSkill = _train != null && _train.HasSkill;
+         bool hasSkill = _train != null && _train.HasActiveSkill;
 
          if (skillIcon != null)
          {
@@ -115,7 +115,7 @@ namespace TrainDefense.Game.UI
 
       private void _UpdateSkillCooldownUI()
       {
-         if (skillCooldownImage == null || _train == null || !_train.HasSkill)
+         if (skillCooldownImage == null || _train == null || !_train.HasActiveSkill)
             return;
 
          skillCooldownImage.fillAmount = _train.SkillCooldownRatio;
@@ -129,7 +129,7 @@ namespace TrainDefense.Game.UI
             return;
          }
 
-         if (!_train.HasSkill)
+         if (!_train.HasActiveSkill)
          {
             Debug.LogWarning($"[TrainInfoSlotUI] {_train.name} does not have skill");
             return;

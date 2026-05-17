@@ -33,8 +33,8 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         #region IDescribableData
-        public string Name => name;
-        public string Description => description;
+        public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey($"Monster_{id}_Name", name);
+        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey($"Monster_{id}_Desc", description);
         public Sprite Icon => icon;
         #endregion
 
@@ -58,7 +58,7 @@ namespace TrainDefense.Game.Datas
         }
         #endregion
 
-        public string MonsterName => name;
+        public string MonsterName => Name;
         public MonsterStatusInfo MonsterStatusData => monsterStatusData;
         public MonsterAttackType AttackType => monsterStatusData.AttackType;
         public Projectile RangedProjectilePrefab => rangedProjectilePrefab;

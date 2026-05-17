@@ -20,6 +20,9 @@ namespace TrainDefense.Game
         protected IProjectileTarget _target;
         protected IProjectileTarget _owner;
         protected IMovementStrategy _movementStrategy;
+
+        public bool SuppressShoveEffect { get; set; }
+        public float ShoveScale { get; set; } = 1f;
         protected Coroutine _destroyCoroutine;
         protected Dictionary<IProjectileTarget, float> _damageTimers = new();
         protected float _age;
@@ -27,6 +30,11 @@ namespace TrainDefense.Game
         protected float _scaleRadius;
         protected int _hitCount;
         protected readonly HashSet<IProjectileTarget> _hitSet = new();
+
+        // 런타임 넉백 오버라이드 (KnockbackOnHitPassive 등 패시브가 주입)
+        private bool _runtimeHasShove;
+        private float _runtimeShovePower;
+        private float _runtimeShoveDuration;
 
         #region Enable/Disable
 
@@ -37,6 +45,11 @@ namespace TrainDefense.Game
             _hitSet.Clear();
             _hitCount = 0;
             _isSpawnedTrigger = false;
+            SuppressShoveEffect = false;
+            ShoveScale = 1f;
+            _runtimeHasShove = false;
+            _runtimeShovePower = 0f;
+            _runtimeShoveDuration = 0f;
 
             if (data != null && data.DestroyDelay > 0)
             {
@@ -162,7 +175,7 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (target == _owner) return;
+            if (_owner is Train && target is Train) return;
 
             ProcessEnter(target);
         }
@@ -174,7 +187,7 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (target == _owner) return;
+            if (_owner is Train && target is Train) return;
 
             ProcessStay(target);
         }
@@ -186,7 +199,7 @@ namespace TrainDefense.Game
                 return;
             }
 
-            if (target == _owner) return;
+            if (_owner is Train && target is Train) return;
 
             ProcessExit(target);
         }
@@ -278,9 +291,14 @@ namespace TrainDefense.Game
             }
 
             // 상태 효과 적용
-            if (data.HasShoveEffect)
+            if (data.HasShoveEffect && !SuppressShoveEffect)
             {
-                target.Shove(data.ShovePower, data.ShoveDuration);
+                target.Shove(data.ShovePower * ShoveScale, data.ShoveDuration);
+            }
+
+            if (_runtimeHasShove && !SuppressShoveEffect)
+            {
+                target.Shove(_runtimeShovePower * ShoveScale, _runtimeShoveDuration);
             }
 
             if (data.HasStunEffect)
@@ -324,9 +342,9 @@ namespace TrainDefense.Game
             }
 
             // 넉백 효과 (Stay 중에도 적용)
-            if (data.HasShoveEffect)
+            if (data.HasShoveEffect && !SuppressShoveEffect)
             {
-                target.Shove(data.ShovePower, data.ShoveDuration);
+                target.Shove(data.ShovePower * ShoveScale, data.ShoveDuration);
             }
         }
 
@@ -366,13 +384,25 @@ namespace TrainDefense.Game
             {
                 if (col.TryGetComponent<IProjectileTarget>(out var target))
                 {
-                    if (target == _owner) return;
+                    if (target == _owner) continue;
 
                     ProcessEnter(target);
                 }
             }
         }
         #endregion
+
+        public void SetModelScale(float scale)
+        {
+            if (model != null) model.transform.localScale = UnityEngine.Vector3.one * scale;
+        }
+
+        public void SetRuntimeShove(float power, float duration)
+        {
+            _runtimeHasShove = true;
+            _runtimeShovePower = power;
+            _runtimeShoveDuration = duration;
+        }
 
         public bool IsScaleByArea()
         {
@@ -417,7 +447,7 @@ namespace TrainDefense.Game
                 }
             }
 
-            triggerHandle.Init(_damage);
+            triggerHandle.Init(_damage, _owner);
         }
 
         private IEnumerator DestroyCoroutine()
