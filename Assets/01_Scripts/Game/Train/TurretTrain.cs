@@ -313,13 +313,24 @@ namespace TrainDefense.Game
             ProjectileData baseData = GetProjectile()?.GetData();
             float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
             int count = _currentTurretTrainStatus.AttackCount;
+            // 파티클 투사체(화염 등)는 스폰포인트가 포탑 중심에서 오프셋되어 있어
+            // 투사체 위치 기준 LookAt2D를 쓰면 가까운 타겟에서 포탑이 바라보는 방향과 어긋난다.
+            // 포탑 회전을 그대로 따라가도록 처리해 시각적 정합성을 맞춘다.
+            bool alignToTurret = useParticleProjectile && isRotateTurret && turret != null;
 
             for (int i = 0; i < count; i++)
             {
                 Projectile projectile = SpawnNormalProjectile(i);
                 if (projectile != null)
                 {
-                    projectile.transform.LookAt2D(nearTarget.transform);
+                    if (alignToTurret)
+                    {
+                        projectile.transform.rotation = turret.transform.rotation;
+                    }
+                    else
+                    {
+                        projectile.transform.LookAt2D(nearTarget.transform);
+                    }
 
                     if (spreadAngle > 0f && count > 1)
                     {

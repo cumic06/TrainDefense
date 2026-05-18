@@ -23,6 +23,9 @@ namespace TrainDefense.Game
         {
             base.Awake();
             Time.maximumDeltaTime = maxDeltaTime;
+            // 씬 로드 직후 첫 프레임부터 정지 상태를 보장 (인트로/타임라인 연출 중 시간 진행 방지).
+            // dontDestroyOnLoad 싱글톤이라 중복 인스턴스의 Awake가 Instance에 위임되어도 정상 동작.
+            TimeManager.Instance?.Pause();
         }
 
         private void OnApplicationPause(bool pauseStatus)
@@ -70,8 +73,7 @@ namespace TrainDefense.Game
 
         private void Start()
         {
-            // Keep gameplay frozen until the intro/timeline explicitly starts the run.
-            Pause();
+            // Pause는 Awake에서 미리 수행. Start에서는 이벤트 구독만 처리.
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
             GameEventSystem.Subscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
