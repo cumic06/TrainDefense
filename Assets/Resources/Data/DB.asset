@@ -524,11 +524,11 @@ MonoBehaviour:
     - 60001
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 10
+      AttackDamage: 20
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 0.3
+      AttackInterval: 0.125
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -538,7 +538,7 @@ MonoBehaviour:
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
-    damageType: 0
+    damageType: 1
     attackSoundType: 302
     description: 
     trainStatusData:
@@ -550,11 +550,11 @@ MonoBehaviour:
     - 60003
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 4
+      AttackDamage: 8
       AttackRange: 8
       AttackArea: 8
       AttackCount: 1
-      AttackInterval: 0.15
+      AttackInterval: 0.1
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -577,11 +577,11 @@ MonoBehaviour:
     - 60010
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 25
+      AttackDamage: 84
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 1.25
+      AttackInterval: 0.7
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -603,7 +603,7 @@ MonoBehaviour:
     - 60012
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 200
       AttackRange: 30
       AttackArea: 30
       AttackCount: 1
@@ -629,12 +629,12 @@ MonoBehaviour:
     - 60013
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 10
+      AttackDamage: 15
       AttackRange: 20
       AttackArea: 20
-      AttackCount: 3
+      AttackCount: 8
       AttackInterval: 1
-      TargetCount: 3
+      TargetCount: 8
       CriticalChance: 30
       CriticalDamage: 0.3
     turretProjectilePrefabId: ElectrickProjectile
@@ -656,9 +656,9 @@ MonoBehaviour:
     - 60015
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
-      AttackRange: 3
-      AttackArea: 3
+      AttackDamage: 70
+      AttackRange: 20
+      AttackArea: 9
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 1
@@ -683,11 +683,11 @@ MonoBehaviour:
     - 60018
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 160
       AttackRange: 30
       AttackArea: 30
       AttackCount: 1
-      AttackInterval: 1
+      AttackInterval: 0.8
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -722,7 +722,7 @@ MonoBehaviour:
     name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
-    damageType: 0
+    damageType: 1
     attackSoundType: 0
     description: 
     trainStatusData:
@@ -922,7 +922,7 @@ MonoBehaviour:
     iconId: 
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
-    attackSoundType: 0
+    attackSoundType: 308
     description: 
     trainStatusData:
       MaxHp: 150
@@ -945,7 +945,7 @@ MonoBehaviour:
     iconId: 
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 1
-    attackSoundType: 0
+    attackSoundType: 309
     description: 
     trainStatusData:
       MaxHp: 150
@@ -968,10 +968,10 @@ MonoBehaviour:
     iconId: 
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
-    attackSoundType: 0
+    attackSoundType: 308
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 250
     prefabId: EliteExplosionRangeTrain
     activeSkillDataIds:
     - 50004
@@ -980,9 +980,9 @@ MonoBehaviour:
     - 60007
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 50
-      AttackRange: 5
-      AttackArea: 5
+      AttackDamage: 70
+      AttackRange: 12
+      AttackArea: 12
       AttackCount: 1
       AttackInterval: 4
       CriticalChance: 30
@@ -993,11 +993,11 @@ MonoBehaviour:
     name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
     iconId: 
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
-    damageType: 0
-    attackSoundType: 0
+    damageType: 1
+    attackSoundType: 309
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 250
     prefabId: EliteColdAirRangeTrain
     activeSkillDataIds:
     - 50003
@@ -1006,11 +1006,11 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 1
-      AttackRange: 5
-      AttackArea: 5
+      AttackDamage: 4
+      AttackRange: 12
+      AttackArea: 12
       AttackCount: 1
-      AttackInterval: 0.1
+      AttackInterval: 0.15
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
@@ -1395,11 +1395,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 20
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.24
+        AttackInterval: 0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1407,11 +1407,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 20
+        AttackDamage: 24
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0
+        AttackInterval: 0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1564,11 +1564,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 35
+        AttackDamage: 40
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: 0.08
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1580,7 +1580,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: 0.12
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
