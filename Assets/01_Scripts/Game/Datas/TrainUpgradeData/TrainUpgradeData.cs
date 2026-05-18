@@ -1,6 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using Sirenix.OdinInspector;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game.Datas
 {
@@ -36,8 +37,8 @@ namespace TrainDefense.Game.Datas
       #endregion
 
       #region IDescribableData
-      public string Name => name;
-      public string Description => description;
+      public string Name => LocalizeHelper.GetByKey(name, name);
+      public string Description => LocalizeHelper.GetByKey(description, description);
       #endregion
 
       #region IIconData
@@ -61,7 +62,7 @@ namespace TrainDefense.Game.Datas
       #endregion
 
       #region ITrainUpgradeData
-      public string UpgradeName => name;
+      public string UpgradeName => LocalizeHelper.GetByKey(name, name);
       public TrainStatusData GetStatusUpgrade(int level)
       {
          var stats = GetStatsForLevel(level);

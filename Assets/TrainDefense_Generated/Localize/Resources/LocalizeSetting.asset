@@ -12,6 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7277e707a8e124544a7bd0a136058ef1, type: 3}
   m_Name: LocalizeSetting
   m_EditorClassIdentifier: 
-  sheetURL: 
+  sheets:
+  - sheet: 0
+    sheetURL: 
+    bakedTextAsset: {fileID: 4900000, guid: f3d67600bd8c83347990a5581a86a4d6, type: 3}
+  - sheet: 1
+    sheetURL: 
+    bakedTextAsset: {fileID: 4900000, guid: 5f65bca1e19e18d488bbe7356536bdd3, type: 3}
+  - sheet: 2
+    sheetURL: 
+    bakedTextAsset: {fileID: 4900000, guid: 6de19308382394a43ac8dc0d298afdd1, type: 3}
+  - sheet: 3
+    sheetURL: 
+    bakedTextAsset: {fileID: 4900000, guid: cfbe7c44158f0904ca0f75bf9135d26a, type: 3}
+  - sheet: 4
+    sheetURL: 
+    bakedTextAsset: {fileID: 4900000, guid: f6f44e6dc99da594fb80f90af1138587, type: 3}
   useRuntimeDownload: 0
-  localizedTextAsset: {fileID: 4900000, guid: ad6b7a2f3e4d5c6b7a8d9e0f1a2b3c4d, type: 3}

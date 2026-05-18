@@ -1,0 +1,32 @@
+Key	Korean	English	Japanese	ChineseSimplified
+UI_Admin_Name	관리자	Admin	管理者	管理员
+UI_Welcome	TrainDefense에 오신 것을 환영합니다!	Welcome to TrainDefense!	TrainDefenseへようこそ！	欢迎来到TrainDefense！
+UI_Cancel	취소	Cancel	キャンセル	取消
+UI_ResetConfirm	정말로 데이터를 초기화 하겠습니까?	Are you sure you want to reset the data?	本当にデータを初期化しますか？	您确定要重置数据吗？
+UI_ResetButton	초기화 하기	Reset	初期化する	重置
+UI_SkipTutorial	건너뛰기	Skip	スキップ	跳过
+UI_SkipTutorialConfirm	튜토리얼을 건너뛰시겠습니까?	Skip the tutorial?	チュートリアルをスキップしますか？	要跳过教程吗？
+UI_Continue	계속하기	Continue	続ける	继续
+UI_NewMonster	New Monster !	New Monster !	新モンスター！	新怪物！
+UI_GameOver	GameOver	Game Over	ゲームオーバー	游戏结束
+UI_StageClear	StageClear	Stage Clear	ステージクリア	关卡清关
+UI_Warning	Warning!	Warning!	警告！	警告！
+UI_Lucky	Lucky!	Lucky!	ラッキー！	幸运！
+UI_Shop	Shop	Shop	ショップ	商店
+UI_Lobby	Lobby	Lobby	ロビー	大厅
+UI_Next	다음	Next	次へ	下一步
+UI_Start	시작	Start	スタート	开始
+UI_Quit	종료	Quit	終了	退出
+UI_Reset	초기화	Reset	リセット	重置
+Tutorial_Skill_Title	스킬 튜토리얼	Skill Tutorial	スキルチュートリアル	技能教程
+Tutorial_Skill_Msg1	스킬을 사용해보세요!	Try using a skill!	スキルを使ってみましょう！	试试使用技能吧！
+Tutorial_Skill_Msg2	기차 아이콘을 눌러 스킬을 사용하세요!	Press the train icon to use a skill!	列車アイコンを押してスキルを使用してください！	按列车图标使用技能！
+Tutorial_Inspection_Title	검사 시간 튜토리얼	Inspection Time Tutorial	検査時間チュートリアル	检查时间教程
+Tutorial_Inspection_Msg1	이 게이지는 상점 게이지입니다. 해당 시간이 다 차면 상점에 도착합니다!	This is the shop gauge. When it fills up, you'll arrive at the shop!	これはショップゲージです。ゲージが満タンになるとショップに到着します！	这是商店计量表。充满后即可到达商店！
+Tutorial_Inspection_Msg2	상점에 도달하면 모든 기차의 내구도가 회복합니다!	When you reach the shop, all trains are repaired!	ショップに到達すると、すべての列車の耐久度が回復します！	到达商店后，所有列车的耐久度将恢复！
+Tutorial_MapSelect_Title	맵 선택 튜토리얼	Map Selection Tutorial	マップ選択チュートリアル	地图选择教程
+Tutorial_MapSelect_Msg1	다음에 도전할 맵을 선택하세요! 두 개의 스테이지 중 원하는 것을 고를 수 있습니다.	Choose the map to challenge next! You can pick one of two stages.	次に挑戦するマップを選択してください！2つのステージから好きなものを選べます。	选择下一个要挑战的地图！可以从两个关卡中选择您想要的。
+Tutorial_MapSelect_Msg2	스테이지별로 등장하는 몬스터가 다르게 나오니 신중하게 고르세요!	Choose carefully, as different monsters appear in each stage!	ステージごとに登場するモンスターが異なるので、慎重に選んでください！	每个关卡出现的怪物不同，请慎重选择！
+Tutorial_TrainInfo_Title	기차 정보 슬롯 튜토리얼	Train Info Slot Tutorial	列車情報スロットチュートリアル	列车信息格教程
+Tutorial_TrainInfo_Msg1	이것은 기차 정보 슬롯입니다. 기차의 체력 상태를 색상으로 확인할 수 있어요!	This is the train info slot. You can check the train's health status by color!	これは列車情報スロットです。列車の体力状態を色で確認できます！	这是列车信息格。可以通过颜色查看列车的生命值状态！
+Tutorial_TrainInfo_Msg2	체력에 따라 초록 → 노랑 → 빨강으로 변합니다.	It changes from green → yellow → red based on health.	体力に応じて緑→黄→赤に変化します。	根据生命值从绿色→黄色→红色变化。

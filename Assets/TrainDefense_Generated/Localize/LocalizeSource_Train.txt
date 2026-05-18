@@ -1,0 +1,39 @@
+Key	Korean	English	Japanese	ChineseSimplified
+Train_20001_Name	기본 기차	Basic Train	基本列車	基本列车
+Train_20001_Desc	가장 기본이 되는 기차이다.	The most basic train.	最も基本的な列車だ。	最基础的列车。
+Train_30001_Name	기관총 포탑	Machine Gun Turret	機関銃タレット	机枪炮塔
+Train_30001_Desc	기관총으로 피해를 준다.	Deals damage with a machine gun.	機関銃でダメージを与える。	用机枪造成伤害。
+Train_30002_Name	화염 포탑	Flame Turret	炎タレット	火焰炮塔
+Train_30002_Desc	화염으로 지속적인 피해를 준다.	Deals continuous damage with fire.	炎で継続的なダメージを与える。	用火焰造成持续伤害。
+Train_30003_Name	미사일 포탑	Missile Turret	ミサイルタレット	导弹炮塔
+Train_30003_Desc	미사일로 <color=#FFDD52><shake>강한 피해</shake></color>를 준다. 공격속도는 느리다.	Deals <color=#FFDD52><shake>heavy damage</shake></color> with missiles. Attack speed is slow.	ミサイルで<color=#FFDD52><shake>強力なダメージ</shake></color>を与える。攻撃速度は遅い。	用导弹造成<color=#FFDD52><shake>强力伤害</shake></color>。攻击速度较慢。
+Train_30004_Name	레이저 포탑	Laser Turret	レーザータレット	激光炮塔
+Train_30004_Desc	레이저로 <color=#FFDD52><shake>강력한</shake></color> 피해를 준다.	Deals <color=#FFDD52><shake>powerful</shake></color> damage with lasers.	レーザーで<color=#FFDD52><shake>強力な</shake></color>ダメージを与える。	用激光造成<color=#FFDD52><shake>强力</shake></color>伤害。
+Train_30005_Name	전기 포탑	Electric Turret	電気タレット	电气炮塔
+Train_30005_Desc	화면에 있는 다수의 적들을 동시에 공격한다.	Simultaneously attacks multiple enemies on screen.	画面内の複数の敵を同時に攻撃する。	同时攻击屏幕内的多个敌人。
+Train_30006_Name	포격 포탑	Artillery Turret	砲撃タレット	炮击炮塔
+Train_30006_Desc	거대한 미사일을 발사해 몇 번 큰 피해를 준다.	Fires a massive missile dealing huge damage multiple times.	巨大なミサイルを発射し、何度も大きなダメージを与える。	发射巨型导弹，多次造成巨大伤害。
+Train_30007_Name	저격 포탑	Sniper Turret	スナイパータレット	狙击炮塔
+Train_30007_Desc	저격을 발사해 몇 번 큰 <color=#FFDD52><shake>강한 피해</shake></color>를 준다.	Fires sniper shots dealing <color=#FFDD52><shake>heavy damage</shake></color> several times.	狙撃を発射して何度も大きな<color=#FFDD52><shake>強力なダメージ</shake></color>を与える。	发射狙击弹多次造成<color=#FFDD52><shake>强力伤害</shake></color>。
+Train_31001_Name	엘리트 기관총 포탑	Elite Machine Gun Turret	エリート機関銃タレット	精英机枪炮塔
+Train_31002_Name	엘리트 화염 포탑	Elite Flame Turret	エリート炎タレット	精英火焰炮塔
+Train_31003_Name	엘리트 미사일 포탑	Elite Missile Turret	エリートミサイルタレット	精英导弹炮塔
+Train_31004_Name	엘리트 레이저 포탑	Elite Laser Turret	エリートレーザータレット	精英激光炮塔
+Train_31005_Name	엘리트 전기 포탑	Elite Electric Turret	エリート電気タレット	精英电气炮塔
+Train_31006_Name	엘리트 포격 포탑	Elite Artillery Turret	エリート砲撃タレット	精英炮击炮塔
+Train_31007_Name	엘리트 저격 포탑	Elite Sniper Turret	エリートスナイパータレット	精英狙击炮塔
+Train_32001_Name	엘리트 기관총 포탑 II	Elite Machine Gun Turret II	エリート機関銃タレットII	精英机枪炮塔II
+Train_32002_Name	엘리트 화염 포탑 II	Elite Flame Turret II	エリート炎タレットII	精英火焰炮塔II
+Train_32003_Name	엘리트 미사일 포탑 II	Elite Missile Turret II	エリートミサイルタレットII	精英导弹炮塔II
+Train_32004_Name	엘리트 레이저 포탑 II	Elite Laser Turret II	エリートレーザータレットII	精英激光炮塔II
+Train_32005_Name	엘리트 전기 포탑 II	Elite Electric Turret II	エリート電気タレットII	精英电气炮塔II
+Train_32006_Name	엘리트 포격 포탑 II	Elite Artillery Turret II	エリート砲撃タレットII	精英炮击炮塔II
+Train_32007_Name	엘리트 저격 포탑 II	Elite Sniper Turret II	エリートスナイパータレットII	精英狙击炮塔II
+Train_40001_Name	폭발 포탑	Explosive Turret	爆発タレット	爆炸炮塔
+Train_40001_Desc	적이 가장 많은 곳으로 위치해 피해를 준다.	Deals damage in areas with the most enemies.	敵が最も多い場所に移動してダメージを与える。	在敌人最密集的地方造成伤害。
+Train_40002_Name	냉기 포탑	Frost Turret	冷気タレット	冰霜炮塔
+Train_40002_Desc	적이 가장 많은 곳으로 이동속도를 떨어뜨려 피해를 준다.	Slows movement speed and deals damage where enemies are most dense.	敵が最も多い場所で移動速度を落としてダメージを与える。	在敌人最密集的地方降低移动速度并造成伤害。
+Train_41001_Name	엘리트 폭발 포탑	Elite Explosive Turret	エリート爆発タレット	精英爆炸炮塔
+Train_41002_Name	엘리트 냉기 포탑	Elite Frost Turret	エリート冷気タレット	精英冰霜炮塔
+Train_42001_Name	엘리트 폭발 포탑 II	Elite Explosive Turret II	エリート爆発タレットII	精英爆炸炮塔II
+Train_42002_Name	엘리트 냉기 포탑 II	Elite Frost Turret II	エリート冷気タレットII	精英冰霜炮塔II

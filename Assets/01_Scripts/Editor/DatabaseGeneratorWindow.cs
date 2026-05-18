@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using System.IO;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using TrainDefense.Editor.DataImport;
 using TrainDefense.Editor.DataImport.Importers.Rows;
 using TrainDefense.Game.Datas;
@@ -165,6 +168,17 @@ namespace TrainDefense.Editor
 			_debugMode = EditorGUILayout.ToggleLeft("개발자 모드 (숨김 기능 표시)", _debugMode);
 			if (_debugMode)
 			{
+				EditorGUILayout.Space(6);
+				EditorGUILayout.LabelField("Localization 키 엑셀 적용", EditorStyles.boldLabel);
+				using (new EditorGUI.DisabledScope(disabled))
+				{
+					var green = GUI.backgroundColor;
+					GUI.backgroundColor = new Color(0.4f, 0.7f, 1f);
+					if (GUILayout.Button("모든 엑셀에 Localization 키 적용", GUILayout.Height(28)))
+						ApplyLocalizationKeysToAll();
+					GUI.backgroundColor = green;
+				}
+
 				EditorGUILayout.Space(6);
 				EditorGUILayout.LabelField("엑셀 ← 현재 데이터 덮어쓰기", EditorStyles.boldLabel);
 				using (new EditorGUI.DisabledScope(disabled))
@@ -590,6 +604,101 @@ namespace TrainDefense.Editor
 			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_area", "attack_damage", "attack_count", "attack_delay" });
 			ExcelWriter.WriteToSheet(excelPath, "turret_train_upgrade_data", rows);
 			EditorUtility.DisplayDialog("완료", "turret_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
+		}
+
+		// ---------- LOCALIZATION KEY APPLICATION ----------
+
+		private static readonly (string file, string sheet, string idCol, string nameCol, string descCol, string prefix)[] LocalizeSheetMappings =
+		{
+			("MonsterData.xlsx",    "monster_data",              "id", "monster_name", "description", "Monster"),
+			("TrainData.xlsx",      "train_data",                "id", "train_name",   "description", "Train"),
+			("TrainData.xlsx",      "range_train_data",          "id", "train_name",   "description", "Train"),
+			("TrainData.xlsx",      "turret_train_data",         "id", "train_name",   "description", "Train"),
+			("TrainSkillData.xlsx", "active_skill_data",         "id", "name",         "description", "Skill"),
+			("TrainSkillData.xlsx", "passive_skill_data",        "id", "name",         "description", "Passive"),
+			("TrainUpgradeData.xlsx","turret_train_upgrade_data","id", "upgrade_name", "description", "TUpgrade"),
+			("TrainUpgradeData.xlsx","range_train_upgrade_data", "id", "upgrade_name", "description", "RUpgrade"),
+			("UpgradeData.xlsx",    "upgrade_data",              "id", "upgrade_name", "description", "Upgrade"),
+		};
+
+		private void ApplyLocalizationKeysToAll()
+		{
+			bool ok = EditorUtility.DisplayDialog("확인",
+				"각 엑셀 시트의 이름/설명 컬럼을 Localization 키 값으로 덮어씁니다.\n예) Monster_10001_Name, Monster_10001_Desc\n\n계속할까요?",
+				"적용", "취소");
+			if (!ok) return;
+
+			int success = 0, fail = 0;
+			foreach (var m in LocalizeSheetMappings)
+			{
+				string path = GetExcelAbsPath(m.file);
+				if (!File.Exists(path))
+				{
+					Debug.LogWarning($"[LocalizeKey] 파일 없음: {path}");
+					continue;
+				}
+				try
+				{
+					ApplyLocalizationKeysToSheet(path, m.sheet, m.idCol, m.nameCol, m.descCol, m.prefix);
+					success++;
+				}
+				catch (System.Exception ex)
+				{
+					Debug.LogError($"[LocalizeKey] {m.file}/{m.sheet} 처리 실패: {ex.Message}");
+					fail++;
+				}
+			}
+
+			EditorUtility.DisplayDialog("완료", $"Localization 키 적용 완료\n성공: {success}개 시트 / 실패: {fail}개 시트", "확인");
+		}
+
+		private static void ApplyLocalizationKeysToSheet(string excelPath, string sheetName, string idCol, string nameCol, string descCol, string prefix)
+		{
+			IWorkbook wb;
+			using (var fs = new FileStream(excelPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+				wb = excelPath.EndsWith(".xlsx") ? (IWorkbook)new XSSFWorkbook(fs) : new HSSFWorkbook(fs);
+
+			ISheet sheet = null;
+			for (int s = 0; s < wb.NumberOfSheets; s++)
+			{
+				if (string.Equals(wb.GetSheetName(s), sheetName, System.StringComparison.OrdinalIgnoreCase))
+				{
+					sheet = wb.GetSheetAt(s);
+					break;
+				}
+			}
+			if (sheet == null)
+			{
+				Debug.LogWarning($"[LocalizeKey] 시트 없음: {sheetName} in {excelPath}");
+				return;
+			}
+
+			var headers = new List<string>();
+			var headerRow = sheet.GetRow(0);
+			if (headerRow != null)
+				for (int i = 0; i < headerRow.LastCellNum; i++)
+					headers.Add(headerRow.GetCell(i)?.ToString() ?? string.Empty);
+			var map = new HeaderMap(headers);
+
+			int changed = 0;
+			for (int i = 1; i <= sheet.LastRowNum; i++)
+			{
+				var row = sheet.GetRow(i);
+				if (row == null) continue;
+				string id = map.GetString(row, idCol)?.Trim();
+				if (string.IsNullOrEmpty(id)) continue;
+
+				map.SetCell(row, nameCol, $"{prefix}_{id}_Name");
+				if (map.IndexOf(descCol) >= 0)
+					map.SetCell(row, descCol, $"{prefix}_{id}_Desc");
+				changed++;
+			}
+
+			using var ms = new System.IO.MemoryStream();
+			wb.Write(ms);
+			File.WriteAllBytes(excelPath, ms.ToArray());
+
+			Debug.Log($"<color=cyan>[LocalizeKey] {sheetName}: {changed}행 키 적용 완료</color>");
 		}
 
 		private void WriteRangeTrainUpgradeSheetFromDb()
