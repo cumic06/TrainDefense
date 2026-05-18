@@ -524,11 +524,11 @@ MonoBehaviour:
     - 60001
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 20
+      AttackDamage: 10
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 0.125
+      AttackInterval: 0.25
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -550,7 +550,7 @@ MonoBehaviour:
     - 60003
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 8
+      AttackDamage: 2
       AttackRange: 8
       AttackArea: 8
       AttackCount: 1
@@ -577,11 +577,11 @@ MonoBehaviour:
     - 60010
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 84
+      AttackDamage: 30
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 0.7
+      AttackInterval: 1
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -603,7 +603,7 @@ MonoBehaviour:
     - 60012
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 200
+      AttackDamage: 50
       AttackRange: 30
       AttackArea: 30
       AttackCount: 1
@@ -629,10 +629,10 @@ MonoBehaviour:
     - 60013
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 15
+      AttackDamage: 10
       AttackRange: 20
       AttackArea: 20
-      AttackCount: 8
+      AttackCount: 3
       AttackInterval: 1
       TargetCount: 8
       CriticalChance: 30
@@ -656,9 +656,9 @@ MonoBehaviour:
     - 60015
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 70
+      AttackDamage: 50
       AttackRange: 20
-      AttackArea: 9
+      AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 1
@@ -683,11 +683,11 @@ MonoBehaviour:
     - 60018
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 160
+      AttackDamage: 50
       AttackRange: 30
       AttackArea: 30
       AttackCount: 1
-      AttackInterval: 0.8
+      AttackInterval: 1
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -980,9 +980,9 @@ MonoBehaviour:
     - 60007
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 70
-      AttackRange: 12
-      AttackArea: 12
+      AttackDamage: 50
+      AttackRange: 5
+      AttackArea: 5
       AttackCount: 1
       AttackInterval: 4
       CriticalChance: 30
@@ -1006,9 +1006,9 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 4
-      AttackRange: 12
-      AttackArea: 12
+      AttackDamage: 2
+      AttackRange: 5
+      AttackArea: 5
       AttackCount: 1
       AttackInterval: 0.15
       CriticalChance: 30
@@ -1187,10 +1187,10 @@ MonoBehaviour:
     - id: 60006
       name: "\uD6C4\uD3ED\uBC1C"
       passiveType: FollowUpExplosion
-      param1: 0.2
+      param1: 1
       param2: ExplosionProjectile
       param3: -1:0.5:0.3
-      description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uB4A4 \uB3D9\uC77C \uBC94\uC704\uC758
+      description: "\uACF5\uACA9 \uD6C4 1\uCD08 \uB4A4 \uB3D9\uC77C \uBC94\uC704\uC758
         \uC57D\uD55C \uD3ED\uBC1C \uC0DD\uC131 (\uB370\uBBF8\uC9C0 50%, \uB109\uBC31
         30%)"
     - id: 60007
@@ -1302,7 +1302,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.015
+        AttackInterval: -0.015
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1314,7 +1314,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.35
+        AttackInterval: -0.035
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1326,7 +1326,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.75
+        AttackInterval: -0.075
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1387,7 +1387,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: -0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1399,7 +1399,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: -0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1411,7 +1411,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: -0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1568,7 +1568,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.08
+        AttackInterval: -0.08
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1580,7 +1580,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.12
+        AttackInterval: -0.12
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1652,13 +1652,13 @@ MonoBehaviour:
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     name: "\uD3ED\uBC1C \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
-      \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
+    description: "\uBC94\uC704 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
+      \uACF5\uACA9\uB51C\uB808\uC774 <color=#5196FF><bounce>{1}\uAC10\uC18C</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 0
         AttackRange: 0
         AttackArea: 1
         AttackCount: 0
@@ -1668,11 +1668,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 0
         AttackRange: 0
-        AttackArea: 2
+        AttackArea: 1
         AttackCount: 0
-        AttackInterval: 0
+        AttackInterval: -0.2
         CriticalChance: 0
         CriticalDamage: 0
     - statusUpgrade:
@@ -1680,9 +1680,9 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackDamage: 0
         AttackRange: 0
-        AttackArea: 4
+        AttackArea: 2
         AttackCount: 0
-        AttackInterval: 0
+        AttackInterval: -0.3
         CriticalChance: 0
         CriticalDamage: 0
   - id: 100002
