@@ -1,6 +1,7 @@
 using Cumic.Events;
 using TrainDefense.Game;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Intro;
 using UnityEngine;
 
 namespace TrainDefense
@@ -42,6 +43,8 @@ namespace TrainDefense
             StageSpawnData[] spawnDatas = { _currentStageData.SpawnDatas[0] };
             MonsterSpawner.Instance.SetSpawnRule(spawnDatas, _currentStageData.SpawnInterval);
             MonsterSpawner.Instance.StartSpawnMonster();
+            if (IntroManager.Instance == null)
+                TimeManager.Instance.Resume();
         }
 
         private void MapSpawn()

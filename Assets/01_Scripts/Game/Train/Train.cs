@@ -34,7 +34,7 @@ namespace TrainDefense.Game
         protected readonly TrainSkillModule _skillModule = new();
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
         protected string _selectedSkillId = null;
-        private bool _initialized;
+        protected bool _initialized;
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statMaxHpAccum;
