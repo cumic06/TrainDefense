@@ -62,6 +62,12 @@ namespace TrainDefense.Game.Intro
                 Debug.Log($"[IntroManager] TryStart 결과={started}, timeScale={Time.timeScale}");
                 if (started)
                     TimeManager.Instance?.Pause();
+                else
+                    TimeManager.Instance?.Resume();
+            }
+            else
+            {
+                TimeManager.Instance?.Resume();
             }
         }
 
