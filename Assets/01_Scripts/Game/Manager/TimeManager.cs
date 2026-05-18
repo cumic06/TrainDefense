@@ -47,7 +47,7 @@ namespace TrainDefense.Game
 
         private void Update()
         {
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             if (_isPaused)
             {
                 return;
@@ -68,7 +68,7 @@ namespace TrainDefense.Game
             {
                 GameEventSystem.Publish(new LevelUpEvent(1));
             }
-            #endif
+#endif
         }
 
         private void Start()
@@ -125,7 +125,7 @@ namespace TrainDefense.Game
         {
             Resume();
         }
-        
+
         private void OnStageEnd(StageEndEvent stageEndEvent)
         {
             Pause();
@@ -173,6 +173,7 @@ namespace TrainDefense.Game
             Debug.Log($"[TimeManager] Pause — timeScale {Time.timeScale}→0");
             _isPaused = true;
             Time.timeScale = 0;
+            SoundManager.Instance.SuppressSFX(true);
         }
 
         public void Resume()
@@ -181,6 +182,7 @@ namespace TrainDefense.Game
             Debug.Log($"[TimeManager] Resume — timeScale {Time.timeScale}→{next}");
             _isPaused = false;
             Time.timeScale = next;
+            SoundManager.Instance.SuppressSFX(false);
         }
     }
 }
