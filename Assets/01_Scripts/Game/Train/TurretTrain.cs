@@ -832,7 +832,10 @@ namespace TrainDefense.Game
                     case StatType.AttackArea:
                         _currentTurretTrainStatus.AttackArea += _currentTurretTrainStatus.AttackArea * percent;
                         if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
-                            foreach (var p in _nonMovementProjectiles) { if (p != null) InitializeProjectileDamage(p); }
+                        {
+                            float ratio = _currentTurretTrainStatus.AttackArea / turretTrainData.TurretTrainStatus.AttackArea;
+                            foreach (var p in _nonMovementProjectiles) { if (p != null) p.transform.localScale = new Vector3(ratio, ratio, 1f); }
+                        }
                         break;
                     case StatType.AttackDamage:
                         _currentTurretTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentTurretTrainStatus.AttackDamage * percent);
@@ -861,17 +864,11 @@ namespace TrainDefense.Game
 
                 case StatType.AttackArea:
                     _currentTurretTrainStatus.AttackArea += baseStatus.AttackArea * percent;
-
-                    // AttackArea 변경 시 NonMovement 프로젝타일도 업데이트
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
+                        float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
                         foreach (var projectile in _nonMovementProjectiles)
-                        {
-                            if (projectile != null)
-                            {
-                                InitializeProjectileDamage(projectile);
-                            }
-                        }
+                            if (projectile != null) projectile.transform.localScale = new Vector3(ratio, ratio, 1f);
                     }
                     break;
 
@@ -944,8 +941,11 @@ namespace TrainDefense.Game
                 case StatType.AttackArea:
                     _currentTurretTrainStatus.AttackArea += baseStatus.AttackArea * percent * times;
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+                    {
+                        float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
                         foreach (var p in _nonMovementProjectiles)
-                            if (p != null) InitializeProjectileDamage(p);
+                            if (p != null) p.transform.localScale = new Vector3(ratio, ratio, 1f);
+                    }
                     break;
 
                 case StatType.AttackDamage:

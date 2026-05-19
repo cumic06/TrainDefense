@@ -179,7 +179,6 @@ namespace TrainDefense.Game
         public void Resume()
         {
             float next = _isFastForward ? fastForwardScale : 1f;
-            Debug.Log($"[TimeManager] Resume — timeScale {Time.timeScale}→{next}");
             _isPaused = false;
             Time.timeScale = next;
             SoundManager.Instance.SuppressSFX(false);
