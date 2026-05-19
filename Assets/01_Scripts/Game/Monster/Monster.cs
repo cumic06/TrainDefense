@@ -248,7 +248,7 @@ namespace TrainDefense.Game
             var projectile = ResourceManager.Instance.Spawn(_monsterData.RangedProjectilePrefab);
             projectile.transform.position = transform.position;
             projectile.transform.LookAt2D(_targetTrain.transform);
-            projectile.Init(_monsterData.MonsterStatusData.Damage, _targetTrain);
+            projectile.Init(_monsterData.MonsterStatusData.Damage, this);
          }
          else if (_currentMonsterStatus.AttackType == MonsterAttackType.Melee)
          {
