@@ -108,12 +108,12 @@ namespace TrainDefense.Game
             }
         }
 
-        private void ApplyScaleByArea(float scaleRadius)
+        protected virtual void ApplyScaleByArea(float scaleRadius)
         {
             StretchBeamModel(scaleRadius);
         }
 
-        private void ApplyScaleByTargetRange(Vector3 targetPos)
+        protected virtual void ApplyScaleByTargetRange(Vector3 targetPos)
         {
             float distance = Vector2.Distance(transform.position, targetPos);
             StretchBeamModel(distance);

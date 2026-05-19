@@ -18,6 +18,8 @@ MonoBehaviour:
   destroyDelay: 0
   destroyOnTriggerEnter: 0
   scaleByAttackRange: 0
+  scaleByRange: 1
+  scaleRangeType: 0
   isTargeting: 0
   damageType: 1
   tickDamageInterval: 0.1
