@@ -1,12 +1,13 @@
-using UnityEngine;
-using Cumic;
-using Cumic.Events;
-using TrainDefense.Game.Datas;
-using TrainDefense.Game.Events;
-using Sirenix.OdinInspector;
-using TrainDefense.Game.Stats;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cumic;
+using Cumic.Events;
+using Sirenix.OdinInspector;
+using TrainDefense.Game.Datas;
+using TrainDefense.Game.Events;
+using TrainDefense.Game.Stats;
+using UnityEngine;
 
 namespace TrainDefense.Game
 {
@@ -35,6 +36,10 @@ namespace TrainDefense.Game
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
         protected string _selectedSkillId = null;
         private bool _initialized;
+        private static Material _flashMaterial;
+        private SpriteRenderer[] _spriteRenderers;
+        private Material[] _originalMaterials;
+        private Coroutine _flashCoroutine;
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statMaxHpAccum;
@@ -55,6 +60,15 @@ namespace TrainDefense.Game
         public float SkillCooldownRatio => _skillModule.CooldownRatio;
         
         #endregion
+
+        protected virtual void Awake()
+        {
+            _spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+            _originalMaterials = new Material[_spriteRenderers.Length];
+
+            for (int i = 0; i < _spriteRenderers.Length; i++)
+                _originalMaterials[i] = _spriteRenderers[i].sharedMaterial;
+        }
 
         protected virtual void Start()
         {
@@ -125,6 +139,7 @@ namespace TrainDefense.Game
             _currentHp -= damage;
             _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
 
+            _StartDamageFlash();
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, damage, isCritical));
 
             if (_currentHp <= 0)
@@ -194,6 +209,40 @@ namespace TrainDefense.Game
         protected virtual void OnDestroy()
         {
             _skillModule.Dispose();
+        }
+
+        private void _StartDamageFlash()
+        {
+            if (_spriteRenderers == null || _spriteRenderers.Length == 0) return;
+
+            if (_flashCoroutine != null)
+                StopCoroutine(_flashCoroutine);
+
+            _flashCoroutine = StartCoroutine(_FlashRoutine());
+        }
+
+        private IEnumerator _FlashRoutine()
+        {
+            if (_flashMaterial == null)
+                _flashMaterial = Resources.Load<Material>("SpriteRed");
+
+            if (_flashMaterial == null) yield break;
+
+            for (int i = 0; i < _spriteRenderers.Length; i++)
+            {
+                if (_spriteRenderers[i] != null)
+                    _spriteRenderers[i].sharedMaterial = _flashMaterial;
+            }
+
+            yield return new WaitForSeconds(0.15f);
+
+            for (int i = 0; i < _spriteRenderers.Length; i++)
+            {
+                if (_spriteRenderers[i] != null)
+                    _spriteRenderers[i].sharedMaterial = _originalMaterials[i];
+            }
+
+            _flashCoroutine = null;
         }
 
         public virtual void Upgrade(ITrainUpgradeData upgradeData)
