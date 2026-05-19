@@ -157,6 +157,7 @@ GameObject:
   - component: {fileID: 2044104082955074338}
   - component: {fileID: 2421659834947347654}
   - component: {fileID: 5659788643454069378}
+  - component: {fileID: 7890123456789012345}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -283,3 +284,16 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7890123456789012345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9018387934572370511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeText
+  _key: 15

@@ -13,7 +13,7 @@ UI_StageClear	StageClear	Stage Clear	ステージクリア	关卡清关
 UI_Warning	Warning!	Warning!	警告！	警告！
 UI_Lucky	Lucky!	Lucky!	ラッキー！	幸运！
 UI_Shop	Shop	Shop	ショップ	商店
-UI_Lobby	Lobby	Lobby	ロビー	大厅
+UI_Lobby	로비	Lobby	ロビー	大厅
 UI_Next	다음	Next	次へ	下一步
 UI_Start	시작	Start	スタート	开始
 UI_Quit	종료	Quit	終了	退出
