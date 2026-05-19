@@ -67,15 +67,18 @@ namespace TrainDefense.Game
          GameEventSystem.Subscribe<TrainDeadEvent>(CheckDeadTrain);
          GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
 
-         _currentAliveTrains.Clear();
-         _currentTrains.Clear();
-         _deadTrains.Clear();
-         _trainOriginalIndexMap.Clear();
-         _replacedTrainIds.Clear();
-
-         if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
+         if (!_initialized)
          {
-            SpawnTrain(startTrainablePrefab);
+            _currentAliveTrains.Clear();
+            _currentTrains.Clear();
+            _deadTrains.Clear();
+            _trainOriginalIndexMap.Clear();
+            _replacedTrainIds.Clear();
+
+            if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
+            {
+               SpawnTrain(startTrainablePrefab);
+            }
          }
       }
 

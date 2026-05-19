@@ -18,18 +18,20 @@ namespace TrainDefense.Localize
         private void OnEnable()
         {
             Localization.OnLanguageChanged += Refresh;
+            Localization.OnInitialized += Refresh;
             Refresh();
         }
 
         private void OnDisable()
         {
             Localization.OnLanguageChanged -= Refresh;
+            Localization.OnInitialized -= Refresh;
         }
 
         public void Refresh()
         {
             if (_text == null || !Localization.IsInitialized) return;
-            string localized = Localization.Get((int)_key);
+            string localized = Localization.Get(_key);
             if (!string.IsNullOrEmpty(localized))
                 _text.text = localized;
         }

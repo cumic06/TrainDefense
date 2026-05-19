@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
@@ -33,8 +33,8 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         #region IDescribableData
-        public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey($"Monster_{id}_Name", name);
-        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey($"Monster_{id}_Desc", description);
+        public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey(name, name);
+        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey(description, description);
         public Sprite Icon => icon;
         #endregion
 

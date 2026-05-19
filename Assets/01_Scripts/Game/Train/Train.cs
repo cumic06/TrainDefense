@@ -35,7 +35,7 @@ namespace TrainDefense.Game
         protected readonly TrainSkillModule _skillModule = new();
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
         protected string _selectedSkillId = null;
-        private bool _initialized;
+        protected bool _initialized;
         private static Material _flashMaterial;
         private SpriteRenderer[] _spriteRenderers;
         private Material[] _originalMaterials;

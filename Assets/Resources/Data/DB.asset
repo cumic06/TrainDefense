@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Datas.DB
   monsterDataList:
   - id: 10001
-    name: Skull
-    description: "\uD574\uACE8 \uBCD1\uC0AC\uB2E4."
+    name: Monster_10001_Name
+    description: Monster_10001_Desc
     icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
     monsterStatusData:
       MaxHp: 10
@@ -31,8 +31,8 @@ MonoBehaviour:
     prefabId: Skull
     rangedProjectilePrefab: {fileID: 0}
   - id: 10002
-    name: Thief
-    description: "\uB3C4\uC801\uC774\uB2E4."
+    name: Monster_10002_Name
+    description: Monster_10002_Desc
     icon: {fileID: -8975192331532836980, guid: 5d9812acc860e45b4be3490475ec11ce, type: 3}
     monsterStatusData:
       MaxHp: 25
@@ -48,8 +48,8 @@ MonoBehaviour:
     prefabId: Thief
     rangedProjectilePrefab: {fileID: 0}
   - id: 10003
-    name: Gnoll
-    description: "\uB180\uC774\uB2E4."
+    name: Monster_10003_Name
+    description: Monster_10003_Desc
     icon: {fileID: -3602873763752426733, guid: c8770fe2a236a4dd4b51a7fa9eac9569, type: 3}
     monsterStatusData:
       MaxHp: 40
@@ -65,8 +65,8 @@ MonoBehaviour:
     prefabId: Gnoll
     rangedProjectilePrefab: {fileID: 1036439603542617377, guid: 6a9ea03ac9f950d439de3c0caecb2b4e, type: 3}
   - id: 10004
-    name: Hammershark
-    description: "\uADC0\uC0C1\uC5B4\uB2E4."
+    name: Monster_10004_Name
+    description: Monster_10004_Desc
     icon: {fileID: -7218776650163668934, guid: 65602c0b9fc4f4152bc6802be7cd391c, type: 3}
     monsterStatusData:
       MaxHp: 20
@@ -82,8 +82,8 @@ MonoBehaviour:
     prefabId: Hammershark
     rangedProjectilePrefab: {fileID: 0}
   - id: 10005
-    name: Shark
-    description: "\uC0C1\uC5B4\uB2E4 "
+    name: Monster_10005_Name
+    description: Monster_10005_Desc
     icon: {fileID: -7414083336469400027, guid: 231acd077d50441dc8c800208a8a508d, type: 3}
     monsterStatusData:
       MaxHp: 35
@@ -99,8 +99,8 @@ MonoBehaviour:
     prefabId: Shark
     rangedProjectilePrefab: {fileID: 7851231680386804850, guid: ddc4306fa2d8ff6478e229d8bd8e7ce4, type: 3}
   - id: 10006
-    name: Turtle
-    description: "\uAC70\uBD81\uC774\uB2E4"
+    name: Monster_10006_Name
+    description: Monster_10006_Desc
     icon: {fileID: 6240235003232040363, guid: 02a56956d819644e9ba1f5230f17be41, type: 3}
     monsterStatusData:
       MaxHp: 120
@@ -116,8 +116,8 @@ MonoBehaviour:
     prefabId: Turtle
     rangedProjectilePrefab: {fileID: 0}
   - id: 10007
-    name: Snake
-    description: "\uBC40\uC774\uB2E4"
+    name: Monster_10007_Name
+    description: Monster_10007_Desc
     icon: {fileID: -3625172091503848354, guid: 6b0643aaa67844e2aae806b506ebe8f5, type: 3}
     monsterStatusData:
       MaxHp: 20
@@ -133,8 +133,8 @@ MonoBehaviour:
     prefabId: Snake
     rangedProjectilePrefab: {fileID: 0}
   - id: 10008
-    name: Panda
-    description: "\uD310\uB2E4\uB2E4"
+    name: Monster_10008_Name
+    description: Monster_10008_Desc
     icon: {fileID: -3635613324321525249, guid: ef9ae9e2cb8b84e81b8c56aea546a281, type: 3}
     monsterStatusData:
       MaxHp: 50
@@ -150,8 +150,8 @@ MonoBehaviour:
     prefabId: Panda
     rangedProjectilePrefab: {fileID: 0}
   - id: 10009
-    name: Lizard
-    description: "\uB3C4\uB9C8\uBC40\uC774\uB2E4"
+    name: Monster_10009_Name
+    description: Monster_10009_Desc
     icon: {fileID: 3863950976592595061, guid: a9f259f952e5f4141a134eb245f1d344, type: 3}
     monsterStatusData:
       MaxHp: 80
@@ -167,8 +167,8 @@ MonoBehaviour:
     prefabId: Lizard
     rangedProjectilePrefab: {fileID: 0}
   - id: 10010
-    name: Bear
-    description: "\uACF0\uC774\uB2E4"
+    name: Monster_10010_Name
+    description: Monster_10010_Desc
     icon: {fileID: 8580189074808014292, guid: 3addccd9ed6334cf9b6fa384aba038d0, type: 3}
     monsterStatusData:
       MaxHp: 130
@@ -184,8 +184,8 @@ MonoBehaviour:
     prefabId: Bear
     rangedProjectilePrefab: {fileID: 0}
   - id: 10011
-    name: Dwarf
-    description: "\uB09C\uC7C1\uC774\uB2E4"
+    name: Monster_10011_Name
+    description: Monster_10011_Desc
     icon: {fileID: -6557010917886046056, guid: 327caefdcf18245b58192e6d50fa930a, type: 3}
     monsterStatusData:
       MaxHp: 10
@@ -201,8 +201,8 @@ MonoBehaviour:
     prefabId: Dwarf
     rangedProjectilePrefab: {fileID: 0}
   - id: 10012
-    name: Spider
-    description: "\uAC70\uBBF8\uB2E4"
+    name: Monster_10012_Name
+    description: Monster_10012_Desc
     icon: {fileID: -3068608994661831594, guid: ae483a7a0e01f492ab7488474a21b3e4, type: 3}
     monsterStatusData:
       MaxHp: 40
@@ -218,8 +218,8 @@ MonoBehaviour:
     prefabId: Spider
     rangedProjectilePrefab: {fileID: 0}
   - id: 10013
-    name: Minotaur
-    description: "\uBBF8\uB178\uD0C0\uC6B0\uB85C\uC2A4\uB2E4"
+    name: Monster_10013_Name
+    description: Monster_10013_Desc
     icon: {fileID: 6790613064428419975, guid: c71a51d7fffe3487db08e462fa5be6e3, type: 3}
     monsterStatusData:
       MaxHp: 160
@@ -235,8 +235,8 @@ MonoBehaviour:
     prefabId: Minotaur
     rangedProjectilePrefab: {fileID: 0}
   - id: 10014
-    name: GoblinSpear
-    description: "\uACE0\uBE14\uB9B0 \uCC3D\uBCD1\uC774\uB2E4"
+    name: Monster_10014_Name
+    description: Monster_10014_Desc
     icon: {fileID: 6527618186103422146, guid: 4eea2bd4e5d564b41a313f4ca7f40676, type: 3}
     monsterStatusData:
       MaxHp: 28
@@ -252,8 +252,8 @@ MonoBehaviour:
     prefabId: GoblinSpear
     rangedProjectilePrefab: {fileID: 0}
   - id: 10015
-    name: GoblinSorcerer
-    description: "\uACE0\uBE14\uB9B0 \uC8FC\uC220\uC0AC\uB2E4"
+    name: Monster_10015_Name
+    description: Monster_10015_Desc
     icon: {fileID: -3827772250807918378, guid: 1d9455a2d50d04d4380ccb041dbe4aea, type: 3}
     monsterStatusData:
       MaxHp: 60
@@ -269,8 +269,8 @@ MonoBehaviour:
     prefabId: GoblinSorcerer
     rangedProjectilePrefab: {fileID: 8711250047576817517, guid: b3a9d71d931c9ce42bea0c9077e8b8d3, type: 3}
   - id: 10016
-    name: GiantGoblin
-    description: "\uACE0\uBE14\uB9B0 \uAC70\uC778"
+    name: Monster_10016_Name
+    description: Monster_10016_Desc
     icon: {fileID: -5698702345733656577, guid: 5e42c47f439f04c37a62aec53dbbe7b9, type: 3}
     monsterStatusData:
       MaxHp: 220
@@ -286,8 +286,8 @@ MonoBehaviour:
     prefabId: GiantGoblin
     rangedProjectilePrefab: {fileID: 0}
   - id: 99999
-    name: Booooossssss
-    description: "\uBCF4\uC2A4"
+    name: Monster_99999_Name
+    description: Monster_99999_Desc
     icon: {fileID: -5698702345733656577, guid: 5e42c47f439f04c37a62aec53dbbe7b9, type: 3}
     monsterStatusData:
       MaxHp: 500
@@ -303,8 +303,8 @@ MonoBehaviour:
     prefabId: Boss
     rangedProjectilePrefab: {fileID: 0}
   - id: 10100
-    name: SkullKing
-    description: "\uD574\uACE8 \uC655\uC774\uB2F9."
+    name: Monster_10100_Name
+    description: Monster_10100_Desc
     icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
     monsterStatusData:
       MaxHp: 500
@@ -321,12 +321,12 @@ MonoBehaviour:
     rangedProjectilePrefab: {fileID: 0}
   trainDataList:
   - id: 20001
-    name: "\uAE30\uBCF8 \uAE30\uCC28"
+    name: Train_20001_Name
     iconId: 
     icon: {fileID: 0}
     damageType: 0
     attackSoundType: 0
-    description: "\uAC00\uC7A5 \uAE30\uBCF8\uC774 \uB418\uB294 \uAE30\uCC28\uC774\uB2E4."
+    description: Train_20001_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: MainTrain
@@ -335,12 +335,12 @@ MonoBehaviour:
     isMainTrain: 0
   turretTrainDataList:
   - id: 30001
-    name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1"
+    name: Train_30001_Name
     iconId: Weapon_KMD_08_UI
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     damageType: 0
     attackSoundType: 301
-    description: "\uB192\uC740 \uACF5\uACA9 \uC18D\uB3C4\uB85C \uC801\uC744 \uACF5\uACA9\uD569\uB2C8\uB2E4."
+    description: Train_30001_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: NormalTurretTrain
@@ -359,13 +359,12 @@ MonoBehaviour:
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 1
   - id: 30002
-    name: "\uD654\uC5FC \uD3EC\uD0D1"
+    name: Train_30002_Name
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     damageType: 1
     attackSoundType: 302
-    description: "\uBC94\uC704\uC5D0 \uC9C0\uC18D\uC801\uC73C\uB85C \uD53C\uD574\uB97C
-      \uC90D\uB2C8\uB2E4."
+    description: Train_30002_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: FireTurretTrain
@@ -384,13 +383,12 @@ MonoBehaviour:
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 30003
-    name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
+    name: Train_30003_Name
     iconId: Weapon_KMD_10_UI
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     damageType: 0
     attackSoundType: 303
-    description: "\uBBF8\uC0AC\uC77C\uC744 \uBC1C\uC0AC\uD574 \uBC94\uC704 \uD53C\uD574\uB97C
-      \uC90D\uB2C8\uB2E4,"
+    description: Train_30003_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: MissileTurretTrain
@@ -409,13 +407,12 @@ MonoBehaviour:
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 1
   - id: 30004
-    name: "\uB808\uC774\uC800 \uD3EC\uD0D1"
+    name: Train_30004_Name
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     damageType: 0
     attackSoundType: 304
-    description: "\uB808\uC774\uC800\uB97C \uBC1C\uC0AC\uD574 <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>\uBC94\uC704
-      \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
+    description: Train_30004_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: LaserTurretTrain
@@ -434,13 +431,12 @@ MonoBehaviour:
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 1
   - id: 30005
-    name: "\uC804\uAE30 \uD3EC\uD0D1"
+    name: Train_30005_Name
     iconId: Weapon_MEL_16_UI
     icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     damageType: 0
     attackSoundType: 305
-    description: "\uB2E4\uC218\uC758 \uC801\uC744 \uACF5\uACA9\uD558\uACE0 \uAC10\uC804
-      \uC2DC\uD0B5\uB2C8\uB2E4."
+    description: Train_30005_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: ElectrickTurretTrain
@@ -459,13 +455,12 @@ MonoBehaviour:
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 1
   - id: 30006
-    name: "\uD3EC\uACA9 \uD3EC\uD0D1"
+    name: Train_30006_Name
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     damageType: 0
     attackSoundType: 306
-    description: "\uB113\uC740 \uBC94\uC704\uC5D0 <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>
-      \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
+    description: Train_30006_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: CannonTurretTrain
@@ -484,13 +479,12 @@ MonoBehaviour:
     turretProjectilePrefabId: CannonProjectile
     attackDamageMultiplier: 1
   - id: 30007
-    name: "\uC800\uACA9 \uD3EC\uD0D1"
+    name: Train_30007_Name
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     damageType: 0
     attackSoundType: 307
-    description: "\uC801\uC744 \uAD00\uD1B5\uD558\uBA70 <color=#FFDD52><shake>\uAC15\uB825\uD55C</shake></color>
-      \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
+    description: Train_30007_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: SniperTurretTrain
@@ -509,7 +503,7 @@ MonoBehaviour:
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
   - id: 31001
-    name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
+    name: Train_31001_Name
     iconId: Weapon_KMD_08_UI
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     damageType: 0
@@ -535,7 +529,7 @@ MonoBehaviour:
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 1
   - id: 31002
-    name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
+    name: Train_31002_Name
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     damageType: 0
@@ -561,7 +555,7 @@ MonoBehaviour:
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 31003
-    name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
+    name: Train_31003_Name
     iconId: Weapon_KMD_10_UI
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     damageType: 0
@@ -588,7 +582,7 @@ MonoBehaviour:
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 1
   - id: 31004
-    name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
+    name: Train_31004_Name
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     damageType: 0
@@ -614,7 +608,7 @@ MonoBehaviour:
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 1
   - id: 31005
-    name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
+    name: Train_31005_Name
     iconId: Weapon_MEL_16_UI
     icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     damageType: 0
@@ -640,7 +634,7 @@ MonoBehaviour:
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 1
   - id: 31006
-    name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
+    name: Train_31006_Name
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     damageType: 0
@@ -667,7 +661,7 @@ MonoBehaviour:
     turretProjectilePrefabId: CannonProjectile
     attackDamageMultiplier: 1
   - id: 31007
-    name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
+    name: Train_31007_Name
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     damageType: 0
@@ -694,7 +688,7 @@ MonoBehaviour:
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
   - id: 32001
-    name: "\uC5D8\uB9AC\uD2B8 \uAE30\uAD00\uCD1D \uD3EC\uD0D1"
+    name: Train_32001_Name
     iconId: Weapon_KMD_08_UI
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     damageType: 0
@@ -719,7 +713,7 @@ MonoBehaviour:
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 0
   - id: 32002
-    name: "\uC5D8\uB9AC\uD2B8 \uD654\uC5FC \uD3EC\uD0D1"
+    name: Train_32002_Name
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     damageType: 0
@@ -744,7 +738,7 @@ MonoBehaviour:
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 0
   - id: 32003
-    name: "\uC5D8\uB9AC\uD2B8 \uBBF8\uC0AC\uC77C \uD3EC\uD0D1"
+    name: Train_32003_Name
     iconId: Weapon_KMD_10_UI
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     damageType: 0
@@ -769,7 +763,7 @@ MonoBehaviour:
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 0
   - id: 32004
-    name: "\uC5D8\uB9AC\uD2B8 \uB808\uC774\uC800 \uD3EC\uD0D1"
+    name: Train_32004_Name
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     damageType: 0
@@ -794,7 +788,7 @@ MonoBehaviour:
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 0
   - id: 32005
-    name: "\uC5D8\uB9AC\uD2B8 \uC804\uAE30 \uD3EC\uD0D1"
+    name: Train_32005_Name
     iconId: Weapon_MEL_16_UI
     icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     damageType: 0
@@ -819,7 +813,7 @@ MonoBehaviour:
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 0
   - id: 32006
-    name: "\uC5D8\uB9AC\uD2B8 \uD3EC\uACA9 \uD3EC\uD0D1"
+    name: Train_32006_Name
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
     damageType: 0
@@ -844,7 +838,7 @@ MonoBehaviour:
     turretProjectilePrefabId: CannonProjectile
     attackDamageMultiplier: 0
   - id: 32007
-    name: "\uC5D8\uB9AC\uD2B8 \uC800\uACA9 \uD3EC\uD0D1"
+    name: Train_32007_Name
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     damageType: 0
@@ -870,13 +864,12 @@ MonoBehaviour:
     attackDamageMultiplier: 0
   rangeTrainDataList:
   - id: 40001
-    name: "\uD3ED\uBC1C \uD3EC\uD0D1"
+    name: Train_40001_Name
     iconId: "\uD604\uB300\uBB34\uAE30_\uB300\uD3EC_\uD5E4\uB9AC\uCF65\uD130\uB9AC\uCF54\uB97C_\uC5B4\uC384\uC2E0"
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
     attackSoundType: 308
-    description: "\uC8FC\uBCC0 \uC801\uC744 \uBC00\uCE58\uBA70 \uD53C\uD574\uB97C
-      \uC90D\uB2C8\uB2E4."
+    description: Train_40001_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: ExplosionRangeTrain
@@ -894,13 +887,12 @@ MonoBehaviour:
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 40002
-    name: "\uB0C9\uAE30 \uD3EC\uD0D1"
+    name: Train_40002_Name
     iconId: "\uD604\uB300\uBB34\uAE30_\uB300\uD3EC_288\uC2A4\uB9C8"
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 1
     attackSoundType: 309
-    description: "\uC8FC\uBCC0 \uC801\uC744 \uB454\uD654 \uC2DC\uD0A4\uBA70 \uD53C\uD574\uB97C
-      \uC90D\uB2C8\uB2E4."
+    description: Train_40002_Desc
     trainStatusData:
       MaxHp: 250
     prefabId: ColdAirRangeTrain
@@ -918,7 +910,7 @@ MonoBehaviour:
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   - id: 41001
-    name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
+    name: Train_41001_Name
     iconId: 
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
@@ -941,7 +933,7 @@ MonoBehaviour:
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 41002
-    name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
+    name: Train_41002_Name
     iconId: 
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 1
@@ -964,7 +956,7 @@ MonoBehaviour:
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   - id: 42001
-    name: "\uC5D8\uB9AC\uD2B8 \uD3ED\uBC1C \uD3EC\uD0D1"
+    name: Train_42001_Name
     iconId: 
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
@@ -990,7 +982,7 @@ MonoBehaviour:
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 42002
-    name: "\uC5D8\uB9AC\uD2B8 \uB0C9\uAE30 \uD3EC\uD0D1"
+    name: Train_42002_Name
     iconId: 
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 0
@@ -1018,8 +1010,8 @@ MonoBehaviour:
   trainSkillDataDB:
     trainActiveSkillDataList:
     - id: 50001
-      name: "\uC18D\uC0AC \uBAA8\uB4DC"
-      description: "5\uCD08\uAC04 \uACF5\uACA9 \uAC04\uACA9 50% \uAC10\uC18C"
+      name: Skill_50001_Name
+      description: Skill_50001_Desc
       skillType: 2
       skillCooldown: 20
       skillIconId: 
@@ -1033,8 +1025,8 @@ MonoBehaviour:
       - statType: 4
         percent: -50
     - id: 50002
-      name: "\uD654\uB825 \uC9D1\uC911"
-      description: "6\uCD08\uAC04 \uACF5\uACA9\uB825 100% \uC99D\uAC00"
+      name: Skill_50002_Name
+      description: Skill_50002_Desc
       skillType: 2
       skillCooldown: 25
       skillIconId: 
@@ -1048,9 +1040,8 @@ MonoBehaviour:
       - statType: 2
         percent: 100
     - id: 50003
-      name: "\uBE14\uB9AC\uC790\uB4DC"
-      description: "15\uCD08 \uB3D9\uC548 \uBC94\uC704\uAC00 \uB9F5\uC744 \uB36E\uC744
-        \uC815\uB3C4\uB85C \uB113\uC5B4\uC9D0"
+      name: Skill_50003_Name
+      description: Skill_50003_Desc
       skillType: 0
       skillCooldown: 30
       skillIconId: 
@@ -1062,8 +1053,8 @@ MonoBehaviour:
       buffDuration: 15
       buffs: []
     - id: 50004
-      name: "\uC989\uBC1C \uD3ED\uBC1C"
-      description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
+      name: Skill_50004_Name
+      description: Skill_50004_Desc
       skillType: 3
       skillCooldown: 20
       skillIconId: 
@@ -1075,9 +1066,8 @@ MonoBehaviour:
       buffDuration: 0
       buffs: []
     - id: 50005
-      name: "\uC804\uAE30 \uCDA9\uACA9"
-      description: "\uD558\uB298\uC5D0\uC11C \uBC88\uAC1C\uAC00 \uB5A8\uC5B4\uC838
-        \uB113\uC740 \uC6D0\uD615 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C \uC900\uB2E4."
+      name: Skill_50005_Name
+      description: Skill_50005_Desc
       skillType: 4
       skillCooldown: 30
       skillIconId: 
@@ -1089,8 +1079,8 @@ MonoBehaviour:
       buffDuration: 0
       buffs: []
     - id: 50006
-      name: "\uD3ED\uACA9 \uBBF8\uC0AC\uC77C"
-      description: "5\uCD08 \uB3D9\uC548 \uAC15\uB825\uD55C \uD3EC\uACA9\uC744 \uD37C\uBD93\uC2B5\uB2C8\uB2E4."
+      name: Skill_50006_Name
+      description: Skill_50006_Desc
       skillType: 5
       skillCooldown: 30
       skillIconId: 
@@ -1102,8 +1092,8 @@ MonoBehaviour:
       buffDuration: 5
       buffs: []
     - id: 50007
-      name: "\uC989\uBC1C \uC0AC\uACA9"
-      description: "\uC989\uC2DC \uAC15\uB825\uD55C \uC77C\uACA9\uC744 \uAC00\uD55C\uB2E4"
+      name: Skill_50007_Name
+      description: Skill_50007_Desc
       skillType: 3
       skillCooldown: 15
       skillIconId: 
@@ -1115,8 +1105,8 @@ MonoBehaviour:
       buffDuration: 0
       buffs: []
     - id: 50008
-      name: "\uC989\uBC1C \uD3ED\uBC1C"
-      description: "\uC989\uC2DC \uC8FC\uBCC0\uC5D0 \uD3ED\uBC1C\uC744 \uC77C\uC73C\uD0A8\uB2E4"
+      name: Skill_50008_Name
+      description: Skill_50008_Desc
       skillType: 3
       skillCooldown: 20
       skillIconId: 
@@ -1128,8 +1118,8 @@ MonoBehaviour:
       buffDuration: 0
       buffs: []
     - id: 50009
-      name: "\uAD11\uC5ED \uD0D0\uC9C0"
-      description: "15\uCD08\uAC04 \uACF5\uACA9 \uBC94\uC704 300% \uC99D\uAC00"
+      name: Skill_50009_Name
+      description: Skill_50009_Desc
       skillType: 2
       skillCooldown: 30
       skillIconId: 
@@ -1144,146 +1134,131 @@ MonoBehaviour:
         percent: 300
     trainPassiveSkillDataList:
     - id: 60001
-      name: "\uD3ED\uBC1C\uD0C4"
+      name: Passive_60001_Name
       passiveType: OverrideEveryN
       param1: 5
       param2: ExplosionProjectile
       param3: 
-      description: "5\uD68C \uACF5\uACA9\uB9C8\uB2E4 \uD3ED\uBC1C \uD22C\uC0AC\uCCB4
-        \uBC1C\uC0AC."
+      description: Passive_60001_Desc
     - id: 60002
-      name: "\uBC94\uC704 \uD654\uC5FC"
+      name: Passive_60002_Name
       passiveType: StatModifier
       param1: AttackRange
       param2: 50
       param3: AttackArea:50
-      description: "\uC0AC\uAC70\uB9AC\uAC00 \uAE38\uC5B4\uC9C0\uACE0 \uBC94\uC704\uAC00
-        \uB113\uC5B4\uC9D0."
+      description: Passive_60002_Desc
     - id: 60003
-      name: "\uD65C\uD65C \uD654\uC5FC"
+      name: Passive_60003_Name
       passiveType: StatModifier
       param1: AttackRange
       param2: -30
       param3: AttackArea:-30:AttackDamage:150
-      description: "\uC0AC\uAC70\uB9AC\uC640 \uBC94\uC704\uAC00 \uC881\uC544\uC9C0\uC9C0\uB9CC
-        \uACF5\uACA9\uB825\uC774 \uD06C\uAC8C \uC0C1\uC2B9."
+      description: Passive_60003_Desc
     - id: 60004
-      name: "\uBC94\uC704 \uB0C9\uAE30"
+      name: Passive_60004_Name
       passiveType: StatModifier
       param1: AttackRange
       param2: 100
       param3: AttackArea:100:AttackDamage:30
-      description: "\uC0AC\uAC70\uB9AC\uC640 \uBC94\uC704\uAC00 \uB113\uC5B4\uC9C0\uACE0
-        \uACF5\uACA9\uB825\uC774 \uB192\uC544\uC9D0"
+      description: Passive_60004_Desc
     - id: 60005
-      name: "\uB208\uB369\uC774"
+      name: Passive_60005_Name
       passiveType: PeriodicSpawn
       param1: 3
       param2: SnowballProjectile
       param3: 3
-      description: "3\uCD08\uB9C8\uB2E4 \uC801\uC5D0\uAC8C \uBC94\uC704 \uD53C\uD574\uB97C
-        \uC8FC\uACE0 1 \uCD08 \uB3D9\uC548 \uB454\uD654 \uC2DC\uD0A4\uB294 \uB208\uB369\uC774\uB97C
-        \uBC1C\uC0AC"
+      description: Passive_60005_Desc
     - id: 60006
-      name: "\uD6C4\uD3ED\uBC1C"
+      name: Passive_60006_Name
       passiveType: FollowUpExplosion
       param1: 0.2
       param2: ExplosionProjectile
       param3: -1:0.5:0.3
-      description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uB4A4 \uB3D9\uC77C \uBC94\uC704\uC758
-        \uC57D\uD55C \uD3ED\uBC1C \uC0DD\uC131 (\uB370\uBBF8\uC9C0 50%, \uB109\uBC31
-        30%)"
+      description: Passive_60006_Desc
     - id: 60007
-      name: "\uAC15\uD55C \uD3ED\uBC1C"
+      name: Passive_60007_Name
       passiveType: 
       param1: 
       param2: 
       param3: 
-      description: "\uB109\uBC31\uC774 \uC5C6\uC5B4\uC9C0\uC9C0\uB9CC \uACF5\uACA9\uB825\uC774
-        \uD06C\uAC8C \uC0C1\uC2B9\uD569\uB2C8\uB2E4."
+      description: Passive_60007_Desc
     - id: 60008
-      name: "\uBD80\uCC44 \uBC1C\uC0AC"
+      name: Passive_60008_Name
       passiveType: StatModifier
       param1: AttackCount
       param2: 200
       param3: 
-      description: "\uBD80\uCC44\uAF34\uB85C 3 \uBC1C \uB3D9\uC2DC \uBC1C\uC0AC"
+      description: Passive_60008_Desc
     - id: 60009
-      name: "\uBE60\uB978 \uBBF8\uC0AC\uC77C"
+      name: Passive_60009_Name
       passiveType: 
       param1: 
       param2: 
       param3: 
-      description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00 \uC801 \uB9DE\uC73C\uBA74
-        \uC57D\uD55C \uB109\uBC31"
+      description: Passive_60009_Desc
     - id: 60010
-      name: "\uAC15\uD654 \uBBF8\uC0AC\uC77C"
+      name: Passive_60010_Name
       passiveType: StatModifier:AttackDamage:50:AttackArea:50|ScaleProjectile
       param1: 1.5
       param2: 
       param3: 
-      description: "\uACF5\uACA9\uB825 \uC99D\uAC00, \uBC94\uC704 \uC99D\uAC00, \uBBF8\uC0AC\uC77C
-        \uD06C\uAE30 \uC99D\uAC00"
+      description: Passive_60010_Desc
     - id: 60011
-      name: "\uC5F0\uC18D \uB808\uC774\uC800"
+      name: Passive_60011_Name
       passiveType: RepeatAfterAttack
       param1: 0.2
       param2: 3
       param3: 
-      description: "\uACF5\uACA9\uD560 \uB54C 0.2\uCD08 \uB51C\uB808\uC774\uB85C
-        3\uBC88 \uC5F0\uC18D \uACF5\uACA9"
+      description: Passive_60011_Desc
     - id: 60012
-      name: "\uAC15\uD55C \uB808\uC774\uC800"
+      name: Passive_60012_Name
       passiveType: StatModifier
       param1: AttackArea
       param2: 100
       param3: AttackDamage:50
-      description: "\uBC94\uC704 \uC5C4\uCCAD \uB113\uC5B4\uC9C0\uACE0 \uACF5\uACA9\uB825
-        \uC99D\uAC00"
+      description: Passive_60012_Desc
     - id: 60013
-      name: "\uB354 \uBE60\uB978 \uC804\uAE30"
+      name: Passive_60013_Name
       passiveType: StatModifier
       param1: AttackInterval
       param2: -30
       param3: 
-      description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uC99D\uAC00"
+      description: Passive_60013_Desc
     - id: 60014
-      name: "\uBC94\uC704 \uD3EC\uACA9"
+      name: Passive_60014_Name
       passiveType: StatModifier
       param1: AttackArea
       param2: 300
       param3: 
-      description: "\uD3EC\uACA9 \uBBF8\uC0AC\uC77C\uC758 \uBC94\uC704 \uC99D\uAC00"
+      description: Passive_60014_Desc
     - id: 60015
-      name: "\uD3ED\uACA9"
+      name: Passive_60015_Name
       passiveType: RapidBombard
       param1: -50
       param2: -50
       param3: 2:10:7
-      description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uB9E4\uC6B0 \uBE68\uB77C\uC9C0\uC9C0\uB9CC
-        \uBC94\uC704\uAC00 \uC881\uC544\uC9C0\uACE0 \uD654\uBA74 \uB0B4\uC5D0\uC11C
-        \uBB34\uC791\uC704 \uC704\uCE58\uC5D0 \uD3ED\uACA9"
+      description: Passive_60015_Desc
     - id: 60016
-      name: "\uAD00\uD1B5 \uC800\uACA9"
+      name: Passive_60016_Name
       passiveType: PierceProjectile
       param1: EliteSniperProjectile
       param2: 
       param3: 
-      description: "\uCD1D\uC54C\uC774 \uC801\uC744 \uAD00\uD1B5\uD568."
+      description: Passive_60016_Desc
     - id: 60017
-      name: "\uD589\uC6B4 \uC800\uACA9"
+      name: Passive_60017_Name
       passiveType: ChainAttackChance
       param1: 30
       param2: 0.25
       param3: 
-      description: "30%\uC758 \uD655\uB960\uB85C \uC5F0\uC18D \uACF5\uACA9"
+      description: Passive_60017_Desc
     - id: 60018
-      name: "\uC774\uAC8C \uC800\uACA9?"
+      name: Passive_60018_Name
       passiveType: StatModifier
       param1: AttackInterval
       param2: -80
       param3: 
-      description: "\uACF5\uACA9\uC18D\uB3C4 \uC99D\uAC00"
+      description: Passive_60018_Desc
   _legacyTrainSkillDataList: []
   _legacyTrainPassiveSkillDataList: []
   trainUpgradeDataList: []
@@ -1291,9 +1266,8 @@ MonoBehaviour:
   - id: 90001
     iconId: Weapon_KMD_08_UI
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
-    name: "\uAE30\uAD00\uCD1D \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <bounce><color=#FF5851>{0} \uC99D\uAC00</bounce></color>
-      \uACF5\uACA9\uB51C\uB808\uC774 <color=#5196FF><bounce>{1}\uAC10\uC18C</bounce></color>"
+    name: TUpgrade_90001_Name
+    description: TUpgrade_90001_Desc
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1334,8 +1308,8 @@ MonoBehaviour:
   - id: 90002
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
-    name: "\uD654\uC5FC \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
+    name: TUpgrade_90002_Name
+    description: TUpgrade_90002_Desc
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1376,9 +1350,8 @@ MonoBehaviour:
   - id: 90003
     iconId: Weapon_KMD_10_UI
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
-    name: "\uBBF8\uC0AC\uC77C \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
-      \uACF5\uACA9\uB51C\uB808\uC774 <color=#5196FF><bounce>{1} \uAC10\uC18C</bounce></color>"
+    name: TUpgrade_90003_Name
+    description: TUpgrade_90003_Desc
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1419,8 +1392,8 @@ MonoBehaviour:
   - id: 90004
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
-    name: "\uB808\uC774\uC800 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
+    name: TUpgrade_90004_Name
+    description: TUpgrade_90004_Desc
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1461,9 +1434,8 @@ MonoBehaviour:
   - id: 90005
     iconId: Weapon_MEL_16_UI
     icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
-    name: "\uC804\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
-      \uACF5\uACA9\uD558\uB294 \uC801 \uC218 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
+    name: TUpgrade_90005_Name
+    description: TUpgrade_90005_Desc
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1504,8 +1476,8 @@ MonoBehaviour:
   - id: 90006
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
-    name: "\uD3EC\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
+    name: TUpgrade_90006_Name
+    description: TUpgrade_90006_Desc
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1546,8 +1518,8 @@ MonoBehaviour:
   - id: 90007
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
-    name: "\uC800\uACA9 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>"
+    name: TUpgrade_90007_Name
+    description: TUpgrade_90007_Desc
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1588,9 +1560,8 @@ MonoBehaviour:
   - id: 90008
     iconId: Weapon_288_19_UI
     icon: {fileID: 0}
-    name: "\uB808\uC774\uC800 \uC18D\uC0AC"
-    description: "\uACF5\uACA9 \uD6C4 0.2\uCD08 \uAC04\uACA9\uC73C\uB85C 3\uD68C
-      \uCD94\uAC00 \uBC1C\uC0AC"
+    name: TUpgrade_90008_Name
+    description: TUpgrade_90008_Desc \uCD94\uAC00 \uBC1C\uC0AC"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1607,9 +1578,9 @@ MonoBehaviour:
   - id: 90009
     iconId: Weapon_288_19_UI
     icon: {fileID: 0}
-    name: "\uB808\uC774\uC800 \uAD11\uC5ED \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
-      \uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
+    name: TUpgrade_90009_Name
+    description: TUpgrade_90009_Desc \uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{1}
+      \uC99D\uAC00</bounce></color>"
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1651,9 +1622,8 @@ MonoBehaviour:
   - id: 100001
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
-    name: "\uD3ED\uBC1C \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uACF5\uACA9\uB825 <color=#FF5851><bounce>{0} \uC99D\uAC00</bounce></color>
-      \uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
+    name: RUpgrade_100001_Name
+    description: RUpgrade_100001_Desc
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1688,8 +1658,8 @@ MonoBehaviour:
   - id: 100002
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
-    name: "\uB0C9\uAE30 \uD3EC\uD0D1 \uAC15\uD654"
-    description: "\uBC94\uC704 <color=#FF5851><bounce>{1} \uC99D\uAC00</bounce></color>"
+    name: RUpgrade_100002_Name
+    description: RUpgrade_100002_Desc
     upgradeStats:
     - statusUpgrade:
         MaxHp: 0
@@ -1823,9 +1793,8 @@ MonoBehaviour:
   upgradeDataList:
   - id: 110001
     iconId: sword
-    name: "\uACF5\uACA9\uB825<sprite name=\"sword\"> \uC99D\uAC00"
-    description: "\uD3EC\uD0D1\uB4E4\uC758 \uACF5\uACA9\uB825\uC774 {0}({1}) \uB9CC\uD07C
-      \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
+    name: Upgrade_110001_Name
+    description: Upgrade_110001_Desc
     needMoney: 60
     maxUpgradeCount: 100
     upgradeDataType: 0
@@ -1836,9 +1805,8 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110002
     iconId: 
-    name: "\uACF5\uACA9 \uB51C\uB808\uC774 \uAC10\uC18C"
-    description: "\uD3EC\uD0D1\uB4E4\uC758 \uACF5\uACA9 \uB51C\uB808\uC774\uAC00
-      {0}({1}) \uB9CC\uD07C \uAC10\uC18C\uD569\uB2C8\uB2E4.\\n {2}/{3}"
+    name: Upgrade_110002_Name
+    description: Upgrade_110002_Desc
     needMoney: 85
     maxUpgradeCount: 50
     upgradeDataType: 0
@@ -1849,9 +1817,8 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110003
     iconId: 
-    name: "\uCCB4\uB825 \uC99D\uAC00"
-    description: "\uD3EC\uD0D1\uB4E4\uC758 \uCCB4\uB825\uC774 {0}({1}) \uB9CC\uD07C
-      \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
+    name: Upgrade_110003_Name
+    description: Upgrade_110003_Desc
     needMoney: 120
     maxUpgradeCount: 100
     upgradeDataType: 0
@@ -1862,9 +1829,8 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110004
     iconId: Coin
-    name: "\uACE8\uB4DC <sprite name=\"Coin\">\uD68D\uB4DD\uB7C9 \uC99D\uAC00"
-    description: "\uC801 \uCC98\uCE58 \uC2DC \uD68D\uB4DD\uD558\uB294 \uACE8\uB4DC\uAC00
-      {0}({1}) \uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
+    name: Upgrade_110004_Name
+    description: Upgrade_110004_Desc
     needMoney: 140
     maxUpgradeCount: 100
     upgradeDataType: 1
@@ -1873,9 +1839,8 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110005
     iconId: 
-    name: "\uACBD\uD5D8\uCE58 \uD68D\uB4DD\uB7C9  \uC99D\uAC00"
-    description: "\uC801 \uCC98\uCE58 \uC2DC \uD68D\uB4DD\uD558\uB294 \uACBD\uD5D8\uCE58\uAC00
-      {0}({1}) \uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
+    name: Upgrade_110005_Name
+    description: Upgrade_110005_Desc
     needMoney: 140
     maxUpgradeCount: 100
     upgradeDataType: 1
@@ -1884,9 +1849,8 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110006
     iconId: 
-    name: "\uCE58\uBA85\uD0C0 \uD655\uB960 \uC99D\uAC00"
-    description: "\uD3EC\uD0D1\uB4E4\uC758 \uCE58\uBA85\uD0C0 \uD655\uB960\uC774
-      {0}({1}) \uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
+    name: Upgrade_110006_Name
+    description: Upgrade_110006_Desc
     needMoney: 100
     maxUpgradeCount: 30
     upgradeDataType: 0
@@ -1897,9 +1861,8 @@ MonoBehaviour:
     growthRate: 1.065
   - id: 110007
     iconId: 
-    name: "\uCE58\uBA85\uD0C0 \uD53C\uD574\uB7C9 \uC99D\uAC00"
-    description: "\uD3EC\uD0D1\uB4E4\uC758 \uCE58\uBA85\uD0C0 \uD53C\uD574\uB7C9\uC774
-      {0}({1}) \uB9CC\uD07C \uC99D\uAC00\uD569\uB2C8\uB2E4.\\n {2}/{3}"
+    name: Upgrade_110007_Name
+    description: Upgrade_110007_Desc
     needMoney: 120
     maxUpgradeCount: 50
     upgradeDataType: 0

@@ -5,6 +5,7 @@ using TrainDefense.Game.Datas;
 using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
+using System.Text.RegularExpressions;
 
 namespace TrainDefense.Game.UI
 {
@@ -110,12 +111,18 @@ namespace TrainDefense.Game.UI
             increaseAmountText = $"{increaseAmount}";
          }
 
-         if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
+         string desc = _upgradeData.Description;
+         try
          {
-            return string.Format(_upgradeData.Description, nextTotalValue, increaseAmountText, "Max", "Max");
-         }
+            if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
+               return string.Format(desc, nextTotalValue, increaseAmountText, "Max", "Max");
 
-         return string.Format(_upgradeData.Description, nextTotalValue, increaseAmountText, currentLevel, _upgradeData.MaxUpgradeCount);
+            return string.Format(desc, nextTotalValue, increaseAmountText, currentLevel, _upgradeData.MaxUpgradeCount);
+         }
+         catch (System.FormatException)
+         {
+            return Regex.Replace(desc, @"\{[0-9]+\}", "-");
+         }
       }
 
       public void SetVaild(int currentMoney)

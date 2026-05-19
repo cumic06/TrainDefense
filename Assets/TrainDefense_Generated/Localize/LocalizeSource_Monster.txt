@@ -1,0 +1,37 @@
+Key	Korean	English	Japanese	ChineseSimplified
+Monster_10001_Name	Skull	Skull	スカル	骷髅
+Monster_10001_Desc	해골 병사다.	A skeleton soldier.	骸骨の兵士だ。	骷髅士兵。
+Monster_10002_Name	Thief	Thief	シーフ	盗贼
+Monster_10002_Desc	도적이다.	A thief.	盗賊だ。	盗贼。
+Monster_10003_Name	Gnoll	Gnoll	ノール	狗头人
+Monster_10003_Desc	놀이다.	A gnoll.	ノールだ。	狗头人。
+Monster_10004_Name	Hammershark	Hammershark	ハンマーシャーク	锤头鲨
+Monster_10004_Desc	귀상어다.	A hammerhead shark.	シュモクザメだ。	锤头鲨。
+Monster_10005_Name	Shark	Shark	シャーク	鲨鱼
+Monster_10005_Desc	상어다.	A shark.	サメだ。	鲨鱼。
+Monster_10006_Name	Turtle	Turtle	タートル	乌龟
+Monster_10006_Desc	거북이다.	A turtle.	カメだ。	乌龟。
+Monster_10007_Name	Snake	Snake	スネーク	蛇
+Monster_10007_Desc	뱀이다.	A snake.	ヘビだ。	蛇。
+Monster_10008_Name	Panda	Panda	パンダ	熊猫
+Monster_10008_Desc	판다다.	A panda.	パンダだ。	熊猫。
+Monster_10009_Name	Lizard	Lizard	リザード	蜥蜴
+Monster_10009_Desc	도마뱀이다.	A lizard.	トカゲだ。	蜥蜴。
+Monster_10010_Name	Bear	Bear	ベア	熊
+Monster_10010_Desc	곰이다.	A bear.	クマだ。	熊。
+Monster_10011_Name	Dwarf	Dwarf	ドワーフ	矮人
+Monster_10011_Desc	난쟁이다.	A dwarf.	ドワーフだ。	矮人。
+Monster_10012_Name	Spider	Spider	スパイダー	蜘蛛
+Monster_10012_Desc	거미다.	A spider.	クモだ。	蜘蛛。
+Monster_10013_Name	Minotaur	Minotaur	ミノタウロス	牛头怪
+Monster_10013_Desc	미노타우로스다.	A minotaur.	ミノタウロスだ。	牛头怪。
+Monster_10014_Name	GoblinSpear	Goblin Spearman	ゴブリン槍兵	哥布林长枪兵
+Monster_10014_Desc	고블린 창병이다.	A goblin spearman.	ゴブリン槍兵だ。	哥布林长枪兵。
+Monster_10015_Name	GoblinSorcerer	Goblin Sorcerer	ゴブリン呪術師	哥布林巫师
+Monster_10015_Desc	고블린 주술사다.	A goblin sorcerer.	ゴブリン呪術師だ。	哥布林巫师。
+Monster_10016_Name	GiantGoblin	Giant Goblin	ゴブリン巨人	巨型哥布林
+Monster_10016_Desc	고블린 거인이다.	A giant goblin.	ゴブリン巨人だ。	巨型哥布林。
+Monster_99999_Name	Booooossssss	Booooossssss	ボス	首领
+Monster_99999_Desc	보스다.	The Boss.	ボスだ。	首领。
+Monster_10100_Name	SkullKing	Skull King	スカルキング	骷髅王
+Monster_10100_Desc	해골 왕이다.	The Skeleton King.	骸骨の王だ。	骷髅王。

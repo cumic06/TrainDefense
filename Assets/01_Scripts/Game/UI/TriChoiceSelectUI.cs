@@ -5,6 +5,7 @@ using TMPro;
 using DG.Tweening;
 using TrainDefense.Game.Datas;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace TrainDefense.Game.UI
 {
@@ -76,25 +77,17 @@ namespace TrainDefense.Game.UI
                if (selectedUpgrade != null)
                {
                   object[] formatArgs = GetUpgradeFormatArgs(selectedUpgrade);
-                  try
-                  {
-                     descriptionText.text = string.Format(choiceUIInfo.Description, formatArgs);
-                     upgradeImage.gameObject.SetActive(true);
-                  }
-                  catch (System.FormatException)
-                  {
-                     descriptionText.text = choiceUIInfo.Description;
-                     Debug.LogWarning($"[TriChoiceSelectUI] Format Error: {choiceUIInfo.Description}");
-                  }
+                  descriptionText.text = SafeFormat(choiceUIInfo.Description, formatArgs);
+                  upgradeImage.gameObject.SetActive(true);
                }
                else
                {
-                  descriptionText.text = choiceUIInfo.Description;
+                  descriptionText.text = StripFormatPlaceholders(choiceUIInfo.Description);
                }
             }
             else
             {
-               descriptionText.text = choiceUIInfo.Description;
+               descriptionText.text = StripFormatPlaceholders(choiceUIInfo.Description);
                upgradeImage.gameObject.SetActive(false);
             }
          }
@@ -132,6 +125,26 @@ namespace TrainDefense.Game.UI
                   descriptionText.text = skillDescription;
             }
          }
+      }
+
+      private static string SafeFormat(string format, object[] args)
+      {
+         if (string.IsNullOrEmpty(format)) return format;
+         try
+         {
+            return string.Format(format, args);
+         }
+         catch (System.FormatException)
+         {
+            Debug.LogWarning($"[TriChoiceSelectUI] Format mismatch: {format} (args={args.Length})");
+            return StripFormatPlaceholders(format);
+         }
+      }
+
+      private static string StripFormatPlaceholders(string text)
+      {
+         if (string.IsNullOrEmpty(text)) return text;
+         return Regex.Replace(text, @"\{[0-9]+\}", "-");
       }
 
       private object[] GetUpgradeFormatArgs(ITrainUpgradeData upgradeData)
