@@ -1,3 +1,5 @@
+using System.Collections;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Cumic;
 using Cumic.Events;
@@ -15,9 +17,14 @@ namespace TrainDefense.Game
         [Tooltip("Time.deltaTime 최대값. 백그라운드 복귀 시 프레임 스파이크 방지")]
         private float maxDeltaTime = 0.1f;
 
+        [BoxGroup("GameOverEffect")]
+        [SerializeField]
+        private float gameOverMinTimeScale = 0.05f;
+
         private bool _isPaused;
         private bool _isFastForward;
         private bool _wasPausedBeforeBackground;
+        private bool _isGameOverSlowing;
 
         protected override void Awake()
         {
@@ -82,6 +89,7 @@ namespace TrainDefense.Game
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
             GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
+            GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOverStart);
 
             // 튜토리얼 시작/완료 시 시간 제어 (시퀀스 레벨에서만)
             var tutorialManager = TutorialManager.Instance;
@@ -94,6 +102,10 @@ namespace TrainDefense.Game
 
         private void OnDestroy()
         {
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = 0.02f;
+            _isGameOverSlowing = false;
+
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
             GameEventSystem.Unsubscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
@@ -102,6 +114,7 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
             GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
+            GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOverStart);
 
             var tutorialManager = TutorialManager.Instance;
             if (tutorialManager != null)
@@ -170,19 +183,52 @@ namespace TrainDefense.Game
 
         public void Pause()
         {
-            Debug.Log($"[TimeManager] Pause — timeScale {Time.timeScale}→0");
             _isPaused = true;
+
+            if (_isGameOverSlowing)
+                return;
+
             Time.timeScale = 0;
             SoundManager.Instance.SuppressSFX(true);
         }
 
         public void Resume()
         {
+            if (_isGameOverSlowing)
+                return;
+
             float next = _isFastForward ? fastForwardScale : 1f;
-            Debug.Log($"[TimeManager] Resume — timeScale {Time.timeScale}→{next}");
             _isPaused = false;
             Time.timeScale = next;
             SoundManager.Instance.SuppressSFX(false);
+        }
+
+        private void _OnGameOverStart(GameOverStartEvent e)
+        {
+            StartCoroutine(_GameOverSlowCoroutine(e.Duration));
+        }
+
+        private IEnumerator _GameOverSlowCoroutine(float duration)
+        {
+            _isGameOverSlowing = true;
+            float elapsedTime = 0f;
+            float startTimeScale = Time.timeScale;
+
+            while (elapsedTime < duration)
+            {
+                elapsedTime += Time.unscaledDeltaTime;
+                float t = Mathf.Clamp01(elapsedTime / duration);
+                Time.timeScale = Mathf.Lerp(startTimeScale, gameOverMinTimeScale, t);
+                Time.fixedDeltaTime = 0.02f * Time.timeScale;
+
+                yield return null;
+            }
+
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = 0.02f;
+            _isGameOverSlowing = false;
+
+            GameEventSystem.Publish(new GameEndEvent(false));
         }
     }
 }

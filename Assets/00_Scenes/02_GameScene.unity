@@ -11040,12 +11040,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 692818404}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1035467650}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &692818406
 MonoBehaviour:
@@ -11816,6 +11816,9 @@ Transform:
   - {fileID: 1377530608}
   - {fileID: 415160811}
   - {fileID: 1670328831}
+  - {fileID: 692818405}
+  - {fileID: 1398835986}
+  - {fileID: 1873479376}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1035467651
@@ -12555,12 +12558,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1398835984}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1035467650}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1433751803
 GameObject:
@@ -13602,6 +13605,53 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   upgradeProb: 2
   addProb: 2
+--- !u!1 &1873479375
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1873479376}
+  - component: {fileID: 1873479377}
+  m_Layer: 0
+  m_Name: GameOverController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1873479376
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873479375}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1035467650}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1873479377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1873479375}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e35b53cba296d36428ddfbf535c53adf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Manager.GameOverEffectController
+  material: {fileID: 2100000, guid: f7625298c402ba44fb53be45931c111d, type: 2}
+  grayscaleStrength: 1
+  colorTint: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1876703256
 GameObject:
   m_ObjectHideFlags: 0
@@ -13973,6 +14023,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   fastForwardScale: 3
   maxDeltaTime: 0.1
+  gameOverMinTimeScale: 0.05
 --- !u!1 &2003328626
 GameObject:
   m_ObjectHideFlags: 0
@@ -15927,7 +15978,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 409639994930660694, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -14
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 409639994930660694, guid: 1ded3153b65d0b84ca2197691d85342c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -15985,5 +16036,3 @@ SceneRoots:
   - {fileID: 44021195}
   - {fileID: 901976898}
   - {fileID: 2084221808}
-  - {fileID: 692818405}
-  - {fileID: 1398835986}
