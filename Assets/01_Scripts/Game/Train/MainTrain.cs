@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
@@ -32,6 +33,10 @@ namespace TrainDefense.Game
       [SerializeField]
       [BoxGroup("TrainSetting")]
       private bool isUnDead = false;
+
+      [SerializeField]
+      [BoxGroup("GameOverEffect")]
+      private float gameOverSlowDuration = 2f;
       #endregion
 
       private TrainChoiceSkillType _pendingSkillType = TrainChoiceSkillType.None;
@@ -85,6 +90,8 @@ namespace TrainDefense.Game
       protected override void OnDestroy()
       {
          base.OnDestroy();
+         Time.timeScale = 1f;
+         Time.fixedDeltaTime = 0.02f;
          GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
          GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
@@ -508,7 +515,7 @@ namespace TrainDefense.Game
             return;
 
          base.OnDead();
-         GameEventSystem.Publish(new GameEndEvent(false));
+         GameEventSystem.Publish(new GameOverStartEvent(gameOverSlowDuration));
       }
    }
 }
