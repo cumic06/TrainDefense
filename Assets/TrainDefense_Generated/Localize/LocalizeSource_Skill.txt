@@ -5,9 +5,9 @@ Skill_50002_Name	화력 집중	Focused Firepower	火力集中	火力集中
 Skill_50002_Desc	6초간 공격력 100% 증가	Increases attack power by 100% for 6 seconds.	6秒間、攻撃力を100%増加させる。	6秒内攻击力提升100%。
 Skill_50003_Name	블리자드	Blizzard	ブリザード	暴风雪
 Skill_50003_Desc	15초 동안 범위가 맵을 뒤덮을 정도로 넓어짐	Range expands to cover the entire map for 15 seconds.	15秒間、範囲がマップ全体を覆うほど広がる。	15秒内范围扩大至覆盖整个地图。
-Skill_50004_Name	즉발 폭발	Instant Explosion	即発爆発	即时爆炸
+Skill_50004_Name	대폭발	Massive Explosion	大爆発	大爆炸
 Skill_50004_Desc	즉시 주변에 폭발을 일으킨다	Instantly creates an explosion in the surrounding area.	即座に周囲に爆発を引き起こす。	即时在周围引发爆炸。
-Skill_50005_Name	전기 충격	Electric Shock	電気ショック	电击
+Skill_50005_Name	낙뢰	Lightning Strike	落雷	雷击
 Skill_50005_Desc	하늘에서 번개가 떨어져 넓은 원형 범위에 피해를 준다.	Lightning strikes from the sky, dealing damage in a wide circular area.	空から雷が落ちて広い円形範囲にダメージを与える。	天降闪电，对大范围圆形区域造成伤害。
 Skill_50006_Name	폭격 미사일	Missile Bombardment	爆撃ミサイル	轰炸导弹
 Skill_50006_Desc	5초 동안 강력한 포격을 퍼붓습니다.	Unleashes powerful bombardment for 5 seconds.	5秒間、強力な砲撃を浴びせます。	5秒内进行强力炮击。
@@ -17,31 +17,31 @@ Skill_50008_Name	즉발 폭발	Instant Explosion	即発爆発	即时爆炸
 Skill_50008_Desc	즉시 주변에 폭발을 일으킨다	Instantly creates an explosion in the surrounding area.	即座に周囲に爆発を引き起こす。	即时在周围引发爆炸。
 Skill_50009_Name	광역 탐지	Wide Detection	広域探知	广域探测
 Skill_50009_Desc	15초간 공격 범위 300% 증가	Increases attack range by 300% for 15 seconds.	15秒間、攻撃範囲を300%増加させる。	15秒内攻击范围增加300%。
-Passive_60001_Name	폭발탄	Explosive Shot	爆発弾	爆炸弹
+Passive_60001_Name	폭발탄	Explosive Round	爆発弾	爆炸弹
 Passive_60001_Desc	5회 공격마다 폭발 투사체 발사.	Fires an explosive projectile every 5 attacks.	5回攻撃ごとに爆発投射物を発射する。	每5次攻击发射一枚爆炸弹。
-Passive_60002_Name	범위 화염	Wide Flame	範囲炎	范围火焰
+Passive_60002_Name	확장 화염	Wide Flame	範囲炎	范围火焰
 Passive_60002_Desc	사거리가 길어지고 범위가 넓어짐.	Range and area of effect increase.	射程が伸び、範囲が広がる。	射程延长，范围扩大。
-Passive_60003_Name	활활 화염	Blazing Flame	燃え盛る炎	熊熊火焰
+Passive_60003_Name	화력 집중	Focused Fire	火力集中	火力集中
 Passive_60003_Desc	사거리와 범위가 줄어들지만 공격력이 크게 상승.	Range and area decrease but attack power greatly increases.	射程と範囲が狭まるが攻撃力が大幅に上昇する。	射程和范围减小，但攻击力大幅提升。
 Passive_60004_Name	범위 냉기	Wide Frost	範囲冷気	范围寒气
 Passive_60004_Desc	사거리와 범위가 넓어지고 공격력이 높아짐	Range, area, and attack power all increase.	射程と範囲が広がり、攻撃力も上昇する。	射程、范围和攻击力均提升。
-Passive_60005_Name	눈대이	Snowball	スノーボール	雪球
+Passive_60005_Name	눈덩이	Snowball	スノーボール	雪球
 Passive_60005_Desc	3초마다 적에게 범위 피해를 주고 1초 동안 눈대이를 발사	Deals area damage every 3 seconds and fires snowballs for 1 second.	3秒ごとに敵に範囲ダメージを与え、1秒間雪球を発射する。	每3秒对敌人造成范围伤害并发射1秒雪球。
 Passive_60006_Name	후폭발	After Explosion	後爆発	后爆炸
-Passive_60006_Desc	공격 후 0.2초 뒤 동일 범위의 약한 폭발 생성 (데미지 50%, 넉백 30%)	Creates a weak explosion of same range 0.2s after attack. (50% dmg, 30% knockback)	攻撃後0.2秒後に同じ範囲の弱い爆発を生成する（ダメージ50%、ノックバック30%）。	攻击后0.2秒在相同范围内产生弱爆炸（50%伤害，30%击退）。
+Passive_60006_Desc	공격 후 1초 뒤 동일 범위의 약한 폭발 생성 (데미지 50%, 넉백 30%)	Creates a weak explosion of same range 0.2s after attack. (50% dmg, 30% knockback)	攻撃後0.2秒後に同じ範囲の弱い爆発を生成する（ダメージ50%、ノックバック30%）。	攻击后0.2秒在相同范围内产生弱爆炸（50%伤害，30%击退）。
 Passive_60007_Name	강한 폭발	Powerful Explosion	強力爆発	强力爆炸
 Passive_60007_Desc	넉백이 없어지지만 공격력이 크게 상승합니다.	Knockback is removed but attack power greatly increases.	ノックバックがなくなるが攻撃力が大幅に上昇する。	消除击退效果，但攻击力大幅提升。
 Passive_60008_Name	부채 발사	Fan Shot	扇形射撃	扇形射击
 Passive_60008_Desc	부채꼴로 3발 동시 발사	Fires 3 shots simultaneously in a fan pattern.	扇形に3発同時に発射する。	扇形同时发射3发。
-Passive_60009_Name	빠른 미사일	Swift Missile	高速ミサイル	快速导弹
-Passive_60009_Desc	공격속도 증가. 적이 많으면 약한 넉백	Attack speed increases. Weak knockback when enemies are numerous.	攻撃速度が上昇し、敵が多い場合は弱いノックバックが付く。	攻击速度提升，敌人多时产生弱击退。
-Passive_60010_Name	강화 미사일	Enhanced Missile	強化ミサイル	强化导弹
+Passive_60009_Name	충격 미사일	Impact Missile	衝撃ミサイル	冲击导弹
+Passive_60009_Desc	공격속도 증가. 약한 넉백	Attack speed increases. Weak knockback when enemies are numerous.	攻撃速度が上昇し、敵が多い場合は弱いノックバックが付く。	攻击速度提升，敌人多时产生弱击退。
+Passive_60010_Name	거대한 미사일	Giant Missile	巨大ミサイル	巨型导弹
 Passive_60010_Desc	공격력 증가, 범위 증가, 미사일 크기 증가	Attack power, range, and missile size all increase.	攻撃力、範囲、ミサイルの大きさが増加する。	攻击力、范围和导弹体积均提升。
-Passive_60011_Name	연속 레이저	Continuous Laser	連続レーザー	连续激光
+Passive_60011_Name	과충전	Overcharge	オーバーチャージ	过度充能
 Passive_60011_Desc	공격할 때 0.2초 딜레이로 3번 연속 공격	Attacks 3 times consecutively with a 0.2 second delay.	攻撃時に0.2秒遅延で3回連続攻撃する。	攻击时以0.2秒延迟连续攻击3次。
 Passive_60012_Name	강한 레이저	Powerful Laser	強力レーザー	强力激光
 Passive_60012_Desc	범위가 크게 넓어지고 공격력 증가	Range greatly increases and attack power increases.	範囲が大幅に広がり、攻撃力が上昇する。	范围大幅扩大，攻击力提升。
-Passive_60013_Name	더 빠른 전기	Faster Electric	より速い電気	更快电气
+Passive_60013_Name	과부하	Overload	オーバーロード	过载
 Passive_60013_Desc	공격 속도가 증가	Attack speed increases.	攻撃速度が上昇する。	攻击速度提升。
 Passive_60014_Name	범위 포격	Wide Artillery	範囲砲撃	范围炮击
 Passive_60014_Desc	포격 미사일의 범위 증가	Artillery missile range increases.	砲撃ミサイルの範囲が増加する。	炮击导弹的范围提升。
