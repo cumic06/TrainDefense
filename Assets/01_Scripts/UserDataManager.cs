@@ -34,10 +34,15 @@ namespace TrainDefense
         public UserOptionData UserOptionData => _userOptionData;
         public TutorialSaveData TutorialSaveData => _tutorialSaveData;
 
+        protected override void Awake()
+        {
+            base.Awake();
+            if (Instance == this)
+                DontDestroyOnLoad(gameObject);
+        }
+
         private void Start()
         {
-            DontDestroyOnLoad(gameObject);
-
             LoadDiscoveredMonsters();
             LoadUserOptionData();
             LoadTutorialData();

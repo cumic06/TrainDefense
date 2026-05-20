@@ -57,6 +57,7 @@ namespace TrainDefense.Game
             if (TutorialManager.Instance != null)
             {
                 TutorialManager.Instance.OnTutorialComplete -= OnTrainInfoSlotTutorialComplete;
+                TutorialManager.Instance.OnTutorialComplete -= _OnInspectionTimeTutorialComplete;
             }
         }
 
@@ -202,9 +203,20 @@ namespace TrainDefense.Game
             if (sequenceId != "trainInfoSlotTutorial") return;
 
             TutorialManager.Instance.OnTutorialComplete -= OnTrainInfoSlotTutorialComplete;
+            TutorialManager.Instance.OnTutorialComplete += _OnInspectionTimeTutorialComplete;
 
             Debug.Log("TrainUpgradeManager: Starting inspectionTime tutorial");
             TutorialManager.Instance.StartTutorial("inspectionTimeTutorial");
+        }
+
+        private void _OnInspectionTimeTutorialComplete(string sequenceId)
+        {
+            if (sequenceId != "inspectionTimeTutorial") return;
+
+            TutorialManager.Instance.OnTutorialComplete -= _OnInspectionTimeTutorialComplete;
+
+            Debug.Log("TrainUpgradeManager: inspectionTimeTutorial complete → EngageStart");
+            GameEventSystem.Publish(new EngageStartEvent());
         }
 
         /// <summary>

@@ -1,3 +1,4 @@
+using Cumic.Sequence;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,7 +37,10 @@ namespace TrainDefense.Game.UI
         {
             gameObject.SetActive(true);
 
-            TimeManager.Instance.Pause();
+            if (InGameSequence.Instance != null)
+                InGameSequence.Instance.PushOverlay(OverlayPhase.MenuPause);
+            else
+                TimeManager.Instance.Pause();
 
             pausePanel.SetActive(true);
 
@@ -61,7 +65,10 @@ namespace TrainDefense.Game.UI
             pausePanel.transform.DOScale(0, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
             {
                 pausePanel.transform.localScale = Vector3.zero;
-                TimeManager.Instance.Resume();
+                if (InGameSequence.Instance != null)
+                    InGameSequence.Instance.PopOverlay(OverlayPhase.MenuPause);
+                else
+                    TimeManager.Instance.Resume();
                 pausePanel.SetActive(false);
                 _isPauseUIActive = false;
             }).SetUpdate(true);

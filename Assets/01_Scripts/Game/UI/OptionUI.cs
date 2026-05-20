@@ -1,3 +1,4 @@
+using Cumic.Sequence;
 using TrainDefense.Game;
 using TrainDefense.Game.UI;
 using UnityEngine;
@@ -109,14 +110,20 @@ namespace TrainDefense
       public void ShowOptionUI()
       {
          gameObject.SetActive(true);
-         if (TimeManager.Instance != null)
+
+         if (InGameSequence.Instance != null)
+            InGameSequence.Instance.PushOverlay(OverlayPhase.MenuPause);
+         else if (TimeManager.Instance != null)
             TimeManager.Instance.Pause();
       }
 
       public void HideOptionUI()
       {
          gameObject.SetActive(false);
-         if (TimeManager.Instance != null)
+
+         if (InGameSequence.Instance != null)
+            InGameSequence.Instance.PopOverlay(OverlayPhase.MenuPause);
+         else if (TimeManager.Instance != null)
             TimeManager.Instance.Resume();
       }
 

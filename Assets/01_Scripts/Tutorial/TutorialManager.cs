@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Cumic;
+using Cumic.Sequence;
 
 namespace TrainDefense.Game.Tutorial
 {
@@ -22,6 +23,7 @@ namespace TrainDefense.Game.Tutorial
         private TutorialService _service;
         private TutorialPresenter _presenter;
         private TutorialSaveData _saveData;
+        private bool _tutorialOverlayPushed;
 
         private Coroutine _delayCoroutine;
         private Coroutine _timeoutCoroutine;
@@ -71,7 +73,17 @@ namespace TrainDefense.Game.Tutorial
             _service = new TutorialService(_sequences, _saveData);
 
             // Service 이벤트 -> Manager 이벤트 전달
-            _service.OnTutorialStart += (id) => OnTutorialStart?.Invoke(id);
+            _service.OnTutorialStart += (id) =>
+            {
+                var seq = GetCurrentSequence();
+                bool shouldPause = seq?.ShouldPauseTime ?? true;
+                _tutorialOverlayPushed = shouldPause;
+
+                if (shouldPause)
+                    InGameSequence.Instance?.PushOverlay(OverlayPhase.Tutorial);
+
+                OnTutorialStart?.Invoke(id);
+            };
             _service.OnStepChanged += (index, step) => OnStepChanged?.Invoke(index, step);
             _service.OnTutorialComplete += HandleTutorialComplete;
 
@@ -309,8 +321,16 @@ namespace TrainDefense.Game.Tutorial
 
         private void HandleTutorialComplete(string sequenceId)
         {
+            Debug.Log($"[TutorialManager] Complete — sequenceId={sequenceId} overlayPushed={_tutorialOverlayPushed}");
             StopAllTutorialCoroutines();
             CleanupButtonTarget();
+
+            if (_tutorialOverlayPushed)
+            {
+                _tutorialOverlayPushed = false;
+                InGameSequence.Instance?.PopOverlay(OverlayPhase.Tutorial);
+            }
+
             OnTutorialComplete?.Invoke(sequenceId);
         }
 
