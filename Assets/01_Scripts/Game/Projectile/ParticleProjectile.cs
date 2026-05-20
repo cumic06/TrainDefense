@@ -23,6 +23,7 @@ namespace TrainDefense.Game
         private ParticleSystem _particleSystem;
         private ParticleSystem.Particle[] _particles;
         private float _colliderUpdateTimer;
+        private float _baseScaleRadius;
 
         private void Awake()
         {
@@ -33,6 +34,26 @@ namespace TrainDefense.Game
         {
             base.FixedUpdate();
             UpdateParticleCollider();
+        }
+
+        /// <summary>
+        /// 포탑 AttackArea 변경 시 파티클/콜라이더 전체를 비율로 스케일한다.
+        /// 첫 호출의 scaleRadius를 base로 잡아서 이후 ratio 만큼 transform.localScale을 조정한다.
+        /// ParticleSystem.scalingMode가 Local로 설정돼 있어야 시각/시뮬레이션이 함께 늘어난다.
+        /// </summary>
+        protected override void ApplyScaleByArea(float scaleRadius)
+        {
+            if (scaleRadius <= 0f) return;
+
+            if (_baseScaleRadius <= 0f)
+            {
+                _baseScaleRadius = scaleRadius;
+                transform.localScale = Vector3.one;
+                return;
+            }
+
+            float ratio = scaleRadius / _baseScaleRadius;
+            transform.localScale = new Vector3(ratio, ratio, 1f);
         }
 
         #region ParticleCollider
