@@ -61,6 +61,23 @@ namespace TrainDefense.Game
         
         #endregion
 
+        protected virtual void OnEnable()
+        {
+            if (_flashCoroutine != null)
+            {
+                StopCoroutine(_flashCoroutine);
+                _flashCoroutine = null;
+            }
+
+            if (_spriteRenderers == null || _originalMaterials == null) return;
+
+            for (int i = 0; i < _spriteRenderers.Length; i++)
+            {
+                if (_spriteRenderers[i] != null && i < _originalMaterials.Length)
+                    _spriteRenderers[i].sharedMaterial = _originalMaterials[i];
+            }
+        }
+
         protected virtual void Awake()
         {
             _spriteRenderers = GetComponentsInChildren<SpriteRenderer>(true);
@@ -234,7 +251,7 @@ namespace TrainDefense.Game
                     _spriteRenderers[i].sharedMaterial = _flashMaterial;
             }
 
-            yield return new WaitForSeconds(0.15f);
+            yield return new WaitForSecondsRealtime(0.15f);
 
             for (int i = 0; i < _spriteRenderers.Length; i++)
             {

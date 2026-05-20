@@ -106,6 +106,10 @@ namespace TrainDefense.Game
             {
                 ApplyScaleByArea(scaleRadius);
             }
+            else if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.TargetRange && _target != null)
+            {
+                ApplyScaleByTargetRange(_target.TargetTransform.position);
+            }
         }
 
         protected virtual void ApplyScaleByArea(float scaleRadius)
@@ -262,14 +266,12 @@ namespace TrainDefense.Game
                 }
 
                 var (finalDamage, isCritical) = CalculateCriticalDamage();
-                if (data.TriggerHandlePrefab != null)
-                {
-                    if (!data.TriggerHandlePrefab.HasTurretDamage)
-                    {
-                        target.TakeDamage(finalDamage, isCritical);
-                    }
-                }
-                else
+                // Pierce 모드에서는 TriggerHandle이 마지막에만 소환되므로 직접 데미지 적용
+                bool shouldDealDamage = data.Pierce
+                    || data.TriggerHandlePrefab == null
+                    || !data.TriggerHandlePrefab.HasTurretDamage;
+
+                if (shouldDealDamage)
                 {
                     target.TakeDamage(finalDamage, isCritical);
                 }
