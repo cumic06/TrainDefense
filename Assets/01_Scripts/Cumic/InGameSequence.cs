@@ -128,7 +128,12 @@ namespace Cumic.Sequence
             // 삼중택일이 여러 번 남아있는 동안에는 오버레이를 유지해 시간이 흐르지 않도록 한다.
             if (e != null && e.ChoiceLeftCount > 0)
                 return;
+
             PopOverlay(OverlayPhase.LevelUp);
+
+            // GameEnter 직후 첫 삼중택일(LevelUp 오버레이 없이 Idle 상태)이 완료되면 Engage를 시작한다.
+            if (CurrentBase == BasePhase.Idle)
+                GameEventSystem.Publish(new EngageStartEvent());
         }
         private void _OnStageEnd(StageEndEvent _)             => _SetBase(BasePhase.StageEnd);
         private void _OnGameEnd(GameEndEvent _)               => _SetBase(BasePhase.GameOver);

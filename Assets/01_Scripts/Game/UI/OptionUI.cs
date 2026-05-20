@@ -112,7 +112,7 @@ namespace TrainDefense
          gameObject.SetActive(true);
 
          if (InGameSequence.Instance != null)
-            InGameSequence.Instance.PushOverlay(OverlayPhase.MenuPause);
+            InGameSequence.Instance.PushOverlay(OverlayPhase.Option);
          else if (TimeManager.Instance != null)
             TimeManager.Instance.Pause();
       }
@@ -122,7 +122,7 @@ namespace TrainDefense
          gameObject.SetActive(false);
 
          if (InGameSequence.Instance != null)
-            InGameSequence.Instance.PopOverlay(OverlayPhase.MenuPause);
+            InGameSequence.Instance.PopOverlay(OverlayPhase.Option);
          else if (TimeManager.Instance != null)
             TimeManager.Instance.Resume();
       }
