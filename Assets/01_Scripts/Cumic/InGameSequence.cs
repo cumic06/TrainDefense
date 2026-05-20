@@ -122,7 +122,14 @@ namespace Cumic.Sequence
         private void _OnEngageStart(EngageStartEvent _)       => _SetBase(BasePhase.Engage);
         private void _OnInspectionStart(InspectionStartEvent _) => _SetBase(BasePhase.Inspection);
         private void _OnLevelUp(LevelUpEvent _)               => PushOverlay(OverlayPhase.LevelUp);
-        private void _OnTriChoiceSelect(TriChoiceSelectEvent _) => PopOverlay(OverlayPhase.LevelUp);
+
+        private void _OnTriChoiceSelect(TriChoiceSelectEvent e)
+        {
+            // 삼중택일이 여러 번 남아있는 동안에는 오버레이를 유지해 시간이 흐르지 않도록 한다.
+            if (e != null && e.ChoiceLeftCount > 0)
+                return;
+            PopOverlay(OverlayPhase.LevelUp);
+        }
         private void _OnStageEnd(StageEndEvent _)             => _SetBase(BasePhase.StageEnd);
         private void _OnGameEnd(GameEndEvent _)               => _SetBase(BasePhase.GameOver);
 
