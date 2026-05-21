@@ -343,12 +343,28 @@ namespace TrainDefense.Game
 
         private void TargetedAttack()
         {
+            int processCount = Mathf.Min(_currentTurretTrainStatus.TargetCount, _targetMonsters.Count);
+
+            if (_useNonMovementProjectilePooling)
+            {
+                for (int i = processCount; i < _nonMovementProjectiles.Count; i++)
+                {
+                    if (_nonMovementProjectiles[i] != null)
+                        _nonMovementProjectiles[i].gameObject.SetActive(false);
+                }
+            }
+
             for (int i = 0; i < _currentTurretTrainStatus.TargetCount; i++)
             {
                 if (i >= _targetMonsters.Count) break;
 
                 Monster target = _targetMonsters[i];
-                if (target == null) continue;
+                if (target == null)
+                {
+                    if (_useNonMovementProjectilePooling && i < _nonMovementProjectiles.Count)
+                        _nonMovementProjectiles[i]?.gameObject.SetActive(false);
+                    continue;
+                }
 
                 Projectile projectile = SpawnNormalProjectile(i, target);
                 if (projectile != null)
