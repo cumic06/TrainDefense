@@ -35,12 +35,13 @@ namespace Cumic.Sequence
         private void Awake()
         {
             Instance = this;
+            // TriChoiceUI 등 다른 컴포넌트의 Start()보다 먼저 이벤트를 구독해야
+            // GameEnterEvent 처리 시 Pause가 TriChoice 배경 활성화보다 먼저 실행됨.
+            _SubscribeEvents();
         }
 
         private void Start()
         {
-            _SubscribeEvents();
-
             if (SoundManager.Instance != null)
                 SoundManager.Instance.PlayBGM(SoundType.BGM_Stage);
         }

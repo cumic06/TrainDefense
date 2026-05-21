@@ -124,7 +124,7 @@ namespace TrainDefense.Game
                 return;
 
             Time.timeScale = 0;
-            SoundManager.Instance.SuppressSFX(true);
+            SoundManager.Instance?.SuppressSFX(true);
         }
 
         public void Resume()
@@ -138,7 +138,7 @@ namespace TrainDefense.Game
             Debug.Log($"[TimeManager] Resume — timeScale 0→{next}");
             _isPaused = false;
             Time.timeScale = next;
-            SoundManager.Instance.SuppressSFX(false);
+            SoundManager.Instance?.SuppressSFX(false);
         }
 
         private void _OnGameOverStart(GameOverStartEvent e)
