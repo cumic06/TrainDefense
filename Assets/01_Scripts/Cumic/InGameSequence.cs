@@ -17,7 +17,7 @@ namespace Cumic.Sequence
         public OverlayPhase CurrentOverlays { get; private set; }
 
         public bool IsRunning =>
-            (CurrentBase == BasePhase.Engage || CurrentBase == BasePhase.Inspection)
+            CurrentBase == BasePhase.Engage
             && CurrentOverlays == OverlayPhase.None;
 
         #endregion
