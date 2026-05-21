@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 85d71741927f0cb49979c6bbb9b6f67a, type: 3}
   m_Name: ElectrickProjectileConfig
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ProjectileConfig
-  movementType: 2
+  movementType: 1
   speed: 10
   destroyDelay: 0.2
   destroyOnTriggerEnter: 0
   isSpawnTriggerHandle: 0
   triggerHandlePrefab: {fileID: 0}
-  scaleByRange: 1
+  scaleByRange: 0
   scaleRangeType: 1
   isTargeting: 1
   directDamage: 1
