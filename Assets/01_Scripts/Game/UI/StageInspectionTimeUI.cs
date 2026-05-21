@@ -19,6 +19,7 @@ namespace TrainDefense.Game.UI
       private Slider _slider;
       private TextMeshProUGUI _nextInspectionTimeText;
       private float _maxTime;
+      private bool _isActive;
       #endregion
 
 
@@ -41,6 +42,8 @@ namespace TrainDefense.Game.UI
 
       private void _SubscribeEvents()
       {
+         GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
+         GameEventSystem.Subscribe<EngageReadyEvent>(_OnEngageReady);
          GameEventSystem.Subscribe<InspectionStartEvent>(SetMaxValue);
          GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
          GameEventSystem.Subscribe<StageSelectEvent>(OnStageSelected);
@@ -49,14 +52,31 @@ namespace TrainDefense.Game.UI
 
       private void _UnsubscribeEvents()
       {
+         GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
+         GameEventSystem.Unsubscribe<EngageReadyEvent>(_OnEngageReady);
          GameEventSystem.Unsubscribe<InspectionStartEvent>(SetMaxValue);
          GameEventSystem.Unsubscribe<ChangeStageTimeEvent>(OnChangeStageTime);
          GameEventSystem.Unsubscribe<StageSelectEvent>(OnStageSelected);
          GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
       }
 
+      private void _OnGameEnter(GameEnterEvent _)
+      {
+         _isActive = false;
+         _maxTime = 0f;
+         _slider.value = 0f;
+      }
+
+      private void _OnEngageReady(EngageReadyEvent _)
+      {
+         _isActive = false;
+         _maxTime = 0f;
+         _slider.value = 0f;
+      }
+
       private void OnEngageStart(EngageStartEvent engageStartEvent)
       {
+         _isActive = true;
          _maxTime = 0f;
          StartCoroutine(ResetSliderValue());
       }
@@ -75,6 +95,7 @@ namespace TrainDefense.Game.UI
 
       private void SetMaxValue(InspectionStartEvent inspectionStartEvent)
       {
+         _isActive = true;
          RefreshMaxValue();
          StartCoroutine(ResetSliderValue());
       }
@@ -101,6 +122,8 @@ namespace TrainDefense.Game.UI
 
       private void OnChangeStageTime(ChangeStageTimeEvent changeStageTimeEvent)
       {
+         if (!_isActive) return;
+
          if (_maxTime <= 0f)
          {
             RefreshMaxValue();

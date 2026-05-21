@@ -116,7 +116,13 @@ namespace TrainDefense.Game
 
         public void Pause()
         {
-            if (_isPaused) return;
+            if (_isPaused)
+            {
+                // _isPaused=true이지만 외부에서 timeScale이 직접 변경된 경우 재동기화
+                if (!_isGameOverSlowing && Time.timeScale != 0f)
+                    Time.timeScale = 0f;
+                return;
+            }
             Debug.Log($"[TimeManager] Pause — timeScale {Time.timeScale}→0");
             _isPaused = true;
 
