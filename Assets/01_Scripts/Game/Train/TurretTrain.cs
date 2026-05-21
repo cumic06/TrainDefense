@@ -347,12 +347,16 @@ namespace TrainDefense.Game
 
             if (_useNonMovementProjectilePooling)
             {
+                EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
+
                 for (int i = processCount; i < _nonMovementProjectiles.Count; i++)
                 {
                     if (_nonMovementProjectiles[i] != null)
                         _nonMovementProjectiles[i].gameObject.SetActive(false);
                 }
             }
+
+            Debug.Log($"[TargetedAttack] TC={_currentTurretTrainStatus.TargetCount} mon={_targetMonsters.Count} pool={_nonMovementProjectiles.Count}");
 
             for (int i = 0; i < _currentTurretTrainStatus.TargetCount; i++)
             {
@@ -367,6 +371,7 @@ namespace TrainDefense.Game
                 }
 
                 Projectile projectile = SpawnNormalProjectile(i, target);
+                Debug.Log($"[TargetedAttack] i={i} target={target.name} proj={(projectile == null ? "NULL" : projectile.gameObject.name)} active={projectile?.gameObject.activeSelf}");
                 if (projectile != null)
                 {
                     projectile.transform.LookAt2D(target.transform);
