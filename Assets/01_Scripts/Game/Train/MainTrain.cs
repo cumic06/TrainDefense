@@ -90,7 +90,6 @@ namespace TrainDefense.Game
       protected override void OnDestroy()
       {
          base.OnDestroy();
-         Time.timeScale = 1f;
          Time.fixedDeltaTime = 0.02f;
          GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
          GameEventSystem.Unsubscribe<TrainDeadEvent>(CheckDeadTrain);

@@ -40,6 +40,7 @@ namespace TrainDefense.Game.Manager
         private GameObject _currentMapInstance;
         private int _inspectionCount = 0;
         private bool _shouldShowStageSelectionOnStageEnd;
+        private bool _isGameOver;
         #endregion
 
         public StageData CurrentStageData => _stageDatas[_currentStageIndex];
@@ -70,6 +71,7 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
             GameEventSystem.Subscribe<StageSelectEvent>(_OnStageSelected);
             GameEventSystem.Subscribe<InspectionEndEvent>(_OnInspectionEnd);
+            GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOverStart);
         }
 
         private void _UnsubscribeEvents()
@@ -79,10 +81,13 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
             GameEventSystem.Unsubscribe<StageSelectEvent>(_OnStageSelected);
             GameEventSystem.Unsubscribe<InspectionEndEvent>(_OnInspectionEnd);
+            GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOverStart);
         }
 
         private void FixedUpdate()
         {
+            if (_isGameOver) return;
+            if (Cumic.Sequence.InGameSequence.Instance is { IsRunning: false }) return;
             _CurrentStageTimeUp();
             _StageHandler();
         }
@@ -215,6 +220,8 @@ namespace TrainDefense.Game.Manager
 
             _inspectionCount++;
         }
+
+        private void _OnGameOverStart(GameOverStartEvent _) => _isGameOver = true;
 
         private void _OnInspectionEnd(InspectionEndEvent inspectionEndEvent)
         {
