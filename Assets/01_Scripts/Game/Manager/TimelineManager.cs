@@ -13,6 +13,8 @@ namespace TrainDefense
         private bool startTimelineOnAwake = false;
         #endregion
 
+        #region LifeCycle
+
         private void Start()
         {
             if (startTimelineOnAwake)
@@ -21,8 +23,11 @@ namespace TrainDefense
             }
         }
 
+        #endregion
+
         public void StartTimeline()
         {
+            Game.TimeManager.Instance?.Pause();
             playableDirector.Play();
         }
 

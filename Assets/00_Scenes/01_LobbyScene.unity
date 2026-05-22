@@ -497,7 +497,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &210000011
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1831,6 +1831,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   fastForwardScale: 3
   maxDeltaTime: 0.1
+  gameOverMinTimeScale: 0.05
 --- !u!1 &372542954
 GameObject:
   m_ObjectHideFlags: 0
@@ -3261,8 +3262,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   _key: 17
 --- !u!114 &999990002
 MonoBehaviour:
@@ -3274,8 +3275,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   _key: 19
 --- !u!114 &999990003
 MonoBehaviour:
@@ -3287,8 +3288,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   _key: 18
 --- !u!114 &999990004
 MonoBehaviour:
@@ -3300,8 +3301,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   _key: 16
 --- !u!114 &999990005
 MonoBehaviour:

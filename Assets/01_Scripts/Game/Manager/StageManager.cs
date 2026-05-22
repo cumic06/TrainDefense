@@ -87,6 +87,7 @@ namespace TrainDefense.Game.Manager
         private void FixedUpdate()
         {
             if (_isGameOver) return;
+            if (Cumic.Sequence.InGameSequence.Instance is { IsRunning: false }) return;
             _CurrentStageTimeUp();
             _StageHandler();
         }
