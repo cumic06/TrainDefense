@@ -46,14 +46,18 @@ namespace TrainDefense.Game
                 return result;
             }
 
-            // EliteTrain 보장: CanUpgradeToEliteTrain() true면 삼중택일 중 하나는 무조건 EliteTrain Choice
+            // EliteTrain: 가능한 EliteTrain Choice를 모두 추가 (count 초과 방지)
             if (_CanUpgradeToEliteTrain())
             {
                 var eliteChoices = _GetEliteTrainChoices();
 
-                if (eliteChoices.Count > 0)
+                foreach (var eliteChoice in eliteChoices)
                 {
-                    _AddChoiceToResult(result, eliteChoices);
+                    if (result.Count >= count)
+                        break;
+
+                    if (!_HasChoiceReferenceConflict(eliteChoice.Option, result))
+                        result.Add(eliteChoice);
                 }
             }
 
