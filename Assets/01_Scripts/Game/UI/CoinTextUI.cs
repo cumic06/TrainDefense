@@ -16,28 +16,22 @@ namespace TrainDefense.Game.UI
       private float tweenDuration = 1f;
       #endregion
 
+      private void OnEnable()
+      {
+         if (coinText != null && UserDataManager.Instance != null)
+         {
+            coinText.text = UserDataManager.Instance.Coin.ToCommaString();
+         }
+      }
+
       private void Start()
       {
          GameEventSystem.Subscribe<ChangeCoinUIEvent>(OnChangeCoin);
-         Setup();
       }
 
       private void OnDestroy()
       {
          GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(OnChangeCoin);
-      }
-
-      private void Setup()
-      {
-         if (UserDataManager.Instance != null)
-         {
-            coinText.text = $"0";
-            //coinText.text = $"Coin : {UserDataManager.Instance.Coin}";
-         }
-         else
-         {
-            coinText.text = $"0";
-         }
       }
 
       private void OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)

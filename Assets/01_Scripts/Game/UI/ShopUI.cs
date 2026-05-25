@@ -22,6 +22,8 @@ namespace TrainDefense.Game.UI
         private Image backgroundImage;
         [SerializeField]
         private ShopButtonUI shopButtonUI;
+        [SerializeField]
+        private GameObject groupCoin;
         #endregion
 
         private RectTransform _rectTransform;
@@ -92,6 +94,8 @@ namespace TrainDefense.Game.UI
 
             gameObject.SetActive(true);
 
+            if (groupCoin != null) groupCoin.SetActive(true);
+
             if (_rectTransform == null)
             {
                 _rectTransform = GetComponent<RectTransform>();
@@ -128,6 +132,8 @@ namespace TrainDefense.Game.UI
             }
 
             isShopOpen = false;
+
+            if (groupCoin != null) groupCoin.SetActive(false);
 
             GameEventSystem.Publish(new InspectionEndEvent());
             GameEventSystem.Publish(new EngageStartEvent());
