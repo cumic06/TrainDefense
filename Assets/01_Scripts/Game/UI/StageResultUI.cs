@@ -32,7 +32,6 @@ namespace TrainDefense.Game.UI
 
             GameEventSystem.Subscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
-            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
         }
 
@@ -40,7 +39,6 @@ namespace TrainDefense.Game.UI
         {
             GameEventSystem.Unsubscribe<EngageReadyEvent>(OnEngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
-            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
         }
 
@@ -52,11 +50,6 @@ namespace TrainDefense.Game.UI
         private void OnEngageStart(EngageStartEvent engageStartEvent)
         {
             HideResultUIs();
-        }
-
-        private void OnStageEnd(StageEndEvent stageEndEvent)
-        {
-            ShowResult(stageEndEvent.IsClear);
         }
 
         private void OnGameEnd(GameEndEvent gameEndEvent)

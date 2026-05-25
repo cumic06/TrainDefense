@@ -190,26 +190,17 @@ namespace TrainDefense.Game.Manager
                     _CurrentStageInspectionUp();
                 }
             }
-            else if (_currentStageTime >= _GetPostLastInspectionDuration())
+            else if (_shouldShowStageSelectionOnStageEnd
+                     && _currentStageTime >= _GetPostLastInspectionDuration())
             {
-                _StageEnd();
+                _shouldShowStageSelectionOnStageEnd = false;
+                _TransitionToStageSelection();
             }
         }
 
         private float GetInspectionDurationForIndex(int i)
         {
             return CurrentStageData.BaseInspectionTime + stationInspectionTimeIncrement * i;
-        }
-
-        private void _StageEnd()
-        {
-            if (_shouldShowStageSelectionOnStageEnd)
-            {
-                _TransitionToStageSelection();
-                return;
-            }
-
-            GameEventSystem.Publish(new StageEndEvent(true));
         }
 
         private void _CurrentStageInspectionUp()
@@ -350,12 +341,7 @@ namespace TrainDefense.Game.Manager
             MonsterSpawner.Instance?.DestroyAllMonsters();
             GameEventSystem.Publish(new EngageReadyEvent());
 
-            if (!_ShowStageSelection())
-            {
-                _shouldShowStageSelectionOnStageEnd = false;
-                GameEventSystem.Publish(new StageEndEvent(true));
-                return;
-            }
+            _ShowStageSelection();
         }
 
         #region Scaling
