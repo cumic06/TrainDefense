@@ -74,28 +74,11 @@ namespace TrainDefense.Game
             }
         }
 
-        private void Update()
+        public void SetFastForward(bool fast)
         {
-#if UNITY_EDITOR
-            if (_isPaused)
-                return;
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _isFastForward = true;
-                Time.timeScale = fastForwardScale;
-            }
-            else if (Input.GetKeyUp(KeyCode.Space))
-            {
-                _isFastForward = false;
-                Time.timeScale = 1f;
-            }
-
-            if (Input.GetKeyDown(KeyCode.F))
-            {
-                GameEventSystem.Publish(new LevelUpEvent(1));
-            }
-#endif
+            if (_isPaused) return;
+            _isFastForward = fast;
+            Time.timeScale = fast ? fastForwardScale : 1f;
         }
 
         #endregion
