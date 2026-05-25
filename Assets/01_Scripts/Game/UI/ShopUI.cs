@@ -59,7 +59,6 @@ namespace TrainDefense.Game.UI
             foreach (var shopItemUI in _shopItemUIs)
             {
                 shopItemUI.SetUp();
-                shopItemUI.SetVaild(GetCurrentMoney());
             }
         }
 
@@ -104,7 +103,6 @@ namespace TrainDefense.Game.UI
             foreach (var shopItemUI in _shopItemUIs)
             {
                 shopItemUI.SetUp();
-                shopItemUI.SetVaild(GetCurrentMoney());
             }
 
             await _rectTransform.DOAnchorPosX(shopMoveXEndPos, shopMoveInterval).SetUpdate(true);

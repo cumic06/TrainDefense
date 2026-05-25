@@ -6,6 +6,7 @@ using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using System.Text.RegularExpressions;
+using System.Collections;
 
 namespace TrainDefense.Game.UI
 {
@@ -22,14 +23,22 @@ namespace TrainDefense.Game.UI
       private TextMeshProUGUI itemDescriptionText;
       [SerializeField]
       private TextMeshProUGUI needMoneyText;
+
+      [Header("Flash Settings")]
+      [SerializeField]
+      private float flashDuration = 0.1f;
+      [SerializeField]
+      private int flashLoopCount = 3;
       #endregion
 
       private UpgradeData _upgradeData;
+      private Color _priceOriginalColor;
 
       private void Start()
       {
          buyButton.onClick.AddListener(OnBuyButtonClick);
          _upgradeData = DatabaseManager.Instance.GetUpgradeData(shopItemDataId);
+         _priceOriginalColor = needMoneyText.color;
          SetUp();
       }
 
@@ -43,11 +52,7 @@ namespace TrainDefense.Game.UI
             itemDescriptionText.text = GetLevelDescription();
             needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost().ToCommaString()}$";
 
-            if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
-            {
-               buyButton.interactable = false;
             }
-         }
       }
 
       private int GetCurrentCost()
@@ -125,27 +130,40 @@ namespace TrainDefense.Game.UI
          }
       }
 
-      public void SetVaild(int currentMoney)
+      private void OnBuyButtonClick()
       {
          if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
+            return;
+
+         if (UserDataManager.Instance.Coin < GetCurrentCost())
          {
-            buyButton.interactable = false;
+            _FlashPriceRed();
             return;
          }
 
-         if (currentMoney >= GetCurrentCost())
-         {
-            buyButton.interactable = true;
-         }
-         else
-         {
-            buyButton.interactable = false;
-         }
+         GameEventSystem.Publish(new BuyShopItemEvent(GetCurrentCost(), shopItemDataId));
       }
 
-      private void OnBuyButtonClick()
+      private Coroutine _flashCoroutine;
+
+      private void _FlashPriceRed()
       {
-         GameEventSystem.Publish(new BuyShopItemEvent(GetCurrentCost(), shopItemDataId));
+         if (_flashCoroutine != null)
+            StopCoroutine(_flashCoroutine);
+         needMoneyText.color = _priceOriginalColor;
+         _flashCoroutine = StartCoroutine(_FlashPriceRedRoutine());
+      }
+
+      private IEnumerator _FlashPriceRedRoutine()
+      {
+         for (int i = 0; i < flashLoopCount; i++)
+         {
+            needMoneyText.color = Color.red;
+            yield return new WaitForSecondsRealtime(flashDuration);
+            needMoneyText.color = _priceOriginalColor;
+            yield return new WaitForSecondsRealtime(flashDuration);
+         }
+         _flashCoroutine = null;
       }
    }
 }
