@@ -23,7 +23,11 @@ namespace TrainDefense.Game
         private ParticleSystem _particleSystem;
         private ParticleSystem.Particle[] _particles;
         private float _colliderUpdateTimer;
-        private float _baseScaleRadius;
+
+        [SerializeField]
+        [BoxGroup("ParticleCollider")]
+        [Tooltip("파티클이 localScale=1일 때 대응하는 AttackArea 기준값. 엑셀 기본 AttackArea와 맞춰 설정.")]
+        private float baseScaleRadius = 8f;
 
         private void Awake()
         {
@@ -44,15 +48,7 @@ namespace TrainDefense.Game
         protected override void ApplyScaleByArea(float scaleRadius)
         {
             if (scaleRadius <= 0f) return;
-
-            if (_baseScaleRadius <= 0f)
-            {
-                _baseScaleRadius = scaleRadius;
-                transform.localScale = Vector3.one;
-                return;
-            }
-
-            float ratio = scaleRadius / _baseScaleRadius;
+            float ratio = scaleRadius / baseScaleRadius;
             transform.localScale = new Vector3(ratio, ratio, 1f);
         }
 
