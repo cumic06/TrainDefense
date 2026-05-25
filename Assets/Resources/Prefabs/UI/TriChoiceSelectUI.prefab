@@ -65,6 +65,7 @@ MonoBehaviour:
   newImage: {fileID: 8890260102272059900}
   upgradeImage: {fileID: 8023327746665546210}
   skillNameText: {fileID: 1875584013805568614}
+  eliteOutlineMaterial: {fileID: 2100000, guid: 46ea54cf572a27c4dafc70f63efaef4b, type: 2}
 --- !u!222 &4832810585675717907
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -24,9 +24,12 @@ namespace TrainDefense.Game.UI
       private Image upgradeImage;
       [SerializeField]
       private TextMeshProUGUI skillNameText;
+      [SerializeField]
+      private Material eliteOutlineMaterial;
       #endregion
 
       private Button _selectButton;
+      private Image _cardImage;
       private IChoiceOption _choiceOption;
       private TriChoiceUI _triChoiceUI;
 
@@ -35,6 +38,7 @@ namespace TrainDefense.Game.UI
       private void Awake()
       {
          _selectButton = GetComponent<Button>();
+         _cardImage = GetComponent<Image>();
       }
 
       private void Start()
@@ -63,6 +67,7 @@ namespace TrainDefense.Game.UI
 
          iconImage.sprite = choiceUIInfo.Icon;
          iconImage.gameObject.SetActive(choiceUIInfo.Icon != null);
+         _cardImage.material = (choiceOption is EliteTrainChoice) ? eliteOutlineMaterial : null;
          nameText.text = choiceUIInfo.Name;
 
          if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)

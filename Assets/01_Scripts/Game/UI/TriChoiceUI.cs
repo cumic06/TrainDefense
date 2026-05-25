@@ -35,8 +35,12 @@ namespace TrainDefense.Game.UI
       #endregion
 
       #region LifeCycle
+      private static readonly int GlobalUnscaledTime = Shader.PropertyToID("_GlobalUnscaledTime");
+
       private void OnEnable() => Localize.Localization.OnLanguageChanged += _RefreshLanguage;
       private void OnDisable() => Localize.Localization.OnLanguageChanged -= _RefreshLanguage;
+
+      private void Update() => Shader.SetGlobalFloat(GlobalUnscaledTime, Time.unscaledTime);
 
       private void Awake()
       {

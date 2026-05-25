@@ -13,6 +13,7 @@ Shader "Custom/Sprite/WhiteOutlineGold"
         _ShineWidth ("Shine Width", Range(0.01,0.5)) = 0.12
         _ShineIntensity ("Shine Intensity", Range(0,3)) = 1
         _ShineAngle ("Shine Angle (deg)", Range(0,360)) = 45
+        [Toggle] _RealtimeAnimation ("Realtime (Ignore Timescale)", Float) = 0
     }
 
     SubShader
@@ -71,7 +72,10 @@ Shader "Custom/Sprite/WhiteOutlineGold"
                 float  _ShineWidth;
                 float  _ShineIntensity;
                 float  _ShineAngle;
+                float  _RealtimeAnimation;
             CBUFFER_END
+
+            float _GlobalUnscaledTime; // set by ShaderUnscaledTimeUpdater.cs via Shader.SetGlobalFloat
 
             Varyings vert(Attributes IN)
             {
@@ -127,7 +131,8 @@ Shader "Custom/Sprite/WhiteOutlineGold"
                 float  angleRad     = radians(_ShineAngle);
                 float2 dir          = float2(cos(angleRad), sin(angleRad));
                 float  shineCoord   = dot(IN.uv, dir);
-                float  bandPos      = frac(_Time.y * _ShineSpeed) * 2.0 - 0.5;
+                float  shineTime    = lerp(_Time.y, _GlobalUnscaledTime, _RealtimeAnimation);
+                float  bandPos      = frac(shineTime * _ShineSpeed) * 2.0 - 0.5;
                 float  distFromBand = abs(shineCoord - bandPos);
                 float  shine        = smoothstep(_ShineWidth, 0.0, distFromBand);
                 c.rgb              += shine * _ShineColor.rgb * _Color.rgb * _ShineIntensity * c.a * outlineMask;
