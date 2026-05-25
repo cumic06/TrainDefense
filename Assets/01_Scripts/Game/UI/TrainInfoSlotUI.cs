@@ -196,7 +196,8 @@ namespace TrainDefense.Game.UI
             SetIcon(replaceTrainEvent.NewIcon);
          }
 
-         trainLevelImage.gameObject.SetActive(false);
+         trainLevelImage.gameObject.SetActive(true);
+         trainLevelText.text = "E";
          backGroundImage.color = Color.green;
          _RefreshSkillUI();
       }
