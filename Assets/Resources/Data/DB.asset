@@ -522,7 +522,7 @@ MonoBehaviour:
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 0.3
+      AttackInterval: 0.25
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -544,11 +544,11 @@ MonoBehaviour:
     - 60003
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 4
+      AttackDamage: 2
       AttackRange: 8
       AttackArea: 8
       AttackCount: 1
-      AttackInterval: 0.15
+      AttackInterval: 0.1
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -571,11 +571,11 @@ MonoBehaviour:
     - 60010
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 25
+      AttackDamage: 30
       AttackRange: 10
       AttackArea: 10
       AttackCount: 1
-      AttackInterval: 1.25
+      AttackInterval: 1
       TargetCount: 1
       CriticalChance: 30
       CriticalDamage: 0.3
@@ -651,7 +651,7 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 3
+      AttackRange: 20
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
@@ -998,11 +998,11 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 1
+      AttackDamage: 2
       AttackRange: 5
       AttackArea: 5
       AttackCount: 1
-      AttackInterval: 0.1
+      AttackInterval: 0.15
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
@@ -1042,20 +1042,16 @@ MonoBehaviour:
     - id: 50003
       name: Skill_50003_Name
       description: Skill_50003_Desc
-      skillType: 2
+      skillType: 0
       skillCooldown: 30
-      skillIconId:
+      skillIconId: 
       projectileData:
-        projectilePrefabId:
+        projectilePrefabId: 
         damage: 0
         range: 0
         projectileCount: 0
       buffDuration: 15
-      buffs:
-      - statType: 1
-        percent: 200
-      - statType: 8
-        percent: 200
+      buffs: []
     - id: 50004
       name: Skill_50004_Name
       description: Skill_50004_Desc
@@ -1276,11 +1272,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 4
+        AttackDamage: 5
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.015
+        AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1288,11 +1284,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 6
+        AttackDamage: 8
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.35
+        AttackInterval: -0.02
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1300,11 +1296,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 9
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.75
+        AttackInterval: -0.03
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1364,7 +1360,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: -0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1376,7 +1372,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.24
+        AttackInterval: -0.24
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1544,7 +1540,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: -0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1556,7 +1552,7 @@ MonoBehaviour:
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: 0.1
+        AttackInterval: -0.1
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
