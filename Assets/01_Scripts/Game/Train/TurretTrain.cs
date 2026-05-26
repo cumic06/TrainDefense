@@ -956,11 +956,11 @@ namespace TrainDefense.Game
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    _currentTurretTrainStatus.AttackRange += baseStatus.AttackRange * percent * times;
+                    _currentTurretTrainStatus.AttackRange = _currentTurretTrainStatus.AttackRange / (1f + percent * prevLevel) * (1f + percent * newLevel);
                     break;
 
                 case StatType.AttackArea:
-                    _currentTurretTrainStatus.AttackArea += baseStatus.AttackArea * percent * times;
+                    _currentTurretTrainStatus.AttackArea = _currentTurretTrainStatus.AttackArea / (1f + percent * prevLevel) * (1f + percent * newLevel);
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
                         float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
@@ -971,9 +971,7 @@ namespace TrainDefense.Game
 
                 case StatType.AttackDamage:
                 {
-                    float dmgDelta = baseStatus.AttackDamage * percent * (newLevel - prevLevel);
-                    Debug.Log($"[Shop DMG] base={baseStatus.AttackDamage} val={stat.Value} new={newLevel} prev={prevLevel} delta={dmgDelta} → {_currentTurretTrainStatus.AttackDamage + dmgDelta}");
-                    _currentTurretTrainStatus.AttackDamage += dmgDelta;
+                    _currentTurretTrainStatus.AttackDamage = _currentTurretTrainStatus.AttackDamage / (1f + percent * prevLevel) * (1f + percent * newLevel);
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                         foreach (var p in _nonMovementProjectiles)
                             if (p != null) InitializeProjectileDamage(p);
@@ -991,7 +989,7 @@ namespace TrainDefense.Game
                 }
 
                 case StatType.AttackInterval:
-                    _currentTurretTrainStatus.AttackInterval += baseStatus.AttackInterval * percent * times;
+                    _currentTurretTrainStatus.AttackInterval = _currentTurretTrainStatus.AttackInterval * (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
                     break;
 
                 case StatType.TargetCount:

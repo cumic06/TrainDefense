@@ -351,11 +351,11 @@ namespace TrainDefense.Game
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    _currentRangeTrainStatus.AttackRange += baseStatus.AttackRange * percent * times;
+                    _currentRangeTrainStatus.AttackRange = _currentRangeTrainStatus.AttackRange / (1f + percent * prevLevel) * (1f + percent * newLevel);
                     break;
 
                 case StatType.AttackArea:
-                    _currentRangeTrainStatus.AttackArea += baseStatus.AttackArea * percent * times;
+                    _currentRangeTrainStatus.AttackArea = _currentRangeTrainStatus.AttackArea / (1f + percent * prevLevel) * (1f + percent * newLevel);
                     if (_rangeProjectilePrefab != null)
                         _rangeProjectilePrefab.transform.localScale =
                             new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
@@ -363,8 +363,7 @@ namespace TrainDefense.Game
 
                 case StatType.AttackDamage:
                 {
-                    float dmgDelta = baseStatus.AttackDamage * percent * (newLevel - prevLevel);
-                    _currentRangeTrainStatus.AttackDamage += dmgDelta;
+                    _currentRangeTrainStatus.AttackDamage = _currentRangeTrainStatus.AttackDamage / (1f + percent * prevLevel) * (1f + percent * newLevel);
                     if (_rangeProjectilePrefab != null)
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
                             _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
@@ -381,7 +380,7 @@ namespace TrainDefense.Game
                 }
 
                 case StatType.AttackInterval:
-                    _currentRangeTrainStatus.AttackInterval += baseStatus.AttackInterval * percent * times;
+                    _currentRangeTrainStatus.AttackInterval = _currentRangeTrainStatus.AttackInterval * (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
                     break;
 
                 case StatType.CriticalChance:
