@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using TrainDefense.Game.Datas;
+using TrainDefense.Localize;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -76,23 +77,15 @@ namespace TrainDefense.Game.UI
                skillNameText.gameObject.SetActive(false);
 
             var triChoiceManager = TriChoiceManager.Instance;
-            if (triChoiceManager != null)
+            var selectedUpgrade = triChoiceManager?.GetSelectedUpgrade(upgradeTrainChoice);
+            if (selectedUpgrade != null)
             {
-               var selectedUpgrade = triChoiceManager.GetSelectedUpgrade(upgradeTrainChoice);
-               if (selectedUpgrade != null)
-               {
-                  object[] formatArgs = GetUpgradeFormatArgs(selectedUpgrade);
-                  descriptionText.text = SafeFormat(choiceUIInfo.Description, formatArgs);
-                  upgradeImage.gameObject.SetActive(true);
-               }
-               else
-               {
-                  descriptionText.text = StripFormatPlaceholders(choiceUIInfo.Description);
-               }
+               descriptionText.text = GetUpgradeDescription(selectedUpgrade);
+               upgradeImage.gameObject.SetActive(true);
             }
             else
             {
-               descriptionText.text = StripFormatPlaceholders(choiceUIInfo.Description);
+               descriptionText.text = "";
                upgradeImage.gameObject.SetActive(false);
             }
          }
@@ -152,7 +145,7 @@ namespace TrainDefense.Game.UI
          return Regex.Replace(text, @"\{[0-9]+\}", "-");
       }
 
-      private object[] GetUpgradeFormatArgs(ITrainUpgradeData upgradeData)
+      private string GetUpgradeDescription(ITrainUpgradeData upgradeData)
       {
          int currentLevel = 0;
          if (_choiceOption is UpgradeTrainChoice upgradeChoice)
@@ -169,46 +162,46 @@ namespace TrainDefense.Game.UI
             }
          }
 
-         var statusUpgrade = upgradeData.GetStatusUpgrade(currentLevel);
-         var args = new System.Collections.Generic.List<object>();
+         var lines = new System.Collections.Generic.List<string>();
 
-         if (statusUpgrade.MaxHp != 0)
-         {
-            args.Add(statusUpgrade.MaxHp);
-         }
+         var statusUpgrade = upgradeData.GetStatusUpgrade(currentLevel);
+         AddStatLine(lines, "Upgrade_MaxHp", statusUpgrade.MaxHp);
 
          if (upgradeData is TurretTrainUpgradeData turretUpgrade)
          {
             var turretStatus = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
-            if (turretStatus.AttackDamage != 0)
-               args.Add(turretStatus.AttackDamage);
-            if (turretStatus.AttackRange != 0)
-               args.Add(turretStatus.AttackRange);
-            if (turretStatus.AttackArea != 0)
-               args.Add(turretStatus.AttackArea);
-            if (turretStatus.AttackCount != 0)
-               args.Add(turretStatus.AttackCount);
-            if (turretStatus.AttackInterval != 0)
-               args.Add(turretStatus.AttackInterval);
-            if (turretStatus.TargetCount != 0)
-               args.Add(turretStatus.TargetCount);
+            AddStatLine(lines, "Upgrade_AttackDamage", turretStatus.AttackDamage);
+            AddStatLine(lines, "Upgrade_AttackRange", turretStatus.AttackRange);
+            AddStatLine(lines, "Upgrade_AttackArea", turretStatus.AttackArea);
+            AddStatLine(lines, "Upgrade_AttackCount", turretStatus.AttackCount);
+            AddStatLine(lines, "Upgrade_AttackInterval", turretStatus.AttackInterval);
+            AddStatLine(lines, "Upgrade_TargetCount", turretStatus.TargetCount);
          }
          else if (upgradeData is RangeTrainUpgradeData rangeUpgrade)
          {
             var rangeStatus = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
-            if (rangeStatus.AttackDamage != 0)
-               args.Add(rangeStatus.AttackDamage);
-            if (rangeStatus.AttackRange != 0)
-               args.Add(rangeStatus.AttackRange);
-            if (rangeStatus.AttackArea != 0)
-               args.Add(rangeStatus.AttackArea);
-            if (rangeStatus.AttackCount != 0)
-               args.Add(rangeStatus.AttackCount);
-            if (rangeStatus.AttackInterval != 0)
-               args.Add(rangeStatus.AttackInterval);
+            AddStatLine(lines, "Upgrade_AttackDamage", rangeStatus.AttackDamage);
+            AddStatLine(lines, "Upgrade_AttackRange", rangeStatus.AttackRange);
+            AddStatLine(lines, "Upgrade_AttackArea", rangeStatus.AttackArea);
+            AddStatLine(lines, "Upgrade_AttackCount", rangeStatus.AttackCount);
+            AddStatLine(lines, "Upgrade_AttackInterval", rangeStatus.AttackInterval);
          }
 
-         return args.ToArray();
+         return string.Join("\n", lines);
+      }
+
+      // 스탯 키가 LocalizeSource에 존재하고 값이 0이 아닐 때만 한 줄로 추가.
+      // 키가 없으면(아직 정의 안 된 스탯) 조용히 건너뛴다.
+      private static void AddStatLine(System.Collections.Generic.List<string> lines, string statKey, float value)
+      {
+         if (value == 0)
+            return;
+
+         string template = Localization.GetByKey(statKey);
+         if (string.IsNullOrEmpty(template))
+            return;
+
+         lines.Add(SafeFormat(template, new object[] { value }));
       }
 
       private void OnSelectButtonClick()
