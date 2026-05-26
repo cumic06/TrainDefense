@@ -22,6 +22,12 @@ namespace TrainDefense.Game.UI
       [SerializeField]
       private ParticleSystem coinParticleSystem;
 
+      [Header("Level Up Text")]
+      [SerializeField]
+      private GameObject levelUpTextObject;
+      [SerializeField]
+      private float cardAppearDelay = 0.3f;
+
       [Header("Reroll")]
       [SerializeField]
       private Button rerollButton;
@@ -53,6 +59,9 @@ namespace TrainDefense.Game.UI
          {
             rerollButton.onClick.AddListener(_OnRerollButtonClick);
          }
+
+         if (levelUpTextObject != null)
+            levelUpTextObject.SetActive(false);
       }
 
       private void Start() => _SubscribeEvents();
@@ -94,7 +103,7 @@ namespace TrainDefense.Game.UI
 
       private void _OnGameEnter(GameEnterEvent gameEnterEvent)
       {
-         OnInspectionEnter(1);
+         OnInspectionEnter(1, showLevelUpText: false);
       }
 
       private void _OnLevelUp(LevelUpEvent levelUpEvent)
@@ -112,15 +121,15 @@ namespace TrainDefense.Game.UI
          gameObject.SetActive(false);
       }
 
-      public void OnInspectionEnter(int count)
+      public void OnInspectionEnter(int count, bool showLevelUpText = true)
       {
          backgroundImage.SetActive(true);
 
          int requestId = ++_popupRequestId;
-         _OnChoiceUIPopup(count, requestId).Forget();
+         _OnChoiceUIPopup(count, requestId, showLevelUpText).Forget();
       }
 
-      private async UniTask _OnChoiceUIPopup(int count, int requestId)
+      private async UniTask _OnChoiceUIPopup(int count, int requestId, bool showLevelUpText = true)
       {
          _choiceLeftCount = count;
          _isSelecting = false;
@@ -149,6 +158,20 @@ namespace TrainDefense.Game.UI
 
             return;
          }
+
+         if (showLevelUpText)
+         {
+            await _ShowLevelUpTextAsync();
+
+            if (_IsPopupOutdated(requestId))
+               return;
+
+            if (cardAppearDelay > 0)
+               await UniTask.Delay((int)(cardAppearDelay * 1000), ignoreTimeScale: true);
+         }
+
+         if (_IsPopupOutdated(requestId))
+            return;
 
          if (coinParticleSystem != null)
          {
@@ -215,13 +238,13 @@ namespace TrainDefense.Game.UI
             return false;
          }
 
-         choiceSelectUI.SetData(choiceOption, choiceUIInfo, this);
-         _activeChoices.Add((choiceOption, slotIndex));
          choiceSelectUI.gameObject.SetActive(true);
-         choiceSelectUI.SetButtonInteractable(true);
-
          choiceSelectUI.transform.DOKill();
          choiceSelectUI.transform.localScale = Vector3.zero;
+
+         choiceSelectUI.SetData(choiceOption, choiceUIInfo, this);
+         _activeChoices.Add((choiceOption, slotIndex));
+         choiceSelectUI.SetButtonInteractable(true);
 
          await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
          {
@@ -235,6 +258,31 @@ namespace TrainDefense.Game.UI
       }
 
       private bool _IsPopupOutdated(int requestId) => requestId != _popupRequestId;
+
+      private async UniTask _ShowLevelUpTextAsync()
+      {
+         if (levelUpTextObject == null)
+            return;
+
+         levelUpTextObject.SetActive(true);
+         levelUpTextObject.transform.localScale = Vector3.one;
+
+         var animations = levelUpTextObject.GetComponents<DOTweenAnimation>();
+         float maxDuration = 0f;
+
+         foreach (var anim in animations)
+         {
+            anim.RewindThenRecreateTweenAndPlay();
+            float d = anim.delay + anim.duration;
+            if (d > maxDuration)
+               maxDuration = d;
+         }
+
+         if (maxDuration > 0)
+            await UniTask.Delay((int)(maxDuration * 1000), ignoreTimeScale: true);
+
+         levelUpTextObject.SetActive(false);
+      }
 
       public async UniTaskVoid OnChoiceSelected(IChoiceOption choiceOption)
       {
