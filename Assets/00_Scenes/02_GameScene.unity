@@ -5617,6 +5617,10 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 3022087188581077362, guid: 541ada25a86ffb3479f8d945198245e1, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 5782947213699400805, guid: 5ffd2f1e7defb5a4aa7211388b4536ef, type: 3}
     - target: {fileID: 4014733589011376575, guid: 541ada25a86ffb3479f8d945198245e1, type: 3}
       propertyPath: m_SortingLayerID
       value: 442794067
@@ -12339,6 +12343,10 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 3022087188581077362, guid: 541ada25a86ffb3479f8d945198245e1, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 5782947213699400805, guid: 5ffd2f1e7defb5a4aa7211388b4536ef, type: 3}
     - target: {fileID: 4014733589011376575, guid: 541ada25a86ffb3479f8d945198245e1, type: 3}
       propertyPath: m_SortingLayerID
       value: 442794067
@@ -15964,6 +15972,10 @@ PrefabInstance:
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 3022087188581077362, guid: 541ada25a86ffb3479f8d945198245e1, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 5782947213699400805, guid: 5ffd2f1e7defb5a4aa7211388b4536ef, type: 3}
     - target: {fileID: 4014733589011376575, guid: 541ada25a86ffb3479f8d945198245e1, type: 3}
       propertyPath: m_SortingLayerID
       value: 442794067
