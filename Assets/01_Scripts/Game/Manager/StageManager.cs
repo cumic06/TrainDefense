@@ -15,7 +15,7 @@ namespace TrainDefense.Game.Manager
         #region Fields
 
         [SerializeField]
-        private int changeInterval = 1;
+        private int changeInterval = 0;
 
         [SerializeField]
         private int mapSelectInterval = 3;
