@@ -170,26 +170,45 @@ namespace TrainDefense.Game.UI
 
          var lines = new System.Collections.Generic.List<string>();
 
+         // 카드에 표시할 "현재값"은 상점 효과(배율)를 제외한, 포탑 업그레이드(트라이초이스)만 반영된 스탯.
+         // = base 스탯 + 0~현재레벨까지 각 레벨 업그레이드 증가량의 합.
+         // (train.CurrentStatus에는 상점 배율이 섞여 분리 불가하므로 upgradeData의 누적 메서드 사용)
          if (upgradeData is TurretTrainUpgradeData turretUpgrade && currentTrain is TurretTrain turretTrain)
          {
-            var current = turretTrain.CurrentStatus;
-            var delta = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
-            AddStatLine(lines, "Upgrade_AttackDamage", current.AttackDamage, delta.AttackDamage);
-            AddStatLine(lines, "Upgrade_AttackArea", current.AttackArea, delta.AttackArea);
-            AddStatLine(lines, "Upgrade_AttackInterval", current.AttackInterval, delta.AttackInterval);
-            AddStatLine(lines, "Upgrade_TargetCount", current.TargetCount, delta.TargetCount);
+            var baseStatus = turretTrain.BaseStatus;
+            var accumulated = turretUpgrade.GetAccumulatedTurretStatusUpgrade(turretTrain.CurrentLevel);
+            float currentDamage = baseStatus.AttackDamage + accumulated.AttackDamage;
+            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
+            float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
+            int currentTargetCount = baseStatus.TargetCount + accumulated.TargetCount;
+
+            var nextUpgrade = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
+            float currentSpeed = ToAttackSpeed(currentInterval);
+            AddStatLine(lines, "Upgrade_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
+            AddStatLine(lines, "Upgrade_AttackArea", currentArea, nextUpgrade.AttackArea);
+            AddStatLine(lines, "Upgrade_AttackSpeed", currentSpeed, ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed);
+            AddStatLine(lines, "Upgrade_TargetCount", currentTargetCount, nextUpgrade.TargetCount);
          }
          else if (upgradeData is RangeTrainUpgradeData rangeUpgrade && currentTrain is RangeTrain rangeTrain)
          {
-            var current = rangeTrain.CurrentStatus;
-            var delta = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
-            AddStatLine(lines, "Upgrade_AttackDamage", current.AttackDamage, delta.AttackDamage);
-            AddStatLine(lines, "Upgrade_AttackArea", current.AttackArea, delta.AttackArea);
-            AddStatLine(lines, "Upgrade_AttackInterval", current.AttackInterval, delta.AttackInterval);
+            var baseStatus = rangeTrain.BaseStatus;
+            var accumulated = rangeUpgrade.GetAccumulatedRangeStatusUpgrade(rangeTrain.CurrentLevel);
+            float currentDamage = baseStatus.AttackDamage + accumulated.AttackDamage;
+            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
+            float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
+
+            var nextUpgrade = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
+            float currentSpeed = ToAttackSpeed(currentInterval);
+            AddStatLine(lines, "Upgrade_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
+            AddStatLine(lines, "Upgrade_AttackArea", currentArea, nextUpgrade.AttackArea);
+            AddStatLine(lines, "Upgrade_AttackSpeed", currentSpeed, ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed);
          }
 
          return string.Join("\n", lines);
       }
+
+      // 공격 딜레이(초)를 초당 공격 횟수(공격속도)로 변환. 시스템 값이 아닌 UI 표시 전용.
+      private static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
 
       // 스탯 키가 LocalizeSource에 존재하고 증가량이 0이 아닐 때만 "현재값 → 다음값" 한 줄로 추가.
       // 키가 없으면(아직 정의 안 된 스탯) 조용히 건너뛴다.

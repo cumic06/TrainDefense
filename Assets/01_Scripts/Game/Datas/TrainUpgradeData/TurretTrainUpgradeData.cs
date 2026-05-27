@@ -76,6 +76,25 @@ namespace TrainDefense.Game.Datas
          return stats?.TurretStatusUpgrade ?? default;
       }
 
+      // 0~level 까지 각 레벨 업그레이드 증가량의 합 (base 미포함)
+      public TurretTrainStatus GetAccumulatedTurretStatusUpgrade(int level)
+      {
+         var total = new TurretTrainStatus();
+         for (int i = 0; i <= level; i++)
+         {
+            var s = GetTurretStatusUpgrade(i);
+            total.AttackDamage += s.AttackDamage;
+            total.AttackRange += s.AttackRange;
+            total.AttackArea += s.AttackArea;
+            total.AttackCount += s.AttackCount;
+            total.AttackInterval += s.AttackInterval;
+            total.TargetCount += s.TargetCount;
+            total.CriticalChance += s.CriticalChance;
+            total.CriticalDamage += s.CriticalDamage;
+         }
+         return total;
+      }
+
       public string GetPassiveSkillDataId(int level)
       {
          return GetStatsForLevel(level)?.PassiveSkillDataId;
