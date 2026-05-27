@@ -153,60 +153,56 @@ namespace TrainDefense.Game.UI
       private string GetUpgradeDescription(ITrainUpgradeData upgradeData)
       {
          int currentLevel = 0;
+         Train currentTrain = null;
          if (_choiceOption is UpgradeTrainChoice upgradeChoice)
          {
             var trainManager = TrainManager.Instance;
             if (trainManager?.MainTrain != null)
             {
-               var train = trainManager.MainTrain.CurrentTrains
+               currentTrain = trainManager.MainTrain.CurrentTrains
                    .FirstOrDefault(t => t.TrainData.Id == upgradeChoice.TargetTrainId);
-               if (train != null)
+               if (currentTrain != null)
                {
-                  currentLevel = train.CurrentLevel + 1;
+                  currentLevel = currentTrain.CurrentLevel + 1;
                }
             }
          }
 
          var lines = new System.Collections.Generic.List<string>();
 
-         var statusUpgrade = upgradeData.GetStatusUpgrade(currentLevel);
-         AddStatLine(lines, "Upgrade_MaxHp", statusUpgrade.MaxHp);
-
-         if (upgradeData is TurretTrainUpgradeData turretUpgrade)
+         if (upgradeData is TurretTrainUpgradeData turretUpgrade && currentTrain is TurretTrain turretTrain)
          {
-            var turretStatus = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
-            AddStatLine(lines, "Upgrade_AttackDamage", turretStatus.AttackDamage);
-            AddStatLine(lines, "Upgrade_AttackRange", turretStatus.AttackRange);
-            AddStatLine(lines, "Upgrade_AttackArea", turretStatus.AttackArea);
-            AddStatLine(lines, "Upgrade_AttackCount", turretStatus.AttackCount);
-            AddStatLine(lines, "Upgrade_AttackInterval", turretStatus.AttackInterval);
-            AddStatLine(lines, "Upgrade_TargetCount", turretStatus.TargetCount);
+            var current = turretTrain.CurrentStatus;
+            var delta = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
+            AddStatLine(lines, "Upgrade_AttackDamage", current.AttackDamage, delta.AttackDamage);
+            AddStatLine(lines, "Upgrade_AttackArea", current.AttackArea, delta.AttackArea);
+            AddStatLine(lines, "Upgrade_AttackInterval", current.AttackInterval, delta.AttackInterval);
+            AddStatLine(lines, "Upgrade_TargetCount", current.TargetCount, delta.TargetCount);
          }
-         else if (upgradeData is RangeTrainUpgradeData rangeUpgrade)
+         else if (upgradeData is RangeTrainUpgradeData rangeUpgrade && currentTrain is RangeTrain rangeTrain)
          {
-            var rangeStatus = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
-            AddStatLine(lines, "Upgrade_AttackDamage", rangeStatus.AttackDamage);
-            AddStatLine(lines, "Upgrade_AttackRange", rangeStatus.AttackRange);
-            AddStatLine(lines, "Upgrade_AttackArea", rangeStatus.AttackArea);
-            AddStatLine(lines, "Upgrade_AttackCount", rangeStatus.AttackCount);
-            AddStatLine(lines, "Upgrade_AttackInterval", rangeStatus.AttackInterval);
+            var current = rangeTrain.CurrentStatus;
+            var delta = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
+            AddStatLine(lines, "Upgrade_AttackDamage", current.AttackDamage, delta.AttackDamage);
+            AddStatLine(lines, "Upgrade_AttackArea", current.AttackArea, delta.AttackArea);
+            AddStatLine(lines, "Upgrade_AttackInterval", current.AttackInterval, delta.AttackInterval);
          }
 
          return string.Join("\n", lines);
       }
 
-      // 스탯 키가 LocalizeSource에 존재하고 값이 0이 아닐 때만 한 줄로 추가.
+      // 스탯 키가 LocalizeSource에 존재하고 증가량이 0이 아닐 때만 "현재값 → 다음값" 한 줄로 추가.
       // 키가 없으면(아직 정의 안 된 스탯) 조용히 건너뛴다.
-      private static void AddStatLine(System.Collections.Generic.List<string> lines, string statKey, float value)
+      private static void AddStatLine(System.Collections.Generic.List<string> lines, string statKey, float currentValue, float delta)
       {
-         if (value == 0)
+         if (delta == 0)
             return;
 
          string template = Localization.GetByKey(statKey);
          if (string.IsNullOrEmpty(template))
             return;
 
-         lines.Add(SafeFormat(template, new object[] { value }));
+         lines.Add(SafeFormat(template, new object[] { currentValue, currentValue + delta }));
       }
 
       private void OnSelectButtonClick()

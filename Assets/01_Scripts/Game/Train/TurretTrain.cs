@@ -49,6 +49,8 @@ namespace TrainDefense.Game
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
         private float _attackCountdown;
 
+        public TurretTrainStatus CurrentStatus => _currentTurretTrainStatus;
+
         public float ProjectileModelScale { get; set; } = 1f;
         public float ProjectileKnockbackPower { get; set; }
         public float ProjectileKnockbackDuration { get; set; }
