@@ -30,6 +30,7 @@ namespace TrainDefense
         public int Coin => _coin;
         public float ExpPercent => _currentExp / GetNextLevelUpExp();
         public int CurrentLevel => _currentLevel;
+        public bool IsLobby { get; private set; }
         public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
         public UserOptionData UserOptionData => _userOptionData;
         public TutorialSaveData TutorialSaveData => _tutorialSaveData;
@@ -85,6 +86,7 @@ namespace TrainDefense
             _currentLevel = 1;
             _triChoiceData.Clear();
             _upgradeLevels.Clear();
+            IsLobby = gameEnterEvent.IsLobby;
         }
         #endregion
 

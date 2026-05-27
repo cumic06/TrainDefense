@@ -15,7 +15,7 @@ namespace TrainDefense
 
         private void Start()
         {
-            GameEventSystem.Publish(new GameEnterEvent());
+            GameEventSystem.Publish(new GameEnterEvent(isLobby: true));
             SetStageData();
             SpawnTrain();
             MapSpawn();

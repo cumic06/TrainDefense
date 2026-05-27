@@ -472,7 +472,7 @@ namespace TrainDefense.Game
 
          ResourceManager.Instance.Spawn(Resources.Load<GameObject>(MoneyPrefabPath), transform.position);
 
-         if (UserDataManager.Instance != null)
+         if (UserDataManager.Instance != null && !UserDataManager.Instance.IsLobby)
          {
             int beforeCoin = UserDataManager.Instance.Coin;
             int afterCoin = beforeCoin + dropMoney;
