@@ -13056,7 +13056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   dontDestroyOnLoad: 0
-  changeInterval: 1
+  changeInterval: 0
   mapSelectInterval: 3
   hpScale: 0.15
   attackScale: 0.07
