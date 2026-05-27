@@ -514,7 +514,7 @@ namespace TrainDefense.Game
             return;
 
          base.OnDead();
-         GameEventSystem.Publish(new GameOverStartEvent(gameOverSlowDuration));
+         GameEventSystem.Publish(new GameOverStartEvent(gameOverSlowDuration, transform));
       }
    }
 }

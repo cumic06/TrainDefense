@@ -34,7 +34,7 @@ namespace TrainDefense.Game.Manager
         [SerializeField]
         private Color colorTint = new Color(0.3f, 0.3f, 0.3f, 1f);
 
-        #endregion
+#endregion
 
         #region LifeCycle
 
