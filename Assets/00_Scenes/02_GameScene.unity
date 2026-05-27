@@ -13009,7 +13009,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.TrainManager
   dontDestroyOnLoad: 0
   mainTrain: {fileID: -6865814404541872816, guid: a544662bcec77a141b5326512a51ff41, type: 3}
-  cinemachineCamera: {fileID: 1580891170}
+  cameraController: {fileID: 1580891172}
 --- !u!1 &1377530607
 GameObject:
   m_ObjectHideFlags: 0
@@ -13638,6 +13638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.CameraController
   testShakeIntensity: 5
   testShakeDuration: 0.2
+  gameOverZoomOrthoSize: 4
 --- !u!114 &1580891173
 MonoBehaviour:
   m_ObjectHideFlags: 0

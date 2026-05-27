@@ -2,8 +2,8 @@ using UnityEngine;
 using Cumic;
 using TrainDefense;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Controller;
 using Cumic.Events;
-using Unity.Cinemachine;
 using System.Linq;
 
 namespace TrainDefense.Game
@@ -14,7 +14,7 @@ namespace TrainDefense.Game
       [SerializeField]
       private MainTrain mainTrain;
       [SerializeField]
-      private CinemachineCamera cinemachineCamera;
+      private CameraController cameraController;
       #endregion
 
       public MainTrain MainTrain => mainTrain;
@@ -44,7 +44,7 @@ namespace TrainDefense.Game
          var trainObject = ResourceManager.Instance.Spawn(trainData.Prefab).GetComponent<MainTrain>();
          mainTrain = trainObject;
          mainTrain.Initialize(trainData);
-         cinemachineCamera.Target.TrackingTarget = mainTrain.transform;
+         cameraController?.SetFollowTarget(mainTrain.transform);
       }
 
       public bool CheckHasTrain(TrainData trainData)
