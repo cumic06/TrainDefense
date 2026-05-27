@@ -360,7 +360,7 @@ namespace TrainDefense.Game.UI
          }
 
          int requestId = ++_popupRequestId;
-         _OnChoiceUIPopup(_choiceLeftCount, requestId).Forget();
+         _OnChoiceUIPopup(_choiceLeftCount, requestId, showLevelUpText: false).Forget();
       }
    }
 }
