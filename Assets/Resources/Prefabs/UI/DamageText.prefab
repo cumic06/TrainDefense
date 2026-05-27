@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7453207798755353711}
   - component: {fileID: 7564822618610381177}
   - component: {fileID: -8015864109821002527}
+  - component: {fileID: 4982676839546862443}
   m_Layer: 5
   m_Name: DamageText
   m_TagString: Untagged
@@ -151,6 +152,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.DamageUI
   damageText: {fileID: 7564822618610381177}
-  moveDuration: 0.8
-  moveVDistance: 100
-  fadeDuration: 0.8
+  moveDuration: 0.6
+  moveVDistance: 80
+  fadeDuration: 0.6
+--- !u!95 &4982676839546862443
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1332595036757075716}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3171929acac2d684cbb7bda87f634af9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

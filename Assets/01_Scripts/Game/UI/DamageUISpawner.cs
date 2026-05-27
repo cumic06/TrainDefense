@@ -14,6 +14,9 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private RectTransform canvasRect;
 
+        [SerializeField]
+        private float spawnRandomRadius = 5f;
+
         private Camera _mainCamera;
         private Camera _uiCamera;
         #endregion
@@ -44,6 +47,8 @@ namespace TrainDefense.Game.UI
             Vector2 screenPoint = _mainCamera.WorldToScreenPoint(hitEvent.Position);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, _uiCamera, out Vector2 localPoint);
 
+            Vector2 randomOffset = Random.insideUnitCircle * spawnRandomRadius;
+            localPoint += randomOffset;
             spawnDamageUI.SetLocalPosition(localPoint);
             spawnDamageUI.SetDamage(hitEvent.Damage, hitEvent.IsCritical);
         }

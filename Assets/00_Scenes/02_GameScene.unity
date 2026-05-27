@@ -5782,6 +5782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.DamageUISpawner
   damageUI: {fileID: -8015864109821002527, guid: 5624163a5f8572f4a8e71f3874781b47, type: 3}
   canvasRect: {fileID: 214686401}
+  spawnRandomRadius: 10
 --- !u!1 &480421406
 GameObject:
   m_ObjectHideFlags: 0
