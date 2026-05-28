@@ -187,6 +187,9 @@ namespace TrainDefense.Game.UI
                return;
 
             var choiceSelectUI = choiceSelectUIs[i];
+            if (choiceSelectUI == null)
+               return;
+
             choiceSelectUI.SetSelected(false);
 
             if (i < availableChoices.Count)
@@ -220,6 +223,9 @@ namespace TrainDefense.Game.UI
       // null=요청 취소됨, true=활성화 성공, false=InfoBuild 실패(스킵)
       private async UniTask<bool?> _ActivateChoiceCardAsync(TriChoiceSelectUI choiceSelectUI, IChoiceOption choiceOption, int slotIndex, int requestId)
       {
+         if (choiceSelectUI == null)
+            return null;
+
          var userDataManager = UserDataManager.Instance;
 
          if (userDataManager != null)

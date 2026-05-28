@@ -14,6 +14,8 @@ namespace TrainDefense.Game.Manager
       [ShowInInspector, ReadOnly]
       public int CurrentScore { get; private set; }
 
+      private bool _isLobby;
+
       private void Start()
       {
          if (DatabaseManager.Instance != null)
@@ -32,11 +34,12 @@ namespace TrainDefense.Game.Manager
       private void _OnGameEnter(GameEnterEvent gameEnterEvent)
       {
          CurrentScore = 0;
+         _isLobby = gameEnterEvent.IsLobby;
       }
 
       private void _OnMonsterDead(MonsterDeadEvent monsterDeadEvent)
       {
-         if (_scoreData == null)
+         if (_scoreData == null || _isLobby)
             return;
          var beforeScore = CurrentScore;
          CurrentScore += monsterDeadEvent.IsElite ? _scoreData.eliteKillScore : _scoreData.normalKillScore;

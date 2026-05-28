@@ -15,7 +15,7 @@ namespace TrainDefense.Game.Manager
         #region Fields
 
         [SerializeField]
-        private int changeInterval = 1;
+        private int monsterRushInterval = 0;
 
         [SerializeField]
         private int mapSelectInterval = 3;
@@ -216,9 +216,9 @@ namespace TrainDefense.Game.Manager
 
         private void _OnInspectionEnd(InspectionEndEvent inspectionEndEvent)
         {
-            bool shouldStartMonsterRush = changeInterval > 0
+            bool shouldStartMonsterRush = monsterRushInterval > 0
                 && _inspectionCount > 0
-                && _inspectionCount % changeInterval == changeInterval - 1;
+                && _inspectionCount % monsterRushInterval == monsterRushInterval - 1;
 
             if (shouldStartMonsterRush)
             {

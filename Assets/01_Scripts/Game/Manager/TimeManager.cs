@@ -106,7 +106,6 @@ namespace TrainDefense.Game
                     Time.timeScale = 0f;
                 return;
             }
-            Debug.Log($"[TimeManager] Pause — timeScale {Time.timeScale}→0");
             _isPaused = true;
 
             if (_isGameOverSlowing)
@@ -124,7 +123,6 @@ namespace TrainDefense.Game
                 return;
 
             float next = _isFastForward ? fastForwardScale : 1f;
-            Debug.Log($"[TimeManager] Resume — timeScale 0→{next}");
             _isPaused = false;
             Time.timeScale = next;
             SoundManager.Instance?.SuppressSFX(false);
