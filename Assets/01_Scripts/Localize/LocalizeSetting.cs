@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace TrainDefense.Localize
@@ -31,5 +32,8 @@ namespace TrainDefense.Localize
 
         [Header("Language")]
         public SystemLanguage defaultLanguage = SystemLanguage.Korean;
+
+        [Header("Font per Language")]
+        public TMP_FontAsset japaneseFontAsset;
     }
 }

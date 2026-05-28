@@ -545,6 +545,7 @@ GameObject:
   - component: {fileID: 5869894423694629752}
   - component: {fileID: 3447287005141843137}
   - component: {fileID: 2680944309099936224}
+  - component: {fileID: 227715212849170}
   m_Layer: 5
   m_Name: Txt_NewMonsterName
   m_TagString: Untagged
@@ -671,3 +672,16 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+
+--- !u!114 &227715212849170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8525337812691851423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:

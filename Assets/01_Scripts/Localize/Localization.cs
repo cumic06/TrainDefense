@@ -17,6 +17,8 @@ namespace TrainDefense.Localize
 
         public static bool IsInitialized => _isInitialized;
         public static SystemLanguage? CurrentOverride => _languageOverride;
+        public static SystemLanguage CurrentLanguage => _languageOverride ?? Application.systemLanguage;
+        public static LocalizeSetting Setting => _setting;
         public static event Action OnLanguageChanged;
         public static event Action OnInitialized;
 

@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 822732366132647311}
   - component: {fileID: 822732366132647310}
   - component: {fileID: 822732366132647305}
+  - component: {fileID: 538863449972537}
   m_Layer: 5
   m_Name: CancelText
   m_TagString: Untagged
@@ -363,6 +364,7 @@ GameObject:
   - component: {fileID: 822732366161970383}
   - component: {fileID: 822732366161970382}
   - component: {fileID: 822732366161970377}
+  - component: {fileID: 543612096566034}
   m_Layer: 5
   m_Name: PopupMessage
   m_TagString: Untagged
@@ -578,6 +580,7 @@ GameObject:
   - component: {fileID: 822732366176140303}
   - component: {fileID: 822732366176140302}
   - component: {fileID: 822732366176140297}
+  - component: {fileID: 626329763800398}
   m_Layer: 5
   m_Name: ConfirmText
   m_TagString: Untagged
@@ -825,3 +828,39 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &538863449972537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822732366132647308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &543612096566034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822732366161970380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &626329763800398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822732366176140300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:

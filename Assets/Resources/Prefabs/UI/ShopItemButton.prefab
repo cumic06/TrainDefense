@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6990009374368430003}
   - component: {fileID: 8959832261333494957}
   - component: {fileID: 194019013546866761}
+  - component: {fileID: 313264812455426}
   m_Layer: 5
   m_Name: CoinText
   m_TagString: Untagged
@@ -305,6 +306,7 @@ GameObject:
   - component: {fileID: 3418775609779917466}
   - component: {fileID: 1875437763237595036}
   - component: {fileID: 3171329993146016651}
+  - component: {fileID: 169275927493783}
   m_Layer: 5
   m_Name: ShopItemDescriptionText
   m_TagString: Untagged
@@ -444,6 +446,7 @@ GameObject:
   - component: {fileID: 7083687277069500475}
   - component: {fileID: 87740404326025402}
   - component: {fileID: 4617223773666497518}
+  - component: {fileID: 934686611060753}
   m_Layer: 5
   m_Name: ShopItemNameText
   m_TagString: Untagged
@@ -570,3 +573,39 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &313264812455426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947661798313330385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &169275927493783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5313426415167394168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &934686611060753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8712806541159986230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:

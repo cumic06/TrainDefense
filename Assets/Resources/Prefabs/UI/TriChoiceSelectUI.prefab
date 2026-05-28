@@ -518,6 +518,7 @@ GameObject:
   - component: {fileID: 4134703530001778365}
   - component: {fileID: 6234110546711956770}
   - component: {fileID: 129680205898412895}
+  - component: {fileID: 320502720827308}
   m_Layer: 5
   m_Name: TriChoiceSelectName
   m_TagString: Untagged
@@ -655,6 +656,7 @@ GameObject:
   - component: {fileID: 9163856401282243675}
   - component: {fileID: 8384374964006317319}
   - component: {fileID: 1875584013805568614}
+  - component: {fileID: 378533114591675}
   m_Layer: 5
   m_Name: TriChoiceSelectSkillName
   m_TagString: Untagged
@@ -793,6 +795,7 @@ GameObject:
   - component: {fileID: 7349560611230191176}
   - component: {fileID: 1883611576015354353}
   - component: {fileID: 7492859791754804602}
+  - component: {fileID: 676263322748818}
   m_Layer: 5
   m_Name: TriChoiceSelectDescription
   m_TagString: Untagged
@@ -1528,3 +1531,40 @@ MonoBehaviour:
   optionalScrambleMode: 0
   optionalShakeRandomnessMode: 0
   optionalString: 
+--- !u!114 &320502720827308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251662364758316045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &378533114591675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2432724511745012548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &676263322748818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3200011125263859928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+

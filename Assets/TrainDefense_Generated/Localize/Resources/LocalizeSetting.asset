@@ -29,3 +29,5 @@ MonoBehaviour:
     sheetURL: 
     bakedTextAsset: {fileID: 4900000, guid: f6f44e6dc99da594fb80f90af1138587, type: 3}
   useRuntimeDownload: 0
+  defaultLanguage: 18
+  japaneseFontAsset: {fileID: 11400000, guid: 7d74d9f97188a6c41b28e6f097b08085, type: 2}

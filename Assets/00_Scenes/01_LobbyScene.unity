@@ -739,6 +739,7 @@ GameObject:
   - component: {fileID: 210000041}
   - component: {fileID: 210000043}
   - component: {fileID: 210000042}
+  - component: {fileID: 673818526733106}
   m_Layer: 5
   m_Name: SpeakerNameText
   m_TagString: Untagged
@@ -876,6 +877,7 @@ GameObject:
   - component: {fileID: 210000051}
   - component: {fileID: 210000053}
   - component: {fileID: 210000052}
+  - component: {fileID: 920289248981534}
   m_Layer: 5
   m_Name: DialogueText
   m_TagString: Untagged
@@ -4723,6 +4725,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf67857fd4e4e24eb3339f5e550403b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.OptionUI
+--- !u!114 &673818526733106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210000040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &920289248981534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210000050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
