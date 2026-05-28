@@ -342,6 +342,9 @@ namespace TrainDefense.Game
 
         public virtual string GetStatSummary() => $"MaxHp={_currentMaxHp}";
 
+        public virtual (string label, string value)[] GetStatDetails()
+            => new[] { ("HP", $"{Mathf.RoundToInt(_currentMaxHp)}") };
+
         protected virtual void ApplyStat(IStat stat)
         {
             if (stat == null) return;

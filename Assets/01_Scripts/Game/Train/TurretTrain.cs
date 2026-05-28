@@ -830,6 +830,17 @@ namespace TrainDefense.Game
         public override string GetStatSummary() =>
             $"DMG={_currentTurretTrainStatus.AttackDamage} | RANGE={_currentTurretTrainStatus.AttackRange} | AREA={_currentTurretTrainStatus.AttackArea} | CNT={_currentTurretTrainStatus.AttackCount} | TGT={_currentTurretTrainStatus.TargetCount} | MaxHp={_currentMaxHp}";
 
+        public override (string label, string value)[] GetStatDetails() => new[]
+        {
+            ("HP", $"{Mathf.RoundToInt(_currentMaxHp)}"),
+            ("공격력", $"{Mathf.RoundToInt(_currentTurretTrainStatus.AttackDamage)}"),
+            ("사거리", $"{_currentTurretTrainStatus.AttackRange:F1}"),
+            ("범위", $"{_currentTurretTrainStatus.AttackArea:F1}"),
+            ("공격속도", $"{_currentTurretTrainStatus.AttackInterval:F2}s"),
+            ("대상 수", $"{_currentTurretTrainStatus.TargetCount}"),
+            ("크리티컬", $"{_currentTurretTrainStatus.CriticalChance:F0}%"),
+        };
+
         public override void ApplyPassiveSkills()
         {
             if (_skillTypeMask == TrainChoiceSkillType.Active) return;

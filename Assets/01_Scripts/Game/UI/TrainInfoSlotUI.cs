@@ -1,13 +1,15 @@
+using System.Collections;
 using Cumic.Events;
 using TMPro;
 using TrainDefense.Game.Events;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace TrainDefense.Game.UI
 {
    [RequireComponent(typeof(Button))]
-   public class TrainInfoSlotUI : MonoBehaviour
+   public class TrainInfoSlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
    {
       #region Verialbes
       #region Field
@@ -26,9 +28,15 @@ namespace TrainDefense.Game.UI
       private Image trainLevelImage;
       [SerializeField]
       private TextMeshProUGUI trainLevelText;
+
+      [SerializeField]
+      private TrainDetailPopupUI detailPopup;
       #endregion
 
       private Train _train;
+      private const float LongPressDuration = 0.5f;
+      private Coroutine _longPressCoroutine;
+      private bool _longPressFired;
       #endregion
 
       private void Awake()
@@ -60,7 +68,38 @@ namespace TrainDefense.Game.UI
             slotButton.onClick.RemoveListener(_OnClickSlot);
          }
 
+         if (_longPressCoroutine != null)
+         {
+            StopCoroutine(_longPressCoroutine);
+            _longPressCoroutine = null;
+         }
+
          _UnsubscribeEvents();
+      }
+
+      public void OnPointerDown(PointerEventData eventData)
+      {
+         _longPressFired = false;
+         _longPressCoroutine = StartCoroutine(_LongPressRoutine());
+      }
+
+      public void OnPointerUp(PointerEventData eventData)
+      {
+         if (_longPressCoroutine != null)
+         {
+            StopCoroutine(_longPressCoroutine);
+            _longPressCoroutine = null;
+         }
+
+         if (_longPressFired)
+            detailPopup?.Hide();
+      }
+
+      private IEnumerator _LongPressRoutine()
+      {
+         yield return new WaitForSecondsRealtime(LongPressDuration);
+         _longPressFired = true;
+         detailPopup?.Show(_train);
       }
 
       #region Event
@@ -123,6 +162,12 @@ namespace TrainDefense.Game.UI
 
       private void _OnClickSlot()
       {
+         if (_longPressFired)
+         {
+            _longPressFired = false;
+            return;
+         }
+
          if (_train == null)
          {
             Debug.LogWarning("[TrainInfoSlotUI] _train is null, cannot use skill");
@@ -184,10 +229,7 @@ namespace TrainDefense.Game.UI
       private void _OnReplaceTrain(ReplaceTrainEvent replaceTrainEvent)
       {
          if (_train != replaceTrainEvent.OldTrain)
-         {
-            Debug.LogWarning($"[TrainInfoSlotUI] OldTrain mismatch - Expected: {(_train != null ? _train.name : "null")}, Got: {(replaceTrainEvent.OldTrain != null ? replaceTrainEvent.OldTrain.name : "null")}");
             return;
-         }
 
          _train = replaceTrainEvent.NewTrain;
 
