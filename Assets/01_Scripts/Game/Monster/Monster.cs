@@ -470,6 +470,17 @@ namespace TrainDefense.Game
             Debug.Log($"[Monster] Drop Money Scaled - {_currentMonsterStatus.DropMoneyMin}~{_currentMonsterStatus.DropMoneyMax} -> {dropMoneyMin}~{dropMoneyMax} (x{goldScale})");
          }
 
+         // 골드 획득 업그레이드 보너스 (goldScale 미적용, 구매 레벨당 flat 추가)
+         if (DatabaseManager.Instance != null && UserDataManager.Instance != null)
+         {
+            var goldBonusData = DatabaseManager.Instance.GetUpgradeData("110004");
+            if (goldBonusData != null)
+            {
+               int bonusLevel = UserDataManager.Instance.GetUpgradeLevel("110004");
+               dropMoney += Mathf.RoundToInt(bonusLevel * goldBonusData.UpgradeValue);
+            }
+         }
+
          ResourceManager.Instance.Spawn(Resources.Load<GameObject>(MoneyPrefabPath), transform.position);
 
          if (UserDataManager.Instance != null && !UserDataManager.Instance.IsLobby)

@@ -133,7 +133,7 @@ namespace TrainDefense.Game.Tutorial
                     ? GetCanvasPosition(target)
                     : Vector2.zero;
                 anchorPos += step.MessageOffset;
-                SetMessage(step.Message, anchorPos);
+                _messageBubble.Show(step.Message, anchorPos, step.NpcSprite);
             }
             else
             {

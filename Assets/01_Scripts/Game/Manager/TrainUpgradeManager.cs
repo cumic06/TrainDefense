@@ -179,8 +179,7 @@ namespace TrainDefense.Game
         /// </summary>
         private void ApplyNonTrainUpgrade(UpgradeData upgradeData)
         {
-            // NonTrainUpgrade 타입의 업그레이드 처리 로직 추가 가능
-            Debug.Log($"UpgradeManager: NonTrainUpgrade applied for '{upgradeData.Id}'");
+            // 드롭 시점에 계산되므로 구매 시 별도 처리 없음
         }
 
         /// <summary>

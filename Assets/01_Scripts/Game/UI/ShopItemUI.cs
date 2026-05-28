@@ -132,6 +132,8 @@ namespace TrainDefense.Game.UI
 
       private void OnBuyButtonClick()
       {
+         if (_upgradeData == null) return;
+
          if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
             return;
 

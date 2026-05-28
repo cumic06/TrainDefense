@@ -39,6 +39,13 @@ namespace TrainDefense.Game.Tutorial
         [Tooltip("메시지 말풍선의 위치를 추가로 보정합니다 (캔버스 로컬 좌표 기준)")]
         [SerializeField] private Vector2 _messageOffset;
 
+        [Header("NPC 캐릭터")]
+        [SerializeField] private Sprite _npcSprite;
+        [Tooltip("캔버스 기준 anchoredPosition. NPC Image RectTransform의 anchor/pivot에 따라 의미가 달라집니다.")]
+        [SerializeField] private Vector2 _npcPosition;
+        [Tooltip("NPC 이미지를 좌우 반전합니다.")]
+        [SerializeField] private bool _npcFlipX;
+
         [Header("선행 조건")]
         [SerializeField] private string _prerequisiteStepId;
 
@@ -60,6 +67,9 @@ namespace TrainDefense.Game.Tutorial
         public float DelayBefore => _delayBefore;
         public string SfxKey => _sfxKey;
         public Vector2 MessageOffset => _messageOffset;
+        public Sprite NpcSprite => _npcSprite;
+        public Vector2 NpcPosition => _npcPosition;
+        public bool NpcFlipX => _npcFlipX;
         public string PrerequisiteStepId => _prerequisiteStepId;
 
         #endregion

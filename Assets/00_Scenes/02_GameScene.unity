@@ -5283,7 +5283,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6709126058939105065, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 6055522620302845798, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
       insertIndex: -1
@@ -13056,7 +13057,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   dontDestroyOnLoad: 0
-  changeInterval: 0
+  monsterRushInterval: 0
   mapSelectInterval: 3
   hpScale: 0.15
   attackScale: 0.07

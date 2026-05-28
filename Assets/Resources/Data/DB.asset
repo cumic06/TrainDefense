@@ -1837,16 +1837,6 @@ MonoBehaviour:
     upgradeValue: 1
     stats: []
     growthRate: 1.065
-  - id: 110005
-    iconId: 
-    name: Upgrade_110005_Name
-    description: Upgrade_110005_Desc
-    needMoney: 140
-    maxUpgradeCount: 100
-    upgradeDataType: 1
-    upgradeValue: 1
-    stats: []
-    growthRate: 1.065
   - id: 110006
     iconId: 
     name: Upgrade_110006_Name

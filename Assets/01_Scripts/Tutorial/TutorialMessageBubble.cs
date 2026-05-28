@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
@@ -12,12 +13,15 @@ namespace TrainDefense.Game.Tutorial
         [SerializeField] private RectTransform _bubbleRect;
         [SerializeField] private TextMeshProUGUI _messageText;
         [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private Image _npcPortrait;
         [SerializeField] private float _typingSpeed = 0.03f;
         [SerializeField] private float _fadeDuration = 0.2f;
         [SerializeField] private float _verticalOffset = 80f;
         [SerializeField] private Vector2 _padding = new Vector2(40f, 30f);
         [SerializeField] private float _minWidth = 200f;
         [SerializeField] private float _maxWidth = 600f;
+        [SerializeField] private float _portraitAreaWidth = 120f;
+        [SerializeField] private float _portraitGap = 8f;
 
         private Tween _typingTween;
         private Tween _fadeTween;
@@ -34,7 +38,7 @@ namespace TrainDefense.Game.Tutorial
         /// <summary>
         /// 메시지를 표시합니다. 타이핑 효과와 함께 페이드인됩니다.
         /// </summary>
-        public void Show(string message, Vector2 anchorCanvasPosition)
+        public void Show(string message, Vector2 anchorCanvasPosition, Sprite npcSprite = null)
         {
             if (string.IsNullOrEmpty(message))
             {
@@ -45,12 +49,26 @@ namespace TrainDefense.Game.Tutorial
             gameObject.SetActive(true);
             _fullMessage = message;
 
-            // 화면 중앙 기준으로 위/아래 배치 결정
+            bool hasPortrait = npcSprite != null && _npcPortrait != null;
+
+            if (_npcPortrait != null)
+            {
+                var npcFrame = _npcPortrait.transform.parent.gameObject;
+                if (hasPortrait)
+                {
+                    _npcPortrait.sprite = npcSprite;
+                    npcFrame.SetActive(true);
+                }
+                else
+                {
+                    npcFrame.SetActive(false);
+                }
+            }
+
             bool placeAbove = anchorCanvasPosition.y < 0;
             float yOffset = placeAbove ? _verticalOffset : -_verticalOffset;
             var bubblePos = new Vector2(anchorCanvasPosition.x, anchorCanvasPosition.y + yOffset);
 
-            // 화면 밖으로 나가지 않도록 X 클램핑
             if (_parentCanvasRect != null)
             {
                 var halfWidth = _parentCanvasRect.rect.width * 0.5f;
@@ -62,10 +80,8 @@ namespace TrainDefense.Game.Tutorial
 
             _bubbleRect.anchoredPosition = bubblePos;
 
-            // 텍스트 길이에 맞게 배경 크기 조정
-            ResizeBubble(message);
+            _ResizeBubble(message, hasPortrait);
 
-            // 타이핑 효과
             _messageText.text = "";
             float typingDuration = message.Length * _typingSpeed;
 
@@ -74,7 +90,6 @@ namespace TrainDefense.Game.Tutorial
                 .SetEase(Ease.Linear)
                 .SetUpdate(true);
 
-            // 페이드인
             _canvasGroup.alpha = 0f;
             _fadeTween?.Kill();
             _fadeTween = _canvasGroup.DOFade(1f, _fadeDuration)
@@ -103,25 +118,42 @@ namespace TrainDefense.Game.Tutorial
             gameObject.SetActive(false);
         }
 
-        private void ResizeBubble(string message)
+        private void _ResizeBubble(string message, bool hasPortrait)
         {
-            // 최대 너비 제한을 적용하여 preferred 크기 계산
-            float textMaxWidth = _maxWidth - _padding.x;
-            _messageText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, textMaxWidth);
+            float extraWidth = hasPortrait ? _portraitAreaWidth + _portraitGap : 0f;
+            float availTextWidth = _maxWidth - _padding.x - extraWidth;
+
+            _messageText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, availTextWidth);
             _messageText.text = message;
             _messageText.ForceMeshUpdate();
 
-            float preferredWidth = Mathf.Min(_messageText.preferredWidth, textMaxWidth);
+            float preferredWidth = Mathf.Min(_messageText.preferredWidth, availTextWidth);
             float preferredHeight = _messageText.preferredHeight;
 
-            float bubbleWidth = Mathf.Clamp(preferredWidth + _padding.x, _minWidth, _maxWidth);
+            float bubbleWidth = Mathf.Clamp(preferredWidth + _padding.x + extraWidth, _minWidth, _maxWidth);
             float bubbleHeight = preferredHeight + _padding.y;
 
             _bubbleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, bubbleWidth);
             _bubbleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, bubbleHeight);
 
-            // 텍스트 영역도 맞춤
-            _messageText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, bubbleWidth - _padding.x);
+            if (hasPortrait && _npcPortrait != null)
+            {
+                var frameRect = _npcPortrait.transform.parent as RectTransform;
+                if (frameRect != null)
+                {
+                    frameRect.anchorMin = new Vector2(0, 0.5f);
+                    frameRect.anchorMax = new Vector2(0, 0.5f);
+                    frameRect.pivot = new Vector2(0, 0.5f);
+                    frameRect.anchoredPosition = new Vector2(_padding.x * 0.5f, 0);
+                    float frameHeight = Mathf.Min(bubbleHeight - _padding.y * 0.5f, _portraitAreaWidth);
+                    frameRect.sizeDelta = new Vector2(_portraitAreaWidth, frameHeight);
+                }
+            }
+
+            float textLeft = hasPortrait ? extraWidth + _padding.x * 0.5f : _padding.x * 0.5f;
+            _messageText.rectTransform.offsetMin = new Vector2(textLeft, _padding.y * 0.5f);
+            _messageText.rectTransform.offsetMax = new Vector2(-_padding.x * 0.5f, -_padding.y * 0.5f);
+
             _messageText.text = "";
         }
 

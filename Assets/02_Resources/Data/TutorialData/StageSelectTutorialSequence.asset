@@ -33,9 +33,12 @@ MonoBehaviour:
     _useDimming: 1
     _useHighlight: 1
     _delayBefore: 0.3
-    _sfxKey: 
+    _sfxKey:
     _messageOffset: {x: 0, y: 150}
-    _prerequisiteStepId: 
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId:
   - _id: 30001
     _targetObject: {fileID: 0}
     _targetObjectName: StageSelectButton2
