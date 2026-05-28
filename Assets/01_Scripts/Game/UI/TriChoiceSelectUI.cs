@@ -127,6 +127,13 @@ namespace TrainDefense.Game.UI
                else
                   descriptionText.text = skillDescription;
             }
+
+            if (choiceOption is AddTrainChoice addTrainChoice)
+            {
+               string statText = GetTrainStatsDescription(addTrainChoice.TrainDataId);
+               if (!string.IsNullOrEmpty(statText))
+                  descriptionText.text += $"\n\n<size=80%><color=#FFFFFF>{statText}</color></size>";
+            }
          }
       }
 
@@ -207,6 +214,30 @@ namespace TrainDefense.Game.UI
          return string.Join("\n", lines);
       }
 
+      // 새 포탑 선택 카드용: 해당 포탑의 base 스탯을 줄 단위로 반환.
+      private string GetTrainStatsDescription(string trainDataId)
+      {
+         var trainData = DatabaseManager.Instance?.GetTrainData(trainDataId);
+         if (trainData == null) return null;
+
+         var lines = new System.Collections.Generic.List<string>();
+         if (trainData is TurretTrainData turretData)
+         {
+            var s = turretData.TurretTrainStatus;
+            AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
+            AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
+            AddStatValueLine(lines, "Stat_AttackRange", s.AttackRange);
+         }
+         else if (trainData is RangeTrainData rangeData)
+         {
+            var s = rangeData.RangeTrainStatus;
+            AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
+            AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
+            AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
+         }
+         return string.Join("\n", lines);
+      }
+
       // 공격 딜레이(초)를 초당 공격 횟수(공격속도)로 변환. 시스템 값이 아닌 UI 표시 전용.
       private static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
 
@@ -222,6 +253,16 @@ namespace TrainDefense.Game.UI
             return;
 
          lines.Add(SafeFormat(template, new object[] { currentValue, currentValue + delta }));
+      }
+
+      // 단일 스탯 값을 "레이블 값" 한 줄로 추가 (새 포탑 카드용).
+      private static void AddStatValueLine(System.Collections.Generic.List<string> lines, string statKey, float value)
+      {
+         string template = Localization.GetByKey(statKey);
+         if (string.IsNullOrEmpty(template))
+            return;
+
+         lines.Add(SafeFormat(template, new object[] { value }));
       }
 
       private void OnSelectButtonClick()
