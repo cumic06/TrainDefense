@@ -1238,13 +1238,6 @@ MonoBehaviour:
       param2: -50
       param3: 2:10:7
       description: Passive_60015_Desc
-    - id: 60016
-      name: Passive_60016_Name
-      passiveType: PierceProjectile
-      param1: EliteSniperProjectile
-      param2: 
-      param3: 
-      description: Passive_60016_Desc
     - id: 60017
       name: Passive_60017_Name
       passiveType: ChainAttackChance
@@ -1860,6 +1853,16 @@ MonoBehaviour:
     stats:
     - <Type>k__BackingField: 7
       <Value>k__BackingField: 2
+    growthRate: 1.065
+  - id: 110005
+    iconId: 
+    name: Upgrade_110005_Name
+    description: Upgrade_110005_Desc
+    needMoney: 140
+    maxUpgradeCount: 100
+    upgradeDataType: 1
+    upgradeValue: 1
+    stats: []
     growthRate: 1.065
   triChoiceDB:
     addTrainChoices:
