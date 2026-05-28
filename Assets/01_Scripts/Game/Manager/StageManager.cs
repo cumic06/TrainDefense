@@ -225,8 +225,7 @@ namespace TrainDefense.Game.Manager
                 _StartMonsterRush();
             }
 
-            if (shouldStartMonsterRush
-                && mapSelectInterval > 0
+            if (mapSelectInterval > 0
                 && _inspectionCount > 0
                 && _inspectionCount % mapSelectInterval == 0)
             {
