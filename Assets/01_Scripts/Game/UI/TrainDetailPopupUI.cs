@@ -43,9 +43,6 @@ namespace TrainDefense.Game.UI
             {
                 var sb = new StringBuilder();
 
-                int level = train.CurrentLevel + 1;
-                sb.AppendLine($"Lv.{level}");
-
                 if (data != null)
                 {
                     var activeSkills = data.TrainSkillDatas;
