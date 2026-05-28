@@ -656,7 +656,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e4957572118bd844a49dbd1cf62b1ff, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialMessageBubble
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.MessageBubble
   _bubbleRect: {fileID: 600000002}
   _messageText: {fileID: 620000004}
   _canvasGroup: {fileID: 600000003}

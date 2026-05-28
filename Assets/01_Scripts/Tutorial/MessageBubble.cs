@@ -8,7 +8,7 @@ namespace TrainDefense.Game.Tutorial
     /// <summary>
     /// 튜토리얼 메시지 말풍선 - 타이핑 효과 + 자동 위치 배치
     /// </summary>
-    public class TutorialMessageBubble : MonoBehaviour
+    public class MessageBubble : MonoBehaviour
     {
         [SerializeField] private RectTransform _bubbleRect;
         [SerializeField] private TextMeshProUGUI _messageText;

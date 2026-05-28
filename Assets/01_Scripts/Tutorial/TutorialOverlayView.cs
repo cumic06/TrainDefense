@@ -13,7 +13,7 @@ namespace TrainDefense.Game.Tutorial
         [SerializeField] private CanvasGroup _dimmingOverlay;
         [SerializeField] private TutorialHighlight _highlight;
         [SerializeField] private TutorialArrowGuide _arrowGuide;
-        [SerializeField] private TutorialMessageBubble _messageBubble;
+        [SerializeField] private MessageBubble _messageBubble;
 
         [Header("Buttons")]
         [SerializeField] private Button _skipButton;

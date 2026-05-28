@@ -1,5 +1,5 @@
 using System;
-using TMPro;
+using TrainDefense.Game.Tutorial;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,16 +10,12 @@ namespace TrainDefense.Game.Intro
         [Header("Root")]
         [SerializeField] private GameObject _root;
 
-        [Header("Visuals")]
+        [Header("Background")]
         [SerializeField] private Image _backgroundImage;
-        [SerializeField] private Image _characterPortrait;
 
-        [Header("Dialogue Box")]
-        [SerializeField] private GameObject _dialoguePanel;
-
-        [Header("Text")]
-        [SerializeField] private TextMeshProUGUI _speakerNameText;
-        [SerializeField] private TextMeshProUGUI _dialogueText;
+        [Header("Message Bubble")]
+        [SerializeField] private MessageBubble _messageBubble;
+        [SerializeField] private Vector2 _bubbleAnchorPosition = new Vector2(0f, -380f);
 
         [Header("Buttons")]
         [SerializeField] private Button _nextButton;
@@ -48,35 +44,20 @@ namespace TrainDefense.Game.Intro
 
         public void Hide()
         {
+            _messageBubble?.Hide();
             if (_root != null)
                 _root.SetActive(false);
         }
 
         public void ShowSlide(IntroSlideData slide, int index, int total)
         {
-            _dialoguePanel?.SetActive(true);
-
             if (_backgroundImage != null)
             {
                 _backgroundImage.sprite = slide.BackgroundImage;
                 _backgroundImage.enabled = slide.BackgroundImage != null;
             }
 
-            bool hasPortrait = slide.CharacterPortrait != null;
-            if (_characterPortrait != null)
-            {
-                _characterPortrait.sprite = slide.CharacterPortrait;
-                _characterPortrait.enabled = hasPortrait;
-            }
-
-            if (_speakerNameText != null)
-            {
-                _speakerNameText.text = slide.SpeakerName;
-                _speakerNameText.enabled = !string.IsNullOrEmpty(slide.SpeakerName);
-            }
-
-            if (_dialogueText != null)
-                _dialogueText.text = slide.GetText();
+            _messageBubble?.Show(slide.GetText(), _bubbleAnchorPosition, slide.CharacterPortrait);
 
             bool isLastSlide = index >= total - 1;
             if (_skipButton != null)

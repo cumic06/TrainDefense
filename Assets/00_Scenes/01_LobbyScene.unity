@@ -513,6 +513,7 @@ RectTransform:
   - {fileID: 210000021}
   - {fileID: 210000031}
   - {fileID: 1590011813}
+  - {fileID: 210000101}
   m_Father: {fileID: 428184894}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -572,10 +573,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Intro.IntroOverlayView
   _root: {fileID: 210000010}
   _backgroundImage: {fileID: 210000022}
-  _characterPortrait: {fileID: 210000032}
-  _dialoguePanel: {fileID: 1590011812}
-  _speakerNameText: {fileID: 210000042}
-  _dialogueText: {fileID: 210000052}
+  _messageBubble: {fileID: 210000102}
+  _bubbleAnchorPosition: {x: 0, y: -380}
   _nextButton: {fileID: 210000064}
   _skipButton: {fileID: 210000074}
 --- !u!1 &210000020
@@ -670,7 +669,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &210000031
 RectTransform:
   m_ObjectHideFlags: 0
@@ -746,7 +745,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &210000041
 RectTransform:
   m_ObjectHideFlags: 0
@@ -884,7 +883,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &210000051
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1038,11 +1037,11 @@ RectTransform:
   - {fileID: 210000066}
   m_Father: {fileID: 1590011813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.72, y: 0.01}
-  m_AnchorMax: {x: 0.97, y: 0.13}
-  m_AnchoredPosition: {x: 0, y: 0.0000038146973}
-  m_SizeDelta: {x: 0, y: 0.0000076293945}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -50, y: 50}
+  m_SizeDelta: {x: 480, y: 75}
+  m_Pivot: {x: 1, y: 0}
 --- !u!114 &210000062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1281,7 +1280,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &210000071
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1297,11 +1296,11 @@ RectTransform:
   - {fileID: 210000076}
   m_Father: {fileID: 1590011813}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.02, y: 0.87}
-  m_AnchorMax: {x: 0.2, y: 0.97}
-  m_AnchoredPosition: {x: -709.8, y: 411.59998}
-  m_SizeDelta: {x: 327.59998, y: 98}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -50, y: 0}
+  m_SizeDelta: {x: 480, y: 75}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &210000072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1522,6 +1521,35 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 210000075}
   m_CullTransparentMesh: 1
+--- !u!1001 &210000100
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 210000011}
+    m_Modifications: []
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2, type: 3}
+--- !u!224 &210000101 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 100000002, guid: b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2, type: 3}
+  m_PrefabInstance: {fileID: 210000100}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &210000102 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 100000004, guid: b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2, type: 3}
+  m_PrefabInstance: {fileID: 210000100}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e4957572118bd844a49dbd1cf62b1ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.MessageBubble
 --- !u!1 &211117476
 GameObject:
   m_ObjectHideFlags: 0
@@ -4424,6 +4452,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.DatabaseManager
   dontDestroyOnLoad: 0
+--- !u!114 &673818526733106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210000040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &920289248981534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210000050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4420362823813284957
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4725,30 +4777,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf67857fd4e4e24eb3339f5e550403b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.OptionUI
---- !u!114 &673818526733106
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 210000040}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
---- !u!114 &920289248981534
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 210000050}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

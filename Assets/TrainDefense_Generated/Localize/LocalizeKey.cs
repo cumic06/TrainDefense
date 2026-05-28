@@ -194,5 +194,10 @@ namespace TrainDefense.Localize
         Upgrade_110001_Desc = 179,
         Upgrade_110002_Name = 180,
         Upgrade_110002_Desc = 181,
+        Intro_Slide1 = 182,
+        Intro_Slide2 = 183,
+        Intro_Slide3 = 184,
+        Intro_Slide4 = 185,
+        Intro_Slide5 = 186,
     }
 }

@@ -16,9 +16,41 @@ MonoBehaviour:
   _slides:
   - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
     _characterPortrait: {fileID: 0}
-    _speakerName: "\uAD00\uB9AC\uC790"
-    _text: "TrainDefense\uC5D0 \uC624\uC2E0 \uAC83\uC744 \uD658\uC601\uD569\uB2C8\uB2E4!"
-    _localizationKey: 
+    _speakerName: "나레이터"
+    _text: "끝이 보이지 않는 황폐한 세상.\n어느 날 갑자기 나타난 몬스터 무리가 모든 것을 집어삼켰다."
+    _localizationKey: Intro_Slide1
+    _bgmClip: {fileID: 0}
+    _voiceClip: {fileID: 0}
+    _autoAdvanceDuration: 0
+  - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
+    _characterPortrait: {fileID: 0}
+    _speakerName:
+    _text: "살아남은 자들은 도시를 버리고 도망쳤다.\n하지만 아직 희망을 포기하지 않은 이들이 있었다."
+    _localizationKey: Intro_Slide2
+    _bgmClip: {fileID: 0}
+    _voiceClip: {fileID: 0}
+    _autoAdvanceDuration: 0
+  - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
+    _characterPortrait: {fileID: 0}
+    _speakerName: "기관사"
+    _text: "우리에게는 기차가 있다.\n몬스터 무리를 뾻고 달릴 수 있는 유일한 방법이지."
+    _localizationKey: Intro_Slide3
+    _bgmClip: {fileID: 0}
+    _voiceClip: {fileID: 0}
+    _autoAdvanceDuration: 0
+  - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
+    _characterPortrait: {fileID: 0}
+    _speakerName: "기관사"
+    _text: "기차를 타고 달리며 상점을 돌아다닌다.\n무기를 구하고, 탑승자를 지킨다. 멈추면 죽는다."
+    _localizationKey: Intro_Slide4
+    _bgmClip: {fileID: 0}
+    _voiceClip: {fileID: 0}
+    _autoAdvanceDuration: 0
+  - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
+    _characterPortrait: {fileID: 0}
+    _speakerName:
+    _text: "몬스터들은 끝없이 몰려온다.\n기차를 지켜라. 포기하지 않는 한, 우리는 살아남을 수 있다."
+    _localizationKey: Intro_Slide5
     _bgmClip: {fileID: 0}
     _voiceClip: {fileID: 0}
     _autoAdvanceDuration: 0

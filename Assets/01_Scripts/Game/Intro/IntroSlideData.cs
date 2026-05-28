@@ -1,4 +1,5 @@
 using System;
+using TrainDefense.Localize;
 using UnityEngine;
 
 namespace TrainDefense.Game.Intro
@@ -32,15 +33,15 @@ namespace TrainDefense.Game.Intro
         public float AutoAdvanceDuration => _autoAdvanceDuration;
         public bool IsAutoAdvance => _autoAdvanceDuration > 0f;
 
-        /// <summary>
-        /// 표시할 텍스트를 반환합니다.
-        /// Localization 시스템 구현 후 _localizationKey 우선 적용 예정.
-        /// </summary>
         public string GetText()
         {
-            // TODO: Localization 구현 시 아래 주석 해제
-            // if (!string.IsNullOrEmpty(_localizationKey))
-            //     return Localization.Get(_localizationKey);
+            if (!string.IsNullOrEmpty(_localizationKey))
+            {
+                string localized = LocalizeHelper.GetByKey(_localizationKey, _text);
+
+                return localized.Replace("\\n", "\n");
+            }
+
             return _text;
         }
     }

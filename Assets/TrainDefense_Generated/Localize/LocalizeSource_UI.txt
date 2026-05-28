@@ -30,3 +30,8 @@ Tutorial_MapSelect_Msg2	스테이지별로 등장하는 몬스터가 다르게 �
 Tutorial_TrainInfo_Title	기차 정보 슬롯 튜토리얼	Train Info Slot Tutorial	列車情報スロットチュートリアル	列车信息格教程
 Tutorial_TrainInfo_Msg1	이것은 기차 정보 슬롯입니다. 기차의 체력 상태를 색상으로 확인할 수 있어요!	This is the train info slot. You can check the train's health status by color!	これは列車情報スロットです。列車の体力状態を色で確認できます！	这是列车信息格。可以通过颜色查看列车的生命值状态！
 Tutorial_TrainInfo_Msg2	체력에 따라 초록 → 노랑 → 빨강으로 변합니다.	It changes from green → yellow → red based on health.	体力に応じて緑→黄→赤に変化します。	根据生命值从绿色→黄色→红色变化。
+Intro_Slide1	끝이 보이지 않는 황폐한 세상.\n어느 날 갑자기 나타난 몬스터 무리가 모든 것을 집어삼켰다.	A desolate world with no end in sight.\nOne day, a horde of monsters suddenly appeared and devoured everything.	果てしなく荒廃した世界。\nある日、突然現れたモンスターの群れがすべてを飲み込んだ。	一个看不到尽头的荒废世界。\n某天，突然出现的怪物群将一切吞噬殆尽。
+Intro_Slide2	살아남은 자들은 도시를 버리고 도망쳤다.\n하지만 아직 희망을 포기하지 않은 이들이 있었다.	Survivors fled, abandoning the cities.\nBut there were those who had not yet given up hope.	生き残った者たちは都市を捨て、逃げ去った。\nしかし、まだ希望を捨てていない者たちがいた。	幸存者们抛弃城市，四散逃亡。\n但仍有人尚未放弃希望。
+Intro_Slide3	우리에게는 기차가 있다.\n몬스터 무리를 뚫고 달릴 수 있는 유일한 방법이지.	We have the train.\nIt's the only way to break through the monster hordes and keep moving.	私たちには列車がある。\nモンスターの群れを突き破って走れる唯一の方法だ。	我们有火车。\n这是唯一能突破怪物群继续前进的方法。
+Intro_Slide4	기차를 타고 달리며 상점을 돌아다닌다.\n무기를 구하고, 탑승자를 지킨다. 멈추면 죽는다.	Ride the train, visit shops along the way.\nGather weapons, protect passengers. Stop, and you die.	列車に乗って走りながら、商店を巡る。\n武器を集め、乗客を守る。止まれば死ぬ。	乘坐火车奔驰，沿途造访商店。\n搜集武器，保护乘客。停下就是死路一条。
+Intro_Slide5	몬스터들은 끝없이 몰려온다.\n기차를 지켜라. 포기하지 않는 한, 우리는 살아남을 수 있다.	The monsters come endlessly.\nProtect the train. As long as we don't give up, we can survive.	モンスターたちは絶えず押し寄せてくる。\n列車を守れ。諦めない限り、私たちは生き残れる。	怪物们无穷无尽地涌来。\n保护火车。只要不放弃，我们就能活下去。
