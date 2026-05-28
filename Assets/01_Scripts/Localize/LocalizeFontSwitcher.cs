@@ -11,7 +11,7 @@ namespace TrainDefense.Localize
 
         #region Variables
         private static LocalizeFontSwitcher _instance;
-        private readonly List<(TextMeshProUGUI tmp, TMP_FontAsset originalFont, Material originalMaterial)> _registered = new();
+        private readonly List<(TextMeshProUGUI tmp, TMP_FontAsset originalFont, Material originalMaterial, FontStyles originalFontStyle)> _registered = new();
         #endregion
 
         #region LifeCycle
@@ -58,8 +58,8 @@ namespace TrainDefense.Localize
         {
             if (_instance == null || tmp == null) return;
 
-            _instance._registered.Add((tmp, tmp.font, tmp.fontSharedMaterial));
-            _instance._ApplySingle(tmp, tmp.font, tmp.fontSharedMaterial);
+            _instance._registered.Add((tmp, tmp.font, tmp.fontSharedMaterial, tmp.fontStyle));
+            _instance._ApplySingle(tmp, tmp.font, tmp.fontSharedMaterial, tmp.fontStyle);
         }
 
         public static void Unregister(TextMeshProUGUI tmp)
@@ -73,7 +73,7 @@ namespace TrainDefense.Localize
         {
             for (int i = _registered.Count - 1; i >= 0; i--)
             {
-                var (tmp, originalFont, originalMaterial) = _registered[i];
+                var (tmp, originalFont, originalMaterial, originalFontStyle) = _registered[i];
 
                 if (tmp == null)
                 {
@@ -82,11 +82,11 @@ namespace TrainDefense.Localize
                     continue;
                 }
 
-                _ApplySingle(tmp, originalFont, originalMaterial);
+                _ApplySingle(tmp, originalFont, originalMaterial, originalFontStyle);
             }
         }
 
-        private void _ApplySingle(TextMeshProUGUI tmp, TMP_FontAsset originalFont, Material originalMaterial)
+        private void _ApplySingle(TextMeshProUGUI tmp, TMP_FontAsset originalFont, Material originalMaterial, FontStyles originalFontStyle)
         {
             var setting = Localization.Setting;
             if (setting?.japaneseFontAsset == null) return;
@@ -94,6 +94,7 @@ namespace TrainDefense.Localize
             bool isJapanese = Localization.CurrentLanguage == SystemLanguage.Japanese;
             tmp.font = isJapanese ? setting.japaneseFontAsset : originalFont;
             tmp.fontSharedMaterial = isJapanese ? setting.japaneseFontAsset.material : originalMaterial;
+            tmp.fontStyle = isJapanese ? (originalFontStyle | FontStyles.Bold) : originalFontStyle;
         }
     }
 }

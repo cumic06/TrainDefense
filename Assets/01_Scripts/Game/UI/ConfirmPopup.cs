@@ -29,7 +29,6 @@ namespace TrainDefense.Game.UI
 
         public void ShowPopup()
         {
-            _messageText.text = _defaultMessage;
             gameObject.SetActive(true);
         }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TrainDefense.Localize;
 using UnityEngine;
 
 namespace TrainDefense.Game.Tutorial
@@ -11,13 +12,16 @@ namespace TrainDefense.Game.Tutorial
     {
         [SerializeField] private string _sequenceId;
         [SerializeField] private string _displayName;
+        [SerializeField] private LocalizeKey _displayNameKey;
         [SerializeField] private List<TutorialStepData> _steps = new();
         [SerializeField] private bool _canSkip = true;
         [SerializeField] private int _priority;
         [SerializeField] private bool _shouldPauseTime = true;
 
         public string SequenceId => _sequenceId;
-        public string DisplayName => _displayName;
+        public string DisplayName => _displayNameKey != default && Localization.IsInitialized
+            ? Localization.Get(_displayNameKey)
+            : _displayName;
         public IReadOnlyList<TutorialStepData> Steps => _steps;
         public bool CanSkip => _canSkip;
         public int Priority => _priority;

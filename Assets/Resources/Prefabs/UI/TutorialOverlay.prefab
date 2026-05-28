@@ -1011,6 +1011,7 @@ GameObject:
   - component: {fileID: 710000003}
   - component: {fileID: 710000004}
   - component: {fileID: 637663565326833}
+  - component: {fileID: 637663565326900}
   m_Layer: 5
   m_Name: SkipText
   m_TagString: Untagged
@@ -1226,10 +1227,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 727f6705ddd1f494fb9fc4f44ec0bac9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialSkipPopup
-  _messageText: {fileID: 820000004}
   _confirmButton: {fileID: 830000005}
   _cancelButton: {fileID: 840000005}
-  _defaultMessage: "\uD29C\uD1A0\uB9AC\uC5BC\uC744 \uAC74\uB108\uB6F0\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
 --- !u!1 &810000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,6 +1319,7 @@ GameObject:
   - component: {fileID: 820000003}
   - component: {fileID: 820000004}
   - component: {fileID: 822680249618059}
+  - component: {fileID: 822680249618100}
   m_Layer: 5
   m_Name: PopupMessage
   m_TagString: Untagged
@@ -1579,6 +1579,7 @@ GameObject:
   - component: {fileID: 831000003}
   - component: {fileID: 831000004}
   - component: {fileID: 542406117426019}
+  - component: {fileID: 542406117426100}
   m_Layer: 5
   m_Name: ConfirmText
   m_TagString: Untagged
@@ -1838,6 +1839,7 @@ GameObject:
   - component: {fileID: 841000003}
   - component: {fileID: 841000004}
   - component: {fileID: 371455644490746}
+  - component: {fileID: 371455644490800}
   m_Layer: 5
   m_Name: CancelText
   m_TagString: Untagged
@@ -2024,3 +2026,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
   m_Name:
   m_EditorClassIdentifier:
+--- !u!114 &637663565326900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _key: 6
+--- !u!114 &822680249618100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _key: 7
+--- !u!114 &542406117426100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 831000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _key: 6
+--- !u!114 &371455644490800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 841000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _key: 8

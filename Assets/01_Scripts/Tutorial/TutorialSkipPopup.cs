@@ -1,19 +1,13 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 namespace TrainDefense.Game.Tutorial
 {
-    /// <summary>
-    /// 튜토리얼 스킵 확인 팝업
-    /// </summary>
     public class TutorialSkipPopup : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI _messageText;
         [SerializeField] private Button _confirmButton;
         [SerializeField] private Button _cancelButton;
-        [SerializeField] private string _defaultMessage = "튜토리얼을 건너뛰시겠습니까?";
 
         public event Action OnConfirmed;
         public event Action OnCancelled;
@@ -30,9 +24,8 @@ namespace TrainDefense.Game.Tutorial
             _cancelButton.onClick.RemoveListener(HandleCancel);
         }
 
-        public void ShowPopup(string message = null)
+        public void ShowPopup()
         {
-            _messageText.text = string.IsNullOrEmpty(message) ? _defaultMessage : message;
             gameObject.SetActive(true);
         }
 

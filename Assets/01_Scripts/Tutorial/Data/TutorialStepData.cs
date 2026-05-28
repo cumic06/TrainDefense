@@ -1,4 +1,5 @@
 using System;
+using TrainDefense.Localize;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,6 +24,7 @@ namespace TrainDefense.Game.Tutorial
         [Header("메시지")]
         [TextArea]
         [SerializeField] private string _message;
+        [SerializeField] private LocalizeKey _messageKey;
 
         [Header("연출")]
         [SerializeField] private TutorialArrowDirection _arrowDirection;
@@ -48,7 +50,9 @@ namespace TrainDefense.Game.Tutorial
         public TutorialSkipCondition SkipCondition => _skipCondition;
         public float TimeoutDuration => _timeoutDuration;
         public UnityEvent CustomSkipEvent => _customSkipEvent;
-        public string Message => _message;
+        public string Message => _messageKey != default && Localization.IsInitialized
+            ? Localization.Get(_messageKey)
+            : _message;
         public TutorialArrowDirection ArrowDirection => _arrowDirection;
         public TutorialArrowLookDirection ArrowLookDirection => _arrowLookDirection;
         public bool UseDimming => _useDimming;
