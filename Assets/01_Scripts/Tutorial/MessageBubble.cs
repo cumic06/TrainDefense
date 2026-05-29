@@ -64,6 +64,13 @@ namespace TrainDefense.Game.Tutorial
 
             var textObject = _messageText.gameObject;
 
+            // AddComponent<TypewriterComponent>() 호출 즉시 OnEnable이 동기 실행되는데,
+            // 그 시점엔 아직 localSettings가 null이라 NullReference가 발생한다.
+            // 비활성 상태에서 컴포넌트를 붙이고 설정을 끝낸 뒤 다시 활성화해 회피한다.
+            bool wasActive = textObject.activeSelf;
+            if (wasActive)
+                textObject.SetActive(false);
+
             if (!textObject.TryGetComponent(out _textAnimator))
                 _textAnimator = textObject.AddComponent<TextAnimator_TMP>();
 
@@ -84,6 +91,9 @@ namespace TrainDefense.Game.Tutorial
                 timings.waitForNormalChars = _typingSpeed;
                 _typewriter.TimingSettings = timings;
             }
+
+            if (wasActive)
+                textObject.SetActive(true);
         }
 
         /// <summary>
