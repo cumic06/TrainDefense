@@ -63,8 +63,13 @@ MonoBehaviour:
     soundType: 308
     clip: {fileID: 8300000, guid: 97bd4dbbfbe4eff4eb9d4d5c2b045db9, type: 3}
     volume: 0.4
-  - id: 
-    clipId: 
+  - id:
+    clipId:
     soundType: 309
     clip: {fileID: 8300000, guid: d5012cb5b56f118499035db0c250bed2, type: 3}
+    volume: 0.5
+  - id:
+    clipId:
+    soundType: 203
+    clip: {fileID: 8300000, guid: c48a972d3d024c2408a3331750786a29, type: 3}
     volume: 0.5

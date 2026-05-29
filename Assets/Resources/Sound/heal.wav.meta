@@ -1,14 +1,7 @@
 fileFormatVersion: 2
-guid: cf6c0e7fbef9449c98a0cdb5ea0c4d9f
-labels:
-- Audio
-- Casual
-- Sound
-- SFX
-- Effect
-timeCreated: 1453238770
-licenseType: Store
+guid: c48a972d3d024c2408a3331750786a29
 AudioImporter:
+  externalObjects: {}
   serializedVersion: 6
   defaultSettings:
     loadType: 0
@@ -22,14 +15,15 @@ AudioImporter:
   normalize: 1
   preloadAudioData: 1
   loadInBackground: 0
+  ambisonic: 0
   3D: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
-  productId: 54116
-  packageName: FREE Casual Game SFX Pack
-  packageVersion: 1.1
-  assetPath: Assets/Casual Game Sounds U6/CasualGameSounds/DM-CGS-31.wav
-  uploadId: 688818
+  productId: 177096
+  packageName: Shooting Sound
+  packageVersion: 1.0
+  assetPath: Assets/ShootingSound/heal.wav
+  uploadId: 385456
