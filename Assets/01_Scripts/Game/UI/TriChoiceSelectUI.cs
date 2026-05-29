@@ -133,7 +133,7 @@ namespace TrainDefense.Game.UI
             {
                string statText = GetTrainStatsDescription(addTrainChoice.TrainDataId);
                if (!string.IsNullOrEmpty(statText))
-                  descriptionText.text += $"\n\n<size=80%><color=#FFFFFF>{statText}</color></size>";
+                  descriptionText.text += $"\n<size=50%>\n</size><line-height=70%><size=80%><color=#FFFFFF>{statText}</color></size>";
             }
          }
       }
