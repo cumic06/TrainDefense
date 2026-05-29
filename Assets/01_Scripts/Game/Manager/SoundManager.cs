@@ -280,7 +280,11 @@ namespace TrainDefense.Game
 
                 if (sfxDuplicatePolicy == SfxDuplicatePolicy.RestartExisting)
                 {
+                    // ApplySfxSettings → ConfigureSfxSourceDefaults가 loop=false로 덮어쓰므로
+                    // 재생 직전에 loop 플래그를 복원해야 한다. 누락 시 루프 SFX(냉기포탑 등)가
+                    // one-shot으로 변질되어 재생 종료 후 풀 반환→영구 무음 버그 발생.
                     ApplySfxSettings(existing, data, ignoreSuppress);
+                    existing.loop = isLoop;
                     existing.Stop();
                     existing.Play();
                     return;
