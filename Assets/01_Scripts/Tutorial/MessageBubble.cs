@@ -29,6 +29,7 @@ namespace TrainDefense.Game.Tutorial
         private RectTransform _parentCanvasRect;
         private TextAnimator_TMP _textAnimator;
         private TypewriterComponent _typewriter;
+        private Sprite _currentNpcSprite;
 
         private void Awake()
         {
@@ -99,14 +100,20 @@ namespace TrainDefense.Game.Tutorial
 
             gameObject.SetActive(true);
 
-            bool hasPortrait = npcSprite != null && _npcPortrait != null;
+            // 새 초상화가 들어오면 갱신하고, null이면 마지막으로 지정된 초상화를 유지한다.
+            // (튜토리얼 진행 중 스텝마다 NPC가 꺼졌다 켜지는 깜빡임 방지. 인트로처럼 한 번도
+            //  초상화를 지정하지 않으면 _currentNpcSprite가 null이라 프레임은 계속 숨겨진다.)
+            if (npcSprite != null)
+                _currentNpcSprite = npcSprite;
+
+            bool hasPortrait = _npcPortrait != null && _currentNpcSprite != null;
 
             if (_npcPortrait != null)
             {
                 var npcFrame = _npcPortrait.transform.parent.gameObject;
                 if (hasPortrait)
                 {
-                    _npcPortrait.sprite = npcSprite;
+                    _npcPortrait.sprite = _currentNpcSprite;
                     npcFrame.SetActive(true);
                 }
                 else
