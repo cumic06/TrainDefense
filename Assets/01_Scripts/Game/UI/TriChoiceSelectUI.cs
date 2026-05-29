@@ -5,6 +5,7 @@ using TMPro;
 using DG.Tweening;
 using TrainDefense.Game.Datas;
 using TrainDefense.Localize;
+using TrainDefense.Game;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -227,6 +228,10 @@ namespace TrainDefense.Game.UI
             AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
             AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
             AddStatValueLine(lines, "Stat_AttackRange", s.AttackRange);
+            if (s.AttackArea > 0f && UsesAttackArea(turretData))
+               AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
+            if (s.TargetCount > 1)
+               AddStatValueLine(lines, "Stat_TargetCount", s.TargetCount);
          }
          else if (trainData is RangeTrainData rangeData)
          {
@@ -240,6 +245,16 @@ namespace TrainDefense.Game.UI
 
       // 공격 딜레이(초)를 초당 공격 횟수(공격속도)로 변환. 시스템 값이 아닌 UI 표시 전용.
       private static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
+
+      // 포탑이 AttackArea 스탯을 실제 폭발 반경으로 쓰는지 판정 (빔 길이·파티클 비율은 제외).
+      private static bool UsesAttackArea(TurretTrainData turretData)
+      {
+         var prefab = turretData?.TurretProjectilePrefab;
+         if (prefab == null) return false;
+         if (!prefab.TryGetComponent<Projectile>(out var projectile)) return false;
+         var data = projectile.GetData();
+         return data != null && data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && data.IsSpawnTriggerHandle;
+      }
 
       // 스탯 키가 LocalizeSource에 존재하고 증가량이 0이 아닐 때만 "현재값 → 다음값" 한 줄로 추가.
       // 키가 없으면(아직 정의 안 된 스탯) 조용히 건너뛴다.

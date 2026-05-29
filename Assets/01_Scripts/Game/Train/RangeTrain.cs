@@ -17,6 +17,8 @@ namespace TrainDefense.Game
 
         protected RangeTrainStatus _currentRangeTrainStatus;
         protected Projectile _rangeProjectilePrefab;
+        // AttackArea(데이터값)를 prefab의 base 콜라이더 radius로 나눠 localScale에 적용해야 월드 반경과 일치.
+        private float _baseColliderRadius = 1f;
         private Coroutine _rangeAttackCoroutine;
         private float _attackCountdown;
 
@@ -176,7 +178,10 @@ namespace TrainDefense.Game
                 {
                     _rangeProjectilePrefab = ResourceManager.Instance.Spawn(projectile);
                     _rangeProjectilePrefab.transform.SetParent(transform);
-                    _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1);
+                    var circle = _rangeProjectilePrefab.GetComponentInChildren<CircleCollider2D>();
+                    _baseColliderRadius = circle != null && circle.radius > 0f ? circle.radius : 1f;
+                    float scale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
+                    _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
                     _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
@@ -209,7 +214,8 @@ namespace TrainDefense.Game
 
                 if (_rangeProjectilePrefab != null)
                 {
-                    _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1);
+                    float scale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
+                    _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
                     _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
@@ -227,7 +233,8 @@ namespace TrainDefense.Game
 
             if (_rangeProjectilePrefab != null)
             {
-                _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1);
+                float scale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
+                _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
                 _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
             }
         }
@@ -273,7 +280,10 @@ namespace TrainDefense.Game
                     case StatType.AttackArea:
                         _currentRangeTrainStatus.AttackArea += _currentRangeTrainStatus.AttackArea * percent;
                         if (_rangeProjectilePrefab != null)
-                            _rangeProjectilePrefab.transform.localScale = new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
+                        {
+                            float areaScale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
+                            _rangeProjectilePrefab.transform.localScale = new Vector3(areaScale, areaScale, 1f);
+                        }
                         break;
                     case StatType.AttackDamage:
                         _currentRangeTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentRangeTrainStatus.AttackDamage * percent);
@@ -305,8 +315,8 @@ namespace TrainDefense.Game
 
                     if (_rangeProjectilePrefab != null)
                     {
-                        _rangeProjectilePrefab.transform.localScale =
-                            new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
+                        float areaScale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
+                        _rangeProjectilePrefab.transform.localScale = new Vector3(areaScale, areaScale, 1f);
                     }
                     break;
 
@@ -368,8 +378,10 @@ namespace TrainDefense.Game
                 case StatType.AttackArea:
                     _currentRangeTrainStatus.AttackArea = _currentRangeTrainStatus.AttackArea / (1f + percent * prevLevel) * (1f + percent * newLevel);
                     if (_rangeProjectilePrefab != null)
-                        _rangeProjectilePrefab.transform.localScale =
-                            new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
+                    {
+                        float areaScale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
+                        _rangeProjectilePrefab.transform.localScale = new Vector3(areaScale, areaScale, 1f);
+                    }
                     break;
 
                 case StatType.AttackDamage:
@@ -439,8 +451,8 @@ namespace TrainDefense.Game
 
             if (_rangeProjectilePrefab != null)
             {
-                _rangeProjectilePrefab.transform.localScale =
-                    new Vector3(_currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.AttackArea, 1f);
+                float scale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
+                _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1f);
                 _rangeProjectilePrefab.Init(
                     _currentRangeTrainStatus.AttackDamage,
                     this,
