@@ -843,11 +843,13 @@ namespace TrainDefense.Game
 
         public override void ApplyPassiveSkills()
         {
-            if (_skillTypeMask == TrainChoiceSkillType.Active) return;
             var passives = turretTrainData?.PassiveSkillDatas;
             if (passives == null) return;
+            // 액티브 스킬을 뽑은 엘리트도 고유 패시브(예: 기관총 5발마다 폭발)는 상시 적용한다.
+            // 패시브 자체가 선택지로 뽑힌 경우(액티브 없는 엘리트의 빌드 선택)에만 선택된 1개로 한정한다.
+            bool applyAll = _skillTypeMask != TrainChoiceSkillType.Passive;
             foreach (var p in passives)
-                if (string.IsNullOrEmpty(_selectedSkillId) || p.Id == _selectedSkillId)
+                if (applyAll || p.Id == _selectedSkillId)
                     _skillModule.RegisterPassiveFromData(p);
         }
 

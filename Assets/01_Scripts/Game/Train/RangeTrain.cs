@@ -137,6 +137,18 @@ namespace TrainDefense.Game
             }
         }
 
+        /// <summary>
+        /// 스킬 InstantAttack용: 쿨다운을 기다리지 않고 즉시 1회 공격을 강제한다. (TurretTrain.ForceAttack 대칭)
+        /// </summary>
+        public bool ForceAttack()
+        {
+            if (_isDead) return false;
+            if (rangeTrainData == null || rangeTrainData.RangeProjectilePrefab == null) return false;
+            _attackCountdown = 0f;
+            RangeAttackHandler();
+            return true;
+        }
+
         public void SetSuppressMainProjectileShove(bool suppress)
         {
             _suppressMainProjectileShove = suppress;
@@ -257,11 +269,13 @@ namespace TrainDefense.Game
 
         public override void ApplyPassiveSkills()
         {
-            if (_skillTypeMask == TrainChoiceSkillType.Active) return;
             var passives = rangeTrainData?.PassiveSkillDatas;
             if (passives == null) return;
+            // 액티브 스킬을 뽑은 엘리트도 고유 패시브는 상시 적용한다.
+            // 패시브 자체가 선택지로 뽑힌 경우에만 선택된 1개로 한정한다.
+            bool applyAll = _skillTypeMask != TrainChoiceSkillType.Passive;
             foreach (var p in passives)
-                if (string.IsNullOrEmpty(_selectedSkillId) || p.Id == _selectedSkillId)
+                if (applyAll || p.Id == _selectedSkillId)
                     _skillModule.RegisterPassiveFromData(p);
         }
 
