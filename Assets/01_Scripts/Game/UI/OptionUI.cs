@@ -28,6 +28,10 @@ namespace TrainDefense
       private Sprite muteSprite;
       [SerializeField]
       private Sprite unMuteSprite;
+
+      [Header("옵션 UI가 열려 있는 동안 숨길 오브젝트 (예: 로비 버튼)")]
+      [SerializeField]
+      private GameObject[] hideWhileOpen;
       #endregion
 
       private void Awake()
@@ -110,6 +114,7 @@ namespace TrainDefense
       public void ShowOptionUI()
       {
          gameObject.SetActive(true);
+         _SetHideTargetsActive(false);
 
          if (InGameSequence.Instance != null)
             InGameSequence.Instance.PushOverlay(OverlayPhase.Option);
@@ -120,11 +125,24 @@ namespace TrainDefense
       public void HideOptionUI()
       {
          gameObject.SetActive(false);
+         _SetHideTargetsActive(true);
 
          if (InGameSequence.Instance != null)
             InGameSequence.Instance.PopOverlay(OverlayPhase.Option);
          else if (TimeManager.Instance != null)
             TimeManager.Instance.Resume();
+      }
+
+      // 옵션 UI 표시 중에는 로비 버튼 등 지정한 오브젝트를 숨겨 겹침을 방지한다.
+      private void _SetHideTargetsActive(bool isActive)
+      {
+         if (hideWhileOpen == null) return;
+
+         for (int i = 0; i < hideWhileOpen.Length; i++)
+         {
+            if (hideWhileOpen[i] != null)
+               hideWhileOpen[i].SetActive(isActive);
+         }
       }
 
       private void _ChangeBGMVolume(float value)
