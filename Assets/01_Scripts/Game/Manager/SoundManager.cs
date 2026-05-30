@@ -232,14 +232,14 @@ namespace TrainDefense.Game
 
         #region SFX Management
 
-        public void PlaySFX(SoundType type, bool isLoop = false)
+        public void PlaySFX(SoundType type, bool isLoop = false, bool ignoreSuppress = false)
         {
             var db = _GetSoundDB();
             if (db == null)
                 return;
             var data = db.GetSoundData(type);
             if (data != null)
-                PlaySFX(data, isLoop);
+                PlaySFX(data, isLoop, ignoreSuppress);
         }
 
         public void PlaySFX(string id, bool isLoop = false)
@@ -262,11 +262,14 @@ namespace TrainDefense.Game
                 PlaySFX(data, isLoop);
         }
 
-        public void PlaySFX(SoundData data, bool isLoop)
+        public void PlaySFX(SoundData data, bool isLoop, bool ignoreSuppress = false)
         {
             if (data == null || data.Clip == null)
                 return;
-            if (IsSfxSilenced)
+
+            // 옵션 음소거는 항상 존중하되, 일시 억제(Pause 등)는 ignoreSuppress로 우회 가능
+            bool silenced = IsSfxMuted || (_isSfxSuppressed && !ignoreSuppress);
+            if (silenced)
                 return;
 
             var existing = FindActiveSfxSourceByClip(data.Clip);
@@ -277,7 +280,11 @@ namespace TrainDefense.Game
 
                 if (sfxDuplicatePolicy == SfxDuplicatePolicy.RestartExisting)
                 {
-                    ApplySfxSettings(existing, data);
+                    // ApplySfxSettings → ConfigureSfxSourceDefaults가 loop=false로 덮어쓰므로
+                    // 재생 직전에 loop 플래그를 복원해야 한다. 누락 시 루프 SFX(냉기포탑 등)가
+                    // one-shot으로 변질되어 재생 종료 후 풀 반환→영구 무음 버그 발생.
+                    ApplySfxSettings(existing, data, ignoreSuppress);
+                    existing.loop = isLoop;
                     existing.Stop();
                     existing.Play();
                     return;
@@ -285,7 +292,7 @@ namespace TrainDefense.Game
             }
 
             AudioSource source = GetSfxSource();
-            ApplySfxSettings(source, data);
+            ApplySfxSettings(source, data, ignoreSuppress);
             source.loop = isLoop;
             source.Play();
 
@@ -314,13 +321,13 @@ namespace TrainDefense.Game
             }
         }
 
-        private void ApplySfxSettings(AudioSource source, SoundData data)
+        private void ApplySfxSettings(AudioSource source, SoundData data, bool ignoreSuppress = false)
         {
             ConfigureSfxSourceDefaults(source);
             source.clip = data.Clip;
             _sfxBaseVolumes[source] = data.Volume;
             source.volume = data.Volume * sfxVolume;
-            source.mute = IsSfxSilenced;
+            source.mute = ignoreSuppress ? IsSfxMuted : IsSfxSilenced;
         }
 
         private AudioSource FindActiveSfxSourceByClip(AudioClip clip)

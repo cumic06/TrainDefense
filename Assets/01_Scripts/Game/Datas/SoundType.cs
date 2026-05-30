@@ -12,6 +12,7 @@ namespace TrainDefense.Game.Datas
         SFX_UI_ButtonClick = 200,
         SFX_UI_WindowOpen = 201,
         SFX_UI_WindowClose = 202,
+        SFX_UI_ShopOpen = 203,
 
         // SFX - Game
         SFX_Game_Hit = 300,

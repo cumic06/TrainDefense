@@ -15,8 +15,8 @@ namespace TrainDefense
          return new UserOptionData
          {
             IsHapticEnabled = PlayerPrefs.GetInt(HapticEnabledKey, 1) == 1,
-            BgmVolume = PlayerPrefs.GetFloat(BgmVolumeKey, 1f),
-            SfxVolume = PlayerPrefs.GetFloat(SfxVolumeKey, 1f),
+            BgmVolume = PlayerPrefs.GetFloat(BgmVolumeKey, 0.5f),
+            SfxVolume = PlayerPrefs.GetFloat(SfxVolumeKey, 0.5f),
             IsBgmMuted = PlayerPrefs.GetInt(BgmMutedKey, 0) == 1,
             IsSfxMuted = PlayerPrefs.GetInt(SfxMutedKey, 0) == 1,
          };

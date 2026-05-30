@@ -23,8 +23,9 @@ namespace TrainDefense.Game.UI
       private ParticleSystem coinParticleSystem;
 
       [Header("Level Up Text")]
+      [Tooltip("레벨업 텍스트 연출 전용 컴포넌트. 선택지 UI와 분리된 오브젝트에 부착")]
       [SerializeField]
-      private GameObject levelUpTextObject;
+      private LevelUpText levelUpText;
       [SerializeField]
       private float cardAppearDelay = 0.3f;
 
@@ -59,9 +60,6 @@ namespace TrainDefense.Game.UI
          {
             rerollButton.onClick.AddListener(_OnRerollButtonClick);
          }
-
-         if (levelUpTextObject != null)
-            levelUpTextObject.SetActive(false);
       }
 
       private void Start() => _SubscribeEvents();
@@ -161,7 +159,18 @@ namespace TrainDefense.Game.UI
 
          if (showLevelUpText)
          {
-            await _ShowLevelUpTextAsync();
+            if (levelUpText != null)
+            {
+               // 레벨업 텍스트 연출 동안에는 리롤 버튼 비활성화
+               if (rerollButton != null)
+                  rerollButton.interactable = false;
+
+               await levelUpText.PlayAsync(() => _IsPopupOutdated(requestId));
+
+               // 레벨업 텍스트 연출이 끝나면 리롤 버튼 다시 활성화
+               if (rerollButton != null)
+                  rerollButton.interactable = true;
+            }
 
             if (_IsPopupOutdated(requestId))
                return;
@@ -264,31 +273,6 @@ namespace TrainDefense.Game.UI
       }
 
       private bool _IsPopupOutdated(int requestId) => requestId != _popupRequestId;
-
-      private async UniTask _ShowLevelUpTextAsync()
-      {
-         if (levelUpTextObject == null)
-            return;
-
-         levelUpTextObject.SetActive(true);
-         levelUpTextObject.transform.localScale = Vector3.one;
-
-         var animations = levelUpTextObject.GetComponents<DOTweenAnimation>();
-         float maxDuration = 0f;
-
-         foreach (var anim in animations)
-         {
-            anim.RewindThenRecreateTweenAndPlay();
-            float d = anim.delay + anim.duration;
-            if (d > maxDuration)
-               maxDuration = d;
-         }
-
-         if (maxDuration > 0)
-            await UniTask.Delay((int)(maxDuration * 1000), ignoreTimeScale: true);
-
-         levelUpTextObject.SetActive(false);
-      }
 
       public async UniTaskVoid OnChoiceSelected(IChoiceOption choiceOption)
       {

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using Cumic.Events;
+using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.UI
@@ -92,6 +93,9 @@ namespace TrainDefense.Game.UI
             }
 
             gameObject.SetActive(true);
+
+            // 점검 단계는 Pause(SFX 일시 억제) 상태이므로 ignoreSuppress로 우회해 재생
+            SoundManager.Instance.PlaySFX(SoundType.SFX_UI_ShopOpen, ignoreSuppress: true);
 
             if (groupCoin != null) groupCoin.SetActive(true);
 

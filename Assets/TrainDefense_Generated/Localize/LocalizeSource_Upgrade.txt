@@ -28,3 +28,4 @@ Stat_AttackDamage	공격력<pos=40%><color=#FFD24A>{0:0.##}</color>	Attack Power
 Stat_AttackSpeed	공격속도<pos=40%><color=#FFD24A>{0:0.##}</color>	Attack Speed<pos=70%><color=#FFD24A>{0:0.##}</color>	攻撃速度<pos=40%><color=#FFD24A>{0:0.##}</color>	攻击速度<pos=40%><color=#FFD24A>{0:0.##}</color>
 Stat_AttackRange	사거리<pos=40%><color=#FFD24A>{0:0.##}</color>	Range<pos=70%><color=#FFD24A>{0:0.##}</color>	射程<pos=40%><color=#FFD24A>{0:0.##}</color>	射程<pos=40%><color=#FFD24A>{0:0.##}</color>
 Stat_AttackArea	범위<pos=40%><color=#FFD24A>{0:0.##}</color>	Area<pos=70%><color=#FFD24A>{0:0.##}</color>	範囲<pos=40%><color=#FFD24A>{0:0.##}</color>	范围<pos=40%><color=#FFD24A>{0:0.##}</color>
+Stat_TargetCount	대상 수<pos=40%><color=#FFD24A>{0}</color>	Targets<pos=70%><color=#FFD24A>{0}</color>	対象数<pos=40%><color=#FFD24A>{0}</color>	目标数<pos=40%><color=#FFD24A>{0}</color>
