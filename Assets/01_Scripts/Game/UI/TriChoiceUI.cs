@@ -160,7 +160,17 @@ namespace TrainDefense.Game.UI
          if (showLevelUpText)
          {
             if (levelUpText != null)
+            {
+               // 레벨업 텍스트 연출 동안에는 리롤 버튼 비활성화
+               if (rerollButton != null)
+                  rerollButton.interactable = false;
+
                await levelUpText.PlayAsync(() => _IsPopupOutdated(requestId));
+
+               // 레벨업 텍스트 연출이 끝나면 리롤 버튼 다시 활성화
+               if (rerollButton != null)
+                  rerollButton.interactable = true;
+            }
 
             if (_IsPopupOutdated(requestId))
                return;
