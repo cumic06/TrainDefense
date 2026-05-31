@@ -349,8 +349,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 7
+      AttackArea: 7
       AttackCount: 1
       AttackInterval: 0.25
       TargetCount: 1
@@ -373,8 +373,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 2
-      AttackRange: 8
-      AttackArea: 8
+      AttackRange: 7
+      AttackArea: 7
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 1
@@ -397,8 +397,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 30
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 7
+      AttackArea: 7
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
@@ -421,8 +421,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 30
-      AttackArea: 30
+      AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -445,8 +445,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
-      AttackRange: 20
-      AttackArea: 20
+      AttackRange: 10
+      AttackArea: 10
       AttackCount: 3
       AttackInterval: 1
       TargetCount: 3
@@ -469,7 +469,7 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 20
+      AttackRange: 10
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
@@ -493,8 +493,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 30
-      AttackArea: 30
+      AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
@@ -598,8 +598,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 30
-      AttackArea: 30
+      AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -624,8 +624,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
-      AttackRange: 20
-      AttackArea: 20
+      AttackRange: 10
+      AttackArea: 10
       AttackCount: 3
       AttackInterval: 1
       TargetCount: 3
@@ -651,7 +651,7 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 20
+      AttackRange: 10
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
@@ -678,8 +678,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 30
-      AttackArea: 30
+      AttackRange: 10
+      AttackArea: 10
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
