@@ -38,11 +38,13 @@ namespace TrainDefense.Game.UI
       private TriChoiceUI _triChoiceUI;
 
       private bool _isSelected = false;
+      private float _baseDescFontSize;
 
       private void Awake()
       {
          _selectButton = GetComponent<Button>();
          _cardImage = GetComponent<Image>();
+         _baseDescFontSize = descriptionText.fontSize;
       }
 
       private void Start()
@@ -69,6 +71,10 @@ namespace TrainDefense.Game.UI
             return;
          }
 
+         // 영어는 글이 길어 description 폰트만 줄임
+         descriptionText.fontSize = Localization.CurrentLanguage == SystemLanguage.English
+            ? _baseDescFontSize * 0.85f : _baseDescFontSize;
+
          iconImage.sprite = choiceUIInfo.Icon;
          iconImage.gameObject.SetActive(choiceUIInfo.Icon != null);
          bool isElite = choiceOption is EliteTrainChoice;
@@ -86,8 +92,7 @@ namespace TrainDefense.Game.UI
             var selectedUpgrade = triChoiceManager?.GetSelectedUpgrade(upgradeTrainChoice);
             if (selectedUpgrade != null)
             {
-               // 스탯 줄은 새 포탑 카드와 동일하게 작은 폰트로 표시.
-               descriptionText.text = $"<line-height=70%><size=80%>{GetUpgradeDescription(selectedUpgrade)}</size>";
+               descriptionText.text = $"<line-height=120%><size=80%>{GetUpgradeDescription(selectedUpgrade)}</size>";
                upgradeImage.gameObject.SetActive(true);
             }
             else
@@ -134,7 +139,7 @@ namespace TrainDefense.Game.UI
             {
                string statText = GetTrainStatsDescription(addTrainChoice.TrainDataId);
                if (!string.IsNullOrEmpty(statText))
-                  descriptionText.text += $"\n<size=50%>\n</size><line-height=70%><size=80%><color=#D7D3B3>{statText}</color></size>";
+                  descriptionText.text += $"\n<size=50%>\n</size><line-height=70%><size=70%><color=#D7D3B3>{statText}</color></size>";
             }
          }
       }
@@ -280,8 +285,8 @@ namespace TrainDefense.Game.UI
             string upgradeTemplate = Localization.GetByKey(upgradeKey);
             if (!string.IsNullOrEmpty(upgradeTemplate))
             {
-               // 현재값({0})·다음값({1}) 모두 공백 PadLeft한 string으로 주입 → txt의 <mspace>와 함께 양쪽 다 우측 정렬.
-               lines.Add(SafeFormat(upgradeTemplate, new object[] { AlignStatValue(currentValue), AlignStatValue(currentValue + delta) }));
+               // 현재값({0})은 우측 정렬(PadLeft), 바뀔 값({1})은 좌측 정렬(PadLeft 없이 raw).
+               lines.Add(SafeFormat(upgradeTemplate, new object[] { AlignStatValue(currentValue), (currentValue + delta).ToString("0.#") }));
                return;
             }
          }

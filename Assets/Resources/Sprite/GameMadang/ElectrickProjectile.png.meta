@@ -1,10 +1,55 @@
 fileFormatVersion: 2
-guid: cf2923c2bedfe9849a9d6bfd36611313
+guid: 8fced339c251d1f498a2be61ab9357d0
 TextureImporter:
   internalIDToNameTable:
   - first:
       213: -7636701915186941633
     second: ElectrickProjectile_0
+  - first:
+      213: 4246966628365444324
+    second: ElectrickProjectile_1
+  - first:
+      213: 8434214240539831953
+    second: ElectrickProjectile_2
+  - first:
+      213: -9072617491489415482
+    second: ElectrickProjectile_3
+  - first:
+      213: -4604157120476546150
+    second: ElectrickProjectile_4
+  - first:
+      213: 3223746133804707465
+    second: ElectrickProjectile_5
+  - first:
+      213: -596079056023691432
+    second: ElectrickProjectile_6
+  - first:
+      213: -7327676477759817796
+    second: ElectrickProjectile_7
+  - first:
+      213: 1406262953012003883
+    second: ElectrickProjectile_8
+  - first:
+      213: 5722423423262879127
+    second: ElectrickProjectile_9
+  - first:
+      213: -3395261608434593120
+    second: ElectrickProjectile_10
+  - first:
+      213: 1319975384059050237
+    second: ElectrickProjectile_11
+  - first:
+      213: -6342023878237135184
+    second: ElectrickProjectile_12
+  - first:
+      213: 5205205527136180508
+    second: ElectrickProjectile_13
+  - first:
+      213: -7839541368547397976
+    second: ElectrickProjectile_14
+  - first:
+      213: 8968258863432945967
+    second: ElectrickProjectile_15
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +96,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -131,10 +176,10 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        width: 128
+        height: 200
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -147,11 +192,77 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: ElectrickProjectile_1
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 200
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e429a8a5a140fa30800000000000000
+      internalID: 4246966628365444324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElectrickProjectile_2
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 128
+        height: 200
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19eeae65a295c0570800000000000000
+      internalID: 8434214240539831953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ElectrickProjectile_3
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 128
+        height: 200
+      alignment: 9
+      pivot: {x: 0.5, y: 0.2}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ce17c4d576971280800000000000000
+      internalID: -9072617491489415482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 7b8a8fe7b27b4234ba260f73394d481e
+    spriteID: 087157d175f69fb4aa9fd573d6279f91
     internalID: 0
     vertices: []
     indices: 
@@ -159,9 +270,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":128.0,"y":200.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       ElectrickProjectile_0: -7636701915186941633
+      ElectrickProjectile_1: 4246966628365444324
+      ElectrickProjectile_2: 8434214240539831953
+      ElectrickProjectile_3: -9072617491489415482
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
