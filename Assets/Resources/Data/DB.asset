@@ -1703,6 +1703,8 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map1
+      customSpawnAreas: []
+      spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: 8598508764172064028, guid: 15a620789885c0e4785fe4b6ee084b5d, type: 3}
   - id: 50002
     baseInspectionTime: 40
@@ -1722,6 +1724,12 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map2
+      customSpawnAreas:
+      - Offset: {x: 0, y: 6}
+        Size: {x: 35, y: 5}
+      - Offset: {x: 0, y: -6}
+        Size: {x: 35, y: 5}
+      spawnEffectPrefab: {fileID: 5497501282563620409, guid: 61ec9a5b3b8a7454ba21d3c1bad637c6, type: 3}
     stageImage: {fileID: -8210071984612457726, guid: e44f3d3e5e510c747b272409f41010fd, type: 3}
   - id: 50003
     baseInspectionTime: 40
@@ -1744,6 +1752,8 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map3
+      customSpawnAreas: []
+      spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: 8750756355730269390, guid: 36a96b526898ef64595432763c5436f6, type: 3}
   - id: 50004
     baseInspectionTime: 40
@@ -1763,6 +1773,8 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map4
+      customSpawnAreas: []
+      spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: -5933715298724706184, guid: cbb1a3d97c892a94f875b5f9da3ae9ae, type: 3}
   - id: 50005
     baseInspectionTime: 40
@@ -1782,6 +1794,8 @@ MonoBehaviour:
     mapData:
       id: 
       prefabId: Map5
+      customSpawnAreas: []
+      spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: 9023624542499435072, guid: 0980d694155662c49bcb150ed8cb626b, type: 3}
   upgradeDataList:
   - id: 110001

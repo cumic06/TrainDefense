@@ -47,6 +47,10 @@ namespace TrainDefense.Game
       private bool _stopSpawnMonster;
 
       private StageSpawnData[] _currentSpawnDatas;
+      // 씬에 설정된 공통 스폰 영역. 첫 SetSpawnRule 때 보존하고, 맵별 영역이 없을 때 이 값으로 복귀.
+      private List<SpawnAreaInfo> _defaultSpawnAreas;
+      // 현재 맵의 스폰 이펙트(없으면 null). 몬스터 스폰 시 spawnPos에 생성.
+      private GameObject _currentSpawnEffect;
 
       [ShowInInspector]
       private readonly List<Monster> _spawnedMonsters = new();
@@ -104,12 +108,19 @@ namespace TrainDefense.Game
          }
       }
 
-      public void SetSpawnRule(StageSpawnData[] spawnDatas, float monsterSpawnInterval)
+      public void SetSpawnRule(StageSpawnData[] spawnDatas, float monsterSpawnInterval, List<SpawnAreaInfo> mapSpawnAreas = null, GameObject mapSpawnEffect = null)
       {
          _currentSpawnDatas = spawnDatas;
          _originalSpawnInterval = monsterSpawnInterval;
          _stationPassedCount = 0;
          spawnInterval = _originalSpawnInterval;
+
+         // 맵별 영역(MapData.CustomSpawnAreas)이 있으면 그걸 쓰고, 없으면 씬 기본(공통)으로 복귀.
+         _defaultSpawnAreas ??= customSpawnAreas != null ? new List<SpawnAreaInfo>(customSpawnAreas) : new List<SpawnAreaInfo>();
+         customSpawnAreas = (mapSpawnAreas != null && mapSpawnAreas.Count > 0) ? mapSpawnAreas : _defaultSpawnAreas;
+
+         // 맵별 스폰 이펙트(MapData.SpawnEffectPrefab). null이면 이펙트 없음.
+         _currentSpawnEffect = mapSpawnEffect;
       }
 
       public void StartSpawnMonster()
@@ -182,6 +193,11 @@ namespace TrainDefense.Game
             }
 
             Vector3 spawnPos = RandomSpawnPos();
+
+            if (_currentSpawnEffect != null)
+            {
+               ResourceManager.Instance.Spawn(_currentSpawnEffect, spawnPos, parent: transform);
+            }
 
             // 가중치 선택 로직
             StageSpawnData selectedData = SelectMonsterData();

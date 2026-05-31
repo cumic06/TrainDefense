@@ -22,6 +22,8 @@ namespace TrainDefense.Game
       private GameObject eliteEffect;
       [SerializeField]
       private Color slowColor = new Color(0.5f, 0.85f, 1f, 1f);
+      [SerializeField]
+      private float spawnStunDuration = 0.1f;
       #endregion
 
       [ShowInInspector, ReadOnly]
@@ -73,6 +75,7 @@ namespace TrainDefense.Game
       {
          _monsterData = monsterData;
          _InitStats();
+         Stun(spawnStunDuration);
       }
 
       #region Enable/Disable

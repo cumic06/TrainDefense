@@ -134,7 +134,8 @@ namespace TrainDefense.Game.Manager
                 }
             }
 
-            MonsterSpawner.Instance.SetSpawnRule(filteredList.ToArray(), CurrentStageData.SpawnInterval);
+            var mapData = DatabaseManager.Instance.GetMapData(CurrentStageData);
+            MonsterSpawner.Instance.SetSpawnRule(filteredList.ToArray(), CurrentStageData.SpawnInterval, mapData?.CustomSpawnAreas, mapData?.SpawnEffectPrefab);
         }
 
         private void _SetCurrentStage()
