@@ -9,17 +9,17 @@ TUpgrade_90007_Name	저격 포탑 강화	Sniper Turret Upgrade	スナイパー�
 RUpgrade_100001_Name	폭발 포탑 강화	Explosive Turret Upgrade	爆発タレット強化	爆炸炮塔强化
 RUpgrade_100002_Name	냉기 포탑 강화	Frost Turret Upgrade	冷気タレット強化	冰霜炮塔强화
 Upgrade_110001_Name	공격력<sprite name="sword"> 증가	Attack Power<sprite name="sword"> Increase	攻撃力<sprite name="sword">増加	攻击力<sprite name="sword">提升
-Upgrade_110001_Desc	포탑들의 공격력이 {0}({1}) 만큼 증가합니다. {2}/{3}	Increases turret attack power by {0}({1}). {2}/{3}	タレットの攻撃力が{0}({1})増加します。{2}/{3}	炮塔攻击力提升{0}({1})。{2}/{3}
+Upgrade_110001_Desc	포탑들의 공격력이 {1} 만큼 증가합니다. {2}/{3}	Increases turret attack power by {1}. {2}/{3}	タレットの攻撃力が{1}増加します。{2}/{3}	炮塔攻击力提升{1}。{2}/{3}
 Upgrade_110002_Name	공격 딜레이 감소	Attack Delay Decrease	攻撃ディレイ減少	攻击延迟减少
-Upgrade_110002_Desc	포탑들의 공격 딜레이가 {0}({1}) 만큼 감소합니다. {2}/{3}	Decreases turret attack delay by {0}({1}). {2}/{3}	タレットの攻撃ディレイが{0}({1})減少します。{2}/{3}	炮塔攻击延迟减少{0}({1})。{2}/{3}
+Upgrade_110002_Desc	포탑들의 공격 딜레이가 {1} 만큼 감소합니다. {2}/{3}	Decreases turret attack delay by {1}. {2}/{3}	タレットの攻撃ディレイが{1}減少します。{2}/{3}	炮塔攻击延迟减少{1}。{2}/{3}
 Upgrade_110003_Name	기차 체력 증가	Train HP Increase	列車HP増加	列车体力提升
-Upgrade_110003_Desc	기차의 최대 체력이 {0}({1}) 만큼 증가합니다. {2}/{3}	Increases train max HP by {0}({1}). {2}/{3}	列車の最大HPが{0}({1})増加します。{2}/{3}	列车最大体力提升{0}({1})。{2}/{3}
+Upgrade_110003_Desc	기차의 최대 체력이 {1} 만큼 증가합니다. {2}/{3}	Increases train max HP by {1}. {2}/{3}	列車の最大HPが{1}増加します。{2}/{3}	列车最大体力提升{1}。{2}/{3}
 Upgrade_110004_Name	골드 획득	Gold Acquisition	ゴールド獲得	金币获取
 Upgrade_110004_Desc	골드 획득에 보너스가 추가됩니다. {2}/{3}	Adds a bonus to gold acquisition. {2}/{3}	ゴールド獲得にボーナスが追加されます。{2}/{3}	金币获取添加奖励。{2}/{3}
 Upgrade_110006_Name	치명타 확률 증가	Critical Chance Increase	会心率増加	暴击率提升
-Upgrade_110006_Desc	포탑들의 치명타 확률이 {0}%({1}) 만큼 증가합니다. {2}/{3}	Increases turret critical chance by {0}%({1}). {2}/{3}	タレットの会心率が{0}%({1})増加します。{2}/{3}	炮塔暴击率提升{0}%({1})。{2}/{3}
+Upgrade_110006_Desc	포탑들의 치명타 확률이 {1}% 만큼 증가합니다. {2}/{3}	Increases turret critical chance by {1}%. {2}/{3}	タレットの会心率が{1}%増加します。{2}/{3}	炮塔暴击率提升{1}%。{2}/{3}
 Upgrade_110007_Name	치명타 피해 증가	Critical Damage Increase	会心ダメージ増加	暴击伤害提升
-Upgrade_110007_Desc	포탑들의 치명타 피해가 {0}%({1}) 만큼 증가합니다. {2}/{3}	Increases turret critical damage by {0}%({1}). {2}/{3}	タレットの会心ダメージが{0}%({1})増加します。{2}/{3}	炮塔暴击伤害提升{0}%({1})。{2}/{3}
+Upgrade_110007_Desc	포탑들의 치명타 피해가 {1}% 만큼 증가합니다. {2}/{3}	Increases turret critical damage by {1}%. {2}/{3}	タレットの会心ダメージが{1}%増加します。{2}/{3}	炮塔暴击伤害提升{1}%。{2}/{3}
 Upgrade_AttackDamage	공격력 {0} → <color=#FF5851><bounce>{1}</bounce></color>	Attack power {0} → <color=#FF5851><bounce>{1}</bounce></color>	攻撃力 {0} → <color=#FF5851><bounce>{1}</bounce></color>	攻击力 {0} → <color=#FF5851><bounce>{1}</bounce></color>
 Upgrade_AttackSpeed	공격속도 {0:0.##} → <color=#FF5851><bounce>{1:0.##}</bounce></color>	Attack speed {0:0.##} → <color=#FF5851><bounce>{1:0.##}</bounce></color>	攻撃速度 {0:0.##} → <color=#FF5851><bounce>{1:0.##}</bounce></color>	攻击速度 {0:0.##} → <color=#FF5851><bounce>{1:0.##}</bounce></color>
 Upgrade_AttackArea	공격 범위 {0} → <color=#FF5851><bounce>{1}</bounce></color>	Attack range {0} → <color=#FF5851><bounce>{1}</bounce></color>	攻撃範囲 {0} → <color=#FF5851><bounce>{1}</bounce></color>	攻击范围 {0} → <color=#FF5851><bounce>{1}</bounce></color>

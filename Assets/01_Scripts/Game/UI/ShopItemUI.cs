@@ -87,12 +87,10 @@ namespace TrainDefense.Game.UI
          int currentLevel = UserDataManager.Instance.GetUpgradeLevel(shopItemDataId);
 
          string increaseAmountText = "";
-         float nextTotalValue = 0;
          float increaseAmount = 0;
 
          if (_upgradeData.UpgradeDataType == UpgradeDataType.NonTrainUpgrade)
          {
-            nextTotalValue = (currentLevel + 1) * _upgradeData.UpgradeValue;
             increaseAmount = _upgradeData.UpgradeValue;
          }
          else if (_upgradeData.UpgradeDataType == UpgradeDataType.TrainUpgrade)
@@ -102,7 +100,6 @@ namespace TrainDefense.Game.UI
                if (stat.Value == 0)
                   continue;
 
-               nextTotalValue += (currentLevel + 1) * stat.Value;
                increaseAmount += stat.Value;
             }
          }
@@ -117,12 +114,13 @@ namespace TrainDefense.Game.UI
          }
 
          string desc = _upgradeData.Description;
+         // {0}(다음 누적 총값)은 더 이상 표시하지 않음(증가량만 표기). 포맷 {1}=증가량, {2}=현재레벨, {3}=최대레벨.
          try
          {
             if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
-               return string.Format(desc, nextTotalValue, increaseAmountText, "Max", "Max");
+               return string.Format(desc, string.Empty, increaseAmountText, "Max", "Max");
 
-            return string.Format(desc, nextTotalValue, increaseAmountText, currentLevel, _upgradeData.MaxUpgradeCount);
+            return string.Format(desc, string.Empty, increaseAmountText, currentLevel, _upgradeData.MaxUpgradeCount);
          }
          catch (System.FormatException)
          {
@@ -142,6 +140,8 @@ namespace TrainDefense.Game.UI
             _FlashPriceRed();
             return;
          }
+
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ItemBuy, ignoreSuppress: true);
 
          GameEventSystem.Publish(new BuyShopItemEvent(GetCurrentCost(), shopItemDataId));
       }

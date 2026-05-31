@@ -161,9 +161,9 @@ RUpgrade_100001_Desc	공격력 <color=#FF5851><bounce>{0} 증가</bounce></color
 RUpgrade_100002_Name	냉기 포탑 강화	Frost Turret Upgrade	冷気タレット強化	冰霜炮塔强化
 RUpgrade_100002_Desc	공격력 <color=#FF5851><bounce>{0} 증가</bounce></color> 범위 <color=#FF5851><bounce>{1} 증가</bounce></color>	Attack power <color=#FF5851><bounce>{0} increase</bounce></color> Range <color=#FF5851><bounce>{1} increase</bounce></color>	攻撃力<color=#FF5851><bounce>{0}増加</bounce></color> 範囲<color=#FF5851><bounce>{1}増加</bounce></color>	攻击力<color=#FF5851><bounce>{0}提升</bounce></color> 范围<color=#FF5851><bounce>{1}增加</bounce></color>
 Upgrade_110001_Name	공격력<sprite name="sword"> 증가	Attack Power<sprite name="sword"> Increase	攻撃力<sprite name="sword">増加	攻击力<sprite name="sword">提升
-Upgrade_110001_Desc	포탑들의 공격력이 {0}({1}) 만큼 증가합니다. {2}/{3}	Increases turret attack power by {0}({1}). {2}/{3}	タレットの攻撃力が{0}({1})増加します。{2}/{3}	炮塔攻击力提升{0}({1})。{2}/{3}
+Upgrade_110001_Desc	포탑들의 공격력이 {1} 만큼 증가합니다. {2}/{3}	Increases turret attack power by {1}. {2}/{3}	タレットの攻撃力が{1}増加します。{2}/{3}	炮塔攻击力提升{1}。{2}/{3}
 Upgrade_110002_Name	공격 딜레이 감소	Attack Delay Decrease	攻撃ディレイ減少	攻击延迟减少
-Upgrade_110002_Desc	포탑들의 공격 딜레이가 {0}({1}) 만큼 감소합니다. {2}/{3}	Decreases turret attack delay by {0}({1}). {2}/{3}	タレットの攻撃ディレイが{0}({1})減少します。{2}/{3}	炮塔攻击延迟减少{0}({1})。{2}/{3}
+Upgrade_110002_Desc	포탑들의 공격 딜레이가 {1} 만큼 감소합니다. {2}/{3}	Decreases turret attack delay by {1}. {2}/{3}	タレットの攻撃ディレイが{1}減少します。{2}/{3}	炮塔攻击延迟减少{1}。{2}/{3}
 Tutorial_Skill_Title	스킬 튜토리얼	Skill Tutorial	スキルチュートリアル	技能教程
 Tutorial_Skill_Msg1	스킬을 사용해보세요!	Try using a skill!	スキルを使ってみましょう！	试试使用技能吧！
 Tutorial_Skill_Msg2	기차 아이콘을 눌러 스킬을 사용하세요!	Press the train icon to use a skill!	列車アイコンを押してスキルを使用してください！	按列车图标使用技能！
