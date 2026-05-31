@@ -58,7 +58,9 @@ namespace TrainDefense.Game
         public float SkillCooldown => _skillModule.SkillCooldown;
         public bool CanUseSkill => _skillModule.CanUse;
         public float SkillCooldownRatio => _skillModule.CooldownRatio;
-        
+        public float SkillRemainingCooldown => _skillModule.RemainingCooldown;
+        public float CurrentHpRatio => _currentMaxHp > 0f ? _currentHp / _currentMaxHp : 0f;
+
         #endregion
 
         protected virtual void OnEnable()

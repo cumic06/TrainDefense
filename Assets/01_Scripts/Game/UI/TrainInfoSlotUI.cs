@@ -16,13 +16,15 @@ namespace TrainDefense.Game.UI
       [SerializeField]
       private Button slotButton;
       [SerializeField]
-      private Image backGroundImage;
+      private Image healthImage;
       [SerializeField]
       private Image iconImage;
       [SerializeField]
       private Image skillIcon;
       [SerializeField]
       private Image skillCooldownImage;
+      [SerializeField]
+      private TextMeshProUGUI skillCooldownText;
 
       [SerializeField]
       private Image trainLevelImage;
@@ -52,7 +54,7 @@ namespace TrainDefense.Game.UI
       private void Start()
       {
          _SubscribeEvents();
-         backGroundImage.color = Color.green;
+         _RefreshHealthUI();
          _RefreshSkillUI();
       }
 
@@ -124,12 +126,34 @@ namespace TrainDefense.Game.UI
       {
          _train = train;
          trainLevelImage.gameObject.SetActive(false);
+         _RefreshHealthUI();
          _RefreshSkillUI();
       }
 
       public void SetIcon(Sprite icon)
       {
          iconImage.sprite = icon;
+      }
+
+      private void _RefreshHealthUI()
+      {
+         if (healthImage == null)
+            return;
+
+         float ratio = _train != null ? _train.CurrentHpRatio : 1f;
+         healthImage.fillAmount = ratio;
+         healthImage.color = _GetHealthColor(ratio);
+      }
+
+      private static Color _GetHealthColor(float ratio)
+      {
+         if (ratio <= 0.25f)
+            return Color.red;
+         if (ratio <= 0.5f)
+            return new Color(1f, 0.5f, 0f);
+         if (ratio <= 0.7f)
+            return Color.yellow;
+         return Color.green;
       }
 
       private void _RefreshSkillUI()
@@ -150,14 +174,39 @@ namespace TrainDefense.Game.UI
             skillCooldownImage.gameObject.SetActive(hasSkill);
             skillCooldownImage.fillAmount = hasSkill ? _train.SkillCooldownRatio : 0f;
          }
+
+         if (skillCooldownText != null)
+         {
+            // 텍스트는 쿨다운이 남아있을 때만 노출, 초기/스킬 없음 상태는 숨김
+            skillCooldownText.gameObject.SetActive(false);
+         }
       }
 
       private void _UpdateSkillCooldownUI()
       {
-         if (skillCooldownImage == null || _train == null || !_train.HasActiveSkill)
+         if (_train == null || !_train.HasActiveSkill)
             return;
 
-         skillCooldownImage.fillAmount = _train.SkillCooldownRatio;
+         if (skillCooldownImage != null)
+         {
+            skillCooldownImage.fillAmount = _train.SkillCooldownRatio;
+         }
+
+         if (skillCooldownText != null)
+         {
+            float remaining = _train.SkillRemainingCooldown;
+            bool onCooldown = remaining > 0f;
+
+            if (skillCooldownText.gameObject.activeSelf != onCooldown)
+            {
+               skillCooldownText.gameObject.SetActive(onCooldown);
+            }
+
+            if (onCooldown)
+            {
+               skillCooldownText.text = $"{remaining:0.0}s";
+            }
+         }
       }
 
       private void _OnClickSlot()
@@ -191,21 +240,10 @@ namespace TrainDefense.Game.UI
 
          float ratio = hitEvent.CurrentHpRatio;
 
-         if (ratio <= 0.25f)
+         if (healthImage != null)
          {
-            backGroundImage.color = Color.red;
-         }
-         else if (ratio <= 0.5f)
-         {
-            backGroundImage.color = new Color(1f, 0.5f, 0f);
-         }
-         else if (ratio <= 0.7f)
-         {
-            backGroundImage.color = Color.yellow;
-         }
-         else
-         {
-            backGroundImage.color = Color.green;
+            healthImage.fillAmount = ratio;
+            healthImage.color = _GetHealthColor(ratio);
          }
       }
 
@@ -223,7 +261,10 @@ namespace TrainDefense.Game.UI
          if (_train != trainDeadEvent.Train)
             return;
 
-         backGroundImage.color = Color.gray;
+         if (healthImage != null)
+         {
+            healthImage.color = Color.gray;
+         }
       }
 
       private void _OnReplaceTrain(ReplaceTrainEvent replaceTrainEvent)
@@ -240,7 +281,7 @@ namespace TrainDefense.Game.UI
 
          trainLevelImage.gameObject.SetActive(true);
          trainLevelText.text = "E";
-         backGroundImage.color = Color.green;
+         _RefreshHealthUI();
          _RefreshSkillUI();
       }
    }

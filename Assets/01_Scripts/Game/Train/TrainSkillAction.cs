@@ -42,6 +42,8 @@ namespace TrainDefense.Game
             return true;
         }
 
+        public float RemainingCooldown => GetRemainingCooldown();
+
         public float GetCooldownRatio()
         {
             if (trainSkillData == null || trainSkillData.SkillCooldown <= 0f)
