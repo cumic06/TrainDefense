@@ -2,6 +2,7 @@ using Cumic.Sequence;
 using TrainDefense.Game;
 using TrainDefense.Game.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace TrainDefense
@@ -29,10 +30,13 @@ namespace TrainDefense
       [SerializeField]
       private Sprite unMuteSprite;
 
-      [Header("옵션 UI가 열려 있는 동안 숨길 오브젝트 (예: 로비 버튼)")]
+      [Header("인게임 전용 로비 버튼 (로비 씬에서는 자동 숨김)")]
       [SerializeField]
-      private GameObject[] hideWhileOpen;
+      private Transform lobbyButton;
       #endregion
+
+      // 로비 씬의 빌드 인덱스 (ChangeSceneButton.LobbySceneIndex와 동일)
+      private const int LobbySceneBuildIndex = 1;
 
       private void Awake()
       {
@@ -114,7 +118,7 @@ namespace TrainDefense
       public void ShowOptionUI()
       {
          gameObject.SetActive(true);
-         _SetHideTargetsActive(false);
+         _RefreshLobbyButton();
 
          if (InGameSequence.Instance != null)
             InGameSequence.Instance.PushOverlay(OverlayPhase.Option);
@@ -125,7 +129,6 @@ namespace TrainDefense
       public void HideOptionUI()
       {
          gameObject.SetActive(false);
-         _SetHideTargetsActive(true);
 
          if (InGameSequence.Instance != null)
             InGameSequence.Instance.PopOverlay(OverlayPhase.Option);
@@ -133,16 +136,13 @@ namespace TrainDefense
             TimeManager.Instance.Resume();
       }
 
-      // 옵션 UI 표시 중에는 로비 버튼 등 지정한 오브젝트를 숨겨 겹침을 방지한다.
-      private void _SetHideTargetsActive(bool isActive)
+      // 로비 씬에서는 이미 로비이므로 인게임 전용 로비 버튼을 숨긴다.
+      private void _RefreshLobbyButton()
       {
-         if (hideWhileOpen == null) return;
+         if (lobbyButton == null) return;
 
-         for (int i = 0; i < hideWhileOpen.Length; i++)
-         {
-            if (hideWhileOpen[i] != null)
-               hideWhileOpen[i].SetActive(isActive);
-         }
+         bool isLobbyScene = SceneManager.GetActiveScene().buildIndex == LobbySceneBuildIndex;
+         lobbyButton.gameObject.SetActive(!isLobbyScene);
       }
 
       private void _ChangeBGMVolume(float value)
