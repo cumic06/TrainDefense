@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: cfd7b8cb450cf1145b644f7901ca4995
+guid: 2633c6e50972d5541859b3e17b33c52b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -2241038574562563445
-    second: "TrainDefense\uC778\uD2B8\uB85C \uC774\uBBF8\uC9C0_0"
+      213: -6874985944943452393
+    second: "TrainDefense\uBC30\uACBD_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "TrainDefense\uC778\uD2B8\uB85C \uC774\uBBF8\uC9C0_0"
+      name: "TrainDefense\uBC30\uACBD_0"
       rect:
         serializedVersion: 2
         x: 0
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b8a204b3a4b36e0e0800000000000000
-      internalID: -2241038574562563445
+      spriteID: 71f97d355b42790a0800000000000000
+      internalID: -6874985944943452393
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      "TrainDefense\uC778\uD2B8\uB85C \uC774\uBBF8\uC9C0_0": -2241038574562563445
+      "TrainDefense\uBC30\uACBD_0": -6874985944943452393
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

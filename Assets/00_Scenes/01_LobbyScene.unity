@@ -2638,6 +2638,7 @@ GameObject:
   - component: {fileID: 742654798}
   - component: {fileID: 742654800}
   - component: {fileID: 742654799}
+  - component: {fileID: 742654801}
   m_Layer: 5
   m_Name: ButtonGrid
   m_TagString: Untagged
@@ -2731,6 +2732,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 742654796}
   m_CullTransparentMesh: 1
+--- !u!114 &742654801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742654796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Outline
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 2, y: -2}
+  m_UseGraphicAlpha: 1
 --- !u!1 &781410602
 GameObject:
   m_ObjectHideFlags: 0
@@ -4731,7 +4747,7 @@ PrefabInstance:
       objectReference: {fileID: 1142119252}
     - target: {fileID: 3684458376229620085, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: deletePlayerPrefsButton
-      value:
+      value: 
       objectReference: {fileID: 968503760}
     - target: {fileID: 3850423757073790851, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_IsActive
