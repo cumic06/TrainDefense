@@ -108,3 +108,8 @@ MonoBehaviour:
     soundType: 206
     clip: {fileID: 8300000, guid: bd3e7774135d0e84ba05e9c6deb1e654, type: 3}
     volume: 0.5
+  - id:
+    clipId:
+    soundType: 311
+    clip: {fileID: 8300000, guid: c48a972d3d024c2408a3331750786a29, type: 3}
+    volume: 0.5

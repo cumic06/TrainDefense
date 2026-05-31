@@ -29,6 +29,7 @@ namespace TrainDefense.Game.Datas
         ExplosionRangeTrainAttack = 308,
         ColdAirRangeTrainAttack = 309,
         SFX_Game_NewMonster = 310,
+        SFX_Game_Heal = 311,
 
         CannonTriggerSound = 401,
         MissleTriggerSound = 402,
