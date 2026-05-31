@@ -31,7 +31,3 @@ Monster_10015_Name	고블린 주술사	Goblin Sorcerer	ゴブリン呪術師	哥
 Monster_10015_Desc	고블린 주술사다.	A goblin sorcerer.	ゴブリン呪術師だ。	哥布林巫师。
 Monster_10016_Name	고블린 거인	Giant Goblin	ゴブリン巨人	巨型哥布林
 Monster_10016_Desc	고블린 거인이다.	A giant goblin.	ゴブリン巨人だ。	巨型哥布林。
-Monster_99999_Name	보스	Booooossssss	ボス	首领
-Monster_99999_Desc	보스다.	The Boss.	ボスだ。	首领。
-Monster_10100_Name	해골 왕	Skull King	スカルキング	骷髅王
-Monster_10100_Desc	해골 왕이다.	The Skeleton King.	骸骨の王だ。	骷髅王。
