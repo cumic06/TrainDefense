@@ -285,7 +285,8 @@ namespace TrainDefense.Game.UI
             string upgradeTemplate = Localization.GetByKey(upgradeKey);
             if (!string.IsNullOrEmpty(upgradeTemplate))
             {
-               lines.Add(SafeFormat(upgradeTemplate, new object[] { AlignStatValue(currentValue), AlignStatValue(currentValue + delta) }));
+               // 현재값({0})은 우측 정렬(PadLeft), 바뀔 값({1})은 좌측 정렬(PadLeft 없이 raw).
+               lines.Add(SafeFormat(upgradeTemplate, new object[] { AlignStatValue(currentValue), (currentValue + delta).ToString("0.#") }));
                return;
             }
          }
