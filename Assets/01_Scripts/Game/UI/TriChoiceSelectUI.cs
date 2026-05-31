@@ -86,7 +86,8 @@ namespace TrainDefense.Game.UI
             var selectedUpgrade = triChoiceManager?.GetSelectedUpgrade(upgradeTrainChoice);
             if (selectedUpgrade != null)
             {
-               descriptionText.text = GetUpgradeDescription(selectedUpgrade);
+               // 스탯 줄은 새 포탑 카드와 동일하게 작은 폰트로 표시.
+               descriptionText.text = $"<line-height=70%><size=80%>{GetUpgradeDescription(selectedUpgrade)}</size>";
                upgradeImage.gameObject.SetActive(true);
             }
             else
@@ -133,7 +134,7 @@ namespace TrainDefense.Game.UI
             {
                string statText = GetTrainStatsDescription(addTrainChoice.TrainDataId);
                if (!string.IsNullOrEmpty(statText))
-                  descriptionText.text += $"\n<size=50%>\n</size><line-height=70%><size=80%><color=#FFFFFF>{statText}</color></size>";
+                  descriptionText.text += $"\n<size=50%>\n</size><line-height=70%><size=80%><color=#D7D3B3>{statText}</color></size>";
             }
          }
       }
@@ -188,14 +189,21 @@ namespace TrainDefense.Game.UI
             float currentDamage = baseStatus.AttackDamage + accumulated.AttackDamage;
             float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
             float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
+            float currentRange = baseStatus.AttackRange + accumulated.AttackRange;
             int currentTargetCount = baseStatus.TargetCount + accumulated.TargetCount;
 
             var nextUpgrade = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
             float currentSpeed = ToAttackSpeed(currentInterval);
-            AddStatLine(lines, "Upgrade_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
-            AddStatLine(lines, "Upgrade_AttackArea", currentArea, nextUpgrade.AttackArea);
-            AddStatLine(lines, "Upgrade_AttackSpeed", currentSpeed, ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed);
-            AddStatLine(lines, "Upgrade_TargetCount", currentTargetCount, nextUpgrade.TargetCount);
+            float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
+
+            // 처음 선택 카드(GetTrainStatsDescription)와 같은 스탯 목록을 전체 화살표(Upgrade_, "현재 → 다음")로 표시.
+            AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
+            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
+            AddUpgradeOrStatLine(lines, "Upgrade_AttackRange", "Stat_AttackRange", currentRange, nextUpgrade.AttackRange);
+            if (currentArea > 0f && turretTrain.TrainData is TurretTrainData turretData && UsesAttackArea(turretData))
+               AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
+            if (currentTargetCount > 1)
+               AddUpgradeOrStatLine(lines, "Upgrade_TargetCount", "Stat_TargetCount", currentTargetCount, nextUpgrade.TargetCount);
          }
          else if (upgradeData is RangeTrainUpgradeData rangeUpgrade && currentTrain is RangeTrain rangeTrain)
          {
@@ -207,9 +215,11 @@ namespace TrainDefense.Game.UI
 
             var nextUpgrade = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
             float currentSpeed = ToAttackSpeed(currentInterval);
-            AddStatLine(lines, "Upgrade_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
-            AddStatLine(lines, "Upgrade_AttackArea", currentArea, nextUpgrade.AttackArea);
-            AddStatLine(lines, "Upgrade_AttackSpeed", currentSpeed, ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed);
+            float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
+
+            AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
+            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
+            AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
          }
 
          return string.Join("\n", lines);
@@ -246,6 +256,11 @@ namespace TrainDefense.Game.UI
       // 공격 딜레이(초)를 초당 공격 횟수(공격속도)로 변환. 시스템 값이 아닌 UI 표시 전용.
       private static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
 
+      // 값을 공백 PadLeft → txt의 <mspace>(고정폭) 안에서 자릿수가 달라도 우측 끝이 정렬됨. 소수는 첫째 자리까지.
+      private const int StatValueWidth = 3;
+      private static string AlignStatValue(float value)
+         => value.ToString("0.#").PadLeft(StatValueWidth, ' ');
+
       // 포탑이 AttackArea 스탯을 실제 폭발 반경으로 쓰는지 판정 (빔 길이·파티클 비율은 제외).
       private static bool UsesAttackArea(TurretTrainData turretData)
       {
@@ -256,18 +271,24 @@ namespace TrainDefense.Game.UI
          return data != null && data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && data.IsSpawnTriggerHandle;
       }
 
-      // 스탯 키가 LocalizeSource에 존재하고 증가량이 0이 아닐 때만 "현재값 → 다음값" 한 줄로 추가.
-      // 키가 없으면(아직 정의 안 된 스탯) 조용히 건너뛴다.
-      private static void AddStatLine(System.Collections.Generic.List<string> lines, string statKey, float currentValue, float delta)
+      // 업그레이드 카드용: 값이 바뀌는 스탯(delta≠0)만 "현재값 → 다음값"(upgradeKey) 화살표로 표시.
+      // 변화 없는 스탯은 statKey로 현재값만 표시. 해당 키가 없으면 조용히 건너뛴다.
+      private static void AddUpgradeOrStatLine(System.Collections.Generic.List<string> lines, string upgradeKey, string statKey, float currentValue, float delta)
       {
-         if (delta == 0)
-            return;
+         if (delta != 0)
+         {
+            string upgradeTemplate = Localization.GetByKey(upgradeKey);
+            if (!string.IsNullOrEmpty(upgradeTemplate))
+            {
+               // 현재값({0})·다음값({1}) 모두 공백 PadLeft한 string으로 주입 → txt의 <mspace>와 함께 양쪽 다 우측 정렬.
+               lines.Add(SafeFormat(upgradeTemplate, new object[] { AlignStatValue(currentValue), AlignStatValue(currentValue + delta) }));
+               return;
+            }
+         }
 
-         string template = Localization.GetByKey(statKey);
-         if (string.IsNullOrEmpty(template))
-            return;
-
-         lines.Add(SafeFormat(template, new object[] { currentValue, currentValue + delta }));
+         string statTemplate = Localization.GetByKey(statKey);
+         if (!string.IsNullOrEmpty(statTemplate))
+            lines.Add(SafeFormat(statTemplate, new object[] { AlignStatValue(currentValue) }));
       }
 
       // 단일 스탯 값을 "레이블 값" 한 줄로 추가 (새 포탑 카드용).
@@ -277,7 +298,7 @@ namespace TrainDefense.Game.UI
          if (string.IsNullOrEmpty(template))
             return;
 
-         lines.Add(SafeFormat(template, new object[] { value }));
+         lines.Add(SafeFormat(template, new object[] { AlignStatValue(value) }));
       }
 
       private void OnSelectButtonClick()
