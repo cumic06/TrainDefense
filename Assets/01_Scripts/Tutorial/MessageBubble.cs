@@ -14,6 +14,7 @@ namespace TrainDefense.Game.Tutorial
     {
         [SerializeField] private RectTransform _bubbleRect;
         [SerializeField] private TextMeshProUGUI _messageText;
+        [SerializeField] private TextMeshProUGUI _speakerNameText;
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private Image _npcPortrait;
         [SerializeField] private float _typingSpeed = 0.03f;
@@ -24,6 +25,8 @@ namespace TrainDefense.Game.Tutorial
         [SerializeField] private float _maxWidth = 600f;
         [SerializeField] private float _portraitAreaWidth = 120f;
         [SerializeField] private float _portraitGap = 8f;
+        [Tooltip("화자 이름 라벨이 말풍선 상단에서 차지하는 높이.")]
+        [SerializeField] private float _speakerNameHeight = 36f;
 
         private Tween _fadeTween;
         private RectTransform _parentCanvasRect;
@@ -99,7 +102,7 @@ namespace TrainDefense.Game.Tutorial
         /// <summary>
         /// 메시지를 표시합니다. 타이핑 효과와 함께 페이드인됩니다.
         /// </summary>
-        public void Show(string message, Vector2 anchorCanvasPosition, Sprite npcSprite = null)
+        public void Show(string message, Vector2 anchorCanvasPosition, Sprite npcSprite = null, string speakerName = null)
         {
             if (string.IsNullOrEmpty(message))
             {
@@ -132,6 +135,16 @@ namespace TrainDefense.Game.Tutorial
                 }
             }
 
+            // 화자 이름은 슬라이드/스텝마다 명시적으로 지정된 값을 그대로 반영한다.
+            // (지정되지 않으면 라벨을 숨겨 일반 말풍선처럼 동작)
+            bool hasSpeaker = _speakerNameText != null && !string.IsNullOrEmpty(speakerName);
+            if (_speakerNameText != null)
+            {
+                _speakerNameText.gameObject.SetActive(hasSpeaker);
+                if (hasSpeaker)
+                    _speakerNameText.text = speakerName;
+            }
+
             bool placeAbove = anchorCanvasPosition.y < 0;
             float yOffset = placeAbove ? _verticalOffset : -_verticalOffset;
             var bubblePos = new Vector2(anchorCanvasPosition.x, anchorCanvasPosition.y + yOffset);
@@ -147,7 +160,7 @@ namespace TrainDefense.Game.Tutorial
 
             _bubbleRect.anchoredPosition = bubblePos;
 
-            _ResizeBubble(message, hasPortrait);
+            _ResizeBubble(message, hasPortrait, hasSpeaker);
 
             _canvasGroup.alpha = 0f;
             _fadeTween?.Kill();
@@ -171,9 +184,10 @@ namespace TrainDefense.Game.Tutorial
             gameObject.SetActive(false);
         }
 
-        private void _ResizeBubble(string message, bool hasPortrait)
+        private void _ResizeBubble(string message, bool hasPortrait, bool hasSpeaker)
         {
             float extraWidth = hasPortrait ? _portraitAreaWidth + _portraitGap : 0f;
+            float speakerHeight = hasSpeaker ? _speakerNameHeight : 0f;
             float availTextWidth = _maxWidth - _padding.x - extraWidth;
 
             _messageText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, availTextWidth);
@@ -188,7 +202,7 @@ namespace TrainDefense.Game.Tutorial
             float preferredHeight = _messageText.preferredHeight;
 
             float bubbleWidth = Mathf.Clamp(preferredWidth + _padding.x + extraWidth, _minWidth, _maxWidth);
-            float bubbleHeight = preferredHeight + _padding.y;
+            float bubbleHeight = preferredHeight + _padding.y + speakerHeight;
 
             _bubbleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, bubbleWidth);
             _bubbleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, bubbleHeight);
@@ -208,8 +222,21 @@ namespace TrainDefense.Game.Tutorial
             }
 
             float textLeft = hasPortrait ? extraWidth + _padding.x * 0.5f : _padding.x * 0.5f;
+
+            // 화자 이름 라벨은 말풍선 상단(top-stretch)에 배치한다.
+            // 대사 텍스트의 상단은 이름 높이만큼 더 내려 영역이 겹치지 않게 한다.
+            if (hasSpeaker && _speakerNameText != null)
+            {
+                var nameRect = _speakerNameText.rectTransform;
+                nameRect.anchorMin = new Vector2(0, 1);
+                nameRect.anchorMax = new Vector2(1, 1);
+                nameRect.pivot = new Vector2(0.5f, 1);
+                nameRect.offsetMax = new Vector2(-_padding.x * 0.5f, -_padding.y * 0.5f);
+                nameRect.offsetMin = new Vector2(textLeft, -_padding.y * 0.5f - _speakerNameHeight);
+            }
+
             _messageText.rectTransform.offsetMin = new Vector2(textLeft, _padding.y * 0.5f);
-            _messageText.rectTransform.offsetMax = new Vector2(-_padding.x * 0.5f, -_padding.y * 0.5f);
+            _messageText.rectTransform.offsetMax = new Vector2(-_padding.x * 0.5f, -_padding.y * 0.5f - speakerHeight);
         }
     }
 }

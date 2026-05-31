@@ -66,7 +66,7 @@ namespace TrainDefense.Game.Intro
                 _backgroundImage.enabled = slide.BackgroundImage != null;
             }
 
-            _messageBubble?.Show(slide.GetText(), _bubbleAnchorPosition, slide.CharacterPortrait);
+            _messageBubble?.Show(slide.GetText(), _bubbleAnchorPosition, slide.CharacterPortrait, slide.SpeakerName);
 
             bool isLastSlide = index >= total - 1;
             if (_skipButton != null)
