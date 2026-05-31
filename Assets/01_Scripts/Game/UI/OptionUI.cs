@@ -1,5 +1,6 @@
 using Cumic.Sequence;
 using TrainDefense.Game;
+using TrainDefense.Game.Datas;
 using TrainDefense.Game.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -117,6 +118,8 @@ namespace TrainDefense
 
       public void ShowOptionUI()
       {
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_WindowOpen, ignoreSuppress: true);
+
          gameObject.SetActive(true);
          _RefreshLobbyButton();
 
@@ -128,6 +131,8 @@ namespace TrainDefense
 
       public void HideOptionUI()
       {
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_WindowClose, ignoreSuppress: true);
+
          gameObject.SetActive(false);
 
          if (InGameSequence.Instance != null)

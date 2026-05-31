@@ -285,6 +285,8 @@ namespace TrainDefense.Game.UI
          if (_isSelected || _choiceOption == null || _triChoiceUI == null)
             return;
 
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_TriChoiceSelect, ignoreSuppress: true);
+
          if (HapticManager.Instance != null)
          {
             HapticManager.Instance.Play(HapticFeedbackType.LightImpact);

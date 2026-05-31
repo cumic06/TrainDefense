@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using Cumic.Events;
+using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using DG.Tweening;
 
@@ -71,6 +72,8 @@ namespace TrainDefense.Game.UI
 
         private void Show()
         {
+            SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_NewMonster);
+
             UpdateUI();
 
             if (panel != null)

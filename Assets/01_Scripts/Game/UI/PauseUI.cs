@@ -1,5 +1,6 @@
 using Cumic.Sequence;
 using DG.Tweening;
+using TrainDefense.Game.Datas;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,8 @@ namespace TrainDefense.Game.UI
 
         public void OnClickPauseButton()
         {
+            SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+
             if (_isPauseUIActive)
             {
                 HidePauseUI();

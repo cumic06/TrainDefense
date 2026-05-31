@@ -13,6 +13,9 @@ namespace TrainDefense.Game.Datas
         SFX_UI_WindowOpen = 201,
         SFX_UI_WindowClose = 202,
         SFX_UI_ShopOpen = 203,
+        SFX_UI_TriChoiceSelect = 204,
+        SFX_UI_ItemBuy = 205,
+        SFX_UI_LevelUp = 206,
 
         // SFX - Game
         SFX_Game_Hit = 300,
@@ -25,6 +28,7 @@ namespace TrainDefense.Game.Datas
         SniperTurretTrainAttack = 307,
         ExplosionRangeTrainAttack = 308,
         ColdAirRangeTrainAttack = 309,
+        SFX_Game_NewMonster = 310,
 
         CannonTriggerSound = 401,
         MissleTriggerSound = 402,

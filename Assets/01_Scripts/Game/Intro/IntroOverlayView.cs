@@ -1,4 +1,5 @@
 using System;
+using TrainDefense.Game.Datas;
 using TrainDefense.Game.Tutorial;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,8 +27,16 @@ namespace TrainDefense.Game.Intro
 
         private void Awake()
         {
-            _nextButton?.onClick.AddListener(() => OnNextRequested?.Invoke());
-            _skipButton?.onClick.AddListener(() => OnSkipRequested?.Invoke());
+            _nextButton?.onClick.AddListener(() =>
+            {
+                SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+                OnNextRequested?.Invoke();
+            });
+            _skipButton?.onClick.AddListener(() =>
+            {
+                SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+                OnSkipRequested?.Invoke();
+            });
         }
 
         private void OnDestroy()
