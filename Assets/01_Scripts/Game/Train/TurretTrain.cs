@@ -130,18 +130,22 @@ namespace TrainDefense.Game
             });
         }
 
-        public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius, float damageMul = 1f, float shoveScale = 1f)
+        public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius, float damageMul = 1f, float shoveScale = 1f, Monster target = null)
         {
             if (prefab == null) return;
             var spawned = ResourceManager.Instance.Spawn(prefab, transform.position, Quaternion.identity);
             if (spawned == null) return;
             float r = radius >= 0f ? radius : _currentTurretTrainStatus.AttackArea;
+            // 새 총알(눈덩이 등)은 지정 타겟(없으면 기본 타겟팅)을 조준해서 발사한다.
+            // NonMovement(폭발 등)는 방향/타겟이 무관하므로 조준해도 동작에 영향 없음.
+            Monster nearTarget = target != null ? target : GetNearTargetMonster();
+            if (nearTarget != null) spawned.transform.LookAt2D(nearTarget.transform);
             int damage = Mathf.RoundToInt(_currentTurretTrainStatus.AttackDamage * damageMul);
             spawned.ShoveScale = shoveScale;
             spawned.Init(
                 damage,
                 this,
-                null,
+                nearTarget,
                 r,
                 _currentTurretTrainStatus.CriticalChance,
                 _currentTurretTrainStatus.CriticalDamage);
