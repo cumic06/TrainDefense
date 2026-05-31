@@ -1141,7 +1141,7 @@ MonoBehaviour:
       name: Passive_60001_Name
       passiveType: OverrideEveryN
       param1: 5
-      param2: ExplosionProjectile
+      param2: MissileProjectile
       param3: 
       description: Passive_60001_Desc
     - id: 60002

@@ -15,6 +15,9 @@ namespace TrainDefense.Game
         public string ProjectilePrefabId { get; private set; }
         public float Radius { get; private set; } = 4f;
 
+        // 눈덩이 등은 owner 사거리가 아니라 화면 전체에서 가장 가까운 적을 조준해야 하므로 넉넉한 탐색 반경 사용.
+        private const float ScreenSearchRadius = 100f;
+
         private Projectile _cachedPrefab;
         private bool _loadAttempted;
         private float _timer;
@@ -43,12 +46,17 @@ namespace TrainDefense.Game
             var prefab = LoadPrefab();
             if (prefab == null) return;
 
+            // 새 총알(눈덩이 등)은 화면 안(맵 전체)에서 가장 가까운 적을 조준해 발사한다. (owner 사거리와 무관)
+            Monster nearest = FindNearestMonster(ScreenSearchRadius);
+
             if (Owner is RangeTrain range)
             {
-                Monster nearest = FindNearestMonster(range.CurrentAttackRange);
                 range.SpawnExternalProjectile(prefab, Radius, nearest);
             }
-            else if (Owner is TurretTrain turret) turret.SpawnExternalProjectileAtSelf(prefab, Radius);
+            else if (Owner is TurretTrain turret)
+            {
+                turret.SpawnExternalProjectileAtSelf(prefab, Radius, target: nearest);
+            }
         }
 
         private Monster FindNearestMonster(float radius)
