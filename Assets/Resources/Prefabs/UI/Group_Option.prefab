@@ -211,6 +211,7 @@ MonoBehaviour:
   hapticToggle: {fileID: 0}
   muteSprite: {fileID: 3997766605359117159, guid: 71462e0bee377bc4786c732ff06b80d2, type: 3}
   unMuteSprite: {fileID: 21300000, guid: 41574e2742c0b4b238ba415d423bf99a, type: 3}
+  lobbyButton: {fileID: 5590214731490055478}
 --- !u!1001 &2118456210223865923
 PrefabInstance:
   m_ObjectHideFlags: 0
