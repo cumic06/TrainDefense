@@ -32,12 +32,18 @@ namespace TrainDefense.Game.UI
       [Header("Reroll")]
       [SerializeField]
       private Button rerollButton;
+
+      [Header("Pause Button")]
+      [Tooltip("첫 삼중택일(게임 진입 시 자동 선택지)이 떠 있는 동안 비활성화할 일시정지 버튼")]
+      [SerializeField]
+      private Button pauseButton;
       #endregion
 
       #region Variables
       private int _choiceLeftCount;
       private bool _isSelecting = false;
       private int _popupRequestId = 0;
+      private bool _pauseButtonLocked = false;
       private readonly List<(IChoiceOption option, int slotIndex)> _activeChoices = new();
       #endregion
 
@@ -60,6 +66,11 @@ namespace TrainDefense.Game.UI
          {
             rerollButton.onClick.AddListener(_OnRerollButtonClick);
          }
+
+         // 첫 기차 등장 연출(Timeline)이 재생되기 전, 씬 진입 즉시 일시정지 버튼을 막는다.
+         // GameEnterEvent는 연출 도중 Signal로 발행되므로 그 시점에 잠그면 연출 초반에 버튼이 눌린다.
+         // 해제는 첫 삼중택일이 완료될 때 이루어진다.
+         _SetPauseButtonLocked(true);
       }
 
       private void Start() => _SubscribeEvents();
@@ -101,7 +112,28 @@ namespace TrainDefense.Game.UI
 
       private void _OnGameEnter(GameEnterEvent gameEnterEvent)
       {
+         // 일시정지 버튼 잠금은 연출 전(Awake)에 이미 처리됨. 여기선 첫 삼중택일만 띄운다.
          OnInspectionEnter(1, showLevelUpText: false);
+      }
+
+      // 첫 삼중택일(게임 진입 시 자동 선택지)이 떠 있는 동안만 일시정지 버튼을 잠근다.
+      // 잠긴 상태에서만 해제하므로 레벨업 등 이후 선택지에서는 영향이 없다.
+      private void _SetPauseButtonLocked(bool locked)
+      {
+         if (locked)
+         {
+            if (pauseButton != null)
+               pauseButton.interactable = false;
+            _pauseButtonLocked = true;
+         }
+         else
+         {
+            if (!_pauseButtonLocked)
+               return;
+            if (pauseButton != null)
+               pauseButton.interactable = true;
+            _pauseButtonLocked = false;
+         }
       }
 
       private void _OnLevelUp(LevelUpEvent levelUpEvent)
@@ -152,6 +184,7 @@ namespace TrainDefense.Game.UI
             TriChoiceSelectEvent eventData = new(null, 0);
             GameEventSystem.Publish(eventData);
             backgroundImage.SetActive(false);
+            _SetPauseButtonLocked(false);
             Debug.LogWarning("No available choices found");
 
             return;
@@ -163,13 +196,13 @@ namespace TrainDefense.Game.UI
             {
                // 레벨업 텍스트 연출 동안에는 리롤 버튼 비활성화
                if (rerollButton != null)
-                  rerollButton.interactable = false;
+                  rerollButton.gameObject.SetActive(false);
 
                await levelUpText.PlayAsync(() => _IsPopupOutdated(requestId));
 
                // 레벨업 텍스트 연출이 끝나면 리롤 버튼 다시 활성화
                if (rerollButton != null)
-                  rerollButton.interactable = true;
+                  rerollButton.gameObject.SetActive(true);
             }
 
             if (_IsPopupOutdated(requestId))
@@ -226,6 +259,7 @@ namespace TrainDefense.Game.UI
             TriChoiceSelectEvent fallback = new(null, 0);
             GameEventSystem.Publish(fallback);
             backgroundImage.SetActive(false);
+            _SetPauseButtonLocked(false);
          }
       }
 
@@ -303,6 +337,7 @@ namespace TrainDefense.Game.UI
          }
 
          backgroundImage.SetActive(false);
+         _SetPauseButtonLocked(false);
       }
 
       private async UniTask _HideAllCardsAsync()

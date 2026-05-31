@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using TrainDefense.Game.Datas;
 using Febucci.TextAnimatorForUnity;
 using Febucci.TextAnimatorForUnity.TextMeshPro;
 
@@ -38,7 +39,7 @@ namespace TrainDefense.Game.UI
       private float popInDuration = 0.45f;
       [Tooltip("타이핑 완료 후 글자를 보여주는 유지 시간(초)")]
       [SerializeField]
-      private float holdDuration = 0.5f;
+      private float holdDuration = 0.2f;
       [Tooltip("퇴장 팝 스케일 시간(초)")]
       [SerializeField]
       private float popOutDuration = 0.22f;
@@ -104,6 +105,9 @@ namespace TrainDefense.Game.UI
          var tr = transform;
          tr.DOKill();
          gameObject.SetActive(true);
+
+         // 레벨업 텍스트는 일시정지(timeScale=0) 중 표시되므로 ignoreSuppress로 재생
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_LevelUp, ignoreSuppress: true);
 
          // 작게 시작해 OutBack으로 통통 튀어오르듯 등장한다.
          tr.localScale = Vector3.one * popInScale;
