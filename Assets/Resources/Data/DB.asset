@@ -878,8 +878,8 @@ MonoBehaviour:
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 50
-      AttackRange: 3
-      AttackArea: 3
+      AttackRange: 4
+      AttackArea: 4
       AttackCount: 1
       AttackInterval: 4
       CriticalChance: 30
@@ -973,8 +973,8 @@ MonoBehaviour:
     isMainTrain: 0
     rangeTrainStatus:
       AttackDamage: 50
-      AttackRange: 3
-      AttackArea: 3
+      AttackRange: 4
+      AttackArea: 4
       AttackCount: 1
       AttackInterval: 4
       CriticalChance: 30
@@ -1042,20 +1042,16 @@ MonoBehaviour:
     - id: 50003
       name: Skill_50003_Name
       description: Skill_50003_Desc
-      skillType: 2
+      skillType: 0
       skillCooldown: 30
-      skillIconId:
+      skillIconId: 
       projectileData:
-        projectilePrefabId:
+        projectilePrefabId: 
         damage: 0
         range: 0
         projectileCount: 0
       buffDuration: 15
-      buffs:
-      - statType: 1
-        percent: 1000
-      - statType: 8
-        percent: 1000
+      buffs: []
     - id: 50004
       name: Skill_50004_Name
       description: Skill_50004_Desc
