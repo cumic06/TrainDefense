@@ -14,42 +14,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Intro.IntroSequenceData
   _sequenceId: intro_main
   _slides:
-  - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
+  - _backgroundImage: {fileID: -6874985944943452393, guid: 2633c6e50972d5541859b3e17b33c52b, type: 3}
     _characterPortrait: {fileID: 0}
-    _speakerName: "나레이터"
-    _text: "끝이 보이지 않는 황폐한 세상.\n어느 날 갑자기 나타난 몬스터 무리가 모든 것을 집어삼켰다."
+    _speakerName: "\uB098\uB808\uC774\uD130"
+    _text: "\uB05D\uC774 \uBCF4\uC774\uC9C0 \uC54A\uB294 \uD669\uD3D0\uD55C \uC138\uC0C1.\n\uC5B4\uB290
+      \uB0A0 \uAC11\uC790\uAE30 \uB098\uD0C0\uB09C \uBAAC\uC2A4\uD130 \uBB34\uB9AC\uAC00
+      \uBAA8\uB4E0 \uAC83\uC744 \uC9D1\uC5B4\uC0BC\uCF30\uB2E4."
     _localizationKey: Intro_Slide1
     _bgmClip: {fileID: 0}
     _voiceClip: {fileID: 0}
     _autoAdvanceDuration: 0
-  - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
+  - _backgroundImage: {fileID: -6874985944943452393, guid: 2633c6e50972d5541859b3e17b33c52b, type: 3}
     _characterPortrait: {fileID: 0}
-    _speakerName:
-    _text: "살아남은 자들은 도시를 버리고 도망쳤다.\n하지만 아직 희망을 포기하지 않은 이들이 있었다."
+    _speakerName: "\uB098\uB808\uC774\uD130"
+    _text: "\uC0B4\uC544\uB0A8\uC740 \uC790\uB4E4\uC740 \uB3C4\uC2DC\uB97C \uBC84\uB9AC\uACE0
+      \uB3C4\uB9DD\uCCE4\uB2E4.\n\uD558\uC9C0\uB9CC \uC544\uC9C1 \uD76C\uB9DD\uC744
+      \uD3EC\uAE30\uD558\uC9C0 \uC54A\uC740 \uC774\uB4E4\uC774 \uC788\uC5C8\uB2E4."
     _localizationKey: Intro_Slide2
     _bgmClip: {fileID: 0}
     _voiceClip: {fileID: 0}
     _autoAdvanceDuration: 0
-  - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
+  - _backgroundImage: {fileID: -6874985944943452393, guid: 2633c6e50972d5541859b3e17b33c52b, type: 3}
     _characterPortrait: {fileID: 0}
-    _speakerName: "기관사"
-    _text: "우리에게는 기차가 있다.\n몬스터 무리를 뾻고 달릴 수 있는 유일한 방법이지."
+    _speakerName: "\uAE30\uAD00\uC0AC"
+    _text: "\uC6B0\uB9AC\uC5D0\uAC8C\uB294 \uAE30\uCC28\uAC00 \uC788\uB2E4.\n\uBAAC\uC2A4\uD130
+      \uBB34\uB9AC\uB97C \uBFBB\uACE0 \uB2EC\uB9B4 \uC218 \uC788\uB294 \uC720\uC77C\uD55C
+      \uBC29\uBC95\uC774\uC9C0."
     _localizationKey: Intro_Slide3
     _bgmClip: {fileID: 0}
     _voiceClip: {fileID: 0}
     _autoAdvanceDuration: 0
-  - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
+  - _backgroundImage: {fileID: -6874985944943452393, guid: 2633c6e50972d5541859b3e17b33c52b, type: 3}
     _characterPortrait: {fileID: 0}
-    _speakerName: "기관사"
-    _text: "기차를 타고 달리며 상점을 돌아다닌다.\n무기를 구하고, 탑승자를 지킨다. 멈추면 죽는다."
+    _speakerName: "\uAE30\uAD00\uC0AC"
+    _text: "\uAE30\uCC28\uB97C \uD0C0\uACE0 \uB2EC\uB9AC\uBA70 \uC0C1\uC810\uC744
+      \uB3CC\uC544\uB2E4\uB2CC\uB2E4.\n\uBB34\uAE30\uB97C \uAD6C\uD558\uACE0, \uD0D1\uC2B9\uC790\uB97C
+      \uC9C0\uD0A8\uB2E4. \uBA48\uCD94\uBA74 \uC8FD\uB294\uB2E4."
     _localizationKey: Intro_Slide4
     _bgmClip: {fileID: 0}
     _voiceClip: {fileID: 0}
     _autoAdvanceDuration: 0
-  - _backgroundImage: {fileID: -2241038574562563445, guid: cfd7b8cb450cf1145b644f7901ca4995, type: 3}
+  - _backgroundImage: {fileID: -6874985944943452393, guid: 2633c6e50972d5541859b3e17b33c52b, type: 3}
     _characterPortrait: {fileID: 0}
-    _speakerName:
-    _text: "몬스터들은 끝없이 몰려온다.\n기차를 지켜라. 포기하지 않는 한, 우리는 살아남을 수 있다."
+    _speakerName: "\uAE30\uAD00\uC0AC"
+    _text: "\uBAAC\uC2A4\uD130\uB4E4\uC740 \uB05D\uC5C6\uC774 \uBAB0\uB824\uC628\uB2E4.\n\uAE30\uCC28\uB97C
+      \uC9C0\uCF1C\uB77C. \uD3EC\uAE30\uD558\uC9C0 \uC54A\uB294 \uD55C, \uC6B0\uB9AC\uB294
+      \uC0B4\uC544\uB0A8\uC744 \uC218 \uC788\uB2E4."
     _localizationKey: Intro_Slide5
     _bgmClip: {fileID: 0}
     _voiceClip: {fileID: 0}

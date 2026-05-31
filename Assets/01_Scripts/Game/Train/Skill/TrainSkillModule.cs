@@ -36,6 +36,7 @@ namespace TrainDefense.Game
         public float SkillCooldown => _activeSkill != null ? _trainData?.TrainSkillData?.SkillCooldown ?? 0f : 0f;
         public bool CanUse => _activeSkill != null && _activeSkill.CanUse;
         public float CooldownRatio => _activeSkill?.GetCooldownRatio() ?? 0f;
+        public float RemainingCooldown => _activeSkill?.RemainingCooldown ?? 0f;
 
         /// <summary>
         /// 모듈 초기화. owner의 ApplyStat 콜백을 받아 시한 버프 만료 시 대칭 복원에 사용.

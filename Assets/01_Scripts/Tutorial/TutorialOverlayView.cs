@@ -1,4 +1,5 @@
 using System;
+using TrainDefense.Game.Datas;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -215,6 +216,8 @@ namespace TrainDefense.Game.Tutorial
 
         private void HandleScreenTap()
         {
+            SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+
             // ScreenTapArea의 onClick은 cutout 외부를 탭했을 때만 호출됨
             // (TutorialRaycastBlocker가 cutout 내부는 통과시킴)
             OnScreenTapped?.Invoke();
@@ -222,6 +225,8 @@ namespace TrainDefense.Game.Tutorial
 
         private void HandleSkipRequest()
         {
+            SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+
             OnSkipRequested?.Invoke();
         }
     }

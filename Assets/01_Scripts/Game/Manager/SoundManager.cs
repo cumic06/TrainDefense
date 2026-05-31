@@ -52,6 +52,8 @@ namespace TrainDefense.Game
         private readonly Stack<AudioSource> _sfxPool = new();
         private readonly List<AudioSource> _activeSfxSources = new();
         private readonly Dictionary<AudioSource, float> _sfxBaseVolumes = new();
+        // ignoreSuppress로 재생된 SFX(UI 사운드 등) — 일시 억제(Pause)에도 음소거되지 않는다.
+        private readonly HashSet<AudioSource> _suppressImmuneSources = new();
         private SoundDB _soundDB;
         private float _currentBgmBaseVolume = 1f;
 
@@ -325,6 +327,12 @@ namespace TrainDefense.Game
         {
             ConfigureSfxSourceDefaults(source);
             source.clip = data.Clip;
+            // UI 사운드(ignoreSuppress)는 일시정지(AudioListener.pause)와 SFX 일시 억제를 모두 무시한다.
+            source.ignoreListenerPause = ignoreSuppress;
+            if (ignoreSuppress)
+                _suppressImmuneSources.Add(source);
+            else
+                _suppressImmuneSources.Remove(source);
             _sfxBaseVolumes[source] = data.Volume;
             source.volume = data.Volume * sfxVolume;
             source.mute = ignoreSuppress ? IsSfxMuted : IsSfxSilenced;
@@ -424,7 +432,9 @@ namespace TrainDefense.Game
             IsSfxMuted = mute;
             foreach (var source in _activeSfxSources)
             {
-                source.mute = IsSfxMuted;
+                if (source == null)
+                    continue;
+                source.mute = _suppressImmuneSources.Contains(source) ? IsSfxMuted : IsSfxSilenced;
             }
             SaveOptions();
         }
@@ -434,7 +444,9 @@ namespace TrainDefense.Game
             IsSfxMuted = !IsSfxMuted;
             foreach (var source in _activeSfxSources)
             {
-                source.mute = IsSfxMuted;
+                if (source == null)
+                    continue;
+                source.mute = _suppressImmuneSources.Contains(source) ? IsSfxMuted : IsSfxSilenced;
             }
             SaveOptions();
         }
@@ -448,7 +460,8 @@ namespace TrainDefense.Game
             {
                 if (source == null)
                     continue;
-                source.mute = IsSfxSilenced;
+                // 억제 면제(UI 사운드)는 옵션 음소거만 따른다.
+                source.mute = _suppressImmuneSources.Contains(source) ? IsSfxMuted : IsSfxSilenced;
             }
         }
 
@@ -482,6 +495,7 @@ namespace TrainDefense.Game
             source.gameObject.SetActive(false);
             _sfxPool.Push(source);
             _sfxBaseVolumes[source] = 1f;
+            _suppressImmuneSources.Remove(source);
         }
 
         private void ConfigureSfxSourceDefaults(AudioSource source)
@@ -491,6 +505,7 @@ namespace TrainDefense.Game
 
             source.playOnAwake = false;
             source.loop = false;
+            source.ignoreListenerPause = false;
             source.mute = IsSfxSilenced;
         }
 

@@ -10855,7 +10855,7 @@ MonoBehaviour:
   effectTags: <bounce><rainb>
   popInScale: 0.6
   popInDuration: 0.45
-  holdDuration: 0.5
+  holdDuration: 0.2
   popOutDuration: 0.22
 --- !u!1 &510185186
 GameObject:
@@ -11851,7 +11851,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 20}
+  m_AnchoredPosition: {x: 0, y: 80}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &882680031
@@ -13001,6 +13001,7 @@ MonoBehaviour:
   levelUpText: {fileID: 505118154}
   cardAppearDelay: 0.15
   rerollButton: {fileID: 2011001730}
+  pauseButton: {fileID: 2966101615171800430}
 --- !u!1 &1458731571
 GameObject:
   m_ObjectHideFlags: 0
@@ -15391,6 +15392,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28191295f2f29324bad78884f7f0bc83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShopButtonUI
+--- !u!114 &2966101615171800430 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2966101615171800429, guid: 3f17b90de03e6f9448ad1e265d2a5750, type: 3}
+  m_PrefabInstance: {fileID: 3076053058507352473}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!1001 &3076053058507352473
 PrefabInstance:
   m_ObjectHideFlags: 0

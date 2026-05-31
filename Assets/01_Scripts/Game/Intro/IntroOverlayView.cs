@@ -1,4 +1,5 @@
 using System;
+using TrainDefense.Game.Datas;
 using TrainDefense.Game.Tutorial;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,8 +27,16 @@ namespace TrainDefense.Game.Intro
 
         private void Awake()
         {
-            _nextButton?.onClick.AddListener(() => OnNextRequested?.Invoke());
-            _skipButton?.onClick.AddListener(() => OnSkipRequested?.Invoke());
+            _nextButton?.onClick.AddListener(() =>
+            {
+                SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+                OnNextRequested?.Invoke();
+            });
+            _skipButton?.onClick.AddListener(() =>
+            {
+                SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+                OnSkipRequested?.Invoke();
+            });
         }
 
         private void OnDestroy()
@@ -57,7 +66,7 @@ namespace TrainDefense.Game.Intro
                 _backgroundImage.enabled = slide.BackgroundImage != null;
             }
 
-            _messageBubble?.Show(slide.GetText(), _bubbleAnchorPosition, slide.CharacterPortrait);
+            _messageBubble?.Show(slide.GetText(), _bubbleAnchorPosition, slide.CharacterPortrait, slide.SpeakerName);
 
             bool isLastSlide = index >= total - 1;
             if (_skipButton != null)

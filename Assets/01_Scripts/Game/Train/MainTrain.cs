@@ -395,6 +395,10 @@ namespace TrainDefense.Game
 
          // 모든 기차를 원래 순서대로 재정렬
          RearrangeAllTrainsToOriginalOrder();
+
+         // 점검(상점 진입) 시 체력 회복 효과음 1회.
+         // 이 시점은 timeScale=0 + SuppressSFX(true) 상태이므로 ignoreSuppress로 우회 재생한다.
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
       }
 
       public bool CheckHasTrain(TrainData trainData)
