@@ -128,7 +128,7 @@ MonoBehaviour:
       DropExpMax: 18
       DropMoneyMin: 18
       DropMoneyMax: 18
-      AttackRange: 3
+      AttackRange: 2
       AttackType: 0
     prefabId: Snake
     rangedProjectilePrefab: {fileID: 0}
