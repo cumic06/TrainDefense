@@ -43,6 +43,7 @@ namespace TrainDefense.Game
 
          var trainObject = ResourceManager.Instance.Spawn(trainData.Prefab).GetComponent<MainTrain>();
          mainTrain = trainObject;
+         ResourceManager.Instance.RegisterPersistent(mainTrain.gameObject);
          mainTrain.Initialize(trainData);
          cameraController?.SetFollowTarget(mainTrain.transform);
       }

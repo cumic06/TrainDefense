@@ -60,6 +60,30 @@ namespace TrainDefense.Game
 
         public Func<Vector3?> TargetPosOverride { get; set; }
 
+        #region LifeCycle
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            GameEventSystem.Subscribe<EngageReadyEvent>(_OnEngageReady);
+        }
+
+        private void OnDisable()
+        {
+            GameEventSystem.Unsubscribe<EngageReadyEvent>(_OnEngageReady);
+        }
+        #endregion
+
+        #region Sub/UnSub
+        private void _OnEngageReady(EngageReadyEvent _)
+        {
+            foreach (var proj in _nonMovementProjectiles)
+            {
+                if (proj != null && proj.gameObject.activeSelf)
+                    proj.gameObject.SetActive(false);
+            }
+        }
+        #endregion
+
         protected override void Setup()
         {
             base.Setup();
@@ -834,17 +858,21 @@ namespace TrainDefense.Game
         public override string GetStatSummary() =>
             $"DMG={_currentTurretTrainStatus.AttackDamage} | RANGE={_currentTurretTrainStatus.AttackRange} | AREA={_currentTurretTrainStatus.AttackArea} | CNT={_currentTurretTrainStatus.AttackCount} | TGT={_currentTurretTrainStatus.TargetCount} | MaxHp={_currentMaxHp}";
 
-        public override (string label, string value)[] GetStatDetails() => new[]
+        public override (string label, string value)[] GetStatDetails()
         {
-            ("HP", $"{Mathf.RoundToInt(_currentMaxHp)}"),
-            ("공격력", $"{Mathf.RoundToInt(_currentTurretTrainStatus.AttackDamage)}"),
-            ("사거리", $"{_currentTurretTrainStatus.AttackRange:F1}"),
-            ("범위", $"{_currentTurretTrainStatus.AttackArea:F1}"),
-            ("공격속도", $"{_currentTurretTrainStatus.AttackInterval:F2}s"),
-            ("대상 수", $"{_currentTurretTrainStatus.TargetCount}"),
-            ("크리티컬 확률", $"{_currentTurretTrainStatus.CriticalChance:F0}%"),
-            ("크리티컬 데미지", $"+{Projectile.BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage:F0}%"),
-        };
+            System.Func<string, string, string> L = TrainDefense.Localize.LocalizeHelper.GetByKey;
+            return new[]
+            {
+                (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}"),
+                (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(_currentTurretTrainStatus.AttackDamage)}"),
+                (L("Detail_Range", "사거리"), $"{_currentTurretTrainStatus.AttackRange:F1}"),
+                (L("Detail_Area", "범위"), $"{_currentTurretTrainStatus.AttackArea:F1}"),
+                (L("Detail_Speed", "공격속도"), $"{_currentTurretTrainStatus.AttackInterval:F2}s"),
+                (L("Detail_Targets", "대상 수"), $"{_currentTurretTrainStatus.TargetCount}"),
+                (L("Detail_CritChance", "크리티컬 확률"), $"{_currentTurretTrainStatus.CriticalChance:F0}%"),
+                (L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage:F0}%"),
+            };
+        }
 
         public override void ApplyPassiveSkills()
         {
