@@ -13,6 +13,8 @@ namespace TrainDefense.Game.Intro
 
         [Header("Text")]
         [SerializeField] private string _speakerName;
+        [Tooltip("화자 이름 Localization key. 설정 시 _speakerName 대신 사용됩니다.")]
+        [SerializeField] private string _speakerNameKey;
         [SerializeField] [TextArea(2, 5)] private string _text;
         [Tooltip("Localization key. 설정 시 _text 대신 사용됩니다 (Localization 시스템 구현 후 활성화).")]
         [SerializeField] private string _localizationKey;
@@ -27,7 +29,6 @@ namespace TrainDefense.Game.Intro
 
         public Sprite BackgroundImage => _backgroundImage;
         public Sprite CharacterPortrait => _characterPortrait;
-        public string SpeakerName => _speakerName;
         public AudioClip BgmClip => _bgmClip;
         public AudioClip VoiceClip => _voiceClip;
         public float AutoAdvanceDuration => _autoAdvanceDuration;
@@ -43,6 +44,14 @@ namespace TrainDefense.Game.Intro
             }
 
             return _text;
+        }
+
+        public string GetSpeakerName()
+        {
+            if (!string.IsNullOrEmpty(_speakerNameKey))
+                return LocalizeHelper.GetByKey(_speakerNameKey, _speakerName);
+
+            return _speakerName;
         }
     }
 }
