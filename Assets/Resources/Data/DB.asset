@@ -1849,7 +1849,7 @@ MonoBehaviour:
     name: Upgrade_110006_Name
     description: Upgrade_110006_Desc
     needMoney: 100
-    maxUpgradeCount: 30
+    maxUpgradeCount: 100
     upgradeDataType: 0
     upgradeValue: 1
     stats:
@@ -1860,13 +1860,13 @@ MonoBehaviour:
     iconId: 
     name: Upgrade_110007_Name
     description: Upgrade_110007_Desc
-    needMoney: 120
-    maxUpgradeCount: 50
+    needMoney: 60
+    maxUpgradeCount: 100
     upgradeDataType: 0
-    upgradeValue: 2
+    upgradeValue: 1
     stats:
     - <Type>k__BackingField: 7
-      <Value>k__BackingField: 2
+      <Value>k__BackingField: 1
     growthRate: 1.065
   - id: 110005
     iconId: 

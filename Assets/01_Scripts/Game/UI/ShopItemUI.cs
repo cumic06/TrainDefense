@@ -104,13 +104,10 @@ namespace TrainDefense.Game.UI
             }
          }
 
-         if (increaseAmount > 0)
+         // 증가/감소 방향은 설명 문구로 표현하고, 값은 크기(양수)만 표시. (예: 공속 -1 → "+1")
+         if (increaseAmount != 0)
          {
-            increaseAmountText = $"+{increaseAmount}";
-         }
-         else if (increaseAmount < 0)
-         {
-            increaseAmountText = $"{increaseAmount}";
+            increaseAmountText = $"+{Mathf.Abs(increaseAmount)}";
          }
 
          string desc = _upgradeData.Description;
