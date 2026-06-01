@@ -7,34 +7,34 @@ TUpgrade_90005_Name	전기 포탑 강화	Electric Turret Upgrade	電気タレッ
 TUpgrade_90006_Name	포격 포탑 강화	Artillery Turret Upgrade	砲撃タレット強化	炮击炮塔强化
 TUpgrade_90007_Name	저격 포탑 강화	Sniper Turret Upgrade	スナイパータレット強化	狙击炮塔强化
 RUpgrade_100001_Name	폭발 포탑 강화	Explosive Turret Upgrade	爆発タレット強化	爆炸炮塔强化
-RUpgrade_100002_Name	냉기 포탑 강화	Frost Turret Upgrade	冷気タレット強化	冰霜炮塔强화
+RUpgrade_100002_Name	냉기 포탑 강화	Frost Turret Upgrade	冷気タレット強化	冰霜炮塔强化
 Upgrade_110001_Name	공격력<sprite name="sword"> 증가	Attack Power<sprite name="sword"> Increase	攻撃力<sprite name="sword">増加	攻击力<sprite name="sword">提升
-Upgrade_110001_Desc	공격력이 {1}% 증가합니다. {2}/{3}	Increases attack power by {1}%. {2}/{3}	攻撃力が{1}%増加します。{2}/{3}	攻击力提升{1}%。{2}/{3}
-Upgrade_110002_Name	공격 딜레이 감소	Attack Delay Decrease	攻撃ディレイ減少	攻击延迟减少
-Upgrade_110002_Desc	공격 속도가 {1}% 증가합니다. {2}/{3}	Increases attack speed by {1}%. {2}/{3}	攻撃速度が{1}%増加します。{2}/{3}	攻击速度提升{1}%。{2}/{3}
+Upgrade_110001_Desc	공격력이 {1}%\n증가합니다\n{2}/{3}	Increases\nattack power by {1}%\n{2}/{3}	攻撃力が{1}%\n増加します\n{2}/{3}	攻击力\n提升{1}%\n{2}/{3}
+Upgrade_110002_Name	공격 속도 증가	Attack Speed Increase	攻撃速度増加	攻击速度提升
+Upgrade_110002_Desc	공격 속도가 {1}%\n증가합니다\n{2}/{3}	Increases\nattack speed by {1}%\n{2}/{3}	攻撃速度が{1}%\n増加します\n{2}/{3}	攻击速度\n提升{1}%\n{2}/{3}
 Upgrade_110003_Name	기차 체력 증가	Train HP Increase	列車HP増加	列车体力提升
-Upgrade_110003_Desc	기차의 최대 체력이 {1}% 증가합니다. {2}/{3}	Increases train max HP by {1}%. {2}/{3}	列車の最大HPが{1}%増加します。{2}/{3}	列车最大体力提升{1}%。{2}/{3}
+Upgrade_110003_Desc	기차의 최대 체력이 {1}%\n증가합니다\n{2}/{3}	Increases\ntrain max HP by {1}%\n{2}/{3}	列車の最大HPが{1}%\n増加します\n{2}/{3}	列车最大体力\n提升{1}%\n{2}/{3}
 Upgrade_110004_Name	골드 획득량 증가	Gold Gain Increase	ゴールド獲得量増加	金币获取量提升
-Upgrade_110004_Desc	골드 획득량이 {1}% 증가합니다. {2}/{3}	Gold gain increases by {1}%. {2}/{3}	ゴールド獲得量が{1}%増加します。{2}/{3}	金币获取量提升{1}%。{2}/{3}
+Upgrade_110004_Desc	골드 획득량이 {1}%\n증가합니다\n{2}/{3}	Increases\ngold gain by {1}%\n{2}/{3}	ゴールド獲得量が{1}%\n増加します\n{2}/{3}	金币获取量\n提升{1}%\n{2}/{3}
 Upgrade_110005_Name	경험치 획득량 증가	Exp Gain Increase	経験値獲得量増加	经验获取量提升
-Upgrade_110005_Desc	경험치 획득량이 {1}% 증가합니다. {2}/{3}	Exp gain increases by {1}%. {2}/{3}	経験値獲得量が{1}%増加します。{2}/{3}	经验获取量提升{1}%。{2}/{3}
+Upgrade_110005_Desc	경험치 획득량이 {1}%\n증가합니다\n{2}/{3}	Increases\nexp gain by {1}%\n{2}/{3}	経験値獲得量が{1}%\n増加します\n{2}/{3}	经验获取量\n提升{1}%\n{2}/{3}
 Upgrade_110006_Name	치명타 확률 증가	Critical Chance Increase	会心率増加	暴击率提升
-Upgrade_110006_Desc	치명타 확률이 {1}% 증가합니다. {2}/{3}	Increases critical chance by {1}%. {2}/{3}	会心率が{1}%増加します。{2}/{3}	暴击率提升{1}%。{2}/{3}
+Upgrade_110006_Desc	치명타 확률이 {1}%\n증가합니다\n{2}/{3}	Increases\ncritical chance by {1}%\n{2}/{3}	会心率が{1}%\n増加します\n{2}/{3}	暴击率\n提升{1}%\n{2}/{3}
 Upgrade_110007_Name	치명타 피해 증가	Critical Damage Increase	会心ダメージ増加	暴击伤害提升
-Upgrade_110007_Desc	치명타 피해가 {1}% 증가합니다. {2}/{3}	Increases critical damage by {1}%. {2}/{3}	会心ダメージが{1}%増加します。{2}/{3}	暴击伤害提升{1}%。{2}/{3}
+Upgrade_110007_Desc	치명타 피해가 {1}%\n증가합니다\n{2}/{3}	Increases\ncritical damage by {1}%\n{2}/{3}	会心ダメージが{1}%\n増加します\n{2}/{3}	暴击伤害\n提升{1}%\n{2}/{3}
 Upgrade_AttackDamage	공격력<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	Attack Power<pos=55%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	攻撃力<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	攻击力<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>
-Upgrade_AttackSpeed	공격속도<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	Attack Speed<pos=55%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	攻撃速度<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	攻击速度<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>
+Upgrade_AttackSpeed	공격 속도<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	Attack Speed<pos=55%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	攻撃速度<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	攻击速度<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>
 Upgrade_AttackRange	사거리<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	Range<pos=55%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	射程<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	射程<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>
 Upgrade_AttackArea	범위<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	Area<pos=55%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	範囲<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	范围<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>
 Upgrade_TargetCount	대상 수<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	Targets<pos=55%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	対象数<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	目标数<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>
 Stat_AttackDamage	공격력<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Attack Power<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	攻撃力<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	攻击力<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
-Stat_AttackSpeed	공격속도<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Attack Speed<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	攻撃速度<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	攻击速度<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
+Stat_AttackSpeed	공격 속도<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Attack Speed<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	攻撃速度<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	攻击速度<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
 Stat_AttackRange	사거리<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Range<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	射程<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	射程<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
 Stat_AttackArea	범위<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Area<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	範囲<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	范围<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
 Stat_TargetCount	대상 수<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Targets<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	対象数<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	目标数<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
 Detail_HP	HP	HP	HP	HP
 Detail_Damage	공격력	ATK	攻撃力	攻击力
-Detail_Speed	공격속도	SPD	攻撃速度	攻击速度
+Detail_Speed	공격 속도	SPD	攻撃速度	攻击速度
 Detail_Range	사거리	Range	射程	射程
 Detail_Area	범위	Area	範囲	范围
 Detail_Targets	대상 수	Targets	対象数	目标数
