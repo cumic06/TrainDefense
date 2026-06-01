@@ -14,6 +14,33 @@ public class ResourceManager : MonoBehaviour
     }
 
     private readonly Dictionary<string, Stack<GameObject>> _pools = new();
+    private readonly HashSet<GameObject> _activeObjects = new();
+    private readonly HashSet<GameObject> _persistentObjects = new();
+
+    public void RegisterPersistent(GameObject obj) => _persistentObjects.Add(obj);
+    public void UnregisterPersistent(GameObject obj) => _persistentObjects.Remove(obj);
+
+    public void ReturnAll()
+    {
+        foreach (var obj in new List<GameObject>(_activeObjects))
+        {
+            if (obj == null) continue;
+            if (_persistentObjects.Contains(obj)) continue;
+            if (_IsChildOfPersistent(obj)) continue;
+            Destroy(obj);
+        }
+    }
+
+    private bool _IsChildOfPersistent(GameObject obj)
+    {
+        Transform t = obj.transform.parent;
+        while (t != null)
+        {
+            if (_persistentObjects.Contains(t.gameObject)) return true;
+            t = t.parent;
+        }
+        return false;
+    }
 
     public GameObject Spawn(GameObject prefab, Vector3 position = default, Quaternion rotation = default,
         Transform parent = null)
@@ -31,6 +58,7 @@ public class ResourceManager : MonoBehaviour
             _pools.Add(key, new Stack<GameObject>());
         }
 
+        GameObject result;
         if (_pools[key].Count > 0)
         {
             GameObject popObject = _pools[key].Pop();
@@ -39,20 +67,19 @@ public class ResourceManager : MonoBehaviour
             popObject.transform.SetPositionAndRotation(position, rotation);
 
             if (parent != null)
-            {
                 popObject.transform.SetParent(parent);
-            }
             else
-            {
                 popObject.transform.SetParent(transform);
-            }
 
-            return popObject;
+            result = popObject;
         }
         else
         {
-            return CreateNewObject(prefab, position, rotation, parent);
+            result = CreateNewObject(prefab, position, rotation, parent);
         }
+
+        _activeObjects.Add(result);
+        return result;
     }
 
     public T Spawn<T>(T prefab, Vector3 position = default, Quaternion rotation = default,
@@ -91,6 +118,7 @@ public class ResourceManager : MonoBehaviour
             _pools.Add(key, new Stack<GameObject>());
         }
 
+        _activeObjects.Remove(obj);
         _pools[key].Push(obj);
         obj.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         obj.transform.SetParent(transform);

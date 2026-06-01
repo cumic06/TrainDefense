@@ -38,7 +38,7 @@ namespace TrainDefense
             // 자식 열차들의 localPosition을 오프셋했다가 복귀 (부모 위치 고정 → 카메라 따라오지 않음)
             // Timeline: 카메라 줌 0~1s / 열차 슬라이드: delay=1s, duration=2s → 총 3s
             if (isMapChange)
-                TrainManager.Instance?.MainTrain?.SlideIn(-15f, 1f, 2f);
+                TrainManager.Instance?.MainTrain?.SlideIn(1f, 2f);
 
             director.Stop();
             director.time = 0;

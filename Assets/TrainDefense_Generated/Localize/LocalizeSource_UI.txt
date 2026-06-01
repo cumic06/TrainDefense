@@ -35,3 +35,7 @@ Intro_Slide2	살아남은 자들은 도시를 버리고 도망쳤다.\n하지만
 Intro_Slide3	우리에게는 <wave>기차</wave>가 있다.\n몬스터 무리를 뚫고 달릴 수 있는 유일한 방법이지.	We have the <wave>train</wave>.\nIt's the only way to break through the monster hordes and keep moving.	私たちには<wave>列車</wave>がある。\nモンスターの群れを突き破って走れる唯一の方法だ。	我们有<wave>火车</wave>。\n这是唯一能突破怪物群继续前进的方法。
 Intro_Slide4	기차를 타고 달리며 상점을 돌아다닌다.\n무기를 구하고, 탑승자를 지킨다. <shake>멈추면 죽는다.</shake>	Ride the train, visit shops along the way.\nGather weapons, protect passengers. <shake>Stop, and you die.</shake>	列車に乗って走りながら、商店を巡る。\n武器を集め、乗客を守る。<shake>止まれば死ぬ。</shake>	乘坐火车奔驰，沿途造访商店。\n搜集武器，保护乘客。<shake>停下就是死路一条。</shake>
 Intro_Slide5	몬스터들은 끝없이 몰려온다.\n<wave>기차를 지켜라.</wave> 포기하지 않는 한, 우리는 살아남을 수 있다.	The monsters come endlessly.\n<wave>Protect the train.</wave> As long as we don't give up, we can survive.	モンスターたちは絶えず押し寄せてくる。\n<wave>列車を守れ。</wave>諦めない限り、私たちは生き残れる。	怪物们无穷无尽地涌来。\n<wave>保护火车。</wave>只要不放弃，我们就能活下去。
+skill_type_active	액티브	Active	アクティブ	主动
+skill_type_passive	패시브	Passive	パッシブ	被动
+Intro_Speaker_Narrator	나레이터	Narrator	ナレーター	旁白
+Intro_Speaker_Engineer	기관사	Engineer	機関士	机械师

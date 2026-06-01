@@ -14,6 +14,7 @@ namespace TrainDefense.Game.UI
 
         private void Awake()
         {
+            ResourceManager.Instance.RegisterPersistent(gameObject);
             GameEventSystem.Subscribe<AddTrainEvent>(OnAddTrain);
         }
 

@@ -30,3 +30,11 @@ Stat_AttackSpeed	공격속도<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace><
 Stat_AttackRange	사거리<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Range<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	射程<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	射程<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
 Stat_AttackArea	범위<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Area<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	範囲<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	范围<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
 Stat_TargetCount	대상 수<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Targets<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	対象数<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	目标数<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
+Detail_HP	HP	HP	HP	HP
+Detail_Damage	공격력	ATK	攻撃力	攻击力
+Detail_Speed	공격속도	SPD	攻撃速度	攻击速度
+Detail_Range	사거리	Range	射程	射程
+Detail_Area	범위	Area	範囲	范围
+Detail_Targets	대상 수	Targets	対象数	目标数
+Detail_CritChance	크리티컬 확률	Crit%	クリティカル率	暴击率
+Detail_CritDamage	크리티컬 데미지	Crit DMG	クリティカルDMG	暴击伤害

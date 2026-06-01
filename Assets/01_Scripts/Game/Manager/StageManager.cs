@@ -346,6 +346,7 @@ namespace TrainDefense.Game.Manager
         private void _TransitionToStageSelection()
         {
             MonsterSpawner.Instance?.DestroyAllMonsters();
+            ResourceManager.Instance.ReturnAll();
             GameEventSystem.Publish(new EngageReadyEvent());
 
             _ShowStageSelection();

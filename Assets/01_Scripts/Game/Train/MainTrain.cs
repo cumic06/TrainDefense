@@ -508,12 +508,19 @@ namespace TrainDefense.Game
          }
       }
 
-      public void SlideIn(float fromOffsetX, float delay, float duration)
+      public void SlideIn(float delay, float duration)
       {
+         Camera cam = Camera.main;
+         float camLeftX = cam != null ? cam.ViewportToWorldPoint(new Vector3(0f, 0.5f, 0f)).x : -10f;
+         float rightmostX = transform.position.x;
+         foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
+             rightmostX = Mathf.Max(rightmostX, sr.bounds.max.x);
+         float offsetX = camLeftX - rightmostX;
+
          foreach (var train in _currentAliveTrains)
          {
             float targetX = train.transform.localPosition.x;
-            train.transform.localPosition += new Vector3(fromOffsetX, 0f, 0f);
+            train.transform.localPosition += new Vector3(offsetX, 0f, 0f);
             train.transform.DOLocalMoveX(targetX, duration)
                .SetDelay(delay)
                .SetEase(Ease.InOutSine)
@@ -523,7 +530,7 @@ namespace TrainDefense.Game
          if (trainModel != null)
          {
             float targetX = trainModel.localPosition.x;
-            trainModel.localPosition += new Vector3(fromOffsetX, 0f, 0f);
+            trainModel.localPosition += new Vector3(offsetX, 0f, 0f);
             trainModel.DOLocalMoveX(targetX, duration)
                .SetDelay(delay)
                .SetEase(Ease.InOutSine)

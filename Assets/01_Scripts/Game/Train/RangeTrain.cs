@@ -257,16 +257,20 @@ namespace TrainDefense.Game
         public override string GetStatSummary() =>
             $"DMG={_currentRangeTrainStatus.AttackDamage} | RANGE={_currentRangeTrainStatus.AttackRange} | AREA={_currentRangeTrainStatus.AttackArea} | MaxHp={_currentMaxHp}";
 
-        public override (string label, string value)[] GetStatDetails() => new[]
+        public override (string label, string value)[] GetStatDetails()
         {
-            ("HP", $"{Mathf.RoundToInt(_currentMaxHp)}"),
-            ("공격력", $"{Mathf.RoundToInt(_currentRangeTrainStatus.AttackDamage)}"),
-            ("사거리", $"{_currentRangeTrainStatus.AttackRange:F1}"),
-            ("범위", $"{_currentRangeTrainStatus.AttackArea:F1}"),
-            ("공격속도", $"{_currentRangeTrainStatus.AttackInterval:F2}s"),
-            ("크리티컬 확률", $"{_currentRangeTrainStatus.CriticalChance:F0}%"),
-            ("크리티컬 데미지", $"+{Projectile.BaseCriticalDamagePercent + _currentRangeTrainStatus.CriticalDamage:F0}%"),
-        };
+            System.Func<string, string, string> L = TrainDefense.Localize.LocalizeHelper.GetByKey;
+            return new[]
+            {
+                (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}"),
+                (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(_currentRangeTrainStatus.AttackDamage)}"),
+                (L("Detail_Range", "사거리"), $"{_currentRangeTrainStatus.AttackRange:F1}"),
+                (L("Detail_Area", "범위"), $"{_currentRangeTrainStatus.AttackArea:F1}"),
+                (L("Detail_Speed", "공격속도"), $"{_currentRangeTrainStatus.AttackInterval:F2}s"),
+                (L("Detail_CritChance", "크리티컬 확률"), $"{_currentRangeTrainStatus.CriticalChance:F0}%"),
+                (L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentRangeTrainStatus.CriticalDamage:F0}%"),
+            };
+        }
 
         public override void ApplyPassiveSkills()
         {
