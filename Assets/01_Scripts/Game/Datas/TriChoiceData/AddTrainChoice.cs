@@ -78,8 +78,11 @@ namespace TrainDefense.Game.Datas
             var skillType = TriChoiceManager.Instance != null
                 ? TriChoiceManager.Instance.GetCachedAddSkillType(id)
                 : TrainChoiceSkillType.None;
+            var selectedSkillId = TriChoiceManager.Instance != null
+                ? TriChoiceManager.Instance.GetCachedAddSkillId(id)
+                : null;
 
-            main.SpawnTrain(trainData, skillType);
+            main.SpawnTrain(trainData, skillType, selectedSkillId);
         }
     }
 }

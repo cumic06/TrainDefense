@@ -264,18 +264,18 @@ namespace TrainDefense.Game
             ("사거리", $"{_currentRangeTrainStatus.AttackRange:F1}"),
             ("범위", $"{_currentRangeTrainStatus.AttackArea:F1}"),
             ("공격속도", $"{_currentRangeTrainStatus.AttackInterval:F2}s"),
-            ("크리티컬", $"{_currentRangeTrainStatus.CriticalChance:F0}%"),
+            ("크리티컬 확률", $"{_currentRangeTrainStatus.CriticalChance:F0}%"),
+            ("크리티컬 데미지", $"+{Projectile.BaseCriticalDamagePercent + _currentRangeTrainStatus.CriticalDamage:F0}%"),
         };
 
         public override void ApplyPassiveSkills()
         {
             var passives = rangeTrainData?.PassiveSkillDatas;
             if (passives == null) return;
-            // 액티브 스킬을 뽑은 엘리트도 고유 패시브는 상시 적용한다.
-            // 패시브 자체가 선택지로 뽑힌 경우에만 선택된 1개로 한정한다.
-            bool applyAll = _skillTypeMask != TrainChoiceSkillType.Passive;
+            // 삼중택일은 픽한 스킬 1개만 부여한다: Active 픽=패시브 미적용, Passive 픽=선택 1개,
+            // None(일반 스폰)=기본 키트 전부. (Train._IsPassiveApplied 공용 규칙)
             foreach (var p in passives)
-                if (applyAll || p.Id == _selectedSkillId)
+                if (_IsPassiveApplied(p.Id))
                     _skillModule.RegisterPassiveFromData(p);
         }
 

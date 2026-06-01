@@ -342,6 +342,41 @@ namespace TrainDefense.Game
 
         public virtual void ApplyPassiveSkills() { }
 
+        // 마스크에 따른 패시브 적용 규칙 (서브클래스 ApplyPassiveSkills·Detail 표시 공용).
+        // Active 픽 = 패시브 미적용, Passive 픽 = 선택한 1개만, None(일반 스폰) = 전부.
+        protected bool _IsPassiveApplied(string passiveId)
+        {
+            if (_skillTypeMask == TrainChoiceSkillType.Active)
+                return false;
+
+            if (_skillTypeMask == TrainChoiceSkillType.Passive)
+                return passiveId == _selectedSkillId;
+
+            return true;
+        }
+
+        // 이 인스턴스에 실제로 적용된 스킬 표시 정보. Detail 팝업이 전체 스킬 대신 이걸 사용한다.
+        public virtual IEnumerable<(bool isActive, string name, string description)> GetAppliedSkillDisplays()
+        {
+            if (_trainData == null)
+                yield break;
+
+            if (_skillModule.HasActiveSkill)
+            {
+                var active = _trainData.TrainSkillData;
+                if (active != null)
+                    yield return (true, active.Name, active.Description);
+            }
+
+            var passives = _trainData.PassiveSkillDatas;
+            if (passives == null)
+                yield break;
+
+            foreach (var passive in passives)
+                if (passive != null && _IsPassiveApplied(passive.Id))
+                    yield return (false, passive.Name, passive.Description);
+        }
+
         public virtual string GetStatSummary() => $"MaxHp={_currentMaxHp}";
 
         public virtual (string label, string value)[] GetStatDetails()

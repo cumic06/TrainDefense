@@ -1,5 +1,6 @@
 using System.Text;
 using TMPro;
+using TrainDefense.Localize;
 using UnityEngine;
 
 namespace TrainDefense.Game.UI
@@ -43,29 +44,15 @@ namespace TrainDefense.Game.UI
             {
                 var sb = new StringBuilder();
 
-                if (data != null)
-                {
-                    var activeSkills = data.TrainSkillDatas;
-                    if (activeSkills != null)
-                    {
-                        foreach (var skill in activeSkills)
-                        {
-                            sb.AppendLine($"[액티브] {skill.Name}");
-                            if (!string.IsNullOrEmpty(skill.Description))
-                                sb.AppendLine(skill.Description);
-                        }
-                    }
+                // TrainData 전체 스킬이 아니라, 이 인스턴스에 실제 적용된 스킬만 표시(마스크 반영).
+                string activeLabel = LocalizeHelper.GetByKey("skill_type_active", "액티브");
+                string passiveLabel = LocalizeHelper.GetByKey("skill_type_passive", "패시브");
 
-                    var passiveSkills = data.PassiveSkillDatas;
-                    if (passiveSkills != null)
-                    {
-                        foreach (var skill in passiveSkills)
-                        {
-                            sb.AppendLine($"[패시브] {skill.Name}");
-                            if (!string.IsNullOrEmpty(skill.Description))
-                                sb.AppendLine(skill.Description);
-                        }
-                    }
+                foreach (var (isActive, name, description) in train.GetAppliedSkillDisplays())
+                {
+                    sb.AppendLine(isActive ? $"[{activeLabel}] {name}" : $"[{passiveLabel}] {name}");
+                    if (!string.IsNullOrEmpty(description))
+                        sb.AppendLine(description);
                 }
 
                 skillsText.text = sb.ToString().TrimEnd();

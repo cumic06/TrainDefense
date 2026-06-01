@@ -110,9 +110,15 @@ namespace TrainDefense.Game.UI
             {
                var parts = new System.Collections.Generic.List<string>();
                if (!string.IsNullOrEmpty(choiceUIInfo.PassiveName))
-                  parts.Add($"-{choiceUIInfo.PassiveName}-");
+               {
+                  string passiveLabel = LocalizeHelper.GetByKey("skill_type_passive", "패시브");
+                  parts.Add($"[{passiveLabel}] {choiceUIInfo.PassiveName}");
+               }
                if (!string.IsNullOrEmpty(choiceUIInfo.ActiveSkillName))
-                  parts.Add($"-{choiceUIInfo.ActiveSkillName}-");
+               {
+                  string activeLabel = LocalizeHelper.GetByKey("skill_type_active", "액티브");
+                  parts.Add($"[{activeLabel}] {choiceUIInfo.ActiveSkillName}");
+               }
 
                bool hasContent = parts.Count > 0;
                skillNameText.gameObject.SetActive(hasContent);

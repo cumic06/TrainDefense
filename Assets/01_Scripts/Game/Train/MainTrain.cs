@@ -129,7 +129,7 @@ namespace TrainDefense.Game
          SpawnTrain(DatabaseManager.Instance.GetTrainData(trainPrefab.Id));
       }
 
-      public void SpawnTrain(TrainData trainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None)
+      public void SpawnTrain(TrainData trainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None, string selectedSkillId = null)
       {
          if (_currentAliveTrains.Count >= maxTrainCount)
          {
@@ -152,7 +152,7 @@ namespace TrainDefense.Game
 
          _pendingSkillType = skillType;
          Train trainObject = Instantiate(trainPrefab, transform);
-         trainObject.Initialize(trainData, _pendingSkillType);
+         trainObject.Initialize(trainData, _pendingSkillType, selectedSkillId);
          _pendingSkillType = TrainChoiceSkillType.None;
          trainObject.IsUnDead = isUnDead;
          _currentAliveTrains.Add(trainObject);

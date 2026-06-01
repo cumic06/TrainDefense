@@ -212,7 +212,9 @@ namespace TrainDefense.Game
         /// <summary>
         /// 치명타 판정 후 최종 데미지와 치명타 여부를 반환합니다.
         /// </summary>
-        private const float BaseCriticalDamagePercent = 30f;
+        // 크리티컬 시 기본 추가 데미지 비율(%). 실제 크리 보너스 = BaseCriticalDamagePercent + CriticalDamage.
+        // Detail UI 표기(TurretTrain/RangeTrain.GetStatDetails)도 이 값을 참조한다.
+        public const float BaseCriticalDamagePercent = 30f;
 
         protected (float finalDamage, bool isCritical) CalculateCriticalDamage()
         {

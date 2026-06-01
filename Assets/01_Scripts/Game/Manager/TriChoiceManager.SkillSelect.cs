@@ -33,6 +33,14 @@ namespace TrainDefense.Game
             return TrainChoiceSkillType.None;
         }
 
+        public string GetCachedAddSkillId(string choiceId)
+        {
+            if (_selectedAddSkills.TryGetValue(choiceId, out var cached))
+                return cached.skillData?.Id;
+
+            return null;
+        }
+
         public (IData skillData, TrainChoiceSkillType skillType) GetSelectedEliteSkill(EliteTrainChoice choice)
         {
             if (choice == null)
