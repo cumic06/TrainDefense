@@ -304,6 +304,10 @@ namespace TrainDefense.Game
                         if (_rangeProjectilePrefab != null)
                             _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                         break;
+                    case StatType.AttackInterval:
+                        // 공속은 상점과 동일하게 현재값 기준 역수 곱셈(DPS 선형, 0 이하 방지). percent 음수=공속 증가.
+                        _currentRangeTrainStatus.AttackInterval *= 1f / (1f + (-percent));
+                        break;
                     default:
                         ApplyStat(stat);
                         break;

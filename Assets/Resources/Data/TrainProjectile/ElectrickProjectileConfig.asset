@@ -30,4 +30,7 @@ MonoBehaviour:
   shovePower: 1
   shoveDuration: 0.5
   hasStunEffect: 1
-  stunDuration: 0.5
+  stunDuration: 0.3
+  pierce: 0
+  maxPenetration: 1
+  spreadAngle: 0

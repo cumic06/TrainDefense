@@ -882,6 +882,10 @@ namespace TrainDefense.Game
                         if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                             foreach (var p in _nonMovementProjectiles) { if (p != null) InitializeProjectileDamage(p); }
                         break;
+                    case StatType.AttackInterval:
+                        // 공속은 상점과 동일하게 현재값 기준 역수 곱셈(DPS 선형, 0 이하 방지). percent 음수=공속 증가.
+                        _currentTurretTrainStatus.AttackInterval *= 1f / (1f + (-percent));
+                        break;
                     default:
                         ApplyStat(stat);
                         break;

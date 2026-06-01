@@ -111,14 +111,14 @@ namespace TrainDefense.Game
             _isDead = false;
             if (_trainData == null)
             {
-                _skillModule.Initialize(this, null, ApplyStat);
+                _skillModule.Initialize(this, null);
                 return;
             }
 
             _currentMaxHp = _trainData.TrainStatusData.MaxHp;
             _currentHp = _currentMaxHp;
             _currentLevel = -1;
-            _skillModule.Initialize(this, _trainData, ApplyStat, _skillTypeMask);
+            _skillModule.Initialize(this, _trainData, _skillTypeMask);
         }
 
         public Transform TargetTransform => transform;

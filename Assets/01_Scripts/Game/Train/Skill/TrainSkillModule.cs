@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TrainDefense.Game.Datas;
@@ -16,7 +15,6 @@ namespace TrainDefense.Game
         private Train _owner;
         private TrainData _trainData;
         private TrainSkillAction _activeSkill;
-        private Action<IStat> _applyStat;
         private readonly List<TimedStatModifier> _timedModifiers = new();
         private readonly List<TrainPassiveSkill> _passives = new();
 
@@ -38,10 +36,7 @@ namespace TrainDefense.Game
         public float CooldownRatio => _activeSkill?.GetCooldownRatio() ?? 0f;
         public float RemainingCooldown => _activeSkill?.RemainingCooldown ?? 0f;
 
-        /// <summary>
-        /// 모듈 초기화. owner의 ApplyStat 콜백을 받아 시한 버프 만료 시 대칭 복원에 사용.
-        /// </summary>
-        public void Initialize(Train owner, TrainData trainData, Action<IStat> applyStatCallback, TrainChoiceSkillType skillTypeMask = TrainChoiceSkillType.None)
+        public void Initialize(Train owner, TrainData trainData, TrainChoiceSkillType skillTypeMask = TrainChoiceSkillType.None)
         {
             // 재초기화 시 기존 구독 해제
             for (int i = 0; i < _passives.Count; i++) _passives[i].Unsubscribe();
@@ -50,7 +45,6 @@ namespace TrainDefense.Game
 
             _owner = owner;
             _trainData = trainData;
-            _applyStat = applyStatCallback;
             _timedModifiers.Clear();
 
             bool createActive = skillTypeMask != TrainChoiceSkillType.Passive;
@@ -75,7 +69,8 @@ namespace TrainDefense.Game
                 return;
             }
 
-            _applyStat?.Invoke(new SimpleStat { Type = type, Value = percent });
+            // 상점과 동일한 레벨인지 곱셈 모델(0→1 토글)로 적용 → 공속은 역수 곱셈, 만료 시 1→0으로 정확히 역적용.
+            _owner?.ApplyStatsLevelAware(new IStat[] { new SimpleStat { Type = type, Value = percent } }, 1, 0);
             _timedModifiers.Add(new TimedStatModifier
             {
                 Type = type,
@@ -94,8 +89,8 @@ namespace TrainDefense.Game
                     mod.RemainingTime -= deltaTime;
                     if (mod.RemainingTime <= 0f)
                     {
-                        // 대칭 복원: 음수 percent로 ApplyStat 재호출
-                        _applyStat?.Invoke(new SimpleStat { Type = mod.Type, Value = -mod.Value });
+                        // 적용의 정확한 역연산(1→0 토글). 같은 모델이라 가산·곱셈 모두 정확히 복원.
+                        _owner?.ApplyStatsLevelAware(new IStat[] { new SimpleStat { Type = mod.Type, Value = mod.Value } }, 0, 1);
                         _timedModifiers.RemoveAt(i);
                     }
                 }

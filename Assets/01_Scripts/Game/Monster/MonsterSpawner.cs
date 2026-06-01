@@ -90,6 +90,7 @@ namespace TrainDefense.Game
          _eliteData = DatabaseManager.Instance.GetEliteData();
          _currentEliteSpawnChance = 0f;
          _eliteRampElapsed = 0f;
+         _stationPassedCount = 0;
          StartCoroutine(SpawnMonster());
       }
 
@@ -112,8 +113,8 @@ namespace TrainDefense.Game
       {
          _currentSpawnDatas = spawnDatas;
          _originalSpawnInterval = monsterSpawnInterval;
-         _stationPassedCount = 0;
-         spawnInterval = _originalSpawnInterval;
+         // 스폰풀/인터벌만 갱신(레벨업·스테이지 변경 시 호출). 역 누적 가속은 유지하고 현재 가속을 반영.
+         spawnInterval = _GetAcceleratedInterval();
 
          // 맵별 영역(MapData.CustomSpawnAreas)이 있으면 그걸 쓰고, 없으면 씬 기본(공통)으로 복귀.
          _defaultSpawnAreas ??= customSpawnAreas != null ? new List<SpawnAreaInfo>(customSpawnAreas) : new List<SpawnAreaInfo>();

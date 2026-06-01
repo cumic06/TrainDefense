@@ -349,8 +349,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
-      AttackRange: 7
-      AttackArea: 7
+      AttackRange: 8
+      AttackArea: 8
       AttackCount: 1
       AttackInterval: 0.25
       TargetCount: 1
@@ -373,8 +373,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 2
-      AttackRange: 7
-      AttackArea: 7
+      AttackRange: 8
+      AttackArea: 8
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 1
@@ -397,8 +397,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 30
-      AttackRange: 7
-      AttackArea: 7
+      AttackRange: 8
+      AttackArea: 8
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
@@ -421,8 +421,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 15
+      AttackArea: 15
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -445,8 +445,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 11
+      AttackArea: 11
       AttackCount: 3
       AttackInterval: 1
       TargetCount: 3
@@ -469,7 +469,7 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 10
+      AttackRange: 13
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
@@ -493,8 +493,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 12
+      AttackArea: 12
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
@@ -519,8 +519,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 8
+      AttackArea: 8
       AttackCount: 1
       AttackInterval: 0.25
       TargetCount: 1
@@ -572,8 +572,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 30
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 8
+      AttackArea: 8
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
@@ -598,8 +598,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 15
+      AttackArea: 15
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -624,8 +624,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 10
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 11
+      AttackArea: 11
       AttackCount: 3
       AttackInterval: 1
       TargetCount: 3
@@ -651,7 +651,7 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 10
+      AttackRange: 13
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 3
@@ -678,8 +678,8 @@ MonoBehaviour:
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 10
-      AttackArea: 10
+      AttackRange: 12
+      AttackArea: 12
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
@@ -2091,12 +2091,12 @@ MonoBehaviour:
       Tier: 0
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
-    spawnInterval: 60
-    spawnMaxChance: 5
+    spawnInterval: 40
+    spawnMaxChance: 15
     chanceGrowthPerInterval: 1
-    hpMultiplier: 3
+    hpMultiplier: 5
     damageMultiplier: 2
-    moveSpeedMultiplier: 1
+    moveSpeedMultiplier: 1.2
     sizeScale: 1.5
     dropExpMultiplier: 2
     dropMoneyMultiplier: 2
