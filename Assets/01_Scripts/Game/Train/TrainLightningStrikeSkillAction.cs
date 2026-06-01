@@ -1,4 +1,5 @@
 using System.Linq;
+using TrainDefense.Game.Datas;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -10,6 +11,9 @@ namespace TrainDefense.Game
     public class TrainLightningStrikeSkillAction : TrainSkillAction
     {
         private const float StunDuration = 3f;
+
+        // 낙뢰 시각 이펙트 프리팹 경로(Resources). 수명은 프리팹의 AutoReleaseEffect가 관리.
+        private const string LightningEffectPath = "Prefabs/LightningStrike";
 
         protected override bool OnUse()
         {
@@ -30,6 +34,10 @@ namespace TrainDefense.Game
             if (nearest == null) return false;
 
             Vector2 strikeCenter = nearest.transform.position;
+
+            // 낙뢰가 떨어진 지점에 번개 이펙트 스폰 (AutoReleaseEffect가 자동 반환).
+            ResourceManager.Instance?.SpawnPath(LightningEffectPath, strikeCenter);
+            SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_LightningStrike);
 
             var targets = Physics2D.OverlapCircleAll(strikeCenter, strikeRadius)
                 .Select(c => c.TryGetComponent(out Monster m) ? m : null)
