@@ -23,7 +23,7 @@ namespace TrainDefense.Game
       [SerializeField]
       private Color slowColor = new Color(0.5f, 0.85f, 1f, 1f);
       [SerializeField]
-      private float spawnStunDuration = 0.1f;
+      private float spawnMoveDelay = 0.1f;
       #endregion
 
       [ShowInInspector, ReadOnly]
@@ -35,6 +35,7 @@ namespace TrainDefense.Game
       protected bool _isShoved;
       protected bool _isStunned;
       protected bool _isDead;
+      private float _spawnTime;
       [ShowInInspector, ReadOnly]
       protected bool _isElite;
 
@@ -49,8 +50,11 @@ namespace TrainDefense.Game
       protected Coroutine _resetMoveSpeedCoroutine;
       protected Coroutine _shoveCoroutine;
       protected Coroutine _stunCoroutine;
+      private GameObject _stunEffectInstance;
 
       private const string MoneyPrefabPath = "Prefabs/Money";
+      private const string StunPrefabPath = "Prefabs/StunPaticle";
+      private static GameObject _stunPrefab;
 
       public string Id => id;
       public bool IsActive => gameObject.activeInHierarchy;
@@ -75,7 +79,6 @@ namespace TrainDefense.Game
       {
          _monsterData = monsterData;
          _InitStats();
-         Stun(spawnStunDuration);
       }
 
       #region Enable/Disable
@@ -83,6 +86,7 @@ namespace TrainDefense.Game
       {
          _isDead = false;
          _isElite = false;
+         _spawnTime = Time.time;
          _startScale = _prefabScale;
          if (model != null) model.transform.localScale = _prefabScale;
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
@@ -101,6 +105,11 @@ namespace TrainDefense.Game
             StopCoroutine(_slowCoroutine);
          }
 
+         if (_stunCoroutine != null)
+         {
+            StopCoroutine(_stunCoroutine);
+         }
+
          if (_modelAnimator != null)
          {
             _modelAnimator.OnAttackHit -= _OnAttackHit;
@@ -108,6 +117,7 @@ namespace TrainDefense.Game
 
          _isStunned = false;
          _isShoved = false;
+         _ReleaseStunEffect();
 
          _targetTrain = null;
       }
@@ -158,6 +168,9 @@ namespace TrainDefense.Game
       {
          _OrderSprite();
          _DetectTrain();
+
+         if (Time.time - _spawnTime < spawnMoveDelay)
+            return;
 
          if (_isShoved)
             return;
@@ -400,6 +413,7 @@ namespace TrainDefense.Game
          {
             StopCoroutine(_stunCoroutine);
          }
+         _SpawnStunEffect();
          _stunCoroutine = StartCoroutine(_StunCoroutine(stunDuration));
       }
 
@@ -408,6 +422,30 @@ namespace TrainDefense.Game
          _isStunned = true;
          yield return new WaitForSeconds(stunDuration);
          _isStunned = false;
+         _ReleaseStunEffect();
+      }
+
+      private void _SpawnStunEffect()
+      {
+         if (_stunEffectInstance != null)
+            return;
+
+         if (_stunPrefab == null)
+            _stunPrefab = Resources.Load<GameObject>(StunPrefabPath);
+         if (_stunPrefab == null || ResourceManager.Instance == null)
+            return;
+
+         _stunEffectInstance = ResourceManager.Instance.Spawn(_stunPrefab, transform.position, Quaternion.identity);
+      }
+
+      private void _ReleaseStunEffect()
+      {
+         if (_stunEffectInstance == null)
+            return;
+
+         if (ResourceManager.Instance != null)
+            ResourceManager.Instance.Destroy(_stunEffectInstance);
+         _stunEffectInstance = null;
       }
       #endregion
 

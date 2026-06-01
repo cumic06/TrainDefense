@@ -178,6 +178,9 @@ MonoBehaviour:
   id: 
   model: {fileID: 24558831701991884}
   eliteEffect: {fileID: 7699133565621818308}
+  stunEffect: {fileID: 6111629820488006253, guid: 9b25e5a13e9fa354fa285264c41046db, type: 3}
+  slowColor: {r: 0.5, g: 0.85, b: 1, a: 1}
+  spawnMoveDelay: 0.1
 --- !u!61 &8967810716900712770
 BoxCollider2D:
   m_ObjectHideFlags: 0
