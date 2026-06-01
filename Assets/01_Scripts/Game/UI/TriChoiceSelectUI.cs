@@ -112,12 +112,12 @@ namespace TrainDefense.Game.UI
                if (!string.IsNullOrEmpty(choiceUIInfo.PassiveName))
                {
                   string passiveLabel = LocalizeHelper.GetByKey("skill_type_passive", "패시브");
-                  parts.Add($"[{passiveLabel}] {choiceUIInfo.PassiveName}");
+                  parts.Add($"{choiceUIInfo.PassiveName}\n<size=70%><alpha=#99>[{passiveLabel}]</size>");
                }
                if (!string.IsNullOrEmpty(choiceUIInfo.ActiveSkillName))
                {
                   string activeLabel = LocalizeHelper.GetByKey("skill_type_active", "액티브");
-                  parts.Add($"[{activeLabel}] {choiceUIInfo.ActiveSkillName}");
+                  parts.Add($"{choiceUIInfo.ActiveSkillName}\n<size=70%><alpha=#99>[{activeLabel}]</size>");
                }
 
                bool hasContent = parts.Count > 0;

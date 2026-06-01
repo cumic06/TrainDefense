@@ -26,7 +26,7 @@ Passive_60003_Desc	사거리와 범위가 줄어들지만 공격력이 크게 �
 Passive_60004_Name	범위 냉기	Wide Frost	範囲冷気	范围寒气
 Passive_60004_Desc	사거리와 범위가 넓어지고 공격력이 높아짐	Range, area, and attack power all increase.	射程と範囲が広がり、攻撃力も上昇する。	射程、范围和攻击力均提升。
 Passive_60005_Name	눈덩이	Snowball	スノーボール	雪球
-Passive_60005_Desc	3초마다 적에게 범위 피해를 주고 1초 동안 눈대이를 발사	Deals area damage every 3 seconds and fires snowballs for 1 second.	3秒ごとに敵に範囲ダメージを与え、1秒間雪球を発射する。	每3秒对敌人造成范围伤害并发射1秒雪球。
+Passive_60005_Desc	3초마다 적에게 범위 피해를 주고 1초 동안 눈덩이를 발사	Deals area damage every 3 seconds and fires snowballs for 1 second.	3秒ごとに敵に範囲ダメージを与え、1秒間雪球を発射する。	每3秒对敌人造成范围伤害并发射1秒雪球。
 Passive_60006_Name	후폭발	After Explosion	後爆発	后爆炸
 Passive_60006_Desc	공격 후 1초 뒤 동일 범위의 약한 폭발 생성 (데미지 50%, 넉백 30%)	Creates a weak explosion of same range 0.2s after attack. (50% dmg, 30% knockback)	攻撃後0.2秒後に同じ範囲の弱い爆発を生成する（ダメージ50%、ノックバック30%）。	攻击后0.2秒在相同范围内产生弱爆炸（50%伤害，30%击退）。
 Passive_60007_Name	강한 폭발	Powerful Explosion	強力爆発	强力爆炸
