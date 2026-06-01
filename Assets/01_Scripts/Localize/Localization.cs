@@ -15,6 +15,8 @@ namespace TrainDefense.Localize
         private static bool _isInitialized = false;
         private static SystemLanguage? _languageOverride = null;
 
+        private const string LanguagePrefKey = "localize_language";
+
         public static bool IsInitialized => _isInitialized;
         public static SystemLanguage? CurrentOverride => _languageOverride;
         public static SystemLanguage CurrentLanguage => _languageOverride ?? Application.systemLanguage;
@@ -25,12 +27,14 @@ namespace TrainDefense.Localize
         public static void SetLanguage(SystemLanguage language)
         {
             _languageOverride = language;
+            PlayerPrefs.SetInt(LanguagePrefKey, (int)language);
+            PlayerPrefs.Save();
             OnLanguageChanged?.Invoke();
         }
 
         public static void ClearLanguageOverride()
         {
-            _languageOverride = _setting?.defaultLanguage;
+            _languageOverride = null;
             OnLanguageChanged?.Invoke();
         }
 
@@ -63,7 +67,7 @@ namespace TrainDefense.Localize
                     ParseTSV(sheet.bakedTextAsset.text);
                 }
                 _isInitialized = true;
-                _languageOverride = _setting.defaultLanguage;
+                _LoadSavedLanguage();
                 Debug.Log("<color=green>[Localization] 로컬 데이터 초기화 완료</color>");
                 OnInitialized?.Invoke();
                 return;
@@ -91,7 +95,7 @@ namespace TrainDefense.Localize
                     ParseTSV(www.downloadHandler.text);
                 }
                 _isInitialized = true;
-                _languageOverride = _setting.defaultLanguage;
+                _LoadSavedLanguage();
                 Debug.Log("<color=green>[Localization] 런타임 다운로드 초기화 완료</color>");
                 OnInitialized?.Invoke();
             }
@@ -99,6 +103,12 @@ namespace TrainDefense.Localize
             {
                 Debug.LogException(e);
             }
+        }
+
+        private static void _LoadSavedLanguage()
+        {
+            if (PlayerPrefs.HasKey(LanguagePrefKey))
+                _languageOverride = (SystemLanguage)PlayerPrefs.GetInt(LanguagePrefKey);
         }
 
         private static void ParseTSV(string tsv)

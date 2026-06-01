@@ -2,6 +2,7 @@ using Cumic.Sequence;
 using TrainDefense.Game;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.UI;
+using TrainDefense.Localize;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -34,7 +35,30 @@ namespace TrainDefense
       [Header("인게임 전용 로비 버튼 (로비 씬에서는 자동 숨김)")]
       [SerializeField]
       private Transform lobbyButton;
+
+      [Header("언어 선택 버튼")]
+      [SerializeField]
+      private Button koreanButton;
+      [SerializeField]
+      private Button englishButton;
+      [SerializeField]
+      private Button japaneseButton;
+
+      [Header("탭")]
+      [SerializeField]
+      private Button soundTabButton;
+      [SerializeField]
+      private Button languageTabButton;
+      [SerializeField]
+      private GameObject soundPanel;
+      [SerializeField]
+      private GameObject languagePanel;
       #endregion
+
+      private static readonly Color _langSelectedColor = new Color(1f, 0.85f, 0.3f);
+      private static readonly Color _langNormalColor = Color.white;
+      private static readonly Color _tabSelectedColor = Color.white;
+      private static readonly Color _tabNormalColor = new Color(0.75f, 0.75f, 0.75f, 1f);
 
       // 로비 씬의 빌드 인덱스 (ChangeSceneButton.LobbySceneIndex와 동일)
       private const int LobbySceneBuildIndex = 1;
@@ -46,6 +70,8 @@ namespace TrainDefense
 
       private void OnEnable()
       {
+         _ShowTab(isSound: true);
+
          if (SoundManager.Instance == null) return;
 
          _SetBGMSliderValue(SoundManager.Instance.BGMVolume);
@@ -53,6 +79,7 @@ namespace TrainDefense
          _SetBGMMuteSprite();
          _SetSFXMuteSprite();
          _RefreshHapticToggle();
+         _RefreshLanguageButtons();
       }
 
       private void OnDestroy()
@@ -68,19 +95,30 @@ namespace TrainDefense
          sfxSlider.onValueChanged.AddListener(_ChangeSFXVolume);
 
          if (hapticToggle != null)
-         {
             hapticToggle.onValueChanged.AddListener(_OnHapticToggleChanged);
-         }
 
          if (deletePlayerPrefsButton != null)
-         {
             deletePlayerPrefsButton.onClick.AddListener(OnDeletePlayerPrefsClicked);
-         }
 
          if (resetConfirmPopup != null)
-         {
             resetConfirmPopup.OnConfirmed += _DeleteAllPlayerPrefs;
-         }
+
+         if (koreanButton != null)
+            koreanButton.onClick.AddListener(() => _OnLanguageButtonClick(SystemLanguage.Korean));
+
+         if (englishButton != null)
+            englishButton.onClick.AddListener(() => _OnLanguageButtonClick(SystemLanguage.English));
+
+         if (japaneseButton != null)
+            japaneseButton.onClick.AddListener(() => _OnLanguageButtonClick(SystemLanguage.Japanese));
+
+         if (soundTabButton != null)
+            soundTabButton.onClick.AddListener(() => _ShowTab(isSound: true));
+
+         if (languageTabButton != null)
+            languageTabButton.onClick.AddListener(() => _ShowTab(isSound: false));
+
+         Localization.OnLanguageChanged += _RefreshLanguageButtons;
       }
 
       private void _UnSubscribeListeners()
@@ -91,19 +129,30 @@ namespace TrainDefense
          sfxSlider.onValueChanged.RemoveAllListeners();
 
          if (hapticToggle != null)
-         {
             hapticToggle.onValueChanged.RemoveListener(_OnHapticToggleChanged);
-         }
 
          if (deletePlayerPrefsButton != null)
-         {
             deletePlayerPrefsButton.onClick.RemoveAllListeners();
-         }
 
          if (resetConfirmPopup != null)
-         {
             resetConfirmPopup.OnConfirmed -= _DeleteAllPlayerPrefs;
-         }
+
+         if (koreanButton != null)
+            koreanButton.onClick.RemoveAllListeners();
+
+         if (englishButton != null)
+            englishButton.onClick.RemoveAllListeners();
+
+         if (japaneseButton != null)
+            japaneseButton.onClick.RemoveAllListeners();
+
+         if (soundTabButton != null)
+            soundTabButton.onClick.RemoveAllListeners();
+
+         if (languageTabButton != null)
+            languageTabButton.onClick.RemoveAllListeners();
+
+         Localization.OnLanguageChanged -= _RefreshLanguageButtons;
       }
 
       public void OnDeletePlayerPrefsClicked()
@@ -214,6 +263,41 @@ namespace TrainDefense
          UserDataManager.Instance.TutorialSaveData.ResetAll();
 
          Debug.Log("[OptionUI] PlayerPrefs 전체 삭제 완료");
+      }
+
+      private void _ShowTab(bool isSound)
+      {
+         if (soundPanel != null)
+            soundPanel.SetActive(isSound);
+
+         if (languagePanel != null)
+            languagePanel.SetActive(!isSound);
+
+         if (soundTabButton != null)
+            soundTabButton.image.color = isSound ? _tabSelectedColor : _tabNormalColor;
+
+         if (languageTabButton != null)
+            languageTabButton.image.color = isSound ? _tabNormalColor : _tabSelectedColor;
+      }
+
+      private void _OnLanguageButtonClick(SystemLanguage language)
+      {
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+         Localization.SetLanguage(language);
+      }
+
+      private void _RefreshLanguageButtons()
+      {
+         SystemLanguage current = Localization.CurrentLanguage;
+
+         if (koreanButton != null)
+            koreanButton.image.color = current == SystemLanguage.Korean ? _langSelectedColor : _langNormalColor;
+
+         if (englishButton != null)
+            englishButton.image.color = current == SystemLanguage.English ? _langSelectedColor : _langNormalColor;
+
+         if (japaneseButton != null)
+            japaneseButton.image.color = current == SystemLanguage.Japanese ? _langSelectedColor : _langNormalColor;
       }
 
       private void _RefreshHapticToggle()
