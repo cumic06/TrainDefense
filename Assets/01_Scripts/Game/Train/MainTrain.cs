@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
+using DG.Tweening;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using Cumic.Events;
@@ -504,6 +505,29 @@ namespace TrainDefense.Game
 
          if (totalAppliedCount > 0)
          {
+         }
+      }
+
+      public void SlideIn(float fromOffsetX, float delay, float duration)
+      {
+         foreach (var train in _currentAliveTrains)
+         {
+            float targetX = train.transform.localPosition.x;
+            train.transform.localPosition += new Vector3(fromOffsetX, 0f, 0f);
+            train.transform.DOLocalMoveX(targetX, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InOutSine)
+               .SetUpdate(true);
+         }
+
+         if (trainModel != null)
+         {
+            float targetX = trainModel.localPosition.x;
+            trainModel.localPosition += new Vector3(fromOffsetX, 0f, 0f);
+            trainModel.DOLocalMoveX(targetX, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InOutSine)
+               .SetUpdate(true);
          }
       }
 

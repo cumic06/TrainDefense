@@ -165,6 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.TimelineManager
   dontDestroyOnLoad: 0
   playableDirector: {fileID: 1580891175}
+  mapChangeDirector: {fileID: 1580891300}
   startTimelineOnAwake: 1
 --- !u!1 &47782937
 GameObject:
@@ -13348,6 +13349,7 @@ GameObject:
   - component: {fileID: 1580891172}
   - component: {fileID: 1580891175}
   - component: {fileID: 1580891174}
+  - component: {fileID: 1580891300}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -13509,6 +13511,25 @@ PlayableDirector:
     value: {fileID: 901976899}
   - key: {fileID: 4930466103270811995, guid: 0e80fe9dd40a3bc41a6631952c288492, type: 2}
     value: {fileID: 1035467651}
+  m_ExposedReferences:
+    m_References: []
+--- !u!320 &1580891300
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580891168}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: e2bc31621c30157409d35bad670eb51e, type: 2}
+  m_InitialState: 0
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 2
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: 4115703417677780799, guid: e2bc31621c30157409d35bad670eb51e, type: 2}
+    value: {fileID: 1580891174}
   m_ExposedReferences:
     m_References: []
 --- !u!224 &1643387769 stripped

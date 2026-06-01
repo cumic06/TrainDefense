@@ -19,6 +19,9 @@ namespace TrainDefense.Game.Manager
 
             if (Input.GetKeyDown(KeyCode.F))
                 GameEventSystem.Publish(new LevelUpEvent(1));
+
+            if (Input.GetKeyDown(KeyCode.M))
+                StageManager.Instance?.ForceMapSelection();
         }
 
         private void _AddMaxCoin()

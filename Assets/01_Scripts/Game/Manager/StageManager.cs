@@ -5,6 +5,7 @@ using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
+using TrainDefense;
 
 namespace TrainDefense.Game.Manager
 {
@@ -309,7 +310,11 @@ namespace TrainDefense.Game.Manager
 
             _currentStageIndex = index;
             _ResetCurrentStageInfo();
-            GameEventSystem.Publish(new EngageStartEvent());
+
+            if (TimelineManager.Instance != null)
+                TimelineManager.Instance.StartTimeline(isMapChange: true, () => GameEventSystem.Publish(new EngageStartEvent()));
+            else
+                GameEventSystem.Publish(new EngageStartEvent());
         }
 
         private bool _ShowStageSelection()
@@ -335,6 +340,8 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Publish(new RandomStageOptionsEvent(candidates[0], candidates[1]));
             return true;
         }
+
+        public void ForceMapSelection() => _TransitionToStageSelection();
 
         private void _TransitionToStageSelection()
         {
