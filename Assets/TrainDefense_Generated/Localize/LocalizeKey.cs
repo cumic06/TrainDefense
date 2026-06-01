@@ -204,5 +204,15 @@ namespace TrainDefense.Localize
         Stat_AttackSpeed = 189,
         Stat_AttackRange = 190,
         Stat_AttackArea = 191,
+        Detail_HP = 192,
+        Detail_Damage = 193,
+        Detail_Speed = 194,
+        Detail_Range = 195,
+        Detail_Area = 196,
+        Detail_Targets = 197,
+        Detail_CritChance = 198,
+        Detail_CritDamage = 199,
+        skill_type_active = 200,
+        skill_type_passive = 201,
     }
 }
