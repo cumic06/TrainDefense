@@ -28,7 +28,13 @@ namespace Cumic.Checker
         private async UniTask CheckVersion()
         {
             // 개발(Development) 빌드 또는 에디터에서는 테스트 버전 파일을 확인한다.
-            string checkUrl = Debug.isDebugBuild ? _testVersionCheckUrl : _versionCheckUrl;
+            bool isTestChannel = Debug.isDebugBuild;
+            string checkUrl = isTestChannel ? _testVersionCheckUrl : _versionCheckUrl;
+
+            // 정식 릴리즈 빌드(isDebugBuild=false)에서는 로그를 남기지 않는다.
+            if (Debug.isDebugBuild)
+                Debug.Log($"[Version] {(isTestChannel ? "테스트" : "정식")} 채널 / 확인 URL: {checkUrl}");
+
             UnityWebRequest www = UnityWebRequest.Get(checkUrl);
 
             await www.SendWebRequest();
@@ -38,10 +44,8 @@ namespace Cumic.Checker
                 string latestVersion = www.downloadHandler.text.Trim();
                 string currentVersion = Application.version;
 
-#if UNITY_EDITOR
-                Debug.Log($"latestVersion {latestVersion}");
-                Debug.Log($"currentVersion {currentVersion}");
-#endif
+                if (Debug.isDebugBuild)
+                    Debug.Log($"[Version] 최신:{latestVersion} / 현재:{currentVersion}");
 
                 if (latestVersion != currentVersion && updatePopup != null)
                 {
@@ -50,9 +54,8 @@ namespace Cumic.Checker
             }
             else
             {
-#if UNITY_EDITOR
-                Debug.LogWarning("버전 확인 실패: " + www.error);
-#endif
+                if (Debug.isDebugBuild)
+                    Debug.LogWarning("[Version] 버전 확인 실패: " + www.error);
             }
         }
 
