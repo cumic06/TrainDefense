@@ -45,6 +45,8 @@ namespace TrainDefense.Localize
         Intro_Slide3 = 34,
         Intro_Slide4 = 35,
         Intro_Slide5 = 36,
+        Intro_Speaker_Narrator = 202,
+        Intro_Speaker_Engineer = 203,
         // Monster
         Monster_10001_Name = 37,
         Monster_10001_Desc = 38,

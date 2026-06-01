@@ -37,3 +37,5 @@ Intro_Slide4	기차를 타고 달리며 상점을 돌아다닌다.\n무기를 �
 Intro_Slide5	몬스터들은 끝없이 몰려온다.\n<wave>기차를 지켜라.</wave> 포기하지 않는 한, 우리는 살아남을 수 있다.	The monsters come endlessly.\n<wave>Protect the train.</wave> As long as we don't give up, we can survive.	モンスターたちは絶えず押し寄せてくる。\n<wave>列車を守れ。</wave>諦めない限り、私たちは生き残れる。	怪物们无穷无尽地涌来。\n<wave>保护火车。</wave>只要不放弃，我们就能活下去。
 skill_type_active	액티브	Active	アクティブ	主动
 skill_type_passive	패시브	Passive	パッシブ	被动
+Intro_Speaker_Narrator	나레이터	Narrator	ナレーター	旁白
+Intro_Speaker_Engineer	기관사	Engineer	機関士	机械师
