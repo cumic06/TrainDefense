@@ -10891,8 +10891,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 5}
+  m_SizeDelta: {x: -80, y: -50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &510185188
 MonoBehaviour:
@@ -10941,15 +10941,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -13001,6 +13001,9 @@ MonoBehaviour:
   levelUpText: {fileID: 505118154}
   cardAppearDelay: 0.15
   rerollButton: {fileID: 2011001730}
+  rerollLabelText: {fileID: 0}
+  rerollInsufficientColor: {r: 1, g: 0, b: 0, a: 1}
+  rerollCostFontScale: 0.75
   pauseButton: {fileID: 2966101615171800430}
 --- !u!1 &1458731571
 GameObject:
@@ -13953,6 +13956,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.TriChoiceManager
   dontDestroyOnLoad: 0
+  baseRerollCost: 50
+  rerollCostMultiplier: 2
   upgradeProb: 2
   addProb: 2
 --- !u!1 &1873479375
