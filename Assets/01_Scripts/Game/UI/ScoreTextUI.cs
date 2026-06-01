@@ -1,42 +1,51 @@
-using Cumic;
 using Cumic.Events;
-using DG.Tweening;
 using TMPro;
 using TrainDefense.Game.Events;
 using UnityEngine;
 
 namespace TrainDefense
 {
+    // 인게임 HUD에 누적 처치 수(일반 + 엘리트)를 표시한다. (이전: 스코어 표시 → 처치 수 표시로 변경)
     public class ScoreTextUI : MonoBehaviour
     {
       #region Field
       [SerializeField]
       private TextMeshProUGUI scoreText;
-      [SerializeField]
-      private float tweenDuration = 1f;
       #endregion
 
+      #region LifeCycle
       private void Start()
       {
-         GameEventSystem.Subscribe<ChangeScoreUIEvent>(OnChangeScore);
-         Setup();
+         _SubscribeEvents();
+         _Setup();
       }
 
       private void OnDestroy()
       {
-         GameEventSystem.Unsubscribe<ChangeScoreUIEvent>(OnChangeScore);
+         _UnsubscribeEvents();
+      }
+      #endregion
+
+      #region Sub/UnSub
+      private void _SubscribeEvents()
+      {
+         GameEventSystem.Subscribe<ChangeKillCountUIEvent>(_OnChangeKillCount);
       }
 
-      private void Setup()
+      private void _UnsubscribeEvents()
       {
-         scoreText.text = $"0";
+         GameEventSystem.Unsubscribe<ChangeKillCountUIEvent>(_OnChangeKillCount);
+      }
+      #endregion
+
+      private void _Setup()
+      {
+         scoreText.text = "0";
       }
 
-      private void OnChangeScore(ChangeScoreUIEvent changeScoreEvent)
+      private void _OnChangeKillCount(ChangeKillCountUIEvent changeKillCountEvent)
       {
-         DOTween.To(() => changeScoreEvent.BeforeScore, x => scoreText.text = x.ToCommaString(), changeScoreEvent.AfterScore, tweenDuration)
-         .SetEase(Ease.InOutSine)
-         .SetUpdate(true);
+         scoreText.text = changeKillCountEvent.KillCount.ToString();
       }
    }
 }
