@@ -902,7 +902,8 @@ namespace TrainDefense.Game
                         if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                         {
                             float ratio = _currentTurretTrainStatus.AttackArea / turretTrainData.TurretTrainStatus.AttackArea;
-                            foreach (var p in _nonMovementProjectiles) { if (p != null) p.transform.localScale = new Vector3(ratio, ratio, 1f); }
+                            // ScaleByArea(빔 등)는 Projectile.StretchBeamModel이 크기를 전담 → root 스케일 제외(이중 스케일 방지).
+                            foreach (var p in _nonMovementProjectiles) { if (p != null && !p.IsScaleByArea()) p.transform.localScale = new Vector3(ratio, ratio, 1f); }
                         }
                         break;
                     case StatType.AttackDamage:
@@ -939,8 +940,9 @@ namespace TrainDefense.Game
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
                         float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
+                        // ScaleByArea(빔 등)는 Projectile.StretchBeamModel이 크기를 전담 → root 스케일 제외(이중 스케일 방지).
                         foreach (var projectile in _nonMovementProjectiles)
-                            if (projectile != null) projectile.transform.localScale = new Vector3(ratio, ratio, 1f);
+                            if (projectile != null && !projectile.IsScaleByArea()) projectile.transform.localScale = new Vector3(ratio, ratio, 1f);
                     }
                     break;
 
@@ -1015,8 +1017,9 @@ namespace TrainDefense.Game
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
                         float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
+                        // ScaleByArea(빔 등)는 Projectile.StretchBeamModel이 크기를 전담 → root 스케일 제외(이중 스케일 방지).
                         foreach (var p in _nonMovementProjectiles)
-                            if (p != null) p.transform.localScale = new Vector3(ratio, ratio, 1f);
+                            if (p != null && !p.IsScaleByArea()) p.transform.localScale = new Vector3(ratio, ratio, 1f);
                     }
                     break;
 
