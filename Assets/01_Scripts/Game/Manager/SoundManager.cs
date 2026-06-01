@@ -1,7 +1,9 @@
 using Cumic;
 using Cumic.Events;
+using DG.Tweening;
 using System.Collections.Generic;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -38,6 +40,12 @@ namespace TrainDefense.Game
         [SerializeField]
         private SfxDuplicatePolicy sfxDuplicatePolicy = SfxDuplicatePolicy.RestartExisting;
 
+        [Header("BGM Muffle (GameOver)")]
+        [SerializeField]
+        private float muffleCutoff = 1400f;
+        [SerializeField]
+        private float muffleTweenDuration = 0.6f;
+
         public float BGMVolume => bgmVolume;
         public float SFXVolume => sfxVolume;
         #endregion
@@ -56,6 +64,10 @@ namespace TrainDefense.Game
         private readonly HashSet<AudioSource> _suppressImmuneSources = new();
         private SoundDB _soundDB;
         private float _currentBgmBaseVolume = 1f;
+
+        private const float _normalCutoff = 22000f;
+        private AudioLowPassFilter _bgmLowPass;
+        private Tween _bgmMuffleTween;
 
         private SoundDB _GetSoundDB()
         {
@@ -94,7 +106,37 @@ namespace TrainDefense.Game
             }
 
             LoadOptions();
+            _SubscribeEvents();
         }
+
+        private void OnDestroy()
+        {
+            _UnsubscribeEvents();
+        }
+
+        #region Sub/UnSub
+        private void _SubscribeEvents()
+        {
+            GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOverStart);
+            GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
+        }
+
+        private void _UnsubscribeEvents()
+        {
+            GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOverStart);
+            GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
+        }
+
+        private void _OnGameOverStart(GameOverStartEvent gameOverStartEvent)
+        {
+            MuffleBGM(gameOverStartEvent.Duration);
+        }
+
+        private void _OnGameEnter(GameEnterEvent gameEnterEvent)
+        {
+            ClearBGMMuffle();
+        }
+        #endregion
 
         private void LoadOptions()
         {
@@ -174,6 +216,9 @@ namespace TrainDefense.Game
             bgmSoundSource.loop = true;
             bgmSoundSource.mute = IsBgmMuted;
             bgmSoundSource.Play();
+
+            // 새 BGM은 항상 뭉갬 상태를 해제하고 시작 (재시도/스테이지 전환 시 복원)
+            ClearBGMMuffle();
         }
 
         public void StopBGM()
@@ -228,6 +273,59 @@ namespace TrainDefense.Game
                 bgmSoundSource.mute = IsBgmMuted;
             }
             SaveOptions();
+        }
+
+        // GameOver 등에서 BGM을 LowPass로 먹먹하게(뭉개지게) 만든다. cutoff를 낮출수록 더 뭉개짐.
+        public void MuffleBGM(float duration)
+        {
+            if (bgmSoundSource == null)
+                return;
+
+            var lowPass = _EnsureBgmLowPass();
+            if (lowPass == null)
+                return;
+
+            _bgmMuffleTween?.Kill();
+
+            float tweenDuration = duration > 0f ? duration : muffleTweenDuration;
+            _bgmMuffleTween = DOTween.To(() => lowPass.cutoffFrequency, x => lowPass.cutoffFrequency = x, muffleCutoff, tweenDuration)
+                .SetEase(Ease.OutCubic)
+                .SetUpdate(true);
+        }
+
+        // BGM 뭉갬 상태 해제 (cutoff를 전대역으로 복원). duration<=0이면 즉시.
+        public void ClearBGMMuffle(float duration = 0f)
+        {
+            _bgmMuffleTween?.Kill();
+
+            if (_bgmLowPass == null)
+                return;
+
+            if (duration <= 0f)
+            {
+                _bgmLowPass.cutoffFrequency = _normalCutoff;
+
+                return;
+            }
+
+            _bgmMuffleTween = DOTween.To(() => _bgmLowPass.cutoffFrequency, x => _bgmLowPass.cutoffFrequency = x, _normalCutoff, duration)
+                .SetEase(Ease.OutCubic)
+                .SetUpdate(true);
+        }
+
+        private AudioLowPassFilter _EnsureBgmLowPass()
+        {
+            if (_bgmLowPass == null && bgmSoundSource != null)
+            {
+                _bgmLowPass = bgmSoundSource.GetComponent<AudioLowPassFilter>();
+                if (_bgmLowPass == null)
+                    _bgmLowPass = bgmSoundSource.gameObject.AddComponent<AudioLowPassFilter>();
+
+                // 부착 직후 기본 cutoff(약 5kHz)로 인해 미리 뭉개지지 않도록 전대역으로 초기화
+                _bgmLowPass.cutoffFrequency = _normalCutoff;
+            }
+
+            return _bgmLowPass;
         }
 
         #endregion
