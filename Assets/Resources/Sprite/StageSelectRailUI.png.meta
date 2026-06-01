@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 04945ac2f133be0409954b79535eeccc
+guid: b3d1a3b7be5a9154d812291191cb0359
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5650735418242191510
-    second: image-Photoroom (4)_0
+      213: -5344181872892445804
+    second: StageSelectRailUI 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6905b0c8ce17b6e40800000000000000
-      internalID: 5650735418242191510
+      spriteID: 49bf92bb6e6a5d5b0800000000000000
+      internalID: -5344181872892445804
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 049edf9d652b1834c8a01fcb051fed83
+    spriteID: a63788f30c8f50e4490c8b2537b88d72
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      StageSelectRailUI: 5650735418242191510
+      StageSelectRailUI: -5344181872892445804
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
