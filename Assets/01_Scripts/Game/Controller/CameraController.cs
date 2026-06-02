@@ -53,11 +53,13 @@ namespace TrainDefense.Game.Controller
         private void _SubscribeEvents()
         {
             GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOverStart);
+            GameEventSystem.Subscribe<CameraShakeEvent>(_OnCameraShake);
         }
 
         private void _UnsubscribeEvents()
         {
             GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOverStart);
+            GameEventSystem.Unsubscribe<CameraShakeEvent>(_OnCameraShake);
         }
         #endregion
 
@@ -91,6 +93,11 @@ namespace TrainDefense.Game.Controller
                 orthoSize,
                 duration
             ).SetEase(Ease.InOutSine).SetUpdate(true);
+        }
+
+        private void _OnCameraShake(CameraShakeEvent e)
+        {
+            ShakeCamera(e.Intensity, e.Duration);
         }
 
         private void _OnGameOverStart(GameOverStartEvent e)

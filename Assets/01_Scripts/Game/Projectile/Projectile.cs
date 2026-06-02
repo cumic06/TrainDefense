@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cumic;
+using Cumic.Events;
+using TrainDefense.Game.Events;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -423,6 +425,9 @@ namespace TrainDefense.Game
 
         public void ReturnToPool()
         {
+            if (data.ShakeOnDestroy)
+                GameEventSystem.Publish(new CameraShakeEvent(data.ShakeIntensity, data.ShakeDuration));
+
             TrySpawnTriggerHandle();
             ResourceManager.Instance.Destroy(gameObject);
         }

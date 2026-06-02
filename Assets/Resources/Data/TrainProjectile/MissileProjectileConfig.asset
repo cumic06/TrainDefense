@@ -34,3 +34,6 @@ MonoBehaviour:
   pierce: 0
   maxPenetration: 1
   spreadAngle: 15
+  shakeOnDestroy: 1
+  shakeIntensity: 0.8
+  shakeDuration: 0.2

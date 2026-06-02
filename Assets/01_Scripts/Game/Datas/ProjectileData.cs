@@ -112,6 +112,20 @@ namespace TrainDefense.Game
         [Min(0f)]
         private float spreadAngle = 0f;
 
+        [BoxGroup("Camera Shake")]
+        [SerializeField]
+        private bool shakeOnDestroy = false;
+
+        [BoxGroup("Camera Shake")]
+        [ShowIf("shakeOnDestroy")]
+        [SerializeField]
+        private float shakeIntensity = 0.5f;
+
+        [BoxGroup("Camera Shake")]
+        [ShowIf("shakeOnDestroy")]
+        [SerializeField]
+        private float shakeDuration = 0.2f;
+
         #region Properties
 
         public bool DirectDamage => directDamage;
@@ -136,6 +150,9 @@ namespace TrainDefense.Game
         public bool Pierce => pierce;
         public int MaxPenetration => maxPenetration;
         public float SpreadAngle => spreadAngle;
+        public bool ShakeOnDestroy => shakeOnDestroy;
+        public float ShakeIntensity => shakeIntensity;
+        public float ShakeDuration => shakeDuration;
 
         #endregion
     }

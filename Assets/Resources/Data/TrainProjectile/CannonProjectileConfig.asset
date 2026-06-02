@@ -35,3 +35,6 @@ MonoBehaviour:
   warningPrefab: {fileID: 1478840698368329111, guid: 1801ab89b587696458f689d6123a298f, type: 3}
   warningDelaySeconds: 0.5
   isScaleByAttackRange: 0
+  shakeOnDestroy: 1
+  shakeIntensity: 0.8
+  shakeDuration: 0.2
