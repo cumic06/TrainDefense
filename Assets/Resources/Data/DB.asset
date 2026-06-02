@@ -1000,8 +1000,8 @@ MonoBehaviour:
       name: Passive_60013_Name
       passiveType: StatModifier
       param1: AttackInterval
-      param2: -30
-      param3: 
+      param2: -20
+      param3:
       description: Passive_60013_Desc
     - id: 60014
       name: Passive_60014_Name
