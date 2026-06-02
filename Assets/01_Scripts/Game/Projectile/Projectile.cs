@@ -462,6 +462,10 @@ namespace TrainDefense.Game
         private IEnumerator DestroyCoroutine()
         {
             yield return new WaitForSeconds(data.DestroyDelay);
+
+            if (this == null)
+                yield break;
+
             ReturnToPool();
         }
     }

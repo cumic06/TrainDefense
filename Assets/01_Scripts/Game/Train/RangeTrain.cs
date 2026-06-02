@@ -46,6 +46,7 @@ namespace TrainDefense.Game
             PlayLoopSFX();
 
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Subscribe<EngageReadyEvent>(_OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(_OnEngageStart);
         }
 
@@ -53,6 +54,7 @@ namespace TrainDefense.Game
         {
             base.OnDestroy();
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Unsubscribe<EngageReadyEvent>(_OnEngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(_OnEngageStart);
 
             StopLoopSFX();
@@ -60,9 +62,21 @@ namespace TrainDefense.Game
 
         private void _OnInspectionStart(InspectionStartEvent _) => StopLoopSFX();
 
+        private void _OnEngageReady(EngageReadyEvent _)
+        {
+            if (_rangeProjectilePrefab == null) return;
+
+            ResourceManager.Instance.Destroy(_rangeProjectilePrefab.gameObject);
+            _rangeProjectilePrefab = null;
+        }
+
         private void _OnEngageStart(EngageStartEvent _)
         {
             if (_isDead) return;
+
+            if (_rangeProjectilePrefab == null)
+                SpawnRangeProjectile();
+
             PlayLoopSFX();
         }
 

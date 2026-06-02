@@ -59,10 +59,19 @@ public class ResourceManager : MonoBehaviour
         }
 
         GameObject result;
-        if (_pools[key].Count > 0)
+        GameObject popObject = null;
+        while (_pools[key].Count > 0)
         {
-            GameObject popObject = _pools[key].Pop();
+            var candidate = _pools[key].Pop();
+            if (candidate != null)
+            {
+                popObject = candidate;
+                break;
+            }
+        }
 
+        if (popObject != null)
+        {
             popObject.SetActive(true);
             popObject.transform.SetPositionAndRotation(position, rotation);
 

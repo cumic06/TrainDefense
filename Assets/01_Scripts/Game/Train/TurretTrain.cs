@@ -65,11 +65,13 @@ namespace TrainDefense.Game
         {
             base.OnEnable();
             GameEventSystem.Subscribe<EngageReadyEvent>(_OnEngageReady);
+            GameEventSystem.Subscribe<EngageStartEvent>(_OnEngageStart);
         }
 
         private void OnDisable()
         {
             GameEventSystem.Unsubscribe<EngageReadyEvent>(_OnEngageReady);
+            GameEventSystem.Unsubscribe<EngageStartEvent>(_OnEngageStart);
         }
         #endregion
 
@@ -78,9 +80,18 @@ namespace TrainDefense.Game
         {
             foreach (var proj in _nonMovementProjectiles)
             {
-                if (proj != null && proj.gameObject.activeSelf)
-                    proj.gameObject.SetActive(false);
+                if (proj != null)
+                    ResourceManager.Instance.Destroy(proj.gameObject);
             }
+
+            _nonMovementProjectiles.Clear();
+        }
+
+        private void _OnEngageStart(EngageStartEvent _)
+        {
+            if (!_useNonMovementProjectilePooling) return;
+
+            PreCreateNonMovementProjectiles();
         }
         #endregion
 
