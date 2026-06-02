@@ -31,5 +31,5 @@ MonoBehaviour:
   isWarningProjectile: 0
   warningObject: {fileID: 0}
   shakeOnDestroy: 1
-  shakeIntensity: 0.8
+  shakeIntensity: 1.5
   shakeDuration: 0.2
