@@ -111,7 +111,7 @@ namespace TrainDefense.Game.Controller
         private IEnumerator _ShakeCor(float intensity, float duration)
         {
             _noiseComp.AmplitudeGain = intensity;
-            _noiseComp.FrequencyGain = duration;
+            _noiseComp.FrequencyGain = 2f;
             yield return new WaitForSeconds(duration);
             _noiseComp.AmplitudeGain = 0;
             _noiseComp.FrequencyGain = 0;
