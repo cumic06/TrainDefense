@@ -984,10 +984,10 @@ MonoBehaviour:
       description: Passive_60010_Desc
     - id: 60011
       name: Passive_60011_Name
-      passiveType: RepeatAfterAttack
-      param1: 0.2
-      param2: 3
-      param3: 
+      passiveType: RepeatAfterAttack:0.2:3|StatModifier:AttackInterval:40
+      param1:
+      param2:
+      param3:
       description: Passive_60011_Desc
     - id: 60012
       name: Passive_60012_Name
