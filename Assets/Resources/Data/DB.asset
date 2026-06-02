@@ -88,7 +88,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 35
       Damage: 10
-      MoveSpeed: 3
+      MoveSpeed: 3.4
       AttackDelay: 3
       DropExpMin: 60
       DropExpMax: 60
@@ -105,7 +105,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 120
       Damage: 15
-      MoveSpeed: 2.2
+      MoveSpeed: 2.8
       AttackDelay: 3
       DropExpMin: 140
       DropExpMax: 140
@@ -275,7 +275,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 220
       Damage: 20
-      MoveSpeed: 2.5
+      MoveSpeed: 3
       AttackDelay: 4
       DropExpMin: 155
       DropExpMax: 155
@@ -985,9 +985,9 @@ MonoBehaviour:
     - id: 60011
       name: Passive_60011_Name
       passiveType: RepeatAfterAttack:0.2:3|StatModifier:AttackInterval:40
-      param1:
-      param2:
-      param3:
+      param1: 
+      param2: 
+      param3: 
       description: Passive_60011_Desc
     - id: 60012
       name: Passive_60012_Name
@@ -1001,7 +1001,7 @@ MonoBehaviour:
       passiveType: StatModifier
       param1: AttackInterval
       param2: -20
-      param3:
+      param3: 
       description: Passive_60013_Desc
     - id: 60014
       name: Passive_60014_Name
