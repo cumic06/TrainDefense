@@ -11442,10 +11442,10 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 876208110}
-  - {fileID: 693134064}
   - {fileID: 1016891130}
   - {fileID: 599216987}
   - {fileID: 936510629}
+  - {fileID: 693134064}
   m_Father: {fileID: 4110951644542846594}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -11554,7 +11554,6 @@ GameObject:
   - component: {fileID: 693134064}
   - component: {fileID: 693134066}
   - component: {fileID: 693134065}
-  - component: {fileID: 693134067}
   m_Layer: 5
   m_Name: Train
   m_TagString: Untagged
@@ -11619,28 +11618,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 693134063}
   m_CullTransparentMesh: 1
---- !u!95 &693134067
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 693134063}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a0c40a32f3de61940b75cfc503806ab1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &728755616
 GameObject:
   m_ObjectHideFlags: 0
