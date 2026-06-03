@@ -103,7 +103,7 @@ MonoBehaviour:
     description: Monster_10006_Desc
     icon: {fileID: 6240235003232040363, guid: 02a56956d819644e9ba1f5230f17be41, type: 3}
     monsterStatusData:
-      MaxHp: 120
+      MaxHp: 170
       Damage: 15
       MoveSpeed: 2.8
       AttackDelay: 3
@@ -190,7 +190,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 10
       Damage: 5
-      MoveSpeed: 7
+      MoveSpeed: 6.5
       AttackDelay: 0.8
       DropExpMin: 11
       DropExpMax: 11
