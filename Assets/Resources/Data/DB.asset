@@ -929,9 +929,9 @@ MonoBehaviour:
     - id: 60003
       name: Passive_60003_Name
       passiveType: StatModifier
-      param1: AttackRange
+      param1: AttackArea
       param2: -30
-      param3: AttackArea:-30:AttackDamage:150
+      param3: AttackDamage:150
       description: Passive_60003_Desc
     - id: 60004
       name: Passive_60004_Name
