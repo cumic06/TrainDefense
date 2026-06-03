@@ -310,6 +310,7 @@ namespace TrainDefense.Game.Manager
 
             _currentStageIndex = index;
             _ResetCurrentStageInfo();
+            MonsterSpawner.Instance?.StartSpawnMonster();
 
             if (TimelineManager.Instance != null)
                 TimelineManager.Instance.StartTimeline(isMapChange: true, () => GameEventSystem.Publish(new EngageStartEvent()));
@@ -345,6 +346,7 @@ namespace TrainDefense.Game.Manager
 
         private void _TransitionToStageSelection()
         {
+            MonsterSpawner.Instance?.StopSpawnMonster();
             MonsterSpawner.Instance?.DestroyAllMonsters();
             ResourceManager.Instance.ReturnAll();
             GameEventSystem.Publish(new EngageReadyEvent());
