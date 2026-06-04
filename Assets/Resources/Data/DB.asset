@@ -532,7 +532,7 @@ MonoBehaviour:
     name: Train_31002_Name
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
-    damageType: 0
+    damageType: 1
     attackSoundType: 302
     description: 
     trainStatusData:
