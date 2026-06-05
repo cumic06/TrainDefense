@@ -734,8 +734,8 @@ MonoBehaviour:
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
-  - id: 42001
-    name: Train_42001_Name
+  - id: 41001
+    name: Train_41001_Name
     iconId: 
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
@@ -760,12 +760,12 @@ MonoBehaviour:
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
-  - id: 42002
-    name: Train_42002_Name
+  - id: 41002
+    name: Train_41002_Name
     iconId: 
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
-    damageType: 0
-    attackSoundType: 0
+    damageType: 1
+    attackSoundType: 309
     description: 
     trainStatusData:
       MaxHp: 250
@@ -2022,13 +2022,13 @@ MonoBehaviour:
       data:
         id: NotNow71008
         baseTrainId: 40001
-        eliteTrainDataId: 42001
+        eliteTrainDataId: 41001
     - rid: 3319472431904325761
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71009
         baseTrainId: 40002
-        eliteTrainDataId: 42002
+        eliteTrainDataId: 41002
     - rid: 3319472431904325762
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -2110,22 +2110,22 @@ MonoBehaviour:
       data:
         id: 62001
         baseTrainId: 40001
-        eliteTrainDataId: 42001
+        eliteTrainDataId: 41001
     - rid: 6103417219460104308
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62001a
         baseTrainId: 40001
-        eliteTrainDataId: 42001
+        eliteTrainDataId: 41001
     - rid: 6103417219460104309
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62002
         baseTrainId: 40002
-        eliteTrainDataId: 42002
+        eliteTrainDataId: 41002
     - rid: 6103417219460104310
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62002a
         baseTrainId: 40002
-        eliteTrainDataId: 42002
+        eliteTrainDataId: 41002
