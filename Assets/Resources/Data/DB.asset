@@ -1853,6 +1853,9 @@ MonoBehaviour:
     spawnInterval: 40
     spawnMaxChance: 15
     chanceGrowthPerInterval: 1
+    multiplierRampInterval: 60
+    multiplierGrowthPerInterval: 0.1
+    multiplierStartProgress: 0
     hpMultiplier: 5
     damageMultiplier: 2
     moveSpeedMultiplier: 1.2

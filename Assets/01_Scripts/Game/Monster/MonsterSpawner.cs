@@ -62,6 +62,10 @@ namespace TrainDefense.Game
       [ShowInInspector]
       private float _currentEliteSpawnChance;
       private float _eliteRampElapsed;
+      // 엘리트 배율 진행도(0~1). 한 판 동안 누적 증가하며 각 몬스터의 EliteChanceMultiplier에 곱해진다.
+      [ShowInInspector]
+      private float _currentEliteMultiplierProgress;
+      private float _eliteMultiplierRampElapsed;
 
       #region UnityLifeCycle
       private void Start()
@@ -90,6 +94,8 @@ namespace TrainDefense.Game
          _eliteData = DatabaseManager.Instance.GetEliteData();
          _currentEliteSpawnChance = 0f;
          _eliteRampElapsed = 0f;
+         _currentEliteMultiplierProgress = _eliteData != null ? Mathf.Clamp01(_eliteData.multiplierStartProgress) : 1f;
+         _eliteMultiplierRampElapsed = 0f;
          _stationPassedCount = 0;
          StartCoroutine(SpawnMonster());
       }
@@ -186,6 +192,7 @@ namespace TrainDefense.Game
             WaitForSeconds spawnWait = new(spawnInterval);
 
             UpdateEliteChance(spawnInterval);
+            UpdateEliteMultiplierProgress(spawnInterval);
 
             if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
             {
@@ -211,7 +218,9 @@ namespace TrainDefense.Game
                   Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
                   spawnMonster.Initialize(monsterData);
 
-                  float eliteChance = _currentEliteSpawnChance * selectedData.EliteChanceMultiplier;
+                  // 몬스터별 목표 배율 × 한 판 누적 진행도 → 초반엔 낮고 후반으로 갈수록 설정 배율까지 증가
+                  float eliteMultiplier = selectedData.EliteChanceMultiplier * _currentEliteMultiplierProgress;
+                  float eliteChance = _currentEliteSpawnChance * eliteMultiplier;
                   bool isElite = _eliteData != null && eliteChance > 0f && Random.value * 100f < eliteChance;
                   if (isElite)
                   {
@@ -240,6 +249,21 @@ namespace TrainDefense.Game
                _currentEliteSpawnChance + _eliteData.chanceGrowthPerInterval,
                _eliteData.spawnMaxChance);
             _eliteRampElapsed -= _eliteData.spawnInterval;
+         }
+      }
+
+      private void UpdateEliteMultiplierProgress(float elapsed)
+      {
+         if (_eliteData == null || _eliteData.multiplierRampInterval <= 0f) return;
+         if (_currentEliteMultiplierProgress >= 1f) return;
+
+         _eliteMultiplierRampElapsed += elapsed;
+         while (_eliteMultiplierRampElapsed >= _eliteData.multiplierRampInterval)
+         {
+            _currentEliteMultiplierProgress = Mathf.Min(
+               1f,
+               _currentEliteMultiplierProgress + _eliteData.multiplierGrowthPerInterval);
+            _eliteMultiplierRampElapsed -= _eliteData.multiplierRampInterval;
          }
       }
 
