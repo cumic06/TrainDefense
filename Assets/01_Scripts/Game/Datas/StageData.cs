@@ -46,13 +46,16 @@ namespace TrainDefense.Game.Datas
         public int SpawnLevel;
         [Tooltip("이 스테이지에서 해당 몬스터의 엘리트 등장 확률 배율. 1이면 기본, 0이면 엘리트로 등장하지 않음. (초반 곰/고블린 거인/미노타우로스 등 강한 몬스터는 낮춰서 난이도 조절)")]
         public float EliteChanceMultiplier;
+        [Tooltip("체크 시 이 몬스터의 엘리트 배율이 한 판 동안 0에서 점점 증가(강한 몬스터용 - 초반엔 엘리트로 거의 안 나오고 후반에 증가). 해제 시 진행도와 무관하게 EliteChanceMultiplier가 바로 적용(약한 몬스터용).")]
+        public bool EliteChanceRamp;
 
-        public StageSpawnData(string monsterId, float probability, int spawnLevel, float eliteChanceMultiplier = 1f)
+        public StageSpawnData(string monsterId, float probability, int spawnLevel, float eliteChanceMultiplier = 1f, bool eliteChanceRamp = false)
         {
             MonsterId = monsterId;
             Probability = probability;
             SpawnLevel = spawnLevel;
             EliteChanceMultiplier = eliteChanceMultiplier;
+            EliteChanceRamp = eliteChanceRamp;
         }
     }
 }
