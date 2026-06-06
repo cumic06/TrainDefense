@@ -459,7 +459,8 @@ namespace TrainDefense.Game
                 }
             }
 
-            triggerHandle.Init(_damage, _owner);
+            var (finalDamage, isCritical) = CalculateCriticalDamage();
+            triggerHandle.Init(finalDamage, _owner, isCritical);
         }
 
         private IEnumerator DestroyCoroutine()
