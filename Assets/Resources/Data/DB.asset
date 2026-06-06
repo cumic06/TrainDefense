@@ -447,9 +447,9 @@ MonoBehaviour:
       AttackDamage: 10
       AttackRange: 11
       AttackArea: 11
-      AttackCount: 3
-      AttackInterval: 1
-      TargetCount: 3
+      AttackCount: 2
+      AttackInterval: 1.5
+      TargetCount: 2
       CriticalChance: 0
       CriticalDamage: 0.5
     turretProjectilePrefabId: ElectrickProjectile
@@ -626,9 +626,9 @@ MonoBehaviour:
       AttackDamage: 10
       AttackRange: 11
       AttackArea: 11
-      AttackCount: 3
-      AttackInterval: 1
-      TargetCount: 3
+      AttackCount: 2
+      AttackInterval: 1.5
+      TargetCount: 2
       CriticalChance: 0
       CriticalDamage: 0.5
     turretProjectilePrefabId: ElectrickProjectile
@@ -1212,7 +1212,19 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 1
+        AttackDamage: 0
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 1
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 2
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1230,18 +1242,6 @@ MonoBehaviour:
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 1
-        CriticalChance: 0
-        CriticalDamage: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 3
         CriticalChance: 0
         CriticalDamage: 0
       passiveSkillDataId: 
