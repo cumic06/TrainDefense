@@ -41,10 +41,16 @@ namespace TrainDefense.Game.Manager
         private GameObject _currentMapInstance;
         private int _inspectionCount = 0;
         private bool _shouldShowStageSelectionOnStageEnd;
+        private bool _pendingStageSelectionAfterShop;
         private bool _isGameOver;
         #endregion
 
         public StageData CurrentStageData => _stageDatas[_currentStageIndex];
+
+        /// <summary>
+        /// 스테이지 선택 전 마지막 상점을 들른 상태로, 상점을 닫으면 스테이지 선택 UI가 떠야 하는지 여부.
+        /// </summary>
+        public bool IsStageSelectionPending => _pendingStageSelectionAfterShop;
 
         //protected override void Awake()
         //{
@@ -104,6 +110,7 @@ namespace TrainDefense.Game.Manager
             _currentStageInspectionTimeIndex = 0;
             _inspectionCount = 0;
             _shouldShowStageSelectionOnStageEnd = false;
+            _pendingStageSelectionAfterShop = false;
 
             _UpdateSpawnRules();
             _SetCurrentStage();
@@ -196,8 +203,18 @@ namespace TrainDefense.Game.Manager
                      && _currentStageTime >= _GetPostLastInspectionDuration())
             {
                 _shouldShowStageSelectionOnStageEnd = false;
-                _TransitionToStageSelection();
+                _BeginStageSelectionShop();
             }
+        }
+
+        /// <summary>
+        /// 스테이지 선택 직전에 상점을 한 번 더 들르게 한다.
+        /// 상점을 닫는 순간(<see cref="InspectionEndEvent"/>) 스테이지 선택 UI로 전환된다.
+        /// </summary>
+        private void _BeginStageSelectionShop()
+        {
+            _pendingStageSelectionAfterShop = true;
+            GameEventSystem.Publish(new InspectionStartEvent());
         }
 
         private float GetInspectionDurationForIndex(int i)
@@ -218,6 +235,14 @@ namespace TrainDefense.Game.Manager
 
         private void _OnInspectionEnd(InspectionEndEvent inspectionEndEvent)
         {
+            // 스테이지 선택용 상점을 닫은 경우, 전투로 복귀하지 않고 스테이지 선택 UI로 전환한다.
+            if (_pendingStageSelectionAfterShop)
+            {
+                _pendingStageSelectionAfterShop = false;
+                _TransitionToStageSelection();
+                return;
+            }
+
             bool shouldStartMonsterRush = monsterRushInterval > 0
                 && _inspectionCount > 0
                 && _inspectionCount % monsterRushInterval == monsterRushInterval - 1;

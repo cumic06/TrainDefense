@@ -7,6 +7,7 @@ using DG.Tweening;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.Manager;
 
 namespace TrainDefense.Game.UI
 {
@@ -224,8 +225,17 @@ namespace TrainDefense.Game.UI
 
             if (groupCoin != null) groupCoin.SetActive(false);
 
+            // 스테이지 선택용 상점이라면 전투로 복귀하지 않고 스테이지 선택 UI로 전환되어야 하므로
+            // InspectionEndEvent 발행 전에 대기 여부를 먼저 확인한다.
+            bool stageSelectionPending = StageManager.Instance != null
+                && StageManager.Instance.IsStageSelectionPending;
+
             GameEventSystem.Publish(new InspectionEndEvent());
-            GameEventSystem.Publish(new EngageStartEvent());
+
+            if (!stageSelectionPending)
+            {
+                GameEventSystem.Publish(new EngageStartEvent());
+            }
         }
 
         private int GetCurrentMoney()
