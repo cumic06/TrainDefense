@@ -50,7 +50,10 @@ namespace TrainDefense.Game.UI
             itemNameText.text = string.Format(_upgradeData.Name, currentTotalValue);
 
             itemDescriptionText.text = GetLevelDescription();
-            needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost().ToCommaString()}$";
+            if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
+               needMoneyText.text = "MAX";
+            else
+               needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost().ToCommaString()}$";
 
             }
       }
@@ -105,19 +108,24 @@ namespace TrainDefense.Game.UI
          }
 
          // 증가/감소 방향은 설명 문구로 표현하고, 값은 크기(양수)만 표시. (예: 공속 -1 → "+1")
+         float perLevelAmount = Mathf.Abs(increaseAmount);
          if (increaseAmount != 0)
          {
-            increaseAmountText = $"+{Mathf.Abs(increaseAmount)}";
+            increaseAmountText = $"+{perLevelAmount}";
          }
 
+         // 현재/최대 누적값 = 레벨 × 레벨당 증가량
+         float currentValue = currentLevel * perLevelAmount;
+         float maxValue = _upgradeData.MaxUpgradeCount * perLevelAmount;
+
          string desc = _upgradeData.Description;
-         // {0}(다음 누적 총값)은 더 이상 표시하지 않음(증가량만 표기). 포맷 {1}=증가량, {2}=현재레벨, {3}=최대레벨.
+         // {0}(다음 누적 총값)은 더 이상 표시하지 않음. 포맷 {1}=레벨당 증가량, {2}=현재 누적값, {3}=최대 누적값.
          try
          {
             if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
-               return string.Format(desc, string.Empty, increaseAmountText, "Max", "Max");
+               return string.Format(desc, string.Empty, increaseAmountText, maxValue, maxValue);
 
-            return string.Format(desc, string.Empty, increaseAmountText, currentLevel, _upgradeData.MaxUpgradeCount);
+            return string.Format(desc, string.Empty, increaseAmountText, currentValue, maxValue);
          }
          catch (System.FormatException)
          {
