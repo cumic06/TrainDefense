@@ -13,7 +13,7 @@ Upgrade_110001_Desc	공격력이 {1}%\n증가합니다\n{2}/{3}	Increases\nattac
 Upgrade_110002_Name	공격 속도 증가	Attack Speed Increase	攻撃速度増加	攻击速度提升
 Upgrade_110002_Desc	공격 속도가 {1}%\n증가합니다\n{2}/{3}	Increases\nattack speed by {1}%\n{2}/{3}	攻撃速度が{1}%\n増加します\n{2}/{3}	攻击速度\n提升{1}%\n{2}/{3}
 Upgrade_110003_Name	기차 체력 증가	Train HP Increase	列車HP増加	列车体力提升
-Upgrade_110003_Desc	기차의 최대 체력이 {1}%\n증가합니다\n{2}/{3}	Increases\ntrain max HP by {1}%\n{2}/{3}	列車の最大HPが{1}%\n増加します\n{2}/{3}	列车最大体力\n提升{1}%\n{2}/{3}
+Upgrade_110003_Desc	기차의 체력이 {1}%\n증가합니다\n{2}/{3}	Increases\ntrain HP by {1}%\n{2}/{3}	列車のHPが{1}%\n増加します\n{2}/{3}	列车体力\n提升{1}%\n{2}/{3}
 Upgrade_110004_Name	골드 획득량 증가	Gold Gain Increase	ゴールド獲得量増加	金币获取量提升
 Upgrade_110004_Desc	골드 획득량이 {1}%\n증가합니다\n{2}/{3}	Increases\ngold gain by {1}%\n{2}/{3}	ゴールド獲得量が{1}%\n増加します\n{2}/{3}	金币获取量\n提升{1}%\n{2}/{3}
 Upgrade_110005_Name	경험치 획득량 증가	Exp Gain Increase	経験値獲得量増加	经验获取量提升
