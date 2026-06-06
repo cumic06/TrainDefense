@@ -192,7 +192,7 @@ namespace TrainDefense.Game.Manager
 
             if (_currentStageInspectionTimeIndex < CurrentStageData.StationCount)
             {
-                if (_currentStageTime >= GetInspectionDurationForIndex(_currentStageInspectionTimeIndex))
+                if (_currentStageTime >= _GetCurrentStationDuration())
                 {
                     _CurrentStageInspectionUp();
                 }
@@ -205,9 +205,11 @@ namespace TrainDefense.Game.Manager
             }
         }
 
-        private float GetInspectionDurationForIndex(int i)
+        // 현재 진행 중인 역 구간의 도착 시간.
+        // 한 판 동안 통과한 누적 역 수(_totalStationPassedCount)에 비례해 증가하며, 스테이지가 바뀌어도 리셋되지 않는다.
+        private float _GetCurrentStationDuration()
         {
-            return CurrentStageData.BaseInspectionTime + stationInspectionTimeIncrement * i;
+            return CurrentStageData.BaseInspectionTime + stationInspectionTimeIncrement * _totalStationPassedCount;
         }
 
         private void _CurrentStageInspectionUp()
@@ -281,15 +283,13 @@ namespace TrainDefense.Game.Manager
             if (_currentStageInspectionTimeIndex >= CurrentStageData.StationCount)
                 return _GetPostLastInspectionDuration();
 
-            return GetInspectionDurationForIndex(_currentStageInspectionTimeIndex);
+            return _GetCurrentStationDuration();
         }
 
         private float _GetPostLastInspectionDuration()
         {
-            float sum = 0f;
-            for (int i = 0; i < CurrentStageData.StationCount; i++)
-                sum += GetInspectionDurationForIndex(i);
-            return CurrentStageData.StageEndTime - sum;
+            // 스테이지 종료 버퍼는 기본 도착 시간 기준으로 계산(역 도착 시간 누적 증가의 영향 없이 안정적으로 유지)
+            return CurrentStageData.StageEndTime - CurrentStageData.BaseInspectionTime * CurrentStageData.StationCount;
         }
 
         private float _GetCurrentInspectionDuration(GetCurrentInspectionDurationEvent getCurrentInspectionDurationEvent)
