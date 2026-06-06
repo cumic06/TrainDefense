@@ -51,6 +51,8 @@ MonoBehaviour:
   model: {fileID: 0}
   colliderUpdateInterval: 0.1
   particleRadius: 0.5
+  baseScaleRadius: 8
+  baseRangeRadius: 8
 --- !u!198 &7808667237599030221
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -994,20 +996,20 @@ ParticleSystem:
     m_BurstCount: 0
     m_Bursts: []
   SizeModule:
-    enabled: 0
+    enabled: 1
     curve:
       serializedVersion: 2
       minMaxState: 1
-      scalar: 1
+      scalar: 2
       minScalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
-          inSlope: 0
-          outSlope: 1
+          value: 0.5
+          inSlope: 0.5
+          outSlope: 0.5
           tangentMode: 0
           weightedMode: 0
           inWeight: 0.33333334
@@ -1015,7 +1017,7 @@ ParticleSystem:
         - serializedVersion: 3
           time: 1
           value: 1
-          inSlope: 1
+          inSlope: 0.5
           outSlope: 0
           tangentMode: 0
           weightedMode: 0

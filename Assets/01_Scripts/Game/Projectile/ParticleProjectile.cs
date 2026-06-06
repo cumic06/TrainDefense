@@ -23,6 +23,9 @@ namespace TrainDefense.Game
         private ParticleSystem _particleSystem;
         private ParticleSystem.Particle[] _particles;
         private float _colliderUpdateTimer;
+        private float _baseStartLifetime;
+        private float _baseShapeAngle;
+        private float _baseRateOverTime;
 
         [SerializeField]
         [BoxGroup("ParticleCollider")]
@@ -46,17 +49,30 @@ namespace TrainDefense.Game
         }
 
         /// <summary>
-        /// 포탑 AttackArea/AttackRange 변경 시 파티클/콜라이더를 축별로 스케일한다.
-        /// 분사 방향(LookAt2D = 로컬 +X)은 AttackRange로 길이를, 수직(Y)은 AttackArea로 폭을 조정한다.
-        /// scaleRange가 0이면(주입 안 됨) 기존처럼 AttackArea로 등방 스케일한다.
-        /// ParticleSystem.scalingMode가 Local로 설정돼 있어야 시각/시뮬레이션이 함께 늘어난다.
+        /// 포탑 AttackArea/AttackRange 변경 시 영역만 키운다. localScale을 건드리지 않아 입자 크기는 보존된다.
+        /// 길이(AttackRange)는 수명으로, 폭(AttackArea)은 Cone 각도와 방출량으로 조정한다.
+        /// 데미지 콜라이더는 파티클 실제 위치를 추적하므로 영역에 맞춰 자동으로 갱신된다.
+        /// scaleRange가 0이면(주입 안 됨) AttackArea를 길이·폭 양쪽에 적용한다.
         /// </summary>
         protected override void ApplyScaleByArea(float scaleRadius, float scaleRange = 0f)
         {
             if (scaleRadius <= 0f) return;
+            if (_particleSystem == null) return;
+
             float areaRatio = scaleRadius / baseScaleRadius;
             float rangeRatio = scaleRange > 0f ? scaleRange / baseRangeRadius : areaRatio;
-            transform.localScale = new Vector3(rangeRatio, areaRatio, 1f);
+
+            // 길이(range)는 수명으로 늘린다. 동시 입자 수가 비례해 늘어 길이 방향 밀도는 유지된다.
+            ParticleSystem.MainModule main = _particleSystem.main;
+            main.startLifetimeMultiplier = _baseStartLifetime * rangeRatio;
+
+            // 폭(area)은 Cone 각도로 부채꼴을 벌린다.
+            ParticleSystem.ShapeModule shape = _particleSystem.shape;
+            shape.angle = _baseShapeAngle * areaRatio;
+
+            // 폭이 넓어진 만큼 방출량을 올려 폭 방향 밀도를 유지한다.
+            ParticleSystem.EmissionModule emission = _particleSystem.emission;
+            emission.rateOverTimeMultiplier = _baseRateOverTime * areaRatio;
         }
 
         #region ParticleCollider
@@ -64,6 +80,10 @@ namespace TrainDefense.Game
         {
             _particleSystem = GetComponent<ParticleSystem>();
             if (_particleSystem == null) return;
+
+            _baseStartLifetime = _particleSystem.main.startLifetimeMultiplier;
+            _baseShapeAngle = _particleSystem.shape.angle;
+            _baseRateOverTime = _particleSystem.emission.rateOverTimeMultiplier;
 
             _polygonCollider = GetComponent<PolygonCollider2D>();
             if (_polygonCollider == null)
