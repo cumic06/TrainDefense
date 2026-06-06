@@ -1582,45 +1582,45 @@ MonoBehaviour:
     name: Upgrade_110001_Name
     description: Upgrade_110001_Desc
     needMoney: 60
-    maxUpgradeCount: 100
+    maxUpgradeCount: 20
     upgradeDataType: 0
-    upgradeValue: 1
+    upgradeValue: 5
     stats:
     - <Type>k__BackingField: 2
-      <Value>k__BackingField: 1
+      <Value>k__BackingField: 5
     growthRate: 1.065
   - id: 110002
     iconId: 
     name: Upgrade_110002_Name
     description: Upgrade_110002_Desc
     needMoney: 85
-    maxUpgradeCount: 50
+    maxUpgradeCount: 10
     upgradeDataType: 0
-    upgradeValue: -1
+    upgradeValue: -5
     stats:
     - <Type>k__BackingField: 4
-      <Value>k__BackingField: -1
+      <Value>k__BackingField: -5
     growthRate: 1.065
   - id: 110003
     iconId: 
     name: Upgrade_110003_Name
     description: Upgrade_110003_Desc
     needMoney: 120
-    maxUpgradeCount: 100
+    maxUpgradeCount: 20
     upgradeDataType: 0
-    upgradeValue: 1
+    upgradeValue: 5
     stats:
     - <Type>k__BackingField: 0
-      <Value>k__BackingField: 1
+      <Value>k__BackingField: 5
     growthRate: 1.065
   - id: 110004
     iconId: Coin
     name: Upgrade_110004_Name
     description: Upgrade_110004_Desc
     needMoney: 140
-    maxUpgradeCount: 100
+    maxUpgradeCount: 20
     upgradeDataType: 1
-    upgradeValue: 1
+    upgradeValue: 5
     stats: []
     growthRate: 1.065
   - id: 110006
@@ -1628,33 +1628,33 @@ MonoBehaviour:
     name: Upgrade_110006_Name
     description: Upgrade_110006_Desc
     needMoney: 100
-    maxUpgradeCount: 100
+    maxUpgradeCount: 20
     upgradeDataType: 0
-    upgradeValue: 1
+    upgradeValue: 5
     stats:
     - <Type>k__BackingField: 6
-      <Value>k__BackingField: 1
+      <Value>k__BackingField: 5
     growthRate: 1.065
   - id: 110007
     iconId: 
     name: Upgrade_110007_Name
     description: Upgrade_110007_Desc
     needMoney: 60
-    maxUpgradeCount: 100
+    maxUpgradeCount: 20
     upgradeDataType: 0
-    upgradeValue: 1
+    upgradeValue: 5
     stats:
     - <Type>k__BackingField: 7
-      <Value>k__BackingField: 1
+      <Value>k__BackingField: 5
     growthRate: 1.065
   - id: 110005
     iconId: 
     name: Upgrade_110005_Name
     description: Upgrade_110005_Desc
     needMoney: 140
-    maxUpgradeCount: 100
+    maxUpgradeCount: 20
     upgradeDataType: 1
-    upgradeValue: 1
+    upgradeValue: 5
     stats: []
     growthRate: 1.065
   triChoiceDB:
