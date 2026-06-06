@@ -354,8 +354,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.25
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 1
   - id: 30002
@@ -378,8 +378,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 30003
@@ -402,8 +402,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 1
   - id: 30004
@@ -426,8 +426,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 1
   - id: 30005
@@ -450,8 +450,8 @@ MonoBehaviour:
       AttackCount: 3
       AttackInterval: 1
       TargetCount: 3
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 1
   - id: 30006
@@ -474,8 +474,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: CannonProjectile
     attackDamageMultiplier: 1
   - id: 30007
@@ -498,8 +498,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
   - id: 31001
@@ -524,8 +524,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.25
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 1
   - id: 31002
@@ -550,8 +550,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 31003
@@ -577,8 +577,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 1
   - id: 31004
@@ -603,8 +603,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 1
   - id: 31005
@@ -629,8 +629,8 @@ MonoBehaviour:
       AttackCount: 3
       AttackInterval: 1
       TargetCount: 3
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 1
   - id: 31006
@@ -656,8 +656,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 3
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: CannonProjectile
     attackDamageMultiplier: 1
   - id: 31007
@@ -683,8 +683,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
   rangeTrainDataList:
@@ -707,8 +707,8 @@ MonoBehaviour:
       AttackArea: 4
       AttackCount: 1
       AttackInterval: 4
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 40002
@@ -730,8 +730,8 @@ MonoBehaviour:
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 0.15
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   - id: 42001
@@ -756,8 +756,8 @@ MonoBehaviour:
       AttackArea: 4
       AttackCount: 1
       AttackInterval: 4
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 42002
@@ -782,8 +782,8 @@ MonoBehaviour:
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 0.15
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0.5
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 0
   trainSkillDataDB:
