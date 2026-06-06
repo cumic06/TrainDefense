@@ -29,6 +29,11 @@ namespace TrainDefense.Game
         [Tooltip("파티클이 localScale=1일 때 대응하는 AttackArea 기준값. 엑셀 기본 AttackArea와 맞춰 설정.")]
         private float baseScaleRadius = 8f;
 
+        [SerializeField]
+        [BoxGroup("ParticleCollider")]
+        [Tooltip("파티클이 localScale.x=1일 때 대응하는 AttackRange 기준값. 화염 포탑 기본 AttackRange와 맞춰 설정.")]
+        private float baseRangeRadius = 8f;
+
         private void Awake()
         {
             SetupParticleCollider();
@@ -41,15 +46,17 @@ namespace TrainDefense.Game
         }
 
         /// <summary>
-        /// 포탑 AttackArea 변경 시 파티클/콜라이더 전체를 비율로 스케일한다.
-        /// 첫 호출의 scaleRadius를 base로 잡아서 이후 ratio 만큼 transform.localScale을 조정한다.
+        /// 포탑 AttackArea/AttackRange 변경 시 파티클/콜라이더를 축별로 스케일한다.
+        /// 분사 방향(LookAt2D = 로컬 +X)은 AttackRange로 길이를, 수직(Y)은 AttackArea로 폭을 조정한다.
+        /// scaleRange가 0이면(주입 안 됨) 기존처럼 AttackArea로 등방 스케일한다.
         /// ParticleSystem.scalingMode가 Local로 설정돼 있어야 시각/시뮬레이션이 함께 늘어난다.
         /// </summary>
-        protected override void ApplyScaleByArea(float scaleRadius)
+        protected override void ApplyScaleByArea(float scaleRadius, float scaleRange = 0f)
         {
             if (scaleRadius <= 0f) return;
-            float ratio = scaleRadius / baseScaleRadius;
-            transform.localScale = new Vector3(ratio, ratio, 1f);
+            float areaRatio = scaleRadius / baseScaleRadius;
+            float rangeRatio = scaleRange > 0f ? scaleRange / baseRangeRadius : areaRatio;
+            transform.localScale = new Vector3(rangeRatio, areaRatio, 1f);
         }
 
         #region ParticleCollider

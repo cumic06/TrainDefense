@@ -82,7 +82,8 @@ namespace TrainDefense.Game
         /// <param name="damage">데미지</param>
         /// <param name="target">타겟 (Monster 또는 null)</param>
         /// <param name="scaleRadius">AoE/스케일 반경 (AttackArea 값)</param>
-        public virtual void Init(float damage, IProjectileTarget owner, IProjectileTarget target = null, float scaleRadius = 0f, float criticalChance = 0f, float criticalDamage = 0f)
+        /// <param name="scaleRange">분사 길이 스케일 (AttackRange 값). ParticleProjectile만 사용</param>
+        public virtual void Init(float damage, IProjectileTarget owner, IProjectileTarget target = null, float scaleRadius = 0f, float criticalChance = 0f, float criticalDamage = 0f, float scaleRange = 0f)
         {
             _damage = damage;
             _owner = owner;
@@ -93,11 +94,11 @@ namespace TrainDefense.Game
 
             if (data != null)
             {
-                InitializeWithConfig(scaleRadius);
+                InitializeWithConfig(scaleRadius, scaleRange);
             }
         }
 
-        private void InitializeWithConfig(float scaleRadius = 0f)
+        private void InitializeWithConfig(float scaleRadius = 0f, float scaleRange = 0f)
         {
             // 이동 전략 초기화
             _movementStrategy = CreateMovementStrategy(data.MovementType);
@@ -106,7 +107,7 @@ namespace TrainDefense.Game
             // AttackArea에 따른 스케일 조정
             if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && scaleRadius > 0f)
             {
-                ApplyScaleByArea(scaleRadius);
+                ApplyScaleByArea(scaleRadius, scaleRange);
             }
             else if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.TargetRange && _target != null)
             {
@@ -114,7 +115,9 @@ namespace TrainDefense.Game
             }
         }
 
-        protected virtual void ApplyScaleByArea(float scaleRadius)
+        // scaleRange는 분사 길이(AttackRange) 전용으로 ParticleProjectile에서만 사용한다.
+        // 빔류(StretchBeamModel)는 AttackArea(scaleRadius)만 길이로 쓰므로 scaleRange를 무시한다.
+        protected virtual void ApplyScaleByArea(float scaleRadius, float scaleRange = 0f)
         {
             StretchBeamModel(scaleRadius);
         }
