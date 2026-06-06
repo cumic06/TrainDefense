@@ -9,7 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers
       public string ExcelFileName => "StageData.xlsx";
       public string SheetName => "stage_data";
       public string ButtonLabel => "Stage 데이터 가져오기";
-      public string[] Headers => new[] { "id", "base_inspection_time", "station_count", "stage_end_time", "spawn_interval", "spawn_monsters", "spawn_monsters_probability", "spawn_monsters_level" };
+      public string[] Headers => new[] { "id", "base_inspection_time", "station_count", "stage_end_time", "spawn_interval", "spawn_monsters", "spawn_monsters_probability", "spawn_monsters_level", "spawn_monsters_elite_chance" };
 
       public int Import(DB db, string excelPath)
       {
@@ -46,10 +46,10 @@ namespace TrainDefense.Editor.DataImport.Importers
          SetPrivateField(t, target, "stationCount", r.stationCount);
          SetPrivateField(t, target, "stageEndTime", r.stageEndTime);
          SetPrivateField(t, target, "spawnInterval", r.spawnInterval);
-         SetPrivateField(t, target, "spawnDatas", ParseSpawnData(r.spawnMonsters, r.spawnMonstersProbability, r.spawnMonstersLevel));
+         SetPrivateField(t, target, "spawnDatas", ParseSpawnData(r.spawnMonsters, r.spawnMonstersProbability, r.spawnMonstersLevel, r.spawnMonstersEliteChance));
       }
 
-      private static StageSpawnData[] ParseSpawnData(string idsCsv, string probsCsv, string levelCsv)
+      private static StageSpawnData[] ParseSpawnData(string idsCsv, string probsCsv, string levelCsv, string eliteChanceCsv)
       {
          if (string.IsNullOrEmpty(idsCsv))
             return System.Array.Empty<StageSpawnData>();
@@ -57,6 +57,7 @@ namespace TrainDefense.Editor.DataImport.Importers
          var idsParts = idsCsv.Split(';');
          var probsParts = string.IsNullOrEmpty(probsCsv) ? System.Array.Empty<string>() : probsCsv.Split(';');
          var levelParts = string.IsNullOrEmpty(levelCsv) ? System.Array.Empty<string>() : levelCsv.Split(';');
+         var eliteChanceParts = string.IsNullOrEmpty(eliteChanceCsv) ? System.Array.Empty<string>() : eliteChanceCsv.Split(';');
 
          var list = new System.Collections.Generic.List<StageSpawnData>();
 
@@ -80,7 +81,14 @@ namespace TrainDefense.Editor.DataImport.Importers
                   level = l;
                }
 
-               list.Add(new StageSpawnData(id, prob, level));
+               // 비어 있으면 기본 1배(기존 동작 유지). 0이면 해당 몬스터는 엘리트로 등장하지 않음.
+               float eliteChanceMultiplier = 1f;
+               if (i < eliteChanceParts.Length && float.TryParse(eliteChanceParts[i].Trim(), out float e))
+               {
+                  eliteChanceMultiplier = e;
+               }
+
+               list.Add(new StageSpawnData(id, prob, level, eliteChanceMultiplier));
             }
          }
          return list.ToArray();

@@ -211,7 +211,8 @@ namespace TrainDefense.Game
                   Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
                   spawnMonster.Initialize(monsterData);
 
-                  bool isElite = _eliteData != null && Random.value * 100f < _currentEliteSpawnChance;
+                  float eliteChance = _currentEliteSpawnChance * selectedData.EliteChanceMultiplier;
+                  bool isElite = _eliteData != null && eliteChance > 0f && Random.value * 100f < eliteChance;
                   if (isElite)
                   {
                      spawnMonster.ApplyElite(_eliteData);
