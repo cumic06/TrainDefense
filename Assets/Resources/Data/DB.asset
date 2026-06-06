@@ -709,6 +709,7 @@ MonoBehaviour:
       AttackInterval: 4
       CriticalChance: 0
       CriticalDamage: 0.5
+      SlowRate: 0
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 40002
@@ -732,6 +733,7 @@ MonoBehaviour:
       AttackInterval: 0.15
       CriticalChance: 0
       CriticalDamage: 0.5
+      SlowRate: 40
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   - id: 42001
@@ -758,6 +760,7 @@ MonoBehaviour:
       AttackInterval: 4
       CriticalChance: 0
       CriticalDamage: 0.5
+      SlowRate: 0
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 42002
@@ -784,6 +787,7 @@ MonoBehaviour:
       AttackInterval: 0.15
       CriticalChance: 0
       CriticalDamage: 0.5
+      SlowRate: 40
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 0
   trainSkillDataDB:
@@ -1407,6 +1411,7 @@ MonoBehaviour:
         AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
@@ -1417,6 +1422,7 @@ MonoBehaviour:
         AttackInterval: -0.2
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
@@ -1427,6 +1433,7 @@ MonoBehaviour:
         AttackInterval: -0.3
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 0
   - id: 100002
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
@@ -1436,13 +1443,14 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 1
         AttackRange: 0
-        AttackArea: 1
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 5
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
@@ -1453,16 +1461,18 @@ MonoBehaviour:
         AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 10
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 2
         AttackRange: 0
-        AttackArea: 2
+        AttackArea: 1
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 15
   stageDataList:
   - id: 50001
     baseInspectionTime: 40

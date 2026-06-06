@@ -37,7 +37,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 				AttackCount = r.attackCount,
 				AttackInterval = r.attackInterval,
 				CriticalChance = r.criticalChance,
-				CriticalDamage = r.criticalDamage
+				CriticalDamage = r.criticalDamage,
+				SlowRate = r.slowRate
 			};
 			SetPrivateField(rangeTrainType, target, "rangeTrainStatus", rangeTrainStatus);
 			SetPrivateField(rangeTrainType, target, "rangeProjectilePrefabId", r.rangeProjectilePrefabId);

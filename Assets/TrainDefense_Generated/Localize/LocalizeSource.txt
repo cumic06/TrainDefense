@@ -83,7 +83,7 @@ Train_32007_Name	엘리트 저격 포탑 II	Elite Sniper Turret II	エリート�
 Train_40001_Name	폭발 포탑	Explosive Turret	爆発タレット	爆炸炮塔
 Train_40001_Desc	적이 가장 많은 곳으로 위치해 피해를 준다.	Deals damage in areas with the most enemies.	敵が最も多い場所に移動してダメージを与える。	在敌人最密集的地方造成伤害。
 Train_40002_Name	냉기 포탑	Frost Turret	冷気タレット	冰霜炮塔
-Train_40002_Desc	적이 가장 많은 곳으로 이동속도를 떨어뜨려 피해를 준다.	Slows movement speed and deals damage where enemies are most dense.	敵が最も多い場所で移動速度を落としてダメージを与える。	在敌人最密集的地方降低移动速度并造成伤害。
+Train_40002_Desc	주변 적을 둔화시키고\n피해를 줍니다.	Slows nearby enemies\nand deals damage.	周囲の敵を減速させ、\nダメージを与える。	减速周围的敌人\n并造成伤害。
 Train_41001_Name	엘리트 폭발 포탑	Elite Explosive Turret	エリート爆発タレット	精英爆炸炮塔
 Train_41002_Name	엘리트 냉기 포탑	Elite Frost Turret	エリート冷気タレット	精英冰霜炮塔
 Train_42001_Name	엘리트 폭발 포탑 II	Elite Explosive Turret II	エリート爆発タレットII	精英爆炸炮塔II

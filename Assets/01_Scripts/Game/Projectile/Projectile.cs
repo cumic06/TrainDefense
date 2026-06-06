@@ -341,10 +341,11 @@ namespace TrainDefense.Game
                 }
             }
 
-            // 슬로우 효과 (Stay 중 지속 적용)
+            // 슬로우 효과 (Stay 중 지속 적용). owner가 둔화율을 제공하면 그 값, 아니면 config 기본값.
             if (data.HasSlowEffect)
             {
-                target.Slow(data.SlowValue);
+                float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
+                target.Slow(slowValue);
             }
 
             // 넉백 효과 (Stay 중에도 적용)

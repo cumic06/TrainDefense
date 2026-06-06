@@ -227,10 +227,14 @@ namespace TrainDefense.Game.UI
             var nextUpgrade = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
             float currentSpeed = ToAttackSpeed(currentInterval);
             float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
+            float currentSlow = baseStatus.SlowRate + accumulated.SlowRate;
 
             AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
             AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
             AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
+            // 둔화 포탑(냉기)만 둔화율 표시.
+            if (currentSlow > 0f)
+               AddUpgradeOrStatLine(lines, "Upgrade_Slow", "Stat_Slow", currentSlow, nextUpgrade.SlowRate);
          }
 
          return string.Join("\n", lines);
@@ -260,6 +264,8 @@ namespace TrainDefense.Game.UI
             AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
             AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
             AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
+            if (s.SlowRate > 0f)
+               AddStatValueLine(lines, "Stat_Slow", s.SlowRate);
          }
          return string.Join("\n", lines);
       }

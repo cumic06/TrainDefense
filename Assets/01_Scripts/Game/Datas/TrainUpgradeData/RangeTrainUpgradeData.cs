@@ -88,6 +88,7 @@ namespace TrainDefense.Game.Datas
             total.AttackInterval += s.AttackInterval;
             total.CriticalChance += s.CriticalChance;
             total.CriticalDamage += s.CriticalDamage;
+            total.SlowRate += s.SlowRate;
          }
          return total;
       }
