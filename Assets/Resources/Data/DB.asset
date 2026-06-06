@@ -374,7 +374,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 2
       AttackRange: 8
-      AttackArea: 8
+      AttackArea: 12
       AttackCount: 1
       AttackInterval: 0.1
       TargetCount: 1
@@ -725,11 +725,11 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 3
       AttackRange: 3
       AttackArea: 3
       AttackCount: 1
-      AttackInterval: 0.15
+      AttackInterval: 0.2
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
@@ -777,11 +777,11 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 3
       AttackRange: 3
       AttackArea: 3
       AttackCount: 1
-      AttackInterval: 0.15
+      AttackInterval: 0.2
       CriticalChance: 30
       CriticalDamage: 0.3
     rangeProjectilePrefabId: ColdAirProjectile
@@ -1086,18 +1086,6 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 1
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
         AttackDamage: 2
         AttackRange: 0
         AttackArea: 0
@@ -1110,7 +1098,19 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 3
+        AttackDamage: 4
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 6
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
