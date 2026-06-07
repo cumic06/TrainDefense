@@ -1483,12 +1483,18 @@ MonoBehaviour:
     - MonsterId: 10001
       Probability: 5
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10002
       Probability: 3
       SpawnLevel: 3
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10003
       Probability: 2
       SpawnLevel: 5
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map1
@@ -1504,12 +1510,18 @@ MonoBehaviour:
     - MonsterId: 10004
       Probability: 4.5
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10005
       Probability: 4
       SpawnLevel: 3
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10006
       Probability: 1.5
       SpawnLevel: 6
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map2
@@ -1529,15 +1541,23 @@ MonoBehaviour:
     - MonsterId: 10007
       Probability: 4
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10008
       Probability: 3.5
       SpawnLevel: 3
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10009
       Probability: 2
       SpawnLevel: 5
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10010
       Probability: 0.5
       SpawnLevel: 9
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 1
     mapData:
       id: 
       prefabId: Map3
@@ -1553,12 +1573,18 @@ MonoBehaviour:
     - MonsterId: 10011
       Probability: 5.5
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10012
       Probability: 3.5
       SpawnLevel: 4
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10013
       Probability: 1
       SpawnLevel: 6
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 1
     mapData:
       id: 
       prefabId: Map4
@@ -1574,12 +1600,18 @@ MonoBehaviour:
     - MonsterId: 10014
       Probability: 5
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10015
       Probability: 4
       SpawnLevel: 4
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10016
       Probability: 1
       SpawnLevel: 6
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 1
     mapData:
       id: 
       prefabId: Map5
@@ -1847,6 +1879,9 @@ MonoBehaviour:
     spawnInterval: 40
     spawnMaxChance: 15
     chanceGrowthPerInterval: 1
+    multiplierRampInterval: 60
+    multiplierGrowthPerInterval: 0.1
+    multiplierStartProgress: 0
     hpMultiplier: 5
     damageMultiplier: 2
     moveSpeedMultiplier: 1.2

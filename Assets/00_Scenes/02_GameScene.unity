@@ -13358,7 +13358,7 @@ MonoBehaviour:
   hpScale: 0.15
   attackScale: 0.07
   goldScale: 0.05
-  stationInspectionTimeIncrement: 0
+  stationInspectionTimeIncrement: 5
 --- !u!1 &1398835984
 GameObject:
   m_ObjectHideFlags: 0
