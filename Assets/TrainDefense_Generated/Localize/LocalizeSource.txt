@@ -86,8 +86,6 @@ Train_40002_Name	냉기 포탑	Frost Turret	冷気タレット	冰霜炮塔
 Train_40002_Desc	주변 적을 둔화시키고\n피해를 줍니다.	Slows nearby enemies\nand deals damage.	周囲の敵を減速させ、\nダメージを与える。	减速周围的敌人\n并造成伤害。
 Train_41001_Name	엘리트 폭발 포탑	Elite Explosive Turret	エリート爆発タレット	精英爆炸炮塔
 Train_41002_Name	엘리트 냉기 포탑	Elite Frost Turret	エリート冷気タレット	精英冰霜炮塔
-Train_42001_Name	엘리트 폭발 포탑 II	Elite Explosive Turret II	エリート爆発タレットII	精英爆炸炮塔II
-Train_42002_Name	엘리트 냉기 포탑 II	Elite Frost Turret II	エリート冷気タレットII	精英冰霜炮塔II
 Skill_50001_Name	속사 모드	Rapid Fire	速射モード	速射模式
 Skill_50001_Desc	5초간 공격 간격 50% 감소	Reduces attack interval by 50% for 5 seconds.	5秒間、攻撃間隔を50%減少させる。	5秒内攻击间隔减少50%。
 Skill_50002_Name	화력 집중	Focused Firepower	火力集中	火力集中

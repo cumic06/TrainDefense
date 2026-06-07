@@ -720,7 +720,8 @@ namespace TrainDefense.Game
                 target,
                 projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
                 _currentTurretTrainStatus.CriticalChance,
-                _currentTurretTrainStatus.CriticalDamage
+                _currentTurretTrainStatus.CriticalDamage,
+                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackRange : 0f
             );
         }
 
@@ -738,7 +739,8 @@ namespace TrainDefense.Game
                 null,
                 projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
                 _currentTurretTrainStatus.CriticalChance,
-                _currentTurretTrainStatus.CriticalDamage
+                _currentTurretTrainStatus.CriticalDamage,
+                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackRange : 0f
             );
         }
 

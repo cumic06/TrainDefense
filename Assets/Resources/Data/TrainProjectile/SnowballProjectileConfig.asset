@@ -20,7 +20,7 @@ MonoBehaviour:
   triggerHandlePrefab: {fileID: 0}
   scaleByRange: 0
   scaleRangeType: 0
-  isTargeting: 1
+  isTargeting: 0
   directDamage: 0
   damageType: 0
   tickDamageInterval: 0.1

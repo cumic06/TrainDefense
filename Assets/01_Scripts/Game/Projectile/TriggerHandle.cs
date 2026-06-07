@@ -45,6 +45,7 @@ namespace TrainDefense.Game
 
         private Dictionary<IProjectileTarget, float> _damageTimers = new();
         private IProjectileTarget _owner;
+        private bool _isCritical;
 
         public bool HasTurretDamage => hasTurretDamage;
 
@@ -67,11 +68,12 @@ namespace TrainDefense.Game
             _damageTimers.Clear();
         }
 
-        public void Init(float damage, IProjectileTarget owner = null)
+        public void Init(float damage, IProjectileTarget owner = null, bool isCritical = false)
         {
             if (hasTurretDamage)
             {
                 this.damage = damage;
+                _isCritical = isCritical;
             }
             _owner = owner;
         }
@@ -122,13 +124,13 @@ namespace TrainDefense.Game
                 if (!_damageTimers.ContainsKey(target))
                 {
                     _damageTimers[target] = Time.time;
-                    target.TakeDamage(damage);
+                    target.TakeDamage(damage, _isCritical);
                 }
             }
             else
             {
                 // 직접 데미지는 즉시 피해
-                target.TakeDamage(damage);
+                target.TakeDamage(damage, _isCritical);
 
                 if (destroyOnTriggerEnter && expandingWave == null)
                 {
@@ -159,7 +161,7 @@ namespace TrainDefense.Game
                 {
                     if (Time.time - lastTime >= tickInterval)
                     {
-                        target.TakeDamage(damage);
+                        target.TakeDamage(damage, _isCritical);
                         _damageTimers[target] = Time.time;
                     }
                 }

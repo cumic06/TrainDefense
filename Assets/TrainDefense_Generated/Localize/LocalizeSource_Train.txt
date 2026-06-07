@@ -23,8 +23,8 @@ Train_31005_Name	엘리트 전기 포탑	Elite Electric Turret	エリート\n電
 Train_31006_Name	엘리트 포격 포탑	Elite Artillery Turret	エリート\n砲撃タレット	精英炮击炮塔
 Train_31007_Name	엘리트 저격 포탑	Elite Sniper Turret	エリート\nスナイパータレット	精英狙击炮塔
 Train_40001_Name	폭발 포탑	Explosive Turret	爆発タレット	爆炸炮塔
-Train_40001_Desc	주변 적들을 밀쳐내며\n피해를 줍니다.	Knocks back nearby enemies while\ndealing damage.	周囲の敵を押し出しながら\nダメージを与える。	击退周围的敌人\n并造成伤害。
+Train_40001_Desc	주변 적들을 밀쳐내며\n피해를 줍니다.	Knocks back nearby enemies while\ndealing damage.	周囲の敵を押し出しながらダメージを与える。	击退周围的敌人\n并造成伤害。
 Train_40002_Name	냉기 포탑	Frost Turret	冷気タレット	冰霜炮塔
 Train_40002_Desc	주변 적을 둔화시키고\n피해를 줍니다.	Slows nearby enemies\nand deals damage.	周囲の敵を減速させ、\nダメージを与える。	减速周围的敌人\n并造成伤害。
-Train_42001_Name	엘리트 폭발 포탑	Elite Explosive Turret	エリート\n爆発タレット	精英爆炸炮塔
-Train_42002_Name	엘리트 냉기 포탑	Elite Frost Turret	エリート\n冷気タレット	精英冰霜炮塔
+Train_41001_Name	엘리트 폭발 포탑	Elite Explosive Turret	エリート\n爆発タレット	精英爆炸炮塔
+Train_41002_Name	엘리트 냉기 포탑	Elite Frost Turret	エリート\n冷気タレット	精英冰霜炮塔
