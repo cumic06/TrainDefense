@@ -13355,10 +13355,10 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   monsterRushInterval: 0
   mapSelectInterval: 3
-  hpScale: 0.15
-  attackScale: 0.07
-  goldScale: 0.05
-  stationInspectionTimeIncrement: 5
+  hpScale: 0.1
+  attackScale: 0.04
+  goldScale: 0.067
+  stationInspectionTimeIncrement: 2
 --- !u!1 &1398835984
 GameObject:
   m_ObjectHideFlags: 0
@@ -14143,7 +14143,7 @@ MonoBehaviour:
   spawnInterval: 2
   spawnRange: 2
   stationSpawnAccelPercent: 5
-  maxSpawnAccelPercent: 90
+  maxSpawnAccelPercent: 80
   spawnMode: 1
   customSpawnAreas:
   - Offset: {x: 0, y: 10}

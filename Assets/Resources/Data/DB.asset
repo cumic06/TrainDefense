@@ -35,7 +35,7 @@ MonoBehaviour:
     description: Monster_10002_Desc
     icon: {fileID: -8975192331532836980, guid: 5d9812acc860e45b4be3490475ec11ce, type: 3}
     monsterStatusData:
-      MaxHp: 25
+      MaxHp: 30
       Damage: 5
       MoveSpeed: 8
       AttackDelay: 0.7
@@ -52,14 +52,14 @@ MonoBehaviour:
     description: Monster_10003_Desc
     icon: {fileID: -3602873763752426733, guid: c8770fe2a236a4dd4b51a7fa9eac9569, type: 3}
     monsterStatusData:
-      MaxHp: 40
+      MaxHp: 45
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 2.7
-      DropExpMin: 40
-      DropExpMax: 40
-      DropMoneyMin: 40
-      DropMoneyMax: 40
+      DropExpMin: 45
+      DropExpMax: 45
+      DropMoneyMin: 45
+      DropMoneyMax: 45
       AttackRange: 6
       AttackType: 1
     prefabId: Gnoll
@@ -73,8 +73,8 @@ MonoBehaviour:
       Damage: 10
       MoveSpeed: 4
       AttackDelay: 2
-      DropExpMin: 25
-      DropExpMax: 25
+      DropExpMin: 20
+      DropExpMax: 20
       DropMoneyMin: 20
       DropMoneyMax: 20
       AttackRange: 2
@@ -90,10 +90,10 @@ MonoBehaviour:
       Damage: 10
       MoveSpeed: 3.4
       AttackDelay: 3
-      DropExpMin: 60
-      DropExpMax: 60
-      DropMoneyMin: 45
-      DropMoneyMax: 45
+      DropExpMin: 35
+      DropExpMax: 35
+      DropMoneyMin: 35
+      DropMoneyMax: 35
       AttackRange: 5
       AttackType: 1
     prefabId: Shark
@@ -107,10 +107,10 @@ MonoBehaviour:
       Damage: 15
       MoveSpeed: 2.8
       AttackDelay: 3
-      DropExpMin: 140
-      DropExpMax: 140
-      DropMoneyMin: 95
-      DropMoneyMax: 95
+      DropExpMin: 170
+      DropExpMax: 170
+      DropMoneyMin: 170
+      DropMoneyMax: 170
       AttackRange: 2
       AttackType: 0
     prefabId: Turtle
@@ -120,7 +120,7 @@ MonoBehaviour:
     description: Monster_10007_Desc
     icon: {fileID: -3625172091503848354, guid: 6b0643aaa67844e2aae806b506ebe8f5, type: 3}
     monsterStatusData:
-      MaxHp: 20
+      MaxHp: 18
       Damage: 5
       MoveSpeed: 5
       AttackDelay: 2
@@ -137,7 +137,7 @@ MonoBehaviour:
     description: Monster_10008_Desc
     icon: {fileID: -3635613324321525249, guid: ef9ae9e2cb8b84e81b8c56aea546a281, type: 3}
     monsterStatusData:
-      MaxHp: 50
+      MaxHp: 45
       Damage: 10
       MoveSpeed: 6
       AttackDelay: 1.5
@@ -154,14 +154,14 @@ MonoBehaviour:
     description: Monster_10009_Desc
     icon: {fileID: 3863950976592595061, guid: a9f259f952e5f4141a134eb245f1d344, type: 3}
     monsterStatusData:
-      MaxHp: 80
+      MaxHp: 70
       Damage: 10
       MoveSpeed: 4.3
       AttackDelay: 1
-      DropExpMin: 75
-      DropExpMax: 75
-      DropMoneyMin: 75
-      DropMoneyMax: 75
+      DropExpMin: 70
+      DropExpMax: 70
+      DropMoneyMin: 70
+      DropMoneyMax: 70
       AttackRange: 1.5
       AttackType: 0
     prefabId: Lizard
@@ -171,14 +171,14 @@ MonoBehaviour:
     description: Monster_10010_Desc
     icon: {fileID: 8580189074808014292, guid: 3addccd9ed6334cf9b6fa384aba038d0, type: 3}
     monsterStatusData:
-      MaxHp: 130
+      MaxHp: 110
       Damage: 30
       MoveSpeed: 7
       AttackDelay: 2.5
-      DropExpMin: 150
-      DropExpMax: 150
-      DropMoneyMin: 150
-      DropMoneyMax: 150
+      DropExpMin: 110
+      DropExpMax: 110
+      DropMoneyMin: 110
+      DropMoneyMax: 110
       AttackRange: 2
       AttackType: 0
     prefabId: Bear
@@ -188,14 +188,14 @@ MonoBehaviour:
     description: Monster_10011_Desc
     icon: {fileID: -6557010917886046056, guid: 327caefdcf18245b58192e6d50fa930a, type: 3}
     monsterStatusData:
-      MaxHp: 10
+      MaxHp: 8
       Damage: 5
       MoveSpeed: 6.5
       AttackDelay: 0.8
-      DropExpMin: 11
-      DropExpMax: 11
-      DropMoneyMin: 13
-      DropMoneyMax: 13
+      DropExpMin: 8
+      DropExpMax: 8
+      DropMoneyMin: 8
+      DropMoneyMax: 8
       AttackRange: 2
       AttackType: 0
     prefabId: Dwarf
@@ -205,14 +205,14 @@ MonoBehaviour:
     description: Monster_10012_Desc
     icon: {fileID: -3068608994661831594, guid: ae483a7a0e01f492ab7488474a21b3e4, type: 3}
     monsterStatusData:
-      MaxHp: 40
+      MaxHp: 35
       Damage: 15
       MoveSpeed: 5
       AttackDelay: 1.4
-      DropExpMin: 30
-      DropExpMax: 30
-      DropMoneyMin: 40
-      DropMoneyMax: 40
+      DropExpMin: 35
+      DropExpMax: 35
+      DropMoneyMin: 35
+      DropMoneyMax: 35
       AttackRange: 3
       AttackType: 0
     prefabId: Spider
@@ -222,14 +222,14 @@ MonoBehaviour:
     description: Monster_10013_Desc
     icon: {fileID: 6790613064428419975, guid: c71a51d7fffe3487db08e462fa5be6e3, type: 3}
     monsterStatusData:
-      MaxHp: 160
+      MaxHp: 110
       Damage: 20
       MoveSpeed: 4.7
       AttackDelay: 2
-      DropExpMin: 80
-      DropExpMax: 80
-      DropMoneyMin: 95
-      DropMoneyMax: 95
+      DropExpMin: 110
+      DropExpMax: 110
+      DropMoneyMin: 110
+      DropMoneyMax: 110
       AttackRange: 2
       AttackType: 0
     prefabId: Minotaur
@@ -243,10 +243,10 @@ MonoBehaviour:
       Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
-      DropExpMin: 26
-      DropExpMax: 26
-      DropMoneyMin: 26
-      DropMoneyMax: 26
+      DropExpMin: 28
+      DropExpMax: 28
+      DropMoneyMin: 28
+      DropMoneyMax: 28
       AttackRange: 2
       AttackType: 0
     prefabId: GoblinSpear
@@ -260,10 +260,10 @@ MonoBehaviour:
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 3
-      DropExpMin: 73
-      DropExpMax: 73
-      DropMoneyMin: 73
-      DropMoneyMax: 73
+      DropExpMin: 60
+      DropExpMax: 60
+      DropMoneyMin: 60
+      DropMoneyMax: 60
       AttackRange: 5
       AttackType: 1
     prefabId: GoblinSorcerer
@@ -277,10 +277,10 @@ MonoBehaviour:
       Damage: 20
       MoveSpeed: 3
       AttackDelay: 4
-      DropExpMin: 155
-      DropExpMax: 155
-      DropMoneyMin: 155
-      DropMoneyMax: 155
+      DropExpMin: 220
+      DropExpMax: 220
+      DropMoneyMin: 220
+      DropMoneyMax: 220
       AttackRange: 2
       AttackType: 0
     prefabId: GiantGoblin
@@ -1557,7 +1557,7 @@ MonoBehaviour:
       Probability: 0.5
       SpawnLevel: 9
       EliteChanceMultiplier: 1
-      EliteChanceRamp: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map3
@@ -1584,7 +1584,7 @@ MonoBehaviour:
       Probability: 1
       SpawnLevel: 6
       EliteChanceMultiplier: 1
-      EliteChanceRamp: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map4
@@ -1611,7 +1611,7 @@ MonoBehaviour:
       Probability: 1
       SpawnLevel: 6
       EliteChanceMultiplier: 1
-      EliteChanceRamp: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map5
@@ -1623,53 +1623,53 @@ MonoBehaviour:
     iconId: sword
     name: Upgrade_110001_Name
     description: Upgrade_110001_Desc
-    needMoney: 60
-    maxUpgradeCount: 20
+    needMoney: 120
+    maxUpgradeCount: 100
     upgradeDataType: 0
     upgradeValue: 5
     stats:
     - <Type>k__BackingField: 2
       <Value>k__BackingField: 5
-    growthRate: 1.065
+    growthRate: 1.15
   - id: 110002
     iconId: 
     name: Upgrade_110002_Name
     description: Upgrade_110002_Desc
-    needMoney: 85
+    needMoney: 150
     maxUpgradeCount: 10
     upgradeDataType: 0
     upgradeValue: -5
     stats:
     - <Type>k__BackingField: 4
       <Value>k__BackingField: -5
-    growthRate: 1.065
+    growthRate: 1.15
   - id: 110003
     iconId: 
     name: Upgrade_110003_Name
     description: Upgrade_110003_Desc
-    needMoney: 120
-    maxUpgradeCount: 20
+    needMoney: 90
+    maxUpgradeCount: 100
     upgradeDataType: 0
     upgradeValue: 5
     stats:
     - <Type>k__BackingField: 0
       <Value>k__BackingField: 5
-    growthRate: 1.065
+    growthRate: 1.11
   - id: 110004
     iconId: Coin
     name: Upgrade_110004_Name
     description: Upgrade_110004_Desc
-    needMoney: 140
+    needMoney: 120
     maxUpgradeCount: 20
     upgradeDataType: 1
     upgradeValue: 5
     stats: []
-    growthRate: 1.065
+    growthRate: 1.13
   - id: 110006
     iconId: 
     name: Upgrade_110006_Name
     description: Upgrade_110006_Desc
-    needMoney: 100
+    needMoney: 70
     maxUpgradeCount: 20
     upgradeDataType: 0
     upgradeValue: 5
@@ -1681,24 +1681,24 @@ MonoBehaviour:
     iconId: 
     name: Upgrade_110007_Name
     description: Upgrade_110007_Desc
-    needMoney: 60
-    maxUpgradeCount: 20
+    needMoney: 100
+    maxUpgradeCount: 100
     upgradeDataType: 0
     upgradeValue: 5
     stats:
     - <Type>k__BackingField: 7
       <Value>k__BackingField: 5
-    growthRate: 1.065
+    growthRate: 1.11
   - id: 110005
     iconId: 
     name: Upgrade_110005_Name
     description: Upgrade_110005_Desc
-    needMoney: 140
+    needMoney: 90
     maxUpgradeCount: 20
     upgradeDataType: 1
     upgradeValue: 5
     stats: []
-    growthRate: 1.065
+    growthRate: 1.1
   triChoiceDB:
     addTrainChoices:
     - Option:
@@ -1882,7 +1882,7 @@ MonoBehaviour:
     multiplierRampInterval: 60
     multiplierGrowthPerInterval: 0.1
     multiplierStartProgress: 0
-    hpMultiplier: 5
+    hpMultiplier: 3.5
     damageMultiplier: 2
     moveSpeedMultiplier: 1.2
     sizeScale: 1.5

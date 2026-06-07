@@ -394,8 +394,9 @@ namespace TrainDefense.Game.Manager
             // 한 판 시작(누적 0)은 1.0 (기본값)
             if (_totalStationPassedCount <= 0) return 1.0f;
 
-            // TODO: 구체적인 수식 적용 필요
-            return 1.0f + (_totalStationPassedCount * hpScale);
+            // 지수(복리) 스케일 — 플레이어 DPS가 곱셈(공격력×공속×치명타×포탑수)으로 커지므로
+            // 난이도도 곱으로 추격해야 균형. base = 1 + hpScale (예: 0.10 → 1.10^역수, 역44≈×44)
+            return Mathf.Pow(1f + hpScale, _totalStationPassedCount);
         }
 
         /// <summary>
@@ -415,11 +416,9 @@ namespace TrainDefense.Game.Manager
         /// </summary>
         public float GetGoldScale()
         {
-            // 한 판 시작(누적 0)은 1.0 (기본값)
-            if (_totalStationPassedCount <= 0) return 1.0f;
-
-            // TODO: 구체적인 수식 적용 필요
-            return 1.0f + (_totalStationPassedCount * goldScale);
+            // 골드는 초반 억제(역0 ×0.30)로 첫 상점 과소비를 막고, 역수에 비례 가속(역44 ≈ ×3.25)해
+            // 후반 무한 상점 골드는 유지. base 0.30 + goldScale(0.067)×역수. 경험치는 이 곡선 영향 없음.
+            return 0.30f + (_totalStationPassedCount * goldScale);
         }
         #endregion
     }

@@ -2795,7 +2795,7 @@ MonoBehaviour:
   spawnInterval: 2
   spawnRange: 2
   stationSpawnAccelPercent: 5
-  maxSpawnAccelPercent: 90
+  maxSpawnAccelPercent: 80
   spawnMode: 1
   customSpawnAreas:
   - Offset: {x: 0, y: 10}
