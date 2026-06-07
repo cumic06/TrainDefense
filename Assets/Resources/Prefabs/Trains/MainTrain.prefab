@@ -243,7 +243,7 @@ MonoBehaviour:
   isRotateModel: 0
   IsUnDead: 0
   moveSpeed: 2
-  maxTrainCount: 5
+  maxTrainCount: 7
   trainOffset: 2.8
   trainModel: {fileID: 2220103901625701442}
   startTrainablePrefab: {fileID: 0}
