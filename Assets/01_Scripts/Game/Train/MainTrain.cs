@@ -310,16 +310,21 @@ namespace TrainDefense.Game
 
       private void RearrangeTrains()
       {
-         int count = _currentAliveTrains.Count;
+         // 원래 추가 순서(originalIndex)로 정렬해 배치 — RearrangeAllTrainsToOriginalOrder와 순서를 일치시켜
+         // 부활·엘리트 전환 등으로 _currentAliveTrains 리스트 순서가 바뀌어도 포탑 위치가 흔들리지 않게 한다.
+         var ordered = _currentAliveTrains
+            .OrderBy(t => _trainOriginalIndexMap.TryGetValue(t, out var idx) ? idx : int.MaxValue)
+            .ToList();
+         int count = ordered.Count;
          float halfLength = count * trainOffset * 0.5f;
 
          ApplyMainTrainModelOffset(halfLength);
 
-         // 살아있는 기차만 연속적으로 재정렬 (편성 중앙이 MainTrain transform에 오도록 오른쪽으로 halfLength 이동)
+         // 편성 중앙이 MainTrain transform에 오도록 오른쪽으로 halfLength 이동
          for (int i = 0; i < count; i++)
          {
             Vector3 newPos = new Vector3(halfLength - trainOffset * (i + 1), 0f, 0f);
-            _currentAliveTrains[i].transform.localPosition = newPos;
+            ordered[i].transform.localPosition = newPos;
          }
       }
 
