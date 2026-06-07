@@ -301,7 +301,8 @@ namespace TrainDefense.Game
 
       private IEnumerator _SlowCoroutine(float slowValue)
       {
-         var slowSpeed = _currentMonsterStatus.MoveSpeed * slowValue;
+         // 원래 속도 기준 둔화 (매 프레임 재적용 시 현재 속도 기준이면 0쪽으로 누적 감속됨)
+         var slowSpeed = _monsterData.MonsterStatusData.MoveSpeed * slowValue;
          var startSpeed = _currentMonsterStatus.MoveSpeed;
          float elapsedTime = 0f;
          float duration = 1f;

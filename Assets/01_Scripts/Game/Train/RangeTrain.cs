@@ -9,7 +9,7 @@ using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game
 {
-    public class RangeTrain : Train, ITrainable
+    public class RangeTrain : Train, ITrainable, ISlowProvider
     {
         #region Fields
         private RangeTrainData rangeTrainData => _trainData as RangeTrainData;
@@ -237,6 +237,7 @@ namespace TrainDefense.Game
                 _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval;
                 _currentRangeTrainStatus.CriticalChance += rangeStatus.CriticalChance;
                 _currentRangeTrainStatus.CriticalDamage += rangeStatus.CriticalDamage;
+                _currentRangeTrainStatus.SlowRate += rangeStatus.SlowRate;
 
                 if (_rangeProjectilePrefab != null)
                 {
@@ -245,6 +246,12 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
+        }
+
+        // 누적 둔화율(%, 기차 base + 강화)을 둔화 배율로 변환.
+        public float GetSlowValue()
+        {
+            return 1f - _currentRangeTrainStatus.SlowRate / 100f;
         }
 
         public override void StatusUpgrade(RangeTrainStatus upgradeData)
@@ -256,6 +263,7 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus.AttackInterval += upgradeData.AttackInterval;
             _currentRangeTrainStatus.CriticalChance += upgradeData.CriticalChance;
             _currentRangeTrainStatus.CriticalDamage += upgradeData.CriticalDamage;
+            _currentRangeTrainStatus.SlowRate += upgradeData.SlowRate;
 
             if (_rangeProjectilePrefab != null)
             {
@@ -481,6 +489,7 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus.AttackInterval = newBase.AttackInterval + (srcCurrent.AttackInterval - srcBase.AttackInterval);
             _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
             _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
+            _currentRangeTrainStatus.SlowRate = newBase.SlowRate + (srcCurrent.SlowRate - srcBase.SlowRate);
 
             _statAttackDamageAccum = srcRange._statAttackDamageAccum;
             _statAttackCountAccum = srcRange._statAttackCountAccum;
