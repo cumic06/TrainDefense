@@ -219,7 +219,7 @@ namespace TrainDefense.Game
         /// </summary>
         // 크리티컬 시 기본 추가 데미지 비율(%). 실제 크리 보너스 = BaseCriticalDamagePercent + CriticalDamage.
         // Detail UI 표기(TurretTrain/RangeTrain.GetStatDetails)도 이 값을 참조한다.
-        public const float BaseCriticalDamagePercent = 30f;
+        public const float BaseCriticalDamagePercent = 100f;
 
         protected (float finalDamage, bool isCritical) CalculateCriticalDamage()
         {

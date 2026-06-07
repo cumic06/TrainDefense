@@ -421,7 +421,7 @@ namespace TrainDefense.Game
         }
 
         #region DirectDamageAttack
-        private const float BaseCriticalDamagePercent = 30f;
+        private const float BaseCriticalDamagePercent = 100f;
 
         private void DirectDamageAttack(ProjectileData projectileData)
         {
