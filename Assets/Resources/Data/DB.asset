@@ -372,11 +372,11 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 4
       AttackRange: 8
       AttackArea: 12
       AttackCount: 1
-      AttackInterval: 0.1
+      AttackInterval: 0.2
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0.5
@@ -544,11 +544,11 @@ MonoBehaviour:
     - 60003
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 4
       AttackRange: 8
       AttackArea: 8
       AttackCount: 1
-      AttackInterval: 0.1
+      AttackInterval: 0.2
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0.5
