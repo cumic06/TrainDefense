@@ -7,6 +7,9 @@ namespace TrainDefense.Game.Controller
         [SerializeField]
         private GameObject[] _maps;
 
+        [SerializeField]
+        private float speed;
+
         private float width;
         private int _currentIndex = 0;
 
@@ -22,6 +25,11 @@ namespace TrainDefense.Game.Controller
             {
                 width = sr.bounds.size.x;
             }
+        }
+
+        private void FixedUpdate()
+        {
+            transform.Translate(Vector3.left * Time.fixedDeltaTime * speed);
         }
 
         private void Update()
