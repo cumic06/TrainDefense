@@ -1500,7 +1500,7 @@ MonoBehaviour:
       prefabId: Map1
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
-    stageImage: {fileID: 8598508764172064028, guid: 15a620789885c0e4785fe4b6ee084b5d, type: 3}
+    stageImage: {fileID: 1169708250249569854, guid: b1afade6230499848a8b7c09f05c25f5, type: 3}
   - id: 50002
     baseInspectionTime: 40
     stationCount: 3
@@ -1526,10 +1526,10 @@ MonoBehaviour:
       id: 
       prefabId: Map2
       customSpawnAreas:
-      - Offset: {x: 0, y: 6}
-        Size: {x: 35, y: 5}
-      - Offset: {x: 0, y: -6}
-        Size: {x: 35, y: 5}
+      - Offset: {x: 0, y: 4.5}
+        Size: {x: 25, y: 4}
+      - Offset: {x: 0, y: -4.5}
+        Size: {x: 25, y: 4}
       spawnEffectPrefab: {fileID: 5497501282563620409, guid: 61ec9a5b3b8a7454ba21d3c1bad637c6, type: 3}
     stageImage: {fileID: -8210071984612457726, guid: e44f3d3e5e510c747b272409f41010fd, type: 3}
   - id: 50003

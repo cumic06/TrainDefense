@@ -24,7 +24,7 @@ namespace TrainDefense.Game
       private float stationSpawnAccelPercent = 5f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
-      private float maxSpawnAccelPercent = 50f;
+      private float maxSpawnAccelPercent = 90f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
       private MonsterSpawnType spawnMode = MonsterSpawnType.CameraBased;
