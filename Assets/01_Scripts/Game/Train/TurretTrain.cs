@@ -218,7 +218,7 @@ namespace TrainDefense.Game
         {
             if (_attackCountdown <= 0)
             {
-                _attackCountdown = _currentTurretTrainStatus.AttackInterval;
+                // 쿨 리셋은 발사 성공 시(AttackHandler)에만 → 타겟 없으면 쿨 유지(헛돌지 않음)
                 return true;
             }
             else
@@ -242,12 +242,12 @@ namespace TrainDefense.Game
             }
 
             Attack();
+            _attackCountdown = _currentTurretTrainStatus.AttackInterval;
         }
 
         private void ResetTarget()
         {
             _targetMonsters.Clear();
-            _attackCountdown = _currentTurretTrainStatus.AttackInterval;
 
             if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
             {

@@ -49,13 +49,15 @@ namespace TrainDefense.Game
 
             _timer += deltaTime;
             if (_timer < Interval) return;
-            _timer = 0f;
 
             var prefab = LoadPrefab();
             if (prefab == null) return;
 
             // 새 총알(눈덩이 등)은 화면 안(맵 전체)에서 가장 가까운 적을 조준해 발사한다. (owner 사거리와 무관)
             Monster nearest = FindNearestMonster(ScreenSearchRadius);
+            if (nearest == null) return; // 타겟 없으면 쿨 유지(다음 프레임 재시도) → 적 등장 시 즉시 발사
+
+            _timer = 0f;
 
             if (Owner is RangeTrain range)
             {
