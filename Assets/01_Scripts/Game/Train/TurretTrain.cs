@@ -50,6 +50,7 @@ namespace TrainDefense.Game
         private float _attackCountdown;
 
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
+        public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
 
         public float ProjectileModelScale { get; set; } = 1f;
         public float ProjectileKnockbackPower { get; set; }
@@ -1122,8 +1123,11 @@ namespace TrainDefense.Game
             return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
         }
 
-        public void SpawnProjectileAtWorldPositionPublic(Monster target, Vector3 worldPosition)
+        public void SpawnProjectileAtWorldPositionPublic(Monster target, Vector3 worldPosition, bool playSound = false)
         {
+            // 무작위 위치 폭격 발사음 (Attack() 미경유로 무음 → 호출자가 빈도를 조절해 재생).
+            if (playSound && turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
+                SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
             SpawnProjectileAtWorldPosition(target, worldPosition);
         }
 

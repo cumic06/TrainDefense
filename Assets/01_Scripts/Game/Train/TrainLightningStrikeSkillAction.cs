@@ -10,7 +10,7 @@ namespace TrainDefense.Game
     /// </summary>
     public class TrainLightningStrikeSkillAction : TrainSkillAction
     {
-        private const float StunDuration = 3f;
+        private const float StunDuration = 2f;
 
         // 낙뢰 시각 이펙트 프리팹 경로(Resources). 수명은 프리팹의 AutoReleaseEffect가 관리.
         private const string LightningEffectPath = "Prefabs/LightningStrike";
@@ -23,22 +23,23 @@ namespace TrainDefense.Game
             float strikeRadius = projectileSkillData.Range;
             if (strikeRadius <= 0f) return false;
 
+            // 낙뢰 피해 = 포탑 공격력 × 3 (공격력 비례). 비-TurretTrain이면 스킬 고정값 폴백.
             float damage = projectileSkillData.Damage;
+            if (owner is TurretTrain turret)
+            {
+                damage = turret.CurrentAttackDamage * 4f;
+            }
 
-            var nearest = Physics2D.OverlapCircleAll(owner.transform.position, strikeRadius)
-                .Select(c => c.TryGetComponent(out Monster m) ? m : null)
-                .Where(m => m != null && m.IsActive && m.gameObject.activeInHierarchy)
-                .OrderBy(m => (owner.transform.position - m.transform.position).sqrMagnitude)
-                .FirstOrDefault();
+            // 낙뢰 중심 = 카메라 화면 정중앙 (적 위치 무관, 고정).
+            Camera cam = Camera.main;
+            if (cam == null) return false;
+            Vector2 strikeCenter = cam.transform.position;
 
-            if (nearest == null) return false;
-
-            Vector2 strikeCenter = nearest.transform.position;
-
-            // 낙뢰가 떨어진 지점에 번개 이펙트 스폰 (AutoReleaseEffect가 자동 반환).
+            // 낙뢰 이펙트·사운드는 적 유무와 무관하게 항상 발동 (스킬 쓰면 무조건 떨어짐).
             ResourceManager.Instance?.SpawnPath(LightningEffectPath, strikeCenter);
             SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_LightningStrike);
 
+            // 반경 내 적이 있으면 데미지 + 스턴.
             var targets = Physics2D.OverlapCircleAll(strikeCenter, strikeRadius)
                 .Select(c => c.TryGetComponent(out Monster m) ? m : null)
                 .Where(m => m != null && m.IsActive && m.gameObject.activeInHierarchy)
@@ -50,7 +51,7 @@ namespace TrainDefense.Game
                 target.Stun(StunDuration);
             }
 
-            return targets.Length > 0;
+            return true;
         }
     }
 }

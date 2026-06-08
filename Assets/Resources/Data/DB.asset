@@ -852,7 +852,7 @@ MonoBehaviour:
       name: Skill_50005_Name
       description: Skill_50005_Desc
       skillType: 4
-      skillCooldown: 30
+      skillCooldown: 10
       skillIconId: 
       projectileData:
         projectilePrefabId: 
@@ -865,7 +865,7 @@ MonoBehaviour:
       name: Skill_50006_Name
       description: Skill_50006_Desc
       skillType: 5
-      skillCooldown: 30
+      skillCooldown: 15
       skillIconId: 
       projectileData:
         projectilePrefabId: 
@@ -935,7 +935,7 @@ MonoBehaviour:
       passiveType: StatModifier
       param1: AttackArea
       param2: -30
-      param3: AttackDamage:150
+      param3: AttackDamage:100
       description: Passive_60003_Desc
     - id: 60004
       name: Passive_60004_Name
@@ -969,8 +969,8 @@ MonoBehaviour:
       name: Passive_60008_Name
       passiveType: StatModifier
       param1: AttackCount
-      param2: 200
-      param3: 
+      param2: 100
+      param3:
       description: Passive_60008_Desc
     - id: 60009
       name: Passive_60009_Name
@@ -981,7 +981,7 @@ MonoBehaviour:
       description: Passive_60009_Desc
     - id: 60010
       name: Passive_60010_Name
-      passiveType: StatModifier:AttackDamage:50:AttackArea:50|ScaleProjectile
+      passiveType: StatModifier:AttackDamage:100:AttackArea:50|ScaleProjectile
       param1: 1.5
       param2: 
       param3: 
@@ -1011,14 +1011,14 @@ MonoBehaviour:
       name: Passive_60014_Name
       passiveType: StatModifier
       param1: AttackArea
-      param2: 300
+      param2: 150
       param3: 
       description: Passive_60014_Desc
     - id: 60015
       name: Passive_60015_Name
       passiveType: RapidBombard
-      param1: -50
-      param2: -50
+      param1: -150
+      param2: 0
       param3: 2:10:7
       description: Passive_60015_Desc
     - id: 60017
@@ -2090,18 +2090,14 @@ MonoBehaviour:
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 70010
-        targetTrainId: 31004
-        weightedUpgrades:
-        - upgradeDataId: 90008
-          upgradeDataWeight: 1
+        targetTrainId:
+        weightedUpgrades: []
     - rid: 5100000000000000002
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 70011
-        targetTrainId: 31004
-        weightedUpgrades:
-        - upgradeDataId: 90009
-          upgradeDataWeight: 1
+        targetTrainId:
+        weightedUpgrades: []
     - rid: 6103417219460104299
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
