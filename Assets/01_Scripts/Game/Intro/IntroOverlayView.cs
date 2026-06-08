@@ -22,6 +22,10 @@ namespace TrainDefense.Game.Intro
         [SerializeField] private Button _nextButton;
         [SerializeField] private Button _skipButton;
 
+        [Header("Screen Tap")]
+        [Tooltip("화면 전체를 덮는 버튼. 버튼이 아닌 빈 화면을 터치해도 다음 슬라이드로 넘어가게 한다.")]
+        [SerializeField] private Button _screenButton;
+
         public event Action OnNextRequested;
         public event Action OnSkipRequested;
 
@@ -37,12 +41,18 @@ namespace TrainDefense.Game.Intro
                 SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
                 OnSkipRequested?.Invoke();
             });
+            _screenButton?.onClick.AddListener(() =>
+            {
+                SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+                OnNextRequested?.Invoke();
+            });
         }
 
         private void OnDestroy()
         {
             _nextButton?.onClick.RemoveAllListeners();
             _skipButton?.onClick.RemoveAllListeners();
+            _screenButton?.onClick.RemoveAllListeners();
         }
 
         public void Show()
