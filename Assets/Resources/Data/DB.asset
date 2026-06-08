@@ -726,14 +726,14 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 3
       AttackRange: 3
-      AttackArea: 3
+      AttackArea: 5
       AttackCount: 1
-      AttackInterval: 0.15
+      AttackInterval: 0.2
       CriticalChance: 0
       CriticalDamage: 0
-      SlowRate: 40
+      SlowRate: 25
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   - id: 41001
@@ -780,14 +780,14 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 3
       AttackRange: 3
-      AttackArea: 3
+      AttackArea: 5
       AttackCount: 1
-      AttackInterval: 0.15
+      AttackInterval: 0.2
       CriticalChance: 0
       CriticalDamage: 0
-      SlowRate: 40
+      SlowRate: 25
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 0
   trainSkillDataDB:
@@ -1456,7 +1456,7 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackDamage: 1
         AttackRange: 0
-        AttackArea: 1
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
@@ -1467,12 +1467,12 @@ MonoBehaviour:
       rangeStatusUpgrade:
         AttackDamage: 2
         AttackRange: 0
-        AttackArea: 1
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
-        SlowRate: 15
+        SlowRate: 10
   stageDataList:
   - id: 50001
     baseInspectionTime: 40
