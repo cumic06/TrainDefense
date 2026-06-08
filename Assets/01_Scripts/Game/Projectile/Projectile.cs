@@ -348,7 +348,7 @@ namespace TrainDefense.Game
             if (data.HasSlowEffect)
             {
                 float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
-                target.Slow(slowValue);
+                target.Slow(slowValue, 0f);
             }
 
             // 넉백 효과 (Stay 중에도 적용)

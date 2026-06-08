@@ -16,15 +16,15 @@ MonoBehaviour:
   speed: 10
   destroyDelay: 3
   destroyOnTriggerEnter: 1
-  isSpawnTriggerHandle: 0
-  triggerHandlePrefab: {fileID: 0}
+  isSpawnTriggerHandle: 1
+  triggerHandlePrefab: {fileID: 7700000000000000005, guid: 5e0d1a3c7b9f4862a1d6c8e042f7b913, type: 3}
   scaleByRange: 0
   scaleRangeType: 0
   isTargeting: 0
   directDamage: 0
   damageType: 0
   tickDamageInterval: 0.1
-  hasSlowEffect: 1
+  hasSlowEffect: 0
   slowValue: 0.5
   hasShoveEffect: 0
   shovePower: 1

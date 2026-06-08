@@ -442,7 +442,7 @@ namespace TrainDefense.Game
                 if (projectileData.HasShoveEffect)
                     target.Shove(projectileData.ShovePower, projectileData.ShoveDuration);
                 if (projectileData.HasSlowEffect)
-                    target.Slow(projectileData.SlowValue);
+                    target.Slow(projectileData.SlowValue, 0f);
             }
         }
 

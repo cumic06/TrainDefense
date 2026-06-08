@@ -129,7 +129,7 @@ namespace TrainDefense.Game
             return transform;
         }
 
-        public void Slow(float slowValue)
+        public void Slow(float slowValue, float duration)
         {
 
         }

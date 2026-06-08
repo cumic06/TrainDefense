@@ -33,6 +33,20 @@ namespace TrainDefense.Game
         [SerializeField]
         private float stunDuration = 1f;
 
+        [BoxGroup("Status Effects")]
+        [SerializeField]
+        private bool hasSlowEffect = false;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasSlowEffect")]
+        [SerializeField]
+        private float slowValue = 0.5f;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasSlowEffect")]
+        [SerializeField]
+        private float slowDuration = 2f;
+
         [SerializeField]
         private bool destroyOnTriggerEnter = false;
 
@@ -148,6 +162,11 @@ namespace TrainDefense.Game
             if (hasStunEffect)
             {
                 target.Stun(stunDuration);
+            }
+
+            if (hasSlowEffect)
+            {
+                target.Slow(slowValue, slowDuration);
             }
         }
 

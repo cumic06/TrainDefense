@@ -5,7 +5,8 @@ namespace TrainDefense.Game
     /// <summary>
     /// 주기적으로 owner 위치에 투사체 발사. (엘리트 냉기 눈덩이: 3s마다)
     /// 이벤트 구독 대신 Tick(deltaTime) 사용.
-    /// DSL: "PeriodicSpawn:interval:projectile_prefab_id:radius"
+    /// DSL: "PeriodicSpawn:interval:projectile_prefab_id:radius[:damage_mul]"
+    /// damage_mul 생략 시 1.0 (owner 공격력 그대로).
     /// </summary>
     public class PeriodicSpawnPassive : TrainPassiveSkill
     {
@@ -14,6 +15,7 @@ namespace TrainDefense.Game
         public float Interval { get; private set; } = 3f;
         public string ProjectilePrefabId { get; private set; }
         public float Radius { get; private set; } = 4f;
+        public float DamageMultiplier { get; private set; } = 1f;
 
         // 눈덩이 등은 owner 사거리가 아니라 화면 전체에서 가장 가까운 적을 조준해야 하므로 넉넉한 탐색 반경 사용.
         private const float ScreenSearchRadius = 100f;
@@ -27,11 +29,17 @@ namespace TrainDefense.Game
             if (parts.Length < 4) return null;
             if (!float.TryParse(parts[1], out float interval) || interval <= 0f) return null;
             if (!float.TryParse(parts[3], out float radius) || radius <= 0f) return null;
+            float damageMultiplier = 1f;
+            if (parts.Length >= 5 && !float.TryParse(parts[4], out damageMultiplier))
+            {
+                damageMultiplier = 1f;
+            }
             return new PeriodicSpawnPassive
             {
                 Interval = interval,
                 ProjectilePrefabId = parts[2].Trim(),
-                Radius = radius
+                Radius = radius,
+                DamageMultiplier = damageMultiplier
             };
         }
 
@@ -51,11 +59,11 @@ namespace TrainDefense.Game
 
             if (Owner is RangeTrain range)
             {
-                range.SpawnExternalProjectile(prefab, Radius, nearest);
+                range.SpawnExternalProjectile(prefab, Radius, nearest, DamageMultiplier);
             }
             else if (Owner is TurretTrain turret)
             {
-                turret.SpawnExternalProjectileAtSelf(prefab, Radius, target: nearest);
+                turret.SpawnExternalProjectileAtSelf(prefab, Radius, DamageMultiplier, target: nearest);
             }
         }
 

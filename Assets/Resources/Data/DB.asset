@@ -947,9 +947,9 @@ MonoBehaviour:
     - id: 60005
       name: Passive_60005_Name
       passiveType: PeriodicSpawn
-      param1: 3
+      param1: 2
       param2: SnowballProjectile
-      param3: 3
+      param3: 3:10
       description: Passive_60005_Desc
     - id: 60006
       name: Passive_60006_Name
