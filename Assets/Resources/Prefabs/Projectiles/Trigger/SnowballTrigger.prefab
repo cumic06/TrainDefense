@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7700000000000000003}
   - component: {fileID: 7700000000000000004}
   - component: {fileID: 7700000000000000005}
+  - component: {fileID: 240581893164055398}
   m_Layer: 0
   m_Name: SnowballTrigger
   m_TagString: Untagged
@@ -83,12 +84,12 @@ SpriteRenderer:
   m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -4641516227613644353, guid: 0fb3704cb47b345c3bc3d5afcf150930, type: 3}
-  m_Color: {r: 0.7, g: 0.85, b: 1, a: 0.6}
+  m_Sprite: {fileID: 9218647182403415196, guid: dffe3019b6071cf4b8fc74311dd7c8b0, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3.56, y: 2.56}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -139,7 +140,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 46e9ea777c7a7c540a13b6cd8cd7e91c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.TriggerHandle
   hasTurretDamage: 1
   damage: 10
@@ -151,5 +152,27 @@ MonoBehaviour:
   slowValue: 0.3
   slowDuration: 1
   destroyOnTriggerEnter: 1
-  destroyDelay: 0.3
+  destroyDelay: 0.15
   expandingWave: {fileID: 0}
+--- !u!95 &240581893164055398
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7700000000000000001}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 41fdbf1b39b70ed41a03397d31957e63, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

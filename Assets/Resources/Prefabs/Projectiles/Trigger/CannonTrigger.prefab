@@ -79,10 +79,10 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 731328439
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -4041541690360546090, guid: 04fdb7480a7bc1449b141f256b40e8c3, type: 3}
+  m_Sprite: {fileID: 8027965801587242155, guid: 04fdb7480a7bc1449b141f256b40e8c3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -200,5 +200,11 @@ MonoBehaviour:
   damage: 50
   damageType: 0
   tickInterval: 0.5
+  hasStunEffect: 0
+  stunDuration: 1
+  hasSlowEffect: 0
+  slowValue: 0.5
+  slowDuration: 2
   destroyOnTriggerEnter: 1
-  destroyDelay: 0.3
+  destroyDelay: 0.25
+  expandingWave: {fileID: 0}
