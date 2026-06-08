@@ -334,6 +334,10 @@ namespace TrainDefense.Game
                         // 공속은 상점과 동일하게 현재값 기준 역수 곱셈(DPS 선형, 0 이하 방지). percent 음수=공속 증가.
                         _currentRangeTrainStatus.AttackInterval *= 1f / (1f + (-percent));
                         break;
+                    case StatType.SlowRate:
+                        // 둔화율(%)을 현재값 기준 percent 증가
+                        _currentRangeTrainStatus.SlowRate += _currentRangeTrainStatus.SlowRate * percent;
+                        break;
                     default:
                         ApplyStat(stat);
                         break;

@@ -21,5 +21,8 @@ namespace TrainDefense.Game.Stats
 
         // 공격 범위 (855f466에서 중간 삽입되어 기존 값 밀림 방지 — 맨 뒤 고정)
         AttackArea = 8,
+
+        // 둔화율 (RangeTrain 전용, 맨 뒤 고정)
+        SlowRate = 9,
     }
 }
