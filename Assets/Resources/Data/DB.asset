@@ -189,7 +189,7 @@ MonoBehaviour:
     icon: {fileID: -6557010917886046056, guid: 327caefdcf18245b58192e6d50fa930a, type: 3}
     monsterStatusData:
       MaxHp: 8
-      Damage: 5
+      Damage: 3
       MoveSpeed: 6.5
       AttackDelay: 0.8
       DropExpMin: 8
@@ -827,9 +827,9 @@ MonoBehaviour:
       description: Skill_50003_Desc
       skillType: 2
       skillCooldown: 30
-      skillIconId:
+      skillIconId: 
       projectileData:
-        projectilePrefabId:
+        projectilePrefabId: 
         damage: 0
         range: 0
         projectileCount: 0
@@ -963,21 +963,21 @@ MonoBehaviour:
     - id: 60007
       name: Passive_60007_Name
       passiveType: Strengthen:100|StatModifier:AttackArea:50
-      param1:
-      param2:
-      param3:
+      param1: 
+      param2: 
+      param3: 
       description: Passive_60007_Desc
     - id: 60008
       name: Passive_60008_Name
       passiveType: RepeatAfterAttack:0.15:1:1
-      param1:
-      param2:
-      param3:
+      param1: 
+      param2: 
+      param3: 
       description: Passive_60008_Desc
     - id: 60009
       name: Passive_60009_Name
       passiveType: StatModifier:AttackInterval:30|KnockbackOnHit:2:0.3
-      param1:
+      param1: 
       param2: 
       param3: 
       description: Passive_60009_Desc
@@ -2092,13 +2092,13 @@ MonoBehaviour:
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 70010
-        targetTrainId:
+        targetTrainId: 
         weightedUpgrades: []
     - rid: 5100000000000000002
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 70011
-        targetTrainId:
+        targetTrainId: 
         weightedUpgrades: []
     - rid: 6103417219460104299
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
