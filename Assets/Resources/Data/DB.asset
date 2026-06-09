@@ -19,7 +19,7 @@ MonoBehaviour:
     icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
     monsterStatusData:
       MaxHp: 10
-      Damage: 5
+      Damage: 3
       MoveSpeed: 5
       AttackDelay: 1
       DropExpMin: 10
