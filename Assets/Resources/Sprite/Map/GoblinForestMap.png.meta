@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0980d694155662c49bcb150ed8cb626b
+guid: d7d6afe20884f4140beef75663e91020
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9023624542499435072
-    second: GoblinForestMap_0
+      213: -2663140553942567082
+    second: TestGoblinForestMap_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: GoblinForestMap_0
+      name: GoblinForestMap
       rect:
         serializedVersion: 2
         x: 0
@@ -134,15 +134,15 @@ TextureImporter:
         width: 1536
         height: 1024
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 042fc2256ba5a3d70800000000000000
-      internalID: 9023624542499435072
+      spriteID: 657f05fa6cf9a0bd0800000000000000
+      internalID: -2663140553942567082
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: dd4e2834b59f69142baabdcc3d972d3d
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      GoblinForestMap_0: 9023624542499435072
+      GoblinForestMap: -2663140553942567082
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
