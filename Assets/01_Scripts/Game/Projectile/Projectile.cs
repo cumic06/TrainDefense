@@ -37,6 +37,9 @@ namespace TrainDefense.Game
         private bool _runtimeHasShove;
         private float _runtimeShovePower;
         private float _runtimeShoveDuration;
+        private float _scale = 1f;
+        private Vector3 _baseScale = Vector3.one;
+        private bool _baseScaleCaptured;
 
         #region Enable/Disable
 
@@ -52,6 +55,13 @@ namespace TrainDefense.Game
             _runtimeHasShove = false;
             _runtimeShovePower = 0f;
             _runtimeShoveDuration = 0f;
+            _scale = 1f;
+            // trigger 스폰형(미사일)만 루트 스케일 리셋 → 풀 재사용 잔존 방지. 다른 투사체는 안 건드림.
+            if (data != null && data.IsSpawnTriggerHandle)
+            {
+                if (!_baseScaleCaptured) { _baseScale = transform.localScale; _baseScaleCaptured = true; }
+                transform.localScale = _baseScale;
+            }
 
             if (data != null && data.DestroyDelay > 0)
             {
@@ -402,9 +412,10 @@ namespace TrainDefense.Game
         }
         #endregion
 
-        public void SetModelScale(float scale)
+        public void SetScale(float scale)
         {
-            if (model != null) model.transform.localScale = UnityEngine.Vector3.one * scale;
+            _scale = scale;
+            transform.localScale = _baseScale * scale;
         }
 
         public void SetRuntimeShove(float power, float duration)
@@ -462,6 +473,13 @@ namespace TrainDefense.Game
 
             var (finalDamage, isCritical) = CalculateCriticalDamage();
             triggerHandle.Init(finalDamage, _owner, isCritical);
+
+            if (_runtimeHasShove && !SuppressShoveEffect)
+                triggerHandle.SetRuntimeShove(_runtimeShovePower * ShoveScale, _runtimeShoveDuration);
+
+            // 미사일 스케일(거대한 미사일)을 trigger 폭발 반경에도 반영 → 데미지 범위도 비례 확대
+            if (_scale != 1f)
+                triggerHandle.transform.localScale *= _scale;
         }
 
         private IEnumerator DestroyCoroutine()

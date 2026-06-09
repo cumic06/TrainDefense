@@ -974,14 +974,14 @@ MonoBehaviour:
       description: Passive_60008_Desc
     - id: 60009
       name: Passive_60009_Name
-      passiveType: 
-      param1: 
+      passiveType: StatModifier:AttackInterval:30|KnockbackOnHit:2:0.3
+      param1:
       param2: 
       param3: 
       description: Passive_60009_Desc
     - id: 60010
       name: Passive_60010_Name
-      passiveType: StatModifier:AttackDamage:100:AttackArea:50|ScaleProjectile
+      passiveType: StatModifier:AttackDamage:100|ScaleProjectile
       param1: 1.5
       param2: 
       param3: 

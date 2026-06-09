@@ -47,6 +47,20 @@ namespace TrainDefense.Game
         [SerializeField]
         private float slowDuration = 2f;
 
+        [BoxGroup("Status Effects")]
+        [SerializeField]
+        private bool hasShove = false;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasShove")]
+        [SerializeField]
+        private float shovePower = 1f;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasShove")]
+        [SerializeField]
+        private float shoveDuration = 0.5f;
+
         [SerializeField]
         private bool destroyOnTriggerEnter = false;
 
@@ -90,6 +104,14 @@ namespace TrainDefense.Game
                 _isCritical = isCritical;
             }
             _owner = owner;
+        }
+
+        // 런타임에 넉백 부여 (충격 미사일: 본체 넉백을 trigger로 전파)
+        public void SetRuntimeShove(float power, float duration)
+        {
+            hasShove = true;
+            shovePower = power;
+            shoveDuration = duration;
         }
 
         public void ApplyWaveHit(IProjectileTarget target)
@@ -167,6 +189,11 @@ namespace TrainDefense.Game
             if (hasSlowEffect)
             {
                 target.Slow(slowValue, slowDuration);
+            }
+
+            if (hasShove)
+            {
+                target.Shove(shovePower, shoveDuration);
             }
         }
 

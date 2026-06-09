@@ -52,7 +52,7 @@ namespace TrainDefense.Game
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
         public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
 
-        public float ProjectileModelScale { get; set; } = 1f;
+        public float ProjectileScale { get; set; } = 1f;
         public float ProjectileKnockbackPower { get; set; }
         public float ProjectileKnockbackDuration { get; set; }
 
@@ -798,8 +798,8 @@ namespace TrainDefense.Game
                 projectile.gameObject.SetActive(true);
             }
 
-            if (ProjectileModelScale != 1f)
-                projectile.SetModelScale(ProjectileModelScale);
+            if (ProjectileScale != 1f)
+                projectile.SetScale(ProjectileScale);
 
             if (ProjectileKnockbackPower > 0f)
                 projectile.SetRuntimeShove(ProjectileKnockbackPower, ProjectileKnockbackDuration);

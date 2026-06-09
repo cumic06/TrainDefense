@@ -20,12 +20,12 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            if (Owner is TurretTrain t) t.ProjectileModelScale = Scale;
+            if (Owner is TurretTrain t) t.ProjectileScale = Scale;
         }
 
         public override void Unsubscribe()
         {
-            if (Owner is TurretTrain t) t.ProjectileModelScale = 1f;
+            if (Owner is TurretTrain t) t.ProjectileScale = 1f;
         }
     }
 }
