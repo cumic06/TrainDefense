@@ -41,6 +41,8 @@ namespace TrainDefense.Game
         private Vector3 _baseScale = Vector3.one;
         private bool _baseScaleCaptured;
         [SerializeField] private float baseScaleArea = 3f;
+        // 빔 원본 굵기(레이저 model 스케일 x). 폭 = baseRangeScale * AttackArea.
+        [SerializeField] private float baseRangeScale = 1f;
 
         #region Enable/Disable
 
@@ -126,8 +128,8 @@ namespace TrainDefense.Game
             }
         }
 
-        // scaleRange는 분사 길이(AttackRange) 전용으로 ParticleProjectile에서만 사용한다.
-        // 빔류(StretchBeamModel)는 AttackArea(scaleRadius)만 길이로 쓰므로 scaleRange를 무시한다.
+        // 빔류(StretchBeamModel): 길이는 AttackRange(scaleRange), 폭은 AttackArea(scaleRadius)로 늘린다.
+        // scaleRange가 없으면(0) 길이도 scaleRadius로 폴백.
         protected virtual void ApplyScaleByArea(float scaleRadius, float scaleRange = 0f)
         {
             // 캐논류(trigger 스폰 + 빔 아님): 투사체 루트를 AttackArea 비례로 스케일 (model은 자식이라 따라 커짐).
@@ -137,7 +139,7 @@ namespace TrainDefense.Game
                 transform.localScale = _baseScale * (scaleRadius / baseScaleArea);
                 return;
             }
-            StretchBeamModel(scaleRadius);
+            StretchBeamModel(scaleRange > 0f ? scaleRange : scaleRadius, scaleRadius);
         }
 
         protected virtual void ApplyScaleByTargetRange(Vector3 targetPos)
@@ -146,9 +148,12 @@ namespace TrainDefense.Game
             StretchBeamModel(distance);
         }
 
-        // 빔/레이저형 투사체 전용: model에 BoxCollider2D가 있을 때만 세로 길이 늘리기.
-        // 캐논처럼 CircleCollider2D + 일반 SpriteRenderer 조합은 건드리지 않는다.
-        private void StretchBeamModel(float length)
+        // 빔/레이저형 투사체 전용: model에 BoxCollider2D가 있을 때만 늘린다.
+        // 길이는 sprite.size(Tiled)로 늘리고, 폭은 model 스케일로 stretch한다.
+        // (sprite.size로 폭을 늘리면 Tiled drawMode가 가로로 반복돼 스프라이트가 여러 개로 보임)
+        // 레이저 model은 -90도 회전 상태라 model 스케일 x축=폭. widthMul=1이면 원본 굵기 유지(전기 등).
+        // 캐논(CircleCollider)은 건드리지 않는다.
+        private void StretchBeamModel(float length, float widthMul = 1f)
         {
             if (model == null)
                 return;
@@ -158,6 +163,8 @@ namespace TrainDefense.Game
 
             model.transform.localPosition = new Vector3(length / 2, 0, 0);
             box.size = new Vector2(1, length);
+            var ls = model.transform.localScale;
+            model.transform.localScale = new Vector3(baseRangeScale * widthMul, ls.y, ls.z);
 
             if (model.TryGetComponent<SpriteRenderer>(out var sprite))
             {

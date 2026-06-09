@@ -422,7 +422,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 15
-      AttackArea: 15
+      AttackArea: 3
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -470,7 +470,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 13
-      AttackArea: 2
+      AttackArea: 3
       AttackCount: 1
       AttackInterval: 2
       TargetCount: 1
@@ -599,7 +599,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 15
-      AttackArea: 15
+      AttackArea: 3
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -652,7 +652,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 13
-      AttackArea: 2
+      AttackArea: 3
       AttackCount: 1
       AttackInterval: 2
       TargetCount: 1
@@ -826,17 +826,17 @@ MonoBehaviour:
       name: Skill_50003_Name
       description: Skill_50003_Desc
       skillType: 2
-      skillCooldown: 30
+      skillCooldown: 20
       skillIconId: 
       projectileData:
         projectilePrefabId: 
         damage: 0
         range: 0
         projectileCount: 0
-      buffDuration: 15
+      buffDuration: 10
       buffs:
       - statType: 8
-        percent: 200
+        percent: 250
     - id: 50004
       name: Skill_50004_Name
       description: Skill_50004_Desc
@@ -949,7 +949,7 @@ MonoBehaviour:
     - id: 60005
       name: Passive_60005_Name
       passiveType: PeriodicSpawn
-      param1: 2
+      param1: 3
       param2: SnowballProjectile
       param3: 3:10
       description: Passive_60005_Desc
@@ -1013,13 +1013,13 @@ MonoBehaviour:
       name: Passive_60014_Name
       passiveType: StatModifier
       param1: AttackArea
-      param2: 150
+      param2: 50
       param3: 
       description: Passive_60014_Desc
     - id: 60015
       name: Passive_60015_Name
       passiveType: RapidBombard
-      param1: -150
+      param1: -50
       param2: 0
       param3: 2:10:7
       description: Passive_60015_Desc
@@ -1260,7 +1260,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 15
         AttackRange: 0
         AttackArea: 1
         AttackCount: 0
@@ -1272,9 +1272,9 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 30
         AttackRange: 0
-        AttackArea: 2
+        AttackArea: 1
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1284,9 +1284,9 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 20
+        AttackDamage: 55
         AttackRange: 0
-        AttackArea: 3
+        AttackArea: 1
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
