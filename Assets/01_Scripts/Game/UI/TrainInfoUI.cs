@@ -14,6 +14,9 @@ namespace TrainDefense.Game.UI
         private TrainInfoSlotUI trainInfoSlotUI;
         #endregion
 
+        // 슬롯 묶음이 화면(Canvas) 폭을 넘지 않도록 남기는 좌우 여백 비율
+        private const float WidthFitRatio = 0.95f;
+
         private RectTransform _rectTransform;
         private int _lastScreenWidth;
         private int _lastScreenHeight;
@@ -87,8 +90,29 @@ namespace TrainDefense.Game.UI
 
         private void _RebuildLayout()
         {
-            if (_rectTransform != null)
-                LayoutRebuilder.ForceRebuildLayoutImmediate(_rectTransform);
+            if (_rectTransform == null)
+                return;
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_rectTransform);
+            _FitToAvailableWidth();
+        }
+
+        // 슬롯 묶음(ContentSizeFitter로 늘어난 폭)이 Canvas 폭을 넘으면 균등 축소해
+        // 폴더블을 접어 화면이 좁아져도 모든 슬롯이 화면 안에 들어오게 한다.
+        private void _FitToAvailableWidth()
+        {
+            RectTransform parentRect = _rectTransform.parent as RectTransform;
+            if (parentRect == null)
+                return;
+
+            float available = parentRect.rect.width * WidthFitRatio;
+            float content = _rectTransform.rect.width;
+
+            if (available <= 0f || content <= 0f)
+                return;
+
+            float scale = content > available ? available / content : 1f;
+            _rectTransform.localScale = new Vector3(scale, scale, 1f);
         }
     }
 }
