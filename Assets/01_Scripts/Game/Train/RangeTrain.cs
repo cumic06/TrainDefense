@@ -277,7 +277,7 @@ namespace TrainDefense.Game
             }
         }
 
-        public float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
+        public override float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
         public RangeTrainStatus BaseStatus => rangeTrainData.RangeTrainStatus;
 
         public override string GetStatSummary() =>

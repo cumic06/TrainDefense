@@ -61,6 +61,9 @@ namespace TrainDefense.Game
         public float SkillRemainingCooldown => _skillModule.RemainingCooldown;
         public float CurrentHpRatio => _currentMaxHp > 0f ? _currentHp / _currentMaxHp : 0f;
 
+        // 현재(업그레이드 반영) 공격 사거리. 서브클래스에서 실제 스탯으로 오버라이드. 사거리 표시용.
+        public virtual float CurrentAttackRange => 0f;
+
         #endregion
 
         protected virtual void OnEnable()
@@ -212,6 +215,14 @@ namespace TrainDefense.Game
         public virtual void RestoreHpToMax()
         {
             _currentHp = _currentMaxHp;
+            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
+        }
+
+        /// <summary>최대 체력의 ratio(0~1) 만큼 체력을 회복한다. (업그레이드 선택 시 일부 회복용)</summary>
+        public virtual void RestoreHpByRatio(float ratio)
+        {
+            if (_isDead || ratio <= 0f) return;
+            _currentHp = Mathf.Clamp(_currentHp + _currentMaxHp * ratio, 0f, _currentMaxHp);
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
         }
 
