@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.ParticleProjectile
   data: {fileID: 11400000, guid: ff277412d1ef2a7469b1ff332b0d0dc4, type: 2}
   model: {fileID: 0}
-  colliderUpdateInterval: 0.1
+  colliderUpdateInterval: 0.2
   particleRadius: 0.5
   baseScaleRadius: 8
   baseRangeRadius: 8
@@ -4822,7 +4822,7 @@ ParticleSystemRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 731328439
-  m_SortingLayer: 6
+  m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_RenderMode: 0
