@@ -825,16 +825,18 @@ MonoBehaviour:
     - id: 50003
       name: Skill_50003_Name
       description: Skill_50003_Desc
-      skillType: 0
+      skillType: 2
       skillCooldown: 30
-      skillIconId: 
+      skillIconId:
       projectileData:
-        projectilePrefabId: 
+        projectilePrefabId:
         damage: 0
         range: 0
         projectileCount: 0
       buffDuration: 15
-      buffs: []
+      buffs:
+      - statType: 8
+        percent: 400
     - id: 50004
       name: Skill_50004_Name
       description: Skill_50004_Desc
