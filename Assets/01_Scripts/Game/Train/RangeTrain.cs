@@ -206,8 +206,12 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.transform.SetParent(transform);
                     var circle = _rangeProjectilePrefab.GetComponentInChildren<CircleCollider2D>();
                     _baseColliderRadius = circle != null && circle.radius > 0f ? circle.radius : 1f;
-                    float scale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
-                    _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
+                    // ExpandingWave는 자체 확장 코루틴이 localScale을 제어하므로 여기서 스케일하면 소환 직후 한 프레임 깜빡인다.
+                    if (_rangeProjectilePrefab is not ExpandingWave)
+                    {
+                        float scale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
+                        _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
+                    }
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
                     _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
