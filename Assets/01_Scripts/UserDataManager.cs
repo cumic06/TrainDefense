@@ -29,6 +29,7 @@ namespace TrainDefense
         private UserOptionData _userOptionData = new();
         public int Coin => _coin;
         public float ExpPercent => _currentExp / GetNextLevelUpExp();
+        public int CurrentExp => _currentExp;
         public int CurrentLevel => _currentLevel;
         public bool IsLobby { get; private set; }
         public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
