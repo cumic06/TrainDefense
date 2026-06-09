@@ -825,16 +825,18 @@ MonoBehaviour:
     - id: 50003
       name: Skill_50003_Name
       description: Skill_50003_Desc
-      skillType: 0
+      skillType: 2
       skillCooldown: 30
-      skillIconId: 
+      skillIconId:
       projectileData:
-        projectilePrefabId: 
+        projectilePrefabId:
         damage: 0
         range: 0
         projectileCount: 0
       buffDuration: 15
-      buffs: []
+      buffs:
+      - statType: 8
+        percent: 200
     - id: 50004
       name: Skill_50004_Name
       description: Skill_50004_Desc
@@ -960,10 +962,10 @@ MonoBehaviour:
       description: Passive_60006_Desc
     - id: 60007
       name: Passive_60007_Name
-      passiveType: 
-      param1: 
-      param2: 
-      param3: 
+      passiveType: Strengthen:100|StatModifier:AttackArea:50
+      param1:
+      param2:
+      param3:
       description: Passive_60007_Desc
     - id: 60008
       name: Passive_60008_Name

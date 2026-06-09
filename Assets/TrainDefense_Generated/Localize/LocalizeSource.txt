@@ -116,8 +116,8 @@ Passive_60005_Name	눈덩이	Snowball	スノーボール	雪球
 Passive_60005_Desc	3초마다 적에게 범위 피해를 주고 1초 동안 눈대이를 발사	Deals area damage every 3 seconds and fires snowballs for 1 second.	3秒ごとに敵に範囲ダメージを与え、1秒間雪球を発射する。	每3秒对敌人造成范围伤害并发射1秒雪球。
 Passive_60006_Name	후폭발	After Explosion	後爆発	后爆炸
 Passive_60006_Desc	공격 후 0.2초 뒤 동일 범위의 약한 폭발 생성 (데미지 50%, 넉백 30%)	Creates a weak explosion of same range 0.2s after attack. (50% dmg, 30% knockback)	攻撃後0.2秒後に同じ範囲の弱い爆発を生成する（ダメージ50%、ノックバック30%）。	攻击后0.2秒在相同范围内产生弱爆炸（50%伤害，30%击退）。
-Passive_60007_Name	강한 폭발	Powerful Explosion	強力爆発	强力爆炸
-Passive_60007_Desc	넉백이 없어지지만 공격력이 크게 상승합니다.	Knockback is removed but attack power greatly increases.	ノックバックがなくなるが攻撃力が大幅に上昇する。	消除击退效果，但攻击力大幅提升。
+Passive_60007_Name	초토화	Devastation	焦土化	焦土
+Passive_60007_Desc	넉백이 없어지지만 공격력과 범위가 크게 상승합니다.	Knockback is removed but attack power and area greatly increase.	ノックバックがなくなるが攻撃力と範囲が大幅に上昇する。	消除击退效果，但攻击力与范围大幅提升。
 Passive_60008_Name	연속 발사	Double Tap	連続発射	连续射击
 Passive_60008_Desc	공격할 때 2발을 발사합니다	Fires 2 shots per attack.	攻撃時に2発発射する。	攻击时发射2发。
 Passive_60009_Name	충격 미사일	Impact Missile	衝撃ミサイル	冲击导弹
