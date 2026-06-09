@@ -836,7 +836,7 @@ MonoBehaviour:
       buffDuration: 15
       buffs:
       - statType: 8
-        percent: 400
+        percent: 200
     - id: 50004
       name: Skill_50004_Name
       description: Skill_50004_Desc
