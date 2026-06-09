@@ -84,12 +84,12 @@ SpriteRenderer:
   m_SortingLayer: 7
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 9218647182403415196, guid: dffe3019b6071cf4b8fc74311dd7c8b0, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_Sprite: {fileID: 1304168223639930629, guid: cee86bcd397946745b20d6eab2a456f7, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 3.56, y: 2.56}
+  m_Size: {x: 1.77, y: 1.77}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -151,8 +151,11 @@ MonoBehaviour:
   hasSlowEffect: 1
   slowValue: 0.3
   slowDuration: 1
+  hasShove: 0
+  shovePower: 1
+  shoveDuration: 0.5
   destroyOnTriggerEnter: 1
-  destroyDelay: 0.15
+  destroyDelay: 0.2
   expandingWave: {fileID: 0}
 --- !u!95 &240581893164055398
 Animator:

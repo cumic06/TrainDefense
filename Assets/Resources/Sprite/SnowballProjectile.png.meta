@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5aa174e01180218409659cefa22eecb2
+guid: ecccff0b117a9694c9e6e49b6e79081b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8734579094098876374
-    second: SnowballProjectile_0
+      213: 7860068388604152248
+    second: "ChatGPT Image 2026\uB144 6\uC6D4 9\uC77C \uC624\uD6C4 12_25_20_0"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 256
+  spritePixelsToUnits: 512
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SnowballProjectile_0
+      name: SnowballProjectile
       rect:
         serializedVersion: 2
-        x: 64
-        y: 71
-        width: 271
-        height: 270
+        x: 154
+        y: 163
+        width: 712
+        height: 710
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6d711568865773970800000000000000
-      internalID: 8734579094098876374
+      spriteID: 8b907051e82941d60800000000000000
+      internalID: 7860068388604152248
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 4f5dea0a6a053e148a235128a3a59dfb
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      SnowballProjectile_0: 8734579094098876374
+      SnowballProjectile: 7860068388604152248
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

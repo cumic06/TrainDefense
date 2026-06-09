@@ -1,97 +1,13 @@
 fileFormatVersion: 2
-guid: dffe3019b6071cf4b8fc74311dd7c8b0
+guid: cee86bcd397946745b20d6eab2a456f7
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9218647182403415196
-    second: Sprite-0001-removebg-preview_0
+      213: 1304168223639930629
+    second: SnowballTrigger_0
   - first:
-      213: -4961090527988024930
-    second: Sprite-0001-removebg-preview_1
-  - first:
-      213: -5872978283933905675
-    second: Sprite-0001-removebg-preview_2
-  - first:
-      213: 7522072104529973635
-    second: Sprite-0001-removebg-preview_3
-  - first:
-      213: 128849766047011987
-    second: Sprite-0001-removebg-preview_4
-  - first:
-      213: -5770296369587682831
-    second: Sprite-0001-removebg-preview_5
-  - first:
-      213: -5754449460813186226
-    second: Sprite-0001-removebg-preview_6
-  - first:
-      213: -3694390150644456068
-    second: Sprite-0001-removebg-preview_7
-  - first:
-      213: 3187185025613626551
-    second: Sprite-0001-removebg-preview_8
-  - first:
-      213: 5589623133826287897
-    second: Sprite-0001-removebg-preview_9
-  - first:
-      213: 5438819584281603961
-    second: Sprite-0001-removebg-preview_10
-  - first:
-      213: -2790964003355219671
-    second: Sprite-0001-removebg-preview_11
-  - first:
-      213: -8466450286314436068
-    second: Sprite-0001-removebg-preview_12
-  - first:
-      213: -1283829903480662169
-    second: Sprite-0001-removebg-preview_13
-  - first:
-      213: -8037183299406073054
-    second: Sprite-0001-removebg-preview_14
-  - first:
-      213: 8544592113438499317
-    second: Sprite-0001-removebg-preview_15
-  - first:
-      213: 4336125911461638252
-    second: Sprite-0001-removebg-preview_16
-  - first:
-      213: -7420612507158768266
-    second: Sprite-0001-removebg-preview_17
-  - first:
-      213: 3494722951870381189
-    second: Sprite-0001-removebg-preview_18
-  - first:
-      213: 2330246461868879817
-    second: Sprite-0001-removebg-preview_19
-  - first:
-      213: -4346928289065514399
-    second: Sprite-0001-removebg-preview_20
-  - first:
-      213: -1248163886252190761
-    second: Sprite-0001-removebg-preview_21
-  - first:
-      213: 6099403849105849335
-    second: Sprite-0001-removebg-preview_22
-  - first:
-      213: -3673504020321882032
-    second: Sprite-0001-removebg-preview_23
-  - first:
-      213: 6016992787144423217
-    second: Sprite-0001-removebg-preview_24
-  - first:
-      213: 5925639223720539203
-    second: Sprite-0001-removebg-preview_25
-  - first:
-      213: -8209614854891343325
-    second: Sprite-0001-removebg-preview_26
-  - first:
-      213: 1199487273198016378
-    second: Sprite-0001-removebg-preview_27
-  - first:
-      213: -3765795482756790659
-    second: Sprite-0001-removebg-preview_28
-  - first:
-      213: 9088173586911081860
-    second: Sprite-0001-removebg-preview_29
+      213: -9215427931746996617
+    second: SnowballTrigger_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -138,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 128
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -218,8 +134,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 356
-        height: 256
+        width: 177
+        height: 177
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -228,8 +144,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c9cafc815c63fef70800000000000000
-      internalID: 9218647182403415196
+      spriteID: 5070961f616591210800000000000000
+      internalID: 1304168223639930629
       vertices: []
       indices: 
       edges: []
@@ -238,10 +154,10 @@ TextureImporter:
       name: SnowballTrigger_1
       rect:
         serializedVersion: 2
-        x: 356
+        x: 177
         y: 0
-        width: 356
-        height: 256
+        width: 177
+        height: 177
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -250,8 +166,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e99f7b4237aa62bb0800000000000000
-      internalID: -4961090527988024930
+      spriteID: 77ee10b1f193c1080800000000000000
+      internalID: -9215427931746996617
       vertices: []
       indices: 
       edges: []
@@ -260,7 +176,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: c021cd01acb32094cae13223a7f56217
+    spriteID: 5956e320eb94f7848b271b7804c4675d
     internalID: 0
     vertices: []
     indices: 
@@ -270,10 +186,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":356.0,"y":256.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":177.0,"y":177.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      SnowballTrigger_0: 9218647182403415196
-      SnowballTrigger_1: -4961090527988024930
+      SnowballTrigger_0: 1304168223639930629
+      SnowballTrigger_1: -9215427931746996617
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
