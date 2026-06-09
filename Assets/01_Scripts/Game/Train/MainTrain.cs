@@ -12,6 +12,9 @@ namespace TrainDefense.Game
 {
    public class MainTrain : Train
    {
+      // 업그레이드 선택 시 회복할 최대 체력 비율(0~1). 엘리트 전환은 별도로 풀피.
+      private const float UpgradeHealRatio = 0.3f;
+
       #region Field
 
       [SerializeField]
@@ -178,6 +181,8 @@ namespace TrainDefense.Game
          if (upgradeTrain != null)
          {
             upgradeTrain.Upgrade(upgradeData);
+            // 업그레이드 선택 보상: 최대 체력의 일부를 회복.
+            upgradeTrain.RestoreHpByRatio(UpgradeHealRatio);
             GameEventSystem.Publish(new UpgradeTrainEvent(upgradeTrain, upgradeData));
          }
       }
@@ -240,6 +245,8 @@ namespace TrainDefense.Game
          // CopyProgressFrom의 delta가 영구 + 카드를 모두 옮긴다. 둘 다 호출하면 영구분이 중복 적용된다.
          newTrain.CopyProgressFrom(oldTrain);
          newTrain.ApplyPassiveSkills();
+         // 엘리트로 업그레이드되면 풀피로 회복. (패시브 적용 후 최대 체력 확정된 상태에서 호출)
+         newTrain.RestoreHpToMax();
 
          // Elite 생성에 소비된 base ID는 이후 TriChoice에서 영구 차단 (다른 Elite 변형 / base 업그레이드 / 재추가 모두 금지).
          _replacedTrainIds.Add(oldTrainId);
