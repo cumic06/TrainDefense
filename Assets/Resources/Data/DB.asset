@@ -962,10 +962,10 @@ MonoBehaviour:
       description: Passive_60006_Desc
     - id: 60007
       name: Passive_60007_Name
-      passiveType: 
-      param1: 
-      param2: 
-      param3: 
+      passiveType: Strengthen
+      param1: 100
+      param2:
+      param3:
       description: Passive_60007_Desc
     - id: 60008
       name: Passive_60008_Name
