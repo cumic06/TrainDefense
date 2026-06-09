@@ -118,8 +118,8 @@ Passive_60006_Name	후폭발	After Explosion	後爆発	后爆炸
 Passive_60006_Desc	공격 후 0.2초 뒤 동일 범위의 약한 폭발 생성 (데미지 50%, 넉백 30%)	Creates a weak explosion of same range 0.2s after attack. (50% dmg, 30% knockback)	攻撃後0.2秒後に同じ範囲の弱い爆発を生成する（ダメージ50%、ノックバック30%）。	攻击后0.2秒在相同范围内产生弱爆炸（50%伤害，30%击退）。
 Passive_60007_Name	강한 폭발	Powerful Explosion	強力爆発	强力爆炸
 Passive_60007_Desc	넉백이 없어지지만 공격력이 크게 상승합니다.	Knockback is removed but attack power greatly increases.	ノックバックがなくなるが攻撃力が大幅に上昇する。	消除击退效果，但攻击力大幅提升。
-Passive_60008_Name	이중 발사	Double Shot	二連射撃	双重射击
-Passive_60008_Desc	2발 동시 발사	Fires 2 shots simultaneously.	2発を同時に発射する。	同时发射2发。
+Passive_60008_Name	연속 발사	Double Tap	連続発射	连续射击
+Passive_60008_Desc	공격할 때 2발을 발사합니다	Fires 2 shots per attack.	攻撃時に2発発射する。	攻击时发射2发。
 Passive_60009_Name	빠른 미사일	Swift Missile	高速ミサイル	快速导弹
 Passive_60009_Desc	공격속도 증가. 적이 많으면 약한 넉백	Attack speed increases. Weak knockback when enemies are numerous.	攻撃速度が上昇し、敵が多い場合は弱いノックバックが付く。	攻击速度提升，敌人多时产生弱击退。
 Passive_60010_Name	강화 미사일	Enhanced Missile	強化ミサイル	强化导弹

@@ -126,18 +126,29 @@ namespace TrainDefense.Game
 
         public Monster GetNearTargetMonsterPublic() => GetNearTargetMonster();
 
-        public void RepeatNormalAttack()
+        public void RepeatNormalAttack(Vector2? aimPosition = null)
         {
             if (_isDead) return;
-            DetectTarget();
-            if (_targetMonsters.Count == 0) return;
 
-            Monster nearTarget = GetNearTargetMonster();
+            // aimPosition이 있으면 재조준 없이 그 방향으로 발사 (연속 발사: 타겟이 죽어도 그 방향).
+            Monster nearTarget = null;
+            if (!aimPosition.HasValue)
+            {
+                DetectTarget();
+                if (_targetMonsters.Count == 0) return;
+                nearTarget = GetNearTargetMonster();
+                if (nearTarget == null) return;
+            }
 
-            if (turretModel != null && nearTarget != null)
+            if (turretModel != null)
             {
                 if (isRotateTurret)
-                    turret.transform.LookAt2D(nearTarget.transform);
+                {
+                    if (aimPosition.HasValue)
+                        turret.transform.LookAt2D(aimPosition.Value);
+                    else
+                        turret.transform.LookAt2D(nearTarget.transform);
+                }
                 PlayAttackAnimation();
             }
 
@@ -153,7 +164,7 @@ namespace TrainDefense.Game
                 }
             }
 
-            NormalAttack();
+            NormalAttack(nearTarget, aimPosition);
         }
 
         private void PlayAttackAnimation()
@@ -347,10 +358,19 @@ namespace TrainDefense.Game
             return true;
         }
 
-        protected virtual void NormalAttack()
+        protected virtual void NormalAttack(Monster forcedTarget = null, Vector2? aimPosition = null)
         {
-            Monster nearTarget = GetNearTargetMonster();
-            if (nearTarget == null) return;
+            Vector2 aimPos;
+            if (aimPosition.HasValue)
+            {
+                aimPos = aimPosition.Value;
+            }
+            else
+            {
+                Monster nearTarget = forcedTarget != null ? forcedTarget : GetNearTargetMonster();
+                if (nearTarget == null) return;
+                aimPos = nearTarget.transform.position;
+            }
 
             ProjectileData baseData = GetProjectile()?.GetData();
             float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
@@ -371,7 +391,7 @@ namespace TrainDefense.Game
                     }
                     else
                     {
-                        projectile.transform.LookAt2D(nearTarget.transform);
+                        projectile.transform.LookAt2D(aimPos);
                     }
 
                     if (spreadAngle > 0f && count > 1)

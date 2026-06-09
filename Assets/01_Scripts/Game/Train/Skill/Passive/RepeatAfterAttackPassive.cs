@@ -11,13 +11,16 @@ namespace TrainDefense.Game
     {
         public float Delay { get; private set; } = 0.2f;
         public int RepeatCount { get; private set; } = 2;
+        // 추가 발사가 첫 타겟을 유지할지 (true면 재조준 안 함). DSL 4번째 인자 "1".
+        public bool KeepTarget { get; private set; } = false;
 
         public static RepeatAfterAttackPassive From(string[] parts)
         {
             if (parts.Length < 3) return null;
             if (!float.TryParse(parts[1], out float delay) || delay < 0f) return null;
             if (!int.TryParse(parts[2], out int count) || count <= 0) return null;
-            return new RepeatAfterAttackPassive { Delay = delay, RepeatCount = count };
+            bool keepTarget = parts.Length >= 4 && parts[3] == "1";
+            return new RepeatAfterAttackPassive { Delay = delay, RepeatCount = count, KeepTarget = keepTarget };
         }
 
         public override void Subscribe()
@@ -34,16 +37,18 @@ namespace TrainDefense.Game
         {
             if (target == null || RepeatCount <= 0) return;
             if (Owner is not TurretTrain turret) return;
-            turret.StartCoroutine(Run(turret));
+            // KeepTarget이면 첫 타겟 위치를 캡처 → 타겟이 죽어도 그 방향으로 발사.
+            Vector2? aimPosition = KeepTarget ? (Vector2)target.transform.position : (Vector2?)null;
+            turret.StartCoroutine(Run(turret, aimPosition));
         }
 
-        private IEnumerator Run(TurretTrain turret)
+        private IEnumerator Run(TurretTrain turret, Vector2? aimPosition)
         {
             for (int i = 0; i < RepeatCount; i++)
             {
                 yield return new WaitForSeconds(Delay);
                 if (turret == null || turret.IsDead) yield break;
-                turret.RepeatNormalAttack();
+                turret.RepeatNormalAttack(aimPosition);
             }
         }
     }

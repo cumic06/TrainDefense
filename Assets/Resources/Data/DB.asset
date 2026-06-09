@@ -967,9 +967,9 @@ MonoBehaviour:
       description: Passive_60007_Desc
     - id: 60008
       name: Passive_60008_Name
-      passiveType: StatModifier
-      param1: AttackCount
-      param2: 100
+      passiveType: RepeatAfterAttack:0.15:1:1
+      param1:
+      param2:
       param3:
       description: Passive_60008_Desc
     - id: 60009
