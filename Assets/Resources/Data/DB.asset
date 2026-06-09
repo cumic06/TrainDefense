@@ -424,7 +424,7 @@ MonoBehaviour:
       AttackRange: 15
       AttackArea: 3
       AttackCount: 1
-      AttackInterval: 2.5
+      AttackInterval: 2
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -601,7 +601,7 @@ MonoBehaviour:
       AttackRange: 15
       AttackArea: 3
       AttackCount: 1
-      AttackInterval: 2.5
+      AttackInterval: 2
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -706,7 +706,7 @@ MonoBehaviour:
       AttackRange: 4
       AttackArea: 4
       AttackCount: 1
-      AttackInterval: 4
+      AttackInterval: 3
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 0
@@ -757,7 +757,7 @@ MonoBehaviour:
       AttackRange: 4
       AttackArea: 4
       AttackCount: 1
-      AttackInterval: 4
+      AttackInterval: 3
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 0
@@ -1134,11 +1134,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 15
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: -0.1
+        AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1146,11 +1146,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 30
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: -0.24
+        AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1158,7 +1158,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 20
+        AttackDamage: 55
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1406,7 +1406,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 20
         AttackRange: 0
         AttackArea: 1
         AttackCount: 0
@@ -1417,22 +1417,22 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 30
         AttackRange: 0
         AttackArea: 1
         AttackCount: 0
-        AttackInterval: -0.2
+        AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
         SlowRate: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 50
         AttackRange: 0
-        AttackArea: 2
+        AttackArea: 1
         AttackCount: 0
-        AttackInterval: -0.3
+        AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
         SlowRate: 0
