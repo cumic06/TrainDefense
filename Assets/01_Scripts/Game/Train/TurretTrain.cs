@@ -51,6 +51,7 @@ namespace TrainDefense.Game
 
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
         public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
+        public override float CurrentAttackRange => _currentTurretTrainStatus.AttackRange;
 
         public float ProjectileModelScale { get; set; } = 1f;
         public float ProjectileKnockbackPower { get; set; }

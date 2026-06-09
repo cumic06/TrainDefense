@@ -76,6 +76,10 @@ namespace TrainDefense.Game.UI
             _longPressCoroutine = null;
          }
 
+         // 누르는 도중 슬롯이 파괴되면 사거리 표시도 정리.
+         if (_longPressFired)
+            TrainRangeIndicator.HideActive();
+
          _UnsubscribeEvents();
       }
 
@@ -94,7 +98,10 @@ namespace TrainDefense.Game.UI
          }
 
          if (_longPressFired)
+         {
             detailPopup?.Hide();
+            TrainRangeIndicator.Instance.Hide();
+         }
       }
 
       private IEnumerator _LongPressRoutine()
@@ -102,6 +109,8 @@ namespace TrainDefense.Game.UI
          yield return new WaitForSecondsRealtime(LongPressDuration);
          _longPressFired = true;
          detailPopup?.Show(_train);
+         // 롱프레스 동안 포탑의 실제 사거리를 게임 화면에 원형으로 표시.
+         TrainRangeIndicator.Instance.Show(_train);
       }
 
       #region Event
