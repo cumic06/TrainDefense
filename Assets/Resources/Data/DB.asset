@@ -962,7 +962,7 @@ MonoBehaviour:
       description: Passive_60006_Desc
     - id: 60007
       name: Passive_60007_Name
-      passiveType: Strengthen:0|StatModifier:AttackInterval:-100
+      passiveType: Strengthen:100|StatModifier:AttackArea:50
       param1:
       param2:
       param3:
