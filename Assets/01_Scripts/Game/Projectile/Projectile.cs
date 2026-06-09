@@ -40,6 +40,7 @@ namespace TrainDefense.Game
         private float _scale = 1f;
         private Vector3 _baseScale = Vector3.one;
         private bool _baseScaleCaptured;
+        [SerializeField] private float baseScaleArea = 3f;
 
         #region Enable/Disable
 
@@ -129,6 +130,13 @@ namespace TrainDefense.Game
         // 빔류(StretchBeamModel)는 AttackArea(scaleRadius)만 길이로 쓰므로 scaleRange를 무시한다.
         protected virtual void ApplyScaleByArea(float scaleRadius, float scaleRange = 0f)
         {
+            // 캐논류(trigger 스폰 + 빔 아님): 투사체 루트를 AttackArea 비례로 스케일 (model은 자식이라 따라 커짐).
+            // baseScaleArea = 원본 크기(localScale 1배)에 대응하는 AttackArea. 매 발사 재계산이라 풀 잔존 없음.
+            if (data != null && data.IsSpawnTriggerHandle && scaleRadius > 0f && baseScaleArea > 0f)
+            {
+                transform.localScale = _baseScale * (scaleRadius / baseScaleArea);
+                return;
+            }
             StretchBeamModel(scaleRadius);
         }
 
