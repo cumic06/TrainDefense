@@ -170,17 +170,17 @@ namespace TrainDefense.Game.UI
             string scoreSuffix = LocalizeHelper.GetByKey("result_score_suffix", "점");
 
             int display = 0;
-            targetText.text = $"{label}  {display}{countSuffix}";
+            targetText.text = $"{label}  {display.ToCommaString()}{countSuffix}";
 
             _resultSequence.Append(DOTween.To(() => display, value =>
             {
                 display = value;
-                targetText.text = $"{label}  {display}{countSuffix}";
+                targetText.text = $"{label}  {display.ToCommaString()}{countSuffix}";
             }, killCount, killCountTweenDuration).SetEase(Ease.OutCubic));
 
             _resultSequence.AppendCallback(() =>
             {
-                targetText.text = $"{label}  {killCount}{countSuffix}   {scoreContribution.ToCommaString()}{scoreSuffix}";
+                targetText.text = $"{label}  {killCount.ToCommaString()}{countSuffix}   {scoreContribution.ToCommaString()}{scoreSuffix}";
             });
             _resultSequence.AppendInterval(stageInterval);
         }

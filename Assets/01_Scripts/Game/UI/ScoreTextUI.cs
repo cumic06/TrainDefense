@@ -1,3 +1,4 @@
+using Cumic;
 using Cumic.Events;
 using TMPro;
 using TrainDefense.Game.Events;
@@ -45,7 +46,7 @@ namespace TrainDefense
 
       private void _OnChangeKillCount(ChangeKillCountUIEvent changeKillCountEvent)
       {
-         scoreText.text = changeKillCountEvent.KillCount.ToString();
+         scoreText.text = changeKillCountEvent.KillCount.ToCommaString();
       }
    }
 }
