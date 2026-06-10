@@ -61,8 +61,11 @@ namespace TrainDefense.Game
         public float SkillRemainingCooldown => _skillModule.RemainingCooldown;
         public float CurrentHpRatio => _currentMaxHp > 0f ? _currentHp / _currentMaxHp : 0f;
 
-        // 현재(업그레이드 반영) 공격 사거리. 서브클래스에서 실제 스탯으로 오버라이드. 사거리 표시용.
+        // 현재(업그레이드 반영) 공격 사거리. 서브클래스에서 실제 스탯으로 오버라이드.
         public virtual float CurrentAttackRange => 0f;
+
+        // 사거리 표시 원의 반지름. 기본은 공격 사거리, 레인지 포탑은 공격 범위(AttackArea)로 오버라이드.
+        public virtual float RangeIndicatorRadius => CurrentAttackRange;
 
         #endregion
 

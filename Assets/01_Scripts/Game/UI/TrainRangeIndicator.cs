@@ -47,6 +47,8 @@ namespace TrainDefense.Game.UI
          var color = new Color(0.3f, 0.85f, 1f, 0.85f);
          _line.startColor = color;
          _line.endColor = color;
+         // 배경 Rail(Map 레이어)에 가려지지 않도록 전용 Range 레이어에 배치.
+         _line.sortingLayerName = "Range";
          _line.sortingOrder = 500;
          gameObject.SetActive(false);
       }
@@ -61,7 +63,7 @@ namespace TrainDefense.Game.UI
          }
 
          _target = train;
-         _radius = Mathf.Max(0f, train.CurrentAttackRange);
+         _radius = Mathf.Max(0f, train.RangeIndicatorRadius);
 
          if (_radius <= 0f)
          {

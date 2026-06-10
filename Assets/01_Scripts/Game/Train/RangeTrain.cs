@@ -278,6 +278,8 @@ namespace TrainDefense.Game
         }
 
         public override float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
+        // 레인지 포탑은 사거리가 아닌 공격 범위(자기 위치 중심 원)를 표시한다.
+        public override float RangeIndicatorRadius => _currentRangeTrainStatus.AttackArea;
         public RangeTrainStatus BaseStatus => rangeTrainData.RangeTrainStatus;
 
         public override string GetStatSummary() =>
