@@ -70,12 +70,16 @@ namespace TrainDefense.Game.Controller
         {
             GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOverStart);
             GameEventSystem.Subscribe<CameraShakeEvent>(_OnCameraShake);
+            GameEventSystem.Subscribe<CameraZoomEvent>(_OnCameraZoom);
+            GameEventSystem.Subscribe<CameraRestoreEvent>(_OnCameraRestore);
         }
 
         private void _UnsubscribeEvents()
         {
             GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOverStart);
             GameEventSystem.Unsubscribe<CameraShakeEvent>(_OnCameraShake);
+            GameEventSystem.Unsubscribe<CameraZoomEvent>(_OnCameraZoom);
+            GameEventSystem.Unsubscribe<CameraRestoreEvent>(_OnCameraRestore);
         }
         #endregion
 
@@ -110,6 +114,56 @@ namespace TrainDefense.Game.Controller
                 duration
             ).SetEase(Ease.InOutSine).SetUpdate(true);
         }
+
+        /// <summary>
+        /// 카메라를 target으로 옮기며 orthoSize로 줌인한다(상점 진입 등). 줌 동안 종횡비 보정(AspectFit)은 중단되고,
+        /// delay 후 타깃 전환과 줌이 시작된다.
+        /// </summary>
+        public void ZoomToTarget(Transform target, float orthoSize, float duration, float delay)
+        {
+            // AspectFit이 켜져 있으면 Update가 매 프레임 OrthographicSize를 덮어써 줌이 적용되지 않으므로 먼저 중단한다.
+            _aspectFitActive = false;
+            _zoomTween?.Kill();
+            _zoomTween = DOTween.To(
+                () => _camera.Lens.OrthographicSize,
+                x => _camera.Lens.OrthographicSize = x,
+                orthoSize,
+                duration
+            ).SetEase(Ease.InOutSine).SetUpdate(true).SetDelay(delay)
+                .OnStart(() =>
+                {
+                    if (target != null)
+                    {
+                        _camera.Target.TrackingTarget = target;
+                        _camera.Target.LookAtTarget = target;
+                    }
+                });
+        }
+
+        /// <summary>
+        /// 카메라를 followTarget(보통 기차)으로 되돌리고 기본 OrthographicSize로 줌아웃한 뒤, 종횡비 보정을 재개한다.
+        /// </summary>
+        public void RestoreZoom(Transform followTarget, float duration)
+        {
+            if (followTarget != null)
+            {
+                _camera.Target.TrackingTarget = followTarget;
+                _camera.Target.LookAtTarget = followTarget;
+            }
+
+            _zoomTween?.Kill();
+            _zoomTween = DOTween.To(
+                () => _camera.Lens.OrthographicSize,
+                x => _camera.Lens.OrthographicSize = x,
+                _startOrthoSize,
+                duration
+            ).SetEase(Ease.InOutSine).SetUpdate(true)
+                .OnComplete(() => _aspectFitActive = true);
+        }
+
+        private void _OnCameraZoom(CameraZoomEvent e) => ZoomToTarget(e.Target, e.OrthoSize, e.Duration, e.Delay);
+
+        private void _OnCameraRestore(CameraRestoreEvent e) => RestoreZoom(e.FollowTarget, e.Duration);
 
         private void _OnCameraShake(CameraShakeEvent e)
         {

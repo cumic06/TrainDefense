@@ -520,6 +520,11 @@ namespace TrainDefense.Game
          }
       }
 
+      // SlideOut으로 화면 밖에 보낸 대상들의 원래 localPosition.x(정위치). ResetSlidePosition으로 복귀할 때 사용.
+      private readonly List<(Transform target, float originX)> _slideOutOrigins = new();
+      // ShrinkOut으로 축소한 대상들의 원래 localScale. GrowIn으로 복원할 때 사용.
+      private readonly List<(Transform target, Vector3 originScale)> _scaleOrigins = new();
+
       public void SlideIn(float delay, float duration)
       {
          Camera cam = Camera.main;
@@ -548,6 +553,102 @@ namespace TrainDefense.Game
                .SetEase(Ease.InOutSine)
                .SetUpdate(true);
          }
+      }
+
+      /// <summary>
+      /// 정위치에서 전진 방향(+X, 화면 오른쪽 밖)으로 슬라이드 아웃(열차 출발 연출). 출발 전 위치를 _slideOutOrigins에 저장하며,
+      /// 연출이 끝나면 <see cref="ResetSlidePosition"/>으로 정위치에 즉시 복귀시킨다.
+      /// </summary>
+      public void SlideOut(float delay, float duration)
+      {
+         Camera cam = Camera.main;
+         // 전진 방향(+X, 화면 오른쪽)으로 출발: 기차의 가장 왼쪽 끝이 화면 오른쪽 경계에 닿도록 밀어낸다.
+         float camRightX = cam != null ? cam.ViewportToWorldPoint(new Vector3(1f, 0.5f, 0f)).x : 10f;
+         float leftmostX = transform.position.x;
+         foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
+             leftmostX = Mathf.Min(leftmostX, sr.bounds.min.x);
+         float offsetX = camRightX - leftmostX;
+
+         _slideOutOrigins.Clear();
+
+         foreach (var train in _currentAliveTrains)
+         {
+            _slideOutOrigins.Add((train.transform, train.transform.localPosition.x));
+            train.transform.DOLocalMoveX(train.transform.localPosition.x + offsetX, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InOutSine)
+               .SetUpdate(true);
+         }
+
+         if (trainModel != null)
+         {
+            _slideOutOrigins.Add((trainModel, trainModel.localPosition.x));
+            trainModel.DOLocalMoveX(trainModel.localPosition.x + offsetX, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InOutSine)
+               .SetUpdate(true);
+         }
+      }
+
+      /// <summary>
+      /// <see cref="SlideOut"/>으로 화면 밖에 보낸 대상들을 정위치로 즉시 복귀시킨다.
+      /// (페이드로 화면이 가려진 동안 호출해 순간이동이 보이지 않게 한다.)
+      /// </summary>
+      public void ResetSlidePosition()
+      {
+         foreach (var (target, originX) in _slideOutOrigins)
+         {
+            if (target == null) continue;
+            target.DOKill();
+            Vector3 p = target.localPosition;
+            target.localPosition = new Vector3(originX, p.y, p.z);
+         }
+         _slideOutOrigins.Clear();
+      }
+
+      /// <summary>
+      /// 모든 기차를 제자리에서 scale 0으로 축소(어딘가로 빨려들어가는 듯한 맵 이동 연출).
+      /// 원래 scale은 _scaleOrigins에 저장되며, <see cref="GrowIn"/>으로 복원한다.
+      /// </summary>
+      public void ShrinkOut(float delay, float duration)
+      {
+         _scaleOrigins.Clear();
+
+         foreach (var train in _currentAliveTrains)
+         {
+            _scaleOrigins.Add((train.transform, train.transform.localScale));
+            train.transform.DOScale(Vector3.zero, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InBack)
+               .SetUpdate(true);
+         }
+
+         if (trainModel != null)
+         {
+            _scaleOrigins.Add((trainModel, trainModel.localScale));
+            trainModel.DOScale(Vector3.zero, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InBack)
+               .SetUpdate(true);
+         }
+      }
+
+      /// <summary>
+      /// <see cref="ShrinkOut"/>으로 축소한 기차들을 원래 scale로 복원(새 맵에서 다시 나타나는 연출).
+      /// </summary>
+      public void GrowIn(float delay, float duration)
+      {
+         foreach (var (target, originScale) in _scaleOrigins)
+         {
+            if (target == null) continue;
+            target.DOKill();
+            target.localScale = Vector3.zero;
+            target.DOScale(originScale, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.OutBack)
+               .SetUpdate(true);
+         }
+         _scaleOrigins.Clear();
       }
 
       public void UndeadTrain()
