@@ -11,6 +11,7 @@ namespace TrainDefense.Game
         private const float ShotInterval = 0.3f;
         private const float HalfX = 10f;
         private const float HalfY = 7f;
+        private const int SoundEveryNShots = 2;
 
         protected override bool OnUse()
         {
@@ -23,6 +24,7 @@ namespace TrainDefense.Game
         private static IEnumerator BombardCoroutine(TurretTrain turret, float duration)
         {
             float elapsed = 0f;
+            int shotIndex = 0;
             while (elapsed < duration)
             {
                 yield return new WaitForSeconds(ShotInterval);
@@ -34,7 +36,10 @@ namespace TrainDefense.Game
                     center.x + Random.Range(-HalfX, HalfX),
                     center.y + Random.Range(-HalfY, HalfY),
                     0f);
-                turret.SpawnProjectileAtWorldPositionPublic(null, pos);
+                // 발사음은 N발마다 한 번만 (16발 사운드 겹침 방지, 폭격 리듬감).
+                bool playSound = shotIndex % SoundEveryNShots == 0;
+                turret.SpawnProjectileAtWorldPositionPublic(null, pos, playSound);
+                shotIndex++;
             }
         }
     }

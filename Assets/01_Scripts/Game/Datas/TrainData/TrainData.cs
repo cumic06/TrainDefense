@@ -51,9 +51,10 @@ namespace TrainDefense.Game.Datas
         #endregion
 
         #region IDescribableData
-        public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey(name, name).Replace("\\n", "\n");
+        public string Name => TrainDefense.Localize.LocalizeHelper.ProtectWordBreak(TrainDefense.Localize.LocalizeHelper.GetByKey(name, name).Replace("\\n", "\n"));
         // txt에는 줄바꿈을 \n 문자열로 적고 여기서 실제 줄바꿈으로 변환 (TSV라 셀 안에 직접 못 넣음).
-        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey(description, description).Replace("\\n", "\n");
+        // ProtectWordBreak로 한글 단어 중간 줄바꿈도 방지한다.
+        public string Description => TrainDefense.Localize.LocalizeHelper.ProtectWordBreak(TrainDefense.Localize.LocalizeHelper.GetByKey(description, description).Replace("\\n", "\n"));
         #endregion
 
         #region IIconData

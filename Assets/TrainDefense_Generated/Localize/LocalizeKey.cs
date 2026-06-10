@@ -123,8 +123,6 @@ namespace TrainDefense.Localize
         Train_40002_Desc = 106,
         Train_41001_Name = 107,
         Train_41002_Name = 108,
-        Train_42001_Name = 109,
-        Train_42002_Name = 110,
         // Skill
         Skill_50001_Name = 111,
         Skill_50001_Desc = 112,

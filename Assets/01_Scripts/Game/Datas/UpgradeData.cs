@@ -41,7 +41,7 @@ namespace TrainDefense.Game.Datas
 
         #region IDescribableData
         public string Name => TrainDefense.Localize.LocalizeHelper.GetByKey(name, name);
-        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey(description, description).Replace("\\n", "\n");
+        public string Description => TrainDefense.Localize.LocalizeHelper.ProtectWordBreak(TrainDefense.Localize.LocalizeHelper.GetByKey(description, description).Replace("\\n", "\n"));
         #endregion
 
         #region IIconData

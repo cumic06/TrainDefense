@@ -227,10 +227,14 @@ namespace TrainDefense.Game.UI
             var nextUpgrade = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
             float currentSpeed = ToAttackSpeed(currentInterval);
             float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
+            float currentSlow = baseStatus.SlowRate + accumulated.SlowRate;
 
             AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
             AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
             AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
+            // 둔화 포탑(냉기)만 둔화율 표시.
+            if (currentSlow > 0f)
+               AddUpgradeOrStatLine(lines, "Upgrade_Slow", "Stat_Slow", currentSlow, nextUpgrade.SlowRate);
          }
 
          return string.Join("\n", lines);
@@ -260,6 +264,8 @@ namespace TrainDefense.Game.UI
             AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
             AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
             AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
+            if (s.SlowRate > 0f)
+               AddStatValueLine(lines, "Stat_Slow", s.SlowRate);
          }
          return string.Join("\n", lines);
       }
@@ -274,13 +280,7 @@ namespace TrainDefense.Game.UI
 
       // 포탑이 AttackArea 스탯을 실제 폭발 반경으로 쓰는지 판정 (빔 길이·파티클 비율은 제외).
       private static bool UsesAttackArea(TurretTrainData turretData)
-      {
-         var prefab = turretData?.TurretProjectilePrefab;
-         if (prefab == null) return false;
-         if (!prefab.TryGetComponent<Projectile>(out var projectile)) return false;
-         var data = projectile.GetData();
-         return data != null && data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && data.IsSpawnTriggerHandle;
-      }
+         => turretData != null && turretData.UsesAttackArea;
 
       // 업그레이드 카드용: 값이 바뀌는 스탯(delta≠0)만 "현재값 → 다음값"(upgradeKey) 화살표로 표시.
       // 변화 없는 스탯은 statKey로 현재값만 표시. 해당 키가 없으면 조용히 건너뛴다.

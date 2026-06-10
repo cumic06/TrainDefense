@@ -19,13 +19,13 @@ MonoBehaviour:
     icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
     monsterStatusData:
       MaxHp: 10
-      Damage: 5
+      Damage: 3
       MoveSpeed: 5
       AttackDelay: 1
       DropExpMin: 10
       DropExpMax: 10
-      DropMoneyMin: 10
-      DropMoneyMax: 10
+      DropMoneyMin: 4
+      DropMoneyMax: 4
       AttackRange: 2
       AttackType: 0
     prefabId: Skull
@@ -35,14 +35,14 @@ MonoBehaviour:
     description: Monster_10002_Desc
     icon: {fileID: -8975192331532836980, guid: 5d9812acc860e45b4be3490475ec11ce, type: 3}
     monsterStatusData:
-      MaxHp: 25
+      MaxHp: 30
       Damage: 5
       MoveSpeed: 8
       AttackDelay: 0.7
       DropExpMin: 30
       DropExpMax: 30
-      DropMoneyMin: 30
-      DropMoneyMax: 30
+      DropMoneyMin: 9
+      DropMoneyMax: 9
       AttackRange: 1.5
       AttackType: 0
     prefabId: Thief
@@ -52,14 +52,14 @@ MonoBehaviour:
     description: Monster_10003_Desc
     icon: {fileID: -3602873763752426733, guid: c8770fe2a236a4dd4b51a7fa9eac9569, type: 3}
     monsterStatusData:
-      MaxHp: 40
+      MaxHp: 45
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 2.7
-      DropExpMin: 40
-      DropExpMax: 40
-      DropMoneyMin: 40
-      DropMoneyMax: 40
+      DropExpMin: 45
+      DropExpMax: 45
+      DropMoneyMin: 14
+      DropMoneyMax: 14
       AttackRange: 6
       AttackType: 1
     prefabId: Gnoll
@@ -73,10 +73,10 @@ MonoBehaviour:
       Damage: 10
       MoveSpeed: 4
       AttackDelay: 2
-      DropExpMin: 25
-      DropExpMax: 25
-      DropMoneyMin: 20
-      DropMoneyMax: 20
+      DropExpMin: 20
+      DropExpMax: 20
+      DropMoneyMin: 10
+      DropMoneyMax: 10
       AttackRange: 2
       AttackType: 0
     prefabId: Hammershark
@@ -90,10 +90,10 @@ MonoBehaviour:
       Damage: 10
       MoveSpeed: 3.4
       AttackDelay: 3
-      DropExpMin: 60
-      DropExpMax: 60
-      DropMoneyMin: 45
-      DropMoneyMax: 45
+      DropExpMin: 35
+      DropExpMax: 35
+      DropMoneyMin: 10
+      DropMoneyMax: 10
       AttackRange: 5
       AttackType: 1
     prefabId: Shark
@@ -103,14 +103,14 @@ MonoBehaviour:
     description: Monster_10006_Desc
     icon: {fileID: 6240235003232040363, guid: 02a56956d819644e9ba1f5230f17be41, type: 3}
     monsterStatusData:
-      MaxHp: 120
+      MaxHp: 170
       Damage: 15
       MoveSpeed: 2.8
       AttackDelay: 3
-      DropExpMin: 140
-      DropExpMax: 140
-      DropMoneyMin: 95
-      DropMoneyMax: 95
+      DropExpMin: 170
+      DropExpMax: 170
+      DropMoneyMin: 51
+      DropMoneyMax: 51
       AttackRange: 2
       AttackType: 0
     prefabId: Turtle
@@ -120,14 +120,14 @@ MonoBehaviour:
     description: Monster_10007_Desc
     icon: {fileID: -3625172091503848354, guid: 6b0643aaa67844e2aae806b506ebe8f5, type: 3}
     monsterStatusData:
-      MaxHp: 20
+      MaxHp: 18
       Damage: 5
       MoveSpeed: 5
       AttackDelay: 2
       DropExpMin: 18
       DropExpMax: 18
-      DropMoneyMin: 18
-      DropMoneyMax: 18
+      DropMoneyMin: 8
+      DropMoneyMax: 8
       AttackRange: 2
       AttackType: 0
     prefabId: Snake
@@ -137,14 +137,14 @@ MonoBehaviour:
     description: Monster_10008_Desc
     icon: {fileID: -3635613324321525249, guid: ef9ae9e2cb8b84e81b8c56aea546a281, type: 3}
     monsterStatusData:
-      MaxHp: 50
+      MaxHp: 45
       Damage: 10
       MoveSpeed: 6
       AttackDelay: 1.5
       DropExpMin: 45
       DropExpMax: 45
-      DropMoneyMin: 45
-      DropMoneyMax: 45
+      DropMoneyMin: 14
+      DropMoneyMax: 14
       AttackRange: 1.5
       AttackType: 0
     prefabId: Panda
@@ -154,14 +154,14 @@ MonoBehaviour:
     description: Monster_10009_Desc
     icon: {fileID: 3863950976592595061, guid: a9f259f952e5f4141a134eb245f1d344, type: 3}
     monsterStatusData:
-      MaxHp: 80
+      MaxHp: 70
       Damage: 10
       MoveSpeed: 4.3
       AttackDelay: 1
-      DropExpMin: 75
-      DropExpMax: 75
-      DropMoneyMin: 75
-      DropMoneyMax: 75
+      DropExpMin: 70
+      DropExpMax: 70
+      DropMoneyMin: 21
+      DropMoneyMax: 21
       AttackRange: 1.5
       AttackType: 0
     prefabId: Lizard
@@ -171,14 +171,14 @@ MonoBehaviour:
     description: Monster_10010_Desc
     icon: {fileID: 8580189074808014292, guid: 3addccd9ed6334cf9b6fa384aba038d0, type: 3}
     monsterStatusData:
-      MaxHp: 130
+      MaxHp: 110
       Damage: 30
       MoveSpeed: 7
       AttackDelay: 2.5
-      DropExpMin: 150
-      DropExpMax: 150
-      DropMoneyMin: 150
-      DropMoneyMax: 150
+      DropExpMin: 110
+      DropExpMax: 110
+      DropMoneyMin: 33
+      DropMoneyMax: 33
       AttackRange: 2
       AttackType: 0
     prefabId: Bear
@@ -188,14 +188,14 @@ MonoBehaviour:
     description: Monster_10011_Desc
     icon: {fileID: -6557010917886046056, guid: 327caefdcf18245b58192e6d50fa930a, type: 3}
     monsterStatusData:
-      MaxHp: 10
-      Damage: 5
-      MoveSpeed: 7
+      MaxHp: 8
+      Damage: 3
+      MoveSpeed: 6.5
       AttackDelay: 0.8
-      DropExpMin: 11
-      DropExpMax: 11
-      DropMoneyMin: 13
-      DropMoneyMax: 13
+      DropExpMin: 8
+      DropExpMax: 8
+      DropMoneyMin: 5
+      DropMoneyMax: 5
       AttackRange: 2
       AttackType: 0
     prefabId: Dwarf
@@ -205,14 +205,14 @@ MonoBehaviour:
     description: Monster_10012_Desc
     icon: {fileID: -3068608994661831594, guid: ae483a7a0e01f492ab7488474a21b3e4, type: 3}
     monsterStatusData:
-      MaxHp: 40
+      MaxHp: 35
       Damage: 15
       MoveSpeed: 5
       AttackDelay: 1.4
-      DropExpMin: 30
-      DropExpMax: 30
-      DropMoneyMin: 40
-      DropMoneyMax: 40
+      DropExpMin: 35
+      DropExpMax: 35
+      DropMoneyMin: 10
+      DropMoneyMax: 10
       AttackRange: 3
       AttackType: 0
     prefabId: Spider
@@ -222,14 +222,14 @@ MonoBehaviour:
     description: Monster_10013_Desc
     icon: {fileID: 6790613064428419975, guid: c71a51d7fffe3487db08e462fa5be6e3, type: 3}
     monsterStatusData:
-      MaxHp: 160
+      MaxHp: 110
       Damage: 20
-      MoveSpeed: 5
+      MoveSpeed: 4.7
       AttackDelay: 2
-      DropExpMin: 80
-      DropExpMax: 80
-      DropMoneyMin: 95
-      DropMoneyMax: 95
+      DropExpMin: 110
+      DropExpMax: 110
+      DropMoneyMin: 33
+      DropMoneyMax: 33
       AttackRange: 2
       AttackType: 0
     prefabId: Minotaur
@@ -243,10 +243,10 @@ MonoBehaviour:
       Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
-      DropExpMin: 26
-      DropExpMax: 26
-      DropMoneyMin: 26
-      DropMoneyMax: 26
+      DropExpMin: 28
+      DropExpMax: 28
+      DropMoneyMin: 12
+      DropMoneyMax: 12
       AttackRange: 2
       AttackType: 0
     prefabId: GoblinSpear
@@ -260,10 +260,10 @@ MonoBehaviour:
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 3
-      DropExpMin: 73
-      DropExpMax: 73
-      DropMoneyMin: 73
-      DropMoneyMax: 73
+      DropExpMin: 60
+      DropExpMax: 60
+      DropMoneyMin: 18
+      DropMoneyMax: 18
       AttackRange: 5
       AttackType: 1
     prefabId: GoblinSorcerer
@@ -277,10 +277,10 @@ MonoBehaviour:
       Damage: 20
       MoveSpeed: 3
       AttackDelay: 4
-      DropExpMin: 155
-      DropExpMax: 155
-      DropMoneyMin: 155
-      DropMoneyMax: 155
+      DropExpMin: 220
+      DropExpMax: 220
+      DropMoneyMin: 66
+      DropMoneyMax: 66
       AttackRange: 2
       AttackType: 0
     prefabId: GiantGoblin
@@ -354,8 +354,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.25
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 1
   - id: 30002
@@ -372,14 +372,14 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 4
       AttackRange: 8
-      AttackArea: 8
+      AttackArea: 12
       AttackCount: 1
-      AttackInterval: 0.1
+      AttackInterval: 0.2
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 30003
@@ -402,8 +402,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 1
   - id: 30004
@@ -422,12 +422,12 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 15
-      AttackArea: 15
+      AttackArea: 3
       AttackCount: 1
-      AttackInterval: 2.5
+      AttackInterval: 2
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 1
   - id: 30005
@@ -447,11 +447,11 @@ MonoBehaviour:
       AttackDamage: 10
       AttackRange: 11
       AttackArea: 11
-      AttackCount: 3
-      AttackInterval: 1
-      TargetCount: 3
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      AttackCount: 2
+      AttackInterval: 1.5
+      TargetCount: 2
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 1
   - id: 30006
@@ -472,10 +472,10 @@ MonoBehaviour:
       AttackRange: 13
       AttackArea: 3
       AttackCount: 1
-      AttackInterval: 3
+      AttackInterval: 2
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: CannonProjectile
     attackDamageMultiplier: 1
   - id: 30007
@@ -498,8 +498,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
   - id: 31001
@@ -524,15 +524,15 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 0.25
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 1
   - id: 31002
     name: Train_31002_Name
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
-    damageType: 0
+    damageType: 1
     attackSoundType: 302
     description: 
     trainStatusData:
@@ -544,14 +544,14 @@ MonoBehaviour:
     - 60003
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 4
       AttackRange: 8
       AttackArea: 8
       AttackCount: 1
-      AttackInterval: 0.1
+      AttackInterval: 0.2
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 31003
@@ -577,8 +577,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 1
   - id: 31004
@@ -599,12 +599,12 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 15
-      AttackArea: 15
+      AttackArea: 3
       AttackCount: 1
-      AttackInterval: 2.5
+      AttackInterval: 2
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 1
   - id: 31005
@@ -626,11 +626,11 @@ MonoBehaviour:
       AttackDamage: 10
       AttackRange: 11
       AttackArea: 11
-      AttackCount: 3
-      AttackInterval: 1
-      TargetCount: 3
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      AttackCount: 2
+      AttackInterval: 1.5
+      TargetCount: 2
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 1
   - id: 31006
@@ -654,10 +654,10 @@ MonoBehaviour:
       AttackRange: 13
       AttackArea: 3
       AttackCount: 1
-      AttackInterval: 3
+      AttackInterval: 2
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: CannonProjectile
     attackDamageMultiplier: 1
   - id: 31007
@@ -683,8 +683,8 @@ MonoBehaviour:
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      CriticalChance: 0
+      CriticalDamage: 0
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
   rangeTrainDataList:
@@ -706,9 +706,10 @@ MonoBehaviour:
       AttackRange: 4
       AttackArea: 4
       AttackCount: 1
-      AttackInterval: 4
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      AttackInterval: 3
+      CriticalChance: 0
+      CriticalDamage: 0
+      SlowRate: 0
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 40002
@@ -725,17 +726,18 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 3
       AttackRange: 3
-      AttackArea: 3
+      AttackArea: 5
       AttackCount: 1
-      AttackInterval: 0.15
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      AttackInterval: 0.2
+      CriticalChance: 0
+      CriticalDamage: 0
+      SlowRate: 25
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
-  - id: 42001
-    name: Train_42001_Name
+  - id: 41001
+    name: Train_41001_Name
     iconId: 
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
@@ -755,17 +757,18 @@ MonoBehaviour:
       AttackRange: 4
       AttackArea: 4
       AttackCount: 1
-      AttackInterval: 4
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      AttackInterval: 3
+      CriticalChance: 0
+      CriticalDamage: 0
+      SlowRate: 0
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
-  - id: 42002
-    name: Train_42002_Name
+  - id: 41002
+    name: Train_41002_Name
     iconId: 
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
-    damageType: 0
-    attackSoundType: 0
+    damageType: 1
+    attackSoundType: 309
     description: 
     trainStatusData:
       MaxHp: 250
@@ -777,13 +780,14 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 3
       AttackRange: 3
-      AttackArea: 3
+      AttackArea: 5
       AttackCount: 1
-      AttackInterval: 0.15
-      CriticalChance: 30
-      CriticalDamage: 0.3
+      AttackInterval: 0.2
+      CriticalChance: 0
+      CriticalDamage: 0
+      SlowRate: 25
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 0
   trainSkillDataDB:
@@ -821,16 +825,18 @@ MonoBehaviour:
     - id: 50003
       name: Skill_50003_Name
       description: Skill_50003_Desc
-      skillType: 0
-      skillCooldown: 30
+      skillType: 2
+      skillCooldown: 20
       skillIconId: 
       projectileData:
         projectilePrefabId: 
         damage: 0
         range: 0
         projectileCount: 0
-      buffDuration: 15
-      buffs: []
+      buffDuration: 10
+      buffs:
+      - statType: 8
+        percent: 250
     - id: 50004
       name: Skill_50004_Name
       description: Skill_50004_Desc
@@ -848,7 +854,7 @@ MonoBehaviour:
       name: Skill_50005_Name
       description: Skill_50005_Desc
       skillType: 4
-      skillCooldown: 30
+      skillCooldown: 10
       skillIconId: 
       projectileData:
         projectilePrefabId: 
@@ -861,7 +867,7 @@ MonoBehaviour:
       name: Skill_50006_Name
       description: Skill_50006_Desc
       skillType: 5
-      skillCooldown: 30
+      skillCooldown: 15
       skillIconId: 
       projectileData:
         projectilePrefabId: 
@@ -929,23 +935,23 @@ MonoBehaviour:
     - id: 60003
       name: Passive_60003_Name
       passiveType: StatModifier
-      param1: AttackRange
+      param1: AttackArea
       param2: -30
-      param3: AttackArea:-30:AttackDamage:150
+      param3: AttackDamage:100
       description: Passive_60003_Desc
     - id: 60004
       name: Passive_60004_Name
       passiveType: StatModifier
-      param1: AttackRange
-      param2: 100
-      param3: AttackArea:100:AttackDamage:30
+      param1: AttackDamage
+      param2: 50
+      param3: SlowRate:50
       description: Passive_60004_Desc
     - id: 60005
       name: Passive_60005_Name
       passiveType: PeriodicSpawn
       param1: 3
       param2: SnowballProjectile
-      param3: 3
+      param3: 3:10
       description: Passive_60005_Desc
     - id: 60006
       name: Passive_60006_Name
@@ -956,28 +962,28 @@ MonoBehaviour:
       description: Passive_60006_Desc
     - id: 60007
       name: Passive_60007_Name
-      passiveType: 
+      passiveType: Strengthen:100|StatModifier:AttackArea:50
       param1: 
       param2: 
       param3: 
       description: Passive_60007_Desc
     - id: 60008
       name: Passive_60008_Name
-      passiveType: StatModifier
-      param1: AttackCount
-      param2: 200
+      passiveType: RepeatAfterAttack:0.15:1:1
+      param1: 
+      param2: 
       param3: 
       description: Passive_60008_Desc
     - id: 60009
       name: Passive_60009_Name
-      passiveType: 
+      passiveType: StatModifier:AttackInterval:30|KnockbackOnHit:2:0.3
       param1: 
       param2: 
       param3: 
       description: Passive_60009_Desc
     - id: 60010
       name: Passive_60010_Name
-      passiveType: StatModifier:AttackDamage:50:AttackArea:50|ScaleProjectile
+      passiveType: StatModifier:AttackDamage:100|ScaleProjectile
       param1: 1.5
       param2: 
       param3: 
@@ -1007,14 +1013,14 @@ MonoBehaviour:
       name: Passive_60014_Name
       passiveType: StatModifier
       param1: AttackArea
-      param2: 300
+      param2: 50
       param3: 
       description: Passive_60014_Desc
     - id: 60015
       name: Passive_60015_Name
       passiveType: RapidBombard
       param1: -50
-      param2: -50
+      param2: 0
       param3: 2:10:7
       description: Passive_60015_Desc
     - id: 60017
@@ -1028,7 +1034,7 @@ MonoBehaviour:
       name: Passive_60018_Name
       passiveType: StatModifier
       param1: AttackInterval
-      param2: -80
+      param2: -30
       param3: 
       description: Passive_60018_Desc
   _legacyTrainSkillDataList: []
@@ -1086,18 +1092,6 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 1
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
         AttackDamage: 2
         AttackRange: 0
         AttackArea: 0
@@ -1110,7 +1104,19 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 3
+        AttackDamage: 4
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 0
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 6
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1128,11 +1134,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 15
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: -0.1
+        AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1140,11 +1146,11 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 10
+        AttackDamage: 30
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
-        AttackInterval: -0.24
+        AttackInterval: 0
         TargetCount: 0
         CriticalChance: 0
         CriticalDamage: 0
@@ -1152,7 +1158,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 20
+        AttackDamage: 55
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1212,7 +1218,19 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 1
+        AttackDamage: 0
+        AttackRange: 0
+        AttackArea: 0
+        AttackCount: 0
+        AttackInterval: 0
+        TargetCount: 1
+        CriticalChance: 0
+        CriticalDamage: 0
+      passiveSkillDataId: 
+    - statusUpgrade:
+        MaxHp: 0
+      turretStatusUpgrade:
+        AttackDamage: 2
         AttackRange: 0
         AttackArea: 0
         AttackCount: 0
@@ -1233,18 +1251,6 @@ MonoBehaviour:
         CriticalChance: 0
         CriticalDamage: 0
       passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 3
-        CriticalChance: 0
-        CriticalDamage: 0
-      passiveSkillDataId: 
   - id: 90006
     iconId: Weapon_MEL_14_UI
     icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
@@ -1254,7 +1260,7 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 15
         AttackRange: 0
         AttackArea: 1
         AttackCount: 0
@@ -1266,9 +1272,9 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 30
         AttackRange: 0
-        AttackArea: 2
+        AttackArea: 1
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1278,9 +1284,9 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       turretStatusUpgrade:
-        AttackDamage: 20
+        AttackDamage: 55
         AttackRange: 0
-        AttackArea: 3
+        AttackArea: 1
         AttackCount: 0
         AttackInterval: 0
         TargetCount: 0
@@ -1400,33 +1406,36 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 20
         AttackRange: 0
         AttackArea: 1
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 30
         AttackRange: 0
         AttackArea: 1
         AttackCount: 0
-        AttackInterval: -0.2
+        AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 0
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 50
         AttackRange: 0
-        AttackArea: 2
+        AttackArea: 1
         AttackCount: 0
-        AttackInterval: -0.3
+        AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 0
   - id: 100002
     iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
@@ -1436,227 +1445,262 @@ MonoBehaviour:
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
-        AttackDamage: 0
+        AttackDamage: 1
         AttackRange: 0
-        AttackArea: 1
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 5
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 1
         AttackRange: 0
-        AttackArea: 1
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 10
     - statusUpgrade:
         MaxHp: 0
       rangeStatusUpgrade:
         AttackDamage: 2
         AttackRange: 0
-        AttackArea: 2
+        AttackArea: 0
         AttackCount: 0
         AttackInterval: 0
         CriticalChance: 0
         CriticalDamage: 0
+        SlowRate: 10
   stageDataList:
   - id: 50001
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.312
+    spawnInterval: 0.2857
     spawnDatas:
     - MonsterId: 10001
       Probability: 5
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10002
       Probability: 3
       SpawnLevel: 3
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10003
       Probability: 2
       SpawnLevel: 5
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map1
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
-    stageImage: {fileID: 8598508764172064028, guid: 15a620789885c0e4785fe4b6ee084b5d, type: 3}
+    stageImage: {fileID: 1169708250249569854, guid: b1afade6230499848a8b7c09f05c25f5, type: 3}
   - id: 50002
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.72
+    spawnInterval: 0.7143
     spawnDatas:
     - MonsterId: 10004
       Probability: 4.5
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10005
       Probability: 4
       SpawnLevel: 3
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10006
       Probability: 1.5
       SpawnLevel: 6
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map2
       customSpawnAreas:
-      - Offset: {x: 0, y: 6}
-        Size: {x: 35, y: 5}
-      - Offset: {x: 0, y: -6}
-        Size: {x: 35, y: 5}
+      - Offset: {x: 0, y: 4.5}
+        Size: {x: 25, y: 4}
+      - Offset: {x: 0, y: -4.5}
+        Size: {x: 25, y: 4}
       spawnEffectPrefab: {fileID: 5497501282563620409, guid: 61ec9a5b3b8a7454ba21d3c1bad637c6, type: 3}
     stageImage: {fileID: -8210071984612457726, guid: e44f3d3e5e510c747b272409f41010fd, type: 3}
   - id: 50003
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.6
+    spawnInterval: 0.5714
     spawnDatas:
     - MonsterId: 10007
       Probability: 4
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10008
       Probability: 3.5
       SpawnLevel: 3
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10009
       Probability: 2
       SpawnLevel: 5
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10010
       Probability: 0.5
       SpawnLevel: 9
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map3
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
-    stageImage: {fileID: 8750756355730269390, guid: 36a96b526898ef64595432763c5436f6, type: 3}
+    stageImage: {fileID: 921028978873285461, guid: 91ac1a6ea09e2394ea9e27fe7d4a7848, type: 3}
   - id: 50004
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.384
+    spawnInterval: 0.3571
     spawnDatas:
     - MonsterId: 10011
       Probability: 5.5
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10012
       Probability: 3.5
       SpawnLevel: 4
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10013
       Probability: 1
       SpawnLevel: 6
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map4
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
-    stageImage: {fileID: -5933715298724706184, guid: cbb1a3d97c892a94f875b5f9da3ae9ae, type: 3}
+    stageImage: {fileID: -2424202261327721187, guid: 7e8a0409500c44f41ad4f08f3355ed80, type: 3}
   - id: 50005
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.84
+    spawnInterval: 0.8571
     spawnDatas:
     - MonsterId: 10014
       Probability: 5
       SpawnLevel: 1
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10015
       Probability: 4
       SpawnLevel: 4
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     - MonsterId: 10016
       Probability: 1
       SpawnLevel: 6
+      EliteChanceMultiplier: 1
+      EliteChanceRamp: 0
     mapData:
       id: 
       prefabId: Map5
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
-    stageImage: {fileID: 9023624542499435072, guid: 0980d694155662c49bcb150ed8cb626b, type: 3}
+    stageImage: {fileID: -2663140553942567082, guid: d7d6afe20884f4140beef75663e91020, type: 3}
   upgradeDataList:
   - id: 110001
     iconId: sword
     name: Upgrade_110001_Name
     description: Upgrade_110001_Desc
-    needMoney: 60
+    needMoney: 120
     maxUpgradeCount: 100
     upgradeDataType: 0
-    upgradeValue: 1
+    upgradeValue: 5
     stats:
     - <Type>k__BackingField: 2
-      <Value>k__BackingField: 1
-    growthRate: 1.065
+      <Value>k__BackingField: 5
+    growthRate: 1.15
   - id: 110002
     iconId: 
     name: Upgrade_110002_Name
     description: Upgrade_110002_Desc
-    needMoney: 85
-    maxUpgradeCount: 50
+    needMoney: 150
+    maxUpgradeCount: 10
     upgradeDataType: 0
-    upgradeValue: -1
+    upgradeValue: -5
     stats:
     - <Type>k__BackingField: 4
-      <Value>k__BackingField: -1
-    growthRate: 1.065
+      <Value>k__BackingField: -5
+    growthRate: 1.15
   - id: 110003
     iconId: 
     name: Upgrade_110003_Name
     description: Upgrade_110003_Desc
-    needMoney: 120
+    needMoney: 90
     maxUpgradeCount: 100
     upgradeDataType: 0
-    upgradeValue: 1
+    upgradeValue: 5
     stats:
     - <Type>k__BackingField: 0
-      <Value>k__BackingField: 1
-    growthRate: 1.065
+      <Value>k__BackingField: 5
+    growthRate: 1.11
   - id: 110004
     iconId: Coin
     name: Upgrade_110004_Name
     description: Upgrade_110004_Desc
-    needMoney: 140
-    maxUpgradeCount: 100
+    needMoney: 120
+    maxUpgradeCount: 20
     upgradeDataType: 1
-    upgradeValue: 1
+    upgradeValue: 5
     stats: []
-    growthRate: 1.065
+    growthRate: 1.13
   - id: 110006
     iconId: 
     name: Upgrade_110006_Name
     description: Upgrade_110006_Desc
-    needMoney: 100
-    maxUpgradeCount: 100
+    needMoney: 120
+    maxUpgradeCount: 20
     upgradeDataType: 0
-    upgradeValue: 1
+    upgradeValue: 5
     stats:
     - <Type>k__BackingField: 6
-      <Value>k__BackingField: 1
-    growthRate: 1.065
+      <Value>k__BackingField: 5
+    growthRate: 1.15
   - id: 110007
     iconId: 
     name: Upgrade_110007_Name
     description: Upgrade_110007_Desc
-    needMoney: 60
+    needMoney: 130
     maxUpgradeCount: 100
     upgradeDataType: 0
-    upgradeValue: 1
+    upgradeValue: 5
     stats:
     - <Type>k__BackingField: 7
-      <Value>k__BackingField: 1
-    growthRate: 1.065
+      <Value>k__BackingField: 5
+    growthRate: 1.13
   - id: 110005
     iconId: 
     name: Upgrade_110005_Name
     description: Upgrade_110005_Desc
-    needMoney: 140
-    maxUpgradeCount: 100
+    needMoney: 90
+    maxUpgradeCount: 20
     upgradeDataType: 1
-    upgradeValue: 1
+    upgradeValue: 5
     stats: []
-    growthRate: 1.065
+    growthRate: 1.1
   triChoiceDB:
     addTrainChoices:
     - Option:
@@ -1837,7 +1881,10 @@ MonoBehaviour:
     spawnInterval: 40
     spawnMaxChance: 15
     chanceGrowthPerInterval: 1
-    hpMultiplier: 5
+    multiplierRampInterval: 60
+    multiplierGrowthPerInterval: 0.1
+    multiplierStartProgress: 0
+    hpMultiplier: 3.5
     damageMultiplier: 2
     moveSpeedMultiplier: 1.2
     sizeScale: 1.5
@@ -2022,13 +2069,13 @@ MonoBehaviour:
       data:
         id: NotNow71008
         baseTrainId: 40001
-        eliteTrainDataId: 42001
+        eliteTrainDataId: 41001
     - rid: 3319472431904325761
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: NotNow71009
         baseTrainId: 40002
-        eliteTrainDataId: 42002
+        eliteTrainDataId: 41002
     - rid: 3319472431904325762
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -2045,18 +2092,14 @@ MonoBehaviour:
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 70010
-        targetTrainId: 31004
-        weightedUpgrades:
-        - upgradeDataId: 90008
-          upgradeDataWeight: 1
+        targetTrainId: 
+        weightedUpgrades: []
     - rid: 5100000000000000002
       type: {class: UpgradeTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 70011
-        targetTrainId: 31004
-        weightedUpgrades:
-        - upgradeDataId: 90009
-          upgradeDataWeight: 1
+        targetTrainId: 
+        weightedUpgrades: []
     - rid: 6103417219460104299
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
@@ -2110,22 +2153,22 @@ MonoBehaviour:
       data:
         id: 62001
         baseTrainId: 40001
-        eliteTrainDataId: 42001
+        eliteTrainDataId: 41001
     - rid: 6103417219460104308
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62001a
         baseTrainId: 40001
-        eliteTrainDataId: 42001
+        eliteTrainDataId: 41001
     - rid: 6103417219460104309
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62002
         baseTrainId: 40002
-        eliteTrainDataId: 42002
+        eliteTrainDataId: 41002
     - rid: 6103417219460104310
       type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
       data:
         id: 62002a
         baseTrainId: 40002
-        eliteTrainDataId: 42002
+        eliteTrainDataId: 41002

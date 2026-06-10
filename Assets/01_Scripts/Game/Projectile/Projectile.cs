@@ -37,6 +37,12 @@ namespace TrainDefense.Game
         private bool _runtimeHasShove;
         private float _runtimeShovePower;
         private float _runtimeShoveDuration;
+        private float _scale = 1f;
+        private Vector3 _baseScale = Vector3.one;
+        private bool _baseScaleCaptured;
+        [SerializeField] private float baseScaleArea = 3f;
+        // 빔 원본 굵기(레이저 model 스케일 x). 폭 = baseRangeScale * AttackArea.
+        [SerializeField] private float baseRangeScale = 1f;
 
         #region Enable/Disable
 
@@ -52,6 +58,13 @@ namespace TrainDefense.Game
             _runtimeHasShove = false;
             _runtimeShovePower = 0f;
             _runtimeShoveDuration = 0f;
+            _scale = 1f;
+            // trigger 스폰형(미사일)만 루트 스케일 리셋 → 풀 재사용 잔존 방지. 다른 투사체는 안 건드림.
+            if (data != null && data.IsSpawnTriggerHandle)
+            {
+                if (!_baseScaleCaptured) { _baseScale = transform.localScale; _baseScaleCaptured = true; }
+                transform.localScale = _baseScale;
+            }
 
             if (data != null && data.DestroyDelay > 0)
             {
@@ -82,7 +95,8 @@ namespace TrainDefense.Game
         /// <param name="damage">데미지</param>
         /// <param name="target">타겟 (Monster 또는 null)</param>
         /// <param name="scaleRadius">AoE/스케일 반경 (AttackArea 값)</param>
-        public virtual void Init(float damage, IProjectileTarget owner, IProjectileTarget target = null, float scaleRadius = 0f, float criticalChance = 0f, float criticalDamage = 0f)
+        /// <param name="scaleRange">분사 길이 스케일 (AttackRange 값). ParticleProjectile만 사용</param>
+        public virtual void Init(float damage, IProjectileTarget owner, IProjectileTarget target = null, float scaleRadius = 0f, float criticalChance = 0f, float criticalDamage = 0f, float scaleRange = 0f)
         {
             _damage = damage;
             _owner = owner;
@@ -93,11 +107,11 @@ namespace TrainDefense.Game
 
             if (data != null)
             {
-                InitializeWithConfig(scaleRadius);
+                InitializeWithConfig(scaleRadius, scaleRange);
             }
         }
 
-        private void InitializeWithConfig(float scaleRadius = 0f)
+        private void InitializeWithConfig(float scaleRadius = 0f, float scaleRange = 0f)
         {
             // 이동 전략 초기화
             _movementStrategy = CreateMovementStrategy(data.MovementType);
@@ -106,7 +120,7 @@ namespace TrainDefense.Game
             // AttackArea에 따른 스케일 조정
             if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && scaleRadius > 0f)
             {
-                ApplyScaleByArea(scaleRadius);
+                ApplyScaleByArea(scaleRadius, scaleRange);
             }
             else if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.TargetRange && _target != null)
             {
@@ -114,9 +128,18 @@ namespace TrainDefense.Game
             }
         }
 
-        protected virtual void ApplyScaleByArea(float scaleRadius)
+        // 빔류(StretchBeamModel): 길이는 AttackRange(scaleRange), 폭은 AttackArea(scaleRadius)로 늘린다.
+        // scaleRange가 없으면(0) 길이도 scaleRadius로 폴백.
+        protected virtual void ApplyScaleByArea(float scaleRadius, float scaleRange = 0f)
         {
-            StretchBeamModel(scaleRadius);
+            // 캐논류(trigger 스폰 + 빔 아님): 투사체 루트를 AttackArea 비례로 스케일 (model은 자식이라 따라 커짐).
+            // baseScaleArea = 원본 크기(localScale 1배)에 대응하는 AttackArea. 매 발사 재계산이라 풀 잔존 없음.
+            if (data != null && data.IsSpawnTriggerHandle && scaleRadius > 0f && baseScaleArea > 0f)
+            {
+                transform.localScale = _baseScale * (scaleRadius / baseScaleArea);
+                return;
+            }
+            StretchBeamModel(scaleRange > 0f ? scaleRange : scaleRadius, scaleRadius);
         }
 
         protected virtual void ApplyScaleByTargetRange(Vector3 targetPos)
@@ -125,9 +148,12 @@ namespace TrainDefense.Game
             StretchBeamModel(distance);
         }
 
-        // 빔/레이저형 투사체 전용: model에 BoxCollider2D가 있을 때만 세로 길이 늘리기.
-        // 캐논처럼 CircleCollider2D + 일반 SpriteRenderer 조합은 건드리지 않는다.
-        private void StretchBeamModel(float length)
+        // 빔/레이저형 투사체 전용: model에 BoxCollider2D가 있을 때만 늘린다.
+        // 길이는 sprite.size(Tiled)로 늘리고, 폭은 model 스케일로 stretch한다.
+        // (sprite.size로 폭을 늘리면 Tiled drawMode가 가로로 반복돼 스프라이트가 여러 개로 보임)
+        // 레이저 model은 -90도 회전 상태라 model 스케일 x축=폭. widthMul=1이면 원본 굵기 유지(전기 등).
+        // 캐논(CircleCollider)은 건드리지 않는다.
+        private void StretchBeamModel(float length, float widthMul = 1f)
         {
             if (model == null)
                 return;
@@ -137,6 +163,8 @@ namespace TrainDefense.Game
 
             model.transform.localPosition = new Vector3(length / 2, 0, 0);
             box.size = new Vector2(1, length);
+            var ls = model.transform.localScale;
+            model.transform.localScale = new Vector3(baseRangeScale * widthMul, ls.y, ls.z);
 
             if (model.TryGetComponent<SpriteRenderer>(out var sprite))
             {
@@ -216,7 +244,7 @@ namespace TrainDefense.Game
         /// </summary>
         // 크리티컬 시 기본 추가 데미지 비율(%). 실제 크리 보너스 = BaseCriticalDamagePercent + CriticalDamage.
         // Detail UI 표기(TurretTrain/RangeTrain.GetStatDetails)도 이 값을 참조한다.
-        public const float BaseCriticalDamagePercent = 30f;
+        public const float BaseCriticalDamagePercent = 100f;
 
         protected (float finalDamage, bool isCritical) CalculateCriticalDamage()
         {
@@ -341,10 +369,11 @@ namespace TrainDefense.Game
                 }
             }
 
-            // 슬로우 효과 (Stay 중 지속 적용)
+            // 슬로우 효과 (Stay 중 지속 적용). owner가 둔화율을 제공하면 그 값, 아니면 config 기본값.
             if (data.HasSlowEffect)
             {
-                target.Slow(data.SlowValue);
+                float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
+                target.Slow(slowValue, 0f);
             }
 
             // 넉백 효과 (Stay 중에도 적용)
@@ -398,9 +427,10 @@ namespace TrainDefense.Game
         }
         #endregion
 
-        public void SetModelScale(float scale)
+        public void SetScale(float scale)
         {
-            if (model != null) model.transform.localScale = UnityEngine.Vector3.one * scale;
+            _scale = scale;
+            transform.localScale = _baseScale * scale;
         }
 
         public void SetRuntimeShove(float power, float duration)
@@ -456,7 +486,15 @@ namespace TrainDefense.Game
                 }
             }
 
-            triggerHandle.Init(_damage, _owner);
+            var (finalDamage, isCritical) = CalculateCriticalDamage();
+            triggerHandle.Init(finalDamage, _owner, isCritical);
+
+            if (_runtimeHasShove && !SuppressShoveEffect)
+                triggerHandle.SetRuntimeShove(_runtimeShovePower * ShoveScale, _runtimeShoveDuration);
+
+            // 미사일 스케일(거대한 미사일)을 trigger 폭발 반경에도 반영 → 데미지 범위도 비례 확대
+            if (_scale != 1f)
+                triggerHandle.transform.localScale *= _scale;
         }
 
         private IEnumerator DestroyCoroutine()

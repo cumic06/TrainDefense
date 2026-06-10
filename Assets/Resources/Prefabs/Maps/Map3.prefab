@@ -173,7 +173,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 8750756355730269390, guid: 36a96b526898ef64595432763c5436f6, type: 3}
+  m_Sprite: {fileID: 921028978873285461, guid: 91ac1a6ea09e2394ea9e27fe7d4a7848, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -232,6 +232,7 @@ MonoBehaviour:
   _maps:
   - {fileID: 5973745689582902677}
   - {fileID: 1760125859614873583}
+  speed: 3
 --- !u!1 &5973745689582902677
 GameObject:
   m_ObjectHideFlags: 0
@@ -314,7 +315,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 8750756355730269390, guid: 36a96b526898ef64595432763c5436f6, type: 3}
+  m_Sprite: {fileID: 921028978873285461, guid: 91ac1a6ea09e2394ea9e27fe7d4a7848, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

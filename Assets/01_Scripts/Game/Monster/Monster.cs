@@ -286,7 +286,7 @@ namespace TrainDefense.Game
       }
 
       #region Slow N Reset Move Speed
-      public void Slow(float slowValue)
+      public void Slow(float slowValue, float duration)
       {
          if (!gameObject.activeInHierarchy)
             return;
@@ -295,13 +295,23 @@ namespace TrainDefense.Game
          {
             StopCoroutine(_slowCoroutine);
          }
-         _slowCoroutine = StartCoroutine(_SlowCoroutine(slowValue));
+
+         if (duration > 0f)
+         {
+            _slowCoroutine = StartCoroutine(_SlowForDurationCoroutine(slowValue, duration));
+         }
+         else
+         {
+            _slowCoroutine = StartCoroutine(_SlowCoroutine(slowValue));
+         }
+
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = slowColor;
       }
 
       private IEnumerator _SlowCoroutine(float slowValue)
       {
-         var slowSpeed = _currentMonsterStatus.MoveSpeed * slowValue;
+         // 원래 속도 기준 둔화 (매 프레임 재적용 시 현재 속도 기준이면 0쪽으로 누적 감속됨)
+         var slowSpeed = _monsterData.MonsterStatusData.MoveSpeed * slowValue;
          var startSpeed = _currentMonsterStatus.MoveSpeed;
          float elapsedTime = 0f;
          float duration = 1f;
@@ -330,22 +340,7 @@ namespace TrainDefense.Game
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
       }
 
-      /// <summary>
-      /// 즉발 슬로우 + duration 초 뒤 자동 복원 (냉기 눈덩이 전용).
-      /// </summary>
-      public void SlowForDuration(float slowValue, float duration)
-      {
-         if (!gameObject.activeInHierarchy)
-            return;
-
-         if (_slowCoroutine != null)
-         {
-            StopCoroutine(_slowCoroutine);
-         }
-         _slowCoroutine = StartCoroutine(_SlowForDurationCoroutine(slowValue, duration));
-         if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = slowColor;
-      }
-
+      // 즉발 슬로우 + duration 초 뒤 자동 복원 (Slow에서 duration > 0일 때 사용).
       private IEnumerator _SlowForDurationCoroutine(float slowValue, float duration)
       {
          var slowSpeed = _currentMonsterStatus.MoveSpeed * slowValue;

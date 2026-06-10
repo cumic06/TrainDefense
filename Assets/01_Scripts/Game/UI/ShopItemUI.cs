@@ -6,7 +6,6 @@ using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using System.Text.RegularExpressions;
-using System.Collections;
 
 namespace TrainDefense.Game.UI
 {
@@ -24,11 +23,10 @@ namespace TrainDefense.Game.UI
       [SerializeField]
       private TextMeshProUGUI needMoneyText;
 
-      [Header("Flash Settings")]
+      [Header("Price Color")]
+      [Tooltip("보유 코인이 부족할 때 가격 텍스트에 적용할 색상")]
       [SerializeField]
-      private float flashDuration = 0.1f;
-      [SerializeField]
-      private int flashLoopCount = 3;
+      private Color insufficientColor = Color.gray;
       #endregion
 
       private UpgradeData _upgradeData;
@@ -39,7 +37,14 @@ namespace TrainDefense.Game.UI
          buyButton.onClick.AddListener(OnBuyButtonClick);
          _upgradeData = DatabaseManager.Instance.GetUpgradeData(shopItemDataId);
          _priceOriginalColor = needMoneyText.color;
+         GameEventSystem.Subscribe<ChangeCoinUIEvent>(_OnChangeCoin);
          SetUp();
+      }
+
+      private void OnDestroy()
+      {
+         buyButton.onClick.RemoveListener(OnBuyButtonClick);
+         GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(_OnChangeCoin);
       }
 
       public void SetUp()
@@ -50,8 +55,12 @@ namespace TrainDefense.Game.UI
             itemNameText.text = string.Format(_upgradeData.Name, currentTotalValue);
 
             itemDescriptionText.text = GetLevelDescription();
-            needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost().ToCommaString()}$";
+            if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
+               needMoneyText.text = "MAX";
+            else
+               needMoneyText.text = $"<sprite name=\"Coin\"> {GetCurrentCost().ToCommaString()}$";
 
+            _UpdatePriceColor();
             }
       }
 
@@ -105,19 +114,24 @@ namespace TrainDefense.Game.UI
          }
 
          // 증가/감소 방향은 설명 문구로 표현하고, 값은 크기(양수)만 표시. (예: 공속 -1 → "+1")
+         float perLevelAmount = Mathf.Abs(increaseAmount);
          if (increaseAmount != 0)
          {
-            increaseAmountText = $"+{Mathf.Abs(increaseAmount)}";
+            increaseAmountText = $"+{perLevelAmount}";
          }
 
+         // 현재/최대 누적값 = 레벨 × 레벨당 증가량
+         float currentValue = currentLevel * perLevelAmount;
+         float maxValue = _upgradeData.MaxUpgradeCount * perLevelAmount;
+
          string desc = _upgradeData.Description;
-         // {0}(다음 누적 총값)은 더 이상 표시하지 않음(증가량만 표기). 포맷 {1}=증가량, {2}=현재레벨, {3}=최대레벨.
+         // {0}(다음 누적 총값)은 더 이상 표시하지 않음. 포맷 {1}=레벨당 증가량, {2}=현재 누적값, {3}=최대 누적값.
          try
          {
             if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
-               return string.Format(desc, string.Empty, increaseAmountText, "Max", "Max");
+               return string.Format(desc, string.Empty, increaseAmountText, maxValue, maxValue);
 
-            return string.Format(desc, string.Empty, increaseAmountText, currentLevel, _upgradeData.MaxUpgradeCount);
+            return string.Format(desc, string.Empty, increaseAmountText, currentValue, maxValue);
          }
          catch (System.FormatException)
          {
@@ -132,37 +146,34 @@ namespace TrainDefense.Game.UI
          if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
             return;
 
+         // 코인이 부족하면 가격 텍스트가 이미 회색으로 표시되어 있으므로 구매만 막는다.
          if (UserDataManager.Instance.Coin < GetCurrentCost())
-         {
-            _FlashPriceRed();
             return;
-         }
 
          SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ItemBuy, ignoreSuppress: true);
 
          GameEventSystem.Publish(new BuyShopItemEvent(GetCurrentCost(), shopItemDataId));
       }
 
-      private Coroutine _flashCoroutine;
-
-      private void _FlashPriceRed()
+      private void _OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)
       {
-         if (_flashCoroutine != null)
-            StopCoroutine(_flashCoroutine);
-         needMoneyText.color = _priceOriginalColor;
-         _flashCoroutine = StartCoroutine(_FlashPriceRedRoutine());
+         // 구독 순서에 의존하지 않도록 이벤트의 AfterCoin을 직접 기준으로 사용한다.
+         _ApplyPriceColor(changeCoinEvent.AfterCoin);
       }
 
-      private IEnumerator _FlashPriceRedRoutine()
+      // 현재 보유 코인이 구매 비용보다 적으면 가격 텍스트를 회색으로, 충분하면 원래 색으로 표시한다.
+      private void _UpdatePriceColor()
       {
-         for (int i = 0; i < flashLoopCount; i++)
-         {
-            needMoneyText.color = Color.red;
-            yield return new WaitForSecondsRealtime(flashDuration);
-            needMoneyText.color = _priceOriginalColor;
-            yield return new WaitForSecondsRealtime(flashDuration);
-         }
-         _flashCoroutine = null;
+         int coin = UserDataManager.Instance != null ? UserDataManager.Instance.Coin : 0;
+         _ApplyPriceColor(coin);
+      }
+
+      private void _ApplyPriceColor(int coin)
+      {
+         if (_upgradeData == null)
+            return;
+
+         needMoneyText.color = coin >= GetCurrentCost() ? _priceOriginalColor : insufficientColor;
       }
    }
 }

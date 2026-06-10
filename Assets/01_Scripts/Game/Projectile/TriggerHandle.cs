@@ -33,6 +33,34 @@ namespace TrainDefense.Game
         [SerializeField]
         private float stunDuration = 1f;
 
+        [BoxGroup("Status Effects")]
+        [SerializeField]
+        private bool hasSlowEffect = false;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasSlowEffect")]
+        [SerializeField]
+        private float slowValue = 0.5f;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasSlowEffect")]
+        [SerializeField]
+        private float slowDuration = 2f;
+
+        [BoxGroup("Status Effects")]
+        [SerializeField]
+        private bool hasShove = false;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasShove")]
+        [SerializeField]
+        private float shovePower = 1f;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasShove")]
+        [SerializeField]
+        private float shoveDuration = 0.5f;
+
         [SerializeField]
         private bool destroyOnTriggerEnter = false;
 
@@ -45,6 +73,7 @@ namespace TrainDefense.Game
 
         private Dictionary<IProjectileTarget, float> _damageTimers = new();
         private IProjectileTarget _owner;
+        private bool _isCritical;
 
         public bool HasTurretDamage => hasTurretDamage;
 
@@ -67,13 +96,22 @@ namespace TrainDefense.Game
             _damageTimers.Clear();
         }
 
-        public void Init(float damage, IProjectileTarget owner = null)
+        public void Init(float damage, IProjectileTarget owner = null, bool isCritical = false)
         {
             if (hasTurretDamage)
             {
                 this.damage = damage;
+                _isCritical = isCritical;
             }
             _owner = owner;
+        }
+
+        // 런타임에 넉백 부여 (충격 미사일: 본체 넉백을 trigger로 전파)
+        public void SetRuntimeShove(float power, float duration)
+        {
+            hasShove = true;
+            shovePower = power;
+            shoveDuration = duration;
         }
 
         public void ApplyWaveHit(IProjectileTarget target)
@@ -122,13 +160,13 @@ namespace TrainDefense.Game
                 if (!_damageTimers.ContainsKey(target))
                 {
                     _damageTimers[target] = Time.time;
-                    target.TakeDamage(damage);
+                    target.TakeDamage(damage, _isCritical);
                 }
             }
             else
             {
                 // 직접 데미지는 즉시 피해
-                target.TakeDamage(damage);
+                target.TakeDamage(damage, _isCritical);
 
                 if (destroyOnTriggerEnter && expandingWave == null)
                 {
@@ -147,6 +185,16 @@ namespace TrainDefense.Game
             {
                 target.Stun(stunDuration);
             }
+
+            if (hasSlowEffect)
+            {
+                target.Slow(slowValue, slowDuration);
+            }
+
+            if (hasShove)
+            {
+                target.Shove(shovePower, shoveDuration);
+            }
         }
 
         private void ProcessStay(IProjectileTarget target)
@@ -159,7 +207,7 @@ namespace TrainDefense.Game
                 {
                     if (Time.time - lastTime >= tickInterval)
                     {
-                        target.TakeDamage(damage);
+                        target.TakeDamage(damage, _isCritical);
                         _damageTimers[target] = Time.time;
                     }
                 }

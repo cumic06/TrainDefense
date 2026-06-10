@@ -65,14 +65,14 @@ namespace TrainDefense.Game
             _hitTargets.Clear();
         }
 
-        public override void Init(float damage, IProjectileTarget owner, IProjectileTarget target = null, float attackRange = 0f, float criticalChance = 0f, float criticalDamage = 0f)
+        public override void Init(float damage, IProjectileTarget owner, IProjectileTarget target = null, float attackRange = 0f, float criticalChance = 0f, float criticalDamage = 0f, float scaleRange = 0f)
         {
             if (attackRange > 0f)
             {
                 _endRadius = attackRange;
             }
 
-            base.Init(damage, owner, target, attackRange, criticalChance, criticalDamage);
+            base.Init(damage, owner, target, attackRange, criticalChance, criticalDamage, scaleRange);
         }
 
         public void SetWave(float radius)

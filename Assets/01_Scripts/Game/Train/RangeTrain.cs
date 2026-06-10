@@ -9,7 +9,7 @@ using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game
 {
-    public class RangeTrain : Train, ITrainable
+    public class RangeTrain : Train, ITrainable, ISlowProvider
     {
         #region Fields
         private RangeTrainData rangeTrainData => _trainData as RangeTrainData;
@@ -206,8 +206,12 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.transform.SetParent(transform);
                     var circle = _rangeProjectilePrefab.GetComponentInChildren<CircleCollider2D>();
                     _baseColliderRadius = circle != null && circle.radius > 0f ? circle.radius : 1f;
-                    float scale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
-                    _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
+                    // ExpandingWave는 자체 확장 코루틴이 localScale을 제어하므로 여기서 스케일하면 소환 직후 한 프레임 깜빡인다.
+                    if (_rangeProjectilePrefab is not ExpandingWave)
+                    {
+                        float scale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
+                        _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
+                    }
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
                     _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
@@ -237,6 +241,7 @@ namespace TrainDefense.Game
                 _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval;
                 _currentRangeTrainStatus.CriticalChance += rangeStatus.CriticalChance;
                 _currentRangeTrainStatus.CriticalDamage += rangeStatus.CriticalDamage;
+                _currentRangeTrainStatus.SlowRate += rangeStatus.SlowRate;
 
                 if (_rangeProjectilePrefab != null)
                 {
@@ -245,6 +250,12 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
+        }
+
+        // 누적 둔화율(%, 기차 base + 강화)을 둔화 배율로 변환.
+        public float GetSlowValue()
+        {
+            return 1f - _currentRangeTrainStatus.SlowRate / 100f;
         }
 
         public override void StatusUpgrade(RangeTrainStatus upgradeData)
@@ -256,6 +267,7 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus.AttackInterval += upgradeData.AttackInterval;
             _currentRangeTrainStatus.CriticalChance += upgradeData.CriticalChance;
             _currentRangeTrainStatus.CriticalDamage += upgradeData.CriticalDamage;
+            _currentRangeTrainStatus.SlowRate += upgradeData.SlowRate;
 
             if (_rangeProjectilePrefab != null)
             {
@@ -265,7 +277,9 @@ namespace TrainDefense.Game
             }
         }
 
-        public float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
+        public override float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
+        // 레인지 포탑은 사거리가 아닌 공격 범위(자기 위치 중심 원)를 표시한다.
+        public override float RangeIndicatorRadius => _currentRangeTrainStatus.AttackArea;
         public RangeTrainStatus BaseStatus => rangeTrainData.RangeTrainStatus;
 
         public override string GetStatSummary() =>
@@ -280,7 +294,7 @@ namespace TrainDefense.Game
                 (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(_currentRangeTrainStatus.AttackDamage)}"),
                 (L("Detail_Range", "사거리"), $"{_currentRangeTrainStatus.AttackRange:F1}"),
                 (L("Detail_Area", "범위"), $"{_currentRangeTrainStatus.AttackArea:F1}"),
-                (L("Detail_Speed", "공격속도"), $"{_currentRangeTrainStatus.AttackInterval:F2}s"),
+                (L("Detail_Speed", "공격속도"), $"{ToAttackSpeed(_currentRangeTrainStatus.AttackInterval):F2}"),
                 (L("Detail_CritChance", "크리티컬 확률"), $"{_currentRangeTrainStatus.CriticalChance:F0}%"),
                 (L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentRangeTrainStatus.CriticalDamage:F0}%"),
             };
@@ -325,6 +339,10 @@ namespace TrainDefense.Game
                     case StatType.AttackInterval:
                         // 공속은 상점과 동일하게 현재값 기준 역수 곱셈(DPS 선형, 0 이하 방지). percent 음수=공속 증가.
                         _currentRangeTrainStatus.AttackInterval *= 1f / (1f + (-percent));
+                        break;
+                    case StatType.SlowRate:
+                        // 둔화율(%)을 현재값 기준 percent 증가
+                        _currentRangeTrainStatus.SlowRate += _currentRangeTrainStatus.SlowRate * percent;
                         break;
                     default:
                         ApplyStat(stat);
@@ -481,6 +499,7 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus.AttackInterval = newBase.AttackInterval + (srcCurrent.AttackInterval - srcBase.AttackInterval);
             _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
             _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
+            _currentRangeTrainStatus.SlowRate = newBase.SlowRate + (srcCurrent.SlowRate - srcBase.SlowRate);
 
             _statAttackDamageAccum = srcRange._statAttackDamageAccum;
             _statAttackCountAccum = srcRange._statAttackCountAccum;

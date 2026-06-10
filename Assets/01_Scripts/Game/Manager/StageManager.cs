@@ -40,11 +40,20 @@ namespace TrainDefense.Game.Manager
         private int _currentStageInspectionTimeIndex = 0;
         private GameObject _currentMapInstance;
         private int _inspectionCount = 0;
+        // 난이도 스케일링용 누적 역 통과 수. 스테이지가 바뀌어도 리셋되지 않고 한 판 동안 계속 누적된다.
+        // (스테이지 흐름 제어용 _currentStageInspectionTimeIndex 와 분리)
+        private int _totalStationPassedCount = 0;
         private bool _shouldShowStageSelectionOnStageEnd;
+        private bool _pendingStageSelectionAfterShop;
         private bool _isGameOver;
         #endregion
 
         public StageData CurrentStageData => _stageDatas[_currentStageIndex];
+
+        /// <summary>
+        /// 스테이지 선택 전 마지막 상점을 들른 상태로, 상점을 닫으면 스테이지 선택 UI가 떠야 하는지 여부.
+        /// </summary>
+        public bool IsStageSelectionPending => _pendingStageSelectionAfterShop;
 
         //protected override void Awake()
         //{
@@ -104,6 +113,7 @@ namespace TrainDefense.Game.Manager
             _currentStageInspectionTimeIndex = 0;
             _inspectionCount = 0;
             _shouldShowStageSelectionOnStageEnd = false;
+            _pendingStageSelectionAfterShop = false;
 
             _UpdateSpawnRules();
             _SetCurrentStage();
@@ -116,6 +126,8 @@ namespace TrainDefense.Game.Manager
 
         private void _OnGameEnter(GameEnterEvent gameEnterEvent)
         {
+            // 새 게임 시작 시에만 누적 난이도 카운터 초기화 (스테이지 변경 시에는 유지)
+            _totalStationPassedCount = 0;
             _UpdateSpawnRules();
         }
 
@@ -187,7 +199,7 @@ namespace TrainDefense.Game.Manager
 
             if (_currentStageInspectionTimeIndex < CurrentStageData.StationCount)
             {
-                if (_currentStageTime >= GetInspectionDurationForIndex(_currentStageInspectionTimeIndex))
+                if (_currentStageTime >= _GetCurrentStationDuration())
                 {
                     _CurrentStageInspectionUp();
                 }
@@ -196,13 +208,25 @@ namespace TrainDefense.Game.Manager
                      && _currentStageTime >= _GetPostLastInspectionDuration())
             {
                 _shouldShowStageSelectionOnStageEnd = false;
-                _TransitionToStageSelection();
+                _BeginStageSelectionShop();
             }
         }
 
-        private float GetInspectionDurationForIndex(int i)
+        /// <summary>
+        /// 스테이지 선택 직전에 상점을 한 번 더 들르게 한다.
+        /// 상점을 닫는 순간(<see cref="InspectionEndEvent"/>) 스테이지 선택 UI로 전환된다.
+        /// </summary>
+        private void _BeginStageSelectionShop()
         {
-            return CurrentStageData.BaseInspectionTime + stationInspectionTimeIncrement * i;
+            _pendingStageSelectionAfterShop = true;
+            GameEventSystem.Publish(new InspectionStartEvent());
+        }
+
+        // 현재 진행 중인 역 구간의 도착 시간.
+        // 한 판 동안 통과한 누적 역 수(_totalStationPassedCount)에 비례해 증가하며, 스테이지가 바뀌어도 리셋되지 않는다.
+        private float _GetCurrentStationDuration()
+        {
+            return CurrentStageData.BaseInspectionTime + stationInspectionTimeIncrement * _totalStationPassedCount;
         }
 
         private void _CurrentStageInspectionUp()
@@ -212,12 +236,21 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Publish(new InspectionStartEvent());
 
             _inspectionCount++;
+            _totalStationPassedCount++;
         }
 
         private void _OnGameOverStart(GameOverStartEvent _) => _isGameOver = true;
 
         private void _OnInspectionEnd(InspectionEndEvent inspectionEndEvent)
         {
+            // 스테이지 선택용 상점을 닫은 경우, 전투로 복귀하지 않고 스테이지 선택 UI로 전환한다.
+            if (_pendingStageSelectionAfterShop)
+            {
+                _pendingStageSelectionAfterShop = false;
+                _TransitionToStageSelection();
+                return;
+            }
+
             bool shouldStartMonsterRush = monsterRushInterval > 0
                 && _inspectionCount > 0
                 && _inspectionCount % monsterRushInterval == monsterRushInterval - 1;
@@ -275,15 +308,13 @@ namespace TrainDefense.Game.Manager
             if (_currentStageInspectionTimeIndex >= CurrentStageData.StationCount)
                 return _GetPostLastInspectionDuration();
 
-            return GetInspectionDurationForIndex(_currentStageInspectionTimeIndex);
+            return _GetCurrentStationDuration();
         }
 
         private float _GetPostLastInspectionDuration()
         {
-            float sum = 0f;
-            for (int i = 0; i < CurrentStageData.StationCount; i++)
-                sum += GetInspectionDurationForIndex(i);
-            return CurrentStageData.StageEndTime - sum;
+            // 스테이지 종료 버퍼는 기본 도착 시간 기준으로 계산(역 도착 시간 누적 증가의 영향 없이 안정적으로 유지)
+            return CurrentStageData.StageEndTime - CurrentStageData.BaseInspectionTime * CurrentStageData.StationCount;
         }
 
         private float _GetCurrentInspectionDuration(GetCurrentInspectionDurationEvent getCurrentInspectionDurationEvent)
@@ -310,6 +341,7 @@ namespace TrainDefense.Game.Manager
 
             _currentStageIndex = index;
             _ResetCurrentStageInfo();
+            MonsterSpawner.Instance?.StartSpawnMonster();
 
             if (TimelineManager.Instance != null)
                 TimelineManager.Instance.StartTimeline(isMapChange: true, () => GameEventSystem.Publish(new EngageStartEvent()));
@@ -345,6 +377,7 @@ namespace TrainDefense.Game.Manager
 
         private void _TransitionToStageSelection()
         {
+            MonsterSpawner.Instance?.StopSpawnMonster();
             MonsterSpawner.Instance?.DestroyAllMonsters();
             ResourceManager.Instance.ReturnAll();
             GameEventSystem.Publish(new EngageReadyEvent());
@@ -354,39 +387,37 @@ namespace TrainDefense.Game.Manager
 
         #region Scaling
         /// <summary>
-        /// 현재 역 인덱스에 따른 HP 배율 반환
+        /// 누적 통과 역 수에 따른 HP 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)
         /// </summary>
         public float GetHPScale()
         {
-            // 0번째 역(시작)은 1.0 (기본값)
-            if (_currentStageInspectionTimeIndex <= 0) return 1.0f;
+            // 한 판 시작(누적 0)은 1.0 (기본값)
+            if (_totalStationPassedCount <= 0) return 1.0f;
 
-            // TODO: 구체적인 수식 적용 필요
-            return 1.0f + (_currentStageInspectionTimeIndex * hpScale);
+            // 지수(복리) 스케일 — 플레이어 DPS가 곱셈(공격력×공속×치명타×포탑수)으로 커지므로
+            // 난이도도 곱으로 추격해야 균형. base = 1 + hpScale (예: 0.10 → 1.10^역수, 역44≈×44)
+            return Mathf.Pow(1f + hpScale, _totalStationPassedCount);
         }
 
         /// <summary>
-        /// 현재 역 인덱스에 따른 공격력 배율 반환
+        /// 누적 통과 역 수에 따른 공격력 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)
         /// </summary>
         public float GetAttackScale()
         {
-            // 0번째 역(시작)은 1.0 (기본값)
-            if (_currentStageInspectionTimeIndex <= 0) return 1.0f;
+            // 한 판 시작(누적 0)은 1.0 (기본값)
+            if (_totalStationPassedCount <= 0) return 1.0f;
 
             // TODO: 구체적인 수식 적용 필요
-            return 1.0f + (_currentStageInspectionTimeIndex * attackScale);
+            return 1.0f + (_totalStationPassedCount * attackScale);
         }
 
         /// <summary>
-        /// 현재 역 인덱스에 따른 골드 배율 반환
+        /// 누적 통과 역 수에 따른 골드 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)
         /// </summary>
         public float GetGoldScale()
         {
-            // 0번째 역(시작)은 1.0 (기본값)
-            if (_currentStageInspectionTimeIndex <= 0) return 1.0f;
-
-            // TODO: 구체적인 수식 적용 필요
-            return 1.0f + (_currentStageInspectionTimeIndex * goldScale);
+            // 골드 배율 = 1.0 + goldScale(0.223)×역수. 드랍골드(엑셀)가 곧 초반 실드랍, 역수 비례 가속.
+            return 1.0f + (_totalStationPassedCount * goldScale);
         }
         #endregion
     }

@@ -7,7 +7,7 @@ namespace TrainDefense.Game
         Transform TargetTransform { get; }
         bool IsActive { get; }
 
-        void Slow(float slowValue);
+        void Slow(float slowValue, float duration);
         void ResetMoveSpeed();
         void Shove(float shovePower, float shoveDuration);
         void Stun(float stunDuration);

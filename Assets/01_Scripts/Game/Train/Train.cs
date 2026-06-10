@@ -61,6 +61,12 @@ namespace TrainDefense.Game
         public float SkillRemainingCooldown => _skillModule.RemainingCooldown;
         public float CurrentHpRatio => _currentMaxHp > 0f ? _currentHp / _currentMaxHp : 0f;
 
+        // 현재(업그레이드 반영) 공격 사거리. 서브클래스에서 실제 스탯으로 오버라이드.
+        public virtual float CurrentAttackRange => 0f;
+
+        // 사거리 표시 원의 반지름. 기본은 공격 사거리, 레인지 포탑은 공격 범위(AttackArea)로 오버라이드.
+        public virtual float RangeIndicatorRadius => CurrentAttackRange;
+
         #endregion
 
         protected virtual void OnEnable()
@@ -129,7 +135,7 @@ namespace TrainDefense.Game
             return transform;
         }
 
-        public void Slow(float slowValue)
+        public void Slow(float slowValue, float duration)
         {
 
         }
@@ -212,6 +218,14 @@ namespace TrainDefense.Game
         public virtual void RestoreHpToMax()
         {
             _currentHp = _currentMaxHp;
+            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
+        }
+
+        /// <summary>최대 체력의 ratio(0~1) 만큼 체력을 회복한다. (업그레이드 선택 시 일부 회복용)</summary>
+        public virtual void RestoreHpByRatio(float ratio)
+        {
+            if (_isDead || ratio <= 0f) return;
+            _currentHp = Mathf.Clamp(_currentHp + _currentMaxHp * ratio, 0f, _currentMaxHp);
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
         }
 
@@ -378,6 +392,9 @@ namespace TrainDefense.Game
         }
 
         public virtual string GetStatSummary() => $"MaxHp={_currentMaxHp}";
+
+        // 공격 간격(초)을 공격 속도(초당 횟수)로 변환. 0 이하면 0.
+        protected static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
 
         public virtual (string label, string value)[] GetStatDetails()
             => new[] { (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}") };

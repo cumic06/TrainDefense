@@ -50,8 +50,10 @@ namespace TrainDefense.Game
         private float _attackCountdown;
 
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
+        public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
+        public override float CurrentAttackRange => _currentTurretTrainStatus.AttackRange;
 
-        public float ProjectileModelScale { get; set; } = 1f;
+        public float ProjectileScale { get; set; } = 1f;
         public float ProjectileKnockbackPower { get; set; }
         public float ProjectileKnockbackDuration { get; set; }
 
@@ -125,18 +127,29 @@ namespace TrainDefense.Game
 
         public Monster GetNearTargetMonsterPublic() => GetNearTargetMonster();
 
-        public void RepeatNormalAttack()
+        public void RepeatNormalAttack(Vector2? aimPosition = null)
         {
             if (_isDead) return;
-            DetectTarget();
-            if (_targetMonsters.Count == 0) return;
 
-            Monster nearTarget = GetNearTargetMonster();
+            // aimPosition이 있으면 재조준 없이 그 방향으로 발사 (연속 발사: 타겟이 죽어도 그 방향).
+            Monster nearTarget = null;
+            if (!aimPosition.HasValue)
+            {
+                DetectTarget();
+                if (_targetMonsters.Count == 0) return;
+                nearTarget = GetNearTargetMonster();
+                if (nearTarget == null) return;
+            }
 
-            if (turretModel != null && nearTarget != null)
+            if (turretModel != null)
             {
                 if (isRotateTurret)
-                    turret.transform.LookAt2D(nearTarget.transform);
+                {
+                    if (aimPosition.HasValue)
+                        turret.transform.LookAt2D(aimPosition.Value);
+                    else
+                        turret.transform.LookAt2D(nearTarget.transform);
+                }
                 PlayAttackAnimation();
             }
 
@@ -152,7 +165,7 @@ namespace TrainDefense.Game
                 }
             }
 
-            NormalAttack();
+            NormalAttack(nearTarget, aimPosition);
         }
 
         private void PlayAttackAnimation()
@@ -218,7 +231,7 @@ namespace TrainDefense.Game
         {
             if (_attackCountdown <= 0)
             {
-                _attackCountdown = _currentTurretTrainStatus.AttackInterval;
+                // 쿨 리셋은 발사 성공 시(AttackHandler)에만 → 타겟 없으면 쿨 유지(헛돌지 않음)
                 return true;
             }
             else
@@ -242,12 +255,12 @@ namespace TrainDefense.Game
             }
 
             Attack();
+            _attackCountdown = _currentTurretTrainStatus.AttackInterval;
         }
 
         private void ResetTarget()
         {
             _targetMonsters.Clear();
-            _attackCountdown = _currentTurretTrainStatus.AttackInterval;
 
             if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
             {
@@ -346,10 +359,19 @@ namespace TrainDefense.Game
             return true;
         }
 
-        protected virtual void NormalAttack()
+        protected virtual void NormalAttack(Monster forcedTarget = null, Vector2? aimPosition = null)
         {
-            Monster nearTarget = GetNearTargetMonster();
-            if (nearTarget == null) return;
+            Vector2 aimPos;
+            if (aimPosition.HasValue)
+            {
+                aimPos = aimPosition.Value;
+            }
+            else
+            {
+                Monster nearTarget = forcedTarget != null ? forcedTarget : GetNearTargetMonster();
+                if (nearTarget == null) return;
+                aimPos = nearTarget.transform.position;
+            }
 
             ProjectileData baseData = GetProjectile()?.GetData();
             float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
@@ -370,7 +392,7 @@ namespace TrainDefense.Game
                     }
                     else
                     {
-                        projectile.transform.LookAt2D(nearTarget.transform);
+                        projectile.transform.LookAt2D(aimPos);
                     }
 
                     if (spreadAngle > 0f && count > 1)
@@ -421,7 +443,7 @@ namespace TrainDefense.Game
         }
 
         #region DirectDamageAttack
-        private const float BaseCriticalDamagePercent = 30f;
+        private const float BaseCriticalDamagePercent = 100f;
 
         private void DirectDamageAttack(ProjectileData projectileData)
         {
@@ -442,7 +464,7 @@ namespace TrainDefense.Game
                 if (projectileData.HasShoveEffect)
                     target.Shove(projectileData.ShovePower, projectileData.ShoveDuration);
                 if (projectileData.HasSlowEffect)
-                    target.Slow(projectileData.SlowValue);
+                    target.Slow(projectileData.SlowValue, 0f);
             }
         }
 
@@ -720,7 +742,8 @@ namespace TrainDefense.Game
                 target,
                 projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
                 _currentTurretTrainStatus.CriticalChance,
-                _currentTurretTrainStatus.CriticalDamage
+                _currentTurretTrainStatus.CriticalDamage,
+                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackRange : 0f
             );
         }
 
@@ -738,7 +761,8 @@ namespace TrainDefense.Game
                 null,
                 projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
                 _currentTurretTrainStatus.CriticalChance,
-                _currentTurretTrainStatus.CriticalDamage
+                _currentTurretTrainStatus.CriticalDamage,
+                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackRange : 0f
             );
         }
 
@@ -775,8 +799,8 @@ namespace TrainDefense.Game
                 projectile.gameObject.SetActive(true);
             }
 
-            if (ProjectileModelScale != 1f)
-                projectile.SetModelScale(ProjectileModelScale);
+            if (ProjectileScale != 1f)
+                projectile.SetScale(ProjectileScale);
 
             if (ProjectileKnockbackPower > 0f)
                 projectile.SetRuntimeShove(ProjectileKnockbackPower, ProjectileKnockbackDuration);
@@ -872,17 +896,26 @@ namespace TrainDefense.Game
         public override (string label, string value)[] GetStatDetails()
         {
             System.Func<string, string, string> L = TrainDefense.Localize.LocalizeHelper.GetByKey;
-            return new[]
+            var details = new System.Collections.Generic.List<(string label, string value)>
             {
                 (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}"),
                 (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(_currentTurretTrainStatus.AttackDamage)}"),
                 (L("Detail_Range", "사거리"), $"{_currentTurretTrainStatus.AttackRange:F1}"),
-                (L("Detail_Area", "범위"), $"{_currentTurretTrainStatus.AttackArea:F1}"),
-                (L("Detail_Speed", "공격속도"), $"{_currentTurretTrainStatus.AttackInterval:F2}s"),
-                (L("Detail_Targets", "대상 수"), $"{_currentTurretTrainStatus.TargetCount}"),
-                (L("Detail_CritChance", "크리티컬 확률"), $"{_currentTurretTrainStatus.CriticalChance:F0}%"),
-                (L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage:F0}%"),
             };
+
+            // 범위(AttackArea)는 실제로 폭발 반경으로 쓰는 포탑만 표시. (선택 카드와 동일 조건)
+            if (_currentTurretTrainStatus.AttackArea > 0f && turretTrainData != null && turretTrainData.UsesAttackArea)
+                details.Add((L("Detail_Area", "범위"), $"{_currentTurretTrainStatus.AttackArea:F1}"));
+
+            details.Add((L("Detail_Speed", "공격속도"), $"{ToAttackSpeed(_currentTurretTrainStatus.AttackInterval):F2}"));
+
+            // 대상 수는 다중 타겟 포탑만 표시. (선택 카드와 동일 조건)
+            if (_currentTurretTrainStatus.TargetCount > 1)
+                details.Add((L("Detail_Targets", "대상 수"), $"{_currentTurretTrainStatus.TargetCount}"));
+
+            details.Add((L("Detail_CritChance", "크리티컬 확률"), $"{_currentTurretTrainStatus.CriticalChance:F0}%"));
+            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage:F0}%"));
+            return details.ToArray();
         }
 
         public override void ApplyPassiveSkills()
@@ -1120,8 +1153,11 @@ namespace TrainDefense.Game
             return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
         }
 
-        public void SpawnProjectileAtWorldPositionPublic(Monster target, Vector3 worldPosition)
+        public void SpawnProjectileAtWorldPositionPublic(Monster target, Vector3 worldPosition, bool playSound = false)
         {
+            // 무작위 위치 폭격 발사음 (Attack() 미경유로 무음 → 호출자가 빈도를 조절해 재생).
+            if (playSound && turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
+                SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
             SpawnProjectileAtWorldPosition(target, worldPosition);
         }
 

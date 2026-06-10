@@ -29,6 +29,7 @@ namespace TrainDefense
         private UserOptionData _userOptionData = new();
         public int Coin => _coin;
         public float ExpPercent => _currentExp / GetNextLevelUpExp();
+        public int CurrentExp => _currentExp;
         public int CurrentLevel => _currentLevel;
         public bool IsLobby { get; private set; }
         public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
@@ -295,15 +296,13 @@ namespace TrainDefense
             return _upgradeLevels.Keys;
         }
 
-        private const float baseExp = 250f;
-        private const float powFactor = 1.15f;
-        private const float expMultiplier = 1.05f;
+        private const float baseExp = 290f;
+        private const float expPower = 1.6f;
 
         public float GetNextLevelUpExp()
         {
-            if (_currentLevel == 1) return baseExp;
-
-            return baseExp * Mathf.Pow(_currentLevel - 1, powFactor) * Mathf.Pow(expMultiplier, _currentLevel - 1);
+            // 레벨업 필요 경험치 = 290 × lv^1.6 (드랍=HP·스폰80% 기준, lv35 ≈ 55분 도달, 후반 정체 없음)
+            return baseExp * Mathf.Pow(_currentLevel, expPower);
         }
         #endregion
 
