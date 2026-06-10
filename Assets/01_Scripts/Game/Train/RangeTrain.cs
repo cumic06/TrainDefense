@@ -62,7 +62,10 @@ namespace TrainDefense.Game
 
         private void _OnInspectionStart(InspectionStartEvent _) => StopLoopSFX();
 
-        private void _OnEngageReady(EngageReadyEvent _)
+        private void _OnEngageReady(EngageReadyEvent _) => ClearAttachedProjectiles();
+
+        // 기차 하위에 부착된 범위 공격 투사체를 풀로 반환한다. (상점 진입/전투 준비 시 잔류 투사체 정리)
+        public override void ClearAttachedProjectiles()
         {
             if (_rangeProjectilePrefab == null) return;
 
