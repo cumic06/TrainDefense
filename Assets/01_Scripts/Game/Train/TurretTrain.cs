@@ -896,17 +896,26 @@ namespace TrainDefense.Game
         public override (string label, string value)[] GetStatDetails()
         {
             System.Func<string, string, string> L = TrainDefense.Localize.LocalizeHelper.GetByKey;
-            return new[]
+            var details = new System.Collections.Generic.List<(string label, string value)>
             {
                 (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}"),
                 (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(_currentTurretTrainStatus.AttackDamage)}"),
                 (L("Detail_Range", "사거리"), $"{_currentTurretTrainStatus.AttackRange:F1}"),
-                (L("Detail_Area", "범위"), $"{_currentTurretTrainStatus.AttackArea:F1}"),
-                (L("Detail_Speed", "공격속도"), $"{_currentTurretTrainStatus.AttackInterval:F2}s"),
-                (L("Detail_Targets", "대상 수"), $"{_currentTurretTrainStatus.TargetCount}"),
-                (L("Detail_CritChance", "크리티컬 확률"), $"{_currentTurretTrainStatus.CriticalChance:F0}%"),
-                (L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage:F0}%"),
             };
+
+            // 범위(AttackArea)는 실제로 폭발 반경으로 쓰는 포탑만 표시. (선택 카드와 동일 조건)
+            if (_currentTurretTrainStatus.AttackArea > 0f && turretTrainData != null && turretTrainData.UsesAttackArea)
+                details.Add((L("Detail_Area", "범위"), $"{_currentTurretTrainStatus.AttackArea:F1}"));
+
+            details.Add((L("Detail_Speed", "공격속도"), $"{ToAttackSpeed(_currentTurretTrainStatus.AttackInterval):F2}"));
+
+            // 대상 수는 다중 타겟 포탑만 표시. (선택 카드와 동일 조건)
+            if (_currentTurretTrainStatus.TargetCount > 1)
+                details.Add((L("Detail_Targets", "대상 수"), $"{_currentTurretTrainStatus.TargetCount}"));
+
+            details.Add((L("Detail_CritChance", "크리티컬 확률"), $"{_currentTurretTrainStatus.CriticalChance:F0}%"));
+            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentTurretTrainStatus.CriticalDamage:F0}%"));
+            return details.ToArray();
         }
 
         public override void ApplyPassiveSkills()

@@ -294,7 +294,7 @@ namespace TrainDefense.Game
                 (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(_currentRangeTrainStatus.AttackDamage)}"),
                 (L("Detail_Range", "사거리"), $"{_currentRangeTrainStatus.AttackRange:F1}"),
                 (L("Detail_Area", "범위"), $"{_currentRangeTrainStatus.AttackArea:F1}"),
-                (L("Detail_Speed", "공격속도"), $"{_currentRangeTrainStatus.AttackInterval:F2}s"),
+                (L("Detail_Speed", "공격속도"), $"{ToAttackSpeed(_currentRangeTrainStatus.AttackInterval):F2}"),
                 (L("Detail_CritChance", "크리티컬 확률"), $"{_currentRangeTrainStatus.CriticalChance:F0}%"),
                 (L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentRangeTrainStatus.CriticalDamage:F0}%"),
             };
