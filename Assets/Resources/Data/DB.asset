@@ -1034,7 +1034,7 @@ MonoBehaviour:
       name: Passive_60018_Name
       passiveType: StatModifier
       param1: AttackInterval
-      param2: -80
+      param2: -30
       param3: 
       description: Passive_60018_Desc
   _legacyTrainSkillDataList: []
