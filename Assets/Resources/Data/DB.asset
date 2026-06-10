@@ -1565,7 +1565,7 @@ MonoBehaviour:
       prefabId: Map3
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
-    stageImage: {fileID: 8750756355730269390, guid: 36a96b526898ef64595432763c5436f6, type: 3}
+    stageImage: {fileID: 921028978873285461, guid: 91ac1a6ea09e2394ea9e27fe7d4a7848, type: 3}
   - id: 50004
     baseInspectionTime: 40
     stationCount: 3
@@ -1592,7 +1592,7 @@ MonoBehaviour:
       prefabId: Map4
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
-    stageImage: {fileID: -5933715298724706184, guid: cbb1a3d97c892a94f875b5f9da3ae9ae, type: 3}
+    stageImage: {fileID: -2424202261327721187, guid: 7e8a0409500c44f41ad4f08f3355ed80, type: 3}
   - id: 50005
     baseInspectionTime: 40
     stationCount: 3
@@ -1619,7 +1619,7 @@ MonoBehaviour:
       prefabId: Map5
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
-    stageImage: {fileID: 9023624542499435072, guid: 0980d694155662c49bcb150ed8cb626b, type: 3}
+    stageImage: {fileID: -2663140553942567082, guid: d7d6afe20884f4140beef75663e91020, type: 3}
   upgradeDataList:
   - id: 110001
     iconId: sword
