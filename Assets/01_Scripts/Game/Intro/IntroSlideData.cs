@@ -40,7 +40,7 @@ namespace TrainDefense.Game.Intro
             {
                 string localized = LocalizeHelper.GetByKey(_localizationKey, _text);
 
-                return localized.Replace("\\n", "\n");
+                return LocalizeHelper.ProtectWordBreak(localized.Replace("\\n", "\n"));
             }
 
             return _text;

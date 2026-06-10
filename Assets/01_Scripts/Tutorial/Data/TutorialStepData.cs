@@ -57,9 +57,20 @@ namespace TrainDefense.Game.Tutorial
         public TutorialSkipCondition SkipCondition => _skipCondition;
         public float TimeoutDuration => _timeoutDuration;
         public UnityEvent CustomSkipEvent => _customSkipEvent;
-        public string Message => _messageKey != default && Localization.IsInitialized
-            ? Localization.Get(_messageKey)
-            : _message;
+        public string Message
+        {
+            get
+            {
+                string raw = _messageKey != default && Localization.IsInitialized
+                    ? Localization.Get(_messageKey)
+                    : _message;
+
+                // Intro(IntroSlideData.GetText)와 동일하게 TSV의 리터럴 "\n"을 실제 줄바꿈으로 변환한다.
+                // (TextAnimator 타이프라이터 경로에서 \n 이스케이프가 누락될 수 있어 데이터단에서 통일)
+                // 추가로 한글 단어 중간 줄바꿈을 방지(주황→주/황, 줍니다.→줍니/다. 방지).
+                return LocalizeHelper.ProtectWordBreak(raw?.Replace("\\n", "\n"));
+            }
+        }
         public TutorialArrowDirection ArrowDirection => _arrowDirection;
         public TutorialArrowLookDirection ArrowLookDirection => _arrowLookDirection;
         public bool UseDimming => _useDimming;
