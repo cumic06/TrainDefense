@@ -12,11 +12,6 @@ namespace TrainDefense.Game.UI
         [SerializeField] private TextMeshProUGUI statsText;
         [SerializeField] private TextMeshProUGUI skillsText;
 
-        private void Awake()
-        {
-            gameObject.SetActive(false);
-        }
-
         public void Show(Train train)
         {
             if (train == null) return;
