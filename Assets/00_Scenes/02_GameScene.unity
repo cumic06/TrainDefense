@@ -167,6 +167,7 @@ MonoBehaviour:
   playableDirector: {fileID: 1580891175}
   mapChangeDirector: {fileID: 1580891300}
   shopEnterDirector: {fileID: 1580891301}
+  shopExitDirector: {fileID: 1580891303}
   mapMoveDirector: {fileID: 1580891302}
   startTimelineOnAwake: 1
   effectAnchor: {fileID: 916000002}
@@ -13573,6 +13574,7 @@ GameObject:
   - component: {fileID: 1580891300}
   - component: {fileID: 1580891301}
   - component: {fileID: 1580891302}
+  - component: {fileID: 1580891303}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -13799,6 +13801,27 @@ PlayableDirector:
     value: {fileID: 1580891174}
   - key: {fileID: 2391215135096721216, guid: f42f45ddc5914e6a9c3c7cc653fca994, type: 2}
     value: {fileID: 916000007}
+  m_ExposedReferences:
+    m_References: []
+--- !u!320 &1580891303
+PlayableDirector:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580891168}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_PlayableAsset: {fileID: 11400000, guid: 76484eb6184c47e28d083444f8683e98, type: 2}
+  m_InitialState: 0
+  m_WrapMode: 2
+  m_DirectorUpdateMode: 2
+  m_InitialTime: 0
+  m_SceneBindings:
+  - key: {fileID: 2391215135096721216, guid: 76484eb6184c47e28d083444f8683e98, type: 2}
+    value: {fileID: 916000003}
+  - key: {fileID: -999413602797725572, guid: 76484eb6184c47e28d083444f8683e98, type: 2}
+    value: {fileID: 916000006}
   m_ExposedReferences:
     m_References: []
 --- !u!224 &1643387769 stripped

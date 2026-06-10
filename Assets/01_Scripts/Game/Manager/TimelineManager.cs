@@ -19,6 +19,8 @@ namespace TrainDefense
         [SerializeField]
         private PlayableDirector shopEnterDirector;
         [SerializeField]
+        private PlayableDirector shopExitDirector;
+        [SerializeField]
         private PlayableDirector mapMoveDirector;
         [SerializeField]
         private bool startTimelineOnAwake = false;
@@ -64,6 +66,7 @@ namespace TrainDefense
         #endregion
 
         public bool CanPlayShopEnterTimeline => shopEnterDirector != null;
+        public bool CanPlayShopExitTimeline => shopExitDirector != null;
         public bool CanPlayMapMoveTimeline => mapMoveDirector != null;
 
         public void StartTimeline(bool isMapChange = false, Action onComplete = null)
@@ -90,6 +93,16 @@ namespace TrainDefense
             TimeManager.Instance?.Pause();
             _MoveAnchorToTrain();
             _Play(shopEnterDirector, onComplete);
+        }
+
+        /// <summary>
+        /// 상점(점검) 퇴장 연출. 상점 오브젝트가 왼쪽 뒤로 슬라이드되며 사라지고(0~2s, 열차 출발 느낌),
+        /// 연출이 끝나면 오브젝트가 비활성화되고 onComplete 호출(전투 재개 타이밍).
+        /// </summary>
+        public void StartShopExitTimeline(Action onComplete = null)
+        {
+            TimeManager.Instance?.Pause();
+            _Play(shopExitDirector, onComplete);
         }
 
         /// <summary>
