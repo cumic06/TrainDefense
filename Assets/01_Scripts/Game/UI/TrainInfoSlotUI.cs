@@ -36,7 +36,7 @@ namespace TrainDefense.Game.UI
       #endregion
 
       private Train _train;
-      private const float LongPressDuration = 0.5f;
+      private const float LongPressDuration = 0.25f;
       private Coroutine _longPressCoroutine;
       private bool _longPressFired;
       #endregion
