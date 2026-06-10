@@ -416,9 +416,8 @@ namespace TrainDefense.Game.Manager
         /// </summary>
         public float GetGoldScale()
         {
-            // 골드는 초반 억제(역0 ×0.30)로 첫 상점 과소비를 막고, 역수에 비례 가속(역44 ≈ ×3.25)해
-            // 후반 무한 상점 골드는 유지. base 0.30 + goldScale(0.067)×역수. 경험치는 이 곡선 영향 없음.
-            return 0.30f + (_totalStationPassedCount * goldScale);
+            // 골드 배율 = 1.0 + goldScale(0.223)×역수. 드랍골드(엑셀)가 곧 초반 실드랍, 역수 비례 가속.
+            return 1.0f + (_totalStationPassedCount * goldScale);
         }
         #endregion
     }

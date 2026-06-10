@@ -24,8 +24,8 @@ MonoBehaviour:
       AttackDelay: 1
       DropExpMin: 10
       DropExpMax: 10
-      DropMoneyMin: 10
-      DropMoneyMax: 10
+      DropMoneyMin: 4
+      DropMoneyMax: 4
       AttackRange: 2
       AttackType: 0
     prefabId: Skull
@@ -41,8 +41,8 @@ MonoBehaviour:
       AttackDelay: 0.7
       DropExpMin: 30
       DropExpMax: 30
-      DropMoneyMin: 30
-      DropMoneyMax: 30
+      DropMoneyMin: 9
+      DropMoneyMax: 9
       AttackRange: 1.5
       AttackType: 0
     prefabId: Thief
@@ -58,8 +58,8 @@ MonoBehaviour:
       AttackDelay: 2.7
       DropExpMin: 45
       DropExpMax: 45
-      DropMoneyMin: 45
-      DropMoneyMax: 45
+      DropMoneyMin: 14
+      DropMoneyMax: 14
       AttackRange: 6
       AttackType: 1
     prefabId: Gnoll
@@ -75,8 +75,8 @@ MonoBehaviour:
       AttackDelay: 2
       DropExpMin: 20
       DropExpMax: 20
-      DropMoneyMin: 20
-      DropMoneyMax: 20
+      DropMoneyMin: 10
+      DropMoneyMax: 10
       AttackRange: 2
       AttackType: 0
     prefabId: Hammershark
@@ -92,8 +92,8 @@ MonoBehaviour:
       AttackDelay: 3
       DropExpMin: 35
       DropExpMax: 35
-      DropMoneyMin: 35
-      DropMoneyMax: 35
+      DropMoneyMin: 10
+      DropMoneyMax: 10
       AttackRange: 5
       AttackType: 1
     prefabId: Shark
@@ -109,8 +109,8 @@ MonoBehaviour:
       AttackDelay: 3
       DropExpMin: 170
       DropExpMax: 170
-      DropMoneyMin: 170
-      DropMoneyMax: 170
+      DropMoneyMin: 51
+      DropMoneyMax: 51
       AttackRange: 2
       AttackType: 0
     prefabId: Turtle
@@ -126,8 +126,8 @@ MonoBehaviour:
       AttackDelay: 2
       DropExpMin: 18
       DropExpMax: 18
-      DropMoneyMin: 18
-      DropMoneyMax: 18
+      DropMoneyMin: 8
+      DropMoneyMax: 8
       AttackRange: 2
       AttackType: 0
     prefabId: Snake
@@ -143,8 +143,8 @@ MonoBehaviour:
       AttackDelay: 1.5
       DropExpMin: 45
       DropExpMax: 45
-      DropMoneyMin: 45
-      DropMoneyMax: 45
+      DropMoneyMin: 14
+      DropMoneyMax: 14
       AttackRange: 1.5
       AttackType: 0
     prefabId: Panda
@@ -160,8 +160,8 @@ MonoBehaviour:
       AttackDelay: 1
       DropExpMin: 70
       DropExpMax: 70
-      DropMoneyMin: 70
-      DropMoneyMax: 70
+      DropMoneyMin: 21
+      DropMoneyMax: 21
       AttackRange: 1.5
       AttackType: 0
     prefabId: Lizard
@@ -177,8 +177,8 @@ MonoBehaviour:
       AttackDelay: 2.5
       DropExpMin: 110
       DropExpMax: 110
-      DropMoneyMin: 110
-      DropMoneyMax: 110
+      DropMoneyMin: 33
+      DropMoneyMax: 33
       AttackRange: 2
       AttackType: 0
     prefabId: Bear
@@ -194,8 +194,8 @@ MonoBehaviour:
       AttackDelay: 0.8
       DropExpMin: 8
       DropExpMax: 8
-      DropMoneyMin: 8
-      DropMoneyMax: 8
+      DropMoneyMin: 5
+      DropMoneyMax: 5
       AttackRange: 2
       AttackType: 0
     prefabId: Dwarf
@@ -211,8 +211,8 @@ MonoBehaviour:
       AttackDelay: 1.4
       DropExpMin: 35
       DropExpMax: 35
-      DropMoneyMin: 35
-      DropMoneyMax: 35
+      DropMoneyMin: 10
+      DropMoneyMax: 10
       AttackRange: 3
       AttackType: 0
     prefabId: Spider
@@ -228,8 +228,8 @@ MonoBehaviour:
       AttackDelay: 2
       DropExpMin: 110
       DropExpMax: 110
-      DropMoneyMin: 110
-      DropMoneyMax: 110
+      DropMoneyMin: 33
+      DropMoneyMax: 33
       AttackRange: 2
       AttackType: 0
     prefabId: Minotaur
@@ -245,8 +245,8 @@ MonoBehaviour:
       AttackDelay: 2
       DropExpMin: 28
       DropExpMax: 28
-      DropMoneyMin: 28
-      DropMoneyMax: 28
+      DropMoneyMin: 12
+      DropMoneyMax: 12
       AttackRange: 2
       AttackType: 0
     prefabId: GoblinSpear
@@ -262,8 +262,8 @@ MonoBehaviour:
       AttackDelay: 3
       DropExpMin: 60
       DropExpMax: 60
-      DropMoneyMin: 60
-      DropMoneyMax: 60
+      DropMoneyMin: 18
+      DropMoneyMax: 18
       AttackRange: 5
       AttackType: 1
     prefabId: GoblinSorcerer
@@ -279,8 +279,8 @@ MonoBehaviour:
       AttackDelay: 4
       DropExpMin: 220
       DropExpMax: 220
-      DropMoneyMin: 220
-      DropMoneyMax: 220
+      DropMoneyMin: 66
+      DropMoneyMax: 66
       AttackRange: 2
       AttackType: 0
     prefabId: GiantGoblin
@@ -1480,7 +1480,7 @@ MonoBehaviour:
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.312
+    spawnInterval: 0.2857
     spawnDatas:
     - MonsterId: 10001
       Probability: 5
@@ -1507,7 +1507,7 @@ MonoBehaviour:
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.72
+    spawnInterval: 0.7143
     spawnDatas:
     - MonsterId: 10004
       Probability: 4.5
@@ -1538,7 +1538,7 @@ MonoBehaviour:
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.6
+    spawnInterval: 0.5714
     spawnDatas:
     - MonsterId: 10007
       Probability: 4
@@ -1570,7 +1570,7 @@ MonoBehaviour:
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.384
+    spawnInterval: 0.3571
     spawnDatas:
     - MonsterId: 10011
       Probability: 5.5
@@ -1597,7 +1597,7 @@ MonoBehaviour:
     baseInspectionTime: 40
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.84
+    spawnInterval: 0.8571
     spawnDatas:
     - MonsterId: 10014
       Probability: 5
