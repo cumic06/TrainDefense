@@ -325,8 +325,8 @@ namespace TrainDefense.Game.Manager
 
         private float _GetPostLastInspectionDuration()
         {
-            // 스테이지 종료 버퍼는 기본 도착 시간 기준으로 계산(역 도착 시간 누적 증가의 영향 없이 안정적으로 유지)
-            return CurrentStageData.StageEndTime - CurrentStageData.BaseInspectionTime * CurrentStageData.StationCount;
+            // 스테이지 선택 직전 마지막 구간도 일반 역과 동일한 도착 시간 사용(이 구간만 길어지던 문제 해결)
+            return _GetCurrentStationDuration();
         }
 
         private float _GetCurrentInspectionDuration(GetCurrentInspectionDurationEvent getCurrentInspectionDurationEvent)
