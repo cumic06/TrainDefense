@@ -1477,7 +1477,7 @@ MonoBehaviour:
         SlowRate: 10
   stageDataList:
   - id: 50001
-    baseInspectionTime: 40
+    baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.2857
@@ -1504,7 +1504,7 @@ MonoBehaviour:
       spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: 1169708250249569854, guid: b1afade6230499848a8b7c09f05c25f5, type: 3}
   - id: 50002
-    baseInspectionTime: 40
+    baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.7143
@@ -1535,7 +1535,7 @@ MonoBehaviour:
       spawnEffectPrefab: {fileID: 5497501282563620409, guid: 61ec9a5b3b8a7454ba21d3c1bad637c6, type: 3}
     stageImage: {fileID: -8210071984612457726, guid: e44f3d3e5e510c747b272409f41010fd, type: 3}
   - id: 50003
-    baseInspectionTime: 40
+    baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.5714
@@ -1567,7 +1567,7 @@ MonoBehaviour:
       spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: 921028978873285461, guid: 91ac1a6ea09e2394ea9e27fe7d4a7848, type: 3}
   - id: 50004
-    baseInspectionTime: 40
+    baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.3571
@@ -1594,7 +1594,7 @@ MonoBehaviour:
       spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: -2424202261327721187, guid: 7e8a0409500c44f41ad4f08f3355ed80, type: 3}
   - id: 50005
-    baseInspectionTime: 40
+    baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.8571

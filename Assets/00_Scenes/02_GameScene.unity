@@ -13878,7 +13878,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   spawnInterval: 2
   spawnRange: 2
-  stationSpawnAccelPercent: 5
+  stationSpawnAccelPercent: 8
   maxSpawnAccelPercent: 80
   spawnMode: 1
   customSpawnAreas:
