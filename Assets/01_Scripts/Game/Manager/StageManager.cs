@@ -32,6 +32,10 @@ namespace TrainDefense.Game.Manager
 
         [SerializeField]
         private float stationInspectionTimeIncrement;
+
+        [SerializeField]
+        [Tooltip("맵 스폰 위치를 기차 기준 X축으로 옮기는 오프셋, 0이면 기차 정중앙.")]
+        private float mapSpawnOffsetX = -24;
         #endregion
 
         private StageData[] _stageDatas;
@@ -189,6 +193,7 @@ namespace TrainDefense.Game.Manager
             if (TrainManager.Instance.MainTrain != null)
             {
                 spawnPosition = TrainManager.Instance.MainTrain.transform.position;
+                spawnPosition.x += mapSpawnOffsetX;
             }
             _currentMapInstance = Instantiate(prefab, spawnPosition, Quaternion.identity);
         }
