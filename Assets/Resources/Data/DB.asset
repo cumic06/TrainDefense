@@ -35,7 +35,7 @@ MonoBehaviour:
     description: Monster_10002_Desc
     icon: {fileID: -8975192331532836980, guid: 5d9812acc860e45b4be3490475ec11ce, type: 3}
     monsterStatusData:
-      MaxHp: 30
+      MaxHp: 25
       Damage: 5
       MoveSpeed: 8
       AttackDelay: 0.7
@@ -52,7 +52,7 @@ MonoBehaviour:
     description: Monster_10003_Desc
     icon: {fileID: -3602873763752426733, guid: c8770fe2a236a4dd4b51a7fa9eac9569, type: 3}
     monsterStatusData:
-      MaxHp: 45
+      MaxHp: 40
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 2.7
@@ -60,7 +60,7 @@ MonoBehaviour:
       DropExpMax: 45
       DropMoneyMin: 14
       DropMoneyMax: 14
-      AttackRange: 6
+      AttackRange: 5
       AttackType: 1
     prefabId: Gnoll
     rangedProjectilePrefab: {fileID: 1036439603542617377, guid: 6a9ea03ac9f950d439de3c0caecb2b4e, type: 3}
@@ -86,7 +86,7 @@ MonoBehaviour:
     description: Monster_10005_Desc
     icon: {fileID: -7414083336469400027, guid: 231acd077d50441dc8c800208a8a508d, type: 3}
     monsterStatusData:
-      MaxHp: 35
+      MaxHp: 30
       Damage: 10
       MoveSpeed: 3.4
       AttackDelay: 3
@@ -103,7 +103,7 @@ MonoBehaviour:
     description: Monster_10006_Desc
     icon: {fileID: 6240235003232040363, guid: 02a56956d819644e9ba1f5230f17be41, type: 3}
     monsterStatusData:
-      MaxHp: 170
+      MaxHp: 160
       Damage: 15
       MoveSpeed: 2.8
       AttackDelay: 3
@@ -120,7 +120,7 @@ MonoBehaviour:
     description: Monster_10007_Desc
     icon: {fileID: -3625172091503848354, guid: 6b0643aaa67844e2aae806b506ebe8f5, type: 3}
     monsterStatusData:
-      MaxHp: 18
+      MaxHp: 16
       Damage: 5
       MoveSpeed: 5
       AttackDelay: 2
@@ -154,7 +154,7 @@ MonoBehaviour:
     description: Monster_10009_Desc
     icon: {fileID: 3863950976592595061, guid: a9f259f952e5f4141a134eb245f1d344, type: 3}
     monsterStatusData:
-      MaxHp: 70
+      MaxHp: 68
       Damage: 10
       MoveSpeed: 4.3
       AttackDelay: 1
@@ -205,7 +205,7 @@ MonoBehaviour:
     description: Monster_10012_Desc
     icon: {fileID: -3068608994661831594, guid: ae483a7a0e01f492ab7488474a21b3e4, type: 3}
     monsterStatusData:
-      MaxHp: 35
+      MaxHp: 30
       Damage: 15
       MoveSpeed: 5
       AttackDelay: 1.4
@@ -256,7 +256,7 @@ MonoBehaviour:
     description: Monster_10015_Desc
     icon: {fileID: -3827772250807918378, guid: 1d9455a2d50d04d4380ccb041dbe4aea, type: 3}
     monsterStatusData:
-      MaxHp: 60
+      MaxHp: 65
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 3
@@ -1494,7 +1494,7 @@ MonoBehaviour:
       EliteChanceRamp: 0
     - MonsterId: 10003
       Probability: 2
-      SpawnLevel: 5
+      SpawnLevel: 6
       EliteChanceMultiplier: 1
       EliteChanceRamp: 0
     mapData:
@@ -1557,7 +1557,7 @@ MonoBehaviour:
       EliteChanceRamp: 0
     - MonsterId: 10010
       Probability: 0.5
-      SpawnLevel: 9
+      SpawnLevel: 8
       EliteChanceMultiplier: 1
       EliteChanceRamp: 0
     mapData:
