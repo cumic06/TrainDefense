@@ -356,6 +356,12 @@ namespace TrainDefense.Game
 
         public virtual void ApplyPassiveSkills() { }
 
+        /// <summary>
+        /// 기차 하위에 부착된 채 풀로 반환되지 않는 공격 투사체(범위 공격·화염 파티클 등)를 정리한다.
+        /// ResourceManager.ReturnAll은 persistent(기차)의 자식을 건너뛰므로, 상점 진입 시 잔류 투사체를 따로 비울 때 호출한다.
+        /// </summary>
+        public virtual void ClearAttachedProjectiles() { }
+
         // 마스크에 따른 패시브 적용 규칙 (서브클래스 ApplyPassiveSkills·Detail 표시 공용).
         // Active 픽 = 패시브 미적용, Passive 픽 = 선택한 1개만, None(일반 스폰) = 전부.
         protected bool _IsPassiveApplied(string passiveId)

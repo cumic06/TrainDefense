@@ -219,7 +219,19 @@ namespace TrainDefense.Game.Manager
         private void _BeginStageSelectionShop()
         {
             _pendingStageSelectionAfterShop = true;
-            GameEventSystem.Publish(new InspectionStartEvent());
+            _StartInspectionWithTimeline();
+        }
+
+        /// <summary>
+        /// 상점(점검) 진입 연출을 거쳐 상점을 연다.
+        /// 도달 위치에 상점 오브젝트가 활성화되고 카메라 줌이 끝난 뒤 InspectionStartEvent가 발행된다.
+        /// </summary>
+        private void _StartInspectionWithTimeline()
+        {
+            if (TimelineManager.Instance != null && TimelineManager.Instance.CanPlayShopEnterTimeline)
+                TimelineManager.Instance.StartShopEnterTimeline(() => GameEventSystem.Publish(new InspectionStartEvent()));
+            else
+                GameEventSystem.Publish(new InspectionStartEvent());
         }
 
         // 현재 진행 중인 역 구간의 도착 시간.
@@ -233,7 +245,7 @@ namespace TrainDefense.Game.Manager
         {
             _currentStageInspectionTimeIndex++;
             _currentStageTime = 0f;
-            GameEventSystem.Publish(new InspectionStartEvent());
+            _StartInspectionWithTimeline();
 
             _inspectionCount++;
             _totalStationPassedCount++;
@@ -313,8 +325,8 @@ namespace TrainDefense.Game.Manager
 
         private float _GetPostLastInspectionDuration()
         {
-            // 스테이지 종료 버퍼는 기본 도착 시간 기준으로 계산(역 도착 시간 누적 증가의 영향 없이 안정적으로 유지)
-            return CurrentStageData.StageEndTime - CurrentStageData.BaseInspectionTime * CurrentStageData.StationCount;
+            // 스테이지 선택 직전 마지막 구간도 일반 역과 동일한 도착 시간 사용(이 구간만 길어지던 문제 해결)
+            return _GetCurrentStationDuration();
         }
 
         private float _GetCurrentInspectionDuration(GetCurrentInspectionDurationEvent getCurrentInspectionDurationEvent)
@@ -340,6 +352,20 @@ namespace TrainDefense.Game.Manager
             }
 
             _currentStageIndex = index;
+
+            if (TimelineManager.Instance != null && TimelineManager.Instance.CanPlayMapMoveTimeline)
+            {
+                // 도달 위치에 포탈을 활성화하고 화면 전환(페이드) 연출의 암전 시점에 실제 맵을 교체한다.
+                TimelineManager.Instance.StartMapMoveTimeline(
+                    onMapSwitch: () =>
+                    {
+                        _ResetCurrentStageInfo();
+                        MonsterSpawner.Instance?.StartSpawnMonster();
+                    },
+                    onComplete: () => GameEventSystem.Publish(new EngageStartEvent()));
+                return;
+            }
+
             _ResetCurrentStageInfo();
             MonsterSpawner.Instance?.StartSpawnMonster();
 

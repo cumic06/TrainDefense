@@ -78,7 +78,10 @@ namespace TrainDefense.Game
         #endregion
 
         #region Sub/UnSub
-        private void _OnEngageReady(EngageReadyEvent _)
+        private void _OnEngageReady(EngageReadyEvent _) => ClearAttachedProjectiles();
+
+        // 기차(또는 스폰포인트) 하위에 부착된 NonMovement 투사체(화염 파티클 등)를 풀로 반환한다. (상점 진입/전투 준비 시 잔류 투사체 정리)
+        public override void ClearAttachedProjectiles()
         {
             foreach (var proj in _nonMovementProjectiles)
             {

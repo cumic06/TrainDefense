@@ -234,7 +234,11 @@ namespace TrainDefense.Game.UI
 
             if (!stageSelectionPending)
             {
-                GameEventSystem.Publish(new EngageStartEvent());
+                // 상점 퇴장 연출(상점 오브젝트가 뒤로 슬라이드되며 사라짐)이 끝난 뒤 전투를 재개한다.
+                if (TimelineManager.Instance != null && TimelineManager.Instance.CanPlayShopExitTimeline)
+                    TimelineManager.Instance.StartShopExitTimeline(() => GameEventSystem.Publish(new EngageStartEvent()));
+                else
+                    GameEventSystem.Publish(new EngageStartEvent());
             }
         }
 
