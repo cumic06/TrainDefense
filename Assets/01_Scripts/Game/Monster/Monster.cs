@@ -230,12 +230,13 @@ namespace TrainDefense.Game
       {
          if (_IsAttackDelay())
          {
+            // 공격 범위 안일 때만 공격하고 딜레이를 리셋한다.
+            // 범위 밖에서 리셋하면 진입 시 딜레이가 남아 바로 공격하지 못한다.
             if (_IsAttackRange())
             {
                _Attack();
+               _currentMonsterStatus.AttackDelay = _monsterData.MonsterStatusData.AttackDelay;
             }
-
-            _currentMonsterStatus.AttackDelay = _monsterData.MonsterStatusData.AttackDelay;
          }
          else
          {

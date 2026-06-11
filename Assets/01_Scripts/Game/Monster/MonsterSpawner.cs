@@ -21,7 +21,7 @@ namespace TrainDefense.Game
       private float spawnRange;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
-      private float stationSpawnAccelPercent = 5f;
+      private float stationSpawnAccelPercent = 8f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
       private float maxSpawnAccelPercent = 80f;
