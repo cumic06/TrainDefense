@@ -472,7 +472,7 @@ MonoBehaviour:
       AttackRange: 13
       AttackArea: 3
       AttackCount: 1
-      AttackInterval: 2
+      AttackInterval: 2.5
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -654,7 +654,7 @@ MonoBehaviour:
       AttackRange: 13
       AttackArea: 3
       AttackCount: 1
-      AttackInterval: 2
+      AttackInterval: 2.5
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
