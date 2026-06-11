@@ -48,6 +48,15 @@ namespace TrainDefense
         [SerializeField]
         [Tooltip("맵 이동 후 새 맵에서 기차가 scale을 회복하며 나타나는 시간")]
         private float mapMoveGrowDuration = 0.5f;
+        [SerializeField]
+        [Tooltip("맵 이동 시 카메라가 기차로 줌인할 OrthographicSize(작을수록 가까이)")]
+        private float mapMoveZoomOrthoSize = 9.156381f;
+        [SerializeField]
+        [Tooltip("맵 이동 시 기차가 빨려들어가는 동안 카메라가 줌인하는 시간")]
+        private float mapMoveZoomDuration = 1f;
+        [SerializeField]
+        [Tooltip("맵 이동(암전) 시 카메라가 기차로 복귀하며 줌아웃하는 시간")]
+        private float mapMoveCameraRestoreDuration = 0.5f;
 
         [Header("상점 연출 타이밍")]
         [SerializeField]
@@ -199,6 +208,12 @@ namespace TrainDefense
             // 포탈 대신 기차들이 제자리에서 scale 0으로 줄어들며 어딘가로 빨려들어가듯 사라진다.
             mainTrain?.ShrinkOut(0f, mapMoveShrinkDuration);
 
+            // 기차가 빨려들어가는 동안 카메라가 기차로 줌인한다. 상점과 동일하게 이벤트로 처리해야
+            // 줌 동안 종횡비 보정(AspectFit)이 중단되고, 아래 CameraRestoreEvent로 추적·줌·보정이 정상 복원된다.
+            // (타임라인이 직접 OrthographicSize를 잡으면 복원되지 않아 카메라가 줌인된 채 기차를 놓친다.)
+            if (mainTrain != null)
+                GameEventSystem.Publish(new CameraZoomEvent(mainTrain.transform, mapMoveZoomOrthoSize, mapMoveZoomDuration));
+
             if (screenFade != null)
             {
                 screenFade.alpha = 0f;
@@ -212,6 +227,10 @@ namespace TrainDefense
                         // 새 맵에서 기차가 scale을 회복하며 다시 나타난다.
                         mainTrain?.GrowIn(0f, mapMoveGrowDuration);
 
+                        // 암전 동안 카메라를 기차로 되돌리며 줌아웃한다(페이드 인 시점엔 다시 기차를 추적하는 정상 화면).
+                        if (mainTrain != null)
+                            GameEventSystem.Publish(new CameraRestoreEvent(mainTrain.transform, mapMoveCameraRestoreDuration));
+
                         screenFade.DOFade(0f, mapMoveFadeDuration)
                             .SetUpdate(true)
                             .OnComplete(() => screenFade.gameObject.SetActive(false));
@@ -221,6 +240,9 @@ namespace TrainDefense
             {
                 onMapSwitch?.Invoke();
                 mainTrain?.GrowIn(0f, mapMoveGrowDuration);
+
+                if (mainTrain != null)
+                    GameEventSystem.Publish(new CameraRestoreEvent(mainTrain.transform, mapMoveCameraRestoreDuration));
             }
 
             _Play(mapMoveDirector, () => onComplete?.Invoke());
