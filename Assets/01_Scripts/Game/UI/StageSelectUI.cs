@@ -197,6 +197,11 @@ namespace TrainDefense.Game.UI
         // 애니메이션에서 실행
         private void OnStageSelected()
         {
+            // 애니메이션 이벤트가 전이/루프 경계 타이밍에 따라 중복 발화될 수 있으므로 1회만 처리한다.
+            // (중복 발행 시 맵 이동 연출이 이중 실행되어 기차 스케일 오염·EngageStart 조기 발행이 발생)
+            if (_selectedStageData == null) return;
+            var selectedStageData = _selectedStageData;
+            _selectedStageData = null;
 
             if (TutorialManager.Instance != null)
             {
@@ -210,7 +215,7 @@ namespace TrainDefense.Game.UI
             }
 
             // 선택 결과 전달 (UI -> StageManager)
-            GameEventSystem.Publish(new StageSelectEvent(_selectedStageData));
+            GameEventSystem.Publish(new StageSelectEvent(selectedStageData));
         }
     }
 }

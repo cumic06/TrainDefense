@@ -612,6 +612,10 @@ namespace TrainDefense.Game
       /// </summary>
       public void ShrinkOut(float delay, float duration)
       {
+         // 이미 축소 연출 중에 재호출되면 축소 중인 스케일을 원본으로 재캡처해
+         // GrowIn 복원값이 오염되므로, 진행 중일 때는 무시한다.
+         if (_scaleOrigins.Count > 0) return;
+
          _scaleOrigins.Clear();
 
          foreach (var train in _currentAliveTrains)
