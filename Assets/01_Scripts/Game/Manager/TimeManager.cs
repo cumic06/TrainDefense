@@ -29,6 +29,7 @@ namespace TrainDefense.Game
         private bool _isPaused;
         private bool _isFastForward;
         private bool _wasPausedBeforeBackground;
+        private bool _isInBackground;
         private bool _isGameOverSlowing;
 
         #endregion
@@ -60,11 +61,17 @@ namespace TrainDefense.Game
         {
             if (pauseStatus)
             {
-                _wasPausedBeforeBackground = _isPaused;
+                // pause(true)가 복귀 없이 연속 통지돼도(오버레이/팝업 등) 최초 진입 시점의 상태만 기억한다
+                if (!_isInBackground)
+                {
+                    _isInBackground = true;
+                    _wasPausedBeforeBackground = _isPaused;
+                }
                 Pause();
             }
             else
             {
+                _isInBackground = false;
                 Time.maximumDeltaTime = maxDeltaTime;
 
                 if (!_wasPausedBeforeBackground)

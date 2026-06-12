@@ -14,6 +14,8 @@ public class ResourceManager : MonoBehaviour
     }
 
     private readonly Dictionary<string, Stack<GameObject>> _pools = new();
+    private readonly Dictionary<GameObject, string> _instanceKeys = new();
+    private readonly HashSet<GameObject> _pooledObjects = new();
     private readonly HashSet<GameObject> _activeObjects = new();
     private readonly HashSet<GameObject> _persistentObjects = new();
 
@@ -51,7 +53,7 @@ public class ResourceManager : MonoBehaviour
             return null;
         }
 
-        var key = GetPoolKey(prefab);
+        var key = GetPrefabKey(prefab);
 
         if (!_pools.ContainsKey(key))
         {
@@ -63,6 +65,7 @@ public class ResourceManager : MonoBehaviour
         while (_pools[key].Count > 0)
         {
             var candidate = _pools[key].Pop();
+            _pooledObjects.Remove(candidate);
             if (candidate != null)
             {
                 popObject = candidate;
@@ -87,6 +90,7 @@ public class ResourceManager : MonoBehaviour
             result = CreateNewObject(prefab, position, rotation, parent);
         }
 
+        _instanceKeys[result] = key;
         _activeObjects.Add(result);
         return result;
     }
@@ -107,12 +111,13 @@ public class ResourceManager : MonoBehaviour
         if (spawnedObject.TryGetComponent(out T component))
             return component;
 
-        // 풀 키가 이름 기반이라 동명의 다른 프리팹과 풀이 섞이면 T가 없는 오브젝트가 나올 수 있다.
+        // 풀이 섞여 T가 없는 오브젝트가 나온 경우(과거 이름 기반 키 잔재 등) 방어:
         // 잘못 꺼낸 오브젝트는 풀로 되돌리고, 풀을 거치지 않고 새 인스턴스를 생성한다.
         Debug.LogError($"ResourceManager: pool key collision — '{spawnedObject.name}' has no {typeof(T).Name} (prefab: {prefab.name})");
         Destroy(spawnedObject);
 
         GameObject created = CreateNewObject(prefab.gameObject, position, rotation, parent);
+        _instanceKeys[created] = GetPrefabKey(prefab.gameObject);
         _activeObjects.Add(created);
         return created.GetComponent<T>();
     }
@@ -139,7 +144,21 @@ public class ResourceManager : MonoBehaviour
             return;
         }
 
-        string key = GetPoolKey(obj);
+        // persistent 오브젝트(터렛 소유 풀 등)는 공용 풀로 회수하지 않고 비활성화만 한다
+        if (_persistentObjects.Contains(obj))
+        {
+            obj.SetActive(false);
+            return;
+        }
+
+        // 이미 풀에 있는 오브젝트의 중복 push 방지 (같은 오브젝트가 두 곳에 대여되는 사고 차단)
+        if (_pooledObjects.Contains(obj))
+        {
+            return;
+        }
+
+        // 스폰 기록이 있으면 프리팹 단위 키 사용, 외부에서 생성된 오브젝트는 이름 기반으로 폴백
+        string key = _instanceKeys.TryGetValue(obj, out string spawnedKey) ? spawnedKey : GetPoolKey(obj);
 
         if (!_pools.ContainsKey(key))
         {
@@ -148,9 +167,16 @@ public class ResourceManager : MonoBehaviour
 
         _activeObjects.Remove(obj);
         _pools[key].Push(obj);
+        _pooledObjects.Add(obj);
         obj.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
         obj.transform.SetParent(transform);
         obj.SetActive(false);
+    }
+
+    // 이름 기반 키는 동명의 다른 프리팹과 풀이 섞이므로, 프리팹 인스턴스 ID로 풀을 구분한다
+    private string GetPrefabKey(GameObject prefab)
+    {
+        return $"{prefab.name}#{prefab.GetInstanceID()}";
     }
 
     private string GetPoolKey(GameObject obj)
