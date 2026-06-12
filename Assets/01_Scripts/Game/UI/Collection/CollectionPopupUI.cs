@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using TrainDefense.Game.Datas;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI.Collection
 {
@@ -20,6 +22,11 @@ namespace TrainDefense.Game.UI.Collection
         [SerializeField] private Color tabSelectedColor = Color.white;
         [SerializeField] private Color tabNormalColor = new Color(0.6f, 0.6f, 0.6f, 1f);
 
+        [Header("Localized Texts")]
+        [SerializeField] private TextMeshProUGUI titleText;
+        [SerializeField] private TextMeshProUGUI trainTabText;
+        [SerializeField] private TextMeshProUGUI monsterTabText;
+
         [Header("Grid / Detail")]
         [SerializeField] private Transform gridContent;
         [SerializeField] private CollectionSlotUI slotPrefab;
@@ -29,6 +36,19 @@ namespace TrainDefense.Game.UI.Collection
         private readonly List<CollectionSlotUI> _slots = new();
         private CollectionTabType _currentTab;
         private CollectionSlotUI _selectedSlot;
+
+        private void OnEnable()
+        {
+            Localization.OnLanguageChanged += _OnLanguageChanged;
+            Localization.OnInitialized += _OnLanguageChanged;
+            _ApplyStaticTexts();
+        }
+
+        private void OnDisable()
+        {
+            Localization.OnLanguageChanged -= _OnLanguageChanged;
+            Localization.OnInitialized -= _OnLanguageChanged;
+        }
 
         private void Awake()
         {
@@ -72,6 +92,26 @@ namespace TrainDefense.Game.UI.Collection
         private void _OnClickMonsterTab()
         {
             _ShowTab(CollectionTabType.Monster);
+        }
+
+        private void _OnLanguageChanged()
+        {
+            _ApplyStaticTexts();
+
+            // 그리드/상세/스탯 라벨도 새 언어로 다시 그린다.
+            _ShowTab(_currentTab);
+        }
+
+        private void _ApplyStaticTexts()
+        {
+            if (titleText != null)
+                titleText.text = LocalizeHelper.GetByKey("Collection_Title", "도감");
+
+            if (trainTabText != null)
+                trainTabText.text = LocalizeHelper.GetByKey("Collection_Tab_Train", "트레인");
+
+            if (monsterTabText != null)
+                monsterTabText.text = LocalizeHelper.GetByKey("Collection_Tab_Monster", "몬스터");
         }
 
         private void _ShowTab(CollectionTabType tab)
