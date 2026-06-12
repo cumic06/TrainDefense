@@ -94,8 +94,27 @@ public class ResourceManager : MonoBehaviour
     public T Spawn<T>(T prefab, Vector3 position = default, Quaternion rotation = default,
         Transform parent = null) where T : Component
     {
+        if (prefab == null)
+        {
+            Debug.LogError("ResourceManager: Cannot spawn null prefab");
+            return null;
+        }
+
         GameObject spawnedObject = Spawn(prefab.gameObject, position, rotation, parent);
-        return spawnedObject.GetComponent<T>();
+        if (spawnedObject == null)
+            return null;
+
+        if (spawnedObject.TryGetComponent(out T component))
+            return component;
+
+        // 풀 키가 이름 기반이라 동명의 다른 프리팹과 풀이 섞이면 T가 없는 오브젝트가 나올 수 있다.
+        // 잘못 꺼낸 오브젝트는 풀로 되돌리고, 풀을 거치지 않고 새 인스턴스를 생성한다.
+        Debug.LogError($"ResourceManager: pool key collision — '{spawnedObject.name}' has no {typeof(T).Name} (prefab: {prefab.name})");
+        Destroy(spawnedObject);
+
+        GameObject created = CreateNewObject(prefab.gameObject, position, rotation, parent);
+        _activeObjects.Add(created);
+        return created.GetComponent<T>();
     }
 
     public GameObject SpawnPath(string path, Vector3 position = default, Quaternion rotation = default,

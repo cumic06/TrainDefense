@@ -301,9 +301,14 @@ namespace TrainDefense.Game
                 {
                     SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
                 }
-                else if (!_nonMovementProjectiles[0].gameObject.activeSelf)
+                else
                 {
-                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
+                    // 사전 생성 실패/풀 반환으로 리스트가 비거나 파괴된 참조가 남아도 발사가 막히지 않게 가드
+                    Projectile firstPooled = _nonMovementProjectiles.FirstOrDefault(p => p != null);
+                    if (firstPooled == null || !firstPooled.gameObject.activeSelf)
+                    {
+                        SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
+                    }
                 }
             }
 
@@ -604,7 +609,11 @@ namespace TrainDefense.Game
             for (int i = 0; i < maxCount; i++)
             {
                 Projectile spawned = ResourceManager.Instance.Spawn(baseProjectile);
-                if (spawned == null) continue;
+                if (spawned == null)
+                {
+                    Debug.LogError($"TurretTrain: NonMovement 프로젝타일 사전 생성 실패 ({baseProjectile.name}, {i + 1}/{maxCount})");
+                    continue;
+                }
 
                 spawned.gameObject.SetActive(false); // 실제 발사 시점에 활성화
 
