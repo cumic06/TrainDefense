@@ -34,16 +34,22 @@ namespace TrainDefense.Game.UI
 
       private void Start()
       {
-         buyButton.onClick.AddListener(OnBuyButtonClick);
          _upgradeData = DatabaseManager.Instance.GetUpgradeData(shopItemDataId);
          _priceOriginalColor = needMoneyText.color;
+
+         // 꾹 누르면 연속 구매되도록 버튼에 부착된 홀드 반복 핸들러에 구매 콜백을 연결한다.
+         // 컴포넌트는 ShopItemButton 프리팹의 Button과 같은 GameObject에 미리 부착되어 있다.
+         // 단발 탭은 OnPointerDown에서 1회 구매로 처리되므로 onClick은 더 이상 사용하지 않는다.
+         ButtonHoldRepeater holdRepeater = buyButton.GetComponent<ButtonHoldRepeater>();
+         if (holdRepeater != null)
+            holdRepeater.Init(_TryBuy);
+
          GameEventSystem.Subscribe<ChangeCoinUIEvent>(_OnChangeCoin);
          SetUp();
       }
 
       private void OnDestroy()
       {
-         buyButton.onClick.RemoveListener(OnBuyButtonClick);
          GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(_OnChangeCoin);
       }
 
@@ -139,20 +145,25 @@ namespace TrainDefense.Game.UI
          }
       }
 
-      private void OnBuyButtonClick()
+      // 구매 1회 시도. 성공하면 true, 더 살 수 없으면(최대 레벨/코인 부족) false를 반환해
+      // 홀드 반복이 즉시 멈추도록 한다.
+      private bool _TryBuy()
       {
-         if (_upgradeData == null) return;
+         if (_upgradeData == null)
+            return false;
 
          if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
-            return;
+            return false;
 
          // 코인이 부족하면 가격 텍스트가 이미 회색으로 표시되어 있으므로 구매만 막는다.
          if (UserDataManager.Instance.Coin < GetCurrentCost())
-            return;
+            return false;
 
          SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ItemBuy, ignoreSuppress: true);
 
          GameEventSystem.Publish(new BuyShopItemEvent(GetCurrentCost(), shopItemDataId));
+
+         return true;
       }
 
       private void _OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)

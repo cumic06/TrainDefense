@@ -12,6 +12,7 @@ namespace TrainDefense
     public class UserDataManager : Singleton<UserDataManager>
     {
         private const string DISCOVERED_MONSTERS_KEY = "DiscoveredMonsters";
+        private const string DISCOVERED_TRAINS_KEY = "DiscoveredTrains";
         private const string TUTORIAL_SAVE_KEY = "TutorialSaveData";
 
         private Dictionary<string, int> _triChoiceData = new();
@@ -22,6 +23,9 @@ namespace TrainDefense
 
         [ShowInInspector]
         private HashSet<string> _discoveredMonsterIds = new();
+
+        [ShowInInspector]
+        private HashSet<string> _discoveredTrainIds = new();
 
         private int _coin;
         private int _currentExp;
@@ -46,6 +50,7 @@ namespace TrainDefense
         private void Start()
         {
             LoadDiscoveredMonsters();
+            LoadDiscoveredTrains();
             LoadUserOptionData();
             LoadTutorialData();
             SubscribeEvents();
@@ -67,6 +72,7 @@ namespace TrainDefense
             GameEventSystem.Subscribe<ChangeCoinUIEvent>(ChangeCoin);
             GameEventSystem.Subscribe<BuyShopItemEvent>(BuyShopItem);
             GameEventSystem.Subscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
+            GameEventSystem.Subscribe<TrainSpawnedEvent>(OnTrainSpawned);
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
         }
 
@@ -77,6 +83,7 @@ namespace TrainDefense
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(ChangeCoin);
             GameEventSystem.Unsubscribe<BuyShopItemEvent>(BuyShopItem);
             GameEventSystem.Unsubscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
+            GameEventSystem.Unsubscribe<TrainSpawnedEvent>(OnTrainSpawned);
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
         }
 
@@ -93,6 +100,9 @@ namespace TrainDefense
 
         private void OnMonsterSpawned(MonsterSpawnedEvent monsterSpawnedEvent)
         {
+            // 로비 시뮬레이션에서 스폰된 몬스터는 도감에 등록하지 않는다.
+            if (IsLobby) return;
+
             string monsterId = monsterSpawnedEvent.MonsterId;
 
             if (string.IsNullOrEmpty(monsterId)) return;
@@ -129,6 +139,47 @@ namespace TrainDefense
         {
             string dataToSave = string.Join(",", _discoveredMonsterIds);
             PlayerPrefs.SetString(DISCOVERED_MONSTERS_KEY, dataToSave);
+            PlayerPrefs.Save();
+        }
+
+        private void OnTrainSpawned(TrainSpawnedEvent trainSpawnedEvent)
+        {
+            // 로비 시뮬레이션에서 스폰된 트레인은 도감에 등록하지 않는다.
+            if (IsLobby) return;
+
+            string trainId = trainSpawnedEvent.TrainId;
+
+            if (string.IsNullOrEmpty(trainId)) return;
+
+            if (!_discoveredTrainIds.Contains(trainId))
+            {
+                _discoveredTrainIds.Add(trainId);
+                SaveDiscoveredTrains();
+            }
+        }
+
+        private void LoadDiscoveredTrains()
+        {
+            string savedData = PlayerPrefs.GetString(DISCOVERED_TRAINS_KEY, "");
+            _discoveredTrainIds.Clear();
+
+            if (!string.IsNullOrEmpty(savedData))
+            {
+                string[] ids = savedData.Split(',');
+                foreach (string id in ids)
+                {
+                    if (!string.IsNullOrEmpty(id))
+                    {
+                        _discoveredTrainIds.Add(id);
+                    }
+                }
+            }
+        }
+
+        private void SaveDiscoveredTrains()
+        {
+            string dataToSave = string.Join(",", _discoveredTrainIds);
+            PlayerPrefs.SetString(DISCOVERED_TRAINS_KEY, dataToSave);
             PlayerPrefs.Save();
         }
 
@@ -195,6 +246,45 @@ namespace TrainDefense
         public HashSet<string> GetDiscoveredMonsterIds()
         {
             return new HashSet<string>(_discoveredMonsterIds);
+        }
+
+        /// <summary>
+        /// 발견된 트레인 데이터를 초기화합니다.
+        /// </summary>
+        [Button("발견된 트레인 초기화")]
+        private void ResetDiscoveredTrains()
+        {
+            _discoveredTrainIds.Clear();
+            PlayerPrefs.DeleteKey(DISCOVERED_TRAINS_KEY);
+            PlayerPrefs.Save();
+            Debug.Log("[UserDataManager] 발견된 트레인 데이터가 초기화되었습니다.");
+        }
+
+        /// <summary>
+        /// 해당 트레인이 이미 발견되었는지 확인합니다.
+        /// </summary>
+        public bool IsTrainDiscovered(string trainId)
+        {
+            return _discoveredTrainIds.Contains(trainId);
+        }
+
+        /// <summary>
+        /// 발견한 모든 트레인 ID 목록을 반환합니다.
+        /// </summary>
+        public HashSet<string> GetDiscoveredTrainIds()
+        {
+            return new HashSet<string>(_discoveredTrainIds);
+        }
+
+        /// <summary>
+        /// 발견한 트레인/몬스터(도감) 런타임 데이터를 모두 비웁니다.
+        /// PlayerPrefs.DeleteAll() 등으로 디스크를 지운 뒤 인메모리 상태를 동기화할 때 호출합니다.
+        /// (DeleteAll이 이미 키를 지우므로 여기서는 인메모리만 비운다.)
+        /// </summary>
+        public void ClearDiscoveredCollections()
+        {
+            _discoveredMonsterIds.Clear();
+            _discoveredTrainIds.Clear();
         }
 
 

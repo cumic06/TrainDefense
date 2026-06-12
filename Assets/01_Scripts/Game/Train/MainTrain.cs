@@ -169,6 +169,8 @@ namespace TrainDefense.Game
          trainObject.ApplyPassiveSkills();
 
          GameEventSystem.Publish(new AddTrainEvent(trainData.Icon, trainObject));
+         // 도감 발견 기록용. 이 트레인을 처음 만들면 발견 처리된다.
+         GameEventSystem.Publish(new TrainSpawnedEvent(trainData.Id));
 
          // 살아있는 기차 재정렬
          RearrangeTrains();
@@ -253,6 +255,8 @@ namespace TrainDefense.Game
 
          // UI 업데이트 이벤트 발행 (oldTrain 참조가 유효한 동안)
          GameEventSystem.Publish(new ReplaceTrainEvent(oldTrain, newTrain, newTrainData?.Icon));
+         // 엘리트 전환 등으로 만들어진 새 트레인도 도감에 발견 처리한다.
+         GameEventSystem.Publish(new TrainSpawnedEvent(newTrainData.Id));
 
          // 기존 Train 제거
          _currentAliveTrains.Remove(oldTrain);
