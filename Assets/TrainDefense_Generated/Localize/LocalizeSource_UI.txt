@@ -41,3 +41,5 @@ Intro_Speaker_Narrator	나레이터	Narrator	ナレーター	旁白
 Intro_Speaker_Engineer	기관사	Engineer	機関士	机械师
 UI_VersionUpdate_Desc	새 버전이 출시되었어요. 업데이트 후 이용해 주세요.	A new version is available. Please update to continue.	新しいバージョンがリリースされました。アップデートしてご利用ください。	新版本已发布，请更新后再使用。
 UI_VersionUpdate_Button	업데이트	Update	アップデート	更新
+UI_RatingTitle	이 게임을 평가해주세요!	Please rate this game!	このゲームを評価してください！	请为这款游戏评分！
+UI_RatingThanks	소중한 의견 감사합니다!	Thank you for your feedback!	貴重なご意見ありがとうございます！	感谢您的宝贵意见！
