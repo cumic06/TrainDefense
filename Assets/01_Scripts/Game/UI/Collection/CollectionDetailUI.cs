@@ -2,6 +2,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI.Collection
 {
@@ -48,7 +49,7 @@ namespace TrainDefense.Game.UI.Collection
                 nameText.text = discovered ? entry.Name : "???";
 
             if (descriptionText != null)
-                descriptionText.text = discovered ? entry.Description : undiscoveredDescription;
+                descriptionText.text = discovered ? entry.Description : LocalizeHelper.GetByKey("Collection_Undiscovered", undiscoveredDescription);
 
             if (statsText != null)
                 statsText.text = discovered ? _BuildStatsText(entry) : string.Empty;

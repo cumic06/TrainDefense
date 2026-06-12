@@ -97,6 +97,9 @@ MonoBehaviour:
   gridContent: {fileID: 9610001}
   slotPrefab: {fileID: 7700005, guid: 12b5408226f34a05b52d359e771db514, type: 3}
   detailUI: {fileID: 9700004}
+  titleText: {fileID: 9200003}
+  trainTabText: {fileID: 9410003}
+  monsterTabText: {fileID: 9510003}
 --- !u!1 &9100000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1026,8 +1029,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4280295456
+  m_fontColor: {r: 0.125, g: 0.125, b: 0.16, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
