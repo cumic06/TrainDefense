@@ -20,9 +20,15 @@ namespace TrainDefense.Game.UI.Collection
         [SerializeField] private GameObject emptyHint;
         [SerializeField] private Color lockedColor = Color.black;
         [SerializeField] private string undiscoveredDescription = "아직 발견하지 못한 유닛입니다.";
+        [Tooltip("발견한 몬스터의 기본 애니메이션 재생 속도(프레임/초).")]
+        [SerializeField] private float framesPerSecond = 10f;
         #endregion
 
         private readonly StringBuilder _statBuilder = new();
+
+        private System.Collections.Generic.IReadOnlyList<Sprite> _playingFrames;
+        private int _frameIndex;
+        private float _frameTimer;
 
         public void Show(CollectionEntry entry)
         {
@@ -45,6 +51,12 @@ namespace TrainDefense.Game.UI.Collection
                 iconImage.color = discovered ? Color.white : lockedColor;
             }
 
+            // 발견한 몬스터이고 베이크된 프레임이 있으면 순환 재생, 아니면 첫 프레임으로 정지한다.
+            if (discovered && entry.HasAnimation)
+                _StartAnimation(entry.Frames);
+            else
+                _StopAnimation();
+
             if (nameText != null)
                 nameText.text = discovered ? entry.Name : "???";
 
@@ -55,8 +67,45 @@ namespace TrainDefense.Game.UI.Collection
                 statsText.text = discovered ? _BuildStatsText(entry) : string.Empty;
         }
 
+        private void Update()
+        {
+            if (_playingFrames == null || _playingFrames.Count <= 1 || iconImage == null)
+                return;
+
+            _frameTimer += Time.unscaledDeltaTime;
+            float interval = 1f / Mathf.Max(1f, framesPerSecond);
+
+            while (_frameTimer >= interval)
+            {
+                _frameTimer -= interval;
+                _frameIndex = (_frameIndex + 1) % _playingFrames.Count;
+                iconImage.sprite = _playingFrames[_frameIndex];
+            }
+        }
+
+        private void _StartAnimation(System.Collections.Generic.IReadOnlyList<Sprite> frames)
+        {
+            _playingFrames = frames;
+            _frameIndex = 0;
+            _frameTimer = 0f;
+
+            if (iconImage != null && frames.Count > 0)
+            {
+                iconImage.sprite = frames[0];
+                iconImage.enabled = true;
+                iconImage.color = Color.white;
+            }
+        }
+
+        private void _StopAnimation()
+        {
+            _playingFrames = null;
+        }
+
         private void _ShowEmpty()
         {
+            _StopAnimation();
+
             if (iconImage != null)
                 iconImage.enabled = false;
 

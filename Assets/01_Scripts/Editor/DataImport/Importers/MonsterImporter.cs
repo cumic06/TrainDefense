@@ -34,6 +34,10 @@ namespace TrainDefense.Editor.DataImport.Importers
                 }
                 imported++;
             }
+
+            // 임포트 직후 각 몬스터의 기본(Run) 클립 프레임을 추출해 도감 애니메이션용으로 베이크한다.
+            MonsterAnimationFrameBaker.Bake(db);
+
             return imported;
         }
     }

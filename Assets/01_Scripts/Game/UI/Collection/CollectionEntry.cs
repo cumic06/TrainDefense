@@ -18,6 +18,7 @@ namespace TrainDefense.Game.UI.Collection
         private readonly string _description;
         private readonly bool _isDiscovered;
         private readonly List<CollectionStatLine> _statLines;
+        private readonly IReadOnlyList<Sprite> _frames;
         #endregion
 
         public string Id => _id;
@@ -27,7 +28,11 @@ namespace TrainDefense.Game.UI.Collection
         public bool IsDiscovered => _isDiscovered;
         public IReadOnlyList<CollectionStatLine> StatLines => _statLines;
 
-        private CollectionEntry(string id, Sprite icon, string name, string description, bool isDiscovered, List<CollectionStatLine> statLines)
+        /// <summary>기본 애니메이션 프레임. 그리드는 첫 프레임만, 상세는 전체를 순환 재생한다. 없으면 Icon을 쓴다.</summary>
+        public IReadOnlyList<Sprite> Frames => _frames;
+        public bool HasAnimation => _frames != null && _frames.Count > 0;
+
+        private CollectionEntry(string id, Sprite icon, string name, string description, bool isDiscovered, List<CollectionStatLine> statLines, IReadOnlyList<Sprite> frames = null)
         {
             _id = id;
             _icon = icon;
@@ -35,6 +40,7 @@ namespace TrainDefense.Game.UI.Collection
             _description = description;
             _isDiscovered = isDiscovered;
             _statLines = statLines;
+            _frames = frames;
         }
 
         public static CollectionEntry FromTrain(TrainData data, bool isDiscovered)
@@ -69,7 +75,7 @@ namespace TrainDefense.Game.UI.Collection
                 new CollectionStatLine(_Loc("Collection_AttackType", "공격 타입"), status.AttackType == MonsterAttackType.Ranged ? _Loc("Collection_Ranged", "원거리") : _Loc("Collection_Melee", "근접")),
             };
 
-            return new CollectionEntry(data.Id, data.Icon, data.Name, data.Description, isDiscovered, statLines);
+            return new CollectionEntry(data.Id, data.DisplaySprite, data.Name, data.Description, isDiscovered, statLines, data.AnimationFrames);
         }
 
         private static void _AppendRangeStats(List<CollectionStatLine> statLines, RangeTrainStatus status)
