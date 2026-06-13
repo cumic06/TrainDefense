@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Cumic;
 using Cumic.Events;
 using DG.Tweening;
@@ -15,68 +16,21 @@ namespace TrainDefense
         [SerializeField]
         private PlayableDirector playableDirector;
         [SerializeField]
-        private PlayableDirector mapChangeDirector;
-        [SerializeField]
-        private PlayableDirector shopEnterDirector;
-        [SerializeField]
-        private PlayableDirector shopExitDirector;
-        [SerializeField]
-        private PlayableDirector mapMoveDirector;
-        [SerializeField]
         private bool startTimelineOnAwake = false;
 
         [Header("연출 오브젝트")]
         [SerializeField]
-        [Tooltip("상점/포탈 오브젝트의 부모 앵커. 연출 시작 시 열차 위치로 옮겨 타임라인의 로컬 좌표 기준을 맞춘다.")]
-        private Transform effectAnchor;
-        [SerializeField]
         private GameObject shopArrivalObject;
         [SerializeField]
-        private GameObject portalObject;
-        [SerializeField]
         private CanvasGroup screenFade;
-
-        [Header("맵 이동 연출 타이밍")]
-        [SerializeField]
-        [Tooltip("포탈 카메라 줌(0~1s) 후 페이드 아웃을 시작할 때까지의 지연")]
-        private float mapMoveFadeDelay = 1f;
-        [SerializeField]
-        private float mapMoveFadeDuration = 1f;
-        [SerializeField]
-        [Tooltip("맵 이동 시 기차가 scale 0으로 빨려들어가듯 축소되는 시간(페이드 시작 전에 끝나야 함)")]
-        private float mapMoveShrinkDuration = 1f;
-        [SerializeField]
-        [Tooltip("맵 이동 후 새 맵에서 기차가 scale을 회복하며 나타나는 시간")]
-        private float mapMoveGrowDuration = 0.5f;
-        [SerializeField]
-        [Tooltip("맵 이동 시 카메라가 기차로 줌인할 OrthographicSize(작을수록 가까이)")]
-        private float mapMoveZoomOrthoSize = 9.156381f;
-        [SerializeField]
-        [Tooltip("맵 이동 시 기차가 빨려들어가는 동안 카메라가 줌인하는 시간")]
-        private float mapMoveZoomDuration = 1f;
-        [SerializeField]
-        [Tooltip("맵 이동(암전) 시 카메라가 기차로 복귀하며 줌아웃하는 시간")]
-        private float mapMoveCameraRestoreDuration = 0.5f;
 
         [Header("상점 연출 타이밍")]
         [SerializeField]
         [Tooltip("상점 진입 시 기차가 화면 밖에서 정위치로 슬라이드 인하며 도착하는 시간(카메라 줌인 시작 전에 끝나야 함)")]
         private float shopEnterSlideInDuration = 2f;
         [SerializeField]
-        [Tooltip("상점 퇴장 시 기차가 정위치에서 화면 밖으로 슬라이드 아웃하며 출발하는 시간")]
-        private float shopExitSlideOutDuration = 1.5f;
-        [SerializeField]
-        [Tooltip("상점 퇴장 시 기차가 나간 뒤 정위치 복귀를 가리는 페이드 길이(아웃/인 각각)")]
-        private float shopExitFadeDuration = 0.5f;
-        [SerializeField]
-        [Tooltip("상점 진입 시 카메라가 상점으로 줌인할 OrthographicSize(작을수록 가까이)")]
-        private float shopZoomOrthoSize = 6f;
-        [SerializeField]
-        [Tooltip("상점 진입 시 카메라가 상점으로 줌인하는 시간")]
-        private float shopZoomDuration = 1f;
-        [SerializeField]
-        [Tooltip("상점 퇴장 시 카메라가 기차로 복귀하며 줌아웃하는 시간")]
-        private float shopCameraRestoreDuration = 0.8f;
+        [Tooltip("상점 퇴장 시 기차가 화면 왼쪽 밖에서 정위치(중앙)로 슬라이드 인하는 시간(클수록 천천히 중앙으로 들어옴)")]
+        private float shopExitSlideOutDuration = 2.5f;
         #endregion
 
         #region LifeCycle
@@ -98,154 +52,112 @@ namespace TrainDefense
 
         #endregion
 
-        public bool CanPlayShopEnterTimeline => shopEnterDirector != null;
-        public bool CanPlayShopExitTimeline => shopExitDirector != null;
-        public bool CanPlayMapMoveTimeline => mapMoveDirector != null;
-
-        public void StartTimeline(bool isMapChange = false, Action onComplete = null)
+        public void StartTimeline(Action onComplete = null)
         {
-            var director = isMapChange && mapChangeDirector != null ? mapChangeDirector : playableDirector;
-
             TimeManager.Instance?.Pause();
-
-            // 자식 열차들의 localPosition을 오프셋했다가 복귀 (부모 위치 고정 → 카메라 따라오지 않음)
-            // Timeline: 카메라 줌 0~1s / 열차 슬라이드: delay=1s, duration=2s → 총 3s
-            if (isMapChange)
-                TrainManager.Instance?.MainTrain?.SlideIn(1f, 2f);
-
-            _Play(director, onComplete);
+            _Play(playableDirector, onComplete);
         }
 
         /// <summary>
-        /// 상점(점검) 진입 연출. 도달 위치에 상점 오브젝트가 고정 활성화되고, 기차가 화면 밖에서
-        /// 정위치로 슬라이드 인하며 역에 도착한다(0~2s). 도착하면 카메라가 줌인된다(2~3s).
-        /// 연출이 끝나면 onComplete 호출(상점 오픈 타이밍). 상점 오브젝트는 상점이 닫힐 때(InspectionEndEvent) 비활성화된다.
+        /// 상점(점검) 진입 연출. 기차가 화면 오른쪽 밖으로 슬라이드 아웃하며 화면이 검게 페이드 아웃되고,
+        /// 가려진 사이 onComplete로 상점을 띄운 뒤 페이드 인하며 상점을 드러낸다.
+        /// 상점 오브젝트는 상점이 닫힐 때(InspectionEndEvent) 비활성화된다.
         /// </summary>
         public void StartShopEnterTimeline(Action onComplete = null)
         {
-            TimeManager.Instance?.Pause();
-
-            // 입장과 함께 화면의 적과 풀에서 소환된 오브젝트(파티클·투사체 등)를 정리한다.
-            // StopSpawnMonster()는 호출하지 않는다 — 일반 상점은 전투 재개 시 스폰을 다시 켜는 흐름(TriChoiceSelect)이 없어
-            // 한 번 멈추면 적이 영영 안 나온다. 상점 동안엔 TimeManager.Pause로 스폰 코루틴이 멈췄다가 재개 시 자동으로 다시 돈다.
-            MonsterSpawner.Instance?.DestroyAllMonsters();
+            // 1. 몬스터를 제외한 모든 투사체·파티클을 정리한다(몬스터는 화면에 그대로 둔다 — ReturnAll이 Monster를 건너뜀).
             ResourceManager.Instance?.ReturnAll();
             // ReturnAll은 persistent(기차)의 자식을 건너뛰므로, 기차 하위에 부착된 투사체(범위 공격·화염 파티클 등)는 따로 정리한다.
             _ClearAttachedProjectiles();
 
-            _MoveAnchorToTrain();
-            // 상점은 도착 위치에 고정되고, 기차가 화면 밖에서 정위치로 슬라이드 인하며 상점에 도착한다.
-            TrainManager.Instance?.MainTrain?.SlideIn(0f, shopEnterSlideInDuration);
+            // 2. 시간을 멈춘다.
+            TimeManager.Instance?.Pause();
 
-            // 기차가 도착한 뒤(SlideIn 시간 후) 카메라가 상점 오브젝트 쪽으로 줌인한다.
-            if (shopArrivalObject != null)
-                GameEventSystem.Publish(new CameraZoomEvent(
-                    shopArrivalObject.transform, shopZoomOrthoSize, shopZoomDuration, shopEnterSlideInDuration));
+            StartCoroutine(_ShopEnterCompletionRoutine(onComplete));
+        }
 
-            _Play(shopEnterDirector, onComplete);
+        private IEnumerator _ShopEnterCompletionRoutine(Action onComplete)
+        {
+            // 1. 기차가 화면 오른쪽 밖으로 슬라이드 아웃하며 동시에 화면을 검게 페이드 아웃한다(퇴장의 역재생, 기차가 나가며 같이 어두워짐).
+            TrainManager.Instance?.MainTrain?.SlideOut(0f, shopEnterSlideInDuration);
+            yield return _Fade(1f, shopEnterSlideInDuration);
+
+            // 2. 검게 가려진 화면 위에 상점을 띄운다.
+            onComplete?.Invoke();
         }
 
         /// <summary>
-        /// 상점(점검) 퇴장 연출. 상점은 고정된 채 기차가 정위치에서 화면 밖으로 슬라이드 아웃하며 출발한다.
-        /// 기차가 나간 뒤 화면을 페이드로 가린 채 기차를 정위치로 복귀시키고, 페이드 인하며 onComplete 호출(전투 재개 타이밍).
+        /// 상점(점검) 퇴장 연출. 화면을 검게 페이드 아웃해 상점을 가린 뒤, 기차가 화면 왼쪽 밖에서
+        /// 정위치(중앙)로 슬라이드 인하며 화면을 페이드 인한다. 기차가 도착하면 onComplete 호출(전투 재개 타이밍).
         /// </summary>
         public void StartShopExitTimeline(Action onComplete = null)
         {
             TimeManager.Instance?.Pause();
 
+            StartCoroutine(_ShopExitRoutine(onComplete));
+        }
+
+        private IEnumerator _ShopExitRoutine(Action onComplete)
+        {
             var mainTrain = TrainManager.Instance?.MainTrain;
 
-            // 상점으로 줌인됐던 카메라를 기차로 되돌리며 줌아웃한다(종횡비 보정도 재개).
-            if (mainTrain != null)
-                GameEventSystem.Publish(new CameraRestoreEvent(mainTrain.transform, shopCameraRestoreDuration));
+            // 1. 진입에서 이미 검게 가려진 상태이므로, 그 사이 기차를 정위치로 즉시 복귀시킨다(추가 페이드 아웃 없음).
+            mainTrain?.ResetSlidePosition();
 
-            // 상점은 고정되고, 기차가 정위치에서 화면 밖으로 슬라이드 아웃하며 역을 떠난다.
-            mainTrain?.SlideOut(0f, shopExitSlideOutDuration);
+            // 2. 기차가 화면 왼쪽 밖에서 정위치(중앙)로 들어오며 화면을 페이드 인한다.
+            mainTrain?.SlideIn(0f, shopExitSlideOutDuration);
+            yield return _Fade(0f, shopExitSlideOutDuration);
 
-            if (screenFade != null)
-            {
-                _Play(shopExitDirector, null);
+            // 3. 기차가 정위치에 도착하면 전투를 재개한다.
+            onComplete?.Invoke();
+        }
 
-                // 기차가 나간 뒤 화면을 어둡게 가리고, 암전 동안 기차를 정위치로 즉시 복귀시킨 뒤 페이드 인하며 전투를 재개한다.
+        // screenFade 오버레이를 targetAlpha(0=투명, 1=검정)로 페이드하고 끝날 때까지 실시간 대기한다.
+        // 게임 정지(timeScale=0) 중에도 진행되도록 SetUpdate(true). 페이드 아웃(검정)은 항상 투명에서 시작한다.
+        private IEnumerator _Fade(float targetAlpha, float duration)
+        {
+            if (screenFade == null)
+                yield break;
+
+            screenFade.gameObject.SetActive(true);
+            if (targetAlpha >= 1f)
                 screenFade.alpha = 0f;
-                screenFade.gameObject.SetActive(true);
-                screenFade.DOFade(1f, shopExitFadeDuration)
-                    .SetDelay(shopExitSlideOutDuration)
-                    .SetUpdate(true)
-                    .OnComplete(() =>
-                    {
-                        mainTrain?.ResetSlidePosition();
-                        screenFade.DOFade(0f, shopExitFadeDuration)
-                            .SetUpdate(true)
-                            .OnComplete(() =>
-                            {
-                                screenFade.gameObject.SetActive(false);
-                                onComplete?.Invoke();
-                            });
-                    });
-            }
-            else
-            {
-                // 폴백: 페이드가 없으면 슬라이드 아웃이 끝난 뒤 기차를 정위치로 복귀하고 즉시 재개한다.
-                _Play(shopExitDirector, () =>
-                {
-                    mainTrain?.ResetSlidePosition();
-                    onComplete?.Invoke();
-                });
-            }
+            screenFade.DOFade(targetAlpha, duration).SetUpdate(true);
+
+            yield return new WaitForSecondsRealtime(duration);
+
+            if (targetAlpha <= 0f)
+                screenFade.gameObject.SetActive(false);
         }
 
         /// <summary>
-        /// 맵 이동 연출. 기차들이 제자리에서 scale 0으로 빨려들어가듯 축소되고(0~1s, 카메라 줌과 함께),
-        /// 화면이 어두워지면(1~2s) 암전 시점에 onMapSwitch로 실제 맵을 교체한다.
-        /// 이후 새 맵에서 기차가 scale을 회복하며 나타나고(페이드 인), 타임라인이 끝나면 onComplete 호출.
+        /// 맵 이동 연출. 스테이지 선택 시점엔 화면이 (상점 진입 때 만든) 검정으로 가려진 상태이므로,
+        /// 그 사이 onMapSwitch로 맵을 새 맵으로 교체하고, 기차가 화면 왼쪽 밖에서 정위치로 슬라이드 인하며
+        /// 화면을 페이드 인한다(상점 퇴장과 동일). 기차가 도착하면 onComplete 호출(새 맵 전투 시작).
         /// </summary>
         public void StartMapMoveTimeline(Action onMapSwitch, Action onComplete = null)
         {
             TimeManager.Instance?.Pause();
 
+            StartCoroutine(_MapMoveRoutine(onMapSwitch, onComplete));
+        }
+
+        private IEnumerator _MapMoveRoutine(Action onMapSwitch, Action onComplete)
+        {
             var mainTrain = TrainManager.Instance?.MainTrain;
-            // 포탈 대신 기차들이 제자리에서 scale 0으로 줄어들며 어딘가로 빨려들어가듯 사라진다.
-            mainTrain?.ShrinkOut(0f, mapMoveShrinkDuration);
 
-            // 기차가 빨려들어가는 동안 카메라가 기차로 줌인한다. 상점과 동일하게 이벤트로 처리해야
-            // 줌 동안 종횡비 보정(AspectFit)이 중단되고, 아래 CameraRestoreEvent로 추적·줌·보정이 정상 복원된다.
-            // (타임라인이 직접 OrthographicSize를 잡으면 복원되지 않아 카메라가 줌인된 채 기차를 놓친다.)
-            if (mainTrain != null)
-                GameEventSystem.Publish(new CameraZoomEvent(mainTrain.transform, mapMoveZoomOrthoSize, mapMoveZoomDuration));
+            // 1. 스테이지 선택 시점에 화면이 이미 검게 가려져 있으므로, 그 사이 맵을 새 맵으로 교체한다.
+            onMapSwitch?.Invoke();
 
-            if (screenFade != null)
-            {
-                screenFade.alpha = 0f;
-                screenFade.gameObject.SetActive(true);
-                screenFade.DOFade(1f, mapMoveFadeDuration)
-                    .SetDelay(mapMoveFadeDelay)
-                    .SetUpdate(true)
-                    .OnComplete(() =>
-                    {
-                        onMapSwitch?.Invoke();
-                        // 새 맵에서 기차가 scale을 회복하며 다시 나타난다.
-                        mainTrain?.GrowIn(0f, mapMoveGrowDuration);
+            // 2. 검게 가려진 사이 기차를 정위치로 즉시 복귀시킨다(상점 진입에서 오른쪽 밖에 나가 있던 상태).
+            mainTrain?.ResetSlidePosition();
 
-                        // 암전 동안 카메라를 기차로 되돌리며 줌아웃한다(페이드 인 시점엔 다시 기차를 추적하는 정상 화면).
-                        if (mainTrain != null)
-                            GameEventSystem.Publish(new CameraRestoreEvent(mainTrain.transform, mapMoveCameraRestoreDuration));
+            // 3. 기차가 화면 왼쪽 밖에서 정위치(중앙)로 들어오며 화면을 페이드 인한다(상점 퇴장과 동일).
+            mainTrain?.SlideIn(0f, shopExitSlideOutDuration);
+            yield return _Fade(0f, shopExitSlideOutDuration);
 
-                        screenFade.DOFade(0f, mapMoveFadeDuration)
-                            .SetUpdate(true)
-                            .OnComplete(() => screenFade.gameObject.SetActive(false));
-                    });
-            }
-            else
-            {
-                onMapSwitch?.Invoke();
-                mainTrain?.GrowIn(0f, mapMoveGrowDuration);
-
-                if (mainTrain != null)
-                    GameEventSystem.Publish(new CameraRestoreEvent(mainTrain.transform, mapMoveCameraRestoreDuration));
-            }
-
-            _Play(mapMoveDirector, () => onComplete?.Invoke());
+            // 4. 기차가 정위치에 도착하면 새 맵 전투를 시작한다.
+            onComplete?.Invoke();
         }
 
         private void _Play(PlayableDirector director, Action onComplete)
@@ -275,16 +187,6 @@ namespace TrainDefense
 
             foreach (var train in trains)
                 train?.ClearAttachedProjectiles();
-        }
-
-        private void _MoveAnchorToTrain()
-        {
-            if (effectAnchor == null)
-                return;
-
-            var mainTrain = TrainManager.Instance?.MainTrain;
-            if (mainTrain != null)
-                effectAnchor.position = mainTrain.transform.position;
         }
 
         private void _OnInspectionEnd(InspectionEndEvent _)

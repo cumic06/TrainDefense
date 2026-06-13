@@ -165,25 +165,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.TimelineManager
   dontDestroyOnLoad: 0
   playableDirector: {fileID: 1580891175}
-  mapChangeDirector: {fileID: 1580891300}
-  shopEnterDirector: {fileID: 1580891301}
-  shopExitDirector: {fileID: 1580891303}
-  mapMoveDirector: {fileID: 1580891302}
   startTimelineOnAwake: 1
-  effectAnchor: {fileID: 916000002}
   shopArrivalObject: {fileID: 916000003}
-  portalObject: {fileID: 916000007}
   screenFade: {fileID: 916000018}
-  mapMoveFadeDelay: 1
-  mapMoveFadeDuration: 1
-  mapMoveShrinkDuration: 1
-  mapMoveGrowDuration: 0.5
   shopEnterSlideInDuration: 2
   shopExitSlideOutDuration: 1.5
-  shopExitFadeDuration: 0.5
-  shopZoomOrthoSize: 6
-  shopZoomDuration: 1
-  shopCameraRestoreDuration: 0.8
 --- !u!1 &47782937
 GameObject:
   m_ObjectHideFlags: 0
@@ -5428,6 +5414,7 @@ RectTransform:
   - {fileID: 8503742246820077438}
   - {fileID: 739713837}
   - {fileID: 1224249018}
+  - {fileID: 916000015}
   - {fileID: 112031396}
   - {fileID: 6884424855140019222}
   - {fileID: 807435033}
@@ -12183,66 +12170,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!1 &916000011
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 916000012}
-  - component: {fileID: 916000013}
-  m_Layer: 5
-  m_Name: ScreenFadeCanvas
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &916000012
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916000011}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 916000015}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
---- !u!223 &916000013
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 916000011}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
-  m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
-  m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 200
-  m_TargetDisplay: 0
 --- !u!1 &916000014
 GameObject:
   m_ObjectHideFlags: 0
@@ -12269,12 +12196,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 916000014}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 916000012}
+  m_Father: {fileID: 214686401}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -14064,8 +13991,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 433573b440b83bd43ba2de76d920a8df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.CameraController
-  testShakeIntensity: 5
-  testShakeDuration: 0.2
   gameOverZoomOrthoSize: 4
   _enableAspectFit: 1
   _referenceResolution: {x: 1920, y: 1080}
@@ -15753,6 +15678,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Group_NewMonster
       objectReference: {fileID: 0}
+    - target: {fileID: 5869894423694629752, guid: 87b9c52964e8aa0429d9a9150f3984dc, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -7.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7851397487179584581, guid: 87b9c52964e8aa0429d9a9150f3984dc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -17129,4 +17058,3 @@ SceneRoots:
   - {fileID: 2084221808}
   - {fileID: 219963910}
   - {fileID: 916000002}
-  - {fileID: 916000012}

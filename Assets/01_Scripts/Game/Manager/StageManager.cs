@@ -32,10 +32,6 @@ namespace TrainDefense.Game.Manager
 
         [SerializeField]
         private float stationInspectionTimeIncrement;
-
-        [SerializeField]
-        [Tooltip("맵 스폰 위치를 기차 기준 X축으로 옮기는 오프셋, 0이면 기차 정중앙.")]
-        private float mapSpawnOffsetX = -24;
         #endregion
 
         private StageData[] _stageDatas;
@@ -193,7 +189,6 @@ namespace TrainDefense.Game.Manager
             if (TrainManager.Instance.MainTrain != null)
             {
                 spawnPosition = TrainManager.Instance.MainTrain.transform.position;
-                spawnPosition.x += mapSpawnOffsetX;
             }
             _currentMapInstance = Instantiate(prefab, spawnPosition, Quaternion.identity);
         }
@@ -229,11 +224,11 @@ namespace TrainDefense.Game.Manager
 
         /// <summary>
         /// 상점(점검) 진입 연출을 거쳐 상점을 연다.
-        /// 도달 위치에 상점 오브젝트가 활성화되고 카메라 줌이 끝난 뒤 InspectionStartEvent가 발행된다.
+        /// 화면이 페이드 아웃되며 기차가 빠져나간 뒤 InspectionStartEvent가 발행된다.
         /// </summary>
         private void _StartInspectionWithTimeline()
         {
-            if (TimelineManager.Instance != null && TimelineManager.Instance.CanPlayShopEnterTimeline)
+            if (TimelineManager.Instance != null)
                 TimelineManager.Instance.StartShopEnterTimeline(() => GameEventSystem.Publish(new InspectionStartEvent()));
             else
                 GameEventSystem.Publish(new InspectionStartEvent());
@@ -358,9 +353,10 @@ namespace TrainDefense.Game.Manager
 
             _currentStageIndex = index;
 
-            if (TimelineManager.Instance != null && TimelineManager.Instance.CanPlayMapMoveTimeline)
+            if (TimelineManager.Instance != null)
             {
-                // 도달 위치에 포탈을 활성화하고 화면 전환(페이드) 연출의 암전 시점에 실제 맵을 교체한다.
+                // 상점 진입에서 검게 가려진 상태 그대로, 암전 사이 맵을 새 맵으로 교체하고
+                // 기차가 슬라이드 인 + 페이드 인하며 새 맵 전투를 시작한다(상점 퇴장 연출과 동일).
                 TimelineManager.Instance.StartMapMoveTimeline(
                     onMapSwitch: () =>
                     {
@@ -368,16 +364,13 @@ namespace TrainDefense.Game.Manager
                         MonsterSpawner.Instance?.StartSpawnMonster();
                     },
                     onComplete: () => GameEventSystem.Publish(new EngageStartEvent()));
-                return;
             }
-
-            _ResetCurrentStageInfo();
-            MonsterSpawner.Instance?.StartSpawnMonster();
-
-            if (TimelineManager.Instance != null)
-                TimelineManager.Instance.StartTimeline(isMapChange: true, () => GameEventSystem.Publish(new EngageStartEvent()));
             else
+            {
+                _ResetCurrentStageInfo();
+                MonsterSpawner.Instance?.StartSpawnMonster();
                 GameEventSystem.Publish(new EngageStartEvent());
+            }
         }
 
         private bool _ShowStageSelection()

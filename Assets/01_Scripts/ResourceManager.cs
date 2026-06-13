@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TrainDefense.Game;
 
 namespace TrainDefense
 {
@@ -27,6 +28,8 @@ public class ResourceManager : MonoBehaviour
             if (obj == null) continue;
             if (_persistentObjects.Contains(obj)) continue;
             if (_IsChildOfPersistent(obj)) continue;
+            // 몬스터도 이 풀로 스폰되지만, 상점 진입 연출에서는 몬스터를 화면에 유지하므로 제외한다(몬스터는 DestroyAllMonsters가 따로 정리).
+            if (obj.TryGetComponent<Monster>(out _)) continue;
             Destroy(obj);
         }
     }
