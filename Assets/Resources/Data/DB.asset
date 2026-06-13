@@ -990,7 +990,7 @@ MonoBehaviour:
       description: Passive_60010_Desc
     - id: 60011
       name: Passive_60011_Name
-      passiveType: RepeatAfterAttack:0.2:3|StatModifier:AttackInterval:40
+      passiveType: RepeatAfterAttack:0.2:2|StatModifier:AttackInterval:40
       param1: 
       param2: 
       param3: 
