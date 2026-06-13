@@ -26,7 +26,10 @@ namespace TrainDefense.Game.UI
       [Header("Price Color")]
       [Tooltip("보유 코인이 부족할 때 가격 텍스트에 적용할 색상")]
       [SerializeField]
-      private Color insufficientColor = Color.gray;
+      private Color insufficientColor = Color.red;
+      [Tooltip("최대 레벨(MAX)일 때 가격 텍스트에 적용할 색상")]
+      [SerializeField]
+      private Color maxLevelColor = Color.white;
       #endregion
 
       private UpgradeData _upgradeData;
@@ -155,7 +158,7 @@ namespace TrainDefense.Game.UI
          if (UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
             return false;
 
-         // 코인이 부족하면 가격 텍스트가 이미 회색으로 표시되어 있으므로 구매만 막는다.
+         // 코인이 부족하면 가격 텍스트가 이미 빨간색으로 표시되어 있으므로 구매만 막는다.
          if (UserDataManager.Instance.Coin < GetCurrentCost())
             return false;
 
@@ -183,6 +186,13 @@ namespace TrainDefense.Game.UI
       {
          if (_upgradeData == null)
             return;
+
+         // MAX 레벨은 코인 보유량과 무관하게 항상 흰색으로 표시한다. (MAX 판정을 가장 먼저)
+         if (UserDataManager.Instance != null && UserDataManager.Instance.IsUpgradeMaxLevel(shopItemDataId))
+         {
+            needMoneyText.color = maxLevelColor;
+            return;
+         }
 
          needMoneyText.color = coin >= GetCurrentCost() ? _priceOriginalColor : insufficientColor;
       }
