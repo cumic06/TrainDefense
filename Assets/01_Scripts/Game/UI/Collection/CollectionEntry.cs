@@ -62,6 +62,15 @@ namespace TrainDefense.Game.UI.Collection
             return new CollectionEntry(data.Id, data.Icon, data.Name, data.Description, isDiscovered, statLines);
         }
 
+        // 엘리트 트레인은 보유 스킬마다 항목을 만든다. 이름·설명은 스킬, 아이콘·스탯은 엘리트 포탑 기준.
+        public static CollectionEntry FromEliteTrainSkill(TrainData eliteTrain, IData skill, bool isDiscovered)
+        {
+            // 엘리트는 스탯을 표시하지 않고 스킬 이름·설명만 보여준다
+            var statLines = new List<CollectionStatLine>();
+
+            return new CollectionEntry($"{eliteTrain.Id}_{skill.Id}", eliteTrain.Icon, _SkillName(skill), _SkillDescription(skill), isDiscovered, statLines);
+        }
+
         public static CollectionEntry FromMonster(MonsterData data, bool isDiscovered)
         {
             MonsterStatusInfo status = data.MonsterStatusData;
@@ -125,6 +134,26 @@ namespace TrainDefense.Game.UI.Collection
         private static float _ToAttackSpeed(float interval)
         {
             return interval > 0f ? 1f / interval : 0f;
+        }
+
+        private static string _SkillName(IData skill)
+        {
+            return skill switch
+            {
+                TrainSkillData active => active.Name,
+                TrainPassiveSkillData passive => passive.Name,
+                _ => string.Empty,
+            };
+        }
+
+        private static string _SkillDescription(IData skill)
+        {
+            return skill switch
+            {
+                TrainSkillData active => active.Description,
+                TrainPassiveSkillData passive => passive.Description,
+                _ => string.Empty,
+            };
         }
     }
 
