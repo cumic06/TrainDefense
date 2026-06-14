@@ -9,9 +9,24 @@ public class ResourceManager : MonoBehaviour
     private static ResourceManager _instance;
     public static ResourceManager Instance => _instance;
 
+    // 씬 언로드/앱 종료로 ResourceManager가 파괴되는 중인지. 파괴 중엔 풀 회수(SetParent)를 막아
+    // "Cannot set the parent ... while its new parent is being destroyed" 에러를 방지한다.
+    private bool _isQuitting;
+    public bool IsQuitting => _isQuitting;
+
     private void Awake()
     {
         _instance = this;
+    }
+
+    private void OnApplicationQuit() => _isQuitting = true;
+
+    private void OnDestroy()
+    {
+        _isQuitting = true;
+
+        if (_instance == this)
+            _instance = null;
     }
 
     private readonly Dictionary<string, Stack<GameObject>> _pools = new();
@@ -172,7 +187,11 @@ public class ResourceManager : MonoBehaviour
         _pools[key].Push(obj);
         _pooledObjects.Add(obj);
         obj.transform.SetPositionAndRotation(Vector3.zero, Quaternion.identity);
-        obj.transform.SetParent(transform);
+
+        // 파괴 중이면 풀(this.transform)로 부모 변경 불가 → 스킵(오브젝트도 씬과 함께 곧 파괴된다)
+        if (!_isQuitting)
+            obj.transform.SetParent(transform);
+
         obj.SetActive(false);
     }
 

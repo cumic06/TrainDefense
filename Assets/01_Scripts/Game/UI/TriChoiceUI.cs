@@ -49,6 +49,11 @@ namespace TrainDefense.Game.UI
       [Tooltip("첫 삼중택일(게임 진입 시 자동 선택지)이 떠 있는 동안 비활성화할 일시정지 버튼")]
       [SerializeField]
       private Button pauseButton;
+
+      [Header("Coin Display")]
+      [Tooltip("삼중택일 동안 표시할 보유 코인 UI(인게임 Group_Coin 복제본). 삼중택일이 뜰 때 활성화되고 카드 위에 정렬된다")]
+      [SerializeField]
+      private GameObject coinUI;
       #endregion
 
       #region Variables
@@ -109,6 +114,9 @@ namespace TrainDefense.Game.UI
          // GameEnterEvent는 연출 도중 Signal로 발행되므로 그 시점에 잠그면 연출 초반에 버튼이 눌린다.
          // 해제는 첫 삼중택일이 완료될 때 이루어진다.
          _SetPauseButtonLocked(true);
+
+         // 삼중택일이 떠 있지 않은 평상시엔 코인 UI를 꺼 둔다(인게임 HUD 코인과 중복 방지).
+         _ShowCoinUI(false);
       }
 
       private void Start() => _SubscribeEvents();
@@ -189,9 +197,35 @@ namespace TrainDefense.Game.UI
          gameObject.SetActive(false);
       }
 
+      // 삼중택일 표시/숨김에 맞춰 보유 코인 UI를 켜고 끈다. 켤 때 카드 위에 그려지도록 정렬을 보장한다.
+      private void _ShowCoinUI(bool show)
+      {
+         if (coinUI == null)
+            return;
+
+         if (show)
+            _EnsureCoinUIAboveCards();
+
+         coinUI.SetActive(show);
+      }
+
+      // 카드(TriChoiceSelectUI의 Canvas는 overrideSorting + sortingOrder=2)보다 위에 그려지도록
+      // 코인 UI에 overrideSorting Canvas를 보장한다. (정렬용 컴포넌트만 부여 — UI 자체는 생성하지 않음)
+      private void _EnsureCoinUIAboveCards()
+      {
+         var canvas = coinUI.GetComponent<Canvas>();
+
+         if (canvas == null)
+            canvas = coinUI.AddComponent<Canvas>();
+
+         canvas.overrideSorting = true;
+         canvas.sortingOrder = 10;
+      }
+
       public void OnInspectionEnter(int count, bool showLevelUpText = true)
       {
          backgroundImage.SetActive(true);
+         _ShowCoinUI(true);
 
          // 삼중택일이 새로 열릴 때마다 리롤 비용을 기본값으로 초기화한다.
          // (리롤은 OnInspectionEnter를 거치지 않고 _OnChoiceUIPopup을 직접 호출하므로 비용이 유지·증가됨)
@@ -226,6 +260,7 @@ namespace TrainDefense.Game.UI
             TriChoiceSelectEvent eventData = new(null, 0);
             GameEventSystem.Publish(eventData);
             backgroundImage.SetActive(false);
+            _ShowCoinUI(false);
             _SetPauseButtonLocked(false);
             Debug.LogWarning("No available choices found");
 
@@ -301,6 +336,7 @@ namespace TrainDefense.Game.UI
             TriChoiceSelectEvent fallback = new(null, 0);
             GameEventSystem.Publish(fallback);
             backgroundImage.SetActive(false);
+            _ShowCoinUI(false);
             _SetPauseButtonLocked(false);
          }
       }
@@ -379,6 +415,7 @@ namespace TrainDefense.Game.UI
          }
 
          backgroundImage.SetActive(false);
+         _ShowCoinUI(false);
          _SetPauseButtonLocked(false);
       }
 

@@ -186,9 +186,11 @@ namespace TrainDefense.Game
         {
             if (turretModel == null) return;
             turretModel.transform.DOKill();
-            turretModel.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
+            // SetUpdate(true): timeScale=0(상점/일시정지/삼중택일) 중에도 트윈이 진행돼 원복되게 한다.
+            // 누락 시 공격 펀치 트윈이 0.9배 축소 상태에서 멈춰 모델이 작게 고정되는 외형 버그가 난다.
+            turretModel.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).SetUpdate(true).OnComplete(() =>
             {
-                turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack);
+                turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack).SetUpdate(true);
             });
         }
 
