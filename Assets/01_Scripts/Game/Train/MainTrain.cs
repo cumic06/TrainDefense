@@ -349,7 +349,7 @@ namespace TrainDefense.Game
          trainModel.localPosition = modelPos;
       }
 
-      private void RearrangeAllTrainsToOriginalOrder()
+      public void RearrangeAllTrainsToOriginalOrder()
       {
          // 모든 기차를 원래 순서대로 재정렬
          // _currentTrains와 _deadTrains를 합쳐서 원래 인덱스 순서로 정렬

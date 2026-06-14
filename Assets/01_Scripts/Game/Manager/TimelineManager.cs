@@ -103,6 +103,8 @@ namespace TrainDefense
 
             // 1. 진입에서 이미 검게 가려진 상태이므로, 그 사이 기차를 정위치로 즉시 복귀시킨다(추가 페이드 아웃 없음).
             mainTrain?.ResetSlidePosition();
+            // 상점 중 부활·재배치로 편성이 바뀌었을 수 있으므로 전체를 정위치로 재확정한다(포탑 겹침 방지).
+            mainTrain?.RearrangeAllTrainsToOriginalOrder();
 
             // 2. 기차가 화면 왼쪽 밖에서 정위치(중앙)로 들어오며 화면을 페이드 인한다.
             mainTrain?.SlideIn(0f, shopExitSlideOutDuration);
@@ -151,6 +153,8 @@ namespace TrainDefense
 
             // 2. 검게 가려진 사이 기차를 정위치로 즉시 복귀시킨다(상점 진입에서 오른쪽 밖에 나가 있던 상태).
             mainTrain?.ResetSlidePosition();
+            // 부활·재배치로 편성이 바뀌었을 수 있으므로 전체를 정위치로 재확정한다(포탑 겹침 방지).
+            mainTrain?.RearrangeAllTrainsToOriginalOrder();
 
             // 3. 기차가 화면 왼쪽 밖에서 정위치(중앙)로 들어오며 화면을 페이드 인한다(상점 퇴장과 동일).
             mainTrain?.SlideIn(0f, shopExitSlideOutDuration);
