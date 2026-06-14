@@ -119,6 +119,7 @@ namespace TrainDefense.Game
             if (!_isStatusInitialized)
             {
                 _currentTurretTrainStatus = turretTrainData.TurretTrainStatus;
+                _ApplyPermanentUpgrade();
                 _attackCountdown = _currentTurretTrainStatus.AttackInterval;
                 _isStatusInitialized = true;
             }
@@ -127,6 +128,22 @@ namespace TrainDefense.Game
 
             if (turretModel != null)
                 _turretmodelScale = turretModel.transform.localScale;
+        }
+
+        // 영구(메타) 업그레이드 중 TurretStat 보너스를 base 스탯에 가산한다. (struct라 값 복사 후 직접 가산)
+        private void _ApplyPermanentUpgrade()
+        {
+            var manager = PermanentUpgradeManager.Instance;
+            if (manager == null) return;
+
+            _currentTurretTrainStatus.AttackDamage += manager.GetBonus(StatType.AttackDamage);
+            _currentTurretTrainStatus.AttackRange += manager.GetBonus(StatType.AttackRange);
+            _currentTurretTrainStatus.AttackArea += manager.GetBonus(StatType.AttackArea);
+            _currentTurretTrainStatus.AttackInterval += manager.GetBonus(StatType.AttackInterval);
+            _currentTurretTrainStatus.CriticalChance += manager.GetBonus(StatType.CriticalChance);
+            _currentTurretTrainStatus.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
+            _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
+            _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(manager.GetBonus(StatType.TargetCount));
         }
 
         public void RegisterProjectileOverride(ProjectileOverrideProvider provider)
