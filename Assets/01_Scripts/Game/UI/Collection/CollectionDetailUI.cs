@@ -61,7 +61,11 @@ namespace TrainDefense.Game.UI.Collection
                 nameText.text = discovered ? entry.Name : "???";
 
             if (descriptionText != null)
-                descriptionText.text = discovered ? entry.Description : LocalizeHelper.GetByKey("Collection_Undiscovered", undiscoveredDescription);
+            {
+                string description = discovered ? entry.Description : LocalizeHelper.GetByKey("Collection_Undiscovered", undiscoveredDescription);
+                descriptionText.gameObject.SetActive(!string.IsNullOrEmpty(description));
+                descriptionText.text = description;
+            }
 
             if (statsText != null)
                 statsText.text = discovered ? _BuildStatsText(entry) : string.Empty;

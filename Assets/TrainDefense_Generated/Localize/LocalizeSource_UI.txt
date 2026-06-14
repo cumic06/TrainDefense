@@ -45,6 +45,7 @@ UI_RatingTitle	이 게임을 평가해주세요!	Please rate this game!	この�
 UI_RatingThanks	소중한 의견 감사합니다!	Thank you for your feedback!	貴重なご意見ありがとうございます！	感谢您的宝贵意见！
 Collection_Title	도감	Collection	図鑑	图鉴
 Collection_Tab_Train	트레인	Train	トレイン	列车
+Collection_Tab_EliteTrain	엘리트	Elite	エリート	精英
 Collection_Tab_Monster	몬스터	Monster	モンスター	怪物
 Collection_Header_Name	이름	Name	名前	名称
 Collection_Header_Description	설명	Description	説明	描述

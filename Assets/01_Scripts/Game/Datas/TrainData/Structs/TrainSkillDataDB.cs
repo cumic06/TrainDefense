@@ -97,5 +97,18 @@ namespace TrainDefense.Game.Datas
             }
             return _index.TryGetValue(trainDataId, out var skills) && skills.Count > 0;
         }
+
+        /// <summary>
+        /// trainDataId에 연결된 모든 스킬을 반환합니다. 없으면 빈 목록.
+        /// </summary>
+        public IReadOnlyList<(IData skillData, TrainChoiceSkillType skillType)> GetSkillsForTrain(string trainDataId)
+        {
+            if (_index == null)
+            {
+                UnityEngine.Debug.LogWarning("TrainSkillDataDB: BuildIndex가 호출되지 않은 상태에서 GetSkillsForTrain 호출됨");
+                return System.Array.Empty<(IData, TrainChoiceSkillType)>();
+            }
+            return _index.TryGetValue(trainDataId, out var skills) ? skills : System.Array.Empty<(IData, TrainChoiceSkillType)>();
+        }
     }
 }
