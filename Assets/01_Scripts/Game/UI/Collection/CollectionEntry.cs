@@ -56,7 +56,7 @@ namespace TrainDefense.Game.UI.Collection
             }
             else if (data is TurretTrainData turretData)
             {
-                _AppendTurretStats(statLines, turretData.TurretTrainStatus);
+                _AppendTurretStats(statLines, turretData);
             }
 
             return new CollectionEntry(data.Id, data.Icon, data.Name, data.Description, isDiscovered, statLines);
@@ -70,46 +70,45 @@ namespace TrainDefense.Game.UI.Collection
                 new CollectionStatLine(_Loc("Detail_HP", "체력"), _Format(status.MaxHp)),
                 new CollectionStatLine(_Loc("Detail_Damage", "공격력"), _Format(status.Damage)),
                 new CollectionStatLine(_Loc("Collection_MoveSpeed", "이동 속도"), _Format(status.MoveSpeed)),
-                new CollectionStatLine(_Loc("Collection_AttackDelay", "공격 주기"), _Format(status.AttackDelay)),
+                new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _Format(_ToAttackSpeed(status.AttackDelay))),
                 new CollectionStatLine(_Loc("Detail_Range", "사거리"), _Format(status.AttackRange)),
                 new CollectionStatLine(_Loc("Collection_AttackType", "공격 타입"), status.AttackType == MonsterAttackType.Ranged ? _Loc("Collection_Ranged", "원거리") : _Loc("Collection_Melee", "근접")),
             };
 
-            return new CollectionEntry(data.Id, data.DisplaySprite, data.Name, data.Description, isDiscovered, statLines, data.AnimationFrames);
+            return new CollectionEntry(data.Id, data.DisplaySprite, data.Name, string.Empty, isDiscovered, statLines, data.AnimationFrames);
         }
 
         private static void _AppendRangeStats(List<CollectionStatLine> statLines, RangeTrainStatus status)
         {
             statLines.Add(new CollectionStatLine(_Loc("Detail_Damage", "공격력"), _Format(status.AttackDamage)));
-            statLines.Add(new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _Format(status.AttackInterval)));
-            statLines.Add(new CollectionStatLine(_Loc("Detail_Range", "사거리"), _Format(status.AttackRange)));
-            statLines.Add(new CollectionStatLine(_Loc("Collection_AttackCount", "공격 횟수"), _Format(status.AttackCount)));
+            statLines.Add(new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _Format(_ToAttackSpeed(status.AttackInterval))));
+            if (status.AttackCount > 1)
+                statLines.Add(new CollectionStatLine(_Loc("Collection_AttackCount", "공격 횟수"), _Format(status.AttackCount)));
 
             if (status.AttackArea > 0f)
                 statLines.Add(new CollectionStatLine(_Loc("Detail_Area", "공격 범위"), _Format(status.AttackArea)));
-
-            statLines.Add(new CollectionStatLine(_Loc("Detail_CritChance", "치명타 확률"), _Format(status.CriticalChance)));
-            statLines.Add(new CollectionStatLine(_Loc("Detail_CritDamage", "치명타 데미지"), _Format(status.CriticalDamage)));
 
             if (status.SlowRate > 0f)
                 statLines.Add(new CollectionStatLine(_Loc("Collection_Slow", "둔화"), _Format(status.SlowRate)));
         }
 
-        private static void _AppendTurretStats(List<CollectionStatLine> statLines, TurretTrainStatus status)
+        private static void _AppendTurretStats(List<CollectionStatLine> statLines, TurretTrainData data)
         {
-            statLines.Add(new CollectionStatLine(_Loc("Detail_Damage", "공격력"), _Format(status.AttackDamage)));
-            statLines.Add(new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _Format(status.AttackInterval)));
-            statLines.Add(new CollectionStatLine(_Loc("Detail_Range", "사거리"), _Format(status.AttackRange)));
-            statLines.Add(new CollectionStatLine(_Loc("Collection_AttackCount", "공격 횟수"), _Format(status.AttackCount)));
+            TurretTrainStatus status = data.TurretTrainStatus;
 
-            if (status.AttackArea > 0f)
+            statLines.Add(new CollectionStatLine(_Loc("Detail_Damage", "공격력"), _Format(status.AttackDamage)));
+            statLines.Add(new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _Format(_ToAttackSpeed(status.AttackInterval))));
+            statLines.Add(new CollectionStatLine(_Loc("Detail_Range", "사거리"), _Format(status.AttackRange)));
+            // 공격 횟수가 대상 수와 같으면 중복이므로 대상 수만 표시
+            if (status.AttackCount > 1 && status.AttackCount != status.TargetCount)
+                statLines.Add(new CollectionStatLine(_Loc("Collection_AttackCount", "공격 횟수"), _Format(status.AttackCount)));
+
+            // 범위(AttackArea)는 실제로 폭발 반경으로 쓰는 포탑만 표시
+            if (status.AttackArea > 0f && data.UsesAttackArea)
                 statLines.Add(new CollectionStatLine(_Loc("Detail_Area", "공격 범위"), _Format(status.AttackArea)));
 
-            if (status.TargetCount > 0)
+            if (status.TargetCount > 1)
                 statLines.Add(new CollectionStatLine(_Loc("Detail_Targets", "타겟 수"), _Format(status.TargetCount)));
-
-            statLines.Add(new CollectionStatLine(_Loc("Detail_CritChance", "치명타 확률"), _Format(status.CriticalChance)));
-            statLines.Add(new CollectionStatLine(_Loc("Detail_CritDamage", "치명타 데미지"), _Format(status.CriticalDamage)));
         }
 
         private static string _Loc(string key, string fallback)
@@ -120,6 +119,12 @@ namespace TrainDefense.Game.UI.Collection
         private static string _Format(float value)
         {
             return value.ToString("0.##");
+        }
+
+        // 공격 간격(초)을 공격 속도(초당 횟수)로 변환. 0 이하면 0.
+        private static float _ToAttackSpeed(float interval)
+        {
+            return interval > 0f ? 1f / interval : 0f;
         }
     }
 
