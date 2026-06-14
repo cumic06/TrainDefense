@@ -744,6 +744,17 @@ namespace TrainDefense.Game
                         projectile.transform.localRotation = Quaternion.identity;
                     }
 
+                    // 빔류는 회전·비균등 스케일된 spawn point의 자식이라, SetParent(worldPositionStays)가 매 발사 루트 스케일을 누적 왜곡한다.
+                    // 루트 스케일을 부모 lossyScale의 역수로 정규화해 월드 스케일을 1로 고정한다(부모 스케일 상쇄, 빔 크기는 StretchBeamModel이 model로 전담).
+                    if (projectile.IsScaleByArea() && !projectile.GetData().IsSpawnTriggerHandle && projectile.transform.parent != null)
+                    {
+                        Vector3 parentLossyScale = projectile.transform.parent.lossyScale;
+                        projectile.transform.localScale = new Vector3(
+                            Mathf.Approximately(parentLossyScale.x, 0f) ? 1f : 1f / parentLossyScale.x,
+                            Mathf.Approximately(parentLossyScale.y, 0f) ? 1f : 1f / parentLossyScale.y,
+                            Mathf.Approximately(parentLossyScale.z, 0f) ? 1f : 1f / parentLossyScale.z);
+                    }
+
                     if (useParticleProjectile)
                     {
                         projectile.transform.localScale = Vector3.one;
