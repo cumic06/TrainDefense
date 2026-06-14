@@ -65,13 +65,13 @@ namespace TrainDefense
         /// </summary>
         public void StartShopEnterTimeline(Action onComplete = null)
         {
-            // 1. 몬스터를 제외한 모든 투사체·파티클을 정리한다(몬스터는 화면에 그대로 둔다 — ReturnAll이 Monster를 건너뜀).
+            // 1. 시간을 먼저 멈춘다. (정리 도중·직후 포탑이 한 발 더 발사하면 그 탄환이 정리에서 누락되므로, 정지 상태에서 정리한다.)
+            TimeManager.Instance?.Pause();
+
+            // 2. 몬스터를 제외한 모든 투사체·파티클을 정리한다(몬스터는 화면에 그대로 둔다 — ReturnAll이 Monster를 건너뜀).
             ResourceManager.Instance?.ReturnAll();
             // ReturnAll은 persistent(기차)의 자식을 건너뛰므로, 기차 하위에 부착된 투사체(범위 공격·화염 파티클 등)는 따로 정리한다.
             _ClearAttachedProjectiles();
-
-            // 2. 시간을 멈춘다.
-            TimeManager.Instance?.Pause();
 
             StartCoroutine(_ShopEnterCompletionRoutine(onComplete));
         }
