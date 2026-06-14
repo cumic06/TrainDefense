@@ -17,6 +17,13 @@ MonoBehaviour:
     name: Monster_10001_Name
     description: Monster_10001_Desc
     icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
+    animationFrames:
+    - {fileID: -821572354167042970, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
+    - {fileID: 6183830700080795110, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
+    - {fileID: -5611761047925831525, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
+    - {fileID: -992156223813187085, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
+    - {fileID: 3058856078925539220, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
+    - {fileID: 6398057966443142182, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
     monsterStatusData:
       MaxHp: 10
       Damage: 3
@@ -34,6 +41,13 @@ MonoBehaviour:
     name: Monster_10002_Name
     description: Monster_10002_Desc
     icon: {fileID: -8975192331532836980, guid: 5d9812acc860e45b4be3490475ec11ce, type: 3}
+    animationFrames:
+    - {fileID: 7370050854565383101, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
+    - {fileID: -7432549385434673514, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
+    - {fileID: 266841408373042049, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
+    - {fileID: -4370755051115519858, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
+    - {fileID: -3137741453567158835, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
+    - {fileID: 9216760424783274641, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     monsterStatusData:
       MaxHp: 25
       Damage: 5
@@ -51,6 +65,15 @@ MonoBehaviour:
     name: Monster_10003_Name
     description: Monster_10003_Desc
     icon: {fileID: -3602873763752426733, guid: c8770fe2a236a4dd4b51a7fa9eac9569, type: 3}
+    animationFrames:
+    - {fileID: 2144306348594205820, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
+    - {fileID: 4748085004446025282, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
+    - {fileID: 6714633736922919927, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
+    - {fileID: -5884609075591523368, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
+    - {fileID: -1169297536214247824, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
+    - {fileID: 747096802065842712, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
+    - {fileID: -1016734687898979182, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
+    - {fileID: 7477702687696233401, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     monsterStatusData:
       MaxHp: 40
       Damage: 15
@@ -68,6 +91,13 @@ MonoBehaviour:
     name: Monster_10004_Name
     description: Monster_10004_Desc
     icon: {fileID: -7218776650163668934, guid: 65602c0b9fc4f4152bc6802be7cd391c, type: 3}
+    animationFrames:
+    - {fileID: 7206519255651833479, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
+    - {fileID: -3353233131205743866, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
+    - {fileID: -7666382304803823762, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
+    - {fileID: 6877229929625872816, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
+    - {fileID: 1066738513809693257, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
+    - {fileID: -6583819675886926066, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
     monsterStatusData:
       MaxHp: 20
       Damage: 10
@@ -85,6 +115,13 @@ MonoBehaviour:
     name: Monster_10005_Name
     description: Monster_10005_Desc
     icon: {fileID: -7414083336469400027, guid: 231acd077d50441dc8c800208a8a508d, type: 3}
+    animationFrames:
+    - {fileID: -5445052611905570623, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
+    - {fileID: -7347731639233511296, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
+    - {fileID: 7079221592670650581, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
+    - {fileID: -962750894682188652, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
+    - {fileID: -5309227702758776139, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
+    - {fileID: 8516958411369342763, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     monsterStatusData:
       MaxHp: 30
       Damage: 10
@@ -102,6 +139,14 @@ MonoBehaviour:
     name: Monster_10006_Name
     description: Monster_10006_Desc
     icon: {fileID: 6240235003232040363, guid: 02a56956d819644e9ba1f5230f17be41, type: 3}
+    animationFrames:
+    - {fileID: 1045174187675160317, guid: eec049525e8bf41429d9c479cff52295, type: 3}
+    - {fileID: 7372856299926882778, guid: eec049525e8bf41429d9c479cff52295, type: 3}
+    - {fileID: 4123599452306132901, guid: eec049525e8bf41429d9c479cff52295, type: 3}
+    - {fileID: 121776693467427713, guid: eec049525e8bf41429d9c479cff52295, type: 3}
+    - {fileID: -7564814631860592599, guid: eec049525e8bf41429d9c479cff52295, type: 3}
+    - {fileID: 6566697209257710286, guid: eec049525e8bf41429d9c479cff52295, type: 3}
+    - {fileID: -1919939128155651028, guid: eec049525e8bf41429d9c479cff52295, type: 3}
     monsterStatusData:
       MaxHp: 160
       Damage: 15
@@ -119,6 +164,15 @@ MonoBehaviour:
     name: Monster_10007_Name
     description: Monster_10007_Desc
     icon: {fileID: -3625172091503848354, guid: 6b0643aaa67844e2aae806b506ebe8f5, type: 3}
+    animationFrames:
+    - {fileID: -8734685360311039092, guid: 312db2f3608864126917ff6df6896c77, type: 3}
+    - {fileID: -4291877875481521614, guid: 312db2f3608864126917ff6df6896c77, type: 3}
+    - {fileID: 6585612629409695857, guid: 312db2f3608864126917ff6df6896c77, type: 3}
+    - {fileID: 2729282496010066705, guid: 312db2f3608864126917ff6df6896c77, type: 3}
+    - {fileID: 61376652812286823, guid: 312db2f3608864126917ff6df6896c77, type: 3}
+    - {fileID: -551693651167080966, guid: 312db2f3608864126917ff6df6896c77, type: 3}
+    - {fileID: -7986096866211416920, guid: 312db2f3608864126917ff6df6896c77, type: 3}
+    - {fileID: -8890637189039292993, guid: 312db2f3608864126917ff6df6896c77, type: 3}
     monsterStatusData:
       MaxHp: 16
       Damage: 5
@@ -136,6 +190,13 @@ MonoBehaviour:
     name: Monster_10008_Name
     description: Monster_10008_Desc
     icon: {fileID: -3635613324321525249, guid: ef9ae9e2cb8b84e81b8c56aea546a281, type: 3}
+    animationFrames:
+    - {fileID: -8814424347361672124, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
+    - {fileID: -8836532904105383544, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
+    - {fileID: -8850384218036740950, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
+    - {fileID: -4422099591060308844, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
+    - {fileID: -8315347680731458982, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
+    - {fileID: -9062487706820149092, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     monsterStatusData:
       MaxHp: 45
       Damage: 10
@@ -153,6 +214,13 @@ MonoBehaviour:
     name: Monster_10009_Name
     description: Monster_10009_Desc
     icon: {fileID: 3863950976592595061, guid: a9f259f952e5f4141a134eb245f1d344, type: 3}
+    animationFrames:
+    - {fileID: -2949093075023951328, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
+    - {fileID: 6155225618276468300, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
+    - {fileID: -3306412654273182118, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
+    - {fileID: -946765646557962331, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
+    - {fileID: -5987072993317950802, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
+    - {fileID: 308462971345494500, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     monsterStatusData:
       MaxHp: 68
       Damage: 10
@@ -170,6 +238,12 @@ MonoBehaviour:
     name: Monster_10010_Name
     description: Monster_10010_Desc
     icon: {fileID: 8580189074808014292, guid: 3addccd9ed6334cf9b6fa384aba038d0, type: 3}
+    animationFrames:
+    - {fileID: 447460725055404813, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
+    - {fileID: 6088292996102413675, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
+    - {fileID: 7966972464660773352, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
+    - {fileID: 6767145381185255370, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
+    - {fileID: 888686281029753222, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
     monsterStatusData:
       MaxHp: 110
       Damage: 30
@@ -187,6 +261,13 @@ MonoBehaviour:
     name: Monster_10011_Name
     description: Monster_10011_Desc
     icon: {fileID: -6557010917886046056, guid: 327caefdcf18245b58192e6d50fa930a, type: 3}
+    animationFrames:
+    - {fileID: 1824361775725072660, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
+    - {fileID: -8781593269075351806, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
+    - {fileID: 9102253123251621943, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
+    - {fileID: -6423896672601820110, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
+    - {fileID: 6099051866714902594, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
+    - {fileID: -4574552896946758463, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
     monsterStatusData:
       MaxHp: 8
       Damage: 3
@@ -204,6 +285,12 @@ MonoBehaviour:
     name: Monster_10012_Name
     description: Monster_10012_Desc
     icon: {fileID: -3068608994661831594, guid: ae483a7a0e01f492ab7488474a21b3e4, type: 3}
+    animationFrames:
+    - {fileID: 862733405723019620, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
+    - {fileID: -10860606023291848, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
+    - {fileID: 5318557865990290930, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
+    - {fileID: -8173720173229929539, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
+    - {fileID: 4663589299363003436, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     monsterStatusData:
       MaxHp: 30
       Damage: 15
@@ -221,6 +308,15 @@ MonoBehaviour:
     name: Monster_10013_Name
     description: Monster_10013_Desc
     icon: {fileID: 6790613064428419975, guid: c71a51d7fffe3487db08e462fa5be6e3, type: 3}
+    animationFrames:
+    - {fileID: 5983938953169559524, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
+    - {fileID: -1865337128288994700, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
+    - {fileID: 3994187499637837032, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
+    - {fileID: -6810120822100623639, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
+    - {fileID: -1236119554121787707, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
+    - {fileID: 3304115312086773058, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
+    - {fileID: -6476088961041308456, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
+    - {fileID: -723742200156331293, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
     monsterStatusData:
       MaxHp: 110
       Damage: 20
@@ -238,6 +334,13 @@ MonoBehaviour:
     name: Monster_10014_Name
     description: Monster_10014_Desc
     icon: {fileID: 6527618186103422146, guid: 4eea2bd4e5d564b41a313f4ca7f40676, type: 3}
+    animationFrames:
+    - {fileID: -8580444238127179786, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
+    - {fileID: 828278362111410375, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
+    - {fileID: -4153816518293905039, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
+    - {fileID: 1456675321045083290, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
+    - {fileID: -3942745417268178275, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
+    - {fileID: -1776823346852784203, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
     monsterStatusData:
       MaxHp: 28
       Damage: 10
@@ -255,6 +358,11 @@ MonoBehaviour:
     name: Monster_10015_Name
     description: Monster_10015_Desc
     icon: {fileID: -3827772250807918378, guid: 1d9455a2d50d04d4380ccb041dbe4aea, type: 3}
+    animationFrames:
+    - {fileID: -1516606137875054919, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
+    - {fileID: -4636269624067035468, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
+    - {fileID: -2829615651170692943, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
+    - {fileID: -6842481794725325692, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
     monsterStatusData:
       MaxHp: 65
       Damage: 15
@@ -272,6 +380,17 @@ MonoBehaviour:
     name: Monster_10016_Name
     description: Monster_10016_Desc
     icon: {fileID: -5698702345733656577, guid: 5e42c47f439f04c37a62aec53dbbe7b9, type: 3}
+    animationFrames:
+    - {fileID: 5100511903279032260, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
+    - {fileID: 2808101193737464588, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
+    - {fileID: 4217714876114698771, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
+    - {fileID: -5997890410454854046, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
+    - {fileID: -3235121162532122644, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
+    - {fileID: 3637264239555153135, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
+    - {fileID: 3823851783207870224, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
+    - {fileID: 3419715262035927088, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
+    - {fileID: 6601671565499704310, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
+    - {fileID: -1199408517139786225, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
     monsterStatusData:
       MaxHp: 220
       Damage: 20
@@ -284,40 +403,6 @@ MonoBehaviour:
       AttackRange: 2
       AttackType: 0
     prefabId: GiantGoblin
-    rangedProjectilePrefab: {fileID: 0}
-  - id: 99999
-    name: Monster_99999_Name
-    description: Monster_99999_Desc
-    icon: {fileID: -5698702345733656577, guid: 5e42c47f439f04c37a62aec53dbbe7b9, type: 3}
-    monsterStatusData:
-      MaxHp: 500
-      Damage: 5
-      MoveSpeed: 2.1
-      AttackDelay: 10
-      DropExpMin: 500
-      DropExpMax: 500
-      DropMoneyMin: 500
-      DropMoneyMax: 500
-      AttackRange: 5
-      AttackType: 0
-    prefabId: Boss
-    rangedProjectilePrefab: {fileID: 0}
-  - id: 10100
-    name: Monster_10100_Name
-    description: Monster_10100_Desc
-    icon: {fileID: -3181094002445039874, guid: 9a1f24026fb5e472a9feb95d3f97ff41, type: 3}
-    monsterStatusData:
-      MaxHp: 500
-      Damage: 100
-      MoveSpeed: 8
-      AttackDelay: 0.1
-      DropExpMin: 1000
-      DropExpMax: 1000
-      DropMoneyMin: 10000
-      DropMoneyMax: 10000
-      AttackRange: 3
-      AttackType: 0
-    prefabId: SkullKing
     rangedProjectilePrefab: {fileID: 0}
   trainDataList:
   - id: 20001

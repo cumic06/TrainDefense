@@ -39,20 +39,26 @@ namespace Cumic.Events
         {
             Type key = typeof(T);
 
-            if (!_events.ContainsKey(key))
+            if (!_events.TryGetValue(key, out List<Delegate> events))
             {
                 Debug.LogWarning($"{typeof(T)} event is Null");
                 return;
             }
 
-            if (_events.ContainsKey(key))
-            {
-                List<Delegate> events = _events[key];
+            // 핸들러 내부에서 같은 이벤트를 구독/해제해도 순회가 깨지지 않도록 스냅샷을 순회하고,
+            // 한 핸들러의 예외가 나머지 핸들러(Resume, 터렛 EngageStart 등)를 건너뛰지 않도록 격리한다.
+            Delegate[] snapshot = events.ToArray();
 
-                foreach (var eventAction in events)
+            foreach (var eventAction in snapshot)
+            {
+                try
                 {
                     Action<T> action = eventAction as Action<T>;
                     action?.Invoke(eventData);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
                 }
             }
         }

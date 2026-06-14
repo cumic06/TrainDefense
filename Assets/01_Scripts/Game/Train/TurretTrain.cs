@@ -75,6 +75,12 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<EngageReadyEvent>(_OnEngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(_OnEngageStart);
         }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            ClearAttachedProjectiles();
+        }
         #endregion
 
         #region Sub/UnSub
@@ -83,10 +89,15 @@ namespace TrainDefense.Game
         // 기차(또는 스폰포인트) 하위에 부착된 NonMovement 투사체(화염 파티클 등)를 풀로 반환한다. (상점 진입/전투 준비 시 잔류 투사체 정리)
         public override void ClearAttachedProjectiles()
         {
-            foreach (var proj in _nonMovementProjectiles)
+            if (ResourceManager.Instance != null)
             {
-                if (proj != null)
+                foreach (var proj in _nonMovementProjectiles)
+                {
+                    if (proj == null) continue;
+                    // persistent 등록(터렛 소유)을 해제해야 공용 풀로 실제 반환된다
+                    ResourceManager.Instance.UnregisterPersistent(proj.gameObject);
                     ResourceManager.Instance.Destroy(proj.gameObject);
+                }
             }
 
             _nonMovementProjectiles.Clear();
@@ -301,9 +312,14 @@ namespace TrainDefense.Game
                 {
                     SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
                 }
-                else if (!_nonMovementProjectiles[0].gameObject.activeSelf)
+                else
                 {
-                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
+                    // 사전 생성 실패/풀 반환으로 리스트가 비거나 파괴된 참조가 남아도 발사가 막히지 않게 가드
+                    Projectile firstPooled = _nonMovementProjectiles.FirstOrDefault(p => p != null);
+                    if (firstPooled == null || !firstPooled.gameObject.activeSelf)
+                    {
+                        SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
+                    }
                 }
             }
 
@@ -538,13 +554,7 @@ namespace TrainDefense.Game
                     Projectile baseProjectile = GetProjectile();
                     if (baseProjectile != null)
                     {
-                        projectile = ResourceManager.Instance.Spawn(baseProjectile);
-                        if (projectile != null)
-                        {
-                            projectile.gameObject.SetActive(false);
-                            InitializeProjectileDamage(projectile);
-                            _nonMovementProjectiles.Add(projectile);
-                        }
+                        projectile = CreatePooledNonMovementProjectile(baseProjectile);
                     }
                 }
             }
@@ -603,16 +613,30 @@ namespace TrainDefense.Game
 
             for (int i = 0; i < maxCount; i++)
             {
-                Projectile spawned = ResourceManager.Instance.Spawn(baseProjectile);
-                if (spawned == null) continue;
-
-                spawned.gameObject.SetActive(false); // 실제 발사 시점에 활성화
-
-                // 생성 시점에 AttackDamage와 AttackRange 초기화
-                InitializeProjectileDamage(spawned);
-
-                _nonMovementProjectiles.Add(spawned);
+                if (CreatePooledNonMovementProjectile(baseProjectile) == null)
+                {
+                    Debug.LogError($"TurretTrain: NonMovement 프로젝타일 사전 생성 실패 ({baseProjectile.name}, {i + 1}/{maxCount})");
+                }
             }
+        }
+
+        /// <summary>
+        /// 터렛 소유 NonMovement 프로젝타일 생성.
+        /// ReturnAll(맵 이동/상점)이 회수해 공용 풀과 이중 소유가 되지 않도록 persistent로 등록한다.
+        /// </summary>
+        private Projectile CreatePooledNonMovementProjectile(Projectile baseProjectile)
+        {
+            Projectile spawned = ResourceManager.Instance.Spawn(baseProjectile);
+            if (spawned == null) return null;
+
+            ResourceManager.Instance.RegisterPersistent(spawned.gameObject);
+            spawned.gameObject.SetActive(false); // 실제 발사 시점에 활성화
+
+            // 생성 시점에 AttackDamage와 AttackRange 초기화
+            InitializeProjectileDamage(spawned);
+
+            _nonMovementProjectiles.Add(spawned);
+            return spawned;
         }
 
         /// <summary>

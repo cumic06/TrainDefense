@@ -352,7 +352,7 @@ namespace TrainDefense.Game
                   spawnPos = new(minX - spawnRange, Random.Range(minY, maxY), 0);
                   break;
                case 3:
-                  spawnPos = new(maxY + spawnRange, Random.Range(minX, maxX), 0);
+                  spawnPos = new(maxX + spawnRange, Random.Range(minY, maxY), 0);
                   break;
             }
             return spawnPos;

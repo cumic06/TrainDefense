@@ -261,6 +261,8 @@ namespace TrainDefense
          PlayerPrefs.Save();
 
          UserDataManager.Instance.TutorialSaveData.ResetAll();
+         // DeleteAll은 디스크만 지우므로 도감(발견 트레인/몬스터) 인메모리 상태도 함께 비운다.
+         UserDataManager.Instance.ClearDiscoveredCollections();
 
          Debug.Log("[OptionUI] PlayerPrefs 전체 삭제 완료");
       }

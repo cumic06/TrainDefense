@@ -41,3 +41,20 @@ Intro_Speaker_Narrator	나레이터	Narrator	ナレーター	旁白
 Intro_Speaker_Engineer	기관사	Engineer	機関士	机械师
 UI_VersionUpdate_Desc	새 버전이 출시되었어요. 업데이트 후 이용해 주세요.	A new version is available. Please update to continue.	新しいバージョンがリリースされました。アップデートしてご利用ください。	新版本已发布，请更新后再使用。
 UI_VersionUpdate_Button	업데이트	Update	アップデート	更新
+UI_RatingTitle	이 게임을 평가해주세요!	Please rate this game!	このゲームを評価してください！	请为这款游戏评分！
+UI_RatingThanks	소중한 의견 감사합니다!	Thank you for your feedback!	貴重なご意見ありがとうございます！	感谢您的宝贵意见！
+Collection_Title	도감	Collection	図鑑	图鉴
+Collection_Tab_Train	트레인	Train	トレイン	列车
+Collection_Tab_Monster	몬스터	Monster	モンスター	怪物
+Collection_Header_Name	이름	Name	名前	名称
+Collection_Header_Description	설명	Description	説明	描述
+Collection_Header_Stats	스탯	Stats	ステータス	属性
+Collection_EmptyHint	유닛을 선택하세요	Select a unit	ユニットを選択してください	请选择单位
+Collection_Undiscovered	아직 발견하지 못한 유닛입니다.	An undiscovered unit.	まだ発見していないユニットです。	尚未发现的单位。
+Collection_MoveSpeed	이동 속도	Move SPD	移動速度	移动速度
+Collection_AttackDelay	공격 주기	ATK Cycle	攻撃間隔	攻击间隔
+Collection_AttackCount	공격 횟수	ATK Count	攻撃回数	攻击次数
+Collection_AttackType	공격 타입	ATK Type	攻撃タイプ	攻击类型
+Collection_Ranged	원거리	Ranged	遠距離	远程
+Collection_Melee	근접	Melee	近接	近战
+Collection_Slow	둔화	Slow	鈍化	减速

@@ -160,8 +160,18 @@ namespace TrainDefense
             onComplete?.Invoke();
         }
 
+        // 디렉터별 대기 중인 stopped 핸들러. 재생 중 같은 디렉터로 _Play가 재호출되면
+        // Stop()이 직전 핸들러를 즉시 발화시켜 onComplete(EngageStart 등)가 조기 실행되므로 먼저 해제한다.
+        private readonly System.Collections.Generic.Dictionary<PlayableDirector, Action<PlayableDirector>> _pendingStopHandlers = new();
+
         private void _Play(PlayableDirector director, Action onComplete)
         {
+            if (_pendingStopHandlers.TryGetValue(director, out var previousHandler))
+            {
+                director.stopped -= previousHandler;
+                _pendingStopHandlers.Remove(director);
+            }
+
             director.Stop();
             director.time = 0;
 
@@ -170,10 +180,12 @@ namespace TrainDefense
                 void Handler(PlayableDirector _)
                 {
                     director.stopped -= Handler;
+                    _pendingStopHandlers.Remove(director);
                     onComplete();
                 }
 
                 director.stopped += Handler;
+                _pendingStopHandlers[director] = Handler;
             }
 
             director.Play();
