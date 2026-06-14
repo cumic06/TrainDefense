@@ -58,3 +58,5 @@ Collection_AttackType	공격 타입	ATK Type	攻撃タイプ	攻击类型
 Collection_Ranged	원거리	Ranged	遠距離	远程
 Collection_Melee	근접	Melee	近接	近战
 Collection_Slow	둔화	Slow	鈍化	减速
+UI_Option_BGM	배경음	BGM	BGM	背景音乐
+UI_Option_SFX	효과음	SFX	効果音	音效
