@@ -25,10 +25,15 @@ namespace TrainDefense.Game
         public int CurrentRerollCost => _currentRerollCost;
 
         /// <summary>
-        /// 삼중택일이 새로 열릴 때 호출. 리롤 비용을 기본값으로 초기화한다.
-        /// (리롤 시에는 호출하지 않으므로 비용이 유지·증가됨)
+        /// 삼중택일이 새로 열릴 때 호출. 리롤 비용을 기본값으로 초기화하고
+        /// 직전 엘리트 기억도 비운다(리롤이 아니므로 제약 없이 시작).
+        /// (리롤 시에는 호출하지 않으므로 비용·엘리트 기억이 유지됨)
         /// </summary>
-        public void ResetRerollCost() => _currentRerollCost = baseRerollCost;
+        public void ResetRerollCost()
+        {
+            _currentRerollCost = baseRerollCost;
+            _lastEliteChoiceIds.Clear();
+        }
 
         /// <summary>
         /// 현재 리롤 비용만큼 코인이 충분한지 여부.

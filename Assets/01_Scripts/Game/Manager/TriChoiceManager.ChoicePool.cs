@@ -63,6 +63,49 @@ namespace TrainDefense.Game
                 .ToList();
         }
 
+        // 직전 GetChoices에서 화면에 나온 엘리트 선택지 Id. 리롤 시 직전에 떴던 엘리트를
+        // 한 번 건너뛰어(ABAB) 같은 엘리트가 연속으로 뜨지 않게 한다.
+        private readonly HashSet<string> _lastEliteChoiceIds = new();
+
+        // 직전에 떴던 엘리트를 제외하고 셔플한 엘리트 후보를 반환한다.
+        // 제외 후 후보가 비면(엘리트가 1종뿐인 경우 등) 엘리트가 아예 안 뜨는 걸 막기 위해
+        // 원본 목록을 그대로 사용한다.
+        private List<ChoiceEntry> _GetEliteTrainChoicesExcludingLast()
+        {
+            var eliteChoices = _GetEliteTrainChoices();
+
+            if (_lastEliteChoiceIds.Count > 0)
+            {
+                var filtered = eliteChoices
+                    .Where(entry => entry?.Option != null && !_lastEliteChoiceIds.Contains(entry.Option.Id))
+                    .ToList();
+
+                if (filtered.Count > 0)
+                    eliteChoices = filtered;
+            }
+
+            // 후보가 여럿일 때 항상 같은 엘리트만 뜨지 않도록 셔플
+            for (int i = eliteChoices.Count - 1; i > 0; i--)
+            {
+                int j = Random.Range(0, i + 1);
+                (eliteChoices[i], eliteChoices[j]) = (eliteChoices[j], eliteChoices[i]);
+            }
+
+            return eliteChoices;
+        }
+
+        // 이번 화면에 실제로 포함된 엘리트 선택지를 기억해 다음 리롤에서 제외한다.
+        private void _RememberEliteChoices(List<ChoiceEntry> result)
+        {
+            _lastEliteChoiceIds.Clear();
+
+            foreach (var entry in result)
+            {
+                if (entry?.Option is EliteTrainChoice elite)
+                    _lastEliteChoiceIds.Add(elite.Id);
+            }
+        }
+
         private List<ChoiceEntry> _GetUpgradeTrainChoices()
         {
             var upgradeDatas = DatabaseManager.Instance.GetTriChoiceDB().UpgradeTrainChoices;
