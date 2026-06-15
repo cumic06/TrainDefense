@@ -1,4 +1,5 @@
 using DG.Tweening;
+using TrainDefense.Game.Datas;
 using TrainDefense.Game.Stats;
 using UnityEngine;
 

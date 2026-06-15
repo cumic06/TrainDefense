@@ -150,6 +150,11 @@ namespace TrainDefense.Game.UI
                 if (_IsEliteTurretId(turretData.Id))
                     continue;
 
+                // MainTrain 주무기는 직선 비행 총알(Linear) 포탑만 사용한다(기관총·미사일·저격 등).
+                // 빔(화염·레이저=NonMovement)·소환(전기·포격=TargetPos)형은 경량 Turret 발사 모델과 맞지 않아 시작 선택창에서 제외.
+                if (!_IsLinearProjectileTurret(turretData))
+                    continue;
+
                 _entries.Add(new SelectEntry
                 {
                     TurretDataId = turretData.Id,
@@ -158,6 +163,18 @@ namespace TrainDefense.Game.UI
                     TurretData = turretData
                 });
             }
+        }
+
+        // 투사체가 Linear(직선 비행 총알)인 포탑만 MainTrain 주무기 후보로 허용한다.
+        private static bool _IsLinearProjectileTurret(TurretTrainData turretData)
+        {
+            GameObject prefab = turretData.TurretProjectilePrefab;
+            if (prefab == null || !prefab.TryGetComponent<Projectile>(out var projectile))
+                return false;
+
+            ProjectileData data = projectile.GetData();
+
+            return data != null && data.MovementType == MovementType.Linear;
         }
 
         // 엘리트 터렛 판정: id의 천의 자리가 1인 변형(일반 30xxx → 엘리트 31xxx, 40xxx → 41xxx)을 시작 선택창에서 제외한다.
