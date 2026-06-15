@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,8 @@ using UnityEngine;
 
 namespace TrainDefense.Game
 {
-    public abstract class Train : MonoBehaviour, ITrainable, IProjectileTarget
+    public class Train : MonoBehaviour, ITrainable, IProjectileTarget,
+        IAttackEvents, IExternalProjectileSpawner, IForceAttacker
     {
         #region Verialbes
 
@@ -33,6 +35,8 @@ namespace TrainDefense.Game
         protected int _currentLevel;
         protected float _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
+        // 공격 동작 컴포넌트(컴포지션). 같은 GameObject의 *AttackModule. MainTrain 등 비전투 기차는 null.
+        protected IAttackModule _attackModule;
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
         protected string _selectedSkillId = null;
         protected bool _initialized;
@@ -61,8 +65,11 @@ namespace TrainDefense.Game
         public float SkillRemainingCooldown => _skillModule.RemainingCooldown;
         public float CurrentHpRatio => _currentMaxHp > 0f ? _currentHp / _currentMaxHp : 0f;
 
-        // 현재(업그레이드 반영) 공격 사거리. 서브클래스에서 실제 스탯으로 오버라이드.
-        public virtual float CurrentAttackRange => 0f;
+        // 현재(업그레이드 반영) 공격 사거리. 공격 모듈이 있으면 그 값을 사용.
+        public virtual float CurrentAttackRange => _attackModule?.CurrentAttackRange ?? 0f;
+
+        // 포탑 회전 여부(공격 모듈이 읽음).
+        public bool IsRotateTurret => isRotateTurret;
 
         // 사거리 표시 원의 반지름. 기본은 공격 사거리, 레인지 포탑은 공격 범위(AttackArea)로 오버라이드.
         public virtual float RangeIndicatorRadius => CurrentAttackRange;
@@ -125,6 +132,10 @@ namespace TrainDefense.Game
             _currentHp = _currentMaxHp;
             _currentLevel = -1;
             _skillModule.Initialize(this, _trainData, _skillTypeMask);
+
+            // 공격 모듈(같은 GameObject) 연결 및 초기화. 없으면(MainTrain 등) 비전투 기차.
+            _attackModule = GetComponent<IAttackModule>();
+            _attackModule?.InitializeModule(this);
         }
 
         public Transform TargetTransform => transform;
@@ -294,6 +305,9 @@ namespace TrainDefense.Game
             _currentHp += statusUpgrade.MaxHp;
             _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
 
+            // 공격 모듈 스탯 업그레이드(currentLevel = 증가 전 레벨 = prevLevel).
+            _attackModule?.ApplyUpgrade(upgradeData, currentLevel);
+
             GameEventSystem.Publish(new TrainLevelUpEvent(this, _currentLevel));
         }
 
@@ -334,6 +348,8 @@ namespace TrainDefense.Game
         protected virtual void ApplyStatLevelAware(IStat stat, int newLevel, int prevLevel)
         {
             if (stat == null) return;
+            // 공격 스탯이면 모듈이 처리. 처리됐으면 종료, 아니면 공통(HP) 처리.
+            if (_attackModule != null && _attackModule.ApplyAttackStatLevelAware(stat, newLevel, prevLevel)) return;
             switch (stat.Type)
             {
                 case StatType.MaxHp:
@@ -351,7 +367,14 @@ namespace TrainDefense.Game
 
         public virtual void ApplyStatsByCurrentValue(IStat[] stats)
         {
-            ApplyStats(stats);
+            if (stats == null || stats.Length == 0) return;
+            foreach (var stat in stats)
+            {
+                if (stat == null) continue;
+                // 현재값 기준 처리는 모듈이 우선, 미처리 타입은 기본 적용(base+모듈)으로 폴백.
+                if (_attackModule != null && _attackModule.ApplyAttackStatByCurrentValue(stat)) continue;
+                ApplyStat(stat);
+            }
         }
 
         public virtual void ApplyPassiveSkills() { }
@@ -360,7 +383,7 @@ namespace TrainDefense.Game
         /// 기차 하위에 부착된 채 풀로 반환되지 않는 공격 투사체(범위 공격·화염 파티클 등)를 정리한다.
         /// ResourceManager.ReturnAll은 persistent(기차)의 자식을 건너뛰므로, 상점 진입 시 잔류 투사체를 따로 비울 때 호출한다.
         /// </summary>
-        public virtual void ClearAttachedProjectiles() { }
+        public virtual void ClearAttachedProjectiles() => _attackModule?.ClearAttachedProjectiles();
 
         // 마스크에 따른 패시브 적용 규칙 (서브클래스 ApplyPassiveSkills·Detail 표시 공용).
         // Active 픽 = 패시브 미적용, Passive 픽 = 선택한 1개만, None(일반 스폰) = 전부.
@@ -421,6 +444,9 @@ namespace TrainDefense.Game
                         break;
                     }
             }
+
+            // 공격 스탯은 모듈이 처리(HP 외 타입).
+            _attackModule?.ApplyAttackStat(stat);
         }
 
         // Elite 교체(MainTrain.ReplaceTrain) 시 기존 트레인의 누적 강화(영구 + 카드)를 새 인스턴스에 승계.
@@ -440,6 +466,23 @@ namespace TrainDefense.Game
             _currentHp = Mathf.Clamp(_currentMaxHp * hpRatio, 0, _currentMaxHp);
 
             _statMaxHpAccum = source._statMaxHpAccum;
+
+            // 공격 모듈 진행도 이관(서로 같은 종류 모듈일 때만 내부에서 처리).
+            _attackModule?.CopyProgressFrom(source._attackModule);
         }
+
+        #region Attack capability facade (공격 모듈로 위임)
+        public event Action<Monster> OnAttacked
+        {
+            add { if (_attackModule is IAttackEvents e) e.OnAttacked += value; }
+            remove { if (_attackModule is IAttackEvents e) e.OnAttacked -= value; }
+        }
+
+        public bool ForceAttack() => _attackModule is IForceAttacker f && f.ForceAttack();
+
+        public void SpawnExternalProjectile(Projectile prefab, float radius,
+            IProjectileTarget target = null, float damageMul = 1f, float shoveScale = 1f)
+            => (_attackModule as IExternalProjectileSpawner)?.SpawnExternalProjectile(prefab, radius, target, damageMul, shoveScale);
+        #endregion
     }
 }
