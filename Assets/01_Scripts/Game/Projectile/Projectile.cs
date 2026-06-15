@@ -427,6 +427,9 @@ namespace TrainDefense.Game
         }
         #endregion
 
+        // 현재 적용된 스케일 배율. 여러 총알 수식자가 곱연산으로 누적할 때 사용한다.
+        public float Scale => _scale;
+
         public void SetScale(float scale)
         {
             _scale = scale;

@@ -6,12 +6,15 @@ namespace TrainDefense.Game
     /// 모든 공격에 관통 투사체를 사용하는 패시브. (엘리트 저격: 관통 저격)
     /// DSL: "PierceProjectile:projectile_prefab_id"
     /// 관통 횟수(maxPenetration)는 투사체 ProjectileData SO에서 설정.
+    /// 합성 가능한 IProjectileModifier로 동작한다(상시 교체이므로 주기적 특수탄보다 낮은 Order).
     /// </summary>
-    public class PierceProjectilePassive : TrainPassiveSkill
+    public class PierceProjectilePassive : TrainPassiveSkill, IProjectileModifier
     {
         private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 
         public string ProjectilePrefabId { get; private set; }
+
+        public int Order => 5;
 
         private Projectile _cachedPrefab;
         private bool _loadAttempted;
@@ -24,15 +27,17 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            if (Owner is TurretTrain t) t.RegisterProjectileOverride(Provide);
+            if (Owner is IProjectileEmitter e) e.AddProjectileModifier(this);
         }
 
         public override void Unsubscribe()
         {
-            if (Owner is TurretTrain t) t.UnregisterProjectileOverride(Provide);
+            if (Owner is IProjectileEmitter e) e.RemoveProjectileModifier(this);
         }
 
-        private Projectile Provide(int attackIndex) => LoadPrefab();
+        public Projectile OverridePrefab(ProjectileSpawnContext ctx, Projectile current) => LoadPrefab();
+
+        public void Apply(ProjectileSpawnContext ctx, Projectile projectile) { }
 
         private Projectile LoadPrefab()
         {

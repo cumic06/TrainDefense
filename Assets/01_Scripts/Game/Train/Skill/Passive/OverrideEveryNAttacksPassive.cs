@@ -3,15 +3,19 @@ using UnityEngine;
 namespace TrainDefense.Game
 {
     /// <summary>
-    /// 매 N공격마다 i번째 투사체를 다른 프리팹으로 교체. (엘리트 기관총: 5발마다 광역 투사체)
+    /// 매 N공격마다 투사체를 다른 프리팹으로 교체. (엘리트 기관총: 5발마다 광역 투사체)
     /// DSL: "OverrideEveryN:N:projectile_prefab_id"
+    /// 합성 가능한 IProjectileModifier로 동작하므로 관통/크기 등 다른 총알 능력과 함께 적용된다.
     /// </summary>
-    public class OverrideEveryNAttacksPassive : TrainPassiveSkill
+    public class OverrideEveryNAttacksPassive : TrainPassiveSkill, IProjectileModifier
     {
         private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 
         public int EveryN { get; private set; }
         public string ProjectilePrefabId { get; private set; }
+
+        // 주기적 특수탄이 상시 교체(관통 등)보다 우선하도록 비교적 높은 Order.
+        public int Order => 10;
 
         private Projectile _cachedPrefab;
         private bool _loadAttempted;
@@ -29,20 +33,22 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            if (Owner is TurretTrain t) t.RegisterProjectileOverride(Provide);
+            if (Owner is IProjectileEmitter e) e.AddProjectileModifier(this);
         }
 
         public override void Unsubscribe()
         {
-            if (Owner is TurretTrain t) t.UnregisterProjectileOverride(Provide);
+            if (Owner is IProjectileEmitter e) e.RemoveProjectileModifier(this);
         }
 
-        private Projectile Provide(int attackIndex)
+        public Projectile OverridePrefab(ProjectileSpawnContext ctx, Projectile current)
         {
             if (EveryN <= 0) return null;
-            if (attackIndex <= 0 || attackIndex % EveryN != 0) return null;
+            if (ctx.AttackIndex <= 0 || ctx.AttackIndex % EveryN != 0) return null;
             return LoadPrefab();
         }
+
+        public void Apply(ProjectileSpawnContext ctx, Projectile projectile) { }
 
         private Projectile LoadPrefab()
         {

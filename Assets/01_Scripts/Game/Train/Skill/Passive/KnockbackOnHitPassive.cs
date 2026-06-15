@@ -5,11 +5,14 @@ namespace TrainDefense.Game
     /// <summary>
     /// 공격 히트 시 타겟에 넉백 효과 적용. (엘리트 미사일: 약한 넉백)
     /// DSL: "KnockbackOnHit:power:duration"
+    /// 합성 가능한 IProjectileModifier로 동작하여 관통/크기 등 다른 총알 능력과 함께 적용된다.
     /// </summary>
-    public class KnockbackOnHitPassive : TrainPassiveSkill
+    public class KnockbackOnHitPassive : TrainPassiveSkill, IProjectileModifier
     {
         public float Power { get; private set; }
         public float Duration { get; private set; }
+
+        public int Order => 100;
 
         public static KnockbackOnHitPassive From(string[] parts)
         {
@@ -21,20 +24,19 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            if (Owner is TurretTrain t)
-            {
-                t.ProjectileKnockbackPower = Power;
-                t.ProjectileKnockbackDuration = Duration;
-            }
+            if (Owner is IProjectileEmitter e) e.AddProjectileModifier(this);
         }
 
         public override void Unsubscribe()
         {
-            if (Owner is TurretTrain t)
-            {
-                t.ProjectileKnockbackPower = 0f;
-                t.ProjectileKnockbackDuration = 0f;
-            }
+            if (Owner is IProjectileEmitter e) e.RemoveProjectileModifier(this);
+        }
+
+        public Projectile OverridePrefab(ProjectileSpawnContext ctx, Projectile current) => null;
+
+        public void Apply(ProjectileSpawnContext ctx, Projectile projectile)
+        {
+            if (projectile != null) projectile.SetRuntimeShove(Power, Duration);
         }
     }
 }

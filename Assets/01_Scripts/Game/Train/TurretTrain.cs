@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace TrainDefense.Game
 {
-    public class TurretTrain : Train, ITrainable
+    public class TurretTrain : Train, ITrainable, IProjectileEmitter
     {
         #region Field
         private TurretTrainData turretTrainData => _trainData as TurretTrainData;
@@ -45,17 +45,13 @@ namespace TrainDefense.Game
         private float _statAttackCountAccum;
         private float _statTargetCountAccum;
 
-        public delegate Projectile ProjectileOverrideProvider(int attackIndex);
-        private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
+        // 합성 가능한 총알 수식자 파이프라인. 기존 "프리팹 통짜 교체 + 스칼라 덮어쓰기" 모델을 대체한다.
+        private readonly List<IProjectileModifier> _projectileModifiers = new();
         private float _attackCountdown;
 
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
         public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
         public override float CurrentAttackRange => _currentTurretTrainStatus.AttackRange;
-
-        public float ProjectileScale { get; set; } = 1f;
-        public float ProjectileKnockbackPower { get; set; }
-        public float ProjectileKnockbackDuration { get; set; }
 
         public event Action<Monster> OnAttacked;
         public event Action OnTargetPosAttacked;
@@ -129,14 +125,17 @@ namespace TrainDefense.Game
                 _turretmodelScale = turretModel.transform.localScale;
         }
 
-        public void RegisterProjectileOverride(ProjectileOverrideProvider provider)
+        public void AddProjectileModifier(IProjectileModifier modifier)
         {
-            if (provider != null) _projectileOverrides.Add(provider);
+            if (modifier == null) return;
+            _projectileModifiers.Add(modifier);
+            // Order 오름차순 유지: 프리팹 선택(낮음) → 비주얼/스탯 수식(높음) 순으로 적용된다.
+            _projectileModifiers.Sort((a, b) => a.Order.CompareTo(b.Order));
         }
 
-        public void UnregisterProjectileOverride(ProjectileOverrideProvider provider)
+        public void RemoveProjectileModifier(IProjectileModifier modifier)
         {
-            if (provider != null) _projectileOverrides.Remove(provider);
+            if (modifier != null) _projectileModifiers.Remove(modifier);
         }
 
         public Monster GetNearTargetMonsterPublic() => GetNearTargetMonster();
@@ -354,16 +353,25 @@ namespace TrainDefense.Game
         protected virtual void TryTriggerFollowUp(Monster target) { }
 
         /// <summary>
-        /// 등록된 ProjectileOverrideProvider 들을 순회. 첫 non-null 반환. 서브클래스가 추가 override 가능.
+        /// 등록된 모디파이어들의 OverridePrefab을 Order 순으로 순회. 마지막 non-null이 최종 프리팹.
+        /// (전부 null이면 베이스 프리팹/풀링 사용) 서브클래스가 추가 override 가능.
         /// </summary>
-        protected virtual Projectile GetOverrideProjectile(int attackIndex)
+        protected virtual Projectile GetOverrideProjectile(ProjectileSpawnContext ctx)
         {
-            for (int i = 0; i < _projectileOverrides.Count; i++)
+            Projectile prefab = null;
+            for (int i = 0; i < _projectileModifiers.Count; i++)
             {
-                var prefab = _projectileOverrides[i](attackIndex);
-                if (prefab != null) return prefab;
+                var p = _projectileModifiers[i].OverridePrefab(ctx, prefab);
+                if (p != null) prefab = p;
             }
-            return null;
+            return prefab;
+        }
+
+        // 스폰된 투사체에 모든 모디파이어의 Apply를 누적 적용한다(크기/넉백 등이 합성됨).
+        private void ApplyProjectileModifiers(ProjectileSpawnContext ctx, Projectile projectile)
+        {
+            for (int i = 0; i < _projectileModifiers.Count; i++)
+                _projectileModifiers[i].Apply(ctx, projectile);
         }
 
         /// <summary>
@@ -807,9 +815,10 @@ namespace TrainDefense.Game
         protected Projectile SpawnNormalProjectile(int index, Monster target = null)
         {
             Projectile projectile = null;
+            var ctx = new ProjectileSpawnContext { AttackIndex = _attackCounter, ProjectileIndex = index };
 
-            // 엘리트 오버라이드 프로젝타일이 있으면 우선 사용 (풀링 우회)
-            Projectile overridePrefab = GetOverrideProjectile(_attackCounter);
+            // 모디파이어가 베이스 프리팹을 교체할 수 있음 (관통/광역 등). 있으면 우선 사용 (풀링 우회)
+            Projectile overridePrefab = GetOverrideProjectile(ctx);
             if (overridePrefab != null)
             {
                 projectile = ResourceManager.Instance.Spawn(overridePrefab);
@@ -837,11 +846,8 @@ namespace TrainDefense.Game
                 projectile.gameObject.SetActive(true);
             }
 
-            if (ProjectileScale != 1f)
-                projectile.SetScale(ProjectileScale);
-
-            if (ProjectileKnockbackPower > 0f)
-                projectile.SetRuntimeShove(ProjectileKnockbackPower, ProjectileKnockbackDuration);
+            // 합성 가능한 총알 수식 적용 (크기/넉백 등 — 여러 능력이 누적된다)
+            ApplyProjectileModifiers(ctx, projectile);
 
             return projectile;
         }
