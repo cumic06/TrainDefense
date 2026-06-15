@@ -52,6 +52,16 @@ namespace TrainDefense.Game
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
         public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
         public override float CurrentAttackRange => _currentTurretTrainStatus.AttackRange;
+        // 공격 간격(초). MainTrain이 터치 연속 발사의 쿨다운으로 사용한다.
+        public float AttackInterval => _currentTurretTrainStatus.AttackInterval;
+
+        // MainTrain 주무기로 장착되면 true. 자동 적 탐지/발사를 끄고, MainTrain의 터치 조준 발사만 받는다.
+        public bool ManualAimMode { get; set; }
+
+        // 경량 Turret(MainTrain 주무기)이 비주얼(회전 pivot·모델·스폰포인트)만 복제해 재사용하기 위한 읽기 전용 노출.
+        public GameObject TurretVisualRoot => turret;
+        public GameObject TurretModelNode => turretModel;
+        public Transform[] ProjectileSpawnPointNodes => turretProjectileSpawnPoints;
 
         public float ProjectileScale { get; set; } = 1f;
         public float ProjectileKnockbackPower { get; set; }
@@ -185,13 +195,8 @@ namespace TrainDefense.Game
         private void PlayAttackAnimation()
         {
             if (turretModel == null) return;
-            turretModel.transform.DOKill();
-            // SetUpdate(true): timeScale=0(상점/일시정지/삼중택일) 중에도 트윈이 진행돼 원복되게 한다.
-            // 누락 시 공격 펀치 트윈이 0.9배 축소 상태에서 멈춰 모델이 작게 고정되는 외형 버그가 난다.
-            turretModel.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).SetUpdate(true).OnComplete(() =>
-            {
-                turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack).SetUpdate(true);
-            });
+
+            TurretCombatFx.PlayAttackPunch(turretModel.transform, _turretmodelScale);
         }
 
         public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius, float damageMul = 1f, float shoveScale = 1f, Monster target = null)
@@ -218,6 +223,8 @@ namespace TrainDefense.Game
         private void FixedUpdate()
         {
             if (_isDead) return;
+            // 수동 조준 모드(MainTrain 주무기)는 자동 탐지/발사를 하지 않는다. MainTrain이 터치 입력으로 RepeatNormalAttack을 직접 호출한다.
+            if (ManualAimMode) return;
 
             DetectTarget();
 
@@ -416,11 +423,7 @@ namespace TrainDefense.Game
                         projectile.transform.LookAt2D(aimPos);
                     }
 
-                    if (spreadAngle > 0f && count > 1)
-                    {
-                        float offset = (i - (count - 1) * 0.5f) * spreadAngle;
-                        projectile.transform.Rotate(0f, 0f, offset);
-                    }
+                    TurretCombatFx.ApplySpread(projectile.transform, i, count, spreadAngle);
                 }
             }
         }
@@ -776,15 +779,7 @@ namespace TrainDefense.Game
         {
             if (projectile == null || target == null) return;
 
-            projectile.Init(
-                _currentTurretTrainStatus.AttackDamage,
-                this,
-                target,
-                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
-                _currentTurretTrainStatus.CriticalChance,
-                _currentTurretTrainStatus.CriticalDamage,
-                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackRange : 0f
-            );
+            TurretCombatFx.InitProjectile(projectile, _currentTurretTrainStatus, this, target);
         }
 
         /// <summary>
@@ -793,17 +788,7 @@ namespace TrainDefense.Game
         /// </summary>
         private void InitializeProjectileDamage(Projectile projectile)
         {
-            if (projectile == null) return;
-
-            projectile.Init(
-                _currentTurretTrainStatus.AttackDamage,
-                this,
-                null,
-                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
-                _currentTurretTrainStatus.CriticalChance,
-                _currentTurretTrainStatus.CriticalDamage,
-                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackRange : 0f
-            );
+            TurretCombatFx.InitProjectile(projectile, _currentTurretTrainStatus, this, null);
         }
 
         protected Projectile SpawnNormalProjectile(int index, Monster target = null)
@@ -832,7 +817,12 @@ namespace TrainDefense.Game
             SetupProjectileTransform(projectile, index);
 
             Monster targetMonster = target ?? GetNearTargetMonster();
-            InitializeProjectile(projectile, targetMonster);
+            // 수동 조준(aimPosition) 발사처럼 타겟이 없을 때도 Init을 호출해 이동 전략을 생성한다.
+            // (InitializeProjectile은 target==null이면 Init을 건너뛰어 투사체가 초기화되지 않아 제자리에 멈춘다.)
+            if (targetMonster != null)
+                InitializeProjectile(projectile, targetMonster);
+            else
+                InitializeProjectileDamage(projectile);
 
             if (_useNonMovementProjectilePooling)
             {

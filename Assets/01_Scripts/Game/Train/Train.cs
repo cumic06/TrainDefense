@@ -52,6 +52,7 @@ namespace TrainDefense.Game
         public string Id => id;
         public TrainData TrainData => _trainData;
         public bool IsMainTrain => _trainData.IsMainTrain;
+        public bool IsRotateTurret => isRotateTurret;
 
         public bool IsDead => _isDead;
         public int CurrentLevel => _currentLevel;

@@ -36,5 +36,16 @@ namespace TrainDefense
          PlayerPrefs.SetInt(SfxMutedKey, userOptionData.IsSfxMuted ? 1 : 0);
          PlayerPrefs.Save();
       }
+
+      // 사운드/햅틱 옵션 PlayerPrefs 키를 모두 삭제한다. 다음 Load 시 기본값으로 복원된다.
+      public static void ResetAll()
+      {
+         PlayerPrefs.DeleteKey(HapticEnabledKey);
+         PlayerPrefs.DeleteKey(BgmVolumeKey);
+         PlayerPrefs.DeleteKey(SfxVolumeKey);
+         PlayerPrefs.DeleteKey(BgmMutedKey);
+         PlayerPrefs.DeleteKey(SfxMutedKey);
+         PlayerPrefs.Save();
+      }
    }
 }
