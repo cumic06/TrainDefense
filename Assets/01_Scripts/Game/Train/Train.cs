@@ -37,8 +37,10 @@ namespace TrainDefense.Game
         protected string _selectedSkillId = null;
         protected bool _initialized;
         private static Material _flashMaterial;
+        private static Material _grayMaterial;
         private SpriteRenderer[] _spriteRenderers;
         private Material[] _originalMaterials;
+        private Collider2D[] _colliders;
         private Coroutine _flashCoroutine;
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
@@ -93,6 +95,8 @@ namespace TrainDefense.Game
 
             for (int i = 0; i < _spriteRenderers.Length; i++)
                 _originalMaterials[i] = _spriteRenderers[i].sharedMaterial;
+
+            _colliders = GetComponentsInChildren<Collider2D>(true);
         }
 
         protected virtual void Start()
@@ -208,11 +212,63 @@ namespace TrainDefense.Game
             }
         }
 
+        // 사망 시 사라지지 않고 회색(흑백) 머티리얼로 전환. 콜라이더도 꺼서 적·물리 상호작용을 멈춘다.
+        public void ApplyDeadVisual()
+        {
+            if (_flashCoroutine != null)
+            {
+                StopCoroutine(_flashCoroutine);
+                _flashCoroutine = null;
+            }
+
+            if (_grayMaterial == null)
+                _grayMaterial = Resources.Load<Material>("Custom_Sprite_Grayscale");
+
+            if (_spriteRenderers != null && _grayMaterial != null)
+            {
+                for (int i = 0; i < _spriteRenderers.Length; i++)
+                {
+                    if (_spriteRenderers[i] != null)
+                        _spriteRenderers[i].sharedMaterial = _grayMaterial;
+                }
+            }
+
+            _SetCollidersEnabled(false);
+        }
+
+        // 부활 시 원래 머티리얼·콜라이더를 복원한다.
+        public void RestoreVisual()
+        {
+            if (_spriteRenderers != null && _originalMaterials != null)
+            {
+                for (int i = 0; i < _spriteRenderers.Length; i++)
+                {
+                    if (_spriteRenderers[i] != null && i < _originalMaterials.Length)
+                        _spriteRenderers[i].sharedMaterial = _originalMaterials[i];
+                }
+            }
+
+            _SetCollidersEnabled(true);
+        }
+
+        private void _SetCollidersEnabled(bool isEnabled)
+        {
+            if (_colliders == null)
+                return;
+
+            for (int i = 0; i < _colliders.Length; i++)
+            {
+                if (_colliders[i] != null)
+                    _colliders[i].enabled = isEnabled;
+            }
+        }
+
         public virtual void Resurrect()
         {
             // HP를 최대치로 복원하고 죽음 상태 해제
             _isDead = false;
             RestoreHpToMax();
+            RestoreVisual();
         }
 
         public virtual void RestoreHpToMax()

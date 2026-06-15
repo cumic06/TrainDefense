@@ -297,8 +297,8 @@ namespace TrainDefense.Game
                // 원래 인덱스 가져오기
                int originalIndex = _trainOriginalIndexMap.ContainsKey(train) ? _trainOriginalIndexMap[train] : _currentAliveTrains.Count;
 
-               // 오브젝트 비활성화
-               train.gameObject.SetActive(false);
+               // 사라지지 않고 회색(흑백)으로 전환 — 원래 자리에 그대로 남긴다.
+               train.ApplyDeadVisual();
 
                // 죽은 기차 정보 저장
                _deadTrains.Add(new DeadTrainInfo
@@ -307,8 +307,8 @@ namespace TrainDefense.Game
                   OriginalIndex = originalIndex
                });
 
-               // 살아있는 기차 재정렬
-               RearrangeTrains();
+               // 죽은 기차도 원래 자리를 유지하도록 산 기차·죽은 기차를 함께 원래 순서로 재정렬
+               RearrangeAllTrainsToOriginalOrder();
 
                if (_currentAliveTrains.Count == 0)
                {
@@ -527,6 +527,23 @@ namespace TrainDefense.Game
       // SlideOut으로 화면 밖에 보낸 대상들의 원래 localPosition.x(정위치). ResetSlidePosition으로 복귀할 때 사용.
       private readonly List<(Transform target, float originX)> _slideOutOrigins = new();
 
+      // 슬라이드 연출(상점/맵 이동)은 산 기차뿐 아니라 죽은(회색) 기차도 함께 움직여야 한다.
+      // 죽은 기차는 _currentAliveTrains에서 빠지고 _deadTrains에 남으므로 둘을 합쳐 순회한다.
+      private IEnumerable<Train> _EnumerateAllTrains()
+      {
+         foreach (var train in _currentAliveTrains)
+         {
+            if (train != null)
+               yield return train;
+         }
+
+         foreach (var deadTrainInfo in _deadTrains)
+         {
+            if (deadTrainInfo.Train != null)
+               yield return deadTrainInfo.Train;
+         }
+      }
+
       public void SlideIn(float delay, float duration, float? screenLeftXOverride = null)
       {
          Camera cam = Camera.main;
@@ -537,7 +554,7 @@ namespace TrainDefense.Game
              rightmostX = Mathf.Max(rightmostX, sr.bounds.max.x);
          float offsetX = camLeftX - rightmostX;
 
-         foreach (var train in _currentAliveTrains)
+         foreach (var train in _EnumerateAllTrains())
          {
             float targetX = train.transform.localPosition.x;
             train.transform.localPosition += new Vector3(offsetX, 0f, 0f);
@@ -575,7 +592,7 @@ namespace TrainDefense.Game
 
          _slideOutOrigins.Clear();
 
-         foreach (var train in _currentAliveTrains)
+         foreach (var train in _EnumerateAllTrains())
          {
             _slideOutOrigins.Add((train.transform, train.transform.localPosition.x));
             train.transform.DOLocalMoveX(train.transform.localPosition.x + offsetX, duration)
