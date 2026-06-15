@@ -15,13 +15,13 @@ namespace TrainDefense.Game
 
         protected override bool OnUse()
         {
-            if (owner is not TurretTrain turret) return false;
+            if (owner is not IProjectileAttacker attacker) return false;
             float duration = trainSkillData.BuffDuration > 0f ? trainSkillData.BuffDuration : 5f;
-            owner.StartCoroutine(BombardCoroutine(turret, duration));
+            owner.StartCoroutine(BombardCoroutine(owner, attacker, duration));
             return true;
         }
 
-        private static IEnumerator BombardCoroutine(TurretTrain turret, float duration)
+        private static IEnumerator BombardCoroutine(Train owner, IProjectileAttacker attacker, float duration)
         {
             float elapsed = 0f;
             int shotIndex = 0;
@@ -29,7 +29,7 @@ namespace TrainDefense.Game
             {
                 yield return new WaitForSeconds(ShotInterval);
                 elapsed += ShotInterval;
-                if (turret == null || turret.IsDead) yield break;
+                if (owner == null || owner.IsDead) yield break;
 
                 Vector3 center = Camera.main != null ? Camera.main.transform.position : Vector3.zero;
                 var pos = new Vector3(
@@ -38,7 +38,7 @@ namespace TrainDefense.Game
                     0f);
                 // 발사음은 N발마다 한 번만 (16발 사운드 겹침 방지, 폭격 리듬감).
                 bool playSound = shotIndex % SoundEveryNShots == 0;
-                turret.SpawnProjectileAtWorldPositionPublic(null, pos, playSound);
+                attacker.SpawnProjectileAtWorldPositionPublic(null, pos, playSound);
                 shotIndex++;
             }
         }
