@@ -98,44 +98,66 @@ namespace TrainDefense.Game
 
             _levels[upgradeId] = GetLevel(upgradeId) + 1;
             _SaveLevels();
+            _InvalidateCache();
             // TODO: 구매 완료 UI 이벤트 발행
             return true;
         }
         #endregion
 
         #region Bonus / Value
+        // 레벨은 구매 시에만 바뀌므로 누적값을 캐시하고, 구매/초기화 때만 재계산한다 (매 호출 순회·할당 제거).
+        private Dictionary<StatType, float> _bonusCache;
+        private Dictionary<PermanentUpgradeType, float> _valueCache;
+
         /// <summary>TurretStat 카테고리 업그레이드들의 해당 StatType 누적 보너스 (레벨 × 레벨당 증가량). 포탑·레인지 스탯에 가산용.</summary>
         public float GetBonus(StatType statType)
         {
-            float total = 0f;
-            foreach (var data in DatabaseManager.Instance.GetPermanentUpgradeDatas())
-            {
-                if (data == null || data.Category != PermanentUpgradeCategory.TurretStat) continue;
-                int level = GetLevel(data.Id);
-                if (level <= 0 || data.Stats == null) continue;
-
-                foreach (var stat in data.Stats)
-                {
-                    if (stat != null && stat.Type == statType)
-                        total += stat.Value * level;
-                }
-            }
-            return total;
+            if (_bonusCache == null) _RebuildCache();
+            return _bonusCache.TryGetValue(statType, out float value) ? value : 0f;
         }
 
         /// <summary>Passive 카테고리 업그레이드들의 해당 효과 누적값 (레벨 × 레벨당 값). 각 시스템이 조회해 적용한다.</summary>
         public float GetValue(PermanentUpgradeType type)
         {
-            float total = 0f;
+            if (_valueCache == null) _RebuildCache();
+            return _valueCache.TryGetValue(type, out float value) ? value : 0f;
+        }
+
+        /// <summary>보유 레벨 기준으로 TurretStat/Passive 누적값을 한 번에 계산해 캐시한다.</summary>
+        private void _RebuildCache()
+        {
+            _bonusCache = new Dictionary<StatType, float>();
+            _valueCache = new Dictionary<PermanentUpgradeType, float>();
+
             foreach (var data in DatabaseManager.Instance.GetPermanentUpgradeDatas())
             {
-                if (data == null || data.Category != PermanentUpgradeCategory.Passive) continue;
-                if (data.PassiveType != type) continue;
+                if (data == null) continue;
                 int level = GetLevel(data.Id);
-                if (level > 0)
-                    total += data.PassiveValuePerLevel * level;
+                if (level <= 0) continue;
+
+                if (data.Category == PermanentUpgradeCategory.TurretStat)
+                {
+                    if (data.Stats == null) continue;
+                    foreach (var stat in data.Stats)
+                    {
+                        if (stat == null) continue;
+                        _bonusCache.TryGetValue(stat.Type, out float cur);
+                        _bonusCache[stat.Type] = cur + stat.Value * level;
+                    }
+                }
+                else
+                {
+                    _valueCache.TryGetValue(data.PassiveType, out float cur);
+                    _valueCache[data.PassiveType] = cur + data.PassiveValuePerLevel * level;
+                }
             }
-            return total;
+        }
+
+        // 레벨이 바뀌면(구매/초기화) 캐시를 버려 다음 조회 때 재계산하게 한다.
+        private void _InvalidateCache()
+        {
+            _bonusCache = null;
+            _valueCache = null;
         }
         #endregion
 
@@ -174,11 +196,19 @@ namespace TrainDefense.Game
             PlayerPrefs.Save();
         }
 
+        [Sirenix.OdinInspector.Button("테스트 재화 +100")]
+        private void AddTestCurrency()
+        {
+            AddCurrency(100);
+            Debug.Log($"[PermanentUpgradeManager] 테스트 재화 +100 (현재 {_currency})");
+        }
+
         [Sirenix.OdinInspector.Button("영구 업그레이드/재화 초기화")]
         private void ResetAll()
         {
             _currency = 0;
             _levels.Clear();
+            _InvalidateCache();
             PlayerPrefs.DeleteKey(CURRENCY_KEY);
             PlayerPrefs.DeleteKey(LEVELS_KEY);
             PlayerPrefs.Save();

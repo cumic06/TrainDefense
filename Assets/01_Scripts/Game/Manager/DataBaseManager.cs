@@ -47,7 +47,7 @@ namespace TrainDefense.Game
 
         public UpgradeData[] GetUpgradeDatas() => GetDB().UpgradeDataList.ToArray();
 
-        public PermanentUpgradeData[] GetPermanentUpgradeDatas() => GetDB().PermanentUpgradeDataList.ToArray();
+        public IReadOnlyList<PermanentUpgradeData> GetPermanentUpgradeDatas() => GetDB().PermanentUpgradeDataList;
         public PermanentUpgradeData GetPermanentUpgradeData(string id) => GetDB().PermanentUpgradeDataList.FirstOrDefault(u => u != null && u.Id == id);
 
         public EliteData GetEliteData() => GetDB().EliteData;

@@ -1,0 +1,11 @@
+Key	Korean	English	Japanese	ChineseSimplified
+PermanentUpgrade_120001_Name	최대 포탑 수	Max Turrets	最大タレット数	最大炮塔数
+PermanentUpgrade_120001_Desc	레벨당 최대 포탑 +1	+1 max turret per level	レベルごとに最大タレット+1	每级最大炮塔+1
+PermanentUpgrade_120002_Name	엘리트 재화	Elite Currency	エリート通貨	精英货币
+PermanentUpgrade_120002_Desc	레벨당 엘리트 재화 +100%	+100% elite currency per level	レベルごとにエリート通貨+100%	每级精英货币+100%
+PermanentUpgrade_120003_Name	최대 체력	Max HP	最大HP	最大体力
+PermanentUpgrade_120003_Desc	레벨당 포탑 체력 +10%	+10% turret HP per level	レベルごとにタレットHP+10%	每级炮塔体力+10%
+PermanentUpgrade_120004_Name	골드 획득	Gold Gain	ゴールド獲得	金币获取
+PermanentUpgrade_120004_Desc	레벨당 골드 +10%	+10% gold per level	レベルごとにゴールド+10%	每级金币+10%
+PermanentUpgrade_120005_Name	경험치 획득	Exp Gain	経験値獲得	经验获取
+PermanentUpgrade_120005_Desc	레벨당 경험치 +10%	+10% exp per level	レベルごとに経験値+10%	每级经验+10%

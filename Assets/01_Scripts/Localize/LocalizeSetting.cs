@@ -12,6 +12,7 @@ namespace TrainDefense.Localize
         Train,
         Skill,
         Upgrade,
+        PermanentUpgrade,
     }
 
     [Serializable]

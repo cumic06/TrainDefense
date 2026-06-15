@@ -47,7 +47,10 @@ namespace TrainDefense.Game
       private string _pendingSelectedSkillId = null;
       private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
       public List<Train> CurrentAliveTrains => _currentAliveTrains;
-      public int MaxTrainCount => maxTrainCount;
+      public int MaxTrainCount => maxTrainCount + Mathf.RoundToInt(
+         PermanentUpgradeManager.Instance != null
+            ? PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.MaxTurretCount)
+            : 0f);
 
       private readonly List<Train> _currentTrains = new();//모든 Train 목록
       public List<Train> CurrentTrains => _currentTrains;
@@ -135,7 +138,7 @@ namespace TrainDefense.Game
 
       public void SpawnTrain(TrainData trainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None, string selectedSkillId = null)
       {
-         if (_currentAliveTrains.Count >= maxTrainCount)
+         if (_currentAliveTrains.Count >= MaxTrainCount)
          {
             Debug.LogWarning("Train count is max");
             return;
