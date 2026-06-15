@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
@@ -53,6 +54,18 @@ namespace TrainDefense.Game.Datas
                 var data = projectile.GetData();
                 return data != null && data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && data.IsSpawnTriggerHandle;
             }
+        }
+
+        public override IEnumerable<TrainStatLine> GetStatLines()
+        {
+            var s = turretTrainStatus;
+            yield return new TrainStatLine("Stat_AttackDamage", s.AttackDamage);
+            yield return new TrainStatLine("Stat_AttackSpeed", TrainStatLine.ToAttackSpeed(s.AttackInterval));
+            yield return new TrainStatLine("Stat_AttackRange", s.AttackRange);
+            if (s.AttackArea > 0f && UsesAttackArea)
+                yield return new TrainStatLine("Stat_AttackArea", s.AttackArea);
+            if (s.TargetCount > 1)
+                yield return new TrainStatLine("Stat_TargetCount", s.TargetCount);
         }
     }
 }

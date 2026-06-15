@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -173,5 +174,8 @@ namespace TrainDefense.Game.Datas
         [Obsolete("Use Prefab property instead")]
         public Train TrainPrefab => Prefab?.GetComponent<Train>();
         public bool IsMainTrain => isMainTrain;
+
+        // 트라이초이스 "새 기차 선택" 카드에 표시할 base 스탯 줄. 타입별 데이터가 override.
+        public virtual IEnumerable<TrainStatLine> GetStatLines() => Enumerable.Empty<TrainStatLine>();
     }
 }

@@ -192,49 +192,11 @@ namespace TrainDefense.Game.UI
 
          // 카드에 표시할 "현재값"은 상점 효과(배율)를 제외한, 포탑 업그레이드(트라이초이스)만 반영된 스탯.
          // = base 스탯 + 0~현재레벨까지 각 레벨 업그레이드 증가량의 합.
-         // (train.CurrentStatus에는 상점 배율이 섞여 분리 불가하므로 upgradeData의 누적 메서드 사용)
-         if (upgradeData is TurretTrainUpgradeData turretUpgrade && currentTrain is TurretTrain turretTrain)
+         // 타입별 스탯 구성은 업그레이드 데이터가 제공(UI는 타입 분기 없이 포맷만 담당).
+         if (currentTrain != null)
          {
-            var baseStatus = turretTrain.BaseStatus;
-            var accumulated = turretUpgrade.GetAccumulatedTurretStatusUpgrade(turretTrain.CurrentLevel);
-            float currentDamage = baseStatus.AttackDamage + accumulated.AttackDamage;
-            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
-            float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
-            float currentRange = baseStatus.AttackRange + accumulated.AttackRange;
-            int currentTargetCount = baseStatus.TargetCount + accumulated.TargetCount;
-
-            var nextUpgrade = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
-            float currentSpeed = ToAttackSpeed(currentInterval);
-            float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
-
-            // 처음 선택 카드(GetTrainStatsDescription)와 같은 스탯 목록을 전체 화살표(Upgrade_, "현재 → 다음")로 표시.
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackRange", "Stat_AttackRange", currentRange, nextUpgrade.AttackRange);
-            if (currentArea > 0f && turretTrain.TrainData is TurretTrainData turretData && UsesAttackArea(turretData))
-               AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
-            if (currentTargetCount > 1)
-               AddUpgradeOrStatLine(lines, "Upgrade_TargetCount", "Stat_TargetCount", currentTargetCount, nextUpgrade.TargetCount);
-         }
-         else if (upgradeData is RangeTrainUpgradeData rangeUpgrade && currentTrain is RangeTrain rangeTrain)
-         {
-            var baseStatus = rangeTrain.BaseStatus;
-            var accumulated = rangeUpgrade.GetAccumulatedRangeStatusUpgrade(rangeTrain.CurrentLevel);
-            float currentDamage = baseStatus.AttackDamage + accumulated.AttackDamage;
-            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
-            float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
-
-            var nextUpgrade = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
-            float currentSpeed = ToAttackSpeed(currentInterval);
-            float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
-            float currentSlow = baseStatus.SlowRate + accumulated.SlowRate;
-
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
-            // 둔화 포탑(냉기)만 둔화율 표시.
-            if (currentSlow > 0f)
-               AddUpgradeOrStatLine(lines, "Upgrade_Slow", "Stat_Slow", currentSlow, nextUpgrade.SlowRate);
+            foreach (var line in upgradeData.GetUpgradePreview(currentTrain.TrainData, currentTrain.CurrentLevel, currentLevel))
+               AddUpgradeOrStatLine(lines, line.UpgradeKey, line.StatKey, line.CurrentValue, line.Delta);
          }
 
          return string.Join("\n", lines);
@@ -247,40 +209,16 @@ namespace TrainDefense.Game.UI
          if (trainData == null) return null;
 
          var lines = new System.Collections.Generic.List<string>();
-         if (trainData is TurretTrainData turretData)
-         {
-            var s = turretData.TurretTrainStatus;
-            AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
-            AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
-            AddStatValueLine(lines, "Stat_AttackRange", s.AttackRange);
-            if (s.AttackArea > 0f && UsesAttackArea(turretData))
-               AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
-            if (s.TargetCount > 1)
-               AddStatValueLine(lines, "Stat_TargetCount", s.TargetCount);
-         }
-         else if (trainData is RangeTrainData rangeData)
-         {
-            var s = rangeData.RangeTrainStatus;
-            AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
-            AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
-            AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
-            if (s.SlowRate > 0f)
-               AddStatValueLine(lines, "Stat_Slow", s.SlowRate);
-         }
+         // 타입별 base 스탯 구성은 TrainData가 제공(UI는 타입 분기 없이 포맷만 담당).
+         foreach (var line in trainData.GetStatLines())
+            AddStatValueLine(lines, line.StatKey, line.CurrentValue);
          return string.Join("\n", lines);
       }
-
-      // 공격 딜레이(초)를 초당 공격 횟수(공격속도)로 변환. 시스템 값이 아닌 UI 표시 전용.
-      private static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
 
       // 값을 공백 PadLeft → txt의 <mspace>(고정폭) 안에서 자릿수가 달라도 우측 끝이 정렬됨. 소수는 첫째 자리까지.
       private const int StatValueWidth = 3;
       private static string AlignStatValue(float value)
          => value.ToString("0.#").PadLeft(StatValueWidth, ' ');
-
-      // 포탑이 AttackArea 스탯을 실제 폭발 반경으로 쓰는지 판정 (빔 길이·파티클 비율은 제외).
-      private static bool UsesAttackArea(TurretTrainData turretData)
-         => turretData != null && turretData.UsesAttackArea;
 
       // 업그레이드 카드용: 값이 바뀌는 스탯(delta≠0)만 "현재값 → 다음값"(upgradeKey) 화살표로 표시.
       // 변화 없는 스탯은 statKey로 현재값만 표시. 해당 키가 없으면 조용히 건너뛴다.

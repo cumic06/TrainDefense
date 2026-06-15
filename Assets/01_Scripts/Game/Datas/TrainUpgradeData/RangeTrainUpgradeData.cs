@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game.Datas
@@ -100,6 +101,29 @@ namespace TrainDefense.Game.Datas
          if (targetLevel < 0 || targetLevel >= upgradeStats.Length)
             return null;
          return upgradeStats[targetLevel];
+      }
+
+      public IEnumerable<TrainStatLine> GetUpgradePreview(TrainData trainData, int currentLevel, int nextLevel)
+      {
+         if (trainData is not RangeTrainData rd) yield break;
+
+         var baseStatus = rd.RangeTrainStatus;
+         var accumulated = GetAccumulatedRangeStatusUpgrade(currentLevel);
+         var next = GetRangeStatusUpgrade(nextLevel);
+
+         float currentDamage = baseStatus.AttackDamage + accumulated.AttackDamage;
+         float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
+         float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
+         float currentSlow = baseStatus.SlowRate + accumulated.SlowRate;
+
+         float currentSpeed = TrainStatLine.ToAttackSpeed(currentInterval);
+         float speedDelta = TrainStatLine.ToAttackSpeed(currentInterval + next.AttackInterval) - currentSpeed;
+
+         yield return new TrainStatLine("Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, next.AttackDamage);
+         yield return new TrainStatLine("Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
+         yield return new TrainStatLine("Upgrade_AttackArea", "Stat_AttackArea", currentArea, next.AttackArea);
+         if (currentSlow > 0f)
+            yield return new TrainStatLine("Upgrade_Slow", "Stat_Slow", currentSlow, next.SlowRate);
       }
    }
 }

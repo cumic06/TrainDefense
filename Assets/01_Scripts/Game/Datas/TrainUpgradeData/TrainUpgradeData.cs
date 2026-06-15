@@ -79,5 +79,9 @@ namespace TrainDefense.Game.Datas
             return null;
          return upgradeStats[targetLevel];
       }
+
+      // 제네릭 업그레이드는 표시할 공격 스탯 미리보기가 없다(타입별 데이터가 채움).
+      public System.Collections.Generic.IEnumerable<TrainStatLine> GetUpgradePreview(TrainData trainData, int currentLevel, int nextLevel)
+         => System.Linq.Enumerable.Empty<TrainStatLine>();
    }
 }

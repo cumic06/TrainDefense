@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game.Datas
@@ -107,6 +108,32 @@ namespace TrainDefense.Game.Datas
          if (targetLevel < 0 || targetLevel >= upgradeStats.Length)
             return null;
          return upgradeStats[targetLevel];
+      }
+
+      public IEnumerable<TrainStatLine> GetUpgradePreview(TrainData trainData, int currentLevel, int nextLevel)
+      {
+         if (trainData is not TurretTrainData td) yield break;
+
+         var baseStatus = td.TurretTrainStatus;
+         var accumulated = GetAccumulatedTurretStatusUpgrade(currentLevel);
+         var next = GetTurretStatusUpgrade(nextLevel);
+
+         float currentDamage = baseStatus.AttackDamage + accumulated.AttackDamage;
+         float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
+         float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
+         float currentRange = baseStatus.AttackRange + accumulated.AttackRange;
+         int currentTargetCount = baseStatus.TargetCount + accumulated.TargetCount;
+
+         float currentSpeed = TrainStatLine.ToAttackSpeed(currentInterval);
+         float speedDelta = TrainStatLine.ToAttackSpeed(currentInterval + next.AttackInterval) - currentSpeed;
+
+         yield return new TrainStatLine("Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, next.AttackDamage);
+         yield return new TrainStatLine("Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
+         yield return new TrainStatLine("Upgrade_AttackRange", "Stat_AttackRange", currentRange, next.AttackRange);
+         if (currentArea > 0f && td.UsesAttackArea)
+            yield return new TrainStatLine("Upgrade_AttackArea", "Stat_AttackArea", currentArea, next.AttackArea);
+         if (currentTargetCount > 1)
+            yield return new TrainStatLine("Upgrade_TargetCount", "Stat_TargetCount", currentTargetCount, next.TargetCount);
       }
    }
 }

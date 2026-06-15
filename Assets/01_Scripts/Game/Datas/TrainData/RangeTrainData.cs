@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
@@ -41,5 +42,15 @@ namespace TrainDefense.Game.Datas
 
         [Obsolete("Use RangeProjectilePrefab property instead")]
         public Projectile RangeProjectilePrefabComponent => RangeProjectilePrefab?.GetComponent<Projectile>();
+
+        public override IEnumerable<TrainStatLine> GetStatLines()
+        {
+            var s = rangeTrainStatus;
+            yield return new TrainStatLine("Stat_AttackDamage", s.AttackDamage);
+            yield return new TrainStatLine("Stat_AttackSpeed", TrainStatLine.ToAttackSpeed(s.AttackInterval));
+            yield return new TrainStatLine("Stat_AttackArea", s.AttackArea);
+            if (s.SlowRate > 0f)
+                yield return new TrainStatLine("Stat_Slow", s.SlowRate);
+        }
     }
 }
