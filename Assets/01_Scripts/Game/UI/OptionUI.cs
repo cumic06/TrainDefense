@@ -24,8 +24,6 @@ namespace TrainDefense
       private Toggle hapticToggle;
       [SerializeField]
       private Button deletePlayerPrefsButton;
-      [SerializeField]
-      private ConfirmPopup resetConfirmPopup;
 
       [SerializeField]
       private Sprite muteSprite;
@@ -100,9 +98,6 @@ namespace TrainDefense
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.AddListener(OnDeletePlayerPrefsClicked);
 
-         if (resetConfirmPopup != null)
-            resetConfirmPopup.OnConfirmed += _DeleteAllPlayerPrefs;
-
          if (koreanButton != null)
             koreanButton.onClick.AddListener(() => _OnLanguageButtonClick(SystemLanguage.Korean));
 
@@ -134,9 +129,6 @@ namespace TrainDefense
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.RemoveAllListeners();
 
-         if (resetConfirmPopup != null)
-            resetConfirmPopup.OnConfirmed -= _DeleteAllPlayerPrefs;
-
          if (koreanButton != null)
             koreanButton.onClick.RemoveAllListeners();
 
@@ -157,12 +149,8 @@ namespace TrainDefense
 
       public void OnDeletePlayerPrefsClicked()
       {
-         if (resetConfirmPopup != null)
-         {
-            resetConfirmPopup.ShowPopup();
-            resetConfirmPopup.OnConfirmed += _DeleteAllPlayerPrefs;
-            return;
-         }
+         // 무엇을 초기화할지 고르는 선택형 팝업을 띄운다. (실제 초기화는 팝업 내부에서 UserDataManager를 통해 수행)
+         ResetSelectPopupUI.Show();
       }
 
       public void ShowOptionUI()
@@ -253,18 +241,6 @@ namespace TrainDefense
          {
             UserDataManager.Instance.SetHapticEnabled(isEnabled);
          }
-      }
-
-      private void _DeleteAllPlayerPrefs()
-      {
-         PlayerPrefs.DeleteAll();
-         PlayerPrefs.Save();
-
-         UserDataManager.Instance.TutorialSaveData.ResetAll();
-         // DeleteAll은 디스크만 지우므로 도감(발견 트레인/몬스터) 인메모리 상태도 함께 비운다.
-         UserDataManager.Instance.ClearDiscoveredCollections();
-
-         Debug.Log("[OptionUI] PlayerPrefs 전체 삭제 완료");
       }
 
       private void _ShowTab(bool isSound)

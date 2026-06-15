@@ -10,7 +10,7 @@ using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Game
 {
-   public class MainTrain : Train
+   public partial class MainTrain : Train
    {
       // 업그레이드 선택 시 회복할 최대 체력 비율(0~1). 엘리트 전환은 별도로 풀피.
       private const float UpgradeHealRatio = 0.3f;
@@ -341,12 +341,21 @@ namespace TrainDefense.Game
 
       private void ApplyMainTrainModelOffset(float halfLength)
       {
-         if (trainModel == null)
-            return;
+         if (trainModel != null)
+         {
+            Vector3 modelPos = trainModel.localPosition;
+            modelPos.x = halfLength;
+            trainModel.localPosition = modelPos;
+         }
 
-         Vector3 modelPos = trainModel.localPosition;
-         modelPos.x = halfLength;
-         trainModel.localPosition = modelPos;
+         // 주무기 마운트도 기차 비주얼과 같은 x로 맞춰 포탑이 항상 기차(trainModel) 중앙 위에 오게 한다.
+         // (trainModel만 halfLength로 밀면 turretMount는 루트 원점(x=0)에 남아 포탑이 기차에서 어긋난다.)
+         if (turretMount != null)
+         {
+            Vector3 mountPos = turretMount.localPosition;
+            mountPos.x = halfLength;
+            turretMount.localPosition = mountPos;
+         }
       }
 
       public void RearrangeAllTrainsToOriginalOrder()
@@ -573,6 +582,17 @@ namespace TrainDefense.Game
                .SetEase(Ease.InOutSine)
                .SetUpdate(true);
          }
+
+         // 주무기 마운트(포탑)도 기차와 함께 슬라이드 인. (누락 시 연출 중 포탑만 제자리에 남는다.)
+         if (turretMount != null)
+         {
+            float targetX = turretMount.localPosition.x;
+            turretMount.localPosition += new Vector3(offsetX, 0f, 0f);
+            turretMount.DOLocalMoveX(targetX, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InOutSine)
+               .SetUpdate(true);
+         }
       }
 
       /// <summary>
@@ -605,6 +625,16 @@ namespace TrainDefense.Game
          {
             _slideOutOrigins.Add((trainModel, trainModel.localPosition.x));
             trainModel.DOLocalMoveX(trainModel.localPosition.x + offsetX, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InOutSine)
+               .SetUpdate(true);
+         }
+
+         // 주무기 마운트(포탑)도 기차와 함께 슬라이드 아웃. ResetSlidePosition이 _slideOutOrigins로 자동 복귀시킨다.
+         if (turretMount != null)
+         {
+            _slideOutOrigins.Add((turretMount, turretMount.localPosition.x));
+            turretMount.DOLocalMoveX(turretMount.localPosition.x + offsetX, duration)
                .SetDelay(delay)
                .SetEase(Ease.InOutSine)
                .SetUpdate(true);

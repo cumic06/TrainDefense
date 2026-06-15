@@ -5,6 +5,7 @@ using Cumic.Events;
 using DG.Tweening;
 using TrainDefense.Game;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.UI;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -41,7 +42,10 @@ namespace TrainDefense
 
             if (startTimelineOnAwake)
             {
-                StartTimeline();
+                // 기차 등장 연출(LoadingTimeline) 재생 전에 포탑 선택창을 먼저 띄운다.
+                // "출발"을 누르면 그때 연출을 재생하고, 연출 끝의 GameEnter Signal로 게임이 시작된다.
+                TimeManager.Instance?.Pause();
+                TurretSelectPopupUI.Show(() => StartTimeline());
             }
         }
 
