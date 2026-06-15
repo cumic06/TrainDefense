@@ -195,13 +195,8 @@ namespace TrainDefense.Game
         private void PlayAttackAnimation()
         {
             if (turretModel == null) return;
-            turretModel.transform.DOKill();
-            // SetUpdate(true): timeScale=0(상점/일시정지/삼중택일) 중에도 트윈이 진행돼 원복되게 한다.
-            // 누락 시 공격 펀치 트윈이 0.9배 축소 상태에서 멈춰 모델이 작게 고정되는 외형 버그가 난다.
-            turretModel.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).SetUpdate(true).OnComplete(() =>
-            {
-                turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack).SetUpdate(true);
-            });
+
+            TurretCombatFx.PlayAttackPunch(turretModel.transform, _turretmodelScale);
         }
 
         public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius, float damageMul = 1f, float shoveScale = 1f, Monster target = null)
@@ -428,11 +423,7 @@ namespace TrainDefense.Game
                         projectile.transform.LookAt2D(aimPos);
                     }
 
-                    if (spreadAngle > 0f && count > 1)
-                    {
-                        float offset = (i - (count - 1) * 0.5f) * spreadAngle;
-                        projectile.transform.Rotate(0f, 0f, offset);
-                    }
+                    TurretCombatFx.ApplySpread(projectile.transform, i, count, spreadAngle);
                 }
             }
         }
@@ -788,15 +779,7 @@ namespace TrainDefense.Game
         {
             if (projectile == null || target == null) return;
 
-            projectile.Init(
-                _currentTurretTrainStatus.AttackDamage,
-                this,
-                target,
-                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
-                _currentTurretTrainStatus.CriticalChance,
-                _currentTurretTrainStatus.CriticalDamage,
-                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackRange : 0f
-            );
+            TurretCombatFx.InitProjectile(projectile, _currentTurretTrainStatus, this, target);
         }
 
         /// <summary>
@@ -805,17 +788,7 @@ namespace TrainDefense.Game
         /// </summary>
         private void InitializeProjectileDamage(Projectile projectile)
         {
-            if (projectile == null) return;
-
-            projectile.Init(
-                _currentTurretTrainStatus.AttackDamage,
-                this,
-                null,
-                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
-                _currentTurretTrainStatus.CriticalChance,
-                _currentTurretTrainStatus.CriticalDamage,
-                projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackRange : 0f
-            );
+            TurretCombatFx.InitProjectile(projectile, _currentTurretTrainStatus, this, null);
         }
 
         protected Projectile SpawnNormalProjectile(int index, Monster target = null)

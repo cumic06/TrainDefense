@@ -144,7 +144,7 @@ namespace TrainDefense.Game
             if (_isRotateTurret && _pivot != null)
                 _pivot.LookAt2D(aimPosition);
 
-            _PlayPunch();
+            TurretCombatFx.PlayAttackPunch(_model, _modelBaseScale);
             _PlayFireSound();
 
             ProjectileData baseData = _projectilePrefab.GetData();
@@ -158,12 +158,7 @@ namespace TrainDefense.Game
                     continue;
 
                 projectile.transform.LookAt2D(aimPosition);
-
-                if (spreadAngle > 0f && count > 1)
-                {
-                    float offset = (i - (count - 1) * 0.5f) * spreadAngle;
-                    projectile.transform.Rotate(0f, 0f, offset);
-                }
+                TurretCombatFx.ApplySpread(projectile.transform, i, count, spreadAngle);
             }
         }
 
@@ -189,15 +184,7 @@ namespace TrainDefense.Game
 
             // target이 없어도 Init을 호출해 _movementStrategy를 생성한다 → 발사 방향으로 실제 비행.
             // (Init이 누락되면 투사체가 초기화되지 않아 제자리에 멈추고 데미지도 0이 된다.)
-            bool scaleByArea = projectile.IsScaleByArea();
-            projectile.Init(
-               _status.AttackDamage,
-               _owner,
-               null,
-               scaleByArea ? _status.AttackArea : 0f,
-               _status.CriticalChance,
-               _status.CriticalDamage,
-               scaleByArea ? _status.AttackRange : 0f);
+            TurretCombatFx.InitProjectile(projectile, _status, _owner, null);
 
             return projectile;
         }
@@ -211,19 +198,6 @@ namespace TrainDefense.Game
                 return _spawnPoints[0];
 
             return _spawnPoints[index];
-        }
-
-        private void _PlayPunch()
-        {
-            if (_model == null)
-                return;
-
-            _model.DOKill();
-            // SetUpdate(true): 발사 직후 timeScale 변동(상점·일시정지 진입)에도 펀치가 원복되게 한다.
-            _model.DOScale(_modelBaseScale * 0.9f, 0.1f).SetEase(Ease.OutBack).SetUpdate(true).OnComplete(() =>
-            {
-                _model.DOScale(_modelBaseScale, 0.1f).SetEase(Ease.InBack).SetUpdate(true);
-            });
         }
 
         private void _PlayFireSound()
