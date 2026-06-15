@@ -59,13 +59,9 @@ namespace TrainDefense.Game
 
             _timer = 0f;
 
-            if (Owner is RangeTrain range)
+            if (Owner is IExternalProjectileSpawner spawner)
             {
-                range.SpawnExternalProjectile(prefab, Radius, nearest, DamageMultiplier);
-            }
-            else if (Owner is TurretTrain turret)
-            {
-                turret.SpawnExternalProjectileAtSelf(prefab, Radius, DamageMultiplier, target: nearest);
+                spawner.SpawnExternalProjectile(prefab, Radius, nearest, DamageMultiplier);
             }
         }
 

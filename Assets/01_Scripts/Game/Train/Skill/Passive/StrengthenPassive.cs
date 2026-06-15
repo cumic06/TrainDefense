@@ -33,8 +33,8 @@ namespace TrainDefense.Game
                 new SimpleStat { Type = StatType.AttackDamage, Value = _damagePercent }
             });
 
-            if (Owner is RangeTrain rangeTrain)
-                rangeTrain.SetSuppressMainProjectileShove(true);
+            if (Owner is IShoveSuppressible suppressible)
+                suppressible.SetSuppressMainProjectileShove(true);
         }
     }
 }

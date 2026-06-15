@@ -48,24 +48,15 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            switch (Owner)
-            {
-                case TurretTrain t: t.OnAttacked += HandleTurretAttacked; break;
-                case RangeTrain r: r.OnAttacked += HandleRangeAttacked; break;
-            }
+            if (Owner is IAttackEvents e) e.OnAttacked += HandleAttacked;
         }
 
         public override void Unsubscribe()
         {
-            switch (Owner)
-            {
-                case TurretTrain t: t.OnAttacked -= HandleTurretAttacked; break;
-                case RangeTrain r: r.OnAttacked -= HandleRangeAttacked; break;
-            }
+            if (Owner is IAttackEvents e) e.OnAttacked -= HandleAttacked;
         }
 
-        private void HandleTurretAttacked(Monster _) => StartFollowUp();
-        private void HandleRangeAttacked() => StartFollowUp();
+        private void HandleAttacked(Monster _) => StartFollowUp();
 
         private void StartFollowUp()
         {
@@ -81,8 +72,8 @@ namespace TrainDefense.Game
             var prefab = LoadPrefab();
             if (prefab == null) yield break;
 
-            if (Owner is RangeTrain range) range.SpawnExternalProjectile(prefab, Radius, null, DamageMul, ShoveScale);
-            else if (Owner is TurretTrain turret) turret.SpawnExternalProjectileAtSelf(prefab, Radius, DamageMul, ShoveScale);
+            if (Owner is IExternalProjectileSpawner spawner)
+                spawner.SpawnExternalProjectile(prefab, Radius, null, DamageMul, ShoveScale);
         }
 
         private Projectile LoadPrefab()

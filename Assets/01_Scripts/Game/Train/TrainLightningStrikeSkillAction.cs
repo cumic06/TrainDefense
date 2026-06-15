@@ -23,11 +23,11 @@ namespace TrainDefense.Game
             float strikeRadius = projectileSkillData.Range;
             if (strikeRadius <= 0f) return false;
 
-            // 낙뢰 피해 = 포탑 공격력 × 3 (공격력 비례). 비-TurretTrain이면 스킬 고정값 폴백.
+            // 낙뢰 피해 = 포탑 공격력 × 4 (공격력 비례). 비-투사체형이면 스킬 고정값 폴백.
             float damage = projectileSkillData.Damage;
-            if (owner is TurretTrain turret)
+            if (owner is IProjectileAttacker attacker)
             {
-                damage = turret.CurrentAttackDamage * 4f;
+                damage = attacker.CurrentAttackDamage * 4f;
             }
 
             // 낙뢰 중심 = 카메라 화면 정중앙 (적 위치 무관, 고정).

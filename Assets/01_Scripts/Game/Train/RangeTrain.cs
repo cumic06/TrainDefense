@@ -9,7 +9,8 @@ using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game
 {
-    public class RangeTrain : Train, ITrainable, ISlowProvider
+    public class RangeTrain : Train, ITrainable, ISlowProvider,
+        IAttackEvents, IExternalProjectileSpawner, IForceAttacker, IShoveSuppressible
     {
         #region Fields
         private RangeTrainData rangeTrainData => _trainData as RangeTrainData;
@@ -28,7 +29,8 @@ namespace TrainDefense.Game
 
         private bool _suppressMainProjectileShove;
 
-        public event Action OnAttacked;
+        // IAttackEvents 통합 시그니처. 범위 기차는 단일 타겟 개념이 없어 monster=null로 발행한다.
+        public event Action<Monster> OnAttacked;
 
         protected override void Setup()
         {
@@ -126,7 +128,7 @@ namespace TrainDefense.Game
                     }
 
                     _attackCountdown = _currentRangeTrainStatus.AttackInterval;
-                    OnAttacked?.Invoke();
+                    OnAttacked?.Invoke(null);
 
                     if (TrainData.DamageType == DamageType.Direct)
                     {

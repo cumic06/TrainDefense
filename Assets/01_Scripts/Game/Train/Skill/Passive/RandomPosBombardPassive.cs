@@ -35,17 +35,17 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            if (Owner is TurretTrain t) t.OnTargetPosAttacked += HandleTargetPosAttacked;
+            if (Owner is IProjectileAttacker attacker) attacker.OnTargetPosAttacked += HandleTargetPosAttacked;
         }
 
         public override void Unsubscribe()
         {
-            if (Owner is TurretTrain t) t.OnTargetPosAttacked -= HandleTargetPosAttacked;
+            if (Owner is IProjectileAttacker attacker) attacker.OnTargetPosAttacked -= HandleTargetPosAttacked;
         }
 
         private void HandleTargetPosAttacked()
         {
-            if (Owner is not TurretTrain turret) return;
+            if (Owner is not IProjectileAttacker attacker) return;
 
             Vector3 center = Camera.main != null ? Camera.main.transform.position : Vector3.zero;
             for (int i = 0; i < Count; i++)
@@ -54,7 +54,7 @@ namespace TrainDefense.Game
                     center.x + Random.Range(Area.min.x, Area.max.x),
                     center.y + Random.Range(Area.min.y, Area.max.y),
                     0f);
-                turret.SpawnProjectileAtWorldPositionPublic(null, pos);
+                attacker.SpawnProjectileAtWorldPositionPublic(null, pos);
             }
         }
     }

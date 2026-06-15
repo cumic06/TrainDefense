@@ -4,11 +4,8 @@ namespace TrainDefense.Game
     {
         protected override bool OnUse()
         {
-            if (owner is TurretTrain turret)
-                return turret.ForceAttack();
-
-            if (owner is RangeTrain rangeTrain)
-                return rangeTrain.ForceAttack();
+            if (owner is IForceAttacker forceAttacker)
+                return forceAttacker.ForceAttack();
 
             return false;
         }

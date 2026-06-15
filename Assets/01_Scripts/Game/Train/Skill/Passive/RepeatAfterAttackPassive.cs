@@ -25,30 +25,30 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            if (Owner is TurretTrain t) t.OnAttacked += HandleAttacked;
+            if (Owner is IAttackEvents e) e.OnAttacked += HandleAttacked;
         }
 
         public override void Unsubscribe()
         {
-            if (Owner is TurretTrain t) t.OnAttacked -= HandleAttacked;
+            if (Owner is IAttackEvents e) e.OnAttacked -= HandleAttacked;
         }
 
         private void HandleAttacked(Monster target)
         {
             if (target == null || RepeatCount <= 0) return;
-            if (Owner is not TurretTrain turret) return;
+            if (Owner is not IProjectileAttacker attacker) return;
             // KeepTarget이면 첫 타겟 위치를 캡처 → 타겟이 죽어도 그 방향으로 발사.
             Vector2? aimPosition = KeepTarget ? (Vector2)target.transform.position : (Vector2?)null;
-            turret.StartCoroutine(Run(turret, aimPosition));
+            Owner.StartCoroutine(Run(attacker, aimPosition));
         }
 
-        private IEnumerator Run(TurretTrain turret, Vector2? aimPosition)
+        private IEnumerator Run(IProjectileAttacker attacker, Vector2? aimPosition)
         {
             for (int i = 0; i < RepeatCount; i++)
             {
                 yield return new WaitForSeconds(Delay);
-                if (turret == null || turret.IsDead) yield break;
-                turret.RepeatNormalAttack(aimPosition);
+                if (Owner == null || Owner.IsDead) yield break;
+                attacker.RepeatNormalAttack(aimPosition);
             }
         }
     }

@@ -31,33 +31,33 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            if (Owner is TurretTrain t) t.OnAttacked += HandleAttacked;
+            if (Owner is IAttackEvents e) e.OnAttacked += HandleAttacked;
         }
 
         public override void Unsubscribe()
         {
-            if (Owner is TurretTrain t) t.OnAttacked -= HandleAttacked;
+            if (Owner is IAttackEvents e) e.OnAttacked -= HandleAttacked;
         }
 
         private void HandleAttacked(Monster target)
         {
             if (target == null) return;
-            if (Owner is not TurretTrain turret) return;
+            if (Owner is not IProjectileAttacker attacker) return;
             if (!UtilMath.CheckProbability(ChancePercent)) return;
 
-            GameEventSystem.Publish(new LuckyEvent(turret.transform.position));
+            GameEventSystem.Publish(new LuckyEvent(Owner.transform.position));
 
             if (Delay > 0f)
-                turret.StartCoroutine(FireAfterDelay(turret));
+                Owner.StartCoroutine(FireAfterDelay(attacker));
             else
-                turret.RepeatNormalAttack();
+                attacker.RepeatNormalAttack();
         }
 
-        private IEnumerator FireAfterDelay(TurretTrain turret)
+        private IEnumerator FireAfterDelay(IProjectileAttacker attacker)
         {
             yield return new WaitForSeconds(Delay);
-            if (turret == null || turret.IsDead) yield break;
-            turret.RepeatNormalAttack();
+            if (Owner == null || Owner.IsDead) yield break;
+            attacker.RepeatNormalAttack();
         }
     }
 }

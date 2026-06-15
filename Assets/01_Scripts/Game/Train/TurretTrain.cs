@@ -12,7 +12,8 @@ using UnityEngine;
 
 namespace TrainDefense.Game
 {
-    public class TurretTrain : Train, ITrainable, IProjectileEmitter
+    public class TurretTrain : Train, ITrainable, IProjectileEmitter,
+        IAttackEvents, IProjectileAttacker, IExternalProjectileSpawner, IForceAttacker
     {
         #region Field
         private TurretTrainData turretTrainData => _trainData as TurretTrainData;
@@ -190,6 +191,11 @@ namespace TrainDefense.Game
                 turretModel.transform.DOScale(_turretmodelScale, 0.1f).SetEase(Ease.InBack);
             });
         }
+
+        // IExternalProjectileSpawner 구현: 포탑은 자기 위치에서 발사한다(at-self).
+        public void SpawnExternalProjectile(Projectile prefab, float radius,
+            IProjectileTarget target = null, float damageMul = 1f, float shoveScale = 1f)
+            => SpawnExternalProjectileAtSelf(prefab, radius, damageMul, shoveScale, target as Monster);
 
         public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius, float damageMul = 1f, float shoveScale = 1f, Monster target = null)
         {
