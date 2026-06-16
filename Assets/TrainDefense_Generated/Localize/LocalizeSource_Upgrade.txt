@@ -34,7 +34,7 @@ Stat_AttackArea	범위<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
 Stat_TargetCount	대상 수<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Targets<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	対象数<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	目标数<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
 Upgrade_Slow	둔화율<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	Slow<pos=55%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	鈍化率<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>	减速率<pos=35%><mspace=0.7em>{0}</mspace>  →  <color=#D7D3B3><bounce><mspace=0.7em>{1}</mspace></bounce></color>
 Stat_Slow	둔화율<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	Slow<pos=55%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	鈍化率<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>	减速率<pos=35%><color=#D7D3B3><mspace=0.7em>{0}</mspace></color>
-Detail_HP	HP	HP	HP	HP
+Detail_HP	체력	HP	体力	生命值
 Detail_Damage	공격력	ATK	攻撃力	攻击力
 Detail_Speed	공격 속도	SPD	攻撃速度	攻击速度
 Detail_Range	사거리	Range	射程	射程

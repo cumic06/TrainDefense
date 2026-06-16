@@ -6,6 +6,7 @@ namespace TrainDefense.Game.UI.Collection
     public enum CollectionTabType
     {
         Train,
+        EliteTrain,
         Monster,
     }
 }

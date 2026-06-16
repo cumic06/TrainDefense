@@ -18,6 +18,7 @@ namespace TrainDefense.Game.UI.Collection
 
         [Header("Tabs")]
         [SerializeField] private Button trainTabButton;
+        [SerializeField] private Button eliteTrainTabButton;
         [SerializeField] private Button monsterTabButton;
         [SerializeField] private Color tabSelectedColor = Color.white;
         [SerializeField] private Color tabNormalColor = new Color(0.6f, 0.6f, 0.6f, 1f);
@@ -25,6 +26,7 @@ namespace TrainDefense.Game.UI.Collection
         [Header("Localized Texts")]
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI trainTabText;
+        [SerializeField] private TextMeshProUGUI eliteTrainTabText;
         [SerializeField] private TextMeshProUGUI monsterTabText;
 
         [Header("Grid / Detail")]
@@ -58,6 +60,9 @@ namespace TrainDefense.Game.UI.Collection
             if (trainTabButton != null)
                 trainTabButton.onClick.AddListener(_OnClickTrainTab);
 
+            if (eliteTrainTabButton != null)
+                eliteTrainTabButton.onClick.AddListener(_OnClickEliteTrainTab);
+
             if (monsterTabButton != null)
                 monsterTabButton.onClick.AddListener(_OnClickMonsterTab);
         }
@@ -75,6 +80,9 @@ namespace TrainDefense.Game.UI.Collection
             if (trainTabButton != null)
                 trainTabButton.onClick.RemoveListener(_OnClickTrainTab);
 
+            if (eliteTrainTabButton != null)
+                eliteTrainTabButton.onClick.RemoveListener(_OnClickEliteTrainTab);
+
             if (monsterTabButton != null)
                 monsterTabButton.onClick.RemoveListener(_OnClickMonsterTab);
         }
@@ -87,6 +95,11 @@ namespace TrainDefense.Game.UI.Collection
         private void _OnClickTrainTab()
         {
             _ShowTab(CollectionTabType.Train);
+        }
+
+        private void _OnClickEliteTrainTab()
+        {
+            _ShowTab(CollectionTabType.EliteTrain);
         }
 
         private void _OnClickMonsterTab()
@@ -110,6 +123,9 @@ namespace TrainDefense.Game.UI.Collection
             if (trainTabText != null)
                 trainTabText.text = LocalizeHelper.GetByKey("Collection_Tab_Train", "트레인");
 
+            if (eliteTrainTabText != null)
+                eliteTrainTabText.text = LocalizeHelper.GetByKey("Collection_Tab_EliteTrain", "엘리트");
+
             if (monsterTabText != null)
                 monsterTabText.text = LocalizeHelper.GetByKey("Collection_Tab_Monster", "몬스터");
         }
@@ -119,22 +135,45 @@ namespace TrainDefense.Game.UI.Collection
             _currentTab = tab;
             _UpdateTabVisual();
 
-            List<CollectionEntry> entries = tab == CollectionTabType.Train
-                ? _BuildTrainEntries()
-                : _BuildMonsterEntries();
+            List<CollectionEntry> entries;
+            switch (tab)
+            {
+                case CollectionTabType.EliteTrain:
+                    entries = _BuildEliteTrainEntries();
+                    break;
+                case CollectionTabType.Monster:
+                    entries = _BuildMonsterEntries();
+                    break;
+                default:
+                    entries = _BuildTrainEntries();
+                    break;
+            }
 
             _PopulateGrid(entries);
         }
 
         private void _UpdateTabVisual()
         {
-            bool isTrain = _currentTab == CollectionTabType.Train;
-
             if (trainTabButton != null)
-                trainTabButton.image.color = isTrain ? tabSelectedColor : tabNormalColor;
+                trainTabButton.image.color = _currentTab == CollectionTabType.Train ? tabSelectedColor : tabNormalColor;
+
+            if (eliteTrainTabButton != null)
+                eliteTrainTabButton.image.color = _currentTab == CollectionTabType.EliteTrain ? tabSelectedColor : tabNormalColor;
 
             if (monsterTabButton != null)
-                monsterTabButton.image.color = isTrain ? tabNormalColor : tabSelectedColor;
+                monsterTabButton.image.color = _currentTab == CollectionTabType.Monster ? tabSelectedColor : tabNormalColor;
+        }
+
+        // EliteTrainChoice에 등록된 엘리트 전용 트레인 ID 집합
+        private HashSet<string> _GetEliteTrainIds()
+        {
+            var eliteTrainIds = new HashSet<string>();
+            foreach (var choice in DatabaseManager.Instance.GetEliteTrainChoices())
+            {
+                if (choice is EliteTrainChoice eliteChoice && !string.IsNullOrEmpty(eliteChoice.EliteTrainDataId))
+                    eliteTrainIds.Add(eliteChoice.EliteTrainDataId);
+            }
+            return eliteTrainIds;
         }
 
         private List<CollectionEntry> _BuildTrainEntries()
@@ -142,13 +181,54 @@ namespace TrainDefense.Game.UI.Collection
             var result = new List<CollectionEntry>();
             UserDataManager userDataManager = UserDataManager.Instance;
 
+            // 엘리트 전용 트레인은 일반 트레인 탭에서 제외 (엘리트 트레인 탭에 표시)
+            HashSet<string> eliteTrainIds = _GetEliteTrainIds();
+
             foreach (TrainData data in DatabaseManager.Instance.GetAllTrainData())
             {
                 if (data == null)
                     continue;
 
+                if (eliteTrainIds.Contains(data.Id))
+                    continue;
+
+                // 기관차 등 비공격 트레인은 제외 (도감 트레인 탭은 포탑·레인지만)
+                if (!(data is TurretTrainData) && !(data is RangeTrainData))
+                    continue;
+
                 bool discovered = userDataManager != null && userDataManager.IsTrainDiscovered(data.Id);
                 result.Add(CollectionEntry.FromTrain(data, discovered));
+            }
+
+            return result;
+        }
+
+        private List<CollectionEntry> _BuildEliteTrainEntries()
+        {
+            var result = new List<CollectionEntry>();
+            UserDataManager userDataManager = UserDataManager.Instance;
+
+            HashSet<string> eliteTrainIds = _GetEliteTrainIds();
+            var skillDataDB = DatabaseManager.Instance.GetTrainSkillDataDB();
+
+            foreach (TrainData data in DatabaseManager.Instance.GetAllTrainData())
+            {
+                if (data == null)
+                    continue;
+
+                if (!eliteTrainIds.Contains(data.Id))
+                    continue;
+
+                bool discovered = userDataManager != null && userDataManager.IsTrainDiscovered(data.Id);
+
+                // 엘리트 포탑은 보유 스킬마다 별도 항목으로 표시 (이름은 스킬명)
+                foreach (var (skillData, _) in skillDataDB.GetSkillsForTrain(data.Id))
+                {
+                    if (skillData == null)
+                        continue;
+
+                    result.Add(CollectionEntry.FromEliteTrainSkill(data, skillData, discovered));
+                }
             }
 
             return result;

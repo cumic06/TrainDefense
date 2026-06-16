@@ -123,7 +123,7 @@ MonoBehaviour:
     - {fileID: -5309227702758776139, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     - {fileID: 8516958411369342763, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     monsterStatusData:
-      MaxHp: 30
+      MaxHp: 40
       Damage: 10
       MoveSpeed: 3.4
       AttackDelay: 3
@@ -198,7 +198,7 @@ MonoBehaviour:
     - {fileID: -8315347680731458982, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     - {fileID: -9062487706820149092, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     monsterStatusData:
-      MaxHp: 45
+      MaxHp: 55
       Damage: 10
       MoveSpeed: 6
       AttackDelay: 1.5
@@ -222,7 +222,7 @@ MonoBehaviour:
     - {fileID: -5987072993317950802, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     - {fileID: 308462971345494500, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     monsterStatusData:
-      MaxHp: 68
+      MaxHp: 80
       Damage: 10
       MoveSpeed: 4.3
       AttackDelay: 1
@@ -292,8 +292,8 @@ MonoBehaviour:
     - {fileID: -8173720173229929539, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     - {fileID: 4663589299363003436, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     monsterStatusData:
-      MaxHp: 30
-      Damage: 15
+      MaxHp: 35
+      Damage: 10
       MoveSpeed: 5
       AttackDelay: 1.4
       DropExpMin: 35
@@ -342,7 +342,7 @@ MonoBehaviour:
     - {fileID: -3942745417268178275, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
     - {fileID: -1776823346852784203, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
     monsterStatusData:
-      MaxHp: 28
+      MaxHp: 24
       Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
@@ -1075,7 +1075,7 @@ MonoBehaviour:
       description: Passive_60010_Desc
     - id: 60011
       name: Passive_60011_Name
-      passiveType: RepeatAfterAttack:0.2:3|StatModifier:AttackInterval:40
+      passiveType: RepeatAfterAttack:0.2:2|StatModifier:AttackInterval:40
       param1: 
       param2: 
       param3: 

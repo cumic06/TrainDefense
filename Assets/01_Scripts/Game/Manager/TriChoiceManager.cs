@@ -47,9 +47,10 @@ namespace TrainDefense.Game
             }
 
             // EliteTrain: 가능한 EliteTrain Choice를 모두 추가 (count 초과 방지)
+            // 직전 리롤에서 떴던 엘리트는 제외해 같은 엘리트가 연속으로 뜨지 않게 한다.
             if (_CanUpgradeToEliteTrain())
             {
-                var eliteChoices = _GetEliteTrainChoices();
+                var eliteChoices = _GetEliteTrainChoicesExcludingLast();
 
                 foreach (var eliteChoice in eliteChoices)
                 {
@@ -114,6 +115,9 @@ namespace TrainDefense.Game
                 int j = Random.Range(0, i + 1);
                 (result[i], result[j]) = (result[j], result[i]);
             }
+
+            // 이번 화면의 엘리트를 기억해 다음 리롤에서 직전 엘리트를 제외한다.
+            _RememberEliteChoices(result);
 
             return result;
         }
