@@ -20,6 +20,5 @@ namespace TrainDefense.Game.Datas
         HealthRegen,       // 5초 무피해 시 체력 회복 (%)
         GoldGainRate,      // 골드 획득률 증가 (%)
         ExpGainRate,       // 경험치 획득률 증가 (%)
-        AttackDamageRate,  // 포탑 공격력 증가 (%, 곱셈)
     }
 }

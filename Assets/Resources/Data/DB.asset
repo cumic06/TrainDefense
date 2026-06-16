@@ -1853,17 +1853,6 @@ MonoBehaviour:
     stats: []
     passiveType: 3
     passiveValuePerLevel: 2
-  - id: 120007
-    iconId:
-    name: PermanentUpgrade_120007_Name
-    description: PermanentUpgrade_120007_Desc
-    needMoney: 5
-    maxUpgradeCount: 10
-    growthRate: 1.2
-    category: 1
-    stats: []
-    passiveType: 6
-    passiveValuePerLevel: 5
   triChoiceDB:
     addTrainChoices:
     - Option:
