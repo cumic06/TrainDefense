@@ -270,6 +270,9 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
             _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
             _currentRangeTrainStatus.SlowRate += manager.GetBonus(StatType.SlowRate);
+
+            // 영구 업그레이드: 공격력 % 증가 (Passive, 곱셈)
+            _currentRangeTrainStatus.AttackDamage *= 1f + manager.GetValue(PermanentUpgradeType.AttackDamageRate) / 100f;
         }
 
         // 누적 둔화율(%, 기차 base + 강화)을 둔화 배율로 변환.

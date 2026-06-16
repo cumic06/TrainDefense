@@ -144,6 +144,9 @@ namespace TrainDefense.Game
             _currentTurretTrainStatus.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
             _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
             _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(manager.GetBonus(StatType.TargetCount));
+
+            // 영구 업그레이드: 공격력 % 증가 (Passive, 곱셈)
+            _currentTurretTrainStatus.AttackDamage *= 1f + manager.GetValue(PermanentUpgradeType.AttackDamageRate) / 100f;
         }
 
         public void RegisterProjectileOverride(ProjectileOverrideProvider provider)

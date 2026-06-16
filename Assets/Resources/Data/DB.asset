@@ -427,7 +427,7 @@ MonoBehaviour:
     attackSoundType: 301
     description: Train_30001_Desc
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: NormalTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -451,7 +451,7 @@ MonoBehaviour:
     attackSoundType: 302
     description: Train_30002_Desc
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: FireTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -475,7 +475,7 @@ MonoBehaviour:
     attackSoundType: 303
     description: Train_30003_Desc
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: MissileTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -499,7 +499,7 @@ MonoBehaviour:
     attackSoundType: 304
     description: Train_30004_Desc
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: LaserTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -523,7 +523,7 @@ MonoBehaviour:
     attackSoundType: 305
     description: Train_30005_Desc
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: ElectrickTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -547,7 +547,7 @@ MonoBehaviour:
     attackSoundType: 306
     description: Train_30006_Desc
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: CannonTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -571,7 +571,7 @@ MonoBehaviour:
     attackSoundType: 307
     description: Train_30007_Desc
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: SniperTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -595,7 +595,7 @@ MonoBehaviour:
     attackSoundType: 301
     description: 
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: EliteNormalTurretTrain
     activeSkillDataIds:
     - 50001
@@ -621,7 +621,7 @@ MonoBehaviour:
     attackSoundType: 302
     description: 
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: EliteFireTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -647,7 +647,7 @@ MonoBehaviour:
     attackSoundType: 303
     description: 
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: EliteMissileTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -674,7 +674,7 @@ MonoBehaviour:
     attackSoundType: 304
     description: 
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: EliteLaserTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -700,7 +700,7 @@ MonoBehaviour:
     attackSoundType: 305
     description: 
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: EliteElectrickTurretTrain
     activeSkillDataIds:
     - 50005
@@ -726,7 +726,7 @@ MonoBehaviour:
     attackSoundType: 306
     description: 
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: EliteCannonTurretTrain
     activeSkillDataIds:
     - 50006
@@ -753,7 +753,7 @@ MonoBehaviour:
     attackSoundType: 307
     description: 
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: EliteSniperTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -781,7 +781,7 @@ MonoBehaviour:
     attackSoundType: 308
     description: Train_40001_Desc
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: ExplosionRangeTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -805,7 +805,7 @@ MonoBehaviour:
     attackSoundType: 309
     description: Train_40002_Desc
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: ColdAirRangeTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -829,7 +829,7 @@ MonoBehaviour:
     attackSoundType: 0
     description: 
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: EliteExplosionRangeTrain
     activeSkillDataIds:
     - 50004
@@ -856,7 +856,7 @@ MonoBehaviour:
     attackSoundType: 309
     description: 
     trainStatusData:
-      MaxHp: 250
+      MaxHp: 150
     prefabId: EliteColdAirRangeTrain
     activeSkillDataIds:
     - 50003
@@ -1722,14 +1722,14 @@ MonoBehaviour:
     iconId: 
     name: Upgrade_110002_Name
     description: Upgrade_110002_Desc
-    needMoney: 150
+    needMoney: 300
     maxUpgradeCount: 10
     upgradeDataType: 0
     upgradeValue: -5
     stats:
     - <Type>k__BackingField: 4
       <Value>k__BackingField: -5
-    growthRate: 1.15
+    growthRate: 1.25
   - id: 110003
     iconId: 
     name: Upgrade_110003_Name
@@ -1756,26 +1756,26 @@ MonoBehaviour:
     iconId: 
     name: Upgrade_110006_Name
     description: Upgrade_110006_Desc
-    needMoney: 120
+    needMoney: 300
     maxUpgradeCount: 20
     upgradeDataType: 0
     upgradeValue: 5
     stats:
     - <Type>k__BackingField: 6
       <Value>k__BackingField: 5
-    growthRate: 1.15
+    growthRate: 1.30
   - id: 110007
     iconId: 
     name: Upgrade_110007_Name
     description: Upgrade_110007_Desc
-    needMoney: 130
+    needMoney: 250
     maxUpgradeCount: 100
     upgradeDataType: 0
     upgradeValue: 5
     stats:
     - <Type>k__BackingField: 7
       <Value>k__BackingField: 5
-    growthRate: 1.13
+    growthRate: 1.22
   - id: 110005
     iconId: 
     name: Upgrade_110005_Name
@@ -1853,6 +1853,17 @@ MonoBehaviour:
     stats: []
     passiveType: 3
     passiveValuePerLevel: 2
+  - id: 120007
+    iconId:
+    name: PermanentUpgrade_120007_Name
+    description: PermanentUpgrade_120007_Desc
+    needMoney: 5
+    maxUpgradeCount: 10
+    growthRate: 1.2
+    category: 1
+    stats: []
+    passiveType: 6
+    passiveValuePerLevel: 5
   triChoiceDB:
     addTrainChoices:
     - Option:
