@@ -1808,7 +1808,7 @@ MonoBehaviour:
     category: 1
     stats: []
     passiveType: 1
-    passiveValuePerLevel: 20
+    passiveValuePerLevel: 100
   - id: 120003
     iconId: 
     name: PermanentUpgrade_120003_Name
@@ -1819,7 +1819,7 @@ MonoBehaviour:
     category: 1
     stats: []
     passiveType: 2
-    passiveValuePerLevel: 50
+    passiveValuePerLevel: 10
   - id: 120004
     iconId: 
     name: PermanentUpgrade_120004_Name
