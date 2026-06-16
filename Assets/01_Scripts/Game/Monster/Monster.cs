@@ -499,9 +499,10 @@ namespace TrainDefense.Game
          }
 
          // 영구 업그레이드: 경험치 획득률 증가 (상점 업글과 독립 곱셈)
-         if (PermanentUpgradeManager.Instance != null)
+         var permanentUpgradeManager = PermanentUpgradeManager.Instance;
+         if (permanentUpgradeManager != null)
          {
-            float expRate = PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.ExpGainRate);
+            float expRate = permanentUpgradeManager.GetValue(PermanentUpgradeType.ExpGainRate);
             dropExp = Mathf.RoundToInt(dropExp * (1f + expRate / 100f));
          }
 
@@ -538,9 +539,10 @@ namespace TrainDefense.Game
          }
 
          // 영구 업그레이드: 골드 획득률 증가 (상점 업글과 독립 곱셈)
-         if (PermanentUpgradeManager.Instance != null)
+         var permanentUpgradeManager = PermanentUpgradeManager.Instance;
+         if (permanentUpgradeManager != null)
          {
-            float goldRate = PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.GoldGainRate);
+            float goldRate = permanentUpgradeManager.GetValue(PermanentUpgradeType.GoldGainRate);
             dropMoney = Mathf.RoundToInt(dropMoney * (1f + goldRate / 100f));
          }
 

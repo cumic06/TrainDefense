@@ -47,6 +47,17 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<MonsterDeadEvent>(_OnMonsterDead);
         }
 
+        // 엘리트 처치/구매마다 PlayerPrefs.Save()(디스크 flush)를 부르지 않고, 백그라운드 전환·종료 시 한 번에 기록한다.
+        private void OnApplicationPause(bool pause)
+        {
+            if (pause) PlayerPrefs.Save();
+        }
+
+        private void OnApplicationQuit()
+        {
+            PlayerPrefs.Save();
+        }
+
         // 엘리트 몬스터 처치 시 영구 재화 획득. EliteRewardRate(%) 패시브가 획득량을 증가시킨다.
         private void _OnMonsterDead(MonsterDeadEvent monsterDeadEvent)
         {
@@ -98,6 +109,8 @@ namespace TrainDefense.Game
 
             _levels[upgradeId] = GetLevel(upgradeId) + 1;
             _SaveLevels();
+            // 구매는 의식적 행동이라 강제 종료에도 잃지 않도록 즉시 디스크 flush (재화 차감 + 레벨을 함께 확정)
+            PlayerPrefs.Save();
             _InvalidateCache();
             // TODO: 구매 완료 UI 이벤트 발행
             return true;
@@ -183,8 +196,8 @@ namespace TrainDefense.Game
 
         private void _SaveCurrency()
         {
+            // 디스크 flush(PlayerPrefs.Save)는 OnApplicationPause/Quit에서 일괄 — 엘리트 처치마다 디스크 쓰기 방지
             PlayerPrefs.SetInt(CURRENCY_KEY, _currency);
-            PlayerPrefs.Save();
         }
 
         private void _SaveLevels()
@@ -193,7 +206,6 @@ namespace TrainDefense.Game
             foreach (var kv in _levels)
                 entries.Add($"{kv.Key}:{kv.Value}");
             PlayerPrefs.SetString(LEVELS_KEY, string.Join(",", entries));
-            PlayerPrefs.Save();
         }
 
         [Sirenix.OdinInspector.Button("테스트 재화 +100")]
