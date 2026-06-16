@@ -772,44 +772,6 @@ MonoBehaviour:
       CriticalDamage: 0
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
-  - id: 39999
-    name: Train_39999_Name
-    iconId: Weapon_KMD_08_UI
-    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
-    damageType: 0
-    attackSoundType: 301
-    description: Train_39999_Desc
-    trainStatusData:
-      MaxHp: 9999
-    prefabId: NormalTurretTrain
-    activeSkillDataIds: []
-    passiveSkillDataIds:
-    - 60001
-    - 60002
-    - 60003
-    - 60008
-    - 60009
-    - 60010
-    - 60011
-    - 60012
-    - 60013
-    - 60014
-    - 60015
-    - 60017
-    - 60018
-    - 60099
-    isMainTrain: 0
-    turretTrainStatus:
-      AttackDamage: 9999
-      AttackRange: 30
-      AttackArea: 12
-      AttackCount: 5
-      AttackInterval: 0.1
-      TargetCount: 10
-      CriticalChance: 1
-      CriticalDamage: 5
-    turretProjectilePrefabId: NormalProjectile
-    attackDamageMultiplier: 1
   rangeTrainDataList:
   - id: 40001
     name: Train_40001_Name
@@ -1160,13 +1122,6 @@ MonoBehaviour:
       param2: -30
       param3: 
       description: Passive_60018_Desc
-    - id: 60099
-      name: Passive_60099_Name
-      passiveType: PeriodicSpawn
-      param1: 1
-      param2: SnowballProjectile
-      param3: 5:3
-      description: Passive_60099_Desc
   _legacyTrainSkillDataList: []
   _legacyTrainPassiveSkillDataList: []
   trainUpgradeDataList: []
@@ -1961,10 +1916,6 @@ MonoBehaviour:
         rid: 6103417219460104310
       Weight: 1
       Tier: 1
-    - Option:
-        rid: 9000000000000000001
-      Weight: 100
-      Tier: 0
     upgradeTrainChoices:
     - Option:
         rid: 2066870334413602904
@@ -2306,9 +2257,3 @@ MonoBehaviour:
         id: 62002a
         baseTrainId: 40002
         eliteTrainDataId: 41002
-    - rid: 9000000000000000001
-      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 63999
-        trainDataId: 39999
-        replaceTrainId:
