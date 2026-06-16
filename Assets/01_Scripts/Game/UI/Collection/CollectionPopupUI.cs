@@ -193,7 +193,7 @@ namespace TrainDefense.Game.UI.Collection
                     continue;
 
                 // 기관차 등 비공격 트레인은 제외 (도감 트레인 탭은 포탑·레인지만)
-                if (!(data is TurretTrainData) && !(data is RangeTrainData))
+                if (data is not IAttackTrainData)
                     continue;
 
                 bool discovered = userDataManager != null && userDataManager.IsTrainDiscovered(data.Id);

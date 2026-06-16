@@ -6,7 +6,7 @@ using Sirenix.OdinInspector;
 namespace TrainDefense.Game.Datas
 {
     [Serializable]
-    public class TurretTrainData : TrainData
+    public class TurretTrainData : TrainData, IAttackTrainData
     {
         #region Fields
         [SerializeField]
@@ -20,6 +20,9 @@ namespace TrainDefense.Game.Datas
 
         public TurretTrainStatus TurretTrainStatus => turretTrainStatus;
         public float AttackDamageMultiplier => attackDamageMultiplier;
+
+        // IAttackTrainData
+        public GameObject ProjectilePrefab => TurretProjectilePrefab;
 
         private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 
