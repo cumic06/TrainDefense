@@ -306,6 +306,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       insertIndex: 1
       addedObject: {fileID: 6472199296939909711}
+    - targetCorrespondingSourceObject: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1904668353176467243}
   m_SourcePrefab: {fileID: 100100000, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
 --- !u!1 &1401957205484222713 stripped
 GameObject:
@@ -329,6 +332,24 @@ MonoBehaviour:
   explosionForce: 10
   isRotateTurret: 0
   IsUnDead: 0
+  turretProjectileSpawnPoints:
+  - {fileID: 3529707877163048822}
+  useParticleProjectile: 0
+  isTargeting: 1
+  turret: {fileID: 7436325860553494596}
+  turretModel: {fileID: 2720132824318672025}
+--- !u!114 &1904668353176467243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401957205484222713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27105d3b72484fd38a61225e7f9d83c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.TurretAttackModule
   turretProjectileSpawnPoints:
   - {fileID: 3529707877163048822}
   useParticleProjectile: 0

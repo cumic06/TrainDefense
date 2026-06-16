@@ -226,6 +226,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
       insertIndex: 1
       addedObject: {fileID: 2253033143173286976}
+    - targetCorrespondingSourceObject: {fileID: 3292229927675379084, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5505456549113926337}
   m_SourcePrefab: {fileID: 100100000, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
 --- !u!1 &1401957205484222713 stripped
 GameObject:
@@ -249,6 +252,18 @@ MonoBehaviour:
   explosionForce: 10
   isRotateTurret: 1
   IsUnDead: 0
+--- !u!114 &5505456549113926337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1401957205484222713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72621f20437643a4b9d455c29ce9028d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.RangeAttackModule
 --- !u!4 &3802654949415311762 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 720900901604711655, guid: 3847cd2415678a5499ac4d2a4fcaf19c, type: 3}
