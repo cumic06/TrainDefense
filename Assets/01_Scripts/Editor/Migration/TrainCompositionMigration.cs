@@ -21,6 +21,12 @@ namespace TrainDefense.EditorTools
             "turretProjectileSpawnPoints", "useParticleProjectile", "isTargeting", "turret", "turretModel"
         };
 
+        // shell(TurretTrain/RangeTrain) → Train 교체 시 보존할 베이스 Train 직렬화 필드.
+        private static readonly string[] BaseTrainFields =
+        {
+            "m_Enabled", "id", "explosionRadius", "explosionForce", "isRotateTurret", "IsUnDead"
+        };
+
         [MenuItem("TrainDefense/Migration/Add AttackModules To Train Prefabs")]
         public static void AddAttackModules()
         {
@@ -73,6 +79,74 @@ namespace TrainDefense.EditorTools
 
             AssetDatabase.SaveAssets();
             Debug.Log($"[TrainCompositionMigration] 완료. RangeModule +{rangeChanged}, TurretModule +{turretChanged}, config 복사 {configCopied}건.");
+        }
+
+        /// <summary>
+        /// 2단계: shell 마커(TurretTrain/RangeTrain) 컴포넌트를 Train으로 교체한다.
+        /// 먼저 AddAttackModules로 모듈+config를 보장한 뒤, 베이스 Train 필드를 새 Train에 복사하고 shell을 제거.
+        /// 실행·검증 후 TurretTrain/RangeTrain 클래스 파일을 삭제하면 된다(코드 참조는 이미 0).
+        /// </summary>
+        [MenuItem("TrainDefense/Migration/Convert Shells To Train")]
+        public static void ConvertShellsToTrain()
+        {
+            // 모듈 + config 선보장 (멱등).
+            AddAttackModules();
+
+            string[] guids = AssetDatabase.FindAssets("t:Prefab", new[] { "Assets" });
+            int swapped = 0, skipped = 0;
+
+            foreach (var guid in guids)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                GameObject root = PrefabUtility.LoadPrefabContents(path);
+                try
+                {
+                    var turretShell = root.GetComponent<TurretTrain>();
+                    var rangeShell = root.GetComponent<RangeTrain>();
+                    Component shell = (Component)turretShell ?? rangeShell;
+                    if (shell == null) continue;
+
+                    // 안전장치: 대응 모듈이 없으면 교체하지 않음(공격 동작 상실 방지).
+                    bool moduleOk = turretShell != null
+                        ? root.GetComponent<TurretAttackModule>() != null
+                        : root.GetComponent<RangeAttackModule>() != null;
+                    if (!moduleOk)
+                    {
+                        skipped++;
+                        Debug.LogWarning($"[TrainCompositionMigration] 모듈 없어 교체 건너뜀 → {path}");
+                        continue;
+                    }
+
+                    var train = root.AddComponent<Train>();
+                    CopyBaseTrainFields(shell, train);
+                    Object.DestroyImmediate(shell, true);
+
+                    PrefabUtility.SaveAsPrefabAsset(root, path);
+                    swapped++;
+                    Debug.Log($"[TrainCompositionMigration] shell→Train 교체 → {path}");
+                }
+                finally
+                {
+                    PrefabUtility.UnloadPrefabContents(root);
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[TrainCompositionMigration] shell 교체 완료. {swapped}개 교체, {skipped}개 건너뜀. " +
+                      "이제 TurretTrain.cs/RangeTrain.cs 클래스 파일을 삭제해도 됩니다.");
+        }
+
+        private static void CopyBaseTrainFields(Component shell, Train train)
+        {
+            var src = new SerializedObject(shell);
+            var dst = new SerializedObject(train);
+            foreach (var f in BaseTrainFields)
+            {
+                var sp = src.FindProperty(f);
+                if (sp != null && dst.FindProperty(f) != null)
+                    dst.CopyFromSerializedProperty(sp);
+            }
+            dst.ApplyModifiedPropertiesWithoutUndo();
         }
 
         // TurretTrain 마커의 직렬화 필드를 같은 이름의 TurretAttackModule 필드로 복사(배열/오브젝트 참조 포함).
