@@ -8,7 +8,7 @@ namespace TrainDefense.Game
     {
         protected override bool OnUse()
         {
-            if (owner is not TurretTrain)
+            if (owner.AttackModule is not IProjectileAttacker)
             {
                 Debug.LogWarning($"TrainProjectileSkillAction: [{owner?.name}] supports only TurretTrain in phase 1.");
                 return false;

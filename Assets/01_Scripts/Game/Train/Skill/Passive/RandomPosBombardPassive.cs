@@ -35,17 +35,17 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            if (Owner is IProjectileAttacker attacker) attacker.OnTargetPosAttacked += HandleTargetPosAttacked;
+            if (Owner.AttackModule is IProjectileAttacker attacker) attacker.OnTargetPosAttacked += HandleTargetPosAttacked;
         }
 
         public override void Unsubscribe()
         {
-            if (Owner is IProjectileAttacker attacker) attacker.OnTargetPosAttacked -= HandleTargetPosAttacked;
+            if (Owner.AttackModule is IProjectileAttacker attacker) attacker.OnTargetPosAttacked -= HandleTargetPosAttacked;
         }
 
         private void HandleTargetPosAttacked()
         {
-            if (Owner is not IProjectileAttacker attacker) return;
+            if (Owner.AttackModule is not IProjectileAttacker attacker) return;
 
             Vector3 center = Camera.main != null ? Camera.main.transform.position : Vector3.zero;
             for (int i = 0; i < Count; i++)

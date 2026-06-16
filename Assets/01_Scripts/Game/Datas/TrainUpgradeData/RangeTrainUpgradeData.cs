@@ -125,5 +125,8 @@ namespace TrainDefense.Game.Datas
          if (currentSlow > 0f)
             yield return new TrainStatLine("Upgrade_Slow", "Stat_Slow", currentSlow, next.SlowRate);
       }
+
+      // 범위 업그레이드는 패시브 부여 없음.
+      public string GetPassiveSkillDataId(int level) => null;
    }
 }

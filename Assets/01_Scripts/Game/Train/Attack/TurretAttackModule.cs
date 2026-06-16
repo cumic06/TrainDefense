@@ -13,13 +13,18 @@ using UnityEngine;
 namespace TrainDefense.Game
 {
     /// <summary>
-    /// 포탑 공격(개별 투사체 발사) 동작을 캡슐화하는 컴포넌트. 기존 TurretTrain의 공격 로직을 이관.
-    /// 직렬화 설정(spawn point/turret/model/flag)은 TurretTrain(shell)이 보유하고 모듈은 접근자로 읽는다.
+    /// 포탑 공격(개별 투사체 발사) 동작을 캡슐화하는 컴포넌트. 직렬화 설정(spawn point/turret/model/flag)도 직접 보유.
     /// </summary>
     public class TurretAttackModule : MonoBehaviour, IAttackModule,
         IProjectileEmitter, IAttackEvents, IProjectileAttacker, IExternalProjectileSpawner, IForceAttacker
     {
-        private TurretTrain _turret;
+        [SerializeField] private Transform[] turretProjectileSpawnPoints;
+        [SerializeField] private bool useParticleProjectile;
+        [SerializeField] private bool isTargeting = false;
+        [SerializeField] private GameObject turret;
+        [SerializeField] private GameObject turretModel;
+
+        private Train _owner;
         private TurretTrainData _data;
         private bool _initialized;
 
@@ -52,9 +57,9 @@ namespace TrainDefense.Game
         #region Lifecycle
         public void InitializeModule(Train owner)
         {
-            _turret = owner as TurretTrain;
+            _owner = owner;
             _data = owner != null ? owner.TrainData as TurretTrainData : null;
-            if (_turret == null || _data == null) return;
+            if (_owner == null || _data == null) return;
 
             // 이미 초기화된 경우 업그레이드된 값이 덮어쓰이지 않도록 보호
             if (!_isStatusInitialized)
@@ -66,8 +71,8 @@ namespace TrainDefense.Game
 
             InitializeProjectilePoolingMode();
 
-            if (_turret.TurretModel != null)
-                _turretmodelScale = _turret.TurretModel.transform.localScale;
+            if (turretModel != null)
+                _turretmodelScale = turretModel.transform.localScale;
 
             _initialized = true;
         }
@@ -88,7 +93,7 @@ namespace TrainDefense.Game
 
         private void FixedUpdate()
         {
-            if (!_initialized || _turret == null || _turret.IsDead) return;
+            if (!_initialized || _owner == null || _owner.IsDead) return;
 
             DetectTarget();
 
@@ -160,10 +165,10 @@ namespace TrainDefense.Game
         #region Attack Loop
         private void DetectTarget()
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(_turret.transform.position, _currentTurretTrainStatus.AttackRange);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(_owner.transform.position, _currentTurretTrainStatus.AttackRange);
             _targetMonsters = colliders.Where(a => a.GetComponent<Monster>() != null)
                 .Select(a => a.GetComponent<Monster>())
-                .OrderBy(x => _turret.transform.position.SqrDistance(x.transform.position))
+                .OrderBy(x => _owner.transform.position.SqrDistance(x.transform.position))
                 .ToList();
         }
 
@@ -192,7 +197,7 @@ namespace TrainDefense.Game
             if (_targetMonsters.Count == 0)
             {
                 ResetTarget();
-                if (_turret.TrainData.DamageType == DamageType.Tick)
+                if (_owner.TrainData.DamageType == DamageType.Tick)
                 {
                     SoundManager.Instance.StopSFX(_data.AttackSoundType);
                 }
@@ -225,17 +230,17 @@ namespace TrainDefense.Game
             _attackCounter++;
             OnAttacked?.Invoke(nearTarget);
 
-            if (_turret.TurretModel != null)
+            if (turretModel != null)
             {
-                if (_turret.IsRotateTurret)
-                    _turret.TurretObject.transform.LookAt2D(nearTarget.transform);
+                if (_owner.IsRotateTurret)
+                    turret.transform.LookAt2D(nearTarget.transform);
 
                 PlayAttackAnimation();
             }
 
             if (_data.AttackSoundType != SoundType.None && SoundManager.Instance != null)
             {
-                if (_turret.TrainData.DamageType == DamageType.Direct)
+                if (_owner.TrainData.DamageType == DamageType.Direct)
                 {
                     SoundManager.Instance.PlaySFX(_data.AttackSoundType);
                 }
@@ -259,7 +264,7 @@ namespace TrainDefense.Game
                 if (projectileData == null || !projectileData.DirectDamage)
                     return;
             }
-            else if (_turret.IsTargeting)
+            else if (isTargeting)
             {
                 TargetedAttack();
             }
@@ -277,7 +282,7 @@ namespace TrainDefense.Game
 
         public bool ForceAttack()
         {
-            if (_turret == null || _turret.IsDead) return false;
+            if (_owner == null || _owner.IsDead) return false;
             DetectTarget();
             if (_targetMonsters.Count == 0) return false;
             Attack();
@@ -302,7 +307,7 @@ namespace TrainDefense.Game
             float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
             int count = _currentTurretTrainStatus.AttackCount;
             // 파티클 투사체(화염 등)는 스폰포인트가 포탑 중심에서 오프셋되어 있어 포탑 회전을 그대로 따라가도록 처리.
-            bool alignToTurret = _turret.UseParticleProjectile && _turret.IsRotateTurret && _turret.TurretObject != null;
+            bool alignToTurret = useParticleProjectile && _owner.IsRotateTurret && turret != null;
 
             for (int i = 0; i < count; i++)
             {
@@ -310,7 +315,7 @@ namespace TrainDefense.Game
                 if (projectile != null)
                 {
                     if (alignToTurret)
-                        projectile.transform.rotation = _turret.TurretObject.transform.rotation;
+                        projectile.transform.rotation = turret.transform.rotation;
                     else
                         projectile.transform.LookAt2D(aimPos);
 
@@ -466,7 +471,7 @@ namespace TrainDefense.Game
 
         public void RepeatNormalAttack(Vector2? aimPosition = null)
         {
-            if (_turret == null || _turret.IsDead) return;
+            if (_owner == null || _owner.IsDead) return;
 
             Monster nearTarget = null;
             if (!aimPosition.HasValue)
@@ -477,21 +482,21 @@ namespace TrainDefense.Game
                 if (nearTarget == null) return;
             }
 
-            if (_turret.TurretModel != null)
+            if (turretModel != null)
             {
-                if (_turret.IsRotateTurret)
+                if (_owner.IsRotateTurret)
                 {
                     if (aimPosition.HasValue)
-                        _turret.TurretObject.transform.LookAt2D(aimPosition.Value);
+                        turret.transform.LookAt2D(aimPosition.Value);
                     else
-                        _turret.TurretObject.transform.LookAt2D(nearTarget.transform);
+                        turret.transform.LookAt2D(nearTarget.transform);
                 }
                 PlayAttackAnimation();
             }
 
             if (_data.AttackSoundType != SoundType.None && SoundManager.Instance != null)
             {
-                if (_turret.TrainData.DamageType == DamageType.Direct)
+                if (_owner.TrainData.DamageType == DamageType.Direct)
                 {
                     SoundManager.Instance.PlaySFX(_data.AttackSoundType);
                 }
@@ -506,7 +511,7 @@ namespace TrainDefense.Game
 
         private void PlayAttackAnimation()
         {
-            var model = _turret.TurretModel;
+            var model = turretModel;
             if (model == null) return;
             model.transform.DOKill();
             model.transform.DOScale(_turretmodelScale * 0.9f, 0.1f).SetEase(Ease.OutBack).OnComplete(() =>
@@ -521,8 +526,8 @@ namespace TrainDefense.Game
 
         public void SpawnExternalProjectileAtSelf(Projectile prefab, float radius, float damageMul = 1f, float shoveScale = 1f, Monster target = null)
         {
-            if (prefab == null || _turret == null) return;
-            var spawned = ResourceManager.Instance.Spawn(prefab, _turret.transform.position, Quaternion.identity);
+            if (prefab == null || _owner == null) return;
+            var spawned = ResourceManager.Instance.Spawn(prefab, _owner.transform.position, Quaternion.identity);
             if (spawned == null) return;
             float r = radius >= 0f ? radius : _currentTurretTrainStatus.AttackArea;
             Monster nearTarget = target != null ? target : GetNearTargetMonster();
@@ -531,7 +536,7 @@ namespace TrainDefense.Game
             spawned.ShoveScale = shoveScale;
             spawned.Init(
                 damage,
-                _turret,
+                _owner,
                 nearTarget,
                 r,
                 _currentTurretTrainStatus.CriticalChance,
@@ -623,7 +628,7 @@ namespace TrainDefense.Game
                     projectile.transform.position = worldPosition.Value;
                     projectile.transform.localRotation = Quaternion.identity;
 
-                    if (_turret.UseParticleProjectile)
+                    if (useParticleProjectile)
                         projectile.transform.localScale = Vector3.one;
                 }
                 else
@@ -634,7 +639,7 @@ namespace TrainDefense.Game
             else
             {
                 Transform parent = null;
-                var spawnPoints = _turret.SpawnPoints;
+                var spawnPoints = turretProjectileSpawnPoints;
 
                 if (spawnPoints != null && spawnPoints.Length > 0)
                 {
@@ -653,7 +658,7 @@ namespace TrainDefense.Game
                     }
                     else
                     {
-                        projectile.transform.SetParent(_turret.transform);
+                        projectile.transform.SetParent(_owner.transform);
                         projectile.transform.localPosition = Vector3.zero;
                         projectile.transform.localRotation = Quaternion.identity;
                     }
@@ -668,12 +673,12 @@ namespace TrainDefense.Game
                             Mathf.Approximately(parentLossyScale.z, 0f) ? 1f : 1f / parentLossyScale.z);
                     }
 
-                    if (_turret.UseParticleProjectile)
+                    if (useParticleProjectile)
                         projectile.transform.localScale = Vector3.one;
                 }
                 else
                 {
-                    projectile.transform.position = parent != null ? parent.position : _turret.transform.position;
+                    projectile.transform.position = parent != null ? parent.position : _owner.transform.position;
                 }
             }
         }
@@ -684,7 +689,7 @@ namespace TrainDefense.Game
 
             projectile.Init(
                 _currentTurretTrainStatus.AttackDamage,
-                _turret,
+                _owner,
                 target,
                 projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
                 _currentTurretTrainStatus.CriticalChance,
@@ -699,7 +704,7 @@ namespace TrainDefense.Game
 
             projectile.Init(
                 _currentTurretTrainStatus.AttackDamage,
-                _turret,
+                _owner,
                 null,
                 projectile.IsScaleByArea() ? _currentTurretTrainStatus.AttackArea : 0f,
                 _currentTurretTrainStatus.CriticalChance,
@@ -983,6 +988,41 @@ namespace TrainDefense.Game
                 foreach (var projectile in _nonMovementProjectiles)
                     if (projectile != null) InitializeProjectileDamage(projectile);
             }
+        }
+        #endregion
+
+        #region Display / SpawnPoint (IAttackModule)
+        public Transform GetSkillSpawnPoint(int index)
+        {
+            if (turretProjectileSpawnPoints == null || turretProjectileSpawnPoints.Length == 0) return null;
+            if (index < 0) index = 0;
+            if (index >= turretProjectileSpawnPoints.Length) index = turretProjectileSpawnPoints.Length - 1;
+            return turretProjectileSpawnPoints[index];
+        }
+
+        public string GetStatSummary()
+        {
+            var s = _currentTurretTrainStatus;
+            return $"DMG={s.AttackDamage} | RANGE={s.AttackRange} | AREA={s.AttackArea} | CNT={s.AttackCount} | TGT={s.TargetCount}";
+        }
+
+        public (string label, string value)[] GetStatDetailLines()
+        {
+            var s = _currentTurretTrainStatus;
+            Func<string, string, string> L = TrainDefense.Localize.LocalizeHelper.GetByKey;
+            var details = new List<(string label, string value)>
+            {
+                (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(s.AttackDamage)}"),
+                (L("Detail_Range", "사거리"), $"{s.AttackRange:F1}"),
+            };
+            if (s.AttackArea > 0f && _data != null && _data.UsesAttackArea)
+                details.Add((L("Detail_Area", "범위"), $"{s.AttackArea:F1}"));
+            details.Add((L("Detail_Speed", "공격속도"), $"{TrainStatLine.ToAttackSpeed(s.AttackInterval):F2}"));
+            if (s.TargetCount > 1)
+                details.Add((L("Detail_Targets", "대상 수"), $"{s.TargetCount}"));
+            details.Add((L("Detail_CritChance", "크리티컬 확률"), $"{s.CriticalChance:F0}%"));
+            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + s.CriticalDamage:F0}%"));
+            return details.ToArray();
         }
         #endregion
     }

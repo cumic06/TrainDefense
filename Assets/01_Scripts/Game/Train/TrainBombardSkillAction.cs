@@ -15,7 +15,7 @@ namespace TrainDefense.Game
 
         protected override bool OnUse()
         {
-            if (owner is not IProjectileAttacker attacker) return false;
+            if (owner.AttackModule is not IProjectileAttacker attacker) return false;
             float duration = trainSkillData.BuffDuration > 0f ? trainSkillData.BuffDuration : 5f;
             owner.StartCoroutine(BombardCoroutine(owner, attacker, duration));
             return true;

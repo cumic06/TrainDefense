@@ -36,7 +36,7 @@ namespace TrainDefense.Game
         private void HandleAttacked(Monster target)
         {
             if (target == null || RepeatCount <= 0) return;
-            if (Owner is not IProjectileAttacker attacker) return;
+            if (Owner.AttackModule is not IProjectileAttacker attacker) return;
             // KeepTarget이면 첫 타겟 위치를 캡처 → 타겟이 죽어도 그 방향으로 발사.
             Vector2? aimPosition = KeepTarget ? (Vector2)target.transform.position : (Vector2?)null;
             Owner.StartCoroutine(Run(attacker, aimPosition));

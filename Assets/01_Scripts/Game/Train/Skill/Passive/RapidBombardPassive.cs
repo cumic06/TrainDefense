@@ -47,7 +47,7 @@ namespace TrainDefense.Game
             if (AreaPct != 0f) stats.Add(new SimpleStat { Type = StatType.AttackArea, Value = AreaPct });
             if (stats.Count > 0) Owner.ApplyStatsByCurrentValue(stats.ToArray());
 
-            if (Owner is IProjectileAttacker attacker)
+            if (Owner.AttackModule is IProjectileAttacker attacker)
                 attacker.TargetPosOverride = () =>
                 {
                     Vector3 center = Camera.main != null ? Camera.main.transform.position : Vector3.zero;
@@ -60,7 +60,7 @@ namespace TrainDefense.Game
 
         public override void Unsubscribe()
         {
-            if (Owner is IProjectileAttacker attacker) attacker.TargetPosOverride = null;
+            if (Owner.AttackModule is IProjectileAttacker attacker) attacker.TargetPosOverride = null;
         }
     }
 }

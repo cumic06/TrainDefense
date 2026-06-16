@@ -42,7 +42,7 @@ namespace TrainDefense.Game
         private void HandleAttacked(Monster target)
         {
             if (target == null) return;
-            if (Owner is not IProjectileAttacker attacker) return;
+            if (Owner.AttackModule is not IProjectileAttacker attacker) return;
             if (!UtilMath.CheckProbability(ChancePercent)) return;
 
             GameEventSystem.Publish(new LuckyEvent(Owner.transform.position));

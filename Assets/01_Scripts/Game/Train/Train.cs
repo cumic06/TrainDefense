@@ -13,7 +13,7 @@ using UnityEngine;
 namespace TrainDefense.Game
 {
     public class Train : MonoBehaviour, ITrainable, IProjectileTarget,
-        IAttackEvents, IExternalProjectileSpawner, IForceAttacker
+        IAttackEvents, IExternalProjectileSpawner, IForceAttacker, ISlowProvider
     {
         #region Verialbes
 
@@ -141,9 +141,12 @@ namespace TrainDefense.Game
         public Transform TargetTransform => transform;
         public bool IsActive => !IsDead;
 
+        // 부착된 공격 모듈(없으면 null). 패시브/스킬이 능력 인터페이스로 접근할 때 사용.
+        public IAttackModule AttackModule => _attackModule;
+
         public virtual Transform GetSkillSpawnPoint(int index)
         {
-            return transform;
+            return _attackModule?.GetSkillSpawnPoint(index) ?? transform;
         }
 
         public void Slow(float slowValue, float duration)
@@ -308,6 +311,15 @@ namespace TrainDefense.Game
             // 공격 모듈 스탯 업그레이드(currentLevel = 증가 전 레벨 = prevLevel).
             _attackModule?.ApplyUpgrade(upgradeData, currentLevel);
 
+            // 업그레이드가 부여하는 패시브 등록(포탑 업그레이드만 ID 반환). _skillModule은 Train 소유.
+            var grantedPassiveId = upgradeData.GetPassiveSkillDataId(currentLevel + 1);
+            if (!string.IsNullOrEmpty(grantedPassiveId))
+            {
+                var passiveData = DatabaseManager.Instance?.GetDB()?.TrainSkillDataDB?.trainPassiveSkillDataList
+                    ?.Find(s => s != null && s.Id == grantedPassiveId);
+                if (passiveData != null) _skillModule.RegisterPassiveFromData(passiveData);
+            }
+
             GameEventSystem.Publish(new TrainLevelUpEvent(this, _currentLevel));
         }
 
@@ -377,7 +389,15 @@ namespace TrainDefense.Game
             }
         }
 
-        public virtual void ApplyPassiveSkills() { }
+        public virtual void ApplyPassiveSkills()
+        {
+            var passives = _trainData?.PassiveSkillDatas;
+            if (passives == null) return;
+            // 삼중택일은 픽한 스킬 1개만 부여. (_IsPassiveApplied 공용 규칙)
+            foreach (var p in passives)
+                if (p != null && _IsPassiveApplied(p.Id))
+                    _skillModule.RegisterPassiveFromData(p);
+        }
 
         /// <summary>
         /// 기차 하위에 부착된 채 풀로 반환되지 않는 공격 투사체(범위 공격·화염 파티클 등)를 정리한다.
@@ -420,13 +440,22 @@ namespace TrainDefense.Game
                     yield return (false, passive.Name, passive.Description);
         }
 
-        public virtual string GetStatSummary() => $"MaxHp={_currentMaxHp}";
+        public virtual string GetStatSummary()
+            => _attackModule != null ? $"{_attackModule.GetStatSummary()} | MaxHp={_currentMaxHp}" : $"MaxHp={_currentMaxHp}";
 
         // 공격 간격(초)을 공격 속도(초당 횟수)로 변환. 0 이하면 0.
         protected static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
 
         public virtual (string label, string value)[] GetStatDetails()
-            => new[] { (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}") };
+        {
+            var hp = (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}");
+            if (_attackModule == null) return new[] { hp };
+            var attack = _attackModule.GetStatDetailLines();
+            var result = new (string label, string value)[attack.Length + 1];
+            result[0] = hp;
+            attack.CopyTo(result, 1);
+            return result;
+        }
 
         protected virtual void ApplyStat(IStat stat)
         {
@@ -479,6 +508,9 @@ namespace TrainDefense.Game
         }
 
         public bool ForceAttack() => _attackModule is IForceAttacker f && f.ForceAttack();
+
+        // 둔화 제공(범위 둔화 포탑). 모듈이 ISlowProvider면 위임, 아니면 1(둔화 없음).
+        public float GetSlowValue() => _attackModule is ISlowProvider sp ? sp.GetSlowValue() : 1f;
 
         public void SpawnExternalProjectile(Projectile prefab, float radius,
             IProjectileTarget target = null, float damageMul = 1f, float shoveScale = 1f)

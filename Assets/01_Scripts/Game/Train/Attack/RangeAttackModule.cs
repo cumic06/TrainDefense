@@ -447,5 +447,31 @@ namespace TrainDefense.Game
             _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, _train, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
         }
         #endregion
+
+        #region Display / SpawnPoint (IAttackModule)
+        // 범위 기차는 전용 스폰포인트가 없어 기차 중심(Train.transform)을 사용 → null 반환(Train이 폴백).
+        public Transform GetSkillSpawnPoint(int index) => null;
+
+        public string GetStatSummary()
+        {
+            var s = _currentRangeTrainStatus;
+            return $"DMG={s.AttackDamage} | RANGE={s.AttackRange} | AREA={s.AttackArea}";
+        }
+
+        public (string label, string value)[] GetStatDetailLines()
+        {
+            var s = _currentRangeTrainStatus;
+            Func<string, string, string> L = TrainDefense.Localize.LocalizeHelper.GetByKey;
+            return new[]
+            {
+                (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(s.AttackDamage)}"),
+                (L("Detail_Range", "사거리"), $"{s.AttackRange:F1}"),
+                (L("Detail_Area", "범위"), $"{s.AttackArea:F1}"),
+                (L("Detail_Speed", "공격속도"), $"{TrainStatLine.ToAttackSpeed(s.AttackInterval):F2}"),
+                (L("Detail_CritChance", "크리티컬 확률"), $"{s.CriticalChance:F0}%"),
+                (L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + s.CriticalDamage:F0}%"),
+            };
+        }
+        #endregion
     }
 }

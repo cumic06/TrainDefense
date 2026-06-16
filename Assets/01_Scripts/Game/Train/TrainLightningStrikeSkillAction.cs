@@ -25,7 +25,7 @@ namespace TrainDefense.Game
 
             // 낙뢰 피해 = 포탑 공격력 × 4 (공격력 비례). 비-투사체형이면 스킬 고정값 폴백.
             float damage = projectileSkillData.Damage;
-            if (owner is IProjectileAttacker attacker)
+            if (owner.AttackModule is IProjectileAttacker attacker)
             {
                 damage = attacker.CurrentAttackDamage * 4f;
             }

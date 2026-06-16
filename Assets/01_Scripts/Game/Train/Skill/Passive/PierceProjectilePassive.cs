@@ -27,12 +27,12 @@ namespace TrainDefense.Game
 
         public override void Subscribe()
         {
-            if (Owner is IProjectileEmitter e) e.AddProjectileModifier(this);
+            if (Owner.AttackModule is IProjectileEmitter e) e.AddProjectileModifier(this);
         }
 
         public override void Unsubscribe()
         {
-            if (Owner is IProjectileEmitter e) e.RemoveProjectileModifier(this);
+            if (Owner.AttackModule is IProjectileEmitter e) e.RemoveProjectileModifier(this);
         }
 
         public Projectile OverridePrefab(ProjectileSpawnContext ctx, Projectile current) => LoadPrefab();

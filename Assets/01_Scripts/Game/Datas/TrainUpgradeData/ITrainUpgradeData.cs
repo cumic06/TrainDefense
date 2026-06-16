@@ -21,5 +21,8 @@ namespace TrainDefense.Game.Datas
         /// <param name="currentLevel">현재 누적 레벨(증가 전)</param>
         /// <param name="nextLevel">다음 업그레이드 레벨 인덱스</param>
         IEnumerable<TrainStatLine> GetUpgradePreview(TrainData trainData, int currentLevel, int nextLevel);
+
+        /// <summary>해당 레벨 업그레이드가 부여하는 패시브 스킬 ID(없으면 null). 포탑 업그레이드만 사용.</summary>
+        string GetPassiveSkillDataId(int level);
     }
 }

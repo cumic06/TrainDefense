@@ -1,5 +1,6 @@
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Stats;
+using UnityEngine;
 
 namespace TrainDefense.Game
 {
@@ -36,5 +37,14 @@ namespace TrainDefense.Game
 
         /// <summary>엘리트 교체 시 진행도(스탯 델타) 이관.</summary>
         void CopyProgressFrom(IAttackModule source);
+
+        /// <summary>스킬 투사체 스폰 위치. 전용 스폰포인트가 없으면 null(Train이 자기 transform으로 폴백).</summary>
+        Transform GetSkillSpawnPoint(int index);
+
+        /// <summary>공격 스탯 요약 문자열(HP 제외 — Train이 MaxHp를 덧붙임).</summary>
+        string GetStatSummary();
+
+        /// <summary>공격 스탯 상세 줄(HP 제외 — Train이 HP를 앞에 붙임).</summary>
+        (string label, string value)[] GetStatDetailLines();
     }
 }
