@@ -1857,7 +1857,7 @@ MonoBehaviour:
     category: 1
     stats: []
     passiveType: 3
-    passiveValuePerLevel: 2
+    passiveValuePerLevel: 1
   - id: 120007
     iconId:
     name: PermanentUpgrade_120007_Name
