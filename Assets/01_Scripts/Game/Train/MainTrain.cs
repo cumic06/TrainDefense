@@ -111,6 +111,7 @@ namespace TrainDefense.Game
       {
          base.Update();
          _TickHealthRegen(Time.deltaTime);
+         _UpdateWeaponInput();
       }
 
       // 자가 복구 레벨이 있으면 5초마다 살아있는 모든 포탑을 한 번에 회복. (메인 기차는 _currentAliveTrains에 미포함이라 자동 제외)

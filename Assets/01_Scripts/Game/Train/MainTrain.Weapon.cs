@@ -25,11 +25,8 @@ namespace TrainDefense.Game
       private float _fireCooldown;
       #endregion
 
-      protected override void Update()
-      {
-         base.Update();
-         _UpdateWeaponInput();
-      }
+      // 무기 입력 갱신은 본체(MainTrain.cs)의 Update()에서 호출한다.
+      // partial 클래스는 Update()를 중복 정의할 수 없으므로, 발사 로직은 _UpdateWeaponInput()으로 분리만 한다.
 
       /// <summary>
       /// 선택한 포탑을 MainTrain 주무기로 장착한다. (TrainManager가 게임 시작 시 호출)
