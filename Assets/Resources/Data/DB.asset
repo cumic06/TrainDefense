@@ -25,8 +25,8 @@ MonoBehaviour:
     - {fileID: 3058856078925539220, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
     - {fileID: 6398057966443142182, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
     monsterStatusData:
-      MaxHp: 10
-      Damage: 3
+      MaxHp: 8
+      Damage: 4
       MoveSpeed: 5
       AttackDelay: 1
       DropExpMin: 10
@@ -49,9 +49,9 @@ MonoBehaviour:
     - {fileID: -3137741453567158835, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     - {fileID: 9216760424783274641, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     monsterStatusData:
-      MaxHp: 25
-      Damage: 5
-      MoveSpeed: 8
+      MaxHp: 28
+      Damage: 4
+      MoveSpeed: 7
       AttackDelay: 0.7
       DropExpMin: 30
       DropExpMax: 30
@@ -75,14 +75,14 @@ MonoBehaviour:
     - {fileID: -1016734687898979182, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     - {fileID: 7477702687696233401, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     monsterStatusData:
-      MaxHp: 40
+      MaxHp: 36
       Damage: 15
       MoveSpeed: 4
-      AttackDelay: 2.7
-      DropExpMin: 45
-      DropExpMax: 45
-      DropMoneyMin: 14
-      DropMoneyMax: 14
+      AttackDelay: 2.4
+      DropExpMin: 36
+      DropExpMax: 36
+      DropMoneyMin: 12
+      DropMoneyMax: 12
       AttackRange: 5
       AttackType: 1
     prefabId: Gnoll
@@ -99,7 +99,7 @@ MonoBehaviour:
     - {fileID: 1066738513809693257, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
     - {fileID: -6583819675886926066, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
     monsterStatusData:
-      MaxHp: 20
+      MaxHp: 24
       Damage: 10
       MoveSpeed: 4
       AttackDelay: 2
@@ -123,14 +123,14 @@ MonoBehaviour:
     - {fileID: -5309227702758776139, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     - {fileID: 8516958411369342763, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     monsterStatusData:
-      MaxHp: 40
-      Damage: 10
+      MaxHp: 43
+      Damage: 15
       MoveSpeed: 3.4
-      AttackDelay: 3
-      DropExpMin: 35
-      DropExpMax: 35
-      DropMoneyMin: 10
-      DropMoneyMax: 10
+      AttackDelay: 2.3
+      DropExpMin: 46
+      DropExpMax: 46
+      DropMoneyMin: 14
+      DropMoneyMax: 14
       AttackRange: 5
       AttackType: 1
     prefabId: Shark
@@ -148,10 +148,10 @@ MonoBehaviour:
     - {fileID: 6566697209257710286, guid: eec049525e8bf41429d9c479cff52295, type: 3}
     - {fileID: -1919939128155651028, guid: eec049525e8bf41429d9c479cff52295, type: 3}
     monsterStatusData:
-      MaxHp: 160
-      Damage: 15
+      MaxHp: 143
+      Damage: 20
       MoveSpeed: 2.8
-      AttackDelay: 3
+      AttackDelay: 2
       DropExpMin: 170
       DropExpMax: 170
       DropMoneyMin: 51
@@ -174,8 +174,8 @@ MonoBehaviour:
     - {fileID: -7986096866211416920, guid: 312db2f3608864126917ff6df6896c77, type: 3}
     - {fileID: -8890637189039292993, guid: 312db2f3608864126917ff6df6896c77, type: 3}
     monsterStatusData:
-      MaxHp: 16
-      Damage: 5
+      MaxHp: 20
+      Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
       DropExpMin: 18
@@ -198,7 +198,7 @@ MonoBehaviour:
     - {fileID: -8315347680731458982, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     - {fileID: -9062487706820149092, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     monsterStatusData:
-      MaxHp: 55
+      MaxHp: 50
       Damage: 10
       MoveSpeed: 6
       AttackDelay: 1.5
@@ -222,9 +222,9 @@ MonoBehaviour:
     - {fileID: -5987072993317950802, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     - {fileID: 308462971345494500, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     monsterStatusData:
-      MaxHp: 80
+      MaxHp: 85
       Damage: 10
-      MoveSpeed: 4.3
+      MoveSpeed: 3.7
       AttackDelay: 1
       DropExpMin: 70
       DropExpMax: 70
@@ -269,14 +269,14 @@ MonoBehaviour:
     - {fileID: 6099051866714902594, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
     - {fileID: -4574552896946758463, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
     monsterStatusData:
-      MaxHp: 8
+      MaxHp: 12
       Damage: 3
       MoveSpeed: 6.5
       AttackDelay: 0.8
-      DropExpMin: 8
-      DropExpMax: 8
-      DropMoneyMin: 5
-      DropMoneyMax: 5
+      DropExpMin: 10
+      DropExpMax: 10
+      DropMoneyMin: 6
+      DropMoneyMax: 6
       AttackRange: 2
       AttackType: 0
     prefabId: Dwarf
@@ -292,14 +292,14 @@ MonoBehaviour:
     - {fileID: -8173720173229929539, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     - {fileID: 4663589299363003436, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     monsterStatusData:
-      MaxHp: 35
-      Damage: 10
-      MoveSpeed: 5
-      AttackDelay: 1.4
-      DropExpMin: 35
-      DropExpMax: 35
-      DropMoneyMin: 10
-      DropMoneyMax: 10
+      MaxHp: 37
+      Damage: 12
+      MoveSpeed: 4
+      AttackDelay: 1.6
+      DropExpMin: 42
+      DropExpMax: 42
+      DropMoneyMin: 12
+      DropMoneyMax: 12
       AttackRange: 3
       AttackType: 0
     prefabId: Spider
@@ -318,14 +318,14 @@ MonoBehaviour:
     - {fileID: -6476088961041308456, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
     - {fileID: -723742200156331293, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
     monsterStatusData:
-      MaxHp: 110
+      MaxHp: 129
       Damage: 20
-      MoveSpeed: 4.7
+      MoveSpeed: 4
       AttackDelay: 2
-      DropExpMin: 110
-      DropExpMax: 110
-      DropMoneyMin: 33
-      DropMoneyMax: 33
+      DropExpMin: 115
+      DropExpMax: 115
+      DropMoneyMin: 31
+      DropMoneyMax: 31
       AttackRange: 2
       AttackType: 0
     prefabId: Minotaur
@@ -342,7 +342,7 @@ MonoBehaviour:
     - {fileID: -3942745417268178275, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
     - {fileID: -1776823346852784203, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
     monsterStatusData:
-      MaxHp: 24
+      MaxHp: 26
       Damage: 10
       MoveSpeed: 5
       AttackDelay: 2
@@ -364,14 +364,14 @@ MonoBehaviour:
     - {fileID: -2829615651170692943, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
     - {fileID: -6842481794725325692, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
     monsterStatusData:
-      MaxHp: 65
+      MaxHp: 51
       Damage: 15
       MoveSpeed: 4
       AttackDelay: 3
-      DropExpMin: 60
-      DropExpMax: 60
-      DropMoneyMin: 18
-      DropMoneyMax: 18
+      DropExpMin: 69
+      DropExpMax: 69
+      DropMoneyMin: 21
+      DropMoneyMax: 21
       AttackRange: 5
       AttackType: 1
     prefabId: GoblinSorcerer
@@ -392,10 +392,10 @@ MonoBehaviour:
     - {fileID: 6601671565499704310, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
     - {fileID: -1199408517139786225, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
     monsterStatusData:
-      MaxHp: 220
-      Damage: 20
+      MaxHp: 257
+      Damage: 30
       MoveSpeed: 3
-      AttackDelay: 4
+      AttackDelay: 2.3
       DropExpMin: 220
       DropExpMax: 220
       DropMoneyMin: 66
@@ -1655,7 +1655,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.3571
+    spawnInterval: 0.4286
     spawnDatas:
     - MonsterId: 10011
       Probability: 5.5
