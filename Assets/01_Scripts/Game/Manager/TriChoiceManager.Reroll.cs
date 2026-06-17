@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cumic.Events;
+using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game
@@ -20,9 +21,12 @@ namespace TrainDefense.Game
 
         #region Variables
         private int _currentRerollCost;
+        // 남은 무료 리롤 횟수(영구 업글). 트라이초이스가 열릴 때 충전된다.
+        private int _freeRerollCount;
         #endregion
 
-        public int CurrentRerollCost => _currentRerollCost;
+        // 무료 리롤이 남아있으면 0(무료)으로 표시한다.
+        public int CurrentRerollCost => _freeRerollCount > 0 ? 0 : _currentRerollCost;
 
         /// <summary>
         /// 삼중택일이 새로 열릴 때 호출. 리롤 비용을 기본값으로 초기화하고
@@ -33,6 +37,12 @@ namespace TrainDefense.Game
         {
             _currentRerollCost = baseRerollCost;
             _lastEliteChoiceIds.Clear();
+
+            // 영구 업그레이드: 레벨업(트라이초이스 오픈)마다 무료 리롤 횟수 충전
+            var permanentUpgradeManager = PermanentUpgradeManager.Instance;
+            _freeRerollCount = permanentUpgradeManager != null
+                ? Mathf.RoundToInt(permanentUpgradeManager.GetValue(PermanentUpgradeType.FreeReroll))
+                : 0;
         }
 
         /// <summary>
@@ -40,6 +50,9 @@ namespace TrainDefense.Game
         /// </summary>
         public bool CanReroll()
         {
+            if (_freeRerollCount > 0)
+                return true;
+
             var userDataManager = UserDataManager.Instance;
 
             return userDataManager != null && userDataManager.Coin >= _currentRerollCost;
@@ -51,6 +64,13 @@ namespace TrainDefense.Game
         /// </summary>
         public bool TryReroll()
         {
+            // 무료 리롤이 남아있으면 코인 차감 없이 소비
+            if (_freeRerollCount > 0)
+            {
+                _freeRerollCount--;
+                return true;
+            }
+
             if (!CanReroll())
                 return false;
 

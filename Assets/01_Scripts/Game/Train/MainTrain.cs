@@ -15,6 +15,10 @@ namespace TrainDefense.Game
       // 업그레이드 선택 시 회복할 최대 체력 비율(0~1). 엘리트 전환은 별도로 풀피.
       private const float UpgradeHealRatio = 0.3f;
 
+      // 영구 업그레이드 '자가 복구': 5초마다 살아있는 전 포탑을 동시에 일정 % 회복하는 중앙 타이머.
+      private const float HealthRegenInterval = 5f;
+      private float _healthRegenTimer;
+
       #region Field
 
       [SerializeField]
@@ -47,7 +51,10 @@ namespace TrainDefense.Game
       private string _pendingSelectedSkillId = null;
       private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
       public List<Train> CurrentAliveTrains => _currentAliveTrains;
-      public int MaxTrainCount => maxTrainCount;
+      public int MaxTrainCount => maxTrainCount + Mathf.RoundToInt(
+         PermanentUpgradeManager.Instance != null
+            ? PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.MaxTurretCount)
+            : 0f);
 
       private readonly List<Train> _currentTrains = new();//모든 Train 목록
       public List<Train> CurrentTrains => _currentTrains;
@@ -100,6 +107,33 @@ namespace TrainDefense.Game
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
       }
 
+      protected override void Update()
+      {
+         base.Update();
+         _TickHealthRegen(Time.deltaTime);
+      }
+
+      // 자가 복구 레벨이 있으면 5초마다 살아있는 모든 포탑을 한 번에 회복. (메인 기차는 _currentAliveTrains에 미포함이라 자동 제외)
+      private void _TickHealthRegen(float deltaTime)
+      {
+         if (_isDead) return;
+
+         var manager = PermanentUpgradeManager.Instance;
+         if (manager == null) return;
+
+         float regenPercent = manager.GetValue(PermanentUpgradeType.HealthRegen);
+         if (regenPercent <= 0f) return;
+
+         _healthRegenTimer += deltaTime;
+         if (_healthRegenTimer < HealthRegenInterval) return;
+
+         _healthRegenTimer -= HealthRegenInterval;
+
+         float ratio = regenPercent / 100f;
+         foreach (var train in _currentAliveTrains)
+            train.RestoreHpByRatio(ratio);
+      }
+
       private void FixedUpdate()
       {
          if (_isDead)
@@ -135,7 +169,7 @@ namespace TrainDefense.Game
 
       public void SpawnTrain(TrainData trainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None, string selectedSkillId = null)
       {
-         if (_currentAliveTrains.Count >= maxTrainCount)
+         if (_currentAliveTrains.Count >= MaxTrainCount)
          {
             Debug.LogWarning("Train count is max");
             return;

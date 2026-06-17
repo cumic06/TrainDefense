@@ -76,6 +76,11 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         public List<UpgradeData> upgradeDataList = new();
 
+        [TabGroup("Upgrade Data")]
+        [InfoBox("영구(메타) 업그레이드 데이터 관리 — 엘리트 처치 재화로 구매, 런 사이 유지")]
+        [SerializeField]
+        public List<PermanentUpgradeData> permanentUpgradeDataList = new();
+
         [TabGroup("TriChoice Database")]
         [InfoBox("3지선다 데이터베이스 (선택지 관리)")]
         [SerializeField]
@@ -110,6 +115,7 @@ namespace TrainDefense.Game.Datas
         public IReadOnlyList<RangeTrainUpgradeData> RangeTrainUpgradeDataList => rangeTrainUpgradeDataList;
         public IReadOnlyList<StageData> StageDataList => stageDataList;
         public IReadOnlyList<UpgradeData> UpgradeDataList => upgradeDataList;
+        public IReadOnlyList<PermanentUpgradeData> PermanentUpgradeDataList => permanentUpgradeDataList;
         public TriChoiceDB TriChoiceDB => triChoiceDB;
         public SoundDB SoundDB => soundDB;
         public EliteData EliteData => eliteData;

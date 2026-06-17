@@ -23,6 +23,9 @@ namespace TrainDefense.Game.Datas
         private MapData mapData;
         [SerializeField]
         private Sprite stageImage;
+        [SerializeField]
+        [Tooltip("이 맵에서 엘리트 처치 시 주는 재화 배율. 빠른(약한 몹) 맵은 낮게, 느린(강한 몹) 맵은 높게 — 맵별 재화 획득률 균등화용. 0이면 1로 처리.")]
+        private float eliteRewardMultiplier = 1f;
         #endregion
 
         #region IData
@@ -36,6 +39,7 @@ namespace TrainDefense.Game.Datas
         public StageSpawnData[] SpawnDatas => spawnDatas;
         public MapData MapData => mapData;
         public Sprite StageImage => stageImage;
+        public float EliteRewardMultiplier => eliteRewardMultiplier > 0f ? eliteRewardMultiplier : 1f;
     }
 
     [Serializable]

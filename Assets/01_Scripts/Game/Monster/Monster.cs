@@ -498,6 +498,14 @@ namespace TrainDefense.Game
             }
          }
 
+         // 영구 업그레이드: 경험치 획득률 증가 (상점 업글과 독립 곱셈)
+         var permanentUpgradeManager = PermanentUpgradeManager.Instance;
+         if (permanentUpgradeManager != null)
+         {
+            float expRate = permanentUpgradeManager.GetValue(PermanentUpgradeType.ExpGainRate);
+            dropExp = Mathf.RoundToInt(dropExp * (1f + expRate / 100f));
+         }
+
          GameEventSystem.Publish(new AddExpEvent(dropExp));
       }
 
@@ -528,6 +536,14 @@ namespace TrainDefense.Game
                int bonusLevel = UserDataManager.Instance.GetUpgradeLevel("110004");
                dropMoney = Mathf.RoundToInt(dropMoney * (1f + bonusLevel * goldBonusData.UpgradeValue / 100f));
             }
+         }
+
+         // 영구 업그레이드: 골드 획득률 증가 (상점 업글과 독립 곱셈)
+         var permanentUpgradeManager = PermanentUpgradeManager.Instance;
+         if (permanentUpgradeManager != null)
+         {
+            float goldRate = permanentUpgradeManager.GetValue(PermanentUpgradeType.GoldGainRate);
+            dropMoney = Mathf.RoundToInt(dropMoney * (1f + goldRate / 100f));
          }
 
          ResourceManager.Instance.Spawn(Resources.Load<GameObject>(MoneyPrefabPath), transform.position);

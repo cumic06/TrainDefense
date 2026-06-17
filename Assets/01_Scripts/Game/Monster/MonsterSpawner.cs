@@ -240,9 +240,20 @@ namespace TrainDefense.Game
          }
       }
 
+      // 엘리트는 스테이지1 통과 후부터 등장(역 3개 후 4번째 검문에 맵 변경). 통과 직후 5%로 시작해 spawnMaxChance(15%)까지 ramp.
+      private const int EliteStartStationCount = 4;
+      private const float EliteStartChance = 5f;
+
       private void UpdateEliteChance(float elapsed)
       {
          if (_eliteData == null || _eliteData.spawnInterval <= 0f) return;
+
+         // 스테이지1 통과 전엔 엘리트 없음
+         if (_stationPassedCount < EliteStartStationCount) return;
+
+         // 스테이지1 통과 직후 5%로 시작
+         if (_currentEliteSpawnChance < EliteStartChance)
+            _currentEliteSpawnChance = EliteStartChance;
 
          _eliteRampElapsed += elapsed;
          while (_eliteRampElapsed >= _eliteData.spawnInterval)

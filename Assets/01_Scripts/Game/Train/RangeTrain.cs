@@ -37,6 +37,7 @@ namespace TrainDefense.Game
 
             // struct 이므로 값 복사가 일어나며, DB 원본은 변경되지 않는다.
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
+            _ApplyPermanentUpgrade();
             _attackCountdown = _currentRangeTrainStatus.AttackInterval;
 
             if (TrainData.DamageType == DamageType.Direct) return;
@@ -253,6 +254,22 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
+        }
+
+        // 영구(메타) 업그레이드 중 TurretStat 보너스를 base 스탯에 가산한다. (struct라 값 복사 후 직접 가산)
+        private void _ApplyPermanentUpgrade()
+        {
+            var manager = PermanentUpgradeManager.Instance;
+            if (manager == null) return;
+
+            _currentRangeTrainStatus.AttackDamage += manager.GetBonus(StatType.AttackDamage);
+            _currentRangeTrainStatus.AttackRange += manager.GetBonus(StatType.AttackRange);
+            _currentRangeTrainStatus.AttackArea += manager.GetBonus(StatType.AttackArea);
+            _currentRangeTrainStatus.AttackInterval += manager.GetBonus(StatType.AttackInterval);
+            _currentRangeTrainStatus.CriticalChance += manager.GetBonus(StatType.CriticalChance);
+            _currentRangeTrainStatus.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
+            _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
+            _currentRangeTrainStatus.SlowRate += manager.GetBonus(StatType.SlowRate);
         }
 
         // 누적 둔화율(%, 기차 base + 강화)을 둔화 배율로 변환.
