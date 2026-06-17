@@ -4,6 +4,7 @@ using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.Manager;
 using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game
@@ -63,8 +64,10 @@ namespace TrainDefense.Game
         {
             if (!monsterDeadEvent.IsElite) return;
 
+            // 맵별 엘리트 재화 배율 (빠른·약한 몹 맵은 낮게, 느린·강한 몹 맵은 높게 → 맵별 재화 획득률 균등)
+            float mapMultiplier = StageManager.Instance != null ? StageManager.Instance.CurrentStageData.EliteRewardMultiplier : 1f;
             float rewardRate = GetValue(PermanentUpgradeType.EliteRewardRate);
-            int reward = Mathf.Max(1, Mathf.RoundToInt(_currencyPerElite * (1f + rewardRate / 100f)));
+            int reward = Mathf.Max(1, Mathf.RoundToInt(_currencyPerElite * mapMultiplier * (1f + rewardRate / 100f)));
             AddCurrency(reward);
         }
 

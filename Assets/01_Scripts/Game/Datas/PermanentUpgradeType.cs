@@ -20,5 +20,6 @@ namespace TrainDefense.Game.Datas
         HealthRegen,       // 5초 무피해 시 체력 회복 (%)
         GoldGainRate,      // 골드 획득률 증가 (%)
         ExpGainRate,       // 경험치 획득률 증가 (%)
+        FreeReroll,        // 레벨업 시 무료 리롤 횟수
     }
 }
