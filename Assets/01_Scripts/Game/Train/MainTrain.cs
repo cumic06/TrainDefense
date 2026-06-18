@@ -454,6 +454,14 @@ namespace TrainDefense.Game
             _currentAliveTrains.Add(train);
          }
 
+         // 상점 진입 시 자기강화(시한버프)를 즉시 해제하고 액티브 스킬 쿨타임을 초기화한다.
+         // (timeScale=0이라 스킬 Tick이 멈춰 버프가 다음 맵까지 유지되고, Time.time 기반 쿨타임이
+         //  진행되지 않아 상점을 다녀와도 쿨타임이 그대로 남던 문제 해결)
+         foreach (var train in _currentAliveTrains)
+         {
+            train.ResetSkillStateForInspection();
+         }
+
          // 모든 기차를 원래 순서대로 재정렬
          RearrangeAllTrainsToOriginalOrder();
 

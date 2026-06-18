@@ -91,6 +91,17 @@ namespace TrainDefense.Game
             base.OnDestroy();
             ClearAttachedProjectiles();
         }
+
+        protected override void OnDead()
+        {
+            base.OnDead();
+
+            if (IsUnDead) return;
+
+            // 사망 시 FixedUpdate(자동 발사·ResetTarget)가 멈춰 마지막에 깔린 NonMovement 장판(냉기/화염 지속 영역)이 그대로 남는다.
+            // 죽은 기차는 회색으로 씬에 남아(Destroy 안 됨) OnDestroy 정리도 타지 않으므로 즉시 끈다.
+            _DeactivateNonMovementProjectiles();
+        }
         #endregion
 
         #region Sub/UnSub
@@ -302,15 +313,19 @@ namespace TrainDefense.Game
         {
             _targetMonsters.Clear();
 
-            if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
+            _DeactivateNonMovementProjectiles();
+        }
+
+        // 깔아둔 NonMovement 장판(냉기/화염 지속 영역)을 모두 끈다. 풀은 유지하므로 부활·다음 전투에서 재사용된다.
+        private void _DeactivateNonMovementProjectiles()
+        {
+            if (!_useNonMovementProjectilePooling || _nonMovementProjectiles.Count == 0)
+                return;
+
+            foreach (var projectile in _nonMovementProjectiles)
             {
-                foreach (var projectile in _nonMovementProjectiles)
-                {
-                    if (projectile != null)
-                    {
-                        projectile.gameObject.SetActive(false);
-                    }
-                }
+                if (projectile != null)
+                    projectile.gameObject.SetActive(false);
             }
         }
 

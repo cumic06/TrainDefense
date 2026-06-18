@@ -296,6 +296,9 @@ namespace TrainDefense.Game
         public void ApplyTimedStat(StatType type, float percent, float duration)
             => _skillModule.ApplyTimedStat(type, percent, duration);
 
+        /// <summary>상점 진입 시 활성 시한버프를 즉시 해제하고 액티브 스킬 쿨타임을 초기화한다. (MainTrain.OnInspectionStart에서 호출)</summary>
+        public void ResetSkillStateForInspection() => _skillModule.ResetForInspection();
+
         protected virtual void Update()
         {
             _skillModule.Tick(Time.deltaTime);
