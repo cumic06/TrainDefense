@@ -59,15 +59,14 @@ namespace TrainDefense.Game
             PlayerPrefs.Save();
         }
 
-        // 엘리트 몬스터 처치 시 영구 재화 획득. EliteRewardRate(%) 패시브가 획득량을 증가시킨다.
+        // 엘리트 몬스터 처치 시 영구 재화 획득.
         private void _OnMonsterDead(MonsterDeadEvent monsterDeadEvent)
         {
             if (!monsterDeadEvent.IsElite) return;
 
             // 맵별 엘리트 재화 배율 (빠른·약한 몹 맵은 낮게, 느린·강한 몹 맵은 높게 → 맵별 재화 획득률 균등)
             float mapMultiplier = StageManager.Instance != null ? StageManager.Instance.CurrentStageData.EliteRewardMultiplier : 1f;
-            float rewardRate = GetValue(PermanentUpgradeType.EliteRewardRate);
-            int reward = Mathf.Max(1, Mathf.RoundToInt(_currencyPerElite * mapMultiplier * (1f + rewardRate / 100f)));
+            int reward = Mathf.Max(1, Mathf.RoundToInt(_currencyPerElite * mapMultiplier));
             AddCurrency(reward);
         }
 
