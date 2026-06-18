@@ -291,6 +291,14 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
         }
 
+        /// <summary>현재 체력을 최대 체력의 ratio(0~1)로 '설정'한다. (긴급 수리로 부활시킨 직후 HP를 일정 비율로 맞출 때 사용)</summary>
+        public virtual void SetHpToRatio(float ratio)
+        {
+            if (_isDead) return;
+            _currentHp = Mathf.Clamp(_currentMaxHp * ratio, 0f, _currentMaxHp);
+            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
+        }
+
         public virtual bool TryUseSkill() => _skillModule.TryUse();
 
         public void ApplyTimedStat(StatType type, float percent, float duration)

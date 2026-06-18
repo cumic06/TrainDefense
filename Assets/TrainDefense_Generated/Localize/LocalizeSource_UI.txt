@@ -61,3 +61,9 @@ Collection_Melee	근접	Melee	近接	近战
 Collection_Slow	둔화	Slow	鈍化	减速
 UI_Option_BGM	배경음	BGM	BGM	背景音乐
 UI_Option_SFX	효과음	SFX	効果音	音效
+Reward_EmergencyRepair_Name	긴급 수리	Emergency Repair	緊急修理	紧急修理
+Reward_EmergencyRepair_Desc	부서진 기차를 모두 부활시키고\n모든 기차의 체력을 10% 회복합니다.	Revive all destroyed trains and\nrestore 10% HP to all trains.	破壊された列車をすべて復活させ\nすべての列車のHPを10%回復します。	复活所有被摧毁的列车，\n并恢复所有列车10%的生命值。
+Reward_Gold_Name	골드 획득	Gold Reward	ゴールド獲得	获得金币
+Reward_Gold_Desc	골드를 획득합니다.	Gain gold.	ゴールドを獲得します。	获得金币。
+Reward_EliteCurrency_Name	엘리트 재화 획득	Elite Currency	エリート財貨獲得	获得精英货币
+Reward_EliteCurrency_Desc	엘리트 재화를 획득합니다.	Gain elite currency.	エリート財貨を獲得します。	获得精英货币。

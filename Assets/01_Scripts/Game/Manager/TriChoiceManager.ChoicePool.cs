@@ -115,6 +115,17 @@ namespace TrainDefense.Game
                 .ToList();
         }
 
+        // 만렙 보상 선택지(골드/엘리트 재화/긴급 수리) 후보를 반환한다.
+        // 보유 기차가 전부 만렙이라 정상 선택지로 슬롯을 채우지 못할 때 빈 슬롯을 채우는 데 쓰인다.
+        private List<ChoiceEntry> _GetRewardChoices()
+        {
+            var rewardDatas = DatabaseManager.Instance.GetTriChoiceDB().RewardChoices;
+
+            return rewardDatas
+                .Where(entry => entry.Option != null && entry.Option.IsValid())
+                .ToList();
+        }
+
         private bool _SelectByProb(int prob1, int prob2)
         {
             float weight1 = 1f / prob1;
@@ -174,6 +185,10 @@ namespace TrainDefense.Game
 
                 // UpgradeTrainChoice는 레벨업 후 다시 선택 가능하므로 제외하지 않음
                 if (x.Option is UpgradeTrainChoice)
+                    return true;
+
+                // 만렙 보상 선택지(골드/엘리트 재화/긴급 수리)는 만렙 후 매 레벨업마다 반복 획득 가능하므로 제외하지 않음
+                if (x.Option is RewardChoiceBase)
                     return true;
 
                 // Add/EliteTrainChoice는 한 번만 선택 가능하므로 제외

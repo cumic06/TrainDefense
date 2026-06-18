@@ -26,6 +26,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 			ExcelImporterRegistry.Register(new PermanentUpgradeImporter());
 			ExcelImporterRegistry.Register(new AddTrainChoiceImporter());
 			ExcelImporterRegistry.Register(new UpgradeTrainChoiceImporter());
+			ExcelImporterRegistry.Register(new RewardChoiceImporter());
 		}
 	}
 }

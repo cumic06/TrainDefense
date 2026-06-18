@@ -438,7 +438,21 @@ namespace TrainDefense.Game
             train.RestoreHpToMax();
          }
 
-         // 죽은 기차 복원
+         // 죽은 기차 풀피 부활
+         ReviveAllDeadTrains();
+
+         // 모든 기차를 원래 순서대로 재정렬
+         RearrangeAllTrainsToOriginalOrder();
+
+         // 점검(상점 진입) 시 체력 회복 효과음 1회.
+         // 이 시점은 timeScale=0 + SuppressSFX(true) 상태이므로 ignoreSuppress로 우회 재생한다.
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
+      }
+
+      // 죽은(부서진) 기차를 모두 부활시켜 산 기차 목록으로 되돌린다.
+      // revivedHpRatio가 0보다 크면 부활 직후 HP를 최대 체력의 그 비율로 맞춘다(0이면 Resurrect의 풀피 유지).
+      private void ReviveAllDeadTrains(float revivedHpRatio = 0f)
+      {
          foreach (var deadTrainInfo in _deadTrains.ToList())
          {
             Train train = deadTrainInfo.Train;
@@ -449,16 +463,31 @@ namespace TrainDefense.Game
             // 오브젝트 활성화
             train.gameObject.SetActive(true);
 
-            // _deadTrains에서 제거하고 _currentTrains에 다시 추가
+            // _deadTrains에서 제거하고 _currentAliveTrains에 다시 추가
             _deadTrains.Remove(deadTrainInfo);
             _currentAliveTrains.Add(train);
+
+            if (revivedHpRatio > 0f)
+               train.SetHpToRatio(revivedHpRatio);
+         }
+      }
+
+      /// <summary>
+      /// 긴급 수리: 부서진 기차를 모두 부활시키고, (부활 전부터) 살아있던 기차를 aliveHealRatio만큼 회복한다.
+      /// 부활시킨 기차의 HP는 revivedHpRatio로 맞춘다.
+      /// </summary>
+      public void EmergencyRepair(float aliveHealRatio, float revivedHpRatio)
+      {
+         // 부활 전 기존 생존 기차만 비율 회복 (부활한 기차는 ReviveAllDeadTrains에서 HP를 따로 설정)
+         foreach (var train in _currentAliveTrains.ToList())
+         {
+            train.RestoreHpByRatio(aliveHealRatio);
          }
 
-         // 모든 기차를 원래 순서대로 재정렬
+         ReviveAllDeadTrains(revivedHpRatio);
+
          RearrangeAllTrainsToOriginalOrder();
 
-         // 점검(상점 진입) 시 체력 회복 효과음 1회.
-         // 이 시점은 timeScale=0 + SuppressSFX(true) 상태이므로 ignoreSuppress로 우회 재생한다.
          SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
       }
 
