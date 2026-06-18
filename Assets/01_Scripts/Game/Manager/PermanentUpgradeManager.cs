@@ -17,17 +17,17 @@ namespace TrainDefense.Game
     /// </summary>
     public class PermanentUpgradeManager : Singleton<PermanentUpgradeManager>
     {
-        private const string CURRENCY_KEY = "PermanentUpgradeCurrency";
+        private const string ELITE_COIN_KEY = "PermanentUpgradeEliteCoin";
         private const string LEVELS_KEY = "PermanentUpgradeLevels";
 
         [SerializeField]
-        [Tooltip("엘리트 몬스터 1마리 처치 시 획득하는 기본 영구 재화량")]
-        private int _currencyPerElite = 1;
+        [Tooltip("엘리트 몬스터 1마리 처치 시 획득하는 기본 엘리트 코인량")]
+        private int _eliteCoinPerElite = 1;
 
-        private int _currency;
+        private int _eliteCoin;
         private readonly Dictionary<string, int> _levels = new();
 
-        public int Currency => _currency;
+        public int EliteCoin => _eliteCoin;
 
         protected override void Awake()
         {
@@ -66,24 +66,24 @@ namespace TrainDefense.Game
 
             // 맵별 엘리트 재화 배율 (빠른·약한 몹 맵은 낮게, 느린·강한 몹 맵은 높게 → 맵별 재화 획득률 균등)
             float mapMultiplier = StageManager.Instance != null ? StageManager.Instance.CurrentStageData.EliteRewardMultiplier : 1f;
-            int reward = Mathf.Max(1, Mathf.RoundToInt(_currencyPerElite * mapMultiplier));
-            AddCurrency(reward);
+            int reward = Mathf.Max(1, Mathf.RoundToInt(_eliteCoinPerElite * mapMultiplier));
+            AddEliteCoin(reward);
         }
 
-        #region Currency
-        public void AddCurrency(int amount)
+        #region EliteCoin
+        public void AddEliteCoin(int amount)
         {
             if (amount <= 0) return;
-            _currency += amount;
-            _SaveCurrency();
-            // TODO: 재화 변경 UI 이벤트 발행
+            _eliteCoin += amount;
+            _SaveEliteCoin();
+            // TODO: 엘리트 코인 변경 UI 이벤트 발행
         }
 
-        public bool SpendCurrency(int amount)
+        public bool SpendEliteCoin(int amount)
         {
-            if (amount <= 0 || _currency < amount) return false;
-            _currency -= amount;
-            _SaveCurrency();
+            if (amount <= 0 || _eliteCoin < amount) return false;
+            _eliteCoin -= amount;
+            _SaveEliteCoin();
             return true;
         }
         #endregion
@@ -107,7 +107,7 @@ namespace TrainDefense.Game
             if (IsMaxLevel(upgradeId)) return false;
 
             int cost = data.GetCostAtLevel(GetLevel(upgradeId));
-            if (!SpendCurrency(cost)) return false;
+            if (!SpendEliteCoin(cost)) return false;
 
             _levels[upgradeId] = GetLevel(upgradeId) + 1;
             _SaveLevels();
@@ -179,7 +179,7 @@ namespace TrainDefense.Game
         #region Save / Load
         private void _Load()
         {
-            _currency = PlayerPrefs.GetInt(CURRENCY_KEY, 0);
+            _eliteCoin = PlayerPrefs.GetInt(ELITE_COIN_KEY, 0);
 
             _levels.Clear();
             // 형식: "id:level,id:level"
@@ -196,10 +196,10 @@ namespace TrainDefense.Game
             }
         }
 
-        private void _SaveCurrency()
+        private void _SaveEliteCoin()
         {
             // 디스크 flush(PlayerPrefs.Save)는 OnApplicationPause/Quit에서 일괄 — 엘리트 처치마다 디스크 쓰기 방지
-            PlayerPrefs.SetInt(CURRENCY_KEY, _currency);
+            PlayerPrefs.SetInt(ELITE_COIN_KEY, _eliteCoin);
         }
 
         private void _SaveLevels()
@@ -210,20 +210,20 @@ namespace TrainDefense.Game
             PlayerPrefs.SetString(LEVELS_KEY, string.Join(",", entries));
         }
 
-        [Sirenix.OdinInspector.Button("테스트 재화 +100")]
-        private void AddTestCurrency()
+        [Sirenix.OdinInspector.Button("테스트 엘리트 코인 +100")]
+        private void AddTestEliteCoin()
         {
-            AddCurrency(100);
-            Debug.Log($"[PermanentUpgradeManager] 테스트 재화 +100 (현재 {_currency})");
+            AddEliteCoin(100);
+            Debug.Log($"[PermanentUpgradeManager] 테스트 엘리트 코인 +100 (현재 {_eliteCoin})");
         }
 
-        [Sirenix.OdinInspector.Button("영구 업그레이드/재화 초기화")]
+        [Sirenix.OdinInspector.Button("영구 업그레이드/엘리트 코인 초기화")]
         private void ResetAll()
         {
-            _currency = 0;
+            _eliteCoin = 0;
             _levels.Clear();
             _InvalidateCache();
-            PlayerPrefs.DeleteKey(CURRENCY_KEY);
+            PlayerPrefs.DeleteKey(ELITE_COIN_KEY);
             PlayerPrefs.DeleteKey(LEVELS_KEY);
             PlayerPrefs.Save();
             Debug.Log("[PermanentUpgradeManager] 영구 업그레이드 데이터가 초기화되었습니다.");

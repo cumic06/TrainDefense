@@ -15,7 +15,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
     {
         #region Fields
         [SerializeField] private Button closeButton;
-        [SerializeField] private TextMeshProUGUI currencyText;
+        [SerializeField] private TextMeshProUGUI eliteCoinText;
         [SerializeField] private Transform slotContent;            // 슬롯이 배치될 컨테이너 (Layout Group 권장)
         [SerializeField] private PermanentUpgradeSlotUI slotPrefab;
 
@@ -42,7 +42,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
         private void Start()
         {
             _BuildSlots();
-            _RefreshCurrency();
+            _RefreshEliteCoin();
             _RefreshDetail();
         }
 
@@ -89,7 +89,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             if (!manager.TryPurchase(_selectedData.Id)) return;
 
             // 구매 성공 → 재화·슬롯·상세 갱신 (재화가 줄어 구매 가능 여부도 바뀜)
-            _RefreshCurrency();
+            _RefreshEliteCoin();
             foreach (var slot in _slots)
                 slot.Refresh();
             _RefreshDetail();
@@ -127,14 +127,14 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             if (detailCostText != null)
                 detailCostText.text = isMax ? "MAX" : cost.ToString();
             if (purchaseButton != null)
-                purchaseButton.interactable = !isMax && manager.Currency >= cost;
+                purchaseButton.interactable = !isMax && manager.EliteCoin >= cost;
         }
 
-        private void _RefreshCurrency()
+        private void _RefreshEliteCoin()
         {
             var manager = PermanentUpgradeManager.Instance;
-            if (currencyText != null && manager != null)
-                currencyText.text = manager.Currency.ToString();
+            if (eliteCoinText != null && manager != null)
+                eliteCoinText.text = manager.EliteCoin.ToString();
         }
     }
 }
