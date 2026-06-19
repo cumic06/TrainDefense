@@ -432,14 +432,8 @@ namespace TrainDefense.Game
 
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
       {
-         // 살아있는 기차도 Inspection 시작 시 HP를 최대치로 회복
-         foreach (var train in _currentAliveTrains)
-         {
-            train.RestoreHpToMax();
-         }
-
-         // 죽은 기차 풀피 부활
-         ReviveAllDeadTrains();
+         // ※ 상점 진입 시 전체 체력 회복·죽은 기차 자동 부활은 제거되었다.
+         //    체력 회복/부활은 상점의 '기차 수리'(EmergencyRepair) 구매로만 수행한다.
 
          // 상점 진입 시 자기강화(시한버프)를 즉시 해제하고 액티브 스킬 쿨타임을 초기화한다.
          // (timeScale=0이라 스킬 Tick이 멈춰 버프가 다음 맵까지 유지되고, Time.time 기반 쿨타임이
@@ -451,10 +445,6 @@ namespace TrainDefense.Game
 
          // 모든 기차를 원래 순서대로 재정렬
          RearrangeAllTrainsToOriginalOrder();
-
-         // 점검(상점 진입) 시 체력 회복 효과음 1회.
-         // 이 시점은 timeScale=0 + SuppressSFX(true) 상태이므로 ignoreSuppress로 우회 재생한다.
-         SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
       }
 
       // 죽은(부서진) 기차를 모두 부활시켜 산 기차 목록으로 되돌린다.

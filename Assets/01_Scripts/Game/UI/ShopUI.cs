@@ -152,7 +152,7 @@ namespace TrainDefense.Game.UI
         /// </summary>
         private void _PrepareItemsHidden()
         {
-            if (_itemGrid == null || _shopItemUIs.Count == 0)
+            if (_itemGrid == null || _itemGridRect == null || _itemGridRect.childCount == 0)
             {
                 return;
             }
@@ -163,12 +163,14 @@ namespace TrainDefense.Game.UI
             Canvas.ForceUpdateCanvases();
             LayoutRebuilder.ForceRebuildLayoutImmediate(_itemGridRect);
 
-            int count = _shopItemUIs.Count;
+            // 업그레이드 버튼뿐 아니라 기차 수리 버튼(ShopRepairItemUI)까지 드롭인 연출에 포함되도록
+            // Grid의 모든 자식을 대상으로 위치를 캐싱한다.
+            int count = _itemGridRect.childCount;
             _itemRects = new RectTransform[count];
             _itemFinalPositions = new Vector2[count];
             for (int i = 0; i < count; i++)
             {
-                _itemRects[i] = (RectTransform)_shopItemUIs[i].transform;
+                _itemRects[i] = (RectTransform)_itemGridRect.GetChild(i);
                 _itemFinalPositions[i] = _itemRects[i].anchoredPosition;
             }
 

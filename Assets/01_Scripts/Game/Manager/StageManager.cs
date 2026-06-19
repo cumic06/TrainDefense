@@ -50,6 +50,9 @@ namespace TrainDefense.Game.Manager
 
         public StageData CurrentStageData => _stageDatas[_currentStageIndex];
 
+        /// <summary>한 판 동안 지나온 누적 역 통과 수. (상점 기차 수리 가격 산정 등에 사용)</summary>
+        public int TotalStationPassedCount => _totalStationPassedCount;
+
         /// <summary>
         /// 스테이지 선택 전 마지막 상점을 들른 상태로, 상점을 닫으면 스테이지 선택 UI가 떠야 하는지 여부.
         /// </summary>
