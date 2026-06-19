@@ -51,6 +51,7 @@ namespace TrainDefense.Localize
         UI_VersionUpdate_Button = 205,
         UI_Option_BGM = 206,
         UI_Option_SFX = 207,
+        Tutorial_MainTrainAttack_Msg1 = 208,
         // Monster
         Monster_10001_Name = 37,
         Monster_10001_Desc = 38,

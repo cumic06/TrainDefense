@@ -10,28 +10,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 887768309d325914b820c47a021cd2b0, type: 3}
-  m_Name: InspectionTimeTutorialSequence
+  m_Name: MainTrainAttackTutorialSequence
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialSequenceData
-  _sequenceId: inspectionTimeTutorial
-  _displayName: "\uAC80\uC0AC \uC2DC\uAC04 \uD29C\uD1A0\uB9AC\uC5BC"
-  _displayNameKey: 23
+  _sequenceId: mainTrainAttackTutorial
+  _displayName: "메인 트레인 공격 튜토리얼"
+  _displayNameKey: 0
   _steps:
-  - _id: 30000
+  - _id: 40000
     _targetObject: {fileID: 0}
-    _targetObjectName: StageInspectionTimeSlider
-    _skipCondition: 0
+    _targetObjectName:
+    _skipCondition: 3
     _timeoutDuration: 3
     _customSkipEvent:
       m_PersistentCalls:
         m_Calls: []
-    _message: "\uC774 \uAC8C\uC774\uC9C0\uB294 \uC0C1\uC810 \uAC8C\uC774\uC9C0\uC785\uB2C8\uB2E4.\n\uD574\uB2F9
-      \uC2DC\uAC04\uC774 \uB2E4 \uCC28\uBA74 \uC0C1\uC810\uC5D0 \uB3C4\uCC29\uD569\uB2C8\uB2E4!"
-    _messageKey: 24
-    _arrowDirection: 1
-    _useDimming: 1
-    _useHighlight: 1
-    _delayBefore: 0.3
+    _message: "화면을 길게 눌러 <wave>메인 기차</wave>의
+      포탑으로 적을 공격하세요!"
+    _messageKey: 208
+    _arrowDirection: 0
+    _arrowLookDirection: 0
+    _useDimming: 0
+    _useHighlight: 0
+    _allowGameInput: 1
+    _delayBefore: 0.5
     _sfxKey:
+    _messageOffset: {x: 0, y: 0}
     _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
     _npcPosition: {x: 0, y: 0}
     _npcFlipX: 0

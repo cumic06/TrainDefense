@@ -54,10 +54,13 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<ReplaceTrainEvent>(OnReplaceTrain);
             GameEventSystem.Unsubscribe<UpgradeTrainEvent>(OnUpgradeTrain);
 
+            GameEventSystem.Unsubscribe<MainTrainFiredEvent>(OnMainTrainFired);
+
             if (TutorialManager.Instance != null)
             {
                 TutorialManager.Instance.OnTutorialComplete -= OnTrainInfoSlotTutorialComplete;
                 TutorialManager.Instance.OnTutorialComplete -= _OnInspectionTimeTutorialComplete;
+                TutorialManager.Instance.OnTutorialComplete -= OnMainTrainAttackTutorialComplete;
             }
         }
 
@@ -216,6 +219,47 @@ namespace TrainDefense.Game
 
             Debug.Log("TrainUpgradeManager: inspectionTimeTutorial complete → EngageStart");
             GameEventSystem.Publish(new EngageStartEvent());
+
+            // 전투 시작 직후 메인 트레인 공격 튜토리얼 시작
+            StartMainTrainAttackTutorial();
+        }
+
+        /// <summary>
+        /// 메인 트레인 공격(화면 터치로 포탑 발사) 튜토리얼을 시작합니다.
+        /// 실제로 발사(MainTrainFiredEvent)하면 완료됩니다.
+        /// </summary>
+        private void StartMainTrainAttackTutorial()
+        {
+            if (TutorialManager.Instance == null) return;
+            if (TutorialManager.Instance.IsTutorialCompleted("mainTrainAttackTutorial")) return;
+
+            GameEventSystem.Subscribe<MainTrainFiredEvent>(OnMainTrainFired);
+            TutorialManager.Instance.OnTutorialComplete += OnMainTrainAttackTutorialComplete;
+
+            if (!TutorialManager.Instance.StartTutorial("mainTrainAttackTutorial"))
+            {
+                // 시작 실패 시 구독 롤백
+                GameEventSystem.Unsubscribe<MainTrainFiredEvent>(OnMainTrainFired);
+                TutorialManager.Instance.OnTutorialComplete -= OnMainTrainAttackTutorialComplete;
+            }
+        }
+
+        private void OnMainTrainFired(MainTrainFiredEvent firedEvent)
+        {
+            // 메인 트레인 공격 튜토리얼 진행 중 발사하면 완료 처리
+            if (TutorialManager.Instance != null
+                && TutorialManager.Instance.CurrentSequenceId == "mainTrainAttackTutorial")
+            {
+                TutorialManager.Instance.SkipCurrent();
+            }
+        }
+
+        private void OnMainTrainAttackTutorialComplete(string sequenceId)
+        {
+            if (sequenceId != "mainTrainAttackTutorial") return;
+
+            TutorialManager.Instance.OnTutorialComplete -= OnMainTrainAttackTutorialComplete;
+            GameEventSystem.Unsubscribe<MainTrainFiredEvent>(OnMainTrainFired);
         }
 
         /// <summary>

@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
+using Cumic.Events;
 using Cumic.Sequence;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Events;
+using TrainDefense.Game.Tutorial;
 
 namespace TrainDefense.Game
 {
@@ -62,7 +65,11 @@ namespace TrainDefense.Game
          }
 
          // 전투 진행(Engage) 중에만 발사. 상점·일시정지·삼중택일 중에는 조준/발사를 막는다.
-         if (InGameSequence.Instance != null && !InGameSequence.Instance.IsRunning)
+         // 단, 메인 트레인 공격 튜토리얼 중에는 게임이 멈춰 있어도 발사를 허용한다(발사로 튜토리얼 완료 → 게임 재개).
+         bool tutorialFiringAllowed = TutorialManager.Instance != null
+            && TutorialManager.Instance.CurrentSequenceId == "mainTrainAttackTutorial";
+
+         if (InGameSequence.Instance != null && !InGameSequence.Instance.IsRunning && !tutorialFiringAllowed)
          {
             _HideAimMarker();
 
@@ -82,6 +89,7 @@ namespace TrainDefense.Game
          if (_fireCooldown <= 0f)
          {
             _turret.Fire(aimPosition);
+            GameEventSystem.Publish(new MainTrainFiredEvent());
             float interval = _turret.AttackInterval;
             _fireCooldown = interval > 0f ? interval : DefaultFireCooldown;
          }

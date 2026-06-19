@@ -32,6 +32,8 @@ namespace TrainDefense.Game.Tutorial
         [SerializeField] private TutorialArrowLookDirection _arrowLookDirection = TutorialArrowLookDirection.Auto;
         [SerializeField] private bool _useDimming = true;
         [SerializeField] private bool _useHighlight = true;
+        [Tooltip("이 스텝에서 게임 입력(화면 터치)을 통과시킵니다. 메인 트레인 발사 등 실제 조작을 체험시킬 때 사용. 활성화 시 딤/탭 영역의 레이캐스트 차단이 해제됩니다.")]
+        [SerializeField] private bool _allowGameInput;
         [SerializeField] private float _delayBefore;
         [SerializeField] private string _sfxKey;
 
@@ -75,6 +77,7 @@ namespace TrainDefense.Game.Tutorial
         public TutorialArrowLookDirection ArrowLookDirection => _arrowLookDirection;
         public bool UseDimming => _useDimming;
         public bool UseHighlight => _useHighlight;
+        public bool AllowGameInput => _allowGameInput;
         public float DelayBefore => _delayBefore;
         public string SfxKey => _sfxKey;
         public Vector2 MessageOffset => _messageOffset;

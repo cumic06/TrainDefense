@@ -67,3 +67,4 @@ Reward_Gold_Name	골드 획득	Gold Reward	ゴールド獲得	获得金币
 Reward_Gold_Desc	골드를 획득합니다.	Gain gold.	ゴールドを獲得します。	获得金币。
 Reward_EliteCurrency_Name	엘리트 재화 획득	Elite Currency	エリート財貨獲得	获得精英货币
 Reward_EliteCurrency_Desc	엘리트 재화를 획득합니다.	Gain elite currency.	エリート財貨を獲得します。	获得精英货币。
+Tutorial_MainTrainAttack_Msg1	화면을 길게 눌러 <wave>메인 기차</wave>의 포탑으로 적을 공격하세요!	Press and hold the screen to fire the <wave>Main Train</wave>'s turret at enemies!	画面を長押しして<wave>メイン列車</wave>の砲塔で敵を攻撃しましょう！	按住屏幕，用<wave>主列车</wave>的炮塔攻击敌人！
