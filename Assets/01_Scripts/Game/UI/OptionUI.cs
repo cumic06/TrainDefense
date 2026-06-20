@@ -445,16 +445,26 @@ namespace TrainDefense
             _ => ("UI_Colorblind_None", "색약 보정: 없음"),
          };
          colorblindLabel.text = LocalizeHelper.GetByKey(key, fallback);
+         colorblindLabel.color = Color.black;
       }
 
       // 접근성 탭 텍스트·카메라 흔들림 라벨을 현재 언어로 갱신한다.
       private void _RefreshAccessibilityTexts()
       {
          if (accessibilityTabText != null)
+         {
             accessibilityTabText.text = LocalizeHelper.GetByKey("UI_Option_Tab_Accessibility", "접근성");
+            // 영어 등 긴 언어에서 탭 폭을 넘지 않도록 자동 축소.
+            accessibilityTabText.enableAutoSizing = true;
+            accessibilityTabText.fontSizeMin = 18;
+            accessibilityTabText.fontSizeMax = 40;
+         }
 
          if (cameraShakeLabel != null)
+         {
             cameraShakeLabel.text = LocalizeHelper.GetByKey("UI_Option_CameraShake", "카메라 흔들림");
+            cameraShakeLabel.color = Color.black;
+         }
       }
    }
 }
