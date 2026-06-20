@@ -2105,11 +2105,11 @@ RectTransform:
   - {fileID: 652940704}
   - {fileID: 8810000000000000011}
   - {fileID: 8820000000000000011}
+  - {fileID: 2050887357}
   - {fileID: 742654797}
   - {fileID: 1681234259}
   - {fileID: 1142119251}
   - {fileID: 210000011}
-  - {fileID: 2050887357}
   m_Father: {fileID: 421220175}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2198,8 +2198,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 433573b440b83bd43ba2de76d920a8df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.CameraController
-  testShakeIntensity: 5
-  testShakeDuration: 0.2
   gameOverZoomOrthoSize: 4
   _enableAspectFit: 1
   _referenceResolution: {x: 1920, y: 1080}
