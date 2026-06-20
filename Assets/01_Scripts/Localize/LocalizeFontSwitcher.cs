@@ -89,11 +89,17 @@ namespace TrainDefense.Localize
         private void _ApplySingle(TextMeshProUGUI tmp, TMP_FontAsset originalFont, Material originalMaterial, FontStyles originalFontStyle)
         {
             var setting = Localization.Setting;
-            if (setting?.japaneseFontAsset == null) return;
+            if (setting == null) return;
 
-            bool isJapanese = Localization.CurrentLanguage == SystemLanguage.Japanese;
-            tmp.font = isJapanese ? setting.japaneseFontAsset : originalFont;
-            tmp.fontSharedMaterial = isJapanese ? setting.japaneseFontAsset.material : originalMaterial;
+            // 언어코드별 폰트 테이블 조회. 지정 폰트가 없으면 원래 폰트 유지.
+            string code = Localization.CurrentLanguageCode;
+            var font = setting.GetFont(code);
+            bool useCustom = font != null;
+
+            tmp.font = useCustom ? font : originalFont;
+            tmp.fontSharedMaterial = useCustom ? font.material : originalMaterial;
+            // 일본어는 기존처럼 Bold 가미(가독성). 그 외 언어는 원래 스타일 유지.
+            bool isJapanese = code == "Japanese";
             tmp.fontStyle = isJapanese ? (originalFontStyle | FontStyles.Bold) : originalFontStyle;
         }
     }

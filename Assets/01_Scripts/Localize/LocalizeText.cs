@@ -57,11 +57,20 @@ namespace TrainDefense.Localize
         private void _ApplyFont()
         {
             var setting = Localization.Setting;
-            if (setting?.japaneseFontAsset == null) return;
+            if (setting == null) return;
 
-            bool isJapanese = Localization.CurrentLanguage == SystemLanguage.Japanese;
-            _text.font = isJapanese ? setting.japaneseFontAsset : _defaultFont;
-            _text.fontSharedMaterial = isJapanese ? setting.japaneseFontAsset.material : _defaultMaterial;
+            // 언어코드별 폰트 테이블 조회. 지정 폰트가 없으면 TMP 기본 폰트를 그대로 사용한다.
+            var font = setting.GetFont(Localization.CurrentLanguageCode);
+            if (font != null)
+            {
+                _text.font = font;
+                _text.fontSharedMaterial = font.material;
+            }
+            else
+            {
+                _text.font = _defaultFont;
+                _text.fontSharedMaterial = _defaultMaterial;
+            }
         }
     }
 }
