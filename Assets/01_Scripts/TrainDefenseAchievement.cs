@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cumic.Achievement;
 using Cumic.Events;
+using TrainDefense;
 using TrainDefense.Game.Events;
 using UnityEngine;
 
@@ -123,8 +124,17 @@ namespace Cumic
 
         #region Event Bridge
 
+        // 로비 데모(LobbyGameSimulation)는 게임씬과 동일하게 몬스터 스폰/처치 이벤트를 발생시키므로,
+        // 로비에서 발생한 이벤트는 업적에 반영하지 않는다. Monster/TrainManager/ScoreManager와 동일한 판별 패턴.
+        private bool _IsLobby()
+        {
+            return UserDataManager.Instance != null && UserDataManager.Instance.IsLobby;
+        }
+
         private void AddProgressByKey(string conditionKey, int amount = 1)
         {
+            if (_IsLobby()) return;
+
             if (!_conditionMap.TryGetValue(conditionKey, out var achievements)) return;
 
             foreach (var data in achievements)
@@ -149,6 +159,8 @@ namespace Cumic
 
         private void SetProgressByKey(string conditionKey, int value)
         {
+            if (_IsLobby()) return;
+
             if (!_conditionMap.TryGetValue(conditionKey, out var achievements)) return;
 
             foreach (var data in achievements)
@@ -174,7 +186,6 @@ namespace Cumic
         private void SubscribeEvents()
         {
             GameEventSystem.Subscribe<MonsterDeadEvent>(OnMonsterDead);
-            GameEventSystem.Subscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Subscribe<AddTrainEvent>(OnTrainAdded);
             GameEventSystem.Subscribe<TrainDeadEvent>(OnTrainDead);
@@ -187,7 +198,6 @@ namespace Cumic
         private void UnsubscribeEvents()
         {
             GameEventSystem.Unsubscribe<MonsterDeadEvent>(OnMonsterDead);
-            GameEventSystem.Unsubscribe<StageEndEvent>(OnStageEnd);
             GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Unsubscribe<AddTrainEvent>(OnTrainAdded);
             GameEventSystem.Unsubscribe<TrainDeadEvent>(OnTrainDead);
@@ -198,14 +208,25 @@ namespace Cumic
         }
 
         private void OnMonsterDead(MonsterDeadEvent e) => AddProgressByKey("monster_kill");
-        private void OnStageEnd(StageEndEvent e) { if (e.IsClear) AddProgressByKey("stage_clear"); }
-        private void OnLevelUp(LevelUpEvent e) => SetProgressByKey("level_reached", e.LevelUpCount);
+        // level_reached는 "도달한 레벨"이 기준이다. LevelUpEvent.LevelUpCount는 이번 경험치 획득에서
+        // 오른 레벨 수(보통 1)라 누적 레벨이 아니므로, 현재 누적 레벨(UserDataManager.CurrentLevel)로 갱신한다.
+        private void OnLevelUp(LevelUpEvent e)
+        {
+            int level = UserDataManager.Instance != null ? UserDataManager.Instance.CurrentLevel : e.LevelUpCount;
+            SetProgressByKey("level_reached", level);
+        }
         private void OnTrainAdded(AddTrainEvent e) => AddProgressByKey("train_added");
         private void OnTrainDead(TrainDeadEvent e) => AddProgressByKey("train_lost");
         private void OnShopItemBought(BuyShopItemEvent e) => AddProgressByKey("shop_item_bought");
         private void OnUpgradeApplied(UpgradeAppliedEvent e) => AddProgressByKey("upgrade_purchased");
         private void OnMonsterDiscovered(NewMonsterDiscoveredEvent e) => AddProgressByKey("monster_discovered");
-        private void OnGameEnter(GameEnterEvent e) => AddProgressByKey("game_played");
+        // 로비 GameEnterEvent(isLobby:true)는 카운트하지 않는다. UserDataManager 갱신 순서와 무관하게
+        // 이벤트 자체의 IsLobby로 직접 판별한다.
+        private void OnGameEnter(GameEnterEvent e)
+        {
+            if (e.IsLobby) return;
+            AddProgressByKey("game_played");
+        }
 
         #endregion
     }

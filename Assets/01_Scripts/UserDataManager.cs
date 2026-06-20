@@ -360,6 +360,16 @@ namespace TrainDefense
         }
 
         /// <summary>
+        /// 업적 진행/달성 데이터를 초기화합니다.
+        /// </summary>
+        [Button("업적 초기화")]
+        public void ResetAchievements()
+        {
+            Cumic.Achievement.AchievementSaveData.Delete();
+            Debug.Log("[UserDataManager] 업적 데이터가 초기화되었습니다.");
+        }
+
+        /// <summary>
         /// 모든 저장 데이터를 삭제합니다. (전체 초기화)
         /// </summary>
         public void ResetAllData()

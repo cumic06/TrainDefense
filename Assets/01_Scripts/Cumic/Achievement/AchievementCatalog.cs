@@ -42,10 +42,6 @@ namespace Cumic.Achievement
                 new() { Id = "monster_kill_500", Title = "몬스터 학살자", Description = "몬스터 500마리 처치", ConditionKey = "monster_kill", TargetValue = 500 },
                 new() { Id = "monster_kill_5000", Title = "몬스터 멸망자", Description = "몬스터 5000마리 처치", ConditionKey = "monster_kill", TargetValue = 5000 },
 
-                // 스테이지 클리어
-                new() { Id = "stage_clear_1", Title = "첫 승리", Description = "스테이지 1회 클리어", ConditionKey = "stage_clear", TargetValue = 1 },
-                new() { Id = "stage_clear_10", Title = "스테이지 정복자", Description = "스테이지 10회 클리어", ConditionKey = "stage_clear", TargetValue = 10 },
-
                 // 레벨 도달
                 new() { Id = "level_5", Title = "성장 중", Description = "레벨 5 도달", ConditionKey = "level_reached", TargetValue = 5 },
                 new() { Id = "level_10", Title = "베테랑", Description = "레벨 10 도달", ConditionKey = "level_reached", TargetValue = 10 },

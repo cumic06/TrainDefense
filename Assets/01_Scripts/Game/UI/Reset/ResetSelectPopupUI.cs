@@ -22,6 +22,8 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private Toggle tutorialToggle;
         [SerializeField]
+        private Toggle achievementToggle;
+        [SerializeField]
         private Toggle allToggle;
 
         [Header("버튼")]
@@ -91,6 +93,9 @@ namespace TrainDefense.Game.UI
 
                     if (tutorialToggle != null && tutorialToggle.isOn)
                         userData.ResetTutorialData();
+
+                    if (achievementToggle != null && achievementToggle.isOn)
+                        userData.ResetAchievements();
                 }
             }
 

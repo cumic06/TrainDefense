@@ -41,6 +41,15 @@ namespace Cumic.Achievement
             PlayerPrefs.Save();
         }
 
+        /// <summary>
+        /// 저장된 업적 진행/달성 데이터를 삭제한다. (초기화)
+        /// </summary>
+        public static void Delete()
+        {
+            PlayerPrefs.DeleteKey(SaveKey);
+            PlayerPrefs.Save();
+        }
+
         public static AchievementSaveData Load()
         {
             var saveData = new AchievementSaveData();
