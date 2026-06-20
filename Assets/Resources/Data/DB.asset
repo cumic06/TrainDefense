@@ -1793,18 +1793,29 @@ MonoBehaviour:
     growthRate: 1.1
   permanentUpgradeDataList:
   - id: 120001
-    iconId: Body_KMD_05
+    iconId: Coin
     name: PermanentUpgrade_120001_Name
     description: PermanentUpgrade_120001_Desc
-    needMoney: 100
-    maxUpgradeCount: 3
-    growthRate: 5
+    needMoney: 10
+    maxUpgradeCount: 10
+    growthRate: 1.5
     category: 1
     stats: []
-    passiveType: 0
-    passiveValuePerLevel: 1
-  - id: 120003
+    passiveType: 3
+    passiveValuePerLevel: 10
+  - id: 120002
     iconId: 
+    name: PermanentUpgrade_120002_Name
+    description: PermanentUpgrade_120002_Desc
+    needMoney: 10
+    maxUpgradeCount: 10
+    growthRate: 1.5
+    category: 1
+    stats: []
+    passiveType: 4
+    passiveValuePerLevel: 10
+  - id: 120003
+    iconId: Health
     name: PermanentUpgrade_120003_Name
     description: PermanentUpgrade_120003_Desc
     needMoney: 10
@@ -1815,31 +1826,9 @@ MonoBehaviour:
     passiveType: 1
     passiveValuePerLevel: 10
   - id: 120004
-    iconId: 
+    iconId: Repair
     name: PermanentUpgrade_120004_Name
     description: PermanentUpgrade_120004_Desc
-    needMoney: 10
-    maxUpgradeCount: 10
-    growthRate: 1.5
-    category: 1
-    stats: []
-    passiveType: 3
-    passiveValuePerLevel: 10
-  - id: 120005
-    iconId: 
-    name: PermanentUpgrade_120005_Name
-    description: PermanentUpgrade_120005_Desc
-    needMoney: 10
-    maxUpgradeCount: 10
-    growthRate: 1.5
-    category: 1
-    stats: []
-    passiveType: 4
-    passiveValuePerLevel: 10
-  - id: 120006
-    iconId: 
-    name: PermanentUpgrade_120006_Name
-    description: PermanentUpgrade_120006_Desc
     needMoney: 30
     maxUpgradeCount: 5
     growthRate: 2
@@ -1847,10 +1836,21 @@ MonoBehaviour:
     stats: []
     passiveType: 2
     passiveValuePerLevel: 1
-  - id: 120007
-    iconId: RerollIcon
-    name: PermanentUpgrade_120007_Name
-    description: PermanentUpgrade_120007_Desc
+  - id: 120005
+    iconId: Body_KMD_05
+    name: PermanentUpgrade_120005_Name
+    description: PermanentUpgrade_120005_Desc
+    needMoney: 100
+    maxUpgradeCount: 3
+    growthRate: 5
+    category: 1
+    stats: []
+    passiveType: 0
+    passiveValuePerLevel: 1
+  - id: 120006
+    iconId: Reroll
+    name: PermanentUpgrade_120006_Name
+    description: PermanentUpgrade_120006_Desc
     needMoney: 150
     maxUpgradeCount: 2
     growthRate: 3.5

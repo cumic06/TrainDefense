@@ -179,3 +179,4 @@ UI_Next	다음	Next	次へ	下一步
 UI_Start	시작	Start	スタート	开始
 UI_Quit	종료	Quit	終了	退出
 UI_Reset	초기화	Reset	リセット	重置
+UI_PermanentUpgrade	강화	Upgrade	強化	强化

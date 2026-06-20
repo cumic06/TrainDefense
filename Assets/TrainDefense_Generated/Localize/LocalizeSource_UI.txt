@@ -18,6 +18,7 @@ UI_Next	다음	Next	次へ	下一步
 UI_Start	시작	Start	スタート	开始
 UI_Quit	종료	Quit	終了	退出
 UI_Reset	초기화	Reset	リセット	重置
+UI_PermanentUpgrade	강화	Upgrade	強化	强化
 Tutorial_Skill_Title	스킬 튜토리얼	Skill Tutorial	スキルチュートリアル	技能教程
 Tutorial_Skill_Msg1	<wave>스킬</wave>을 사용해보세요!	Try using a <wave>skill</wave>!	<wave>スキル</wave>を使ってみましょう！	试试使用<wave>技能</wave>吧！
 Tutorial_Skill_Msg2	기차 아이콘을 눌러 <wave>스킬</wave>을 사용하세요!	Press the train icon to use a <wave>skill</wave>!	列車アイコンを押して<wave>スキル</wave>を使用してください！	按列车图标使用<wave>技能</wave>！

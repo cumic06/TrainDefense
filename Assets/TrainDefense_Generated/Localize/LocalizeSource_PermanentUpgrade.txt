@@ -1,13 +1,13 @@
 Key	Korean	English	Japanese	ChineseSimplified
-PermanentUpgrade_120001_Name	최대 포탑 수	Max Turrets	最大タレット数	最大炮塔数
-PermanentUpgrade_120001_Desc	최대 포탑 +1	+1 max turret	最大タレット+1	最大炮塔+1
+PermanentUpgrade_120001_Name	골드 획득	Gold Gain	ゴールド獲得	金币获取
+PermanentUpgrade_120001_Desc	골드 획득량 +10%	+10% gold gain	ゴールド獲得量+10%	金币获取量+10%
+PermanentUpgrade_120002_Name	경험치 획득	Exp Gain	経験値獲得	经验获取
+PermanentUpgrade_120002_Desc	경험치 획득량 +10%	+10% exp gain	経験値獲得量+10%	经验获取量+10%
 PermanentUpgrade_120003_Name	최대 체력	Max HP	最大HP	最大体力
 PermanentUpgrade_120003_Desc	포탑 체력 +10%	+10% turret HP	タレットHP+10%	炮塔体力+10%
-PermanentUpgrade_120004_Name	골드 획득	Gold Gain	ゴールド獲得	金币获取
-PermanentUpgrade_120004_Desc	골드 획득량 +10%	+10% gold gain	ゴールド獲得量+10%	金币获取量+10%
-PermanentUpgrade_120005_Name	경험치 획득	Exp Gain	経験値獲得	经验获取
-PermanentUpgrade_120005_Desc	경험치 획득량 +10%	+10% exp gain	経験値獲得量+10%	经验获取量+10%
-PermanentUpgrade_120006_Name	자가 복구	Self-Repair	自己修復	自我修复
-PermanentUpgrade_120006_Desc	5초마다 체력 1% 회복	Restore 1% HP every 5s	5秒ごとにHP1%回復	每5秒回复1%体力
-PermanentUpgrade_120007_Name	무료 새로고침	Free Reroll	無料リロール	免费刷新
-PermanentUpgrade_120007_Desc	무료 새로고침 +1회	+1 free reroll	無料リロール+1回	免费刷新+1次
+PermanentUpgrade_120004_Name	자가 복구	Self-Repair	自己修復	自我修复
+PermanentUpgrade_120004_Desc	5초마다 체력 1% 회복	Restore 1% HP every 5s	5秒ごとにHP1%回復	每5秒回复1%体力
+PermanentUpgrade_120005_Name	최대 포탑 수	Max Turrets	最大タレット数	最大炮塔数
+PermanentUpgrade_120005_Desc	최대 포탑 +1	+1 max turret	最大タレット+1	最大炮塔+1
+PermanentUpgrade_120006_Name	무료 새로고침	Free Reroll	無料リロール	免费刷新
+PermanentUpgrade_120006_Desc	무료 새로고침 +1회	+1 free reroll	無料リロール+1回	免费刷新+1次
