@@ -40,6 +40,7 @@ namespace TrainDefense
         public bool IsLobby { get; private set; }
         public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
         public bool IsCameraShakeEnabled => _userOptionData == null || _userOptionData.IsCameraShakeEnabled;
+        public int ColorblindType => _userOptionData == null ? 0 : _userOptionData.ColorblindType;
         public UserOptionData UserOptionData => _userOptionData;
         public TutorialSaveData TutorialSaveData => _tutorialSaveData;
 
@@ -230,6 +231,13 @@ namespace TrainDefense
         {
             _userOptionData ??= new UserOptionData();
             _userOptionData.IsCameraShakeEnabled = enabled;
+            UserOptionDataParser.Save(_userOptionData);
+        }
+
+        public void SetColorblindType(int type)
+        {
+            _userOptionData ??= new UserOptionData();
+            _userOptionData.ColorblindType = type;
             UserOptionDataParser.Save(_userOptionData);
         }
 
