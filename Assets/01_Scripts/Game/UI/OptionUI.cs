@@ -64,6 +64,10 @@ namespace TrainDefense
       private GameObject soundPanel;
       [SerializeField]
       private GameObject languagePanel;
+      [SerializeField]
+      private Button accessibilityTabButton;
+      [SerializeField]
+      private GameObject accessibilityPanel;
       #endregion
 
       private static readonly Color _langSelectedColor = new Color(1f, 0.85f, 0.3f);
@@ -81,7 +85,7 @@ namespace TrainDefense
 
       private void OnEnable()
       {
-         _ShowTab(isSound: true);
+         _ShowTab(OptionTab.Sound);
 
          if (SoundManager.Instance == null) return;
 
@@ -133,10 +137,13 @@ namespace TrainDefense
             languageDropdown.onValueChanged.AddListener(_OnLanguageDropdownChanged);
 
          if (soundTabButton != null)
-            soundTabButton.onClick.AddListener(() => _ShowTab(isSound: true));
+            soundTabButton.onClick.AddListener(() => _ShowTab(OptionTab.Sound));
+
+         if (accessibilityTabButton != null)
+            accessibilityTabButton.onClick.AddListener(() => _ShowTab(OptionTab.Accessibility));
 
          if (languageTabButton != null)
-            languageTabButton.onClick.AddListener(() => _ShowTab(isSound: false));
+            languageTabButton.onClick.AddListener(() => _ShowTab(OptionTab.Language));
 
          Localization.OnLanguageChanged += _RefreshLanguageButtons;
          Localization.OnLanguageChanged += _RefreshLanguageDropdown;
@@ -175,6 +182,9 @@ namespace TrainDefense
 
          if (soundTabButton != null)
             soundTabButton.onClick.RemoveAllListeners();
+
+         if (accessibilityTabButton != null)
+            accessibilityTabButton.onClick.RemoveAllListeners();
 
          if (languageTabButton != null)
             languageTabButton.onClick.RemoveAllListeners();
@@ -304,19 +314,27 @@ namespace TrainDefense
          _RefreshColorblindLabel();
       }
 
-      private void _ShowTab(bool isSound)
+      private enum OptionTab { Sound, Accessibility, Language }
+
+      private void _ShowTab(OptionTab tab)
       {
          if (soundPanel != null)
-            soundPanel.SetActive(isSound);
+            soundPanel.SetActive(tab == OptionTab.Sound);
+
+         if (accessibilityPanel != null)
+            accessibilityPanel.SetActive(tab == OptionTab.Accessibility);
 
          if (languagePanel != null)
-            languagePanel.SetActive(!isSound);
+            languagePanel.SetActive(tab == OptionTab.Language);
 
          if (soundTabButton != null)
-            soundTabButton.image.color = isSound ? _tabSelectedColor : _tabNormalColor;
+            soundTabButton.image.color = tab == OptionTab.Sound ? _tabSelectedColor : _tabNormalColor;
+
+         if (accessibilityTabButton != null)
+            accessibilityTabButton.image.color = tab == OptionTab.Accessibility ? _tabSelectedColor : _tabNormalColor;
 
          if (languageTabButton != null)
-            languageTabButton.image.color = isSound ? _tabNormalColor : _tabSelectedColor;
+            languageTabButton.image.color = tab == OptionTab.Language ? _tabSelectedColor : _tabNormalColor;
       }
 
       private void _OnLanguageButtonClick(SystemLanguage language)
