@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using Cumic.Sequence;
 using TrainDefense.Game;
@@ -49,6 +50,10 @@ namespace TrainDefense
       private Button englishButton;
       [SerializeField]
       private Button japaneseButton;
+      [SerializeField]
+      private TMP_Dropdown languageDropdown;
+      // 드롭다운 인덱스 → 언어코드 매핑(런타임에 채움)
+      private readonly List<string> _languageCodes = new();
 
       [Header("탭")]
       [SerializeField]
@@ -88,6 +93,7 @@ namespace TrainDefense
          _RefreshCameraShakeToggle();
          _RefreshColorblindLabel();
          _RefreshLanguageButtons();
+         _RefreshLanguageDropdown();
       }
 
       private void OnDestroy()
@@ -123,6 +129,9 @@ namespace TrainDefense
          if (japaneseButton != null)
             japaneseButton.onClick.AddListener(() => _OnLanguageButtonClick(SystemLanguage.Japanese));
 
+         if (languageDropdown != null)
+            languageDropdown.onValueChanged.AddListener(_OnLanguageDropdownChanged);
+
          if (soundTabButton != null)
             soundTabButton.onClick.AddListener(() => _ShowTab(isSound: true));
 
@@ -130,6 +139,7 @@ namespace TrainDefense
             languageTabButton.onClick.AddListener(() => _ShowTab(isSound: false));
 
          Localization.OnLanguageChanged += _RefreshLanguageButtons;
+         Localization.OnLanguageChanged += _RefreshLanguageDropdown;
       }
 
       private void _UnSubscribeListeners()
@@ -160,6 +170,9 @@ namespace TrainDefense
          if (japaneseButton != null)
             japaneseButton.onClick.RemoveAllListeners();
 
+         if (languageDropdown != null)
+            languageDropdown.onValueChanged.RemoveListener(_OnLanguageDropdownChanged);
+
          if (soundTabButton != null)
             soundTabButton.onClick.RemoveAllListeners();
 
@@ -167,6 +180,7 @@ namespace TrainDefense
             languageTabButton.onClick.RemoveAllListeners();
 
          Localization.OnLanguageChanged -= _RefreshLanguageButtons;
+         Localization.OnLanguageChanged -= _RefreshLanguageDropdown;
       }
 
       public void OnDeletePlayerPrefsClicked()
@@ -323,6 +337,38 @@ namespace TrainDefense
 
          if (japaneseButton != null)
             japaneseButton.image.color = current == SystemLanguage.Japanese ? _langSelectedColor : _langNormalColor;
+      }
+
+      // 드롭다운에서 언어 선택 시 해당 언어코드로 전환한다.
+      private void _OnLanguageDropdownChanged(int index)
+      {
+         if (index < 0 || index >= _languageCodes.Count) return;
+
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+         Localization.SetLanguage(_languageCodes[index]);
+      }
+
+      // 데이터에 존재하는 언어코드(헤더 자동수집)로 드롭다운 옵션을 채우고 현재 언어를 선택한다.
+      private void _RefreshLanguageDropdown()
+      {
+         if (languageDropdown == null) return;
+
+         _languageCodes.Clear();
+         var options = new List<TMP_Dropdown.OptionData>();
+         var setting = Localization.Setting;
+
+         foreach (var code in Localization.AvailableLanguageCodes)
+         {
+            _languageCodes.Add(code);
+            string display = setting != null ? setting.GetDisplayName(code) : code;
+            options.Add(new TMP_Dropdown.OptionData(display));
+         }
+
+         languageDropdown.options = options;
+
+         int current = _languageCodes.IndexOf(Localization.CurrentLanguageCode);
+         languageDropdown.SetValueWithoutNotify(current >= 0 ? current : 0);
+         languageDropdown.RefreshShownValue();
       }
 
       private void _RefreshHapticToggle()
