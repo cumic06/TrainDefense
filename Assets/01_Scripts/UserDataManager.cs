@@ -39,6 +39,7 @@ namespace TrainDefense
         public int CurrentLevel => _currentLevel;
         public bool IsLobby { get; private set; }
         public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
+        public bool IsCameraShakeEnabled => _userOptionData == null || _userOptionData.IsCameraShakeEnabled;
         public UserOptionData UserOptionData => _userOptionData;
         public TutorialSaveData TutorialSaveData => _tutorialSaveData;
 
@@ -222,6 +223,13 @@ namespace TrainDefense
         {
             _userOptionData ??= new UserOptionData();
             _userOptionData.IsHapticEnabled = enabled;
+            UserOptionDataParser.Save(_userOptionData);
+        }
+
+        public void SetCameraShakeEnabled(bool enabled)
+        {
+            _userOptionData ??= new UserOptionData();
+            _userOptionData.IsCameraShakeEnabled = enabled;
             UserOptionDataParser.Save(_userOptionData);
         }
 

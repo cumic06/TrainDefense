@@ -9,6 +9,7 @@ namespace TrainDefense
       private const string SfxVolumeKey = "SfxVolume";
       private const string BgmMutedKey = "BgmMuted";
       private const string SfxMutedKey = "SfxMuted";
+      private const string CameraShakeEnabledKey = "CameraShakeEnabled";
 
       public static UserOptionData Load()
       {
@@ -19,6 +20,7 @@ namespace TrainDefense
             SfxVolume = PlayerPrefs.GetFloat(SfxVolumeKey, 0.5f),
             IsBgmMuted = PlayerPrefs.GetInt(BgmMutedKey, 0) == 1,
             IsSfxMuted = PlayerPrefs.GetInt(SfxMutedKey, 0) == 1,
+            IsCameraShakeEnabled = PlayerPrefs.GetInt(CameraShakeEnabledKey, 1) == 1,
          };
       }
 
@@ -34,6 +36,7 @@ namespace TrainDefense
          PlayerPrefs.SetFloat(SfxVolumeKey, userOptionData.SfxVolume);
          PlayerPrefs.SetInt(BgmMutedKey, userOptionData.IsBgmMuted ? 1 : 0);
          PlayerPrefs.SetInt(SfxMutedKey, userOptionData.IsSfxMuted ? 1 : 0);
+         PlayerPrefs.SetInt(CameraShakeEnabledKey, userOptionData.IsCameraShakeEnabled ? 1 : 0);
          PlayerPrefs.Save();
       }
 
@@ -45,6 +48,7 @@ namespace TrainDefense
          PlayerPrefs.DeleteKey(SfxVolumeKey);
          PlayerPrefs.DeleteKey(BgmMutedKey);
          PlayerPrefs.DeleteKey(SfxMutedKey);
+         PlayerPrefs.DeleteKey(CameraShakeEnabledKey);
          PlayerPrefs.Save();
       }
    }
