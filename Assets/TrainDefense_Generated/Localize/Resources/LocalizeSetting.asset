@@ -34,3 +34,66 @@ MonoBehaviour:
   useRuntimeDownload: 0
   defaultLanguage: 18
   japaneseFontAsset: {fileID: 11400000, guid: 7d74d9f97188a6c41b28e6f097b08085, type: 2}
+  displayNames:
+  - langCode: Korean
+    displayName: 한국어
+  - langCode: English
+    displayName: English
+  - langCode: Japanese
+    displayName: 日本語
+  - langCode: ChineseSimplified
+    displayName: 简体中文
+  - langCode: ChineseTraditional
+    displayName: 繁體中文
+  - langCode: French
+    displayName: Français
+  - langCode: Italian
+    displayName: Italiano
+  - langCode: German
+    displayName: Deutsch
+  - langCode: es-ES
+    displayName: Español (España)
+  - langCode: es-419
+    displayName: Español (Latinoamérica)
+  - langCode: Greek
+    displayName: Ελληνικά
+  - langCode: Dutch
+    displayName: Nederlands
+  - langCode: Norwegian
+    displayName: Norsk
+  - langCode: Danish
+    displayName: Dansk
+  - langCode: Russian
+    displayName: Русский
+  - langCode: Romanian
+    displayName: Română
+  - langCode: Malay
+    displayName: Bahasa Melayu
+  - langCode: Vietnamese
+    displayName: Tiếng Việt
+  - langCode: Bulgarian
+    displayName: Български
+  - langCode: Swedish
+    displayName: Svenska
+  - langCode: Arabic
+    displayName: العربية
+  - langCode: Ukrainian
+    displayName: Українська
+  - langCode: Indonesian
+    displayName: Bahasa Indonesia
+  - langCode: Czech
+    displayName: Čeština
+  - langCode: Thai
+    displayName: ไทย
+  - langCode: Turkish
+    displayName: Türkçe
+  - langCode: pt-BR
+    displayName: Português (Brasil)
+  - langCode: pt-PT
+    displayName: Português (Portugal)
+  - langCode: Polish
+    displayName: Polski
+  - langCode: Finnish
+    displayName: Suomi
+  - langCode: Hungarian
+    displayName: Magyar
