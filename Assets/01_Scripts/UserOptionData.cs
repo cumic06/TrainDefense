@@ -8,5 +8,6 @@ namespace TrainDefense
       public bool IsBgmMuted { get; set; } = false;
       public bool IsSfxMuted { get; set; } = false;
       public bool IsCameraShakeEnabled { get; set; } = true;
+      public int ColorblindType { get; set; } = 0;
    }
 }

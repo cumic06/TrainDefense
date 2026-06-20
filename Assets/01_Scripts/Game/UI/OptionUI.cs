@@ -1,6 +1,8 @@
+using TMPro;
 using Cumic.Sequence;
 using TrainDefense.Game;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Manager;
 using TrainDefense.Game.UI;
 using TrainDefense.Localize;
 using UnityEngine;
@@ -24,6 +26,10 @@ namespace TrainDefense
       private Toggle hapticToggle;
       [SerializeField]
       private Toggle cameraShakeToggle;
+      [SerializeField]
+      private Button colorblindButton;
+      [SerializeField]
+      private TMP_Text colorblindLabel;
       [SerializeField]
       private Button deletePlayerPrefsButton;
 
@@ -80,6 +86,7 @@ namespace TrainDefense
          _SetSFXMuteSprite();
          _RefreshHapticToggle();
          _RefreshCameraShakeToggle();
+         _RefreshColorblindLabel();
          _RefreshLanguageButtons();
       }
 
@@ -100,6 +107,9 @@ namespace TrainDefense
 
          if (cameraShakeToggle != null)
             cameraShakeToggle.onValueChanged.AddListener(_OnCameraShakeToggleChanged);
+
+         if (colorblindButton != null)
+            colorblindButton.onClick.AddListener(_OnColorblindButtonClick);
 
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.AddListener(OnDeletePlayerPrefsClicked);
@@ -134,6 +144,9 @@ namespace TrainDefense
 
          if (cameraShakeToggle != null)
             cameraShakeToggle.onValueChanged.RemoveListener(_OnCameraShakeToggleChanged);
+
+         if (colorblindButton != null)
+            colorblindButton.onClick.RemoveListener(_OnColorblindButtonClick);
 
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.RemoveAllListeners();
@@ -260,6 +273,23 @@ namespace TrainDefense
          }
       }
 
+      // 색약 유형을 없음→적색맹→녹색맹→청색맹 순으로 순환시키고 즉시 적용한다.
+      private void _OnColorblindButtonClick()
+      {
+         if (UserDataManager.Instance == null)
+            return;
+
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+
+         int next = (UserDataManager.Instance.ColorblindType + 1) % 4;
+         UserDataManager.Instance.SetColorblindType(next);
+
+         if (ColorblindController.Instance != null)
+            ColorblindController.Instance.Apply(next);
+
+         _RefreshColorblindLabel();
+      }
+
       private void _ShowTab(bool isSound)
       {
          if (soundPanel != null)
@@ -324,6 +354,23 @@ namespace TrainDefense
 
          bool isEnabled = UserDataManager.Instance == null || UserDataManager.Instance.IsCameraShakeEnabled;
          cameraShakeToggle.SetIsOnWithoutNotify(isEnabled);
+      }
+
+      private void _RefreshColorblindLabel()
+      {
+         if (colorblindLabel == null)
+         {
+            return;
+         }
+
+         int type = UserDataManager.Instance != null ? UserDataManager.Instance.ColorblindType : 0;
+         colorblindLabel.text = type switch
+         {
+            1 => "색약: 적색맹",
+            2 => "색약: 녹색맹",
+            3 => "색약: 청색맹",
+            _ => "색약: 없음",
+         };
       }
    }
 }
