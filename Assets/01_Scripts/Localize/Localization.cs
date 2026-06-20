@@ -20,6 +20,16 @@ namespace TrainDefense.Localize
         // TSV 헤더에서 수집한 사용 가능한 언어코드 목록(등장 순서 유지). 드롭다운 등 언어 선택 UI에서 사용.
         private static readonly List<string> _availableCodes = new();
 
+        // RTL(오른쪽→왼쪽) 언어코드 집합. 헤더명을 SystemLanguage enum 이름으로 쓰는 경우(Arabic/Hebrew)와
+        // BCP-47 코드(ar/he/fa/ur)를 모두 인식한다. 지역변형("ar-SA")은 '-' 앞 prefix로 판정한다.
+        // 참고: isRightToLeftText는 양방향 정렬만 처리하며, 아랍어 글자 연결(contextual shaping)은
+        // RTLTMPro 같은 reshaper가 별도로 필요하다(후속 과제).
+        private static readonly HashSet<string> _rtlCodes = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Arabic", "Hebrew", "Persian", "Urdu",
+            "ar", "he", "fa", "ur",
+        };
+
         // 구버전: (int)SystemLanguage 저장. 신버전: 언어코드 문자열 저장.
         private const string LanguagePrefKey = "localize_language";
         private const string LangCodePrefKey = "localize_langcode";
@@ -68,6 +78,22 @@ namespace TrainDefense.Localize
         // 언어코드 → SystemLanguage(호환용). 지역변형 등 매칭 실패 시 Unknown.
         public static SystemLanguage CodeToSystemLanguage(string code)
             => Enum.TryParse(code, out SystemLanguage lang) ? lang : SystemLanguage.Unknown;
+
+        // 주어진 언어코드가 RTL(오른쪽→왼쪽) 언어인지 판정한다.
+        public static bool IsRightToLeft(string langCode)
+        {
+            if (string.IsNullOrEmpty(langCode)) return false;
+            if (_rtlCodes.Contains(langCode)) return true;
+
+            // "ar-SA", "fa-IR" 같은 지역변형은 '-' 앞 prefix로 판정.
+            int dash = langCode.IndexOf('-');
+            if (dash > 0 && _rtlCodes.Contains(langCode.Substring(0, dash))) return true;
+
+            return false;
+        }
+
+        // 현재 언어가 RTL인지 여부. 텍스트 방향(isRightToLeftText) 동기화에 사용.
+        public static bool IsCurrentRightToLeft => IsRightToLeft(CurrentLanguageCode);
 
         public static async UniTask InitializeAsync()
         {

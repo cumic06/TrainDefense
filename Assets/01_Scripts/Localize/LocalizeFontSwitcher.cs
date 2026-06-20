@@ -101,6 +101,8 @@ namespace TrainDefense.Localize
             // 일본어는 기존처럼 Bold 가미(가독성). 그 외 언어는 원래 스타일 유지.
             bool isJapanese = code == "Japanese";
             tmp.fontStyle = isJapanese ? (originalFontStyle | FontStyles.Bold) : originalFontStyle;
+            // RTL(아랍어/히브리어 등) 언어면 텍스트 방향을 오른쪽→왼쪽으로 맞춘다.
+            tmp.isRightToLeftText = Localization.IsRightToLeft(code);
         }
     }
 }
