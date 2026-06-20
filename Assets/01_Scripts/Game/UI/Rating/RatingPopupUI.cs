@@ -114,7 +114,7 @@ namespace TrainDefense.Game.UI
 
         private void _SetTitle(string localizeKey, string fallback)
         {
-            titleText.text = LocalizeHelper.ProtectWordBreak(LocalizeHelper.GetByKey(localizeKey, fallback));
+            titleText.text = LocalizeHelper.GetByKey(localizeKey, fallback);
         }
 
         private void _OpenStorePage()

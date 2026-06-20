@@ -47,9 +47,9 @@ namespace TrainDefense.Localize
 
             _ApplyFont();
 
-            // 리터럴 "\n"을 실제 줄바꿈으로 먼저 변환(ProtectWordBreak가 \ n 사이를 묶어 이스케이프를
-            // 깨뜨리지 않도록)한 뒤, 한글 단어 중간 줄바꿈을 방지(주황→주/황, 줍니다.→줍니/다.). 일/중은 원문 유지.
-            string localized = LocalizeHelper.ProtectWordBreak(Localization.Get(_key)?.Replace("\\n", "\n"));
+            // 리터럴 "\n"을 실제 줄바꿈으로 변환(TSV 셀에 직접 개행을 못 넣어 \n 문자열로 저장됨).
+            // 한글 단어 중간 줄바꿈은 TMP_Settings의 Modern Hangul Line Breaking Rules로 처리한다.
+            string localized = Localization.Get(_key)?.Replace("\\n", "\n");
             if (!string.IsNullOrEmpty(localized))
                 _text.text = localized;
         }
