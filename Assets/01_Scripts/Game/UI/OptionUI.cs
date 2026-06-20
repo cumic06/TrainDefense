@@ -32,6 +32,10 @@ namespace TrainDefense
       [SerializeField]
       private TMP_Text colorblindLabel;
       [SerializeField]
+      private TMP_Text accessibilityTabText;
+      [SerializeField]
+      private TMP_Text cameraShakeLabel;
+      [SerializeField]
       private Button deletePlayerPrefsButton;
 
       [SerializeField]
@@ -98,6 +102,7 @@ namespace TrainDefense
          _RefreshColorblindLabel();
          _RefreshLanguageButtons();
          _RefreshLanguageDropdown();
+         _RefreshAccessibilityTexts();
       }
 
       private void OnDestroy()
@@ -147,6 +152,8 @@ namespace TrainDefense
 
          Localization.OnLanguageChanged += _RefreshLanguageButtons;
          Localization.OnLanguageChanged += _RefreshLanguageDropdown;
+         Localization.OnLanguageChanged += _RefreshColorblindLabel;
+         Localization.OnLanguageChanged += _RefreshAccessibilityTexts;
       }
 
       private void _UnSubscribeListeners()
@@ -191,6 +198,8 @@ namespace TrainDefense
 
          Localization.OnLanguageChanged -= _RefreshLanguageButtons;
          Localization.OnLanguageChanged -= _RefreshLanguageDropdown;
+         Localization.OnLanguageChanged -= _RefreshColorblindLabel;
+         Localization.OnLanguageChanged -= _RefreshAccessibilityTexts;
       }
 
       public void OnDeletePlayerPrefsClicked()
@@ -428,13 +437,24 @@ namespace TrainDefense
          }
 
          int type = UserDataManager.Instance != null ? UserDataManager.Instance.ColorblindType : 0;
-         colorblindLabel.text = type switch
+         (string key, string fallback) = type switch
          {
-            1 => "색약: 적색맹",
-            2 => "색약: 녹색맹",
-            3 => "색약: 청색맹",
-            _ => "색약: 없음",
+            1 => ("UI_Colorblind_Protanopia", "색약 보정: 적색맹"),
+            2 => ("UI_Colorblind_Deuteranopia", "색약 보정: 녹색맹"),
+            3 => ("UI_Colorblind_Tritanopia", "색약 보정: 청색맹"),
+            _ => ("UI_Colorblind_None", "색약 보정: 없음"),
          };
+         colorblindLabel.text = LocalizeHelper.GetByKey(key, fallback);
+      }
+
+      // 접근성 탭 텍스트·카메라 흔들림 라벨을 현재 언어로 갱신한다.
+      private void _RefreshAccessibilityTexts()
+      {
+         if (accessibilityTabText != null)
+            accessibilityTabText.text = LocalizeHelper.GetByKey("UI_Option_Tab_Accessibility", "접근성");
+
+         if (cameraShakeLabel != null)
+            cameraShakeLabel.text = LocalizeHelper.GetByKey("UI_Option_CameraShake", "카메라 흔들림");
       }
    }
 }
