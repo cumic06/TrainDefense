@@ -68,3 +68,9 @@ Reward_Gold_Desc	골드를 획득합니다.	Gain gold.	ゴールドを獲得し�
 Reward_EliteCurrency_Name	엘리트 재화 획득	Elite Currency	エリート財貨獲得	获得精英货币
 Reward_EliteCurrency_Desc	엘리트 재화를 획득합니다.	Gain elite currency.	エリート財貨を獲得します。	获得精英货币。
 Tutorial_MainTrainAttack_Msg1	화면을 길게 눌러 <wave>메인 기차</wave>의 포탑으로 적을 공격하세요!	Press and hold the screen to fire the <wave>Main Train</wave>'s turret at enemies!	画面を長押しして<wave>メイン列車</wave>の砲塔で敵を攻撃しましょう！	按住屏幕，用<wave>主列车</wave>的炮塔攻击敌人！
+UI_Option_Tab_Accessibility	접근성	Accessibility	アクセシビリティ	无障碍
+UI_Option_CameraShake	카메라 흔들림	Camera Shake	カメラの揺れ	镜头震动
+UI_Colorblind_None	색약 보정: 없음	Colorblind: Off	色覚補正: なし	色盲校正: 关闭
+UI_Colorblind_Protanopia	색약 보정: 적색맹	Colorblind: Protanopia	色覚補正: P型	色盲校正: 红色盲
+UI_Colorblind_Deuteranopia	색약 보정: 녹색맹	Colorblind: Deuteranopia	色覚補正: D型	色盲校正: 绿色盲
+UI_Colorblind_Tritanopia	색약 보정: 청색맹	Colorblind: Tritanopia	色覚補正: T型	色盲校正: 蓝色盲
