@@ -23,6 +23,8 @@ namespace TrainDefense
       [SerializeField]
       private Toggle hapticToggle;
       [SerializeField]
+      private Toggle cameraShakeToggle;
+      [SerializeField]
       private Button deletePlayerPrefsButton;
 
       [SerializeField]
@@ -77,6 +79,7 @@ namespace TrainDefense
          _SetBGMMuteSprite();
          _SetSFXMuteSprite();
          _RefreshHapticToggle();
+         _RefreshCameraShakeToggle();
          _RefreshLanguageButtons();
       }
 
@@ -94,6 +97,9 @@ namespace TrainDefense
 
          if (hapticToggle != null)
             hapticToggle.onValueChanged.AddListener(_OnHapticToggleChanged);
+
+         if (cameraShakeToggle != null)
+            cameraShakeToggle.onValueChanged.AddListener(_OnCameraShakeToggleChanged);
 
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.AddListener(OnDeletePlayerPrefsClicked);
@@ -125,6 +131,9 @@ namespace TrainDefense
 
          if (hapticToggle != null)
             hapticToggle.onValueChanged.RemoveListener(_OnHapticToggleChanged);
+
+         if (cameraShakeToggle != null)
+            cameraShakeToggle.onValueChanged.RemoveListener(_OnCameraShakeToggleChanged);
 
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.RemoveAllListeners();
@@ -243,6 +252,14 @@ namespace TrainDefense
          }
       }
 
+      private void _OnCameraShakeToggleChanged(bool isEnabled)
+      {
+         if (UserDataManager.Instance != null)
+         {
+            UserDataManager.Instance.SetCameraShakeEnabled(isEnabled);
+         }
+      }
+
       private void _ShowTab(bool isSound)
       {
          if (soundPanel != null)
@@ -296,6 +313,17 @@ namespace TrainDefense
          }
 
          hapticToggle.SetIsOnWithoutNotify(isEnabled);
+      }
+
+      private void _RefreshCameraShakeToggle()
+      {
+         if (cameraShakeToggle == null)
+         {
+            return;
+         }
+
+         bool isEnabled = UserDataManager.Instance == null || UserDataManager.Instance.IsCameraShakeEnabled;
+         cameraShakeToggle.SetIsOnWithoutNotify(isEnabled);
       }
    }
 }
