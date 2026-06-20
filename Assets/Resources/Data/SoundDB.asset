@@ -23,6 +23,11 @@ MonoBehaviour:
     soundType: 101
     clip: {fileID: 8300000, guid: e023b1165d71b4edb94fca9b8106ebc1, type: 3}
     volume: 0.4
+  - id:
+    clipId:
+    soundType: 207
+    clip: {fileID: 8300000, guid: f51ad32b9e98b5942b67a6b20278e0f0, type: 3}
+    volume: 0.5
   - id: 
     clipId: 
     soundType: 301
