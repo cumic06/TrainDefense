@@ -17,11 +17,17 @@ namespace TrainDefense.Localize
         private static bool _isInitialized = false;
         private static string _langCodeOverride = null;
 
+        // TSV 헤더에서 수집한 사용 가능한 언어코드 목록(등장 순서 유지). 드롭다운 등 언어 선택 UI에서 사용.
+        private static readonly List<string> _availableCodes = new();
+
         // 구버전: (int)SystemLanguage 저장. 신버전: 언어코드 문자열 저장.
         private const string LanguagePrefKey = "localize_language";
         private const string LangCodePrefKey = "localize_langcode";
 
         public static bool IsInitialized => _isInitialized;
+
+        // 데이터에 존재하는 언어코드 목록(헤더에서 자동 수집). 시트에 언어 컬럼을 추가하면 자동 반영된다.
+        public static IReadOnlyList<string> AvailableLanguageCodes => _availableCodes;
 
         // 현재 언어코드(문자열). override가 없으면 OS 언어를 코드로 매핑한다.
         public static string CurrentLanguageCode => _langCodeOverride ?? SystemLanguageToCode(Application.systemLanguage);
@@ -79,6 +85,7 @@ namespace TrainDefense.Localize
             }
 
             _cache.Clear();
+            _availableCodes.Clear();
 
             if (!_setting.useRuntimeDownload)
             {
@@ -156,7 +163,11 @@ namespace TrainDefense.Localize
             {
                 string headerName = headers[i].Trim();
                 if (!string.IsNullOrEmpty(headerName))
+                {
                     headerMap[i] = headerName;
+                    if (!_availableCodes.Contains(headerName))
+                        _availableCodes.Add(headerName);
+                }
             }
 
             for (int i = 1; i < lines.Length; i++)
