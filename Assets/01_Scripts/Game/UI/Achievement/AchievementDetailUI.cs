@@ -20,12 +20,24 @@ namespace TrainDefense.Game.UI.Achievement
         [SerializeField] private GameObject emptyHint;
         #endregion
 
+        // emptyHint(GameObject)에 직접 붙은 TMP 캐시. 빈 안내문 다국어 갱신용.
+        private TextMeshProUGUI _emptyHintText;
+
         public void Show(AchievementEntry entry)
         {
             bool hasEntry = entry != null;
 
             if (emptyHint != null)
+            {
                 emptyHint.SetActive(!hasEntry);
+
+                // 빈 안내문도 언어에 맞춰 갱신한다. Show는 언어 변경 시에도 다시 호출되므로 여기서 처리.
+                if (_emptyHintText == null)
+                    _emptyHintText = emptyHint.GetComponent<TextMeshProUGUI>();
+
+                if (_emptyHintText != null)
+                    _emptyHintText.text = LocalizeHelper.GetByKey("Achievement_EmptyHint", "업적을 선택하세요");
+            }
 
             if (!hasEntry)
             {
