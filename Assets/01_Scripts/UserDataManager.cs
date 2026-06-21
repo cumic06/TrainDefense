@@ -39,6 +39,8 @@ namespace TrainDefense
         public int CurrentLevel => _currentLevel;
         public bool IsLobby { get; private set; }
         public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
+        public bool IsCameraShakeEnabled => _userOptionData == null || _userOptionData.IsCameraShakeEnabled;
+        public int ColorblindType => _userOptionData == null ? 0 : _userOptionData.ColorblindType;
         public UserOptionData UserOptionData => _userOptionData;
         public TutorialSaveData TutorialSaveData => _tutorialSaveData;
 
@@ -225,6 +227,20 @@ namespace TrainDefense
             UserOptionDataParser.Save(_userOptionData);
         }
 
+        public void SetCameraShakeEnabled(bool enabled)
+        {
+            _userOptionData ??= new UserOptionData();
+            _userOptionData.IsCameraShakeEnabled = enabled;
+            UserOptionDataParser.Save(_userOptionData);
+        }
+
+        public void SetColorblindType(int type)
+        {
+            _userOptionData ??= new UserOptionData();
+            _userOptionData.ColorblindType = type;
+            UserOptionDataParser.Save(_userOptionData);
+        }
+
         /// <summary>
         /// 발견된 몬스터 데이터를 초기화합니다.
         /// </summary>
@@ -357,6 +373,16 @@ namespace TrainDefense
                 SoundManager.Instance.SetBGMVolume(_userOptionData.BgmVolume);
                 SoundManager.Instance.SetSFXVolume(_userOptionData.SfxVolume);
             }
+        }
+
+        /// <summary>
+        /// 업적 진행/달성 데이터를 초기화합니다.
+        /// </summary>
+        [Button("업적 초기화")]
+        public void ResetAchievements()
+        {
+            Cumic.Achievement.AchievementSaveData.Delete();
+            Debug.Log("[UserDataManager] 업적 데이터가 초기화되었습니다.");
         }
 
         /// <summary>

@@ -1,6 +1,9 @@
+using System.Collections.Generic;
+using TMPro;
 using Cumic.Sequence;
 using TrainDefense.Game;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Manager;
 using TrainDefense.Game.UI;
 using TrainDefense.Localize;
 using UnityEngine;
@@ -23,6 +26,16 @@ namespace TrainDefense
       [SerializeField]
       private Toggle hapticToggle;
       [SerializeField]
+      private Toggle cameraShakeToggle;
+      [SerializeField]
+      private Button colorblindButton;
+      [SerializeField]
+      private TMP_Text colorblindLabel;
+      [SerializeField]
+      private TMP_Text accessibilityTabText;
+      [SerializeField]
+      private TMP_Text cameraShakeLabel;
+      [SerializeField]
       private Button deletePlayerPrefsButton;
 
       [SerializeField]
@@ -41,6 +54,10 @@ namespace TrainDefense
       private Button englishButton;
       [SerializeField]
       private Button japaneseButton;
+      [SerializeField]
+      private TMP_Dropdown languageDropdown;
+      // 드롭다운 인덱스 → 언어코드 매핑(런타임에 채움)
+      private readonly List<string> _languageCodes = new();
 
       [Header("탭")]
       [SerializeField]
@@ -51,6 +68,10 @@ namespace TrainDefense
       private GameObject soundPanel;
       [SerializeField]
       private GameObject languagePanel;
+      [SerializeField]
+      private Button accessibilityTabButton;
+      [SerializeField]
+      private GameObject accessibilityPanel;
       #endregion
 
       private static readonly Color _langSelectedColor = new Color(1f, 0.85f, 0.3f);
@@ -68,7 +89,7 @@ namespace TrainDefense
 
       private void OnEnable()
       {
-         _ShowTab(isSound: true);
+         _ShowTab(OptionTab.Sound);
 
          if (SoundManager.Instance == null) return;
 
@@ -77,7 +98,11 @@ namespace TrainDefense
          _SetBGMMuteSprite();
          _SetSFXMuteSprite();
          _RefreshHapticToggle();
+         _RefreshCameraShakeToggle();
+         _RefreshColorblindLabel();
          _RefreshLanguageButtons();
+         _RefreshLanguageDropdown();
+         _RefreshAccessibilityTexts();
       }
 
       private void OnDestroy()
@@ -95,6 +120,12 @@ namespace TrainDefense
          if (hapticToggle != null)
             hapticToggle.onValueChanged.AddListener(_OnHapticToggleChanged);
 
+         if (cameraShakeToggle != null)
+            cameraShakeToggle.onValueChanged.AddListener(_OnCameraShakeToggleChanged);
+
+         if (colorblindButton != null)
+            colorblindButton.onClick.AddListener(_OnColorblindButtonClick);
+
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.AddListener(OnDeletePlayerPrefsClicked);
 
@@ -107,13 +138,22 @@ namespace TrainDefense
          if (japaneseButton != null)
             japaneseButton.onClick.AddListener(() => _OnLanguageButtonClick(SystemLanguage.Japanese));
 
+         if (languageDropdown != null)
+            languageDropdown.onValueChanged.AddListener(_OnLanguageDropdownChanged);
+
          if (soundTabButton != null)
-            soundTabButton.onClick.AddListener(() => _ShowTab(isSound: true));
+            soundTabButton.onClick.AddListener(() => _ShowTab(OptionTab.Sound));
+
+         if (accessibilityTabButton != null)
+            accessibilityTabButton.onClick.AddListener(() => _ShowTab(OptionTab.Accessibility));
 
          if (languageTabButton != null)
-            languageTabButton.onClick.AddListener(() => _ShowTab(isSound: false));
+            languageTabButton.onClick.AddListener(() => _ShowTab(OptionTab.Language));
 
          Localization.OnLanguageChanged += _RefreshLanguageButtons;
+         Localization.OnLanguageChanged += _RefreshLanguageDropdown;
+         Localization.OnLanguageChanged += _RefreshColorblindLabel;
+         Localization.OnLanguageChanged += _RefreshAccessibilityTexts;
       }
 
       private void _UnSubscribeListeners()
@@ -125,6 +165,12 @@ namespace TrainDefense
 
          if (hapticToggle != null)
             hapticToggle.onValueChanged.RemoveListener(_OnHapticToggleChanged);
+
+         if (cameraShakeToggle != null)
+            cameraShakeToggle.onValueChanged.RemoveListener(_OnCameraShakeToggleChanged);
+
+         if (colorblindButton != null)
+            colorblindButton.onClick.RemoveListener(_OnColorblindButtonClick);
 
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.RemoveAllListeners();
@@ -138,13 +184,22 @@ namespace TrainDefense
          if (japaneseButton != null)
             japaneseButton.onClick.RemoveAllListeners();
 
+         if (languageDropdown != null)
+            languageDropdown.onValueChanged.RemoveListener(_OnLanguageDropdownChanged);
+
          if (soundTabButton != null)
             soundTabButton.onClick.RemoveAllListeners();
+
+         if (accessibilityTabButton != null)
+            accessibilityTabButton.onClick.RemoveAllListeners();
 
          if (languageTabButton != null)
             languageTabButton.onClick.RemoveAllListeners();
 
          Localization.OnLanguageChanged -= _RefreshLanguageButtons;
+         Localization.OnLanguageChanged -= _RefreshLanguageDropdown;
+         Localization.OnLanguageChanged -= _RefreshColorblindLabel;
+         Localization.OnLanguageChanged -= _RefreshAccessibilityTexts;
       }
 
       public void OnDeletePlayerPrefsClicked()
@@ -243,19 +298,52 @@ namespace TrainDefense
          }
       }
 
-      private void _ShowTab(bool isSound)
+      private void _OnCameraShakeToggleChanged(bool isEnabled)
+      {
+         if (UserDataManager.Instance != null)
+         {
+            UserDataManager.Instance.SetCameraShakeEnabled(isEnabled);
+         }
+      }
+
+      // 색약 유형을 없음→적색맹→녹색맹→청색맹 순으로 순환시키고 즉시 적용한다.
+      private void _OnColorblindButtonClick()
+      {
+         if (UserDataManager.Instance == null)
+            return;
+
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+
+         int next = (UserDataManager.Instance.ColorblindType + 1) % 4;
+         UserDataManager.Instance.SetColorblindType(next);
+
+         if (ColorblindController.Instance != null)
+            ColorblindController.Instance.Apply(next);
+
+         _RefreshColorblindLabel();
+      }
+
+      private enum OptionTab { Sound, Accessibility, Language }
+
+      private void _ShowTab(OptionTab tab)
       {
          if (soundPanel != null)
-            soundPanel.SetActive(isSound);
+            soundPanel.SetActive(tab == OptionTab.Sound);
+
+         if (accessibilityPanel != null)
+            accessibilityPanel.SetActive(tab == OptionTab.Accessibility);
 
          if (languagePanel != null)
-            languagePanel.SetActive(!isSound);
+            languagePanel.SetActive(tab == OptionTab.Language);
 
          if (soundTabButton != null)
-            soundTabButton.image.color = isSound ? _tabSelectedColor : _tabNormalColor;
+            soundTabButton.image.color = tab == OptionTab.Sound ? _tabSelectedColor : _tabNormalColor;
+
+         if (accessibilityTabButton != null)
+            accessibilityTabButton.image.color = tab == OptionTab.Accessibility ? _tabSelectedColor : _tabNormalColor;
 
          if (languageTabButton != null)
-            languageTabButton.image.color = isSound ? _tabNormalColor : _tabSelectedColor;
+            languageTabButton.image.color = tab == OptionTab.Language ? _tabSelectedColor : _tabNormalColor;
       }
 
       private void _OnLanguageButtonClick(SystemLanguage language)
@@ -278,6 +366,38 @@ namespace TrainDefense
             japaneseButton.image.color = current == SystemLanguage.Japanese ? _langSelectedColor : _langNormalColor;
       }
 
+      // 드롭다운에서 언어 선택 시 해당 언어코드로 전환한다.
+      private void _OnLanguageDropdownChanged(int index)
+      {
+         if (index < 0 || index >= _languageCodes.Count) return;
+
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+         Localization.SetLanguage(_languageCodes[index]);
+      }
+
+      // 데이터에 존재하는 언어코드(헤더 자동수집)로 드롭다운 옵션을 채우고 현재 언어를 선택한다.
+      private void _RefreshLanguageDropdown()
+      {
+         if (languageDropdown == null) return;
+
+         _languageCodes.Clear();
+         var options = new List<TMP_Dropdown.OptionData>();
+         var setting = Localization.Setting;
+
+         foreach (var code in Localization.AvailableLanguageCodes)
+         {
+            _languageCodes.Add(code);
+            string display = setting != null ? setting.GetDisplayName(code) : code;
+            options.Add(new TMP_Dropdown.OptionData(display));
+         }
+
+         languageDropdown.options = options;
+
+         int current = _languageCodes.IndexOf(Localization.CurrentLanguageCode);
+         languageDropdown.SetValueWithoutNotify(current >= 0 ? current : 0);
+         languageDropdown.RefreshShownValue();
+      }
+
       private void _RefreshHapticToggle()
       {
          if (hapticToggle == null)
@@ -296,6 +416,55 @@ namespace TrainDefense
          }
 
          hapticToggle.SetIsOnWithoutNotify(isEnabled);
+      }
+
+      private void _RefreshCameraShakeToggle()
+      {
+         if (cameraShakeToggle == null)
+         {
+            return;
+         }
+
+         bool isEnabled = UserDataManager.Instance == null || UserDataManager.Instance.IsCameraShakeEnabled;
+         cameraShakeToggle.SetIsOnWithoutNotify(isEnabled);
+      }
+
+      private void _RefreshColorblindLabel()
+      {
+         if (colorblindLabel == null)
+         {
+            return;
+         }
+
+         int type = UserDataManager.Instance != null ? UserDataManager.Instance.ColorblindType : 0;
+         (string key, string fallback) = type switch
+         {
+            1 => ("UI_Colorblind_Protanopia", "색약 보정: 적색맹"),
+            2 => ("UI_Colorblind_Deuteranopia", "색약 보정: 녹색맹"),
+            3 => ("UI_Colorblind_Tritanopia", "색약 보정: 청색맹"),
+            _ => ("UI_Colorblind_None", "색약 보정: 없음"),
+         };
+         colorblindLabel.text = LocalizeHelper.GetByKey(key, fallback);
+         colorblindLabel.color = Color.black;
+      }
+
+      // 접근성 탭 텍스트·카메라 흔들림 라벨을 현재 언어로 갱신한다.
+      private void _RefreshAccessibilityTexts()
+      {
+         if (accessibilityTabText != null)
+         {
+            accessibilityTabText.text = LocalizeHelper.GetByKey("UI_Option_Tab_Accessibility", "접근성");
+            // 영어 등 긴 언어에서 탭 폭을 넘지 않도록 자동 축소.
+            accessibilityTabText.enableAutoSizing = true;
+            accessibilityTabText.fontSizeMin = 18;
+            accessibilityTabText.fontSizeMax = 40;
+         }
+
+         if (cameraShakeLabel != null)
+         {
+            cameraShakeLabel.text = LocalizeHelper.GetByKey("UI_Option_CameraShake", "카메라 흔들림");
+            cameraShakeLabel.color = Color.black;
+         }
       }
    }
 }

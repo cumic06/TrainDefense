@@ -53,11 +53,12 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
         }
 
-        // 게임 진입 시 UserDataManager가 _currentExp=0으로 리셋한 뒤 텍스트를 갱신 (로비 경험치 잔존 방지)
+        // 게임 진입 시 0부터 시작. UserDataManager의 _currentExp=0 리셋(OnGameEnter)이 이 콜백보다
+        // 늦게 실행될 수 있어, CurrentExp를 읽으면 로비 시뮬레이션에서 누적된 값이 잠깐 표시된다.
+        // 분자는 0으로 고정(Setup 재사용)해 콜백 순서와 무관하게 0부터 보이도록 한다.
         private void OnGameEnter(GameEnterEvent gameEnterEvent)
         {
-            _slider.value = 0;
-            UpdateExpText();
+            Setup();
         }
 
         private void OnAddExp(AddExpEvent addExpEvent)

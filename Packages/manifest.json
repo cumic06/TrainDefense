@@ -3,6 +3,7 @@
     "com.antigravity.editor": "https://github.com/hohollala/Antigravity.git",
     "com.boxqkrtm.ide.cursor": "https://github.com/boxqkrtm/com.unity.ide.cursor.git",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+    "com.nosuchstudio.rtltmpro": "https://github.com/hk1ll3r/RTLTMPro.git?path=/UPMPackage",
     "com.redeyestemplate.core": "https://github.com/RedEyesHQ/UnityTemplate.git",
     "com.unity.2d.animation": "13.0.4",
     "com.unity.2d.aseprite": "3.0.1",
