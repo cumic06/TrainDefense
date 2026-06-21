@@ -171,6 +171,25 @@ namespace TrainDefense.Localize.EditorTools
                           $"(없는 문자는 다른 폰트/fallback이 담당). 성공={ok}");
             }
 
+            // 3.5) 베이크 완료 후 Static으로 고정.
+            // Dynamic 모드는 에디터 플레이/빌드/reimport 시 베이크된 글리프가 클리어돼
+            // 비라틴(특히 아랍/태국 등 런타임 베이크 불가한 complex script)이 □로 나온다.
+            // 필요한 글자를 위에서 모두 미리 베이크했으므로 Static으로 굳혀 글리프를 영구 보존한다.
+            foreach (var job in jobs)
+            {
+                if (!created.TryGetValue(job.outName, out var fa)) continue;
+                fa.atlasPopulationMode = AtlasPopulationMode.Static;
+                var so = new SerializedObject(fa);
+                var clearProp = so.FindProperty("m_ClearDynamicDataOnBuild");
+                if (clearProp != null)
+                {
+                    clearProp.boolValue = false;
+                    so.ApplyModifiedProperties();
+                }
+                EditorUtility.SetDirty(fa);
+                Debug.Log($"[Noto] {fa.name}: AtlasPopulationMode=Static 고정 (글리프 손실 방지)");
+            }
+
             // 4) LocalizeSetting.languageFonts 등록
             var setting = AssetDatabase.LoadAssetAtPath<LocalizeSetting>(SettingPath);
             if (setting == null)
