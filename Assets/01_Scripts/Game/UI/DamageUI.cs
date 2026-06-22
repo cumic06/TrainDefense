@@ -27,25 +27,19 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private Color criticalColor = Color.red;
 
-        [Header("치명타 강조 연출")]
-        [Tooltip("치명타 시 상승 거리 (일반보다 크게)")]
+        [Header("치명타 강조 연출 (임팩트 슬램)")]
+        [Tooltip("등장 시 시작 스케일. 크게 시작해 1.0으로 내리꽂힌다.")]
         [SerializeField]
-        private float criticalMoveVDistance = 170f;
-        [Tooltip("등장 시 시작 스케일 (작게 시작해 크게 튀어나옴)")]
+        private float criticalStartScale = 2f;
+        [Tooltip("슬램 안착 시간. 짧을수록 강한 타격감.")]
         [SerializeField]
-        private float criticalStartScale = 0.5f;
-        [Tooltip("정착 스케일 (오버슈트 후 안착)")]
+        private float criticalSlamDuration = 0.18f;
+        [Tooltip("착지 순간 아래로 내리찍는 거리(px).")]
         [SerializeField]
-        private float criticalScale = 1.35f;
-        [Tooltip("스케일 팝업 시간")]
+        private float criticalSlamPunch = 28f;
+        [Tooltip("다운펀치 시간.")]
         [SerializeField]
-        private float criticalScaleDuration = 0.28f;
-        [Tooltip("회전 펀치 각도 (좌우 흔들림)")]
-        [SerializeField]
-        private float criticalPunchRotation = 18f;
-        [Tooltip("회전 펀치 시간")]
-        [SerializeField]
-        private float criticalPunchDuration = 0.3f;
+        private float criticalPunchDuration = 0.25f;
         #endregion
         private RectTransform _rectTransform;
         private bool _isCritical;
@@ -57,10 +51,9 @@ namespace TrainDefense.Game.UI
 
         private void OnEnable()
         {
-            // 풀링 객체이므로 재사용 전 상태를 초기화한다(이전 치명타 연출의 스케일/회전 잔존 방지).
+            // 풀링 객체이므로 재사용 전 상태를 초기화한다(이전 치명타 슬램의 스케일 잔존 방지).
             damageText.alpha = 1f;
             _rectTransform.localScale = Vector3.one;
-            _rectTransform.localRotation = Quaternion.identity;
             StartCoroutine(FadeOut());
         }
 
@@ -69,7 +62,6 @@ namespace TrainDefense.Game.UI
             _rectTransform.DOKill();
             damageText.DOKill();
             _rectTransform.localScale = Vector3.one;
-            _rectTransform.localRotation = Quaternion.identity;
         }
 
         public void SetDamage(float damage, bool isCritical = false)
@@ -95,32 +87,34 @@ namespace TrainDefense.Game.UI
         {
             _rectTransform.DOKill();
 
-            float currentPosition = _rectTransform.anchoredPosition.y;
-            float distance = _isCritical ? criticalMoveVDistance : moveVDistance;
-            float targetPosition = currentPosition + distance;
-
-            // 치명타는 위로 솟구치듯 감속(OutQuad), 일반은 기존과 동일.
-            _rectTransform.DOLocalMoveY(targetPosition, moveDuration)
-                .SetEase(_isCritical ? Ease.OutQuad : Ease.Linear);
-
             if (_isCritical)
-                PlayCriticalEmphasis();
+            {
+                PlayCriticalSlam();
+                return;
+            }
+
+            float currentPosition = _rectTransform.anchoredPosition.y;
+            _rectTransform.DOLocalMoveY(currentPosition + moveVDistance, moveDuration);
         }
 
         /// <summary>
-        /// 치명타 전용 강조 연출: 작게 시작해 탄성 있게 튀어나오고(OutBack), 좌우로 회전 펀치를 주어 역동감을 살린다.
+        /// 치명타 전용 임팩트 슬램: 큰 글자가 제자리에서 1.0으로 빠르게 내리꽂히며(InBack) 안착하고,
+        /// 착지 순간 아래로 내리찍는 펀치를 더해 묵직한 타격감을 낸다. 위로는 거의 뜨지 않는다.
         /// </summary>
-        private void PlayCriticalEmphasis()
+        private void PlayCriticalSlam()
         {
             _rectTransform.localScale = Vector3.one * criticalStartScale;
-            _rectTransform.DOScale(Vector3.one * criticalScale, criticalScaleDuration)
-                .SetEase(Ease.OutBack);
+            _rectTransform.DOScale(Vector3.one, criticalSlamDuration)
+                .SetEase(Ease.InBack);
 
-            _rectTransform.DOPunchRotation(
-                new Vector3(0f, 0f, criticalPunchRotation),
-                criticalPunchDuration,
-                vibrato: 8,
-                elasticity: 0.8f);
+            // 슬램이 안착하는 순간(딜레이=슬램 시간) 아래로 내리찍는 충격 펀치.
+            // anchoredPosition을 건드리는 유일한 트윈이라 이동 트윈과 충돌하지 않는다.
+            _rectTransform.DOPunchAnchorPos(
+                    new Vector2(0f, -criticalSlamPunch),
+                    criticalPunchDuration,
+                    vibrato: 1,
+                    elasticity: 0.5f)
+                .SetDelay(criticalSlamDuration);
         }
 
         private IEnumerator FadeOut()
