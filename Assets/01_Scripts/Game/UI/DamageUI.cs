@@ -36,7 +36,7 @@ namespace TrainDefense.Game.UI
         private float criticalPopDuration = 0.2f;
         [Tooltip("좌/우로 기울며 흔들리는 각도(도).")]
         [SerializeField]
-        private float criticalShakeAngle = 22f;
+        private float criticalShakeAngle = 10f;
         [Tooltip("좌우 흔들림 시간.")]
         [SerializeField]
         private float criticalShakeDuration = 0.45f;
