@@ -40,6 +40,8 @@ namespace TrainDefense.Game.UI
       #endregion
 
       private Train _train;
+      // 엘리트 교체 시 슬롯에 부여하는 고정 이름. 튜토리얼이 GameObject.Find로 엘리트 슬롯을 찾기 위함.
+      public const string EliteSlotObjectName = "EliteTrainInfoSlotUI";
       private const float LongPressDuration = 0.25f;
       private Coroutine _longPressCoroutine;
       private bool _longPressFired;
@@ -313,6 +315,9 @@ namespace TrainDefense.Game.UI
          {
             deadMark.SetActive(false);
          }
+
+         // 엘리트 교체된 슬롯은 튜토리얼이 강조 대상으로 찾을 수 있도록 고정 이름을 부여한다.
+         gameObject.name = EliteSlotObjectName;
 
          trainLevelImage.gameObject.SetActive(true);
          trainLevelText.text = "E";
