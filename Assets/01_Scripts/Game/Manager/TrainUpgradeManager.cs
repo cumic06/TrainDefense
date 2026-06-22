@@ -14,6 +14,7 @@ namespace TrainDefense.Game
     {
         private bool _skillTutorialStarted = false;
         private bool _trainInfoSlotTutorialStarted = false;
+        private bool _eliteTrainTutorialStarted = false;
 
         [ShowInInspector, ReadOnly, FoldoutGroup("디버그 - 상점 업그레이드")]
         private Dictionary<string, int> ShopUpgrades
@@ -122,6 +123,10 @@ namespace TrainDefense.Game
                 return;
             }
 
+            // 트레인 교체는 엘리트 획득 경로(EliteTrainChoice)에서만 발생한다.
+            // 엘리트 획득 시 전용 튜토리얼을 시작하고, 스킬 튜토리얼과 중복되지 않게 우선 처리한다.
+            if (CheckAndStartEliteTrainTutorial())
+                return;
 
             // 대체된 새 기차가 스킬을 가지면 튜토리얼 시작
             if (replaceTrainEvent.NewTrain.HasActiveSkill)
@@ -260,6 +265,20 @@ namespace TrainDefense.Game
 
             TutorialManager.Instance.OnTutorialComplete -= OnMainTrainAttackTutorialComplete;
             GameEventSystem.Unsubscribe<MainTrainFiredEvent>(OnMainTrainFired);
+        }
+
+        /// <summary>
+        /// 엘리트 기차를 획득(트레인 교체)했을 때 엘리트 튜토리얼을 시작합니다.
+        /// 시작했으면 true를 반환합니다.
+        /// </summary>
+        private bool CheckAndStartEliteTrainTutorial()
+        {
+            if (_eliteTrainTutorialStarted) return false;
+            if (TutorialManager.Instance == null) return false;
+
+            _eliteTrainTutorialStarted = true;
+            Debug.Log("TrainUpgradeManager: Starting elite train tutorial");
+            return TutorialManager.Instance.StartTutorial("eliteTrainTutorial");
         }
 
         /// <summary>
