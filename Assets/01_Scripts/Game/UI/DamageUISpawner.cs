@@ -49,8 +49,9 @@ namespace TrainDefense.Game.UI
 
             Vector2 randomOffset = Random.insideUnitCircle * spawnRandomRadius;
             localPoint += randomOffset;
-            spawnDamageUI.SetLocalPosition(localPoint);
+            // 치명타 여부를 먼저 설정해야 SetLocalPosition의 등장 연출이 치명타 강조를 반영한다.
             spawnDamageUI.SetDamage(hitEvent.Damage, hitEvent.IsCritical);
+            spawnDamageUI.SetLocalPosition(localPoint);
         }
     }
 }
