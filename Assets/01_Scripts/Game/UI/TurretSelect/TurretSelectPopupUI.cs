@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using TrainDefense.Game.Datas;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI
 {
@@ -45,6 +46,22 @@ namespace TrainDefense.Game.UI
         private TextMeshProUGUI nameText;
         [SerializeField]
         private TextMeshProUGUI bestSurvivalText;
+
+        [Header("정적 라벨 (로컬라이즈)")]
+        [SerializeField]
+        private TextMeshProUGUI attackLabel;
+        [SerializeField]
+        private TextMeshProUGUI attackSpeedLabel;
+        [SerializeField]
+        private TextMeshProUGUI rangeLabel;
+        [SerializeField]
+        private TextMeshProUGUI bestSurvivalTitle;
+        [SerializeField]
+        private TextMeshProUGUI bestSurvivalHint;
+        [SerializeField]
+        private TextMeshProUGUI departText;
+        [SerializeField]
+        private TextMeshProUGUI cancelText;
 
         [Header("슬롯")]
         [SerializeField]
@@ -92,6 +109,7 @@ namespace TrainDefense.Game.UI
 
         private void Start()
         {
+            _ApplyStaticTexts();
             _BuildEntries();
             _BuildSlots();
 
@@ -241,6 +259,31 @@ namespace TrainDefense.Game.UI
             }
         }
 
+        // 프리팹에 한국어로 박혀 있는 정적 라벨(스탯 이름·생존 시간·버튼)을 현재 언어로 갱신한다.
+        private void _ApplyStaticTexts()
+        {
+            if (attackLabel != null)
+                attackLabel.text = LocalizeHelper.GetByKey("Detail_Damage", "공격력");
+
+            if (attackSpeedLabel != null)
+                attackSpeedLabel.text = LocalizeHelper.GetByKey("Detail_Speed", "공속");
+
+            if (rangeLabel != null)
+                rangeLabel.text = LocalizeHelper.GetByKey("Detail_Range", "사거리");
+
+            if (bestSurvivalTitle != null)
+                bestSurvivalTitle.text = LocalizeHelper.GetByKey("UI_TurretSelect_BestSurvival", "최장 생존 시간");
+
+            if (bestSurvivalHint != null)
+                bestSurvivalHint.text = LocalizeHelper.GetByKey("UI_TurretSelect_BestSurvivalHint", "해당 포탑으로 기록한\n최고 생존 시간입니다.").Replace("\\n", "\n");
+
+            if (departText != null)
+                departText.text = LocalizeHelper.GetByKey("UI_TurretSelect_Depart", "출발 ≫");
+
+            if (cancelText != null)
+                cancelText.text = LocalizeHelper.GetByKey("UI_Cancel", "취소");
+        }
+
         private string _FormatTime(float seconds)
         {
             if (seconds <= 0f)
@@ -260,7 +303,7 @@ namespace TrainDefense.Game.UI
                 slot.SetSelected(false);
 
             if (cardHeaderText != null)
-                cardHeaderText.text = CardHeaderDefault;
+                cardHeaderText.text = LocalizeHelper.GetByKey("UI_TurretSelect_Header", CardHeaderDefault);
 
             if (selectedIconImage != null)
                 selectedIconImage.sprite = null;

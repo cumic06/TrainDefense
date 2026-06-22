@@ -187,8 +187,9 @@ namespace TrainDefense.Game.Intro
 
         #endregion
 
-        [Button("인트로 초기화 (디버그)")]
-        private void _ResetIntro()
+        // 인트로 진행 기록을 지우고 현재 씬에서 인트로를 처음부터 다시 재생한다. (옵션 '튜토리얼 다시 보기'에서 호출)
+        [Button("인트로 다시 보기")]
+        public void Replay()
         {
             UserDataManager.Instance?.TutorialSaveData?.ResetAll();
 

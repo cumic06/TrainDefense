@@ -3,6 +3,7 @@ using TMPro;
 using Cumic.Sequence;
 using TrainDefense.Game;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Intro;
 using TrainDefense.Game.Manager;
 using TrainDefense.Game.UI;
 using TrainDefense.Localize;
@@ -37,6 +38,10 @@ namespace TrainDefense
       private TMP_Text cameraShakeLabel;
       [SerializeField]
       private Button deletePlayerPrefsButton;
+      [SerializeField]
+      private Button tutorialReplayButton;
+      [SerializeField]
+      private TMP_Text tutorialReplayText;
 
       [SerializeField]
       private Sprite muteSprite;
@@ -63,7 +68,11 @@ namespace TrainDefense
       [SerializeField]
       private Button soundTabButton;
       [SerializeField]
+      private TMP_Text soundTabText;
+      [SerializeField]
       private Button languageTabButton;
+      [SerializeField]
+      private TMP_Text languageTabText;
       [SerializeField]
       private GameObject soundPanel;
       [SerializeField]
@@ -103,6 +112,7 @@ namespace TrainDefense
          _RefreshLanguageButtons();
          _RefreshLanguageDropdown();
          _RefreshAccessibilityTexts();
+         _RefreshTabTexts();
       }
 
       private void OnDestroy()
@@ -129,6 +139,9 @@ namespace TrainDefense
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.AddListener(OnDeletePlayerPrefsClicked);
 
+         if (tutorialReplayButton != null)
+            tutorialReplayButton.onClick.AddListener(_OnTutorialReplayClick);
+
          if (koreanButton != null)
             koreanButton.onClick.AddListener(() => _OnLanguageButtonClick(SystemLanguage.Korean));
 
@@ -154,6 +167,7 @@ namespace TrainDefense
          Localization.OnLanguageChanged += _RefreshLanguageDropdown;
          Localization.OnLanguageChanged += _RefreshColorblindLabel;
          Localization.OnLanguageChanged += _RefreshAccessibilityTexts;
+         Localization.OnLanguageChanged += _RefreshTabTexts;
       }
 
       private void _UnSubscribeListeners()
@@ -174,6 +188,9 @@ namespace TrainDefense
 
          if (deletePlayerPrefsButton != null)
             deletePlayerPrefsButton.onClick.RemoveAllListeners();
+
+         if (tutorialReplayButton != null)
+            tutorialReplayButton.onClick.RemoveListener(_OnTutorialReplayClick);
 
          if (koreanButton != null)
             koreanButton.onClick.RemoveAllListeners();
@@ -200,6 +217,7 @@ namespace TrainDefense
          Localization.OnLanguageChanged -= _RefreshLanguageDropdown;
          Localization.OnLanguageChanged -= _RefreshColorblindLabel;
          Localization.OnLanguageChanged -= _RefreshAccessibilityTexts;
+         Localization.OnLanguageChanged -= _RefreshTabTexts;
       }
 
       public void OnDeletePlayerPrefsClicked()
@@ -446,25 +464,79 @@ namespace TrainDefense
          };
          colorblindLabel.text = LocalizeHelper.GetByKey(key, fallback);
          colorblindLabel.color = Color.black;
+         // 긴 언어(영어 색맹 명칭 등)에서 버튼 밖으로 텍스트가 넘치지 않도록 자동 축소.
+         colorblindLabel.enableAutoSizing = true;
+         colorblindLabel.fontSizeMin = 16;
+         colorblindLabel.fontSizeMax = 32;
       }
 
       // 접근성 탭 텍스트·카메라 흔들림 라벨을 현재 언어로 갱신한다.
       private void _RefreshAccessibilityTexts()
       {
-         if (accessibilityTabText != null)
-         {
-            accessibilityTabText.text = LocalizeHelper.GetByKey("UI_Option_Tab_Accessibility", "접근성");
-            // 영어 등 긴 언어에서 탭 폭을 넘지 않도록 자동 축소.
-            accessibilityTabText.enableAutoSizing = true;
-            accessibilityTabText.fontSizeMin = 18;
-            accessibilityTabText.fontSizeMax = 40;
-         }
+         _ApplyTabText(accessibilityTabText, "UI_Option_Tab_Accessibility", "접근성");
 
          if (cameraShakeLabel != null)
          {
             cameraShakeLabel.text = LocalizeHelper.GetByKey("UI_Option_CameraShake", "카메라 흔들림");
             cameraShakeLabel.color = Color.black;
          }
+      }
+
+      // Sound·Language 탭 라벨과 BGM/SFX 그룹 라벨을 현재 언어로 갱신한다.
+      private void _RefreshTabTexts()
+      {
+         _ApplyTabText(soundTabText, "UI_Option_Tab_Sound", "사운드");
+         _ApplyTabText(languageTabText, "UI_Option_Tab_Language", "언어");
+         _RefreshSoundLabels();
+
+         if (tutorialReplayText != null)
+            tutorialReplayText.text = LocalizeHelper.GetByKey("UI_Option_Tutorial_Replay", "튜토리얼 다시 보기");
+      }
+
+      // 탭 라벨을 현재 언어로 설정하고, 긴 언어에서 탭 폭을 넘지 않도록 자동 축소한다.
+      private void _ApplyTabText(TMP_Text text, string key, string fallback)
+      {
+         if (text == null) return;
+
+         text.text = LocalizeHelper.GetByKey(key, fallback);
+         text.enableAutoSizing = true;
+         text.fontSizeMin = 18;
+         text.fontSizeMax = 40;
+      }
+
+      // Sound 패널의 BGM/SFX 그룹 라벨을 현재 언어로 갱신한다. (그룹이 nested 프리팹이라 자식 TMP로 접근)
+      private void _RefreshSoundLabels()
+      {
+         if (soundPanel == null) return;
+
+         Transform panel = soundPanel.transform;
+         if (panel.childCount > 0)
+            _ApplySoundGroupLabel(panel.GetChild(0), "UI_Option_BGM", "배경음");
+
+         if (panel.childCount > 1)
+            _ApplySoundGroupLabel(panel.GetChild(1), "UI_Option_SFX", "효과음");
+      }
+
+      private void _ApplySoundGroupLabel(Transform group, string key, string fallback)
+      {
+         if (group == null) return;
+
+         TMP_Text label = group.GetComponentInChildren<TMP_Text>(true);
+         if (label != null)
+            label.text = LocalizeHelper.GetByKey(key, fallback);
+      }
+
+      // 튜토리얼·인트로 진행 기록을 초기화한다. 인트로가 현재 씬(로비 등)에 있으면 즉시 다시 재생하고,
+      // 없으면 다음 게임 진입 시 튜토리얼·인트로가 처음부터 다시 표시된다.
+      private void _OnTutorialReplayClick()
+      {
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+
+         if (UserDataManager.Instance != null)
+            UserDataManager.Instance.ResetTutorialData();
+
+         if (IntroManager.Instance != null)
+            IntroManager.Instance.Replay();
       }
    }
 }

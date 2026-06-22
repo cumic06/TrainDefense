@@ -108,7 +108,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 1015
 --- !u!114 &100000006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -659,6 +659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.MessageBubble
   _bubbleRect: {fileID: 600000002}
   _messageText: {fileID: 620000004}
+  _speakerNameText: {fileID: 0}
   _canvasGroup: {fileID: 600000003}
   _npcPortrait: {fileID: 910000004}
   _typingSpeed: 0.03
@@ -669,6 +670,7 @@ MonoBehaviour:
   _maxWidth: 600
   _portraitAreaWidth: 120
   _portraitGap: 8
+  _speakerNameHeight: 36
 --- !u!1 &610000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1179,6 +1181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _key: 6
+  _autoSizeForLongText: 1
 --- !u!1 &800000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1512,6 +1515,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _key: 7
+  _autoSizeForLongText: 1
 --- !u!1 &830000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1797,6 +1801,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _key: 6
+  _autoSizeForLongText: 1
 --- !u!1 &840000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2082,6 +2087,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _key: 8
+  _autoSizeForLongText: 1
 --- !u!1 &900000001
 GameObject:
   m_ObjectHideFlags: 0

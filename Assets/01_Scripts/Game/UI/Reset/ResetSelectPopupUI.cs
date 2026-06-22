@@ -1,5 +1,7 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI
 {
@@ -20,8 +22,6 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private Toggle optionToggle;
         [SerializeField]
-        private Toggle tutorialToggle;
-        [SerializeField]
         private Toggle achievementToggle;
         [SerializeField]
         private Toggle allToggle;
@@ -31,6 +31,24 @@ namespace TrainDefense.Game.UI
         private Button confirmButton;
         [SerializeField]
         private Button cancelButton;
+
+        [Header("정적 라벨 (로컬라이즈)")]
+        [SerializeField]
+        private TextMeshProUGUI titleText;
+        [SerializeField]
+        private TextMeshProUGUI collectionLabel;
+        [SerializeField]
+        private TextMeshProUGUI survivalLabel;
+        [SerializeField]
+        private TextMeshProUGUI optionLabel;
+        [SerializeField]
+        private TextMeshProUGUI achievementLabel;
+        [SerializeField]
+        private TextMeshProUGUI allLabel;
+        [SerializeField]
+        private TextMeshProUGUI confirmText;
+        [SerializeField]
+        private TextMeshProUGUI cancelText;
         #endregion
 
         public static ResetSelectPopupUI Show()
@@ -57,7 +75,12 @@ namespace TrainDefense.Game.UI
 
             if (cancelButton != null)
                 cancelButton.onClick.AddListener(_Close);
+
+            Localization.OnLanguageChanged += _ApplyStaticTexts;
+            Localization.OnInitialized += _ApplyStaticTexts;
+            _ApplyStaticTexts();
         }
+
 
         private void OnDisable()
         {
@@ -66,6 +89,37 @@ namespace TrainDefense.Game.UI
 
             if (cancelButton != null)
                 cancelButton.onClick.RemoveListener(_Close);
+
+            Localization.OnLanguageChanged -= _ApplyStaticTexts;
+            Localization.OnInitialized -= _ApplyStaticTexts;
+        }
+
+        // 프리팹에 박힌 정적 라벨(타이틀·토글 라벨·버튼)을 현재 언어로 갱신한다.
+        private void _ApplyStaticTexts()
+        {
+            if (titleText != null)
+                titleText.text = LocalizeHelper.GetByKey("UI_Reset_Prompt", "무엇을 초기화할까요?");
+
+            if (collectionLabel != null)
+                collectionLabel.text = LocalizeHelper.GetByKey("Collection_Title", "도감");
+
+            if (survivalLabel != null)
+                survivalLabel.text = LocalizeHelper.GetByKey("UI_Reset_Survival", "최장 생존 기록");
+
+            if (optionLabel != null)
+                optionLabel.text = LocalizeHelper.GetByKey("UI_Reset_Option", "옵션");
+
+            if (achievementLabel != null)
+                achievementLabel.text = LocalizeHelper.GetByKey("Achievement_Title", "업적");
+
+            if (allLabel != null)
+                allLabel.text = LocalizeHelper.GetByKey("UI_Reset_All", "전체");
+
+            if (confirmText != null)
+                confirmText.text = LocalizeHelper.GetByKey("UI_Reset", "초기화");
+
+            if (cancelText != null)
+                cancelText.text = LocalizeHelper.GetByKey("UI_Cancel", "취소");
         }
 
         private void _Confirm()
@@ -90,9 +144,6 @@ namespace TrainDefense.Game.UI
 
                     if (optionToggle != null && optionToggle.isOn)
                         userData.ResetOptions();
-
-                    if (tutorialToggle != null && tutorialToggle.isOn)
-                        userData.ResetTutorialData();
 
                     if (achievementToggle != null && achievementToggle.isOn)
                         userData.ResetAchievements();

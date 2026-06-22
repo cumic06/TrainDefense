@@ -108,6 +108,13 @@ MonoBehaviour:
   departButton: {fileID: 1700265}
   cardHeaderText: {fileID: 1700208}
   cancelButton: {fileID: 1700305}
+  attackLabel: {fileID: 1700216}
+  attackSpeedLabel: {fileID: 1700224}
+  rangeLabel: {fileID: 1700232}
+  bestSurvivalTitle: {fileID: 1700244}
+  bestSurvivalHint: {fileID: 1700252}
+  departText: {fileID: 1700269}
+  cancelText: {fileID: 1700309}
 --- !u!223 &1700008
 Canvas:
   m_ObjectHideFlags: 0

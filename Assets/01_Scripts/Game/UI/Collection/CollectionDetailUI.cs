@@ -123,7 +123,13 @@ namespace TrainDefense.Game.UI.Collection
                 statsText.text = string.Empty;
 
             if (emptyHint != null)
+            {
                 emptyHint.SetActive(true);
+
+                TMP_Text hintText = emptyHint.GetComponentInChildren<TMP_Text>(true);
+                if (hintText != null)
+                    hintText.text = LocalizeHelper.GetByKey("Collection_SelectPrompt", "유닛을 선택하세요");
+            }
         }
 
         private string _BuildStatsText(CollectionEntry entry)
