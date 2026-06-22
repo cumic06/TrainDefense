@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using TrainDefense.Game.Datas;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI.PermanentUpgrade
 {
@@ -16,6 +17,9 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
         #region Fields
         [SerializeField] private Button closeButton;
         [SerializeField] private TextMeshProUGUI eliteCoinText;
+        [Header("정적 라벨 (로컬라이즈)")]
+        [SerializeField] private TextMeshProUGUI titleText;
+        [SerializeField] private TextMeshProUGUI purchaseText;
         [SerializeField] private Transform slotContent;            // 슬롯이 배치될 컨테이너 (Layout Group 권장)
         [SerializeField] private PermanentUpgradeSlotUI slotPrefab;
 
@@ -37,6 +41,28 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
                 closeButton.onClick.AddListener(Close);
             if (purchaseButton != null)
                 purchaseButton.onClick.AddListener(_OnClickPurchase);
+        }
+
+        private void OnEnable()
+        {
+            Localization.OnLanguageChanged += _ApplyStaticTexts;
+            Localization.OnInitialized += _ApplyStaticTexts;
+            _ApplyStaticTexts();
+        }
+
+        private void OnDisable()
+        {
+            Localization.OnLanguageChanged -= _ApplyStaticTexts;
+            Localization.OnInitialized -= _ApplyStaticTexts;
+        }
+
+        // 프리팹에 박힌 정적 라벨(타이틀·구매 버튼)을 현재 언어로 갱신한다.
+        private void _ApplyStaticTexts()
+        {
+            if (titleText != null)
+                titleText.text = LocalizeHelper.GetByKey("UI_PermanentUpgrade_Title", "영구 레벨업");
+            if (purchaseText != null)
+                purchaseText.text = LocalizeHelper.GetByKey("UI_Purchase", "구매");
         }
 
         private void Start()

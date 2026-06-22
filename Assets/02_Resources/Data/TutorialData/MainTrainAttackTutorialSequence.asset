@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887768309d325914b820c47a021cd2b0, type: 3}
+  m_Name: MainTrainAttackTutorialSequence
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialSequenceData
+  _sequenceId: mainTrainAttackTutorial
+  _displayName: "메인 트레인 공격 튜토리얼"
+  _displayNameKey: 0
+  _steps:
+  - _id: 40000
+    _targetObject: {fileID: 0}
+    _targetObjectName:
+    _skipCondition: 3
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "화면을 길게 눌러 <wave>메인 기차</wave>의
+      포탑으로 적을 공격하세요!"
+    _messageKey: 209
+    _arrowDirection: 0
+    _arrowLookDirection: 0
+    _useDimming: 0
+    _useHighlight: 0
+    _allowGameInput: 1
+    _delayBefore: 0.5
+    _sfxKey:
+    _messageOffset: {x: 0, y: 0}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId:
+  _canSkip: 1
+  _priority: 10
+  _shouldPauseTime: 1

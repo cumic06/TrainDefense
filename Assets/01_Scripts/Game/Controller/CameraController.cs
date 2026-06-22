@@ -108,6 +108,10 @@ namespace TrainDefense.Game.Controller
 
         private void _OnCameraShake(CameraShakeEvent e)
         {
+            // 옵션에서 카메라 흔들림을 끈 경우 무시한다.
+            if (UserDataManager.Instance != null && !UserDataManager.Instance.IsCameraShakeEnabled)
+                return;
+
             ShakeCamera(e.Intensity, e.Duration);
         }
 

@@ -32,6 +32,8 @@ namespace TrainDefense.Game.Tutorial
         [SerializeField] private TutorialArrowLookDirection _arrowLookDirection = TutorialArrowLookDirection.Auto;
         [SerializeField] private bool _useDimming = true;
         [SerializeField] private bool _useHighlight = true;
+        [Tooltip("이 스텝에서 게임 입력(화면 터치)을 통과시킵니다. 메인 트레인 발사 등 실제 조작을 체험시킬 때 사용. 활성화 시 딤/탭 영역의 레이캐스트 차단이 해제됩니다.")]
+        [SerializeField] private bool _allowGameInput;
         [SerializeField] private float _delayBefore;
         [SerializeField] private string _sfxKey;
 
@@ -67,14 +69,14 @@ namespace TrainDefense.Game.Tutorial
 
                 // Intro(IntroSlideData.GetText)와 동일하게 TSV의 리터럴 "\n"을 실제 줄바꿈으로 변환한다.
                 // (TextAnimator 타이프라이터 경로에서 \n 이스케이프가 누락될 수 있어 데이터단에서 통일)
-                // 추가로 한글 단어 중간 줄바꿈을 방지(주황→주/황, 줍니다.→줍니/다. 방지).
-                return LocalizeHelper.ProtectWordBreak(raw?.Replace("\\n", "\n"));
+                return raw?.Replace("\\n", "\n");
             }
         }
         public TutorialArrowDirection ArrowDirection => _arrowDirection;
         public TutorialArrowLookDirection ArrowLookDirection => _arrowLookDirection;
         public bool UseDimming => _useDimming;
         public bool UseHighlight => _useHighlight;
+        public bool AllowGameInput => _allowGameInput;
         public float DelayBefore => _delayBefore;
         public string SfxKey => _sfxKey;
         public Vector2 MessageOffset => _messageOffset;

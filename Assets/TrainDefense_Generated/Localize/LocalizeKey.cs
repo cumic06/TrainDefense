@@ -52,6 +52,7 @@ namespace TrainDefense.Localize
         UI_Option_BGM = 206,
         UI_Option_SFX = 207,
         UI_PermanentUpgrade = 208,
+        Tutorial_MainTrainAttack_Msg1 = 209,
         // Monster
         Monster_10001_Name = 37,
         Monster_10001_Desc = 38,

@@ -118,6 +118,24 @@ namespace TrainDefense.Game
             }
         }
 
+        /// <summary>
+        /// 상점 진입(점검) 시 호출. 활성 시한 스탯버프를 즉시 역연산으로 해제하고(timeScale=0이라
+        /// Tick이 멈춰 버프가 다음 맵까지 유지되던 문제 방지), 액티브 스킬 쿨타임을 초기화한다(상점을
+        /// 다녀오면 즉시 재사용 가능). 패시브는 영구 효과이므로 건드리지 않는다.
+        /// </summary>
+        public void ResetForInspection()
+        {
+            for (int i = _timedModifiers.Count - 1; i >= 0; i--)
+            {
+                var mod = _timedModifiers[i];
+                // Tick 만료와 동일한 역연산(1→0 토글)으로 정확히 복원.
+                _owner?.ApplyStatsLevelAware(new IStat[] { new SimpleStat { Type = mod.Type, Value = mod.Value } }, 0, 1);
+            }
+            _timedModifiers.Clear();
+
+            _activeSkill?.ResetCooldown();
+        }
+
         /// <summary>모든 스킬 Unsubscribe + 클리어. Train.OnDestroy에서 호출.</summary>
         public void Dispose()
         {

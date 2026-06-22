@@ -10,7 +10,7 @@ using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Game
 {
-   public class MainTrain : Train
+   public partial class MainTrain : Train
    {
       // 업그레이드 선택 시 회복할 최대 체력 비율(0~1). 엘리트 전환은 별도로 풀피.
       private const float UpgradeHealRatio = 0.3f;
@@ -111,6 +111,7 @@ namespace TrainDefense.Game
       {
          base.Update();
          _TickHealthRegen(Time.deltaTime);
+         _UpdateWeaponInput();
       }
 
       // 자가 복구 레벨이 있으면 5초마다 살아있는 모든 포탑을 한 번에 회복. (메인 기차는 _currentAliveTrains에 미포함이라 자동 제외)
@@ -331,8 +332,8 @@ namespace TrainDefense.Game
                // 원래 인덱스 가져오기
                int originalIndex = _trainOriginalIndexMap.ContainsKey(train) ? _trainOriginalIndexMap[train] : _currentAliveTrains.Count;
 
-               // 오브젝트 비활성화
-               train.gameObject.SetActive(false);
+               // 사라지지 않고 회색(흑백)으로 전환 — 원래 자리에 그대로 남긴다.
+               train.ApplyDeadVisual();
 
                // 죽은 기차 정보 저장
                _deadTrains.Add(new DeadTrainInfo
@@ -341,8 +342,8 @@ namespace TrainDefense.Game
                   OriginalIndex = originalIndex
                });
 
-               // 살아있는 기차 재정렬
-               RearrangeTrains();
+               // 죽은 기차도 원래 자리를 유지하도록 산 기차·죽은 기차를 함께 원래 순서로 재정렬
+               RearrangeAllTrainsToOriginalOrder();
 
                if (_currentAliveTrains.Count == 0)
                {
@@ -375,12 +376,21 @@ namespace TrainDefense.Game
 
       private void ApplyMainTrainModelOffset(float halfLength)
       {
-         if (trainModel == null)
-            return;
+         if (trainModel != null)
+         {
+            Vector3 modelPos = trainModel.localPosition;
+            modelPos.x = halfLength;
+            trainModel.localPosition = modelPos;
+         }
 
-         Vector3 modelPos = trainModel.localPosition;
-         modelPos.x = halfLength;
-         trainModel.localPosition = modelPos;
+         // 주무기 마운트도 기차 비주얼과 같은 x로 맞춰 포탑이 항상 기차(trainModel) 중앙 위에 오게 한다.
+         // (trainModel만 halfLength로 밀면 turretMount는 루트 원점(x=0)에 남아 포탑이 기차에서 어긋난다.)
+         if (turretMount != null)
+         {
+            Vector3 mountPos = turretMount.localPosition;
+            mountPos.x = halfLength;
+            turretMount.localPosition = mountPos;
+         }
       }
 
       public void RearrangeAllTrainsToOriginalOrder()
@@ -422,13 +432,25 @@ namespace TrainDefense.Game
 
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
       {
-         // 살아있는 기차도 Inspection 시작 시 HP를 최대치로 회복
+         // ※ 상점 진입 시 전체 체력 회복·죽은 기차 자동 부활은 제거되었다.
+         //    체력 회복/부활은 상점의 '기차 수리'(EmergencyRepair) 구매로만 수행한다.
+
+         // 상점 진입 시 자기강화(시한버프)를 즉시 해제하고 액티브 스킬 쿨타임을 초기화한다.
+         // (timeScale=0이라 스킬 Tick이 멈춰 버프가 다음 맵까지 유지되고, Time.time 기반 쿨타임이
+         //  진행되지 않아 상점을 다녀와도 쿨타임이 그대로 남던 문제 해결)
          foreach (var train in _currentAliveTrains)
          {
-            train.RestoreHpToMax();
+            train.ResetSkillStateForInspection();
          }
 
-         // 죽은 기차 복원
+         // 모든 기차를 원래 순서대로 재정렬
+         RearrangeAllTrainsToOriginalOrder();
+      }
+
+      // 죽은(부서진) 기차를 모두 부활시켜 산 기차 목록으로 되돌린다.
+      // revivedHpRatio가 0보다 크면 부활 직후 HP를 최대 체력의 그 비율로 맞춘다(0이면 Resurrect의 풀피 유지).
+      private void ReviveAllDeadTrains(float revivedHpRatio = 0f)
+      {
          foreach (var deadTrainInfo in _deadTrains.ToList())
          {
             Train train = deadTrainInfo.Train;
@@ -439,16 +461,31 @@ namespace TrainDefense.Game
             // 오브젝트 활성화
             train.gameObject.SetActive(true);
 
-            // _deadTrains에서 제거하고 _currentTrains에 다시 추가
+            // _deadTrains에서 제거하고 _currentAliveTrains에 다시 추가
             _deadTrains.Remove(deadTrainInfo);
             _currentAliveTrains.Add(train);
+
+            if (revivedHpRatio > 0f)
+               train.SetHpToRatio(revivedHpRatio);
+         }
+      }
+
+      /// <summary>
+      /// 긴급 수리: 부서진 기차를 모두 부활시키고, (부활 전부터) 살아있던 기차를 aliveHealRatio만큼 회복한다.
+      /// 부활시킨 기차의 HP는 revivedHpRatio로 맞춘다.
+      /// </summary>
+      public void EmergencyRepair(float aliveHealRatio, float revivedHpRatio)
+      {
+         // 부활 전 기존 생존 기차만 비율 회복 (부활한 기차는 ReviveAllDeadTrains에서 HP를 따로 설정)
+         foreach (var train in _currentAliveTrains.ToList())
+         {
+            train.RestoreHpByRatio(aliveHealRatio);
          }
 
-         // 모든 기차를 원래 순서대로 재정렬
+         ReviveAllDeadTrains(revivedHpRatio);
+
          RearrangeAllTrainsToOriginalOrder();
 
-         // 점검(상점 진입) 시 체력 회복 효과음 1회.
-         // 이 시점은 timeScale=0 + SuppressSFX(true) 상태이므로 ignoreSuppress로 우회 재생한다.
          SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
       }
 
@@ -561,6 +598,23 @@ namespace TrainDefense.Game
       // SlideOut으로 화면 밖에 보낸 대상들의 원래 localPosition.x(정위치). ResetSlidePosition으로 복귀할 때 사용.
       private readonly List<(Transform target, float originX)> _slideOutOrigins = new();
 
+      // 슬라이드 연출(상점/맵 이동)은 산 기차뿐 아니라 죽은(회색) 기차도 함께 움직여야 한다.
+      // 죽은 기차는 _currentAliveTrains에서 빠지고 _deadTrains에 남으므로 둘을 합쳐 순회한다.
+      private IEnumerable<Train> _EnumerateAllTrains()
+      {
+         foreach (var train in _currentAliveTrains)
+         {
+            if (train != null)
+               yield return train;
+         }
+
+         foreach (var deadTrainInfo in _deadTrains)
+         {
+            if (deadTrainInfo.Train != null)
+               yield return deadTrainInfo.Train;
+         }
+      }
+
       public void SlideIn(float delay, float duration, float? screenLeftXOverride = null)
       {
          Camera cam = Camera.main;
@@ -571,7 +625,7 @@ namespace TrainDefense.Game
              rightmostX = Mathf.Max(rightmostX, sr.bounds.max.x);
          float offsetX = camLeftX - rightmostX;
 
-         foreach (var train in _currentAliveTrains)
+         foreach (var train in _EnumerateAllTrains())
          {
             float targetX = train.transform.localPosition.x;
             train.transform.localPosition += new Vector3(offsetX, 0f, 0f);
@@ -586,6 +640,17 @@ namespace TrainDefense.Game
             float targetX = trainModel.localPosition.x;
             trainModel.localPosition += new Vector3(offsetX, 0f, 0f);
             trainModel.DOLocalMoveX(targetX, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InOutSine)
+               .SetUpdate(true);
+         }
+
+         // 주무기 마운트(포탑)도 기차와 함께 슬라이드 인. (누락 시 연출 중 포탑만 제자리에 남는다.)
+         if (turretMount != null)
+         {
+            float targetX = turretMount.localPosition.x;
+            turretMount.localPosition += new Vector3(offsetX, 0f, 0f);
+            turretMount.DOLocalMoveX(targetX, duration)
                .SetDelay(delay)
                .SetEase(Ease.InOutSine)
                .SetUpdate(true);
@@ -609,7 +674,7 @@ namespace TrainDefense.Game
 
          _slideOutOrigins.Clear();
 
-         foreach (var train in _currentAliveTrains)
+         foreach (var train in _EnumerateAllTrains())
          {
             _slideOutOrigins.Add((train.transform, train.transform.localPosition.x));
             train.transform.DOLocalMoveX(train.transform.localPosition.x + offsetX, duration)
@@ -622,6 +687,16 @@ namespace TrainDefense.Game
          {
             _slideOutOrigins.Add((trainModel, trainModel.localPosition.x));
             trainModel.DOLocalMoveX(trainModel.localPosition.x + offsetX, duration)
+               .SetDelay(delay)
+               .SetEase(Ease.InOutSine)
+               .SetUpdate(true);
+         }
+
+         // 주무기 마운트(포탑)도 기차와 함께 슬라이드 아웃. ResetSlidePosition이 _slideOutOrigins로 자동 복귀시킨다.
+         if (turretMount != null)
+         {
+            _slideOutOrigins.Add((turretMount, turretMount.localPosition.x));
+            turretMount.DOLocalMoveX(turretMount.localPosition.x + offsetX, duration)
                .SetDelay(delay)
                .SetEase(Ease.InOutSine)
                .SetUpdate(true);
