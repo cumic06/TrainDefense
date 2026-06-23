@@ -734,7 +734,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 50, y: 0}
-  m_SizeDelta: {x: 150, y: 15}
+  m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8147243555645935188
 CanvasRenderer:
@@ -1499,6 +1499,7 @@ MonoBehaviour:
   slotContent: {fileID: 1347050043660586819}
   slotPrefab: {fileID: 6808924425831970735, guid: ffaf82100756d704a807df873d4489a2, type: 3}
   detailPanel: {fileID: 4197028126316841230}
+  detailIcon: {fileID: 7445302709426735423}
   detailNameText: {fileID: 7629172293963241199}
   detailDescriptionText: {fileID: 8861174585782394619}
   detailLevelText: {fileID: 5063409152962586048}

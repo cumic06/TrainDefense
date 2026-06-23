@@ -25,6 +25,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
 
         [Header("상세 패널 (슬롯 클릭 시 표시)")]
         [SerializeField] private GameObject detailPanel;          // 선택 전에는 숨김
+        [SerializeField] private Image detailIcon;                // 선택한 영구 업그레이드 아이콘
         [SerializeField] private TextMeshProUGUI detailNameText;
         [SerializeField] private TextMeshProUGUI detailDescriptionText;
         [SerializeField] private TextMeshProUGUI detailLevelText;
@@ -130,6 +131,13 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             // 선택이 없으면 상세 패널 자체를 숨긴다
             if (detailPanel != null)
                 detailPanel.SetActive(hasSelection);
+
+            // 선택한 업그레이드의 아이콘을 상세 패널에 표시 (슬롯과 동일한 Icon 사용)
+            if (detailIcon != null)
+            {
+                detailIcon.sprite = hasSelection ? _selectedData.Icon : null;
+                detailIcon.enabled = hasSelection && _selectedData.Icon != null;
+            }
 
             if (detailNameText != null)
                 detailNameText.text = hasSelection ? _selectedData.Name : string.Empty;
