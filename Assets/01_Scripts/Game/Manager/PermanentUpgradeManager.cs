@@ -115,7 +115,8 @@ namespace TrainDefense.Game
             // 구매는 의식적 행동이라 강제 종료에도 잃지 않도록 즉시 디스크 flush (재화 차감 + 레벨을 함께 확정)
             PlayerPrefs.Save();
             _InvalidateCache();
-            // TODO: 구매 완료 UI 이벤트 발행
+            GameEventSystem.Publish<PermanentUpgradePurchasedEvent>(new PermanentUpgradePurchasedEvent(upgradeId, cost, GetLevel(upgradeId)));
+
             return true;
         }
         #endregion
