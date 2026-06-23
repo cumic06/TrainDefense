@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Cumic;
 using Cumic.Events;
@@ -23,24 +24,13 @@ namespace TrainDefense.Game.Manager
     public class AnalyticsManager : Singleton<AnalyticsManager>
     {
         #region Variables
+        // 동의 팝업을 띄울 Canvas. AnalyticsManager 오브젝트의 자식 Canvas를 인스펙터에서 연결한다.
+        // (씬 전환에도 함께 살아남도록 자기 자식으로 두며, 동적 생성 대신 AuthScene에 직접 배치한다.)
+        [SerializeField] private Canvas _consentCanvas;
 #if FIREBASE_ANALYTICS
         private bool _firebaseReady;
 #endif
         private float _gameStartTime;
-        #endregion
-
-        #region Bootstrap
-        // 씬 배치(Inspector wiring) 없이 앱 시작 시 자동 생성한다. (RatingPopupManager 부트스트랩과 동일 패턴)
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void _Bootstrap()
-        {
-            if (Instance != null)
-                return;
-
-            var go = new GameObject(nameof(AnalyticsManager));
-            go.AddComponent<AnalyticsManager>();
-            DontDestroyOnLoad(go);
-        }
         #endregion
 
         #region LifeCycle
@@ -136,8 +126,24 @@ namespace TrainDefense.Game.Manager
 
         private void _OnLobbyEnter(LobbyEnterEvent lobbyEnterEvent)
         {
+            // [임시 진단] 원인 특정 후 제거 예정
+            Debug.Log($"[Analytics] LobbyEnter 수신. IsDecided={AnalyticsConsent.IsDecided}, State={AnalyticsConsent.State}");
+
             if (AnalyticsConsent.IsDecided)
                 return;
+
+            // LobbyEnter는 로비 씬이 동기 LoadScene으로 실제 로드(Awake)되기 전, AuthScene 프레임에서 발행된다.
+            // 그래서 이 시점엔 로비 씬에 배치된 ResourceManager.Instance가 아직 null이다. 준비될 때까지 기다린 뒤 띄운다.
+            StartCoroutine(_ShowConsentPopupWhenReady());
+        }
+
+        private IEnumerator _ShowConsentPopupWhenReady()
+        {
+            while (ResourceManager.Instance == null)
+                yield return null;
+
+            // [임시 진단] 원인 특정 후 제거 예정
+            Debug.Log($"[Analytics] 동의 팝업 표시 시도. canvas={_consentCanvas != null}, RM={ResourceManager.Instance != null}");
 
             _ShowConsentPopup();
         }
@@ -153,7 +159,14 @@ namespace TrainDefense.Game.Manager
                 return;
             }
 
-            var popup = Instantiate(prefab);
+            if (_consentCanvas == null || ResourceManager.Instance == null)
+            {
+                Debug.LogWarning("[Analytics] 동의 팝업 Canvas 또는 ResourceManager가 없어 표시를 건너뜁니다.");
+
+                return;
+            }
+
+            var popup = ResourceManager.Instance.Spawn(prefab, parent: _consentCanvas.transform);
             popup.Show(SetConsent);
         }
         #endregion

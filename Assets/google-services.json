@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "105941925040",
+    "project_id": "traindefense-9274c",
+    "storage_bucket": "traindefense-9274c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105941925040:android:fac28f26a0fcc1e4c24f75",
+        "android_client_info": {
+          "package_name": "com.com.RedEyes.TrainDefense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACyyPms8XBTk-6PfNoOFqy7R7KUfkSyQw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
