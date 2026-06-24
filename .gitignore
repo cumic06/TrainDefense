@@ -98,3 +98,13 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Firebase 데스크톱(에디터) 네이티브 — macOS(.bundle)/Linux(.so)는 GitHub 100MB 초과로 제외.
+# Windows(.dll, 16MB)만 추적해 Windows 에디터 테스트는 유지. Mac/Linux는 SDK 재import 필요.
+/[Aa]ssets/Firebase/Plugins/x86_64/*.bundle
+/[Aa]ssets/Firebase/Plugins/x86_64/*.bundle.meta
+/[Aa]ssets/Firebase/Plugins/x86_64/*.so
+/[Aa]ssets/Firebase/Plugins/x86_64/*.so.meta
+
+# IDE 솔루션 파일
+*.slnx
