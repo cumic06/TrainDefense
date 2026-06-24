@@ -393,7 +393,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "더 나은 게임 경험을 위해 익명 사용 통계(Firebase Analytics)를 수집합니다.\n\n동의하지 않아도 게임 이용에는 제한이 없으며, 설정에서 언제든 변경할 수 있습니다."
+  m_text: "더 나은 게임 경험을 위해 익명 사용 통계를 수집합니다.\n\n동의하지 않아도 게임 이용에는 제한이 없으며, 설정에서 언제든 변경할 수 있습니다."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

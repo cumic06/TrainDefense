@@ -79,7 +79,7 @@ namespace TrainDefense.Game.UI.Consent
         private void _RefreshTexts()
         {
             _SetText(titleText, "UI_Consent_Title", "개인정보 수집 동의");
-            _SetText(bodyText, "UI_Consent_Body", "더 나은 게임 경험을 위해 익명 사용 통계(Firebase Analytics)를 수집합니다. 동의하지 않아도 게임 이용에는 제한이 없으며, 설정에서 언제든 변경할 수 있습니다.");
+            _SetText(bodyText, "UI_Consent_Body", "더 나은 게임 경험을 위해 익명 사용 통계를 수집합니다. 동의하지 않아도 게임 이용에는 제한이 없으며, 설정에서 언제든 변경할 수 있습니다.");
             _SetText(agreeText, "UI_Consent_Agree", "동의");
             _SetText(declineText, "UI_Consent_Decline", "동의 안 함");
             _SetText(policyText, "UI_Consent_Policy", "개인정보처리방침");
@@ -112,7 +112,8 @@ namespace TrainDefense.Game.UI.Consent
             _onResult = null;
             callback?.Invoke(granted);
 
-            Destroy(gameObject);
+            // 미리 배치된 팝업이라 파괴하지 않고 비활성으로 닫는다(재표시 가능).
+            gameObject.SetActive(false);
         }
         #endregion
     }

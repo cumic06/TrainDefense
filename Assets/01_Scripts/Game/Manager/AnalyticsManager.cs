@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Cumic;
 using Cumic.Events;
@@ -24,9 +23,12 @@ namespace TrainDefense.Game.Manager
     public class AnalyticsManager : Singleton<AnalyticsManager>
     {
         #region Variables
-        // 동의 팝업을 띄울 Canvas. AnalyticsManager 오브젝트의 자식 Canvas를 인스펙터에서 연결한다.
-        // (씬 전환에도 함께 살아남도록 자기 자식으로 두며, 동적 생성 대신 AuthScene에 직접 배치한다.)
-        [SerializeField] private Canvas _consentCanvas;
+        // 동의 팝업 prefab. 첫 표시 때 ConsentCanvas(자식 Canvas) 아래에 1회 Instantiate(worldPositionStays=false)해서
+        // 인스턴스를 만들고, 이후엔 SetActive로 재사용한다. (씬에 미리 배치할 필요 없음. ResourceManager.Spawn은
+        // 내부 Instantiate가 world 위치를 강제해 RectTransform이 어긋나므로 쓰지 않고 직접 생성한다.)
+        [SerializeField] private ConsentPopupUI _consentPopup;
+        // _consentPopup 을 1회 생성한 런타임 인스턴스. 두 번째부터는 이 인스턴스를 재사용한다.
+        private ConsentPopupUI _consentInstance;
 #if FIREBASE_ANALYTICS
         private bool _firebaseReady;
 #endif
@@ -50,6 +52,7 @@ namespace TrainDefense.Game.Manager
                 return;
 
             _SubscribeEvents();
+            _PrepareConsentPopup();
         }
 
         private void OnDestroy()
@@ -72,6 +75,8 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Subscribe<StageSelectEvent>(_OnStageSelect);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
             GameEventSystem.Subscribe<BuyShopItemEvent>(_OnBuyShopItem);
+            GameEventSystem.Subscribe<TrainRepairedEvent>(_OnTrainRepaired);
+            GameEventSystem.Subscribe<RerollEvent>(_OnReroll);
             GameEventSystem.Subscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
             GameEventSystem.Subscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Subscribe<TutorialStartEvent>(_OnTutorialStart);
@@ -88,6 +93,8 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<StageSelectEvent>(_OnStageSelect);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
             GameEventSystem.Unsubscribe<BuyShopItemEvent>(_OnBuyShopItem);
+            GameEventSystem.Unsubscribe<TrainRepairedEvent>(_OnTrainRepaired);
+            GameEventSystem.Unsubscribe<RerollEvent>(_OnReroll);
             GameEventSystem.Unsubscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
             GameEventSystem.Unsubscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Unsubscribe<TutorialStartEvent>(_OnTutorialStart);
@@ -126,48 +133,39 @@ namespace TrainDefense.Game.Manager
 
         private void _OnLobbyEnter(LobbyEnterEvent lobbyEnterEvent)
         {
-            // [임시 진단] 원인 특정 후 제거 예정
-            Debug.Log($"[Analytics] LobbyEnter 수신. IsDecided={AnalyticsConsent.IsDecided}, State={AnalyticsConsent.State}");
-
             if (AnalyticsConsent.IsDecided)
                 return;
-
-            // LobbyEnter는 로비 씬이 동기 LoadScene으로 실제 로드(Awake)되기 전, AuthScene 프레임에서 발행된다.
-            // 그래서 이 시점엔 로비 씬에 배치된 ResourceManager.Instance가 아직 null이다. 준비될 때까지 기다린 뒤 띄운다.
-            StartCoroutine(_ShowConsentPopupWhenReady());
-        }
-
-        private IEnumerator _ShowConsentPopupWhenReady()
-        {
-            while (ResourceManager.Instance == null)
-                yield return null;
-
-            // [임시 진단] 원인 특정 후 제거 예정
-            Debug.Log($"[Analytics] 동의 팝업 표시 시도. canvas={_consentCanvas != null}, RM={ResourceManager.Instance != null}");
 
             _ShowConsentPopup();
         }
 
+        // ConsentCanvas(AnalyticsManager 자식 Canvas) 아래에 동의 팝업을 미리 1회 소환해 두고 비활성으로 둔다.
+        // worldPositionStays=false 로 생성해 prefab의 RectTransform(전체화면 stretch)을 그대로 보존한다.
+        private void _PrepareConsentPopup()
+        {
+            if (_consentPopup == null || _consentInstance != null)
+                return;
+
+            var canvas = GetComponentInChildren<Canvas>(includeInactive: true);
+            Transform parent = canvas != null ? canvas.transform : transform;
+            _consentInstance = Instantiate(_consentPopup, parent, worldPositionStays: false);
+            _consentInstance.gameObject.SetActive(false);
+        }
+
         private void _ShowConsentPopup()
         {
-            var prefab = Resources.Load<ConsentPopupUI>("Popup_Consent");
+            if (_consentInstance == null)
+                _PrepareConsentPopup();
 
-            if (prefab == null)
+            if (_consentInstance == null)
             {
-                Debug.LogWarning("[Analytics] Popup_Consent 프리팹을 찾을 수 없습니다. 동의 UI 없이 수집은 정지 상태로 유지됩니다.");
+                Debug.LogWarning("[Analytics] 동의 팝업 prefab(_consentPopup)이 연결되지 않아 표시를 건너뜁니다.");
 
                 return;
             }
 
-            if (_consentCanvas == null || ResourceManager.Instance == null)
-            {
-                Debug.LogWarning("[Analytics] 동의 팝업 Canvas 또는 ResourceManager가 없어 표시를 건너뜁니다.");
-
-                return;
-            }
-
-            var popup = ResourceManager.Instance.Spawn(prefab, parent: _consentCanvas.transform);
-            popup.Show(SetConsent);
+            // 미리 만들어 둔 인스턴스를 켠다(Show 내부 SetActive(true)). 동의/거부 시 스스로 SetActive(false).
+            _consentInstance.Show(SetConsent);
         }
         #endregion
 
@@ -251,6 +249,24 @@ namespace TrainDefense.Game.Manager
             _Log("shop_purchase",
                 ("upgrade_id", buyShopItemEvent.UpgradeId),
                 ("cost", buyShopItemEvent.NeedMoney),
+                ("stage", _CurrentStage()),
+                ("play_time_sec", _PlayTimeSec()));
+        }
+
+        private void _OnTrainRepaired(TrainRepairedEvent trainRepairedEvent)
+        {
+            _Log("train_repair",
+                ("cost", trainRepairedEvent.Cost),
+                ("total_station_passed", trainRepairedEvent.StationCount),
+                ("stage", _CurrentStage()),
+                ("play_time_sec", _PlayTimeSec()));
+        }
+
+        private void _OnReroll(RerollEvent rerollEvent)
+        {
+            _Log("reroll",
+                ("cost", rerollEvent.Cost),
+                ("is_free", rerollEvent.IsFree),
                 ("stage", _CurrentStage()),
                 ("play_time_sec", _PlayTimeSec()));
         }

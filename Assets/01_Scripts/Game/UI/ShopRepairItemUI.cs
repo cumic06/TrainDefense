@@ -112,6 +112,9 @@ namespace TrainDefense.Game.UI
 
          mainTrain.EmergencyRepair(aliveHealRatio, revivedHpRatio);
 
+         int stationCount = StageManager.Instance != null ? StageManager.Instance.TotalStationPassedCount : 0;
+         GameEventSystem.Publish(new TrainRepairedEvent(cost, stationCount));
+
          SetUp();
       }
 
