@@ -18,8 +18,8 @@ namespace TrainDefense.Game.Analytics
     {
         private const string CONSENT_KEY = "AnalyticsConsent";
 
-        // TODO: 실제 개인정보처리방침 호스팅 URL 로 교체 (동의 팝업·옵션 화면이 공유)
-        public const string PrivacyPolicyUrl = "https://example.com/traindefense/privacy";
+        // 개인정보처리방침 호스팅 URL (동의 팝업·옵션 화면이 공유). redeyeshq.github.io 에 privacy.html 배포.
+        public const string PrivacyPolicyUrl = "https://redeyeshq.github.io/privacy.html";
 
         public static AnalyticsConsentState State
             => (AnalyticsConsentState)PlayerPrefs.GetInt(CONSENT_KEY, (int)AnalyticsConsentState.Unset);
