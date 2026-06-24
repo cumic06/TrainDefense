@@ -33,5 +33,12 @@ namespace TrainDefense.Game.Analytics
             PlayerPrefs.SetInt(CONSENT_KEY, (int)state);
             PlayerPrefs.Save();
         }
+
+        /// <summary>저장된 동의 상태를 삭제한다(Unset 복귀). 다음 실행 시 동의 팝업이 다시 표시된다. (디버그/테스트용)</summary>
+        public static void Clear()
+        {
+            PlayerPrefs.DeleteKey(CONSENT_KEY);
+            PlayerPrefs.Save();
+        }
     }
 }
