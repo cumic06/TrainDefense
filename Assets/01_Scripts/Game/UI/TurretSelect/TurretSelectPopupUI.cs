@@ -27,8 +27,6 @@ namespace TrainDefense.Game.UI
             public TurretTrainData TurretData;
         }
 
-        private const string CardHeaderDefault = "선택한 포탑";
-
         #region Fields
         [Header("선택 포탑 정보")]
         [SerializeField]
@@ -42,8 +40,6 @@ namespace TrainDefense.Game.UI
         private TextMeshProUGUI attackSpeedText;
         [SerializeField]
         private TextMeshProUGUI rangeText;
-        [SerializeField]
-        private TextMeshProUGUI nameText;
         [SerializeField]
         private TextMeshProUGUI bestSurvivalText;
 
@@ -60,8 +56,6 @@ namespace TrainDefense.Game.UI
         private TextMeshProUGUI bestSurvivalHint;
         [SerializeField]
         private TextMeshProUGUI departText;
-        [SerializeField]
-        private TextMeshProUGUI cancelText;
 
         [Header("슬롯")]
         [SerializeField]
@@ -69,12 +63,9 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private TurretSelectSlotUI slotPrefab;
 
-        [Header("출발/취소")]
+        [Header("출발")]
         [SerializeField]
         private Button departButton;
-        [SerializeField]
-        [Tooltip("선택 해제 버튼. 누르면 아무 포탑도 고르지 않은 상태가 된다.")]
-        private Button cancelButton;
         #endregion
 
         private readonly List<TurretSelectSlotUI> _slots = new();
@@ -115,9 +106,6 @@ namespace TrainDefense.Game.UI
 
             if (departButton != null)
                 departButton.onClick.AddListener(_OnDepart);
-
-            if (cancelButton != null)
-                cancelButton.onClick.AddListener(_OnCancel);
 
             if (_entries.Count > 0)
                 _Select(_entries[0]);
@@ -238,9 +226,6 @@ namespace TrainDefense.Game.UI
             if (selectedIconImage != null)
                 selectedIconImage.sprite = entry.Icon;
 
-            if (nameText != null)
-                nameText.text = entry.Name;
-
             var status = entry.TurretData.TurretTrainStatus;
 
             if (attackText != null)
@@ -279,9 +264,6 @@ namespace TrainDefense.Game.UI
 
             if (departText != null)
                 departText.text = LocalizeHelper.GetByKey("UI_TurretSelect_Depart", "출발 ≫");
-
-            if (cancelText != null)
-                cancelText.text = LocalizeHelper.GetByKey("UI_Cancel", "취소");
         }
 
         private string _FormatTime(float seconds)
@@ -294,39 +276,9 @@ namespace TrainDefense.Game.UI
             return $"{total / 60:00}:{total % 60:00}";
         }
 
-        // 선택 해제: 아무 포탑도 고르지 않은 상태로 되돌린다. (출발 시 무기 없이 진행)
-        private void _OnCancel()
-        {
-            _selected = null;
-
-            foreach (var slot in _slots)
-                slot.SetSelected(false);
-
-            if (cardHeaderText != null)
-                cardHeaderText.text = LocalizeHelper.GetByKey("UI_TurretSelect_Header", CardHeaderDefault);
-
-            if (selectedIconImage != null)
-                selectedIconImage.sprite = null;
-
-            if (nameText != null)
-                nameText.text = string.Empty;
-
-            if (attackText != null)
-                attackText.text = "-";
-
-            if (attackSpeedText != null)
-                attackSpeedText.text = "-";
-
-            if (rangeText != null)
-                rangeText.text = "-";
-
-            if (bestSurvivalText != null)
-                bestSurvivalText.text = "--:--";
-        }
-
         private void _OnDepart()
         {
-            // 선택 해제 상태면 null로 저장되어 무기 없이 시작한다.
+            // 선택된 포탑이 없으면(목록이 비면) null로 저장되어 무기 없이 시작한다.
             if (UserDataManager.Instance != null)
                 UserDataManager.Instance.SelectedTurretId = _selected != null ? _selected.TurretDataId : null;
 
