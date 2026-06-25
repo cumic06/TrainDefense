@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Cumic;
 using TrainDefense.Game.Datas;
 using TrainDefense.Localize;
 
@@ -17,6 +18,9 @@ namespace TrainDefense.Game.UI
     {
         private const string ResourceName = "Popup_TurretSelect";
         private const string ConfigResourcePath = "Data/TurretSelectConfig";
+
+        // 로비 씬 빌드 인덱스 (ChangeSceneButton.LobbySceneIndex와 동일)
+        private const int LobbySceneIndex = 1;
 
         // 선택창 한 항목의 정규화 표현(별도 config든 기본 터렛이든 동일하게 다룬다).
         private class SelectEntry
@@ -63,9 +67,12 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private TurretSelectSlotUI slotPrefab;
 
-        [Header("출발")]
+        [Header("출발/뒤로")]
         [SerializeField]
         private Button departButton;
+        [SerializeField]
+        [Tooltip("포탑 선택을 취소하고 로비 씬으로 돌아가는 버튼.")]
+        private Button backButton;
         #endregion
 
         private readonly List<TurretSelectSlotUI> _slots = new();
@@ -106,6 +113,9 @@ namespace TrainDefense.Game.UI
 
             if (departButton != null)
                 departButton.onClick.AddListener(_OnDepart);
+
+            if (backButton != null)
+                backButton.onClick.AddListener(_OnBack);
 
             if (_entries.Count > 0)
                 _Select(_entries[0]);
@@ -284,6 +294,17 @@ namespace TrainDefense.Game.UI
 
             _onDepart?.Invoke();
             Destroy(gameObject);
+        }
+
+        // 뒤로가기: 포탑 선택을 취소하고 로비 씬으로 돌아간다.
+        // SceneController.LoadScene이 내부(PrepareForSceneChange)에서 TimeManager.Resume·StopAllSFX를
+        // 처리하므로, TimeManager.Pause로 멈춰 있던 게임 상태도 함께 정리된다.
+        private void _OnBack()
+        {
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayBGM(SoundType.BGM_Lobby);
+
+            SceneController.LoadScene(LobbySceneIndex, false);
         }
     }
 }
