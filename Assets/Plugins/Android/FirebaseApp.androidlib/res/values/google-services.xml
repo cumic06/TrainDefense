@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:keep="@string/gcm_defaultSenderId,@string/google_storage_bucket,@string/project_id,@string/google_api_key,@string/google_crash_reporting_api_key,@string/google_app_id">
+  <string name="gcm_defaultSenderId" translatable="false">105941925040</string>
+  <string name="google_storage_bucket" translatable="false">traindefense-9274c.firebasestorage.app</string>
+  <string name="project_id" translatable="false">traindefense-9274c</string>
+  <string name="google_api_key" translatable="false">AIzaSyACyyPms8XBTk-6PfNoOFqy7R7KUfkSyQw</string>
+  <string name="google_crash_reporting_api_key" translatable="false">AIzaSyACyyPms8XBTk-6PfNoOFqy7R7KUfkSyQw</string>
+  <string name="google_app_id" translatable="false">1:105941925040:android:fac28f26a0fcc1e4c24f75</string>
+</resources>

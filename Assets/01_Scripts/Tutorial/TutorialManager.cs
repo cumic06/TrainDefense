@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Cumic;
+using Cumic.Events;
 using Cumic.Sequence;
+using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.Tutorial
 {
@@ -83,6 +85,7 @@ namespace TrainDefense.Game.Tutorial
                     InGameSequence.Instance?.PushOverlay(OverlayPhase.Tutorial);
 
                 OnTutorialStart?.Invoke(id);
+                GameEventSystem.Publish<TutorialStartEvent>(new TutorialStartEvent(id));
             };
             _service.OnStepChanged += (index, step) => OnStepChanged?.Invoke(index, step);
             _service.OnTutorialComplete += HandleTutorialComplete;
@@ -332,6 +335,7 @@ namespace TrainDefense.Game.Tutorial
             }
 
             OnTutorialComplete?.Invoke(sequenceId);
+            GameEventSystem.Publish<TutorialCompleteEvent>(new TutorialCompleteEvent(sequenceId));
         }
 
         #endregion

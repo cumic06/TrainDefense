@@ -3,6 +3,7 @@ using TMPro;
 using Cumic.Sequence;
 using TrainDefense.Game;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Analytics;
 using TrainDefense.Game.Intro;
 using TrainDefense.Game.Manager;
 using TrainDefense.Game.UI;
@@ -81,6 +82,16 @@ namespace TrainDefense
       private Button accessibilityTabButton;
       [SerializeField]
       private GameObject accessibilityPanel;
+
+      [Header("개인정보 (Analytics 동의)")]
+      [SerializeField]
+      private Toggle analyticsConsentToggle;
+      [SerializeField]
+      private TMP_Text analyticsConsentLabel;
+      [SerializeField]
+      private Button privacyPolicyButton;
+      [SerializeField]
+      private TMP_Text privacyPolicyText;
       #endregion
 
       private static readonly Color _langSelectedColor = new Color(1f, 0.85f, 0.3f);
@@ -99,6 +110,7 @@ namespace TrainDefense
       private void OnEnable()
       {
          _ShowTab(OptionTab.Sound);
+         _RefreshAnalyticsConsent();
 
          if (SoundManager.Instance == null) return;
 
@@ -142,6 +154,12 @@ namespace TrainDefense
          if (tutorialReplayButton != null)
             tutorialReplayButton.onClick.AddListener(_OnTutorialReplayClick);
 
+         if (analyticsConsentToggle != null)
+            analyticsConsentToggle.onValueChanged.AddListener(_OnAnalyticsConsentChanged);
+
+         if (privacyPolicyButton != null)
+            privacyPolicyButton.onClick.AddListener(_OnPrivacyPolicyClick);
+
          if (koreanButton != null)
             koreanButton.onClick.AddListener(() => _OnLanguageButtonClick(SystemLanguage.Korean));
 
@@ -168,6 +186,7 @@ namespace TrainDefense
          Localization.OnLanguageChanged += _RefreshColorblindLabel;
          Localization.OnLanguageChanged += _RefreshAccessibilityTexts;
          Localization.OnLanguageChanged += _RefreshTabTexts;
+         Localization.OnLanguageChanged += _RefreshAnalyticsConsent;
       }
 
       private void _UnSubscribeListeners()
@@ -191,6 +210,12 @@ namespace TrainDefense
 
          if (tutorialReplayButton != null)
             tutorialReplayButton.onClick.RemoveListener(_OnTutorialReplayClick);
+
+         if (analyticsConsentToggle != null)
+            analyticsConsentToggle.onValueChanged.RemoveListener(_OnAnalyticsConsentChanged);
+
+         if (privacyPolicyButton != null)
+            privacyPolicyButton.onClick.RemoveListener(_OnPrivacyPolicyClick);
 
          if (koreanButton != null)
             koreanButton.onClick.RemoveAllListeners();
@@ -218,6 +243,7 @@ namespace TrainDefense
          Localization.OnLanguageChanged -= _RefreshColorblindLabel;
          Localization.OnLanguageChanged -= _RefreshAccessibilityTexts;
          Localization.OnLanguageChanged -= _RefreshTabTexts;
+         Localization.OnLanguageChanged -= _RefreshAnalyticsConsent;
       }
 
       public void OnDeletePlayerPrefsClicked()
@@ -537,6 +563,36 @@ namespace TrainDefense
 
          if (IntroManager.Instance != null)
             IntroManager.Instance.Replay();
+      }
+
+      // Analytics 데이터 수집 동의 토글/정책 링크를 현재 상태·언어로 갱신한다.
+      private void _RefreshAnalyticsConsent()
+      {
+         if (analyticsConsentToggle != null)
+            analyticsConsentToggle.SetIsOnWithoutNotify(AnalyticsConsent.IsGranted);
+
+         if (analyticsConsentLabel != null)
+            analyticsConsentLabel.text = LocalizeHelper.GetByKey("UI_Option_Analytics", "데이터 수집 동의");
+
+         if (privacyPolicyText != null)
+            privacyPolicyText.text = LocalizeHelper.GetByKey("UI_Consent_Policy", "개인정보처리방침");
+      }
+
+      // 토글 변경 시 동의 상태를 저장하고 즉시 Firebase 수집 on/off 에 반영한다. (GDPR 철회 수단)
+      private void _OnAnalyticsConsentChanged(bool isGranted)
+      {
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+
+         if (AnalyticsManager.Instance != null)
+            AnalyticsManager.Instance.SetConsent(isGranted);
+         else
+            AnalyticsConsent.Set(isGranted ? AnalyticsConsentState.Granted : AnalyticsConsentState.Denied);
+      }
+
+      private void _OnPrivacyPolicyClick()
+      {
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+         Application.OpenURL(AnalyticsConsent.PrivacyPolicyUrl);
       }
    }
 }

@@ -68,6 +68,8 @@ namespace TrainDefense.Game
             if (_freeRerollCount > 0)
             {
                 _freeRerollCount--;
+                GameEventSystem.Publish(new RerollEvent(0, true));
+
                 return true;
             }
 
@@ -75,10 +77,13 @@ namespace TrainDefense.Game
                 return false;
 
             int beforeCoin = UserDataManager.Instance.Coin;
-            int afterCoin = beforeCoin - _currentRerollCost;
+            int paidCost = _currentRerollCost;
+            int afterCoin = beforeCoin - paidCost;
             GameEventSystem.Publish(new ChangeCoinUIEvent(beforeCoin, afterCoin));
 
             _currentRerollCost = Mathf.Max(1, Mathf.RoundToInt(_currentRerollCost * rerollCostMultiplier));
+
+            GameEventSystem.Publish(new RerollEvent(paidCost, false));
 
             return true;
         }
