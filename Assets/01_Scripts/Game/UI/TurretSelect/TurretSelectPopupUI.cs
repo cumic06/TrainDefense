@@ -105,6 +105,20 @@ namespace TrainDefense.Game.UI
             return popup;
         }
 
+        private void OnEnable()
+        {
+            // Start 시점에 Localization이 아직 초기화 전이면 텍스트가 fallback으로 굳으므로,
+            // 초기화 완료·언어 변경 시 다시 적용하도록 구독한다(LocalizeText 컴포넌트와 동일한 패턴).
+            Localization.OnInitialized += _RefreshLocalizedTexts;
+            Localization.OnLanguageChanged += _RefreshLocalizedTexts;
+        }
+
+        private void OnDisable()
+        {
+            Localization.OnInitialized -= _RefreshLocalizedTexts;
+            Localization.OnLanguageChanged -= _RefreshLocalizedTexts;
+        }
+
         private void Start()
         {
             _ApplyStaticTexts();
@@ -254,6 +268,15 @@ namespace TrainDefense.Game.UI
             }
         }
 
+        // 로컬라이즈 초기화 완료·언어 변경 시 호출되어 정적 라벨과 선택 포탑 이름을 현재 언어로 다시 적용한다.
+        private void _RefreshLocalizedTexts()
+        {
+            _ApplyStaticTexts();
+
+            if (_selected != null && cardHeaderText != null)
+                cardHeaderText.text = _selected.Name;
+        }
+
         // 프리팹에 한국어로 박혀 있는 정적 라벨(스탯 이름·생존 시간·버튼)을 현재 언어로 갱신한다.
         private void _ApplyStaticTexts()
         {
@@ -273,7 +296,7 @@ namespace TrainDefense.Game.UI
                 bestSurvivalHint.text = LocalizeHelper.GetByKey("UI_TurretSelect_BestSurvivalHint", "해당 포탑으로 기록한\n최고 생존 시간입니다.").Replace("\\n", "\n");
 
             if (departText != null)
-                departText.text = LocalizeHelper.GetByKey("UI_TurretSelect_Depart", "출발 ≫");
+                departText.text = LocalizeHelper.GetByKey("UI_TurretSelect_Depart", "출발");
         }
 
         private string _FormatTime(float seconds)
