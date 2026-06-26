@@ -356,22 +356,10 @@ namespace TrainDefense.Game
 
       private void RearrangeTrains()
       {
-         // 원래 추가 순서(originalIndex)로 정렬해 배치 — RearrangeAllTrainsToOriginalOrder와 순서를 일치시켜
-         // 부활·엘리트 전환 등으로 _currentAliveTrains 리스트 순서가 바뀌어도 포탑 위치가 흔들리지 않게 한다.
-         var ordered = _currentAliveTrains
-            .OrderBy(t => _trainOriginalIndexMap.TryGetValue(t, out var idx) ? idx : int.MaxValue)
-            .ToList();
-         int count = ordered.Count;
-         float halfLength = count * trainOffset * 0.5f;
-
-         ApplyMainTrainModelOffset(halfLength);
-
-         // 편성 중앙이 MainTrain transform에 오도록 오른쪽으로 halfLength 이동
-         for (int i = 0; i < count; i++)
-         {
-            Vector3 newPos = new Vector3(halfLength - trainOffset * (i + 1), 0f, 0f);
-            ordered[i].transform.localPosition = newPos;
-         }
+         // 죽은 칸도 회색으로 자리를 유지하는 설계이므로, 산 칸만 따로(count 기준) 배치하면 죽은 칸과 중앙
+         // 기준(halfLength)이 어긋나 위치가 틀어진다(죽은 칸 위로 산 칸이 겹치거나 밀림). 산 칸·죽은 칸을 함께
+         // 원래 순서로 배치하는 RearrangeAllTrainsToOriginalOrder 단일 경로로 통일해 정렬 기준을 일치시킨다.
+         RearrangeAllTrainsToOriginalOrder();
       }
 
       private void ApplyMainTrainModelOffset(float halfLength)
