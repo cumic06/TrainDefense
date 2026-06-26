@@ -16,16 +16,16 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
     {
         #region Fields
         [SerializeField] private Button closeButton;
+        [SerializeField] private TextMeshProUGUI eliteCoinText;
         [Header("정적 라벨 (로컬라이즈)")]
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI purchaseText;
-        [Space]
-        [SerializeField] private TextMeshProUGUI currencyText;
         [SerializeField] private Transform slotContent;            // 슬롯이 배치될 컨테이너 (Layout Group 권장)
         [SerializeField] private PermanentUpgradeSlotUI slotPrefab;
 
         [Header("상세 패널 (슬롯 클릭 시 표시)")]
         [SerializeField] private GameObject detailPanel;          // 선택 전에는 숨김
+        [SerializeField] private Image detailIcon;                // 선택한 영구 업그레이드 아이콘
         [SerializeField] private TextMeshProUGUI detailNameText;
         [SerializeField] private TextMeshProUGUI detailDescriptionText;
         [SerializeField] private TextMeshProUGUI detailLevelText;
@@ -69,7 +69,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
         private void Start()
         {
             _BuildSlots();
-            _RefreshCurrency();
+            _RefreshEliteCoin();
             _RefreshDetail();
         }
 
@@ -116,7 +116,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             if (!manager.TryPurchase(_selectedData.Id)) return;
 
             // 구매 성공 → 재화·슬롯·상세 갱신 (재화가 줄어 구매 가능 여부도 바뀜)
-            _RefreshCurrency();
+            _RefreshEliteCoin();
             foreach (var slot in _slots)
                 slot.Refresh();
             _RefreshDetail();
@@ -131,6 +131,13 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             // 선택이 없으면 상세 패널 자체를 숨긴다
             if (detailPanel != null)
                 detailPanel.SetActive(hasSelection);
+
+            // 선택한 업그레이드의 아이콘을 상세 패널에 표시 (슬롯과 동일한 Icon 사용)
+            if (detailIcon != null)
+            {
+                detailIcon.sprite = hasSelection ? _selectedData.Icon : null;
+                detailIcon.enabled = hasSelection && _selectedData.Icon != null;
+            }
 
             if (detailNameText != null)
                 detailNameText.text = hasSelection ? _selectedData.Name : string.Empty;
@@ -154,14 +161,14 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             if (detailCostText != null)
                 detailCostText.text = isMax ? "MAX" : cost.ToString();
             if (purchaseButton != null)
-                purchaseButton.interactable = !isMax && manager.Currency >= cost;
+                purchaseButton.interactable = !isMax && manager.EliteCoin >= cost;
         }
 
-        private void _RefreshCurrency()
+        private void _RefreshEliteCoin()
         {
             var manager = PermanentUpgradeManager.Instance;
-            if (currencyText != null && manager != null)
-                currencyText.text = manager.Currency.ToString();
+            if (eliteCoinText != null && manager != null)
+                eliteCoinText.text = manager.EliteCoin.ToString();
         }
     }
 }

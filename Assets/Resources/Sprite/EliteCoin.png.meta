@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 093b27b13208d9b4bbb8cf61f55a30f2
+guid: 0b9fda64d21569340bda602f57574332
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1631409707987487227
-    second: Body_KMD_05_0
+      213: 3488240089490820101
+    second: image-Photoroom (2)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 32
+  spritePixelsToUnits: 64
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -97,6 +97,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -113,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Body_KMD_05_0
+      name: EliteCoin
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 125
-        height: 76
+        x: 368
+        y: 316
+        width: 512
+        height: 720
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5063840a3811c59e0800000000000000
-      internalID: -1631409707987487227
+      spriteID: 50c806141e7b86030800000000000000
+      internalID: 3488240089490820101
       vertices: []
       indices: 
       edges: []
@@ -138,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 0ec831957b8713e43a49062065a0c452
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Body_KMD_05_0: -1631409707987487227
+      EliteCoin: 3488240089490820101
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

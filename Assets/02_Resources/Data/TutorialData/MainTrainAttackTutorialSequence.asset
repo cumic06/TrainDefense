@@ -26,7 +26,7 @@ MonoBehaviour:
         m_Calls: []
     _message: "화면을 길게 눌러 <wave>메인 기차</wave>의
       포탑으로 적을 공격하세요!"
-    _messageKey: 208
+    _messageKey: 209
     _arrowDirection: 0
     _arrowLookDirection: 0
     _useDimming: 0

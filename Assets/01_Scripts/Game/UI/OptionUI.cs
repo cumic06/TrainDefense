@@ -187,6 +187,14 @@ namespace TrainDefense
          Localization.OnLanguageChanged += _RefreshAccessibilityTexts;
          Localization.OnLanguageChanged += _RefreshTabTexts;
          Localization.OnLanguageChanged += _RefreshAnalyticsConsent;
+
+         // 로컬라이즈 초기화가 OnEnable보다 늦으면 OnLanguageChanged만으로는 최초 갱신이 누락되므로
+         // OnInitialized에도 동일 갱신을 구독한다.
+         Localization.OnInitialized += _RefreshLanguageButtons;
+         Localization.OnInitialized += _RefreshLanguageDropdown;
+         Localization.OnInitialized += _RefreshColorblindLabel;
+         Localization.OnInitialized += _RefreshAccessibilityTexts;
+         Localization.OnInitialized += _RefreshTabTexts;
       }
 
       private void _UnSubscribeListeners()
@@ -244,6 +252,12 @@ namespace TrainDefense
          Localization.OnLanguageChanged -= _RefreshAccessibilityTexts;
          Localization.OnLanguageChanged -= _RefreshTabTexts;
          Localization.OnLanguageChanged -= _RefreshAnalyticsConsent;
+
+         Localization.OnInitialized -= _RefreshLanguageButtons;
+         Localization.OnInitialized -= _RefreshLanguageDropdown;
+         Localization.OnInitialized -= _RefreshColorblindLabel;
+         Localization.OnInitialized -= _RefreshAccessibilityTexts;
+         Localization.OnInitialized -= _RefreshTabTexts;
       }
 
       public void OnDeletePlayerPrefsClicked()

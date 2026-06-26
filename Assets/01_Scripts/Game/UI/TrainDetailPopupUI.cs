@@ -12,9 +12,31 @@ namespace TrainDefense.Game.UI
         [SerializeField] private TextMeshProUGUI statsText;
         [SerializeField] private TextMeshProUGUI skillsText;
 
+        private Train _train;
+
+        private void OnEnable()
+        {
+            Localization.OnInitialized += _RefreshLocalizedTexts;
+            Localization.OnLanguageChanged += _RefreshLocalizedTexts;
+        }
+
+        private void OnDisable()
+        {
+            Localization.OnInitialized -= _RefreshLocalizedTexts;
+            Localization.OnLanguageChanged -= _RefreshLocalizedTexts;
+        }
+
+        // 떠 있는 동안 초기화 완료·언어 변경 시, 마지막으로 표시한 train으로 다시 그린다.
+        private void _RefreshLocalizedTexts()
+        {
+            if (_train != null)
+                Show(_train);
+        }
+
         public void Show(Train train)
         {
             if (train == null) return;
+            _train = train;
 
             var data = train.TrainData;
             if (data != null)

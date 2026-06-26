@@ -14,12 +14,11 @@ namespace TrainDefense.Game.Datas
     /// </summary>
     public enum PermanentUpgradeType
     {
-        MaxTurretCount,    // 최대 포탑 수 증가 (+개수)
-        EliteRewardRate,   // 엘리트 재화 드랍률 증가 (%)
-        MaxHp,             // 최대 체력 증가
-        HealthRegen,       // 5초 무피해 시 체력 회복 (%)
-        GoldGainRate,      // 골드 획득률 증가 (%)
-        ExpGainRate,       // 경험치 획득률 증가 (%)
-        FreeReroll,        // 레벨업 시 무료 리롤 횟수
+        MaxTurretCount,    // 0 — 최대 포탑 수 증가 (+개수)
+        MaxHp,             // 1 — 최대 체력 증가
+        HealthRegen,       // 2 — 5초마다 체력 회복 (%)
+        GoldGainRate,      // 3 — 골드 획득률 증가 (%)
+        ExpGainRate,       // 4 — 경험치 획득률 증가 (%)
+        FreeReroll,        // 5 — 레벨업 시 무료 리롤 횟수
     }
 }

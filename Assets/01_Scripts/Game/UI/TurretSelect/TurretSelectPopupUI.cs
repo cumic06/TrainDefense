@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Cumic;
 using TrainDefense.Game.Datas;
 using TrainDefense.Localize;
 
@@ -18,6 +19,9 @@ namespace TrainDefense.Game.UI
         private const string ResourceName = "Popup_TurretSelect";
         private const string ConfigResourcePath = "Data/TurretSelectConfig";
 
+        // 로비 씬 빌드 인덱스 (ChangeSceneButton.LobbySceneIndex와 동일)
+        private const int LobbySceneIndex = 1;
+
         // 선택창 한 항목의 정규화 표현(별도 config든 기본 터렛이든 동일하게 다룬다).
         private class SelectEntry
         {
@@ -26,8 +30,6 @@ namespace TrainDefense.Game.UI
             public string Name;
             public TurretTrainData TurretData;
         }
-
-        private const string CardHeaderDefault = "선택한 포탑";
 
         #region Fields
         [Header("선택 포탑 정보")]
@@ -42,8 +44,6 @@ namespace TrainDefense.Game.UI
         private TextMeshProUGUI attackSpeedText;
         [SerializeField]
         private TextMeshProUGUI rangeText;
-        [SerializeField]
-        private TextMeshProUGUI nameText;
         [SerializeField]
         private TextMeshProUGUI bestSurvivalText;
 
@@ -60,8 +60,6 @@ namespace TrainDefense.Game.UI
         private TextMeshProUGUI bestSurvivalHint;
         [SerializeField]
         private TextMeshProUGUI departText;
-        [SerializeField]
-        private TextMeshProUGUI cancelText;
 
         [Header("슬롯")]
         [SerializeField]
@@ -69,12 +67,12 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private TurretSelectSlotUI slotPrefab;
 
-        [Header("출발/취소")]
+        [Header("출발/뒤로")]
         [SerializeField]
         private Button departButton;
         [SerializeField]
-        [Tooltip("선택 해제 버튼. 누르면 아무 포탑도 고르지 않은 상태가 된다.")]
-        private Button cancelButton;
+        [Tooltip("포탑 선택을 취소하고 로비 씬으로 돌아가는 버튼.")]
+        private Button backButton;
         #endregion
 
         private readonly List<TurretSelectSlotUI> _slots = new();
@@ -107,6 +105,20 @@ namespace TrainDefense.Game.UI
             return popup;
         }
 
+        private void OnEnable()
+        {
+            // Start 시점에 Localization이 아직 초기화 전이면 텍스트가 fallback으로 굳으므로,
+            // 초기화 완료·언어 변경 시 다시 적용하도록 구독한다(LocalizeText 컴포넌트와 동일한 패턴).
+            Localization.OnInitialized += _RefreshLocalizedTexts;
+            Localization.OnLanguageChanged += _RefreshLocalizedTexts;
+        }
+
+        private void OnDisable()
+        {
+            Localization.OnInitialized -= _RefreshLocalizedTexts;
+            Localization.OnLanguageChanged -= _RefreshLocalizedTexts;
+        }
+
         private void Start()
         {
             _ApplyStaticTexts();
@@ -116,8 +128,8 @@ namespace TrainDefense.Game.UI
             if (departButton != null)
                 departButton.onClick.AddListener(_OnDepart);
 
-            if (cancelButton != null)
-                cancelButton.onClick.AddListener(_OnCancel);
+            if (backButton != null)
+                backButton.onClick.AddListener(_OnBack);
 
             if (_entries.Count > 0)
                 _Select(_entries[0]);
@@ -238,9 +250,6 @@ namespace TrainDefense.Game.UI
             if (selectedIconImage != null)
                 selectedIconImage.sprite = entry.Icon;
 
-            if (nameText != null)
-                nameText.text = entry.Name;
-
             var status = entry.TurretData.TurretTrainStatus;
 
             if (attackText != null)
@@ -257,6 +266,15 @@ namespace TrainDefense.Game.UI
                 float best = UserDataManager.Instance != null ? UserDataManager.Instance.GetBestSurvivalTime(entry.TurretDataId) : 0f;
                 bestSurvivalText.text = _FormatTime(best);
             }
+        }
+
+        // 로컬라이즈 초기화 완료·언어 변경 시 호출되어 정적 라벨과 선택 포탑 이름을 현재 언어로 다시 적용한다.
+        private void _RefreshLocalizedTexts()
+        {
+            _ApplyStaticTexts();
+
+            if (_selected != null && cardHeaderText != null)
+                cardHeaderText.text = _selected.Name;
         }
 
         // 프리팹에 한국어로 박혀 있는 정적 라벨(스탯 이름·생존 시간·버튼)을 현재 언어로 갱신한다.
@@ -278,10 +296,7 @@ namespace TrainDefense.Game.UI
                 bestSurvivalHint.text = LocalizeHelper.GetByKey("UI_TurretSelect_BestSurvivalHint", "해당 포탑으로 기록한\n최고 생존 시간입니다.").Replace("\\n", "\n");
 
             if (departText != null)
-                departText.text = LocalizeHelper.GetByKey("UI_TurretSelect_Depart", "출발 ≫");
-
-            if (cancelText != null)
-                cancelText.text = LocalizeHelper.GetByKey("UI_Cancel", "취소");
+                departText.text = LocalizeHelper.GetByKey("UI_TurretSelect_Depart", "출발");
         }
 
         private string _FormatTime(float seconds)
@@ -294,44 +309,25 @@ namespace TrainDefense.Game.UI
             return $"{total / 60:00}:{total % 60:00}";
         }
 
-        // 선택 해제: 아무 포탑도 고르지 않은 상태로 되돌린다. (출발 시 무기 없이 진행)
-        private void _OnCancel()
-        {
-            _selected = null;
-
-            foreach (var slot in _slots)
-                slot.SetSelected(false);
-
-            if (cardHeaderText != null)
-                cardHeaderText.text = LocalizeHelper.GetByKey("UI_TurretSelect_Header", CardHeaderDefault);
-
-            if (selectedIconImage != null)
-                selectedIconImage.sprite = null;
-
-            if (nameText != null)
-                nameText.text = string.Empty;
-
-            if (attackText != null)
-                attackText.text = "-";
-
-            if (attackSpeedText != null)
-                attackSpeedText.text = "-";
-
-            if (rangeText != null)
-                rangeText.text = "-";
-
-            if (bestSurvivalText != null)
-                bestSurvivalText.text = "--:--";
-        }
-
         private void _OnDepart()
         {
-            // 선택 해제 상태면 null로 저장되어 무기 없이 시작한다.
+            // 선택된 포탑이 없으면(목록이 비면) null로 저장되어 무기 없이 시작한다.
             if (UserDataManager.Instance != null)
                 UserDataManager.Instance.SelectedTurretId = _selected != null ? _selected.TurretDataId : null;
 
             _onDepart?.Invoke();
             Destroy(gameObject);
+        }
+
+        // 뒤로가기: 포탑 선택을 취소하고 로비 씬으로 돌아간다.
+        // SceneController.LoadScene이 내부(PrepareForSceneChange)에서 TimeManager.Resume·StopAllSFX를
+        // 처리하므로, TimeManager.Pause로 멈춰 있던 게임 상태도 함께 정리된다.
+        private void _OnBack()
+        {
+            if (SoundManager.Instance != null)
+                SoundManager.Instance.PlayBGM(SoundType.BGM_Lobby);
+
+            SceneController.LoadScene(LobbySceneIndex, false);
         }
     }
 }

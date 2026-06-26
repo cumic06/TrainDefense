@@ -25,7 +25,7 @@ namespace TrainDefense.Game.Datas
                 return;
             }
 
-            manager.AddCurrency(eliteCurrencyAmount);
+            manager.AddEliteCoin(eliteCurrencyAmount);
         }
     }
 }
