@@ -2639,6 +2639,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2000000000000000052}
+  - component: {fileID: 1990010001}
   m_Layer: 5
   m_Name: Panel_Sound
   m_TagString: Untagged
@@ -3308,6 +3309,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1990006002}
+  - component: {fileID: 1990010002}
+  - component: {fileID: 1990010004}
   m_Layer: 5
   m_Name: Panel_Accessibility
   m_TagString: Untagged
@@ -3348,6 +3351,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2000000000000000062}
+  - component: {fileID: 1990010003}
   m_Layer: 5
   m_Name: Panel_Language
   m_TagString: Untagged
@@ -3611,6 +3615,73 @@ MonoBehaviour:
   languagePanel: {fileID: 2000000000000000061}
   accessibilityTabButton: {fileID: 1990005005}
   accessibilityPanel: {fileID: 1990006001}
+  analyticsConsentToggle: {fileID: 1990008003}
+  analyticsConsentLabel: {fileID: 1990008033}
+  privacyPolicyButton: {fileID: 1990009005}
+  privacyPolicyText: {fileID: 1990009013}
+--- !u!114 &1990010001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000000000000000051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6d785fc34db5094f9423fde1cbc35b5, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.SoundOptionUI
+  bgmSlider: {fileID: 4462151653518578266}
+  bgmMuteButton: {fileID: 3493417791209905918}
+  sfxSlider: {fileID: 6219123171810878418}
+  sfxMuteButton: {fileID: 6618426828670185334}
+  muteSprite: {fileID: 3997766605359117159, guid: 71462e0bee377bc4786c732ff06b80d2, type: 3}
+  unMuteSprite: {fileID: 21300000, guid: 41574e2742c0b4b238ba415d423bf99a, type: 3}
+--- !u!114 &1990010002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990006001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdfddb6bda72e4b48ae2688556a96848, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.AccessibilityOptionUI
+  hapticToggle: {fileID: 0}
+  cameraShakeToggle: {fileID: 1990002003}
+  cameraShakeLabel: {fileID: 1990002033}
+  colorblindButton: {fileID: 1990003005}
+  colorblindLabel: {fileID: 1990003013}
+--- !u!114 &1990010003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000000000000000061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfe49997b112c5c44942c206bd52f1a1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.LanguageOptionUI
+  koreanButton: {fileID: 1000000000000000014}
+  englishButton: {fileID: 1000000000000000034}
+  japaneseButton: {fileID: 1000000000000000054}
+  languageDropdown: {fileID: 1990007005}
+--- !u!114 &1990010004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990006001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1078843e82deea54490977c361137733, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.PrivacyOptionUI
   analyticsConsentToggle: {fileID: 1990008003}
   analyticsConsentLabel: {fileID: 1990008033}
   privacyPolicyButton: {fileID: 1990009005}
