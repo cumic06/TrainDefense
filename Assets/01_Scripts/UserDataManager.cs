@@ -503,8 +503,14 @@ namespace TrainDefense
 
         public float GetNextLevelUpExp()
         {
+            return GetNextLevelUpExp(_currentLevel);
+        }
+
+        // 특정 레벨 기준 필요 경험치. 게임 진입 표시처럼 _currentLevel 리셋 타이밍에 의존하면 안 되는 곳에서 사용.
+        public float GetNextLevelUpExp(int level)
+        {
             // 레벨업 필요 경험치 = 290 × lv^1.6 (드랍=HP·스폰80% 기준, lv35 ≈ 55분 도달, 후반 정체 없음)
-            return baseExp * Mathf.Pow(_currentLevel, expPower);
+            return baseExp * Mathf.Pow(level, expPower);
         }
         #endregion
 
