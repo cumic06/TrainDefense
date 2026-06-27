@@ -101,6 +101,12 @@ public class ResourceManager : MonoBehaviour
             else
                 popObject.transform.SetParent(transform);
 
+            // 풀에서 꺼낸 오브젝트를 부모에 붙일 때 SetParent의 worldPositionStays(=true) 때문에
+            // 부모의 lossyScale에 맞춰 localScale이 재계산된다. 특히 스케일된 캔버스 아래의 UI는
+            // localScale이 비정상적으로 커지므로(예: DamageUI가 말도 안 되게 커지는 문제),
+            // 프리팹이 의도한 localScale로 복원한다.
+            popObject.transform.localScale = prefab.transform.localScale;
+
             result = popObject;
         }
         else
