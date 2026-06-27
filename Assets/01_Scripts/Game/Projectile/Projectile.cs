@@ -188,6 +188,14 @@ namespace TrainDefense.Game
             if (data == null || _movementStrategy == null)
                 return;
 
+            // 소유 포탑이 죽으면 정지형 지속 범위 공격(NonMovement: 냉기/화염 등)을 즉시 멈춘다.
+            // 비활성화만 하므로 부활 후 공격 재개 시 다시 켜진다. 날아가는 투사체(Linear 등)는 그대로 둔다.
+            if (data.MovementType == MovementType.NonMovement && _owner is Train ownerTrain && ownerTrain.IsDead)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
             float deltaTime = Time.fixedDeltaTime;
             _age += deltaTime;
 
