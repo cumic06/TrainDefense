@@ -46,9 +46,24 @@ namespace TrainDefense.Game.Manager
         private bool _shouldShowStageSelectionOnStageEnd;
         private bool _pendingStageSelectionAfterShop;
         private bool _isGameOver;
+
+        // 맵별 점수 결산 기록(게임오버 슬라이드쇼용). 맵 진입 시 점수/처치 수를 스냅샷(_mapStart*)하고,
+        // 다음 맵으로 넘어가거나(_OnStageSelected) 게임이 끝날 때(_OnGameEnd) 차이를 StageRunRecord로 확정한다.
+        private readonly List<StageRunRecord> _runRecords = new();
+        private int _mapStartScore;
+        private int _mapStartNormalKill;
+        private int _mapStartEliteKill;
+        // 게임오버 시 마지막 맵 마감이 중복되지 않도록 하는 가드(FinalizeAndGetRecords).
+        private bool _runFinalized;
         #endregion
 
         public StageData CurrentStageData => _stageDatas[_currentStageIndex];
+
+        /// <summary>한 판 동안 지나온 누적 역 통과 수. (상점 기차 수리 가격 산정 등에 사용)</summary>
+        public int TotalStationPassedCount => _totalStationPassedCount;
+
+        /// <summary>게임오버 결산용 — 한 판 동안 거쳐 간 맵별 점수/처치 기록(방문 순서).</summary>
+        public IReadOnlyList<StageRunRecord> RunRecords => _runRecords;
 
         /// <summary>
         /// 스테이지 선택 전 마지막 상점을 들른 상태로, 상점을 닫으면 스테이지 선택 UI가 떠야 하는지 여부.
@@ -129,6 +144,14 @@ namespace TrainDefense.Game.Manager
             // 새 게임 시작 시에만 누적 난이도 카운터 초기화 (스테이지 변경 시에는 유지)
             _totalStationPassedCount = 0;
             _UpdateSpawnRules();
+
+            // 맵별 결산 기록 초기화. 첫 맵은 게임 시작과 동시이므로 진입 스냅샷을 0으로 둔다.
+            // (ScoreManager도 GameEnterEvent에서 0으로 리셋되지만 구독 순서가 불확정이라 직접 0 고정)
+            _runRecords.Clear();
+            _runFinalized = false;
+            _mapStartScore = 0;
+            _mapStartNormalKill = 0;
+            _mapStartEliteKill = 0;
         }
 
         private void _UpdateSpawnRules()
@@ -253,6 +276,50 @@ namespace TrainDefense.Game.Manager
 
         private void _OnGameOverStart(GameOverStartEvent _) => _isGameOver = true;
 
+        /// <summary>
+        /// 게임오버 결산 UI가 호출 — 아직 마감 안 된 현재(마지막) 맵 구간을 확정하고 전체 기록을 반환한다.
+        /// GameEndEvent 구독 순서에 의존하면 맵을 1개만 간 판에서 결산 UI가 먼저 읽어 빈 목록이 되므로,
+        /// UI가 읽기 직전에 직접 마감을 트리거하는 방식으로 순서 의존을 없앤다.
+        /// </summary>
+        public IReadOnlyList<StageRunRecord> FinalizeAndGetRecords()
+        {
+            if (!_runFinalized)
+            {
+                _CloseMapRecord();
+                _runFinalized = true;
+            }
+            return _runRecords;
+        }
+
+        // 현재 맵 진입 시점의 점수/처치 수를 스냅샷한다. (다음 _CloseMapRecord의 기준값)
+        private void _BeginMapRecord()
+        {
+            var scoreManager = ScoreManager.Instance;
+            if (scoreManager == null) return;
+
+            _mapStartScore = scoreManager.CurrentScore;
+            _mapStartNormalKill = scoreManager.NormalKillCount;
+            _mapStartEliteKill = scoreManager.EliteKillCount;
+        }
+
+        // 현재 머문 맵 구간을 마감해 RunRecords에 누적한다.
+        // 번 점수/처치 수 = 현재값 - 진입 스냅샷(_mapStart*). 맵 정보는 현재 CurrentStageData 기준.
+        private void _CloseMapRecord()
+        {
+            var scoreManager = ScoreManager.Instance;
+            if (scoreManager == null) return;
+
+            var stage = CurrentStageData;
+            _runRecords.Add(new StageRunRecord
+            {
+                StageId = stage != null ? stage.Id : string.Empty,
+                StageImage = stage != null ? stage.StageImage : null,
+                ScoreEarned = Mathf.Max(0, scoreManager.CurrentScore - _mapStartScore),
+                NormalKill = Mathf.Max(0, scoreManager.NormalKillCount - _mapStartNormalKill),
+                EliteKill = Mathf.Max(0, scoreManager.EliteKillCount - _mapStartEliteKill),
+            });
+        }
+
         private void _OnInspectionEnd(InspectionEndEvent inspectionEndEvent)
         {
             // 스테이지 선택용 상점을 닫은 경우, 전투로 복귀하지 않고 스테이지 선택 UI로 전환한다.
@@ -351,7 +418,11 @@ namespace TrainDefense.Game.Manager
                 return;
             }
 
+            // 이전 맵 구간 결산을 마감한 뒤, 새 맵으로 전환하며 새 구간 점수 스냅샷을 시작한다.
+            // (선택~전환 사이에는 전투가 없어 점수가 변하지 않으므로 이 시점에 스냅샷해도 안전)
+            _CloseMapRecord();
             _currentStageIndex = index;
+            _BeginMapRecord();
 
             if (TimelineManager.Instance != null)
             {

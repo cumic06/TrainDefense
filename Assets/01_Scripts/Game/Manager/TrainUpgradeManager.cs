@@ -14,6 +14,7 @@ namespace TrainDefense.Game
     {
         private bool _skillTutorialStarted = false;
         private bool _trainInfoSlotTutorialStarted = false;
+        private bool _eliteTrainTutorialStarted = false;
 
         [ShowInInspector, ReadOnly, FoldoutGroup("디버그 - 상점 업그레이드")]
         private Dictionary<string, int> ShopUpgrades
@@ -54,10 +55,13 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<ReplaceTrainEvent>(OnReplaceTrain);
             GameEventSystem.Unsubscribe<UpgradeTrainEvent>(OnUpgradeTrain);
 
+            GameEventSystem.Unsubscribe<MainTrainFiredEvent>(OnMainTrainFired);
+
             if (TutorialManager.Instance != null)
             {
                 TutorialManager.Instance.OnTutorialComplete -= OnTrainInfoSlotTutorialComplete;
                 TutorialManager.Instance.OnTutorialComplete -= _OnInspectionTimeTutorialComplete;
+                TutorialManager.Instance.OnTutorialComplete -= OnMainTrainAttackTutorialComplete;
             }
         }
 
@@ -119,6 +123,10 @@ namespace TrainDefense.Game
                 return;
             }
 
+            // 트레인 교체는 엘리트 획득 경로(EliteTrainChoice)에서만 발생한다.
+            // 엘리트 획득 시 전용 튜토리얼을 시작하고, 스킬 튜토리얼과 중복되지 않게 우선 처리한다.
+            if (CheckAndStartEliteTrainTutorial())
+                return;
 
             // 대체된 새 기차가 스킬을 가지면 튜토리얼 시작
             if (replaceTrainEvent.NewTrain.HasActiveSkill)
@@ -216,6 +224,61 @@ namespace TrainDefense.Game
 
             Debug.Log("TrainUpgradeManager: inspectionTimeTutorial complete → EngageStart");
             GameEventSystem.Publish(new EngageStartEvent());
+
+            // 전투 시작 직후 메인 트레인 공격 튜토리얼 시작
+            StartMainTrainAttackTutorial();
+        }
+
+        /// <summary>
+        /// 메인 트레인 공격(화면 터치로 포탑 발사) 튜토리얼을 시작합니다.
+        /// 실제로 발사(MainTrainFiredEvent)하면 완료됩니다.
+        /// </summary>
+        private void StartMainTrainAttackTutorial()
+        {
+            if (TutorialManager.Instance == null) return;
+            if (TutorialManager.Instance.IsTutorialCompleted("mainTrainAttackTutorial")) return;
+
+            GameEventSystem.Subscribe<MainTrainFiredEvent>(OnMainTrainFired);
+            TutorialManager.Instance.OnTutorialComplete += OnMainTrainAttackTutorialComplete;
+
+            if (!TutorialManager.Instance.StartTutorial("mainTrainAttackTutorial"))
+            {
+                // 시작 실패 시 구독 롤백
+                GameEventSystem.Unsubscribe<MainTrainFiredEvent>(OnMainTrainFired);
+                TutorialManager.Instance.OnTutorialComplete -= OnMainTrainAttackTutorialComplete;
+            }
+        }
+
+        private void OnMainTrainFired(MainTrainFiredEvent firedEvent)
+        {
+            // 메인 트레인 공격 튜토리얼 진행 중 발사하면 완료 처리
+            if (TutorialManager.Instance != null
+                && TutorialManager.Instance.CurrentSequenceId == "mainTrainAttackTutorial")
+            {
+                TutorialManager.Instance.SkipCurrent();
+            }
+        }
+
+        private void OnMainTrainAttackTutorialComplete(string sequenceId)
+        {
+            if (sequenceId != "mainTrainAttackTutorial") return;
+
+            TutorialManager.Instance.OnTutorialComplete -= OnMainTrainAttackTutorialComplete;
+            GameEventSystem.Unsubscribe<MainTrainFiredEvent>(OnMainTrainFired);
+        }
+
+        /// <summary>
+        /// 엘리트 기차를 획득(트레인 교체)했을 때 엘리트 튜토리얼을 시작합니다.
+        /// 시작했으면 true를 반환합니다.
+        /// </summary>
+        private bool CheckAndStartEliteTrainTutorial()
+        {
+            if (_eliteTrainTutorialStarted) return false;
+            if (TutorialManager.Instance == null) return false;
+
+            _eliteTrainTutorialStarted = true;
+            Debug.Log("TrainUpgradeManager: Starting elite train tutorial");
+            return TutorialManager.Instance.StartTutorial("eliteTrainTutorial");
         }
 
         /// <summary>

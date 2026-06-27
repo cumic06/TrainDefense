@@ -37,8 +37,10 @@ namespace TrainDefense.Game
         protected string _selectedSkillId = null;
         protected bool _initialized;
         private static Material _flashMaterial;
+        private static Material _grayMaterial;
         private SpriteRenderer[] _spriteRenderers;
         private Material[] _originalMaterials;
+        private Collider2D[] _colliders;
         private Coroutine _flashCoroutine;
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
@@ -50,6 +52,7 @@ namespace TrainDefense.Game
         public string Id => id;
         public TrainData TrainData => _trainData;
         public bool IsMainTrain => _trainData.IsMainTrain;
+        public bool IsRotateTurret => isRotateTurret;
 
         public bool IsDead => _isDead;
         public int CurrentLevel => _currentLevel;
@@ -93,6 +96,8 @@ namespace TrainDefense.Game
 
             for (int i = 0; i < _spriteRenderers.Length; i++)
                 _originalMaterials[i] = _spriteRenderers[i].sharedMaterial;
+
+            _colliders = GetComponentsInChildren<Collider2D>(true);
         }
 
         protected virtual void Start()
@@ -122,6 +127,11 @@ namespace TrainDefense.Game
             }
 
             _currentMaxHp = _trainData.TrainStatusData.MaxHp;
+
+            // 영구 업그레이드: 포탑 최대 체력 % 증가 (레벨당 %, 메인 기차는 무적이라 제외)
+            if (!(this is MainTrain) && PermanentUpgradeManager.Instance != null)
+                _currentMaxHp *= 1f + PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.MaxHp) / 100f;
+
             _currentHp = _currentMaxHp;
             _currentLevel = -1;
             _skillModule.Initialize(this, _trainData, _skillTypeMask);
@@ -208,11 +218,63 @@ namespace TrainDefense.Game
             }
         }
 
+        // 사망 시 사라지지 않고 회색(흑백) 머티리얼로 전환. 콜라이더도 꺼서 적·물리 상호작용을 멈춘다.
+        public void ApplyDeadVisual()
+        {
+            if (_flashCoroutine != null)
+            {
+                StopCoroutine(_flashCoroutine);
+                _flashCoroutine = null;
+            }
+
+            if (_grayMaterial == null)
+                _grayMaterial = Resources.Load<Material>("Custom_Sprite_Grayscale");
+
+            if (_spriteRenderers != null && _grayMaterial != null)
+            {
+                for (int i = 0; i < _spriteRenderers.Length; i++)
+                {
+                    if (_spriteRenderers[i] != null)
+                        _spriteRenderers[i].sharedMaterial = _grayMaterial;
+                }
+            }
+
+            _SetCollidersEnabled(false);
+        }
+
+        // 부활 시 원래 머티리얼·콜라이더를 복원한다.
+        public void RestoreVisual()
+        {
+            if (_spriteRenderers != null && _originalMaterials != null)
+            {
+                for (int i = 0; i < _spriteRenderers.Length; i++)
+                {
+                    if (_spriteRenderers[i] != null && i < _originalMaterials.Length)
+                        _spriteRenderers[i].sharedMaterial = _originalMaterials[i];
+                }
+            }
+
+            _SetCollidersEnabled(true);
+        }
+
+        private void _SetCollidersEnabled(bool isEnabled)
+        {
+            if (_colliders == null)
+                return;
+
+            for (int i = 0; i < _colliders.Length; i++)
+            {
+                if (_colliders[i] != null)
+                    _colliders[i].enabled = isEnabled;
+            }
+        }
+
         public virtual void Resurrect()
         {
             // HP를 최대치로 복원하고 죽음 상태 해제
             _isDead = false;
             RestoreHpToMax();
+            RestoreVisual();
         }
 
         public virtual void RestoreHpToMax()
@@ -229,10 +291,21 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
         }
 
+        /// <summary>현재 체력을 최대 체력의 ratio(0~1)로 '설정'한다. (긴급 수리로 부활시킨 직후 HP를 일정 비율로 맞출 때 사용)</summary>
+        public virtual void SetHpToRatio(float ratio)
+        {
+            if (_isDead) return;
+            _currentHp = Mathf.Clamp(_currentMaxHp * ratio, 0f, _currentMaxHp);
+            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
+        }
+
         public virtual bool TryUseSkill() => _skillModule.TryUse();
 
         public void ApplyTimedStat(StatType type, float percent, float duration)
             => _skillModule.ApplyTimedStat(type, percent, duration);
+
+        /// <summary>상점 진입 시 활성 시한버프를 즉시 해제하고 액티브 스킬 쿨타임을 초기화한다. (MainTrain.OnInspectionStart에서 호출)</summary>
+        public void ResetSkillStateForInspection() => _skillModule.ResetForInspection();
 
         protected virtual void Update()
         {

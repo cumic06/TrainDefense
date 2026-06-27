@@ -40,6 +40,9 @@ namespace TrainDefense.Localize
         Tutorial_TrainInfo_Title = 29,
         Tutorial_TrainInfo_Msg1 = 30,
         Tutorial_TrainInfo_Msg2 = 31,
+        Tutorial_Elite_Title = 209,
+        Tutorial_Elite_Msg1 = 210,
+        Tutorial_Elite_Msg2 = 211,
         Intro_Slide1 = 32,
         Intro_Slide2 = 33,
         Intro_Slide3 = 34,
@@ -51,6 +54,8 @@ namespace TrainDefense.Localize
         UI_VersionUpdate_Button = 205,
         UI_Option_BGM = 206,
         UI_Option_SFX = 207,
+        UI_PermanentUpgrade = 208,
+        Tutorial_MainTrainAttack_Msg1 = 212,
         // Monster
         Monster_10001_Name = 37,
         Monster_10001_Desc = 38,

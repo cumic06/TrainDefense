@@ -34,6 +34,7 @@ namespace TrainDefense.Editor
 			{ "turret_train_upgrade_data", 3 },
 			{ "range_train_upgrade_data", 3 },
 			{ "upgrade_data", 3 },
+			{ "permanent_upgrade_data", 3 },
 			{ "stage_data", 4 },
 			{ "add_train_choice_data", 5 },
 			{ "upgrade_train_choice_data", 5 },

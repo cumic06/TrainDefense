@@ -90,6 +90,8 @@ namespace TrainDefense.Game.Tutorial
             Show();
 
             SetDimming(step.UseDimming);
+            // 게임 입력 통과 모드 (메인 트레인 발사 등 실제 조작 체험용). SetDimming 이후에 호출해야 한다.
+            SetInputPassThrough(step.AllowGameInput);
 
             // 하이라이트
             if (step.UseHighlight && target != null)
@@ -156,8 +158,26 @@ namespace TrainDefense.Game.Tutorial
             if (_dimmingOverlay != null)
             {
                 _dimmingOverlay.alpha = enabled ? _dimmingAlpha : 0f;
-                // 딤핑이 꺼져도 레이캐스트는 차단 유지
+                // 딤핑이 꺼져도 레이캐스트는 차단 유지 (단, AllowGameInput 스텝에서는 SetInputPassThrough가 해제)
                 _dimmingOverlay.blocksRaycasts = true;
+            }
+        }
+
+        /// <summary>
+        /// 게임 입력 통과 모드를 설정합니다.
+        /// true면 딤/탭 영역의 레이캐스트 차단을 해제하여 화면 터치가
+        /// 게임(메인 트레인 발사 등)으로 전달되게 합니다.
+        /// </summary>
+        private void SetInputPassThrough(bool passThrough)
+        {
+            if (_dimmingOverlay != null)
+                _dimmingOverlay.blocksRaycasts = !passThrough;
+
+            if (_screenTapArea != null)
+            {
+                var tapImage = _screenTapArea.GetComponent<Image>();
+                if (tapImage != null)
+                    tapImage.raycastTarget = !passThrough;
             }
         }
 

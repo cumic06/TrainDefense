@@ -36,23 +36,6 @@ MonoBehaviour:
     _npcPosition: {x: 0, y: 0}
     _npcFlipX: 0
     _prerequisiteStepId:
-  - _id: 30001
-    _targetObject: {fileID: 0}
-    _targetObjectName: StageInspectionTimeSlider
-    _skipCondition: 0
-    _timeoutDuration: 3
-    _customSkipEvent:
-      m_PersistentCalls:
-        m_Calls: []
-    _message: "\uC0C1\uC810\uC5D0 \uB3C4\uB2EC\uD558\uBA74 \uBAA8\uB4E0 \uAE30\uCC28\uC758
-      \uB0B4\uAD6C\uB3C4\uAC00 \uD68C\uBCF5\uD569\uB2C8\uB2E4!"
-    _messageKey: 25
-    _arrowDirection: 1
-    _useDimming: 1
-    _useHighlight: 1
-    _delayBefore: 0
-    _sfxKey:
-    _prerequisiteStepId:
   _canSkip: 1
   _priority: 10
   _shouldPauseTime: 1

@@ -32,10 +32,16 @@ namespace TrainDefense.Game.UI
       private TextMeshProUGUI trainLevelText;
 
       [SerializeField]
+      [Tooltip("기차 사망 시 활성화되는 X 표시 오브젝트")]
+      private GameObject deadMark;
+
+      [SerializeField]
       private TrainDetailPopupUI detailPopup;
       #endregion
 
       private Train _train;
+      // 엘리트 교체 시 슬롯에 부여하는 고정 이름. 튜토리얼이 GameObject.Find로 엘리트 슬롯을 찾기 위함.
+      public const string EliteSlotObjectName = "EliteTrainInfoSlotUI";
       private const float LongPressDuration = 0.25f;
       private Coroutine _longPressCoroutine;
       private bool _longPressFired;
@@ -135,6 +141,12 @@ namespace TrainDefense.Game.UI
       {
          _train = train;
          trainLevelImage.gameObject.SetActive(false);
+
+         if (deadMark != null)
+         {
+            deadMark.SetActive(false);
+         }
+
          _RefreshHealthUI();
          _RefreshSkillUI();
       }
@@ -254,6 +266,12 @@ namespace TrainDefense.Game.UI
             healthImage.fillAmount = ratio;
             healthImage.color = _GetHealthColor(ratio);
          }
+
+         // 부활(체력 복원) 시 사망 X 표시 해제
+         if (deadMark != null && ratio > 0f)
+         {
+            deadMark.SetActive(false);
+         }
       }
 
       private void _SetLevelUp(TrainLevelUpEvent trainLevelUpEvent)
@@ -274,6 +292,11 @@ namespace TrainDefense.Game.UI
          {
             healthImage.color = Color.gray;
          }
+
+         if (deadMark != null)
+         {
+            deadMark.SetActive(true);
+         }
       }
 
       private void _OnReplaceTrain(ReplaceTrainEvent replaceTrainEvent)
@@ -287,6 +310,14 @@ namespace TrainDefense.Game.UI
          {
             SetIcon(replaceTrainEvent.NewIcon);
          }
+
+         if (deadMark != null)
+         {
+            deadMark.SetActive(false);
+         }
+
+         // 엘리트 교체된 슬롯은 튜토리얼이 강조 대상으로 찾을 수 있도록 고정 이름을 부여한다.
+         gameObject.name = EliteSlotObjectName;
 
          trainLevelImage.gameObject.SetActive(true);
          trainLevelText.text = "E";

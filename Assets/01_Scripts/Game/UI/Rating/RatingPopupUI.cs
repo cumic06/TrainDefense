@@ -12,6 +12,7 @@ namespace TrainDefense.Game.UI
     {
         #region Variables
         private const string TitleKey = "UI_RatingTitle";
+        private const string TitleFallback = "이 게임을 평가해주세요!";
         private const string ThanksKey = "UI_RatingThanks";
 
         private static readonly Color EmptyStarColor = new(0.4f, 0.4f, 0.45f, 1f);
@@ -44,7 +45,7 @@ namespace TrainDefense.Game.UI
 
         private void Start()
         {
-            _SetTitle(TitleKey, "이 게임을 평가해주세요!");
+            _SetTitle(TitleKey, TitleFallback);
             _RefreshStars();
         }
         #endregion
@@ -59,6 +60,9 @@ namespace TrainDefense.Game.UI
             }
 
             closeButton.onClick.AddListener(_Close);
+
+            Localization.OnInitialized += _RefreshLocalizedTexts;
+            Localization.OnLanguageChanged += _RefreshLocalizedTexts;
         }
 
         private void _UnsubscribeEvents()
@@ -69,6 +73,9 @@ namespace TrainDefense.Game.UI
             }
 
             closeButton.onClick.RemoveAllListeners();
+
+            Localization.OnInitialized -= _RefreshLocalizedTexts;
+            Localization.OnLanguageChanged -= _RefreshLocalizedTexts;
         }
         #endregion
 
@@ -112,9 +119,16 @@ namespace TrainDefense.Game.UI
             }
         }
 
+        // 초기화 완료·언어 변경 시 타이틀을 현재 언어로 다시 적용한다(제출 후엔 코루틴이 곧 닫으므로 미적용).
+        private void _RefreshLocalizedTexts()
+        {
+            if (!_isSubmitted)
+                _SetTitle(TitleKey, TitleFallback);
+        }
+
         private void _SetTitle(string localizeKey, string fallback)
         {
-            titleText.text = LocalizeHelper.ProtectWordBreak(LocalizeHelper.GetByKey(localizeKey, fallback));
+            titleText.text = LocalizeHelper.GetByKey(localizeKey, fallback);
         }
 
         private void _OpenStorePage()

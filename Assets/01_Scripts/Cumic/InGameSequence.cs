@@ -3,6 +3,7 @@ using Sirenix.OdinInspector;
 using TrainDefense.Game;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.UI;
 using UnityEngine;
 
 namespace Cumic.Sequence
@@ -86,6 +87,8 @@ namespace Cumic.Sequence
 
         public void GameEnterHandler()
         {
+            // 포탑 선택창은 기차 등장 연출 전(TimelineManager.Start)에서 띄운다.
+            // 이 핸들러는 연출 끝의 GameEnter Signal로 호출되어 실제 게임 시작 이벤트만 발행한다.
             GameEventSystem.Publish(new GameEnterEvent());
         }
 

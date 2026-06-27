@@ -16,6 +16,7 @@ namespace TrainDefense.Game.Datas
         SFX_UI_TriChoiceSelect = 204,
         SFX_UI_ItemBuy = 205,
         SFX_UI_LevelUp = 206,
+        SFX_UI_AchievementUnlock = 207,
 
         // SFX - Game
         SFX_Game_Hit = 300,

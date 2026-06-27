@@ -109,6 +109,19 @@ namespace TrainDefense.Game
                 }
             }
 
+            // 정상 선택지(추가/강화/엘리트)로 모든 슬롯을 채우지 못했다면(보유 기차가 전부 만렙 등)
+            // 부족분을 만렙 보상 선택지(골드/엘리트 재화/긴급 수리)로 채운다.
+            if (result.Count < count)
+            {
+                var rewardChoices = _GetRewardChoices();
+
+                for (int i = result.Count; i < count; i++)
+                {
+                    if (!_AddChoiceToResult(result, rewardChoices))
+                        break; // 더 채울 보상 선택지가 없으면 중단
+                }
+            }
+
             // 엘리트 트레인이 항상 0번 슬롯에 고정되지 않도록 셔플
             for (int i = result.Count - 1; i > 0; i--)
             {
@@ -183,6 +196,15 @@ namespace TrainDefense.Game
                     Icon = upgradeData.Icon,
                     Name = upgradeData.Name,
                     Description = upgradeData.Description
+                };
+            }
+            else if (choiceOption is RewardChoiceBase rewardChoice)
+            {
+                return new ChoiceUIInfo
+                {
+                    Icon = rewardChoice.Icon,
+                    Name = rewardChoice.Name,
+                    Description = rewardChoice.Description
                 };
             }
 

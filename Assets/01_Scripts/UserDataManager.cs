@@ -14,6 +14,8 @@ namespace TrainDefense
         private const string DISCOVERED_MONSTERS_KEY = "DiscoveredMonsters";
         private const string DISCOVERED_TRAINS_KEY = "DiscoveredTrains";
         private const string TUTORIAL_SAVE_KEY = "TutorialSaveData";
+        // 포탑별 최장 생존 시간(초) 저장 키 접두사. 실제 키는 BEST_SURVIVAL_PREFIX + turretId.
+        private const string BEST_SURVIVAL_PREFIX = "BestSurvival_";
 
         private Dictionary<string, int> _triChoiceData = new();
         private TutorialSaveData _tutorialSaveData;
@@ -37,8 +39,13 @@ namespace TrainDefense
         public int CurrentLevel => _currentLevel;
         public bool IsLobby { get; private set; }
         public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
+        public bool IsCameraShakeEnabled => _userOptionData == null || _userOptionData.IsCameraShakeEnabled;
+        public int ColorblindType => _userOptionData == null ? 0 : _userOptionData.ColorblindType;
         public UserOptionData UserOptionData => _userOptionData;
         public TutorialSaveData TutorialSaveData => _tutorialSaveData;
+
+        // 이번 판 포탑 선택창에서 고른 주무기 포탑 ID. 게임 시작 게이트 → MainTrain 무기 장착 → 생존시간 기록에 사용. (세션값, 영구저장 안 함)
+        public string SelectedTurretId { get; set; }
 
         protected override void Awake()
         {
@@ -205,7 +212,7 @@ namespace TrainDefense
         }
 
         [Button("튜토리얼 진행 초기화")]
-        private void ResetTutorialData()
+        public void ResetTutorialData()
         {
             _tutorialSaveData?.ResetAll();
             Debug.Log("[UserDataManager] 튜토리얼 데이터가 초기화되었습니다.");
@@ -220,11 +227,25 @@ namespace TrainDefense
             UserOptionDataParser.Save(_userOptionData);
         }
 
+        public void SetCameraShakeEnabled(bool enabled)
+        {
+            _userOptionData ??= new UserOptionData();
+            _userOptionData.IsCameraShakeEnabled = enabled;
+            UserOptionDataParser.Save(_userOptionData);
+        }
+
+        public void SetColorblindType(int type)
+        {
+            _userOptionData ??= new UserOptionData();
+            _userOptionData.ColorblindType = type;
+            UserOptionDataParser.Save(_userOptionData);
+        }
+
         /// <summary>
         /// 발견된 몬스터 데이터를 초기화합니다.
         /// </summary>
         [Button("발견된 몬스터 초기화")]
-        private void ResetDiscoveredMonsters()
+        public void ResetDiscoveredMonsters()
         {
             _discoveredMonsterIds.Clear();
             PlayerPrefs.DeleteKey(DISCOVERED_MONSTERS_KEY);
@@ -252,7 +273,7 @@ namespace TrainDefense
         /// 발견된 트레인 데이터를 초기화합니다.
         /// </summary>
         [Button("발견된 트레인 초기화")]
-        private void ResetDiscoveredTrains()
+        public void ResetDiscoveredTrains()
         {
             _discoveredTrainIds.Clear();
             PlayerPrefs.DeleteKey(DISCOVERED_TRAINS_KEY);
@@ -286,6 +307,97 @@ namespace TrainDefense
             _discoveredMonsterIds.Clear();
             _discoveredTrainIds.Clear();
         }
+
+        #region Survival Time
+        /// <summary>
+        /// 해당 포탑으로 기록한 최장 생존 시간(초)을 반환합니다. 기록이 없으면 0.
+        /// </summary>
+        public float GetBestSurvivalTime(string turretId)
+        {
+            if (string.IsNullOrEmpty(turretId))
+                return 0f;
+
+            return PlayerPrefs.GetFloat(BEST_SURVIVAL_PREFIX + turretId, 0f);
+        }
+
+        /// <summary>
+        /// 이번 판 생존 시간을 보고합니다. 기존 기록보다 길 때만 갱신·저장합니다.
+        /// </summary>
+        public void ReportSurvivalTime(string turretId, float seconds)
+        {
+            if (string.IsNullOrEmpty(turretId) || seconds <= 0f)
+                return;
+
+            if (seconds <= GetBestSurvivalTime(turretId))
+                return;
+
+            PlayerPrefs.SetFloat(BEST_SURVIVAL_PREFIX + turretId, seconds);
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>
+        /// 모든 포탑(터렛·원거리)의 최장 생존 시간 기록을 삭제합니다.
+        /// </summary>
+        public void ResetAllSurvivalTimes()
+        {
+            if (DatabaseManager.Instance == null)
+                return;
+
+            foreach (var data in DatabaseManager.Instance.GetTurretTrainDatas())
+            {
+                if (data != null && !string.IsNullOrEmpty(data.Id))
+                    PlayerPrefs.DeleteKey(BEST_SURVIVAL_PREFIX + data.Id);
+            }
+
+            foreach (var data in DatabaseManager.Instance.GetRangeTrainDatas())
+            {
+                if (data != null && !string.IsNullOrEmpty(data.Id))
+                    PlayerPrefs.DeleteKey(BEST_SURVIVAL_PREFIX + data.Id);
+            }
+
+            PlayerPrefs.Save();
+        }
+        #endregion
+
+        #region Reset
+        /// <summary>
+        /// 사운드/햅틱 옵션을 기본값으로 되돌립니다.
+        /// </summary>
+        public void ResetOptions()
+        {
+            UserOptionDataParser.ResetAll();
+            _userOptionData = UserOptionDataParser.Load();
+
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.SetBGMVolume(_userOptionData.BgmVolume);
+                SoundManager.Instance.SetSFXVolume(_userOptionData.SfxVolume);
+            }
+        }
+
+        /// <summary>
+        /// 업적 진행/달성 데이터를 초기화합니다.
+        /// </summary>
+        [Button("업적 초기화")]
+        public void ResetAchievements()
+        {
+            Cumic.Achievement.AchievementSaveData.Delete();
+            Debug.Log("[UserDataManager] 업적 데이터가 초기화되었습니다.");
+        }
+
+        /// <summary>
+        /// 모든 저장 데이터를 삭제합니다. (전체 초기화)
+        /// </summary>
+        public void ResetAllData()
+        {
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+
+            _tutorialSaveData?.ResetAll();
+            ClearDiscoveredCollections();
+            _userOptionData = UserOptionDataParser.Load();
+        }
+        #endregion
 
 
         #region Exp

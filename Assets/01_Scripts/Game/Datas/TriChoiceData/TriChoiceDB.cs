@@ -18,10 +18,15 @@ namespace TrainDefense.Game.Datas
         [Header("Train 업그레이드 선택지")]
         [SerializeField]
         private List<ChoiceEntry> upgradeTrainChoices = new();
+
+        [Header("만렙 보상 선택지 (보유 기차 전부 만렙 시 빈 슬롯 대체)")]
+        [SerializeField]
+        private List<ChoiceEntry> rewardChoices = new();
         #endregion
 
         public IReadOnlyList<ChoiceEntry> TrainChoiceEntries => addTrainChoices;
         public IReadOnlyList<ChoiceEntry> AddTrainChoices => addTrainChoices;
         public IReadOnlyList<ChoiceEntry> UpgradeTrainChoices => upgradeTrainChoices;
+        public IReadOnlyList<ChoiceEntry> RewardChoices => rewardChoices;
     }
 }

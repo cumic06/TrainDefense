@@ -42,6 +42,12 @@ namespace TrainDefense.Game
             return true;
         }
 
+        /// <summary>쿨타임을 초기화해 즉시 사용 가능 상태로 되돌린다. (상점 진입/맵 이동 시)</summary>
+        public void ResetCooldown()
+        {
+            lastUseTime = float.NegativeInfinity;
+        }
+
         public float RemainingCooldown => GetRemainingCooldown();
 
         public float GetCooldownRatio()
