@@ -154,4 +154,12 @@ MonoBehaviour:
   moveDuration: 0.6
   moveVDistance: 80
   fadeDuration: 0.6
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  criticalColor: {r: 1, g: 0, b: 0, a: 1}
+  criticalScale: 1.45
+  criticalPopDuration: 0.2
+  criticalShakeAngle: 10
+  criticalShakeDuration: 0.45
+  criticalShakeVibrato: 10
+  criticalMoveVDistance: 130
 
