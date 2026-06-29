@@ -24,6 +24,14 @@ namespace TrainDefense.Game
       private Color slowColor = new Color(0.5f, 0.85f, 1f, 1f);
       [SerializeField]
       private float spawnMoveDelay = 0.1f;
+
+      [Header("Hit Effect")]
+      [SerializeField]
+      private float hitPunchScale = 0.22f;
+      [SerializeField]
+      private float hitPunchDuration = 0.16f;
+      [SerializeField]
+      private float hitFlashDuration = 0.06f;
       #endregion
 
       [ShowInInspector, ReadOnly]
@@ -45,6 +53,14 @@ namespace TrainDefense.Game
       protected MonsterAnimator _modelAnimator;
       protected SpriteRenderer _modelSpriteRenderer;
       protected Color _originalColor = Color.white;
+
+      // 피격 연출 상태
+      private int _facingSign = 1;
+      private float _hitScaleMultiplier = 1f;
+      private Coroutine _hitEffectCoroutine;
+      private Material _originalMaterial;
+      private static Material _sharedHitFlashMaterial;
+      private const string HitFlashShaderName = "Custom/Sprite/Red";
 
       protected Coroutine _slowCoroutine;
       protected Coroutine _resetMoveSpeedCoroutine;
@@ -78,7 +94,11 @@ namespace TrainDefense.Game
          _startScale = _prefabScale;
          _modelAnimator = model.GetComponentInChildren<MonsterAnimator>();
          _modelSpriteRenderer = model.GetComponent<SpriteRenderer>();
-         if (_modelSpriteRenderer != null) _originalColor = _modelSpriteRenderer.color;
+         if (_modelSpriteRenderer != null)
+         {
+            _originalColor = _modelSpriteRenderer.color;
+            _originalMaterial = _modelSpriteRenderer.sharedMaterial;
+         }
          if (eliteEffect != null) eliteEffect.SetActive(false);
       }
 
@@ -95,8 +115,11 @@ namespace TrainDefense.Game
          _isElite = false;
          _spawnTime = Time.time;
          _startScale = _prefabScale;
+         _facingSign = 1;
+         _hitScaleMultiplier = 1f;
          if (model != null) model.transform.localScale = _prefabScale;
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
+         _RestoreHitFlashMaterial();
          if (eliteEffect != null) eliteEffect.SetActive(false);
 
          // 풀 재사용 전 엘리트 상태 초기화(이전 타입의 오라 배율 잔존 방지).
@@ -124,6 +147,14 @@ namespace TrainDefense.Game
          {
             _modelAnimator.OnAttackHit -= _OnAttackHit;
          }
+
+         if (_hitEffectCoroutine != null)
+         {
+            StopCoroutine(_hitEffectCoroutine);
+            _hitEffectCoroutine = null;
+         }
+         _hitScaleMultiplier = 1f;
+         _RestoreHitFlashMaterial();
 
          _isStunned = false;
          _isShoved = false;
@@ -276,8 +307,20 @@ namespace TrainDefense.Game
 
       private void _LookAtTarget()
       {
-         int x = _MoveDirection().x > 0 ? 1 : -1;
-         model.transform.localScale = new Vector2(x * _startScale.x, _startScale.y);
+         _facingSign = _MoveDirection().x > 0 ? 1 : -1;
+         _ApplyModelScale();
+      }
+
+      // 바라보는 방향(_facingSign)과 피격 펀치 배율(_hitScaleMultiplier)을 합쳐 모델 스케일을 적용한다.
+      // 스케일을 쓰는 단일 지점 — 피격 연출은 transform을 직접 건드리지 않고 배율만 바꿔 좌우반전과 충돌하지 않는다.
+      private void _ApplyModelScale()
+      {
+         if (model == null)
+            return;
+
+         model.transform.localScale = new Vector2(
+            _facingSign * _startScale.x * _hitScaleMultiplier,
+            _startScale.y * _hitScaleMultiplier);
       }
 
       private void _AttackHandler()
@@ -607,8 +650,96 @@ namespace TrainDefense.Game
          if (_currentHp <= 0)
          {
             OnDead();
+
+            return;
+         }
+
+         _PlayHitEffect();
+      }
+
+      #region Hit Effect
+      // 피격 시 흰색 깜빡임 + 커졌다 작아지는 펀치 연출을 재생한다(인디게임 표준 히트 피드백).
+      private void _PlayHitEffect()
+      {
+         if (model == null)
+            return;
+
+         if (_hitEffectCoroutine != null)
+         {
+            StopCoroutine(_hitEffectCoroutine);
+         }
+
+         _hitEffectCoroutine = StartCoroutine(_HitEffectCoroutine());
+      }
+
+      // 흰색 머티리얼로 깜빡이며 모델이 sin 곡선으로 1 → 1+punch → 1 로 커졌다 작아진다.
+      // 일시정지/슬로우모(timeScale 변동)에도 일정하게 보이도록 unscaledDeltaTime을 쓴다(DOTween SetUpdate 함정 회피).
+      private IEnumerator _HitEffectCoroutine()
+      {
+         Material flashMaterial = _GetHitFlashMaterial();
+         if (_modelSpriteRenderer != null && flashMaterial != null)
+         {
+            _modelSpriteRenderer.sharedMaterial = flashMaterial;
+         }
+
+         float elapsedTime = 0f;
+         bool isFlashRestored = false;
+
+         while (elapsedTime < hitPunchDuration)
+         {
+            elapsedTime += Time.unscaledDeltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / hitPunchDuration);
+            _hitScaleMultiplier = 1f + hitPunchScale * Mathf.Sin(Mathf.PI * progress);
+            _ApplyModelScale();
+
+            if (!isFlashRestored && elapsedTime >= hitFlashDuration)
+            {
+               _RestoreHitFlashMaterial();
+               isFlashRestored = true;
+            }
+
+            yield return null;
+         }
+
+         if (!isFlashRestored)
+         {
+            _RestoreHitFlashMaterial();
+         }
+
+         _hitScaleMultiplier = 1f;
+         _ApplyModelScale();
+         _hitEffectCoroutine = null;
+      }
+
+      // 흰색 발광 머티리얼(코드 생성, 전 몬스터 공유). 별도 에셋/인스펙터 연결 불필요.
+      // SpriteRed 셰이더의 Emission을 흰색으로 켜 알파 영역만 흰색으로 번지게 한다.
+      private Material _GetHitFlashMaterial()
+      {
+         if (_sharedHitFlashMaterial == null)
+         {
+            Shader shader = Shader.Find(HitFlashShaderName);
+            if (shader == null)
+               return null;
+
+            _sharedHitFlashMaterial = new Material(shader);
+            _sharedHitFlashMaterial.SetFloat("_RedAmount", 0f);
+            _sharedHitFlashMaterial.SetColor("_EmissionColor", Color.white);
+            _sharedHitFlashMaterial.SetFloat("_EmissionIntensity", 4f);
+            _sharedHitFlashMaterial.SetFloat("_Opacity", 1f);
+         }
+
+         return _sharedHitFlashMaterial;
+      }
+
+      // 원래 머티리얼로 복원한다. 풀 재사용/사망 시 흰색이 잔존하지 않도록 보장.
+      private void _RestoreHitFlashMaterial()
+      {
+         if (_modelSpriteRenderer != null && _originalMaterial != null)
+         {
+            _modelSpriteRenderer.sharedMaterial = _originalMaterial;
          }
       }
+      #endregion
 
       protected void OnDead()
       {
