@@ -5097,11 +5097,11 @@ PrefabInstance:
       objectReference: {fileID: 968503760}
     - target: {fileID: 3850423757073790851, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4818541245212855291, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5235449721300002412, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_Sprite
@@ -5113,7 +5113,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6446761962134726433, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7572821967583651179, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_AnchorMax.x
