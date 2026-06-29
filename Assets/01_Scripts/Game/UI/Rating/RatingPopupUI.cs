@@ -36,6 +36,8 @@ namespace TrainDefense.Game.UI
         private void OnEnable()
         {
             _SubscribeEvents();
+
+            PopupTween.PlayShow(gameObject);
         }
 
         private void OnDisable()
@@ -138,7 +140,7 @@ namespace TrainDefense.Game.UI
 
         private void _Close()
         {
-            Destroy(gameObject);
+            PopupTween.PlayHide(gameObject, () => Destroy(gameObject));
         }
     }
 }

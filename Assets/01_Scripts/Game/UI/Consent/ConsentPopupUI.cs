@@ -33,6 +33,8 @@ namespace TrainDefense.Game.UI.Consent
         private void OnEnable()
         {
             Localization.OnLanguageChanged += _RefreshTexts;
+
+            PopupTween.PlayShow(gameObject);
         }
 
         private void OnDisable()
@@ -113,7 +115,7 @@ namespace TrainDefense.Game.UI.Consent
             callback?.Invoke(granted);
 
             // 미리 배치된 팝업이라 파괴하지 않고 비활성으로 닫는다(재표시 가능).
-            gameObject.SetActive(false);
+            PopupTween.PlayHide(gameObject, () => gameObject.SetActive(false));
         }
         #endregion
     }

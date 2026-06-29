@@ -49,6 +49,8 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             Localization.OnLanguageChanged += _ApplyStaticTexts;
             Localization.OnInitialized += _ApplyStaticTexts;
             _ApplyStaticTexts();
+
+            PopupTween.PlayShow(gameObject);
         }
 
         private void OnDisable()
@@ -83,7 +85,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
 
         public void Close()
         {
-            Destroy(gameObject);
+            PopupTween.PlayHide(gameObject, () => Destroy(gameObject));
         }
 
         private void _BuildSlots()
