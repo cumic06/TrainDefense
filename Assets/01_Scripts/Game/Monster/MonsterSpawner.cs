@@ -18,6 +18,10 @@ namespace TrainDefense.Game
       private float spawnInterval;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
+      [Tooltip("한 spawnInterval마다 소환할 몬스터 마리 수 (기본 1)")]
+      private int spawnCount = 1;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
       private float spawnRange;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
@@ -200,39 +204,43 @@ namespace TrainDefense.Game
                continue;
             }
 
-            Vector3 spawnPos = RandomSpawnPos();
-
-            if (_currentSpawnEffect != null)
+            // 한 spawnInterval마다 spawnCount 마리를 각자 다른 위치·몬스터로 소환
+            for (int spawnIndex = 0; spawnIndex < Mathf.Max(1, spawnCount); spawnIndex++)
             {
-               ResourceManager.Instance.Spawn(_currentSpawnEffect, spawnPos, parent: transform);
-            }
+               Vector3 spawnPos = RandomSpawnPos();
 
-            // 가중치 선택 로직
-            StageSpawnData selectedData = SelectMonsterData();
-            if (selectedData != null)
-            {
-               // MonsterData 가져오기 (DatabaseManager를 통해 ID로 조회)
-               MonsterData monsterData = DatabaseManager.Instance.GetMonsterData(selectedData.MonsterId);
-               if (monsterData != null)
+               if (_currentSpawnEffect != null)
                {
-                  Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
-                  spawnMonster.Initialize(monsterData);
+                  ResourceManager.Instance.Spawn(_currentSpawnEffect, spawnPos, parent: transform);
+               }
 
-                  // 램프 ON(강한 몬스터): 한 판 누적 진행도를 곱해 초반엔 낮고 후반으로 갈수록 설정 배율까지 증가.
-                  // 램프 OFF(약한 몬스터): 진행도 무관하게 설정 배율 그대로 적용.
-                  float eliteProgress = selectedData.EliteChanceRamp ? _currentEliteMultiplierProgress : 1f;
-                  float eliteMultiplier = selectedData.EliteChanceMultiplier * eliteProgress;
-                  float eliteChance = _currentEliteSpawnChance * eliteMultiplier;
-                  bool isElite = _eliteData != null && eliteChance > 0f && Random.value * 100f < eliteChance;
-                  if (isElite)
+               // 가중치 선택 로직
+               StageSpawnData selectedData = SelectMonsterData();
+               if (selectedData != null)
+               {
+                  // MonsterData 가져오기 (DatabaseManager를 통해 ID로 조회)
+                  MonsterData monsterData = DatabaseManager.Instance.GetMonsterData(selectedData.MonsterId);
+                  if (monsterData != null)
                   {
-                     spawnMonster.ApplyElite(_eliteData);
+                     Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
+                     spawnMonster.Initialize(monsterData);
+
+                     // 램프 ON(강한 몬스터): 한 판 누적 진행도를 곱해 초반엔 낮고 후반으로 갈수록 설정 배율까지 증가.
+                     // 램프 OFF(약한 몬스터): 진행도 무관하게 설정 배율 그대로 적용.
+                     float eliteProgress = selectedData.EliteChanceRamp ? _currentEliteMultiplierProgress : 1f;
+                     float eliteMultiplier = selectedData.EliteChanceMultiplier * eliteProgress;
+                     float eliteChance = _currentEliteSpawnChance * eliteMultiplier;
+                     bool isElite = _eliteData != null && eliteChance > 0f && Random.value * 100f < eliteChance;
+                     if (isElite)
+                     {
+                        spawnMonster.ApplyElite(_eliteData);
+                     }
+
+                     _spawnedMonsters.Add(spawnMonster);
+
+                     // 몬스터 스폰 이벤트 발행
+                     GameEventSystem.Publish(new MonsterSpawnedEvent(selectedData.MonsterId));
                   }
-
-                  _spawnedMonsters.Add(spawnMonster);
-
-                  // 몬스터 스폰 이벤트 발행
-                  GameEventSystem.Publish(new MonsterSpawnedEvent(selectedData.MonsterId));
                }
             }
 
