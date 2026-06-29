@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TrainDefense.Game.UI;
 
 namespace Cumic.UI
 {
@@ -13,6 +14,8 @@ namespace Cumic.UI
         {
             if (_confirmButton != null)
                 _confirmButton.onClick.AddListener(OpenStore);
+
+            PopupTween.PlayShow(gameObject);
         }
 
         private void OnDisable()
