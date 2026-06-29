@@ -141,15 +141,15 @@ namespace TrainDefense.Game
             if (!_isReady)
                 return;
 
-            if (_isRotateTurret && _pivot != null)
-                _pivot.LookAt2D(aimPosition);
-
             TurretCombatFx.PlayAttackPunch(_model, _modelBaseScale);
             _PlayFireSound();
 
             ProjectileData baseData = _projectilePrefab.GetData();
             float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
             int count = Mathf.Max(1, _status.AttackCount);
+
+            bool hasFireRotation = false;
+            Quaternion fireRotation = Quaternion.identity;
 
             for (int i = 0; i < count; i++)
             {
@@ -158,8 +158,23 @@ namespace TrainDefense.Game
                     continue;
 
                 projectile.transform.LookAt2D(aimPosition);
+
+                // 첫 투사체의 실제 발사 방향(부채꼴 spread 적용 전)을 포탑 회전 기준으로 삼는다.
+                if (!hasFireRotation)
+                {
+                    fireRotation = projectile.transform.rotation;
+                    hasFireRotation = true;
+                }
+
                 TurretCombatFx.ApplySpread(projectile.transform, i, count, spreadAngle);
             }
+
+            // 포탑을 실제로 발사된 총알 방향으로 회전시킨다.
+            // 기존엔 포탑 자기 위치(_pivot.position) 기준으로 조준점을 바라보게 했는데,
+            // 포탑 정중앙 부근을 터치하면 조준점이 포탑 위치와 거의 겹쳐 방향이 180도 뒤집혀
+            // 포탑이 총알과 반대로 도는 문제가 있었다. 총알(스폰 지점→조준점) 방향과 동일하게 맞춰 해결한다.
+            if (_isRotateTurret && _pivot != null && hasFireRotation)
+                _pivot.rotation = fireRotation;
         }
 
         private Projectile _SpawnProjectile(int index)
