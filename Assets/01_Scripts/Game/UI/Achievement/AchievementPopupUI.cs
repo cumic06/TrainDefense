@@ -38,6 +38,8 @@ namespace TrainDefense.Game.UI.Achievement
             Localization.OnLanguageChanged += _OnLanguageChanged;
             Localization.OnInitialized += _OnLanguageChanged;
             _ApplyStaticTexts();
+
+            PopupTween.PlayShow(gameObject);
         }
 
         private void OnDisable()
@@ -59,7 +61,7 @@ namespace TrainDefense.Game.UI.Achievement
 
         public void Close()
         {
-            Destroy(gameObject);
+            PopupTween.PlayHide(gameObject, () => Destroy(gameObject));
         }
 
         private void _OnLanguageChanged()

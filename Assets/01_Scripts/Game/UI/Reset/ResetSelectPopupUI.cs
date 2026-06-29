@@ -79,6 +79,8 @@ namespace TrainDefense.Game.UI
             Localization.OnLanguageChanged += _ApplyStaticTexts;
             Localization.OnInitialized += _ApplyStaticTexts;
             _ApplyStaticTexts();
+
+            PopupTween.PlayShow(gameObject);
         }
 
 
@@ -155,7 +157,7 @@ namespace TrainDefense.Game.UI
 
         private void _Close()
         {
-            Destroy(gameObject);
+            PopupTween.PlayHide(gameObject, () => Destroy(gameObject));
         }
     }
 }

@@ -18,6 +18,8 @@ namespace TrainDefense.Game.UI
         {
             Localization.OnInitialized += _RefreshLocalizedTexts;
             Localization.OnLanguageChanged += _RefreshLocalizedTexts;
+
+            PopupTween.PlayShow(gameObject);
         }
 
         private void OnDisable()
@@ -80,7 +82,7 @@ namespace TrainDefense.Game.UI
 
         public void Hide()
         {
-            gameObject.SetActive(false);
+            PopupTween.PlayHide(gameObject, () => gameObject.SetActive(false));
         }
     }
 }
