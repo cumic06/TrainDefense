@@ -60,6 +60,7 @@ namespace TrainDefense.Game
       private readonly List<Monster> _spawnedMonsters = new();
 
       private float _originalSpawnInterval;
+      private int _originalSpawnCount;
       private int _stationPassedCount = 0;
 
       private EliteData _eliteData;
@@ -75,11 +76,13 @@ namespace TrainDefense.Game
       private void Start()
       {
          _originalSpawnInterval = spawnInterval;
+         _originalSpawnCount = spawnCount;
          StopSpawnMonster();
          GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
          GameEventSystem.Subscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+         GameEventSystem.Subscribe<StageSelectEvent>(OnStageSelect);
       }
 
       private void OnDestroy()
@@ -88,6 +91,7 @@ namespace TrainDefense.Game
          GameEventSystem.Unsubscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+         GameEventSystem.Unsubscribe<StageSelectEvent>(OnStageSelect);
       }
       #endregion
 
@@ -101,6 +105,7 @@ namespace TrainDefense.Game
          _currentEliteMultiplierProgress = _eliteData != null ? Mathf.Clamp01(_eliteData.multiplierStartProgress) : 1f;
          _eliteMultiplierRampElapsed = 0f;
          _stationPassedCount = 0;
+         spawnCount = _originalSpawnCount;
          StartCoroutine(SpawnMonster());
       }
 
@@ -117,6 +122,12 @@ namespace TrainDefense.Game
          {
             StartSpawnMonster();
          }
+      }
+
+      // 스테이지(맵) 변경마다 한 번에 소환하는 몬스터 수를 1 늘린다.
+      private void OnStageSelect(StageSelectEvent stageSelectEvent)
+      {
+         spawnCount++;
       }
 
       public void SetSpawnRule(StageSpawnData[] spawnDatas, float monsterSpawnInterval, List<SpawnAreaInfo> mapSpawnAreas = null, GameObject mapSpawnEffect = null)
