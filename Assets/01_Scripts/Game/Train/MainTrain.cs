@@ -712,6 +712,15 @@ namespace TrainDefense.Game
          isUnDead = true;
       }
 
+      // 메인 기차(엔진)는 무적이다. 적이 보조 포탑을 조준해 쏜 투사체라도
+      // 경로상 메인 기차 콜라이더에 닿으면 데미지가 들어오는데(Train은 IProjectileTarget이고
+      // GetNearTrain만 메인을 제외할 뿐 투사체 트리거 충돌은 막지 못함), 이때 메인 기차가 죽으면
+      // 보조 포탑이 멀쩡해도 게임오버가 발생하는 버그가 있었다.
+      // 게임오버는 보조 포탑이 모두 전멸했을 때(CheckDeadTrain)만 발생해야 하므로 메인 기차는 피해를 무시한다.
+      public override void TakeDamage(float damage, bool isCritical)
+      {
+      }
+
       protected override void OnDead()
       {
          if (isUnDead)
