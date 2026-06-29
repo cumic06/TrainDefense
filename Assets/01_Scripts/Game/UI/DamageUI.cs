@@ -36,13 +36,13 @@ namespace TrainDefense.Game.UI
         private float criticalPopDuration = 0.2f;
         [Tooltip("좌/우로 기울며 흔들리는 각도(도).")]
         [SerializeField]
-        private float criticalShakeAngle = 10f;
+        private float criticalShakeAngle = 14f;
         [Tooltip("좌우 흔들림 시간.")]
         [SerializeField]
-        private float criticalShakeDuration = 0.45f;
-        [Tooltip("좌우 흔들림 횟수. 클수록 더 빠르게 떨린다.")]
+        private float criticalShakeDuration = 0.5f;
+        [Tooltip("좌우 흔들림 횟수. 클수록 더 빠르게 떨린다. 너무 크면 저프레임 기기에서 진동이 언더샘플링돼 안 보인다.")]
         [SerializeField]
-        private int criticalShakeVibrato = 10;
+        private int criticalShakeVibrato = 5;
         [Tooltip("치명타 상승 거리. 기본보다 크게.")]
         [SerializeField]
         private float criticalMoveVDistance = 130f;

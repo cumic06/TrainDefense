@@ -158,8 +158,8 @@ MonoBehaviour:
   criticalColor: {r: 1, g: 0, b: 0, a: 1}
   criticalScale: 1.45
   criticalPopDuration: 0.2
-  criticalShakeAngle: 10
-  criticalShakeDuration: 0.45
-  criticalShakeVibrato: 10
+  criticalShakeAngle: 14
+  criticalShakeDuration: 0.5
+  criticalShakeVibrato: 5
   criticalMoveVDistance: 130
 
