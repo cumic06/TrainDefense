@@ -39,6 +39,9 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private Image selectedIconImage;
         [SerializeField]
+        [Tooltip("메인 트레인 이미지 위 turretMount 위치에 겹쳐 보일 선택 포탑 비주얼. 선택 시 해당 포탑 스프라이트로 바뀐다.")]
+        private Image turretPreviewImage;
+        [SerializeField]
         private TextMeshProUGUI attackText;
         [SerializeField]
         private TextMeshProUGUI attackSpeedText;
@@ -251,6 +254,13 @@ namespace TrainDefense.Game.UI
 
             if (selectedIconImage != null)
                 selectedIconImage.sprite = entry.Icon;
+
+            // 메인 트레인 미리보기 위에 선택 포탑 아이콘을 겹쳐 보여준다(장착 모습).
+            if (turretPreviewImage != null)
+            {
+                turretPreviewImage.sprite = entry.Icon;
+                turretPreviewImage.enabled = entry.Icon != null;
+            }
 
             var status = entry.TurretData.TurretTrainStatus;
 

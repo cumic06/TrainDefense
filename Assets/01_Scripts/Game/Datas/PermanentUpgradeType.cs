@@ -17,8 +17,6 @@ namespace TrainDefense.Game.Datas
         MaxTurretCount,    // 0 — 최대 포탑 수 증가 (+개수)
         MaxHp,             // 1 — 최대 체력 증가
         HealthRegen,       // 2 — 5초마다 체력 회복 (%)
-        GoldGainRate,      // 3 — 골드 획득률 증가 (%)
-        ExpGainRate,       // 4 — 경험치 획득률 증가 (%)
-        FreeReroll,        // 5 — 레벨업 시 무료 리롤 횟수
+        FreeReroll,        // 3 — 레벨업 시 무료 리롤 횟수
     }
 }
