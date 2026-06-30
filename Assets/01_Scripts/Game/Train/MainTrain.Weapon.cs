@@ -76,6 +76,10 @@ namespace TrainDefense.Game
             return;
          }
 
+         // 누르지 않아도 공속 쿨다운은 계속 진행(0에서 멈춰 대기). 발사만 누를 때 한다.
+         if (_fireCooldown > 0f)
+            _fireCooldown -= Time.deltaTime;
+
          if (!_TryGetAimPosition(out Vector2 aimPosition))
          {
             _HideAimMarker();
@@ -85,7 +89,6 @@ namespace TrainDefense.Game
 
          _ShowAimMarker(aimPosition);
 
-         _fireCooldown -= Time.deltaTime;
          if (_fireCooldown <= 0f)
          {
             _turret.Fire(aimPosition);
