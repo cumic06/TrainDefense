@@ -87,8 +87,6 @@ namespace TrainDefense.Game
             return;
          }
 
-         _ShowAimMarker(aimPosition);
-
          if (_fireCooldown <= 0f)
          {
             _turret.Fire(aimPosition);
