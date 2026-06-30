@@ -794,7 +794,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: NormalProjectile
+    turretProjectilePrefabId: MainNormalProjectile
     attackDamageMultiplier: 1
   - id: 50002
     name: Train_30003_Name
@@ -818,7 +818,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-    turretProjectilePrefabId: MissileProjectile
+    turretProjectilePrefabId: MainMissileProjectile
     attackDamageMultiplier: 1
   rangeTrainDataList:
   - id: 40001
