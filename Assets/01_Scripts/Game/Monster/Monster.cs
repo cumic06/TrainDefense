@@ -24,6 +24,14 @@ namespace TrainDefense.Game
       private Color slowColor = new Color(0.5f, 0.85f, 1f, 1f);
       [SerializeField]
       private float spawnMoveDelay = 0.1f;
+
+      [Header("Hit Effect")]
+      [SerializeField]
+      private float hitPunchScale = 0.22f;
+      [SerializeField]
+      private float hitPunchDuration = 0.16f;
+      [SerializeField]
+      private float hitFlashDuration = 0.06f;
       #endregion
 
       [ShowInInspector, ReadOnly]
@@ -46,11 +54,26 @@ namespace TrainDefense.Game
       protected SpriteRenderer _modelSpriteRenderer;
       protected Color _originalColor = Color.white;
 
+      // 피격 연출 상태
+      private int _facingSign = 1;
+      private float _hitScaleMultiplier = 1f;
+      private Coroutine _hitEffectCoroutine;
+      private Material _originalMaterial;
+      private static Material _sharedHitFlashMaterial;
+      private const string HitFlashShaderName = "Custom/Sprite/Red";
+
       protected Coroutine _slowCoroutine;
       protected Coroutine _resetMoveSpeedCoroutine;
       protected Coroutine _shoveCoroutine;
       protected Coroutine _stunCoroutine;
       private GameObject _stunEffectInstance;
+
+      // 엘리트 타입별 능력 상태
+      private Coroutine _rangedEliteCoroutine;
+      private Coroutine _speedAuraCoroutine;
+      private Coroutine _auraReceiveCoroutine;
+      // 노랑 엘리트 오라로 받은 이동속도 배율(기본 1). _currentMonsterStatus.MoveSpeed에 곱해 Slow와 독립 적용.
+      private float _auraSpeedMultiplier = 1f;
 
       private const string MoneyPrefabPath = "Prefabs/Money";
       private const string StunPrefabPath = "Prefabs/StunPaticle";
@@ -71,7 +94,11 @@ namespace TrainDefense.Game
          _startScale = _prefabScale;
          _modelAnimator = model.GetComponentInChildren<MonsterAnimator>();
          _modelSpriteRenderer = model.GetComponent<SpriteRenderer>();
-         if (_modelSpriteRenderer != null) _originalColor = _modelSpriteRenderer.color;
+         if (_modelSpriteRenderer != null)
+         {
+            _originalColor = _modelSpriteRenderer.color;
+            _originalMaterial = _modelSpriteRenderer.sharedMaterial;
+         }
          if (eliteEffect != null) eliteEffect.SetActive(false);
       }
 
@@ -88,9 +115,15 @@ namespace TrainDefense.Game
          _isElite = false;
          _spawnTime = Time.time;
          _startScale = _prefabScale;
+         _facingSign = 1;
+         _hitScaleMultiplier = 1f;
          if (model != null) model.transform.localScale = _prefabScale;
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
+         _RestoreHitFlashMaterial();
          if (eliteEffect != null) eliteEffect.SetActive(false);
+
+         // 풀 재사용 전 엘리트 상태 초기화(이전 타입의 오라 배율 잔존 방지).
+         _auraSpeedMultiplier = 1f;
 
          if (_modelAnimator != null)
          {
@@ -115,9 +148,19 @@ namespace TrainDefense.Game
             _modelAnimator.OnAttackHit -= _OnAttackHit;
          }
 
+         if (_hitEffectCoroutine != null)
+         {
+            StopCoroutine(_hitEffectCoroutine);
+            _hitEffectCoroutine = null;
+         }
+         _hitScaleMultiplier = 1f;
+         _RestoreHitFlashMaterial();
+
          _isStunned = false;
          _isShoved = false;
          _ReleaseStunEffect();
+         _StopEliteRoutines();
+         _auraSpeedMultiplier = 1f;
 
          _targetTrain = null;
       }
@@ -141,26 +184,66 @@ namespace TrainDefense.Game
          _currentHp = _currentMonsterStatus.MaxHp;
       }
 
-      public void ApplyElite(EliteData data)
+      public void ApplyElite(EliteData data, EliteVariant variant)
       {
          if (_isDead || data == null) return;
          _isElite = true;
 
-         _currentMonsterStatus.MaxHp = _currentMonsterStatus.MaxHp * data.hpMultiplier;
-         _currentMonsterStatus.Damage = _currentMonsterStatus.Damage * data.damageMultiplier;
-         _currentMonsterStatus.MoveSpeed *= data.moveSpeedMultiplier;
-         _currentMonsterStatus.DropExpMin = Mathf.RoundToInt(_currentMonsterStatus.DropExpMin * data.dropExpMultiplier);
-         _currentMonsterStatus.DropExpMax = Mathf.RoundToInt(_currentMonsterStatus.DropExpMax * data.dropExpMultiplier);
-         _currentMonsterStatus.DropMoneyMin = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMin * data.dropMoneyMultiplier);
-         _currentMonsterStatus.DropMoneyMax = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMax * data.dropMoneyMultiplier);
+         // 배율은 variant(타입별) 우선, 없으면 EliteData 단일 배율(빨강 fallback).
+         float hpMul = variant != null ? variant.hpMultiplier : data.hpMultiplier;
+         float damageMul = variant != null ? variant.damageMultiplier : data.damageMultiplier;
+         float moveSpeedMul = variant != null ? variant.moveSpeedMultiplier : data.moveSpeedMultiplier;
+         float sizeMul = variant != null ? variant.sizeScale : data.sizeScale;
+         float dropExpMul = variant != null ? variant.dropExpMultiplier : data.dropExpMultiplier;
+         float dropMoneyMul = variant != null ? variant.dropMoneyMultiplier : data.dropMoneyMultiplier;
+
+         _currentMonsterStatus.MaxHp *= hpMul;
+         _currentMonsterStatus.Damage *= damageMul;
+         _currentMonsterStatus.MoveSpeed *= moveSpeedMul;
+         _currentMonsterStatus.DropExpMin = Mathf.RoundToInt(_currentMonsterStatus.DropExpMin * dropExpMul);
+         _currentMonsterStatus.DropExpMax = Mathf.RoundToInt(_currentMonsterStatus.DropExpMax * dropExpMul);
+         _currentMonsterStatus.DropMoneyMin = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMin * dropMoneyMul);
+         _currentMonsterStatus.DropMoneyMax = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMax * dropMoneyMul);
          _currentHp = _currentMonsterStatus.MaxHp;
 
-         _startScale *= data.sizeScale;
+         _startScale *= sizeMul;
          model.transform.localScale = _startScale;
 
-         if (eliteEffect != null)
+         _ApplyEliteVisual(variant);
+         _ApplyEliteAbility(variant);
+      }
+
+      // 엘리트 불 이펙트를 켜고 타입 색으로 틴트한다. (프리팹마다 EliteEffect 자식에 SpriteRenderer 보유)
+      private void _ApplyEliteVisual(EliteVariant variant)
+      {
+         if (eliteEffect == null) return;
+
+         eliteEffect.SetActive(true);
+         if (variant == null) return;
+
+         SpriteRenderer effectRenderer = eliteEffect.GetComponentInChildren<SpriteRenderer>(true);
+         if (effectRenderer != null)
          {
-            eliteEffect.SetActive(true);
+            effectRenderer.color = variant.tintColor;
+         }
+      }
+
+      // 타입 고유 능력을 활성화한다. (빨강/초록은 배율 프로파일만이라 별도 능력 없음)
+      private void _ApplyEliteAbility(EliteVariant variant)
+      {
+         if (variant == null) return;
+
+         switch (variant.type)
+         {
+            case EliteType.Blue:
+               _rangedEliteCoroutine = StartCoroutine(_RangedEliteAttackCoroutine(variant));
+
+               break;
+
+            case EliteType.Yellow:
+               _speedAuraCoroutine = StartCoroutine(_SpeedAuraCoroutine(variant));
+
+               break;
          }
       }
 
@@ -200,7 +283,9 @@ namespace TrainDefense.Game
 
       private void _Move()
       {
-         transform.Translate(_currentMonsterStatus.MoveSpeed * Time.deltaTime * _MoveDirection().normalized);
+         // 노랑 엘리트 오라 배율을 곱한다(기본 1). Slow는 MoveSpeed 자체를 바꾸므로 둘이 곱셈으로 독립 적용된다.
+         float moveSpeed = _currentMonsterStatus.MoveSpeed * _auraSpeedMultiplier;
+         transform.Translate(moveSpeed * Time.deltaTime * _MoveDirection().normalized);
       }
 
       private Vector3 _MoveDirection()
@@ -222,8 +307,20 @@ namespace TrainDefense.Game
 
       private void _LookAtTarget()
       {
-         int x = _MoveDirection().x > 0 ? 1 : -1;
-         model.transform.localScale = new Vector2(x * _startScale.x, _startScale.y);
+         _facingSign = _MoveDirection().x > 0 ? 1 : -1;
+         _ApplyModelScale();
+      }
+
+      // 바라보는 방향(_facingSign)과 피격 펀치 배율(_hitScaleMultiplier)을 합쳐 모델 스케일을 적용한다.
+      // 스케일을 쓰는 단일 지점 — 피격 연출은 transform을 직접 건드리지 않고 배율만 바꿔 좌우반전과 충돌하지 않는다.
+      private void _ApplyModelScale()
+      {
+         if (model == null)
+            return;
+
+         model.transform.localScale = new Vector2(
+            _facingSign * _startScale.x * _hitScaleMultiplier,
+            _startScale.y * _hitScaleMultiplier);
       }
 
       private void _AttackHandler()
@@ -265,7 +362,8 @@ namespace TrainDefense.Game
             var projectile = ResourceManager.Instance.Spawn(_monsterData.RangedProjectilePrefab);
             projectile.transform.position = transform.position;
             projectile.transform.LookAt2D(_targetTrain.transform);
-            projectile.Init(_monsterData.MonsterStatusData.Damage, this);
+            // 엘리트 배율이 반영된 현재 데미지를 쓴다(base SO 직접참조 시 엘리트 강화가 무시됨).
+            projectile.Init(_currentMonsterStatus.Damage, this);
          }
          else if (_currentMonsterStatus.AttackType == MonsterAttackType.Melee)
          {
@@ -445,6 +543,97 @@ namespace TrainDefense.Game
       }
       #endregion
 
+      #region Elite Ability
+      // 파랑 엘리트: interval마다 타겟 기차로 투사체를 발사한다(근접 몬스터여도 추가 원거리 공격).
+      private IEnumerator _RangedEliteAttackCoroutine(EliteVariant variant)
+      {
+         Projectile projectilePrefab = variant.rangedProjectile != null
+            ? variant.rangedProjectile
+            : _monsterData.RangedProjectilePrefab;
+
+         if (projectilePrefab == null)
+            yield break;
+
+         WaitForSeconds wait = new(variant.rangedAttackInterval);
+         while (!_isDead)
+         {
+            yield return wait;
+
+            if (_isDead || _targetTrain == null || ResourceManager.Instance == null)
+               continue;
+
+            Projectile projectile = ResourceManager.Instance.Spawn(projectilePrefab);
+            projectile.transform.position = transform.position;
+            projectile.transform.LookAt2D(_targetTrain.transform);
+            projectile.Init(_currentMonsterStatus.Damage, this);
+         }
+      }
+
+      // 노랑 엘리트: interval마다 오라 반경 안의 다른 몬스터에게 이동속도 버프를 건다(자신 제외).
+      private IEnumerator _SpeedAuraCoroutine(EliteVariant variant)
+      {
+         Collider2D[] results = new Collider2D[32];
+         WaitForSeconds wait = new(variant.auraInterval);
+         // 갱신 주기보다 약간 길게 유지해 갱신 사이의 끊김을 막는다.
+         float buffDuration = variant.auraInterval * 1.5f;
+
+         while (!_isDead)
+         {
+            int count = Physics2D.OverlapCircleNonAlloc(transform.position, variant.auraRadius, results);
+            for (int i = 0; i < count; i++)
+            {
+               if (results[i].TryGetComponent(out Monster monster) && monster != this)
+               {
+                  monster.ApplySpeedAura(variant.auraSpeedMultiplier, buffDuration);
+               }
+            }
+
+            yield return wait;
+         }
+      }
+
+      // 노랑 오라 수신: duration초 동안 이동속도 배율을 적용하고 자동 복원한다.
+      public void ApplySpeedAura(float multiplier, float duration)
+      {
+         if (!gameObject.activeInHierarchy || _isDead)
+            return;
+
+         _auraSpeedMultiplier = multiplier;
+         if (_auraReceiveCoroutine != null)
+         {
+            StopCoroutine(_auraReceiveCoroutine);
+         }
+         _auraReceiveCoroutine = StartCoroutine(_AuraReceiveCoroutine(duration));
+      }
+
+      private IEnumerator _AuraReceiveCoroutine(float duration)
+      {
+         yield return new WaitForSeconds(duration);
+         _auraSpeedMultiplier = 1f;
+      }
+
+      private void _StopEliteRoutines()
+      {
+         if (_rangedEliteCoroutine != null)
+         {
+            StopCoroutine(_rangedEliteCoroutine);
+            _rangedEliteCoroutine = null;
+         }
+
+         if (_speedAuraCoroutine != null)
+         {
+            StopCoroutine(_speedAuraCoroutine);
+            _speedAuraCoroutine = null;
+         }
+
+         if (_auraReceiveCoroutine != null)
+         {
+            StopCoroutine(_auraReceiveCoroutine);
+            _auraReceiveCoroutine = null;
+         }
+      }
+      #endregion
+
       public void TakeDamage(float damage)
       {
          TakeDamage(damage, false);
@@ -461,8 +650,96 @@ namespace TrainDefense.Game
          if (_currentHp <= 0)
          {
             OnDead();
+
+            return;
+         }
+
+         _PlayHitEffect();
+      }
+
+      #region Hit Effect
+      // 피격 시 흰색 깜빡임 + 커졌다 작아지는 펀치 연출을 재생한다(인디게임 표준 히트 피드백).
+      private void _PlayHitEffect()
+      {
+         if (model == null)
+            return;
+
+         if (_hitEffectCoroutine != null)
+         {
+            StopCoroutine(_hitEffectCoroutine);
+         }
+
+         _hitEffectCoroutine = StartCoroutine(_HitEffectCoroutine());
+      }
+
+      // 흰색 머티리얼로 깜빡이며 모델이 sin 곡선으로 1 → 1+punch → 1 로 커졌다 작아진다.
+      // 일시정지/슬로우모(timeScale 변동)에도 일정하게 보이도록 unscaledDeltaTime을 쓴다(DOTween SetUpdate 함정 회피).
+      private IEnumerator _HitEffectCoroutine()
+      {
+         Material flashMaterial = _GetHitFlashMaterial();
+         if (_modelSpriteRenderer != null && flashMaterial != null)
+         {
+            _modelSpriteRenderer.sharedMaterial = flashMaterial;
+         }
+
+         float elapsedTime = 0f;
+         bool isFlashRestored = false;
+
+         while (elapsedTime < hitPunchDuration)
+         {
+            elapsedTime += Time.unscaledDeltaTime;
+            float progress = Mathf.Clamp01(elapsedTime / hitPunchDuration);
+            _hitScaleMultiplier = 1f + hitPunchScale * Mathf.Sin(Mathf.PI * progress);
+            _ApplyModelScale();
+
+            if (!isFlashRestored && elapsedTime >= hitFlashDuration)
+            {
+               _RestoreHitFlashMaterial();
+               isFlashRestored = true;
+            }
+
+            yield return null;
+         }
+
+         if (!isFlashRestored)
+         {
+            _RestoreHitFlashMaterial();
+         }
+
+         _hitScaleMultiplier = 1f;
+         _ApplyModelScale();
+         _hitEffectCoroutine = null;
+      }
+
+      // 흰색 발광 머티리얼(코드 생성, 전 몬스터 공유). 별도 에셋/인스펙터 연결 불필요.
+      // SpriteRed 셰이더의 Emission을 흰색으로 켜 알파 영역만 흰색으로 번지게 한다.
+      private Material _GetHitFlashMaterial()
+      {
+         if (_sharedHitFlashMaterial == null)
+         {
+            Shader shader = Shader.Find(HitFlashShaderName);
+            if (shader == null)
+               return null;
+
+            _sharedHitFlashMaterial = new Material(shader);
+            _sharedHitFlashMaterial.SetFloat("_RedAmount", 0f);
+            _sharedHitFlashMaterial.SetColor("_EmissionColor", Color.white);
+            _sharedHitFlashMaterial.SetFloat("_EmissionIntensity", 4f);
+            _sharedHitFlashMaterial.SetFloat("_Opacity", 1f);
+         }
+
+         return _sharedHitFlashMaterial;
+      }
+
+      // 원래 머티리얼로 복원한다. 풀 재사용/사망 시 흰색이 잔존하지 않도록 보장.
+      private void _RestoreHitFlashMaterial()
+      {
+         if (_modelSpriteRenderer != null && _originalMaterial != null)
+         {
+            _modelSpriteRenderer.sharedMaterial = _originalMaterial;
          }
       }
+      #endregion
 
       protected void OnDead()
       {

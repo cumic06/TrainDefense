@@ -244,7 +244,8 @@ namespace TrainDefense.Game
                      bool isElite = _eliteData != null && eliteChance > 0f && Random.value * 100f < eliteChance;
                      if (isElite)
                      {
-                        spawnMonster.ApplyElite(_eliteData);
+                        EliteVariant eliteVariant = _eliteData.SelectVariant();
+                        spawnMonster.ApplyElite(_eliteData, eliteVariant);
                      }
 
                      _spawnedMonsters.Add(spawnMonster);

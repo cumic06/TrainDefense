@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TrainDefense.Game.UI;
 
 namespace TrainDefense.Game.Tutorial
 {
@@ -16,6 +17,8 @@ namespace TrainDefense.Game.Tutorial
         {
             _confirmButton.onClick.AddListener(HandleConfirm);
             _cancelButton.onClick.AddListener(HandleCancel);
+
+            PopupTween.PlayShow(gameObject);
         }
 
         private void OnDisable()
@@ -31,7 +34,7 @@ namespace TrainDefense.Game.Tutorial
 
         public void Hide()
         {
-            gameObject.SetActive(false);
+            PopupTween.PlayHide(gameObject, () => gameObject.SetActive(false));
         }
 
         private void HandleConfirm()

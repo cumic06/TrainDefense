@@ -69,6 +69,8 @@ namespace TrainDefense
       {
          _ShowTab(OptionTab.Sound);
          _RefreshTabTexts();
+
+         PopupTween.PlayShow(gameObject);
       }
 
       private void OnDestroy()
@@ -141,7 +143,7 @@ namespace TrainDefense
       {
          SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_WindowClose, ignoreSuppress: true);
 
-         gameObject.SetActive(false);
+         PopupTween.PlayHide(gameObject, () => gameObject.SetActive(false));
 
          if (InGameSequence.Instance != null)
             InGameSequence.Instance.PopOverlay(OverlayPhase.Option);

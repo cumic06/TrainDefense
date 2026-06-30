@@ -114,6 +114,8 @@ namespace TrainDefense.Game.UI
             // 초기화 완료·언어 변경 시 다시 적용하도록 구독한다(LocalizeText 컴포넌트와 동일한 패턴).
             Localization.OnInitialized += _RefreshLocalizedTexts;
             Localization.OnLanguageChanged += _RefreshLocalizedTexts;
+
+            PopupTween.PlayShow(gameObject);
         }
 
         private void OnDisable()

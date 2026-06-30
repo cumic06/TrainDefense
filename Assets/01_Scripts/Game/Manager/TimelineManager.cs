@@ -98,6 +98,11 @@ namespace TrainDefense
         {
             TimeManager.Instance?.Pause();
 
+            // 상점 들어가기 전 전투에서 남은 골드·투사체가 퇴장 후 화면에 그대로 남는 문제를 막는다.
+            // 진입과 동일하게 정지 상태에서 정리한다(상점 중 부활/긴급수리 등으로 생긴 잔재, 진입 정리 직후의 막탄 포함).
+            ResourceManager.Instance?.ReturnAll();
+            _ClearAttachedProjectiles();
+
             StartCoroutine(_ShopExitRoutine(onComplete));
         }
 
@@ -144,6 +149,10 @@ namespace TrainDefense
         public void StartMapMoveTimeline(Action onMapSwitch, Action onComplete = null)
         {
             TimeManager.Instance?.Pause();
+
+            // 이전 맵에서 남은 골드·투사체가 새 맵으로 넘어오지 않도록 맵 교체 전 정지 상태에서 정리한다(몬스터는 별도 정리).
+            ResourceManager.Instance?.ReturnAll();
+            _ClearAttachedProjectiles();
 
             StartCoroutine(_MapMoveRoutine(onMapSwitch, onComplete));
         }
