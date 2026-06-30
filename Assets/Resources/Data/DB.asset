@@ -772,6 +772,54 @@ MonoBehaviour:
       CriticalDamage: 0
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
+  - id: 50001
+    name: Train_30001_Name
+    iconId: Weapon_KMD_08_UI
+    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
+    damageType: 0
+    attackSoundType: 301
+    description: Train_30001_Desc
+    trainStatusData:
+      MaxHp: 150
+    prefabId: NormalTurretTrain
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 10
+      AttackRange: 8
+      AttackArea: 8
+      AttackCount: 1
+      AttackInterval: 0.25
+      TargetCount: 1
+      CriticalChance: 0
+      CriticalDamage: 0
+    turretProjectilePrefabId: NormalProjectile
+    attackDamageMultiplier: 1
+  - id: 50002
+    name: Train_30003_Name
+    iconId: Weapon_KMD_10_UI
+    icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
+    damageType: 0
+    attackSoundType: 303
+    description: Train_30003_Desc
+    trainStatusData:
+      MaxHp: 150
+    prefabId: MissileTurretTrain
+    activeSkillDataIds: []
+    passiveSkillDataIds: []
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 30
+      AttackRange: 8
+      AttackArea: 8
+      AttackCount: 1
+      AttackInterval: 1
+      TargetCount: 1
+      CriticalChance: 0
+      CriticalDamage: 0
+    turretProjectilePrefabId: MissileProjectile
+    attackDamageMultiplier: 1
   rangeTrainDataList:
   - id: 40001
     name: Train_40001_Name

@@ -182,6 +182,10 @@ namespace TrainDefense.Game.UI
                 if (turretData == null || string.IsNullOrEmpty(turretData.Id))
                     continue;
 
+                // 메인 터렛(50xxx)만 시작 선택창에 노출. 일반 편성 포탑(30xxx)은 제외한다.
+                if (!_IsMainTurretId(turretData.Id))
+                    continue;
+
                 if (_IsEliteTurretId(turretData.Id))
                     continue;
 
@@ -219,6 +223,15 @@ namespace TrainDefense.Game.UI
                 return false;
 
             return (numericId / 1000) % 10 == 1;
+        }
+
+        // 메인 터렛 판정: id 50xxx(50000~50999) 대역을 메인 터렛(시작 선택창 전용 주무기)으로 본다.
+        private static bool _IsMainTurretId(string id)
+        {
+            if (!int.TryParse(id, out int numericId))
+                return false;
+
+            return numericId / 1000 == 50;
         }
 
         private void _BuildSlots()
