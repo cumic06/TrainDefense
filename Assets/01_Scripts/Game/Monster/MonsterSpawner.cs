@@ -64,13 +64,9 @@ namespace TrainDefense.Game
       private int _stationPassedCount = 0;
 
       private EliteData _eliteData;
+      // 엘리트 가능(EliteChanceMultiplier>0) 몬스터를 센 누적 수. eliteSpawnCycle마다 1마리를 엘리트로.
       [ShowInInspector]
-      private float _currentEliteSpawnChance;
-      private float _eliteRampElapsed;
-      // 엘리트 배율 진행도(0~1). 한 판 동안 누적 증가하며 각 몬스터의 EliteChanceMultiplier에 곱해진다.
-      [ShowInInspector]
-      private float _currentEliteMultiplierProgress;
-      private float _eliteMultiplierRampElapsed;
+      private int _eliteSpawnCounter;
 
       #region UnityLifeCycle
       private void Start()
@@ -100,10 +96,7 @@ namespace TrainDefense.Game
          if (DatabaseManager.Instance == null) return;
 
          _eliteData = DatabaseManager.Instance.GetEliteData();
-         _currentEliteSpawnChance = 0f;
-         _eliteRampElapsed = 0f;
-         _currentEliteMultiplierProgress = _eliteData != null ? Mathf.Clamp01(_eliteData.multiplierStartProgress) : 1f;
-         _eliteMultiplierRampElapsed = 0f;
+         _eliteSpawnCounter = 0;
          _stationPassedCount = 0;
          spawnCount = _originalSpawnCount;
          StartCoroutine(SpawnMonster());
@@ -206,9 +199,6 @@ namespace TrainDefense.Game
 
             WaitForSeconds spawnWait = new(spawnInterval);
 
-            UpdateEliteChance(spawnInterval);
-            UpdateEliteMultiplierProgress(spawnInterval);
-
             if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
             {
                yield return spawnWait;
@@ -236,16 +226,22 @@ namespace TrainDefense.Game
                      Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
                      spawnMonster.Initialize(monsterData);
 
-                     // 램프 ON(강한 몬스터): 한 판 누적 진행도를 곱해 초반엔 낮고 후반으로 갈수록 설정 배율까지 증가.
-                     // 램프 OFF(약한 몬스터): 진행도 무관하게 설정 배율 그대로 적용.
-                     float eliteProgress = selectedData.EliteChanceRamp ? _currentEliteMultiplierProgress : 1f;
-                     float eliteMultiplier = selectedData.EliteChanceMultiplier * eliteProgress;
-                     float eliteChance = _currentEliteSpawnChance * eliteMultiplier;
-                     bool isElite = _eliteData != null && eliteChance > 0f && Random.value * 100f < eliteChance;
-                     if (isElite)
+                     // 엘리트 스폰: 확률이 아니라 "엘리트 가능한 몬스터 eliteSpawnCycle마리마다 1마리"를 고정 주기로 엘리트화.
+                     // EliteChanceMultiplier<=0 인 몬스터는 엘리트 대상에서 제외(주기 카운트에도 포함하지 않는다).
+                     // 스테이지1 통과(EliteStartStationCount) 전에는 등장하지 않는다.
+                     bool eliteEligible = _eliteData != null
+                                          && selectedData.EliteChanceMultiplier > 0f
+                                          && _stationPassedCount >= EliteStartStationCount;
+                     if (eliteEligible)
                      {
-                        EliteVariant eliteVariant = _eliteData.SelectVariant();
-                        spawnMonster.ApplyElite(_eliteData, eliteVariant);
+                        _eliteSpawnCounter++;
+                        int cycle = Mathf.Max(1, _eliteData.eliteSpawnCycle);
+                        if (_eliteSpawnCounter >= cycle)
+                        {
+                           _eliteSpawnCounter = 0;
+                           EliteVariant eliteVariant = _eliteData.SelectVariant();
+                           spawnMonster.ApplyElite(_eliteData, eliteVariant);
+                        }
                      }
 
                      _spawnedMonsters.Add(spawnMonster);
@@ -260,45 +256,8 @@ namespace TrainDefense.Game
          }
       }
 
-      // 엘리트는 스테이지1 통과 후부터 등장(역 3개 후 4번째 검문에 맵 변경). 통과 직후 5%로 시작해 spawnMaxChance(15%)까지 ramp.
+      // 엘리트는 스테이지1 통과 후부터 등장(역 3개 후 4번째 검문에 맵 변경).
       private const int EliteStartStationCount = 4;
-      private const float EliteStartChance = 5f;
-
-      private void UpdateEliteChance(float elapsed)
-      {
-         if (_eliteData == null || _eliteData.spawnInterval <= 0f) return;
-
-         // 스테이지1 통과 전엔 엘리트 없음
-         if (_stationPassedCount < EliteStartStationCount) return;
-
-         // 스테이지1 통과 직후 5%로 시작
-         if (_currentEliteSpawnChance < EliteStartChance)
-            _currentEliteSpawnChance = EliteStartChance;
-
-         _eliteRampElapsed += elapsed;
-         while (_eliteRampElapsed >= _eliteData.spawnInterval)
-         {
-            _currentEliteSpawnChance = Mathf.Min(
-               _currentEliteSpawnChance + _eliteData.chanceGrowthPerInterval,
-               _eliteData.spawnMaxChance);
-            _eliteRampElapsed -= _eliteData.spawnInterval;
-         }
-      }
-
-      private void UpdateEliteMultiplierProgress(float elapsed)
-      {
-         if (_eliteData == null || _eliteData.multiplierRampInterval <= 0f) return;
-         if (_currentEliteMultiplierProgress >= 1f) return;
-
-         _eliteMultiplierRampElapsed += elapsed;
-         while (_eliteMultiplierRampElapsed >= _eliteData.multiplierRampInterval)
-         {
-            _currentEliteMultiplierProgress = Mathf.Min(
-               1f,
-               _currentEliteMultiplierProgress + _eliteData.multiplierGrowthPerInterval);
-            _eliteMultiplierRampElapsed -= _eliteData.multiplierRampInterval;
-         }
-      }
 
       private StageSpawnData SelectMonsterData()
       {

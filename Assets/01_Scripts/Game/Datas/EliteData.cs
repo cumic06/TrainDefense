@@ -6,7 +6,12 @@ namespace TrainDefense.Game.Datas
    [System.Serializable]
    public class EliteData
    {
-      [Header("스폰 타이밍")]
+      [Header("엘리트 스폰 주기")]
+      [Tooltip("엘리트가 될 수 있는(EliteChanceMultiplier>0) 몬스터 n마리마다 1마리를 엘리트로 스폰한다. 확률이 아니라 고정 주기.")]
+      [Min(1)]
+      public int eliteSpawnCycle = 20;
+
+      [Header("스폰 타이밍 (레거시 확률 방식 - 현재 미사용)")]
       public float spawnInterval = 60f;
       [Range(0f, 100f)]
       public float spawnMaxChance = 30f;
