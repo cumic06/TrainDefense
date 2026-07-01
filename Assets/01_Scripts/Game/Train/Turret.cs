@@ -64,6 +64,10 @@ namespace TrainDefense.Game
             _isRotateTurret = source.IsRotateTurret;
             _BuildVisual(source);
             _isReady = _projectilePrefab != null;
+
+            // 메인 터렛도 편성 포탑과 동일하게 상점 업그레이드(공격력·공속·치명타 등)를 받는다.
+            // 장착 시점에 이미 구매돼 있는 상점 레벨을 소급 적용(MainTrain.ApplyExistingUpgradesToTrain와 동일 방식).
+            _ApplyExistingShopUpgrades();
         }
 
         // 선택 포탑 프리팹의 turret(회전 pivot) 서브트리만 복제해 자식으로 붙이고,
@@ -221,6 +225,99 @@ namespace TrainDefense.Game
                 return;
 
             SoundManager.Instance.PlaySFX(_data.AttackSoundType);
+        }
+        #endregion
+
+        #region ShopUpgrade
+        // 상점 업그레이드를 편성 포탑(TurretTrain.ApplyStatLevelAware)과 동일한 정규화 곱셈으로 _status에 반영한다.
+        // 메인 터렛은 Train을 상속하지 않아 편성 강화 파이프라인 밖이므로 같은 계산을 여기서 미러링한다.
+        // (풀링 side-effect는 없음 — 매 발사 투사체를 새로 스폰해 _status를 즉시 반영한다.)
+
+        /// <summary>
+        /// 상점 업그레이드 스탯을 현재 레벨 기준으로 _status에 적용한다. (장착 시 소급 / MainTrain.ApplyUpgrade가 구매 시 호출)
+        /// prevLevel→newLevel 정규화로 반복 구매 시 이중 적용을 막는다.
+        /// </summary>
+        public void ApplyShopStats(IStat[] stats, int newLevel, int prevLevel = 0)
+        {
+            if (stats == null || stats.Length == 0)
+                return;
+
+            foreach (var stat in stats)
+                _ApplyShopStat(stat, newLevel, prevLevel);
+        }
+
+        private void _ApplyShopStat(IStat stat, int newLevel, int prevLevel)
+        {
+            if (stat == null)
+                return;
+
+            TurretTrainStatus baseStatus = _data.TurretTrainStatus;
+            float percent = stat.Value / 100f;
+            int times = newLevel - prevLevel;
+
+            switch (stat.Type)
+            {
+                case StatType.AttackRange:
+                    _status.AttackRange = _status.AttackRange / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                    break;
+
+                case StatType.AttackArea:
+                    _status.AttackArea = _status.AttackArea / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                    break;
+
+                case StatType.AttackDamage:
+                    _status.AttackDamage = _status.AttackDamage / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                    break;
+
+                case StatType.AttackCount:
+                    _status.AttackCount += Mathf.RoundToInt(baseStatus.AttackCount * percent * newLevel)
+                                         - Mathf.RoundToInt(baseStatus.AttackCount * percent * prevLevel);
+                    break;
+
+                case StatType.AttackInterval:
+                    _status.AttackInterval = _status.AttackInterval * (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
+                    break;
+
+                case StatType.TargetCount:
+                    _status.TargetCount += Mathf.RoundToInt(baseStatus.TargetCount * percent * newLevel)
+                                         - Mathf.RoundToInt(baseStatus.TargetCount * percent * prevLevel);
+                    break;
+
+                case StatType.CriticalChance:
+                    _status.CriticalChance += stat.Value * times;
+                    break;
+
+                case StatType.CriticalDamage:
+                    _status.CriticalDamage += stat.Value * times;
+                    break;
+            }
+        }
+
+        // 장착 시점에 이미 구매돼 있는 상점 업그레이드(UserDataManager._upgradeLevels)를 소급 적용한다.
+        private void _ApplyExistingShopUpgrades()
+        {
+            if (UserDataManager.Instance == null || DatabaseManager.Instance == null)
+                return;
+
+            var upgradeIds = UserDataManager.Instance.GetAllUpgradeIds();
+            if (upgradeIds == null)
+                return;
+
+            foreach (var upgradeId in upgradeIds)
+            {
+                if (string.IsNullOrEmpty(upgradeId))
+                    continue;
+
+                int level = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
+                if (level <= 0)
+                    continue;
+
+                UpgradeData upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
+                if (upgradeData == null || upgradeData.UpgradeDataType != UpgradeDataType.TrainUpgrade)
+                    continue;
+
+                ApplyShopStats(upgradeData.Stats, level);
+            }
         }
         #endregion
 
