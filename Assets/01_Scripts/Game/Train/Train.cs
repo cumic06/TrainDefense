@@ -472,9 +472,6 @@ namespace TrainDefense.Game
 
         public virtual string GetStatSummary() => $"MaxHp={_currentMaxHp}";
 
-        // 공격 간격(초)을 공격 속도(초당 횟수)로 변환. 0 이하면 0.
-        protected static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
-
         public virtual (string label, string value)[] GetStatDetails()
             => new[] { (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}") };
 

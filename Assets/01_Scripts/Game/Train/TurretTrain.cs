@@ -969,7 +969,7 @@ namespace TrainDefense.Game
             if (_currentTurretTrainStatus.AttackArea > 0f && turretTrainData != null && turretTrainData.UsesAttackArea)
                 details.Add((L("Detail_Area", "범위"), $"{_currentTurretTrainStatus.AttackArea:F1}"));
 
-            details.Add((L("Detail_Speed", "공격속도"), $"{ToAttackSpeed(_currentTurretTrainStatus.AttackInterval):F2}"));
+            details.Add((L("Detail_Speed", "공격속도"), $"{_currentTurretTrainStatus.AttackInterval:F2}s"));
 
             // 대상 수는 다중 타겟 포탑만 표시. (선택 카드와 동일 조건)
             if (_currentTurretTrainStatus.TargetCount > 1)

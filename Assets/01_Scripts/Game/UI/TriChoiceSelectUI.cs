@@ -204,12 +204,11 @@ namespace TrainDefense.Game.UI
             int currentTargetCount = baseStatus.TargetCount + accumulated.TargetCount;
 
             var nextUpgrade = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
-            float currentSpeed = ToAttackSpeed(currentInterval);
-            float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
 
             // 처음 선택 카드(GetTrainStatsDescription)와 같은 스탯 목록을 전체 화살표(Upgrade_, "현재 → 다음")로 표시.
             AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
+            // 공격 속도는 공격 간격(초) 그대로 표시. 간격 감소(delta<0)가 속도 상승이다.
+            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentInterval, nextUpgrade.AttackInterval, FormatAttackSpeed);
             AddUpgradeOrStatLine(lines, "Upgrade_AttackRange", "Stat_AttackRange", currentRange, nextUpgrade.AttackRange);
             if (currentArea > 0f && turretTrain.TrainData is TurretTrainData turretData && UsesAttackArea(turretData))
                AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
@@ -225,12 +224,11 @@ namespace TrainDefense.Game.UI
             float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
 
             var nextUpgrade = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
-            float currentSpeed = ToAttackSpeed(currentInterval);
-            float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
             float currentSlow = baseStatus.SlowRate + accumulated.SlowRate;
 
             AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
+            // 공격 속도는 공격 간격(초) 그대로 표시. 간격 감소(delta<0)가 속도 상승이다.
+            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentInterval, nextUpgrade.AttackInterval, FormatAttackSpeed);
             AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
             // 둔화 포탑(냉기)만 둔화율 표시.
             if (currentSlow > 0f)
@@ -251,7 +249,7 @@ namespace TrainDefense.Game.UI
          {
             var s = turretData.TurretTrainStatus;
             AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
-            AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
+            AddStatValueLine(lines, "Stat_AttackSpeed", s.AttackInterval, FormatAttackSpeed);
             AddStatValueLine(lines, "Stat_AttackRange", s.AttackRange);
             if (s.AttackArea > 0f && UsesAttackArea(turretData))
                AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
@@ -262,7 +260,7 @@ namespace TrainDefense.Game.UI
          {
             var s = rangeData.RangeTrainStatus;
             AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
-            AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
+            AddStatValueLine(lines, "Stat_AttackSpeed", s.AttackInterval, FormatAttackSpeed);
             AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
             if (s.SlowRate > 0f)
                AddStatValueLine(lines, "Stat_Slow", s.SlowRate);
@@ -270,8 +268,8 @@ namespace TrainDefense.Game.UI
          return string.Join("\n", lines);
       }
 
-      // 공격 딜레이(초)를 초당 공격 횟수(공격속도)로 변환. 시스템 값이 아닌 UI 표시 전용.
-      private static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
+      // 공격 속도는 공격 간격(초)으로 표시. 시스템 값이 아닌 UI 표시 전용. 예: 0.34s
+      private static string FormatAttackSpeed(float interval) => $"{interval:0.00}s";
 
       // 값을 공백 PadLeft → txt의 <mspace>(고정폭) 안에서 자릿수가 달라도 우측 끝이 정렬됨. 소수는 첫째 자리까지.
       private const int StatValueWidth = 3;
@@ -284,7 +282,8 @@ namespace TrainDefense.Game.UI
 
       // 업그레이드 카드용: 값이 바뀌는 스탯(delta≠0)만 "현재값 → 다음값"(upgradeKey) 화살표로 표시.
       // 변화 없는 스탯은 statKey로 현재값만 표시. 해당 키가 없으면 조용히 건너뛴다.
-      private static void AddUpgradeOrStatLine(System.Collections.Generic.List<string> lines, string upgradeKey, string statKey, float currentValue, float delta)
+      // formatter가 주어지면 값 표시를 위임(예: 공격 속도의 "0.34s"), 없으면 기본 정렬/서식 사용.
+      private static void AddUpgradeOrStatLine(System.Collections.Generic.List<string> lines, string upgradeKey, string statKey, float currentValue, float delta, System.Func<float, string> formatter = null)
       {
          if (delta != 0)
          {
@@ -292,24 +291,26 @@ namespace TrainDefense.Game.UI
             if (!string.IsNullOrEmpty(upgradeTemplate))
             {
                // 현재값({0})은 우측 정렬(PadLeft), 바뀔 값({1})은 좌측 정렬(PadLeft 없이 raw).
-               lines.Add(SafeFormat(upgradeTemplate, new object[] { AlignStatValue(currentValue), (currentValue + delta).ToString("0.#") }));
+               string currentText = formatter != null ? formatter(currentValue) : AlignStatValue(currentValue);
+               string nextText = formatter != null ? formatter(currentValue + delta) : (currentValue + delta).ToString("0.#");
+               lines.Add(SafeFormat(upgradeTemplate, new object[] { currentText, nextText }));
                return;
             }
          }
 
          string statTemplate = Localization.GetByKey(statKey);
          if (!string.IsNullOrEmpty(statTemplate))
-            lines.Add(SafeFormat(statTemplate, new object[] { AlignStatValue(currentValue) }));
+            lines.Add(SafeFormat(statTemplate, new object[] { formatter != null ? formatter(currentValue) : AlignStatValue(currentValue) }));
       }
 
       // 단일 스탯 값을 "레이블 값" 한 줄로 추가 (새 포탑 카드용).
-      private static void AddStatValueLine(System.Collections.Generic.List<string> lines, string statKey, float value)
+      private static void AddStatValueLine(System.Collections.Generic.List<string> lines, string statKey, float value, System.Func<float, string> formatter = null)
       {
          string template = Localization.GetByKey(statKey);
          if (string.IsNullOrEmpty(template))
             return;
 
-         lines.Add(SafeFormat(template, new object[] { AlignStatValue(value) }));
+         lines.Add(SafeFormat(template, new object[] { formatter != null ? formatter(value) : AlignStatValue(value) }));
       }
 
       private void OnSelectButtonClick()

@@ -79,7 +79,7 @@ namespace TrainDefense.Game.UI.Collection
                 new CollectionStatLine(_Loc("Detail_HP", "체력"), _Format(status.MaxHp)),
                 new CollectionStatLine(_Loc("Detail_Damage", "공격력"), _Format(status.Damage)),
                 new CollectionStatLine(_Loc("Collection_MoveSpeed", "이동 속도"), _Format(status.MoveSpeed)),
-                new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _Format(_ToAttackSpeed(status.AttackDelay))),
+                new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _FormatSeconds(status.AttackDelay)),
                 new CollectionStatLine(_Loc("Detail_Range", "사거리"), _Format(status.AttackRange)),
                 new CollectionStatLine(_Loc("Collection_AttackType", "공격 타입"), status.AttackType == MonsterAttackType.Ranged ? _Loc("Collection_Ranged", "원거리") : _Loc("Collection_Melee", "근접")),
             };
@@ -90,7 +90,7 @@ namespace TrainDefense.Game.UI.Collection
         private static void _AppendRangeStats(List<CollectionStatLine> statLines, RangeTrainStatus status)
         {
             statLines.Add(new CollectionStatLine(_Loc("Detail_Damage", "공격력"), _Format(status.AttackDamage)));
-            statLines.Add(new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _Format(_ToAttackSpeed(status.AttackInterval))));
+            statLines.Add(new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _FormatSeconds(status.AttackInterval)));
             if (status.AttackCount > 1)
                 statLines.Add(new CollectionStatLine(_Loc("Collection_AttackCount", "공격 횟수"), _Format(status.AttackCount)));
 
@@ -106,7 +106,7 @@ namespace TrainDefense.Game.UI.Collection
             TurretTrainStatus status = data.TurretTrainStatus;
 
             statLines.Add(new CollectionStatLine(_Loc("Detail_Damage", "공격력"), _Format(status.AttackDamage)));
-            statLines.Add(new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _Format(_ToAttackSpeed(status.AttackInterval))));
+            statLines.Add(new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _FormatSeconds(status.AttackInterval)));
             statLines.Add(new CollectionStatLine(_Loc("Detail_Range", "사거리"), _Format(status.AttackRange)));
             // 공격 횟수가 대상 수와 같으면 중복이므로 대상 수만 표시
             if (status.AttackCount > 1 && status.AttackCount != status.TargetCount)
@@ -130,10 +130,10 @@ namespace TrainDefense.Game.UI.Collection
             return value.ToString("0.##");
         }
 
-        // 공격 간격(초)을 공격 속도(초당 횟수)로 변환. 0 이하면 0.
-        private static float _ToAttackSpeed(float interval)
+        // 공격 속도는 공격 간격(초)으로 표시. 예: 0.34s
+        private static string _FormatSeconds(float seconds)
         {
-            return interval > 0f ? 1f / interval : 0f;
+            return $"{seconds:0.00}s";
         }
 
         private static string _SkillName(IData skill)
