@@ -45,6 +45,12 @@ namespace TrainDefense.Game
         private float _statAttackCountAccum;
         private float _statTargetCountAccum;
 
+        // 상점 업그레이드의 스탯별 누적 배율. 중복선택(Upgrade)으로 더하는 flat 증가분에도 이 배율을 곱해
+        // "(base + 중복선택합) × (1 + 상점%)" 가 강화 순서와 무관하게 성립하도록 한다.
+        private readonly Dictionary<StatType, float> _shopMultiplier = new();
+        private float _ShopMul(StatType type) => _shopMultiplier.TryGetValue(type, out var m) ? m : 1f;
+        private void _MulShop(StatType type, float ratio) => _shopMultiplier[type] = _ShopMul(type) * ratio;
+
         public delegate Projectile ProjectileOverrideProvider(int attackIndex);
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
         private float _attackCountdown;
@@ -885,11 +891,12 @@ namespace TrainDefense.Game
             {
                 int upgradeLevelIndex = currentLevel + 1;
                 var turretStatus = turretUpgradeData.GetTurretStatusUpgrade(upgradeLevelIndex);
-                _currentTurretTrainStatus.AttackDamage += turretStatus.AttackDamage;
-                _currentTurretTrainStatus.AttackRange += turretStatus.AttackRange;
-                _currentTurretTrainStatus.AttackArea += turretStatus.AttackArea;
+                // 중복선택 증가분은 base와 동일하게 상점 배율을 받는다(Model B): (base+중복선택)×(1+상점%).
+                _currentTurretTrainStatus.AttackDamage += turretStatus.AttackDamage * _ShopMul(StatType.AttackDamage);
+                _currentTurretTrainStatus.AttackRange += turretStatus.AttackRange * _ShopMul(StatType.AttackRange);
+                _currentTurretTrainStatus.AttackArea += turretStatus.AttackArea * _ShopMul(StatType.AttackArea);
                 _currentTurretTrainStatus.AttackCount += turretStatus.AttackCount;
-                _currentTurretTrainStatus.AttackInterval += turretStatus.AttackInterval;
+                _currentTurretTrainStatus.AttackInterval += turretStatus.AttackInterval * _ShopMul(StatType.AttackInterval);
                 _currentTurretTrainStatus.TargetCount += turretStatus.TargetCount;
                 _currentTurretTrainStatus.CriticalChance += turretStatus.CriticalChance;
                 _currentTurretTrainStatus.CriticalDamage += turretStatus.CriticalDamage;
@@ -1115,11 +1122,18 @@ namespace TrainDefense.Game
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    _currentTurretTrainStatus.AttackRange = _currentTurretTrainStatus.AttackRange / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                {
+                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    _currentTurretTrainStatus.AttackRange *= shopRatio;
+                    _MulShop(StatType.AttackRange, shopRatio);
                     break;
+                }
 
                 case StatType.AttackArea:
-                    _currentTurretTrainStatus.AttackArea = _currentTurretTrainStatus.AttackArea / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                {
+                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    _currentTurretTrainStatus.AttackArea *= shopRatio;
+                    _MulShop(StatType.AttackArea, shopRatio);
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
                         float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
@@ -1128,10 +1142,13 @@ namespace TrainDefense.Game
                             if (p != null && !p.IsScaleByArea()) p.transform.localScale = new Vector3(ratio, ratio, 1f);
                     }
                     break;
+                }
 
                 case StatType.AttackDamage:
                 {
-                    _currentTurretTrainStatus.AttackDamage = _currentTurretTrainStatus.AttackDamage / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    _currentTurretTrainStatus.AttackDamage *= shopRatio;
+                    _MulShop(StatType.AttackDamage, shopRatio);
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                         foreach (var p in _nonMovementProjectiles)
                             if (p != null) InitializeProjectileDamage(p);
@@ -1149,8 +1166,12 @@ namespace TrainDefense.Game
                 }
 
                 case StatType.AttackInterval:
-                    _currentTurretTrainStatus.AttackInterval = _currentTurretTrainStatus.AttackInterval * (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
+                {
+                    float shopRatio = (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
+                    _currentTurretTrainStatus.AttackInterval *= shopRatio;
+                    _MulShop(StatType.AttackInterval, shopRatio);
                     break;
+                }
 
                 case StatType.TargetCount:
                 {
@@ -1198,6 +1219,10 @@ namespace TrainDefense.Game
             _statAttackDamageAccum = srcTurret._statAttackDamageAccum;
             _statAttackCountAccum = srcTurret._statAttackCountAccum;
             _statTargetCountAccum = srcTurret._statTargetCountAccum;
+
+            // 상점 누적 배율도 그대로 승계(엘리트 전환 후에도 중복선택 flat이 올바른 배율을 받도록).
+            _shopMultiplier.Clear();
+            foreach (var kv in srcTurret._shopMultiplier) _shopMultiplier[kv.Key] = kv.Value;
 
             if (_useNonMovementProjectilePooling)
             {

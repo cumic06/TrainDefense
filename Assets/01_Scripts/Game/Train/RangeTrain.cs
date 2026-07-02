@@ -3,6 +3,7 @@ using UnityEngine;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Stats;
 using System.Collections;
+using System.Collections.Generic;
 using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
@@ -25,6 +26,12 @@ namespace TrainDefense.Game
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statAttackDamageAccum;
         private float _statAttackCountAccum;
+
+        // 상점 업그레이드의 스탯별 누적 배율. 중복선택(Upgrade)으로 더하는 flat 증가분에도 이 배율을 곱해
+        // "(base + 중복선택합) × (1 + 상점%)" 가 강화 순서와 무관하게 성립하도록 한다.
+        private readonly Dictionary<StatType, float> _shopMultiplier = new();
+        private float _ShopMul(StatType type) => _shopMultiplier.TryGetValue(type, out var m) ? m : 1f;
+        private void _MulShop(StatType type, float ratio) => _shopMultiplier[type] = _ShopMul(type) * ratio;
 
         private bool _suppressMainProjectileShove;
 
@@ -238,11 +245,12 @@ namespace TrainDefense.Game
             {
                 int upgradeLevelIndex = currentLevel + 1;
                 var rangeStatus = rangeUpgradeData.GetRangeStatusUpgrade(upgradeLevelIndex);
-                _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange;
-                _currentRangeTrainStatus.AttackArea += rangeStatus.AttackArea;
-                _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage;
+                // 중복선택 증가분은 base와 동일하게 상점 배율을 받는다(Model B): (base+중복선택)×(1+상점%).
+                _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange * _ShopMul(StatType.AttackRange);
+                _currentRangeTrainStatus.AttackArea += rangeStatus.AttackArea * _ShopMul(StatType.AttackArea);
+                _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage * _ShopMul(StatType.AttackDamage);
                 _currentRangeTrainStatus.AttackCount += rangeStatus.AttackCount;
-                _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval;
+                _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval * _ShopMul(StatType.AttackInterval);
                 _currentRangeTrainStatus.CriticalChance += rangeStatus.CriticalChance;
                 _currentRangeTrainStatus.CriticalDamage += rangeStatus.CriticalDamage;
                 _currentRangeTrainStatus.SlowRate += rangeStatus.SlowRate;
@@ -446,21 +454,31 @@ namespace TrainDefense.Game
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    _currentRangeTrainStatus.AttackRange = _currentRangeTrainStatus.AttackRange / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                {
+                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    _currentRangeTrainStatus.AttackRange *= shopRatio;
+                    _MulShop(StatType.AttackRange, shopRatio);
                     break;
+                }
 
                 case StatType.AttackArea:
-                    _currentRangeTrainStatus.AttackArea = _currentRangeTrainStatus.AttackArea / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                {
+                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    _currentRangeTrainStatus.AttackArea *= shopRatio;
+                    _MulShop(StatType.AttackArea, shopRatio);
                     if (_rangeProjectilePrefab != null)
                     {
                         float areaScale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
                         _rangeProjectilePrefab.transform.localScale = new Vector3(areaScale, areaScale, 1f);
                     }
                     break;
+                }
 
                 case StatType.AttackDamage:
                 {
-                    _currentRangeTrainStatus.AttackDamage = _currentRangeTrainStatus.AttackDamage / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    _currentRangeTrainStatus.AttackDamage *= shopRatio;
+                    _MulShop(StatType.AttackDamage, shopRatio);
                     if (_rangeProjectilePrefab != null)
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
                             _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
@@ -477,8 +495,12 @@ namespace TrainDefense.Game
                 }
 
                 case StatType.AttackInterval:
-                    _currentRangeTrainStatus.AttackInterval = _currentRangeTrainStatus.AttackInterval * (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
+                {
+                    float shopRatio = (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
+                    _currentRangeTrainStatus.AttackInterval *= shopRatio;
+                    _MulShop(StatType.AttackInterval, shopRatio);
                     break;
+                }
 
                 case StatType.CriticalChance:
                     _currentRangeTrainStatus.CriticalChance += stat.Value * times;
@@ -523,6 +545,10 @@ namespace TrainDefense.Game
 
             _statAttackDamageAccum = srcRange._statAttackDamageAccum;
             _statAttackCountAccum = srcRange._statAttackCountAccum;
+
+            // 상점 누적 배율도 그대로 승계(엘리트 전환 후에도 중복선택 flat이 올바른 배율을 받도록).
+            _shopMultiplier.Clear();
+            foreach (var kv in srcRange._shopMultiplier) _shopMultiplier[kv.Key] = kv.Value;
 
             if (_rangeProjectilePrefab != null)
             {
