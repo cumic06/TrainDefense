@@ -64,7 +64,7 @@ namespace TrainDefense.Game
       private int _stationPassedCount = 0;
 
       private EliteData _eliteData;
-      // 엘리트 가능(EliteChanceMultiplier>0) 몬스터를 센 수. eliteSpawnCycle마다 1마리를 엘리트로. 역 도착/스테이지 전환 시 리셋.
+      // 엘리트 가능(EliteChanceMultiplier>0) 몬스터를 센 수. eliteSpawnCycle마다 1마리를 엘리트로. 스테이지 전환 시 리셋.
       [ShowInInspector]
       private int _eliteSpawnCounter;
 
@@ -106,7 +106,6 @@ namespace TrainDefense.Game
       {
          DestroyAllMonsters();
          _stationPassedCount++;
-         _eliteSpawnCounter = 0;
          spawnInterval = _GetAcceleratedInterval();
       }
 
