@@ -27,6 +27,8 @@ namespace TrainDefense.Game
         public float ShoveScale { get; set; } = 1f;
         protected Coroutine _destroyCoroutine;
         protected Dictionary<IProjectileTarget, float> _damageTimers = new();
+        // 틱 범위 안에 현재 피해를 받는 대상이 있는지. (RangeTrain이 공격 루프 사운드 게이트로 사용)
+        public bool HasTickTargets => _damageTimers.Count > 0;
         protected float _age;
         protected bool _isSpawnedTrigger;
         protected float _scaleRadius;

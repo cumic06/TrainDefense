@@ -51,8 +51,6 @@ namespace TrainDefense.Game
 
             SpawnRangeProjectile();
 
-            PlayLoopSFX();
-
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Subscribe<EngageReadyEvent>(_OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(_OnEngageStart);
@@ -87,29 +85,54 @@ namespace TrainDefense.Game
 
             if (_rangeProjectilePrefab == null)
                 SpawnRangeProjectile();
-
-            PlayLoopSFX();
         }
+
+        // 매 프레임 게이트(_UpdateTickLoopSfx)에서 호출되므로, 전환 시점에만 Play/Stop이 나가도록 상태를 기억한다.
+        // (TurretTrain은 공격 인터벌 시점에만 Play해서 이런 가드가 필요 없다)
+        private bool _isLoopSfxPlaying;
 
         private void PlayLoopSFX()
         {
-            if (rangeTrainData.AttackSoundType == SoundType.None) return;
+            if (_isLoopSfxPlaying) return;
+            if (rangeTrainData == null || rangeTrainData.AttackSoundType == SoundType.None) return;
+
+            _isLoopSfxPlaying = true;
             SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType, true);
         }
 
         private void StopLoopSFX()
         {
-            if (TrainData == null) return;
-            if (TrainData.DamageType == DamageType.Direct) return;
-            if (rangeTrainData.AttackSoundType == SoundType.None) return;
+            if (!_isLoopSfxPlaying) return;
+            if (rangeTrainData == null || rangeTrainData.AttackSoundType == SoundType.None) return;
+
+            _isLoopSfxPlaying = false;
             SoundManager.Instance.StopSFX(rangeTrainData.AttackSoundType);
         }
 
         protected override void Update()
         {
             base.Update();
-            if (_isDead) return;
+            if (_isDead)
+            {
+                StopLoopSFX();
+                return;
+            }
             RangeAttackHandler();
+            _UpdateTickLoopSfx();
+        }
+
+        // 틱(지속형) 포탑의 공격 루프 사운드를 실제 공격 중(범위 안에 틱 대상이 있을 때)에만 재생한다.
+        private void _UpdateTickLoopSfx()
+        {
+            if (TrainData == null || TrainData.DamageType == DamageType.Direct) return;
+
+            bool attacking = _rangeProjectilePrefab != null
+                             && _rangeProjectilePrefab.gameObject.activeInHierarchy
+                             && _rangeProjectilePrefab.HasTickTargets;
+            if (attacking)
+                PlayLoopSFX();
+            else
+                StopLoopSFX();
         }
 
         private void RangeAttackHandler()
