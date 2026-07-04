@@ -7,9 +7,9 @@ namespace TrainDefense.Game.Datas
    public class EliteData
    {
       [Header("엘리트 스폰 주기")]
-      [Tooltip("엘리트가 될 수 있는(EliteChanceMultiplier>0) 몬스터 n마리마다 1마리를 엘리트로 스폰한다. 확률이 아니라 고정 주기.")]
+      [Tooltip("스폰 루프(틱) n회마다 1마리를 엘리트로 스폰한다. 확률이 아니라 고정 주기. 엘리트 시간 간격 = n × 스폰 간격(spawnCount와 무관).")]
       [Min(1)]
-      public int eliteSpawnCycle = 20;
+      public int eliteSpawnCycle = 100;
 
       [Header("엘리트 스탯 배율 (variants 가 비었을 때 빨강 fallback 으로 사용)")]
       public float hpMultiplier = 3f;

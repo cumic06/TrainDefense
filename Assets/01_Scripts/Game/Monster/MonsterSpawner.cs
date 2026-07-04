@@ -22,13 +22,26 @@ namespace TrainDefense.Game
       private int spawnCount = 1;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
+      [Tooltip("spawnCount 상한")]
+      private int maxSpawnCount = 4;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
+      [Tooltip("spawnCount가 처음 +1 되는 검문(역 도착) 횟수")]
+      private int spawnCountFirstIncreaseStation = 2;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
+      [Tooltip("첫 증가 이후 spawnCount가 다시 +1 되는 검문 간격")]
+      private int spawnCountIncreaseStationInterval = 3;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
       private float spawnRange;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
-      private float stationSpawnAccelPercent = 8f;
+      [Tooltip("스테이지(맵) 변경 1회당 스폰 간격 단축 %")]
+      private float stageSpawnAccelPercent = 10f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
-      private float maxSpawnAccelPercent = 80f;
+      private float maxSpawnAccelPercent = 50f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
       private MonsterSpawnType spawnMode = MonsterSpawnType.CameraBased;
@@ -62,9 +75,11 @@ namespace TrainDefense.Game
       private float _originalSpawnInterval;
       private int _originalSpawnCount;
       private int _stationPassedCount = 0;
+      // 스테이지(맵) 변경 누적 횟수. 스폰 가속의 기준(검문 기반에서 변경, 2026-07-04).
+      private int _stageChangeCount = 0;
 
       private EliteData _eliteData;
-      // 엘리트 가능(EliteChanceMultiplier>0) 몬스터를 센 수. eliteSpawnCycle마다 1마리를 엘리트로. 스테이지 전환 시 리셋.
+      // 스폰 루프(틱) 카운터. eliteSpawnCycle틱마다 1마리를 엘리트로. 스테이지가 바뀌어도 이월.
       [ShowInInspector]
       private int _eliteSpawnCounter;
 
@@ -98,6 +113,7 @@ namespace TrainDefense.Game
          _eliteData = DatabaseManager.Instance.GetEliteData();
          _eliteSpawnCounter = 0;
          _stationPassedCount = 0;
+         _stageChangeCount = 0;
          spawnCount = _originalSpawnCount;
          StartCoroutine(SpawnMonster());
       }
@@ -121,7 +137,6 @@ namespace TrainDefense.Game
       private void OnStageSelect(StageSelectEvent stageSelectEvent)
       {
          spawnCount++;
-         _eliteSpawnCounter = 0;
       }
 
       public void SetSpawnRule(StageSpawnData[] spawnDatas, float monsterSpawnInterval, List<SpawnAreaInfo> mapSpawnAreas = null, GameObject mapSpawnEffect = null)
@@ -206,6 +221,20 @@ namespace TrainDefense.Game
                continue;
             }
 
+            // 엘리트 스폰: 확률이 아니라 "스폰 루프(틱) eliteSpawnCycle회마다 1마리"를 고정 주기로 스폰.
+            // 틱 기준이라 엘리트 시간 간격 = eliteSpawnCycle × 스폰 간격(spawnCount와 무관).
+            // 스테이지1 통과(EliteStartStationCount) 전에는 등장하지 않는다.
+            bool spawnEliteThisTick = false;
+            if (_eliteData != null && _stationPassedCount >= EliteStartStationCount)
+            {
+               _eliteSpawnCounter++;
+               if (_eliteSpawnCounter >= Mathf.Max(1, _eliteData.eliteSpawnCycle))
+               {
+                  _eliteSpawnCounter = 0;
+                  spawnEliteThisTick = true;
+               }
+            }
+
             // 한 spawnInterval마다 spawnCount 마리를 각자 다른 위치·몬스터로 소환
             for (int spawnIndex = 0; spawnIndex < Mathf.Max(1, spawnCount); spawnIndex++)
             {
@@ -216,8 +245,15 @@ namespace TrainDefense.Game
                   ResourceManager.Instance.Spawn(_currentSpawnEffect, spawnPos, parent: transform);
                }
 
-               // 가중치 선택 로직
-               StageSpawnData selectedData = SelectMonsterData();
+               // 가중치 선택 로직. 엘리트 주기가 찬 틱이면 첫 슬롯은 적격(EliteChanceMultiplier>0) 몬스터 중에서만 뽑아 엘리트화.
+               bool spawnAsElite = spawnEliteThisTick && spawnIndex == 0;
+               StageSpawnData selectedData = SelectMonsterData(spawnAsElite);
+               if (spawnAsElite && selectedData == null)
+               {
+                  // 이 맵에 엘리트 가능 몬스터가 없으면 일반 스폰으로 대체.
+                  spawnAsElite = false;
+                  selectedData = SelectMonsterData();
+               }
                if (selectedData != null)
                {
                   // MonsterData 가져오기 (DatabaseManager를 통해 ID로 조회)
@@ -227,22 +263,10 @@ namespace TrainDefense.Game
                      Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
                      spawnMonster.Initialize(monsterData);
 
-                     // 엘리트 스폰: 확률이 아니라 "엘리트 가능한 몬스터 eliteSpawnCycle마리마다 1마리"를 고정 주기로 엘리트화.
-                     // EliteChanceMultiplier<=0 인 몬스터는 엘리트 대상에서 제외(주기 카운트에도 포함하지 않는다).
-                     // 스테이지1 통과(EliteStartStationCount) 전에는 등장하지 않는다.
-                     bool eliteEligible = _eliteData != null
-                                          && selectedData.EliteChanceMultiplier > 0f
-                                          && _stationPassedCount >= EliteStartStationCount;
-                     if (eliteEligible)
+                     if (spawnAsElite)
                      {
-                        _eliteSpawnCounter++;
-                        int cycle = Mathf.Max(1, _eliteData.eliteSpawnCycle);
-                        if (_eliteSpawnCounter >= cycle)
-                        {
-                           _eliteSpawnCounter = 0;
-                           EliteVariant eliteVariant = _eliteData.SelectVariant();
-                           spawnMonster.ApplyElite(_eliteData, eliteVariant);
-                        }
+                        EliteVariant eliteVariant = _eliteData.SelectVariant();
+                        spawnMonster.ApplyElite(_eliteData, eliteVariant);
                      }
 
                      _spawnedMonsters.Add(spawnMonster);
@@ -260,7 +284,8 @@ namespace TrainDefense.Game
       // 엘리트는 스테이지1 통과 후부터 등장(역 3개 후 4번째 검문에 맵 변경).
       private const int EliteStartStationCount = 4;
 
-      private StageSpawnData SelectMonsterData()
+      // eliteEligibleOnly = true 면 엘리트 가능(EliteChanceMultiplier>0) 몬스터 중에서만 뽑는다. 적격 후보가 없으면 null.
+      private StageSpawnData SelectMonsterData(bool eliteEligibleOnly = false)
       {
          if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
             return null;
@@ -269,6 +294,9 @@ namespace TrainDefense.Game
          float totalProbability = 0f;
          foreach (var data in _currentSpawnDatas)
          {
+            if (eliteEligibleOnly && data.EliteChanceMultiplier <= 0f)
+               continue;
+
             if (data.Probability > 0)
             {
                useProbability = true;
@@ -278,6 +306,9 @@ namespace TrainDefense.Game
 
          if (!useProbability)
          {
+            if (eliteEligibleOnly)
+               return null;
+
             return _currentSpawnDatas[Random.Range(0, _currentSpawnDatas.Length)];
          }
 
@@ -285,6 +316,9 @@ namespace TrainDefense.Game
 
          for (int i = 0; i < _currentSpawnDatas.Length; i++)
          {
+            if (eliteEligibleOnly && _currentSpawnDatas[i].EliteChanceMultiplier <= 0f)
+               continue;
+
             if (_currentSpawnDatas[i].Probability > 0)
             {
                if (randomPoint < _currentSpawnDatas[i].Probability)
