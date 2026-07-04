@@ -75,19 +75,19 @@ namespace TrainDefense.Game.Datas
             {
                type = EliteType.Red,
                weight = 1f,
-               hpMultiplier = 3f,
-               damageMultiplier = 2.5f,
-               moveSpeedMultiplier = 1.2f,
-               sizeScale = 1.5f,
-               dropExpMultiplier = 2.5f,
-               dropMoneyMultiplier = 2.5f,
+               hpMultiplier = 12f,
+               damageMultiplier = 4f,
+               moveSpeedMultiplier = 1.4f,
+               sizeScale = 1.6f,
+               dropExpMultiplier = 10f,
+               dropMoneyMultiplier = 10f,
                tintColor = new Color(1f, 0.3f, 0.3f, 1f),
             },
-            // 🟢 초록 — 엄청 튼튼
+            // 🟢 초록 — 엄청 튼튼 (weight 0 = 미등장, 빨강만 사용)
             new EliteVariant
             {
                type = EliteType.Green,
-               weight = 1f,
+               weight = 0f,
                hpMultiplier = 8f,
                damageMultiplier = 1.5f,
                moveSpeedMultiplier = 0.85f,
@@ -96,11 +96,11 @@ namespace TrainDefense.Game.Datas
                dropMoneyMultiplier = 3f,
                tintColor = new Color(0.3f, 1f, 0.4f, 1f),
             },
-            // 🔵 파랑 — 주기적 원거리 공격
+            // 🔵 파랑 — 주기적 원거리 공격 (weight 0 = 미등장, 빨강만 사용)
             new EliteVariant
             {
                type = EliteType.Blue,
-               weight = 1f,
+               weight = 0f,
                hpMultiplier = 3f,
                damageMultiplier = 2f,
                moveSpeedMultiplier = 1f,
@@ -110,11 +110,11 @@ namespace TrainDefense.Game.Datas
                tintColor = new Color(0.3f, 0.6f, 1f, 1f),
                rangedAttackInterval = 3f,
             },
-            // 🟡 노랑 — 주변 이속 증가 오라
+            // 🟡 노랑 — 주변 이속 증가 오라 (weight 0 = 미등장, 빨강만 사용)
             new EliteVariant
             {
                type = EliteType.Yellow,
-               weight = 1f,
+               weight = 0f,
                hpMultiplier = 3f,
                damageMultiplier = 1.5f,
                moveSpeedMultiplier = 1.1f,
