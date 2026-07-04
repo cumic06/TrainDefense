@@ -14480,8 +14480,8 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   spawnInterval: 2
   spawnRange: 2
-  stationSpawnAccelPercent: 8
-  maxSpawnAccelPercent: 80
+  stationSpawnAccelPercent: 3
+  maxSpawnAccelPercent: 60
   spawnMode: 1
   customSpawnAreas:
   - Offset: {x: 0, y: 10}

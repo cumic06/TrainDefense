@@ -37,11 +37,12 @@ namespace TrainDefense.Game
       private float spawnRange;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
-      [Tooltip("스테이지(맵) 변경 1회당 스폰 간격 단축 %")]
-      private float stageSpawnAccelPercent = 10f;
+      [Tooltip("검문(역 도착) 1회당 스폰 간격 단축 %")]
+      private float stationSpawnAccelPercent = 3f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
-      private float maxSpawnAccelPercent = 50f;
+      [Tooltip("스폰 간격 단축 상한 %")]
+      private float maxSpawnAccelPercent = 60f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
       private MonsterSpawnType spawnMode = MonsterSpawnType.CameraBased;
@@ -75,8 +76,6 @@ namespace TrainDefense.Game
       private float _originalSpawnInterval;
       private int _originalSpawnCount;
       private int _stationPassedCount = 0;
-      // 스테이지(맵) 변경 누적 횟수. 스폰 가속의 기준(검문 기반에서 변경, 2026-07-04).
-      private int _stageChangeCount = 0;
 
       private EliteData _eliteData;
       // 스폰 루프(틱) 카운터. eliteSpawnCycle틱마다 1마리를 엘리트로. 스테이지가 바뀌어도 이월.
@@ -93,7 +92,6 @@ namespace TrainDefense.Game
          GameEventSystem.Subscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
-         GameEventSystem.Subscribe<StageSelectEvent>(OnStageSelect);
       }
 
       private void OnDestroy()
@@ -102,7 +100,6 @@ namespace TrainDefense.Game
          GameEventSystem.Unsubscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
-         GameEventSystem.Unsubscribe<StageSelectEvent>(OnStageSelect);
       }
       #endregion
 
@@ -113,7 +110,6 @@ namespace TrainDefense.Game
          _eliteData = DatabaseManager.Instance.GetEliteData();
          _eliteSpawnCounter = 0;
          _stationPassedCount = 0;
-         _stageChangeCount = 0;
          spawnCount = _originalSpawnCount;
          StartCoroutine(SpawnMonster());
       }
@@ -122,7 +118,20 @@ namespace TrainDefense.Game
       {
          DestroyAllMonsters();
          _stationPassedCount++;
+         _UpdateSpawnCountByStation();
          spawnInterval = _GetAcceleratedInterval();
+      }
+
+      // 검문(역 도착) 누적 횟수로 spawnCount를 결정한다.
+      // spawnCountFirstIncreaseStation번째 검문에 처음 +1, 이후 spawnCountIncreaseStationInterval 검문마다 +1, maxSpawnCount 상한.
+      private void _UpdateSpawnCountByStation()
+      {
+         int increase = 0;
+         if (_stationPassedCount >= spawnCountFirstIncreaseStation)
+            increase = spawnCountIncreaseStationInterval > 0
+               ? 1 + (_stationPassedCount - spawnCountFirstIncreaseStation) / spawnCountIncreaseStationInterval
+               : 1;
+         spawnCount = Mathf.Min(_originalSpawnCount + increase, maxSpawnCount);
       }
 
       private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
@@ -131,12 +140,6 @@ namespace TrainDefense.Game
          {
             StartSpawnMonster();
          }
-      }
-
-      // 스테이지(맵) 변경마다 한 번에 소환하는 몬스터 수를 1 늘린다.
-      private void OnStageSelect(StageSelectEvent stageSelectEvent)
-      {
-         spawnCount++;
       }
 
       public void SetSpawnRule(StageSpawnData[] spawnDatas, float monsterSpawnInterval, List<SpawnAreaInfo> mapSpawnAreas = null, GameObject mapSpawnEffect = null)
