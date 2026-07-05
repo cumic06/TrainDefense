@@ -35,6 +35,10 @@ namespace TrainDefense.Game
 
         private bool _suppressMainProjectileShove;
 
+        // 매 프레임 게이트(_UpdateTickLoopSfx)에서 호출되므로, 전환 시점에만 Play/Stop이 나가도록 상태를 기억한다.
+        // (TurretTrain은 공격 인터벌 시점에만 Play해서 이런 가드가 필요 없다)
+        private bool _isLoopSfxPlaying;
+
         public event Action OnAttacked;
 
         protected override void Setup()
@@ -86,10 +90,6 @@ namespace TrainDefense.Game
             if (_rangeProjectilePrefab == null)
                 SpawnRangeProjectile();
         }
-
-        // 매 프레임 게이트(_UpdateTickLoopSfx)에서 호출되므로, 전환 시점에만 Play/Stop이 나가도록 상태를 기억한다.
-        // (TurretTrain은 공격 인터벌 시점에만 Play해서 이런 가드가 필요 없다)
-        private bool _isLoopSfxPlaying;
 
         private void PlayLoopSFX()
         {
