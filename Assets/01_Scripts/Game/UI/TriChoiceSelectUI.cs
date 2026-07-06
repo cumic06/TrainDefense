@@ -268,8 +268,8 @@ namespace TrainDefense.Game.UI
          return string.Join("\n", lines);
       }
 
-      // 공격 속도는 공격 간격(초)으로 표시. 시스템 값이 아닌 UI 표시 전용. 예: 0.34s
-      private static string FormatAttackSpeed(float interval) => $"{interval:0.00}s";
+      // 공격 속도는 공격 간격(초)으로 표시. 시스템 값이 아닌 UI 표시 전용. 예: 0.34
+      private static string FormatAttackSpeed(float interval) => $"{interval:0.00}";
 
       // 값을 공백 PadLeft → txt의 <mspace>(고정폭) 안에서 자릿수가 달라도 우측 끝이 정렬됨. 소수는 첫째 자리까지.
       private const int StatValueWidth = 3;
