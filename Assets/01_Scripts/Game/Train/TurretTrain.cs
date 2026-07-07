@@ -262,10 +262,66 @@ namespace TrainDefense.Game
 
             DetectTarget();
 
-            if (IsAttackDelayZero())
+            // 타겟이 있으면 공격과 무관하게 계속 조준 방향으로 회전한다. (발사 순간에만 돌면 끊겨 보임)
+            _RotateTowardNearTarget();
+
+            // 회전 중에 발사되면 총구와 다른 방향으로 나가 어색해서, 타겟 방향을 (거의) 바라볼 때만 발사한다.
+            if (IsAttackDelayZero() && _IsAimedAtNearTarget())
             {
                 AttackHandler();
             }
+        }
+
+        // 포탑 조준 회전 속도(도/초). 즉시 스냅하면 '휙' 돌아 어색해서 이 속도로 보간한다.
+        private const float TurretRotateSpeed = 1440f;
+        // 발사를 허용하는 조준 오차(도).
+        private const float FireAlignmentTolerance = 10f;
+
+        private void _RotateTowardNearTarget()
+        {
+            if (!isRotateTurret || turret == null)
+                return;
+
+            // 빔(레이저)은 포탑에 붙어 함께 돌아서, 공격 중에 회전하면 빔이 부채꼴로 쓸고 지나간다 → 빔이 켜진 동안 회전 고정.
+            if (_IsBeamAttackActive())
+                return;
+
+            Monster nearTarget = GetNearTargetMonster();
+            if (nearTarget == null)
+                return;
+
+            Quaternion targetRotation = Quaternion.Euler(0f, 0f, turret.transform.GetAngle2D(nearTarget.transform.position));
+            turret.transform.rotation = Quaternion.RotateTowards(
+                turret.transform.rotation, targetRotation, TurretRotateSpeed * Time.fixedDeltaTime);
+        }
+
+        // 포탑이 가장 가까운 타겟을 (거의) 바라보고 있는가. 회전하지 않는 포탑·타겟 없음은 항상 통과.
+        private bool _IsAimedAtNearTarget()
+        {
+            if (!isRotateTurret || turret == null)
+                return true;
+
+            Monster nearTarget = GetNearTargetMonster();
+            if (nearTarget == null)
+                return true;
+
+            float targetAngle = turret.transform.GetAngle2D(nearTarget.transform.position);
+            return Mathf.Abs(Mathf.DeltaAngle(turret.transform.eulerAngles.z, targetAngle)) <= FireAlignmentTolerance;
+        }
+
+        // 빔(파티클이 아닌 NonMovement 부착 투사체, 레이저)이 켜져 있는가.
+        private bool _IsBeamAttackActive()
+        {
+            if (useParticleProjectile || !_useNonMovementProjectilePooling)
+                return false;
+
+            foreach (var projectile in _nonMovementProjectiles)
+            {
+                if (projectile != null && projectile.gameObject.activeSelf)
+                    return true;
+            }
+
+            return false;
         }
 
         protected void DetectTarget()
@@ -275,11 +331,38 @@ namespace TrainDefense.Game
             .Select(a => a.GetComponent<Monster>())
             .OrderBy(x => transform.position.SqrDistance(x.transform.position))
             .ToList();
+
+            _UpdateNearTarget();
+        }
+
+        // 비슷한 거리의 적 둘 사이에서 최근접이 매 틱 뒤바뀌면 포탑이 둘 사이를 오가며 떨려서,
+        // 새 후보가 충분히 더 가까울 때만 타겟을 교체한다. (제곱거리 비율 0.7 = 거리로 약 16% 더 가까울 때)
+        private const float TargetSwitchSqrDistanceRatio = 0.7f;
+        private Monster _nearTarget;
+
+        private void _UpdateNearTarget()
+        {
+            Monster nearest = _targetMonsters.FirstOrDefault();
+
+            // 현재 타겟이 없거나, 죽거나 사거리를 벗어났으면 즉시 최근접으로 교체.
+            if (_nearTarget == null || !_targetMonsters.Contains(_nearTarget))
+            {
+                _nearTarget = nearest;
+                return;
+            }
+
+            if (nearest == _nearTarget)
+                return;
+
+            float nearestSqrDistance = transform.position.SqrDistance(nearest.transform.position);
+            float currentSqrDistance = transform.position.SqrDistance(_nearTarget.transform.position);
+            if (nearestSqrDistance < currentSqrDistance * TargetSwitchSqrDistanceRatio)
+                _nearTarget = nearest;
         }
 
         protected Monster GetNearTargetMonster()
         {
-            if (_targetMonsters.Count == 0) return null;
+            if (_nearTarget != null) return _nearTarget;
 
             return _targetMonsters.FirstOrDefault();
         }
@@ -318,6 +401,7 @@ namespace TrainDefense.Game
         private void ResetTarget()
         {
             _targetMonsters.Clear();
+            _nearTarget = null;
 
             _DeactivateNonMovementProjectiles();
         }
@@ -345,11 +429,7 @@ namespace TrainDefense.Game
 
             if (turretModel != null)
             {
-                if (isRotateTurret)
-                {
-                    turret.transform.LookAt2D(nearTarget.transform);
-                }
-
+                // 조준 회전은 FixedUpdate의 _RotateTowardNearTarget가 보간으로 담당한다. (여기서 스냅하면 '휙' 돎)
                 PlayAttackAnimation();
             }
 

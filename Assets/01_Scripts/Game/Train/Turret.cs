@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using Cumic;
+using Cumic.Events;
 using DG.Tweening;
 using TrainDefense;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Events;
 using TrainDefense.Game.Stats;
 using UnityEngine;
 
@@ -68,6 +70,10 @@ namespace TrainDefense.Game
             // 메인 터렛도 편성 포탑과 동일하게 상점 업그레이드(공격력·공속·치명타 등)를 받는다.
             // 장착 시점에 이미 구매돼 있는 상점 레벨을 소급 적용(MainTrain.ApplyExistingUpgradesToTrain와 동일 방식).
             _ApplyExistingShopUpgrades();
+
+            // 장착 시점의 플레이어 레벨까지 레벨 성장을 소급 적용하고, 이후 레벨업을 구독한다.
+            _SyncLevelGrowth();
+            GameEventSystem.Subscribe<LevelUpEvent>(_OnPlayerLevelUp);
         }
 
         // 선택 포탑 프리팹의 turret(회전 pivot) 서브트리만 복제해 자식으로 붙이고,
@@ -137,6 +143,23 @@ namespace TrainDefense.Game
         #endregion
 
         #region Fire
+        /// <summary>
+        /// 조준 지점을 바라보도록 포탑을 회전시킨다. (MainTrain이 조준 중 매 프레임 호출)
+        /// 발사 순간에만 돌면 공속이 느릴 때 회전이 끊겨 보여서, 누르는 동안 계속 따라 돈다.
+        /// </summary>
+        public void AimAt(Vector2 aimPosition)
+        {
+            if (!_isRotateTurret || _pivot == null)
+                return;
+
+            // 총알과 동일하게 스폰 지점 기준 방향을 쓴다(포탑 정중앙 터치 시 방향 뒤집힘 방지, Fire의 회전 보정과 같은 이유).
+            Transform spawnPoint = _GetSpawnPoint(0);
+            if (spawnPoint == null)
+                return;
+
+            _pivot.rotation = Quaternion.Euler(0f, 0f, spawnPoint.GetAngle2D(aimPosition));
+        }
+
         /// <summary>
         /// aim(월드 좌표) 방향으로 1회 발사한다. MainTrain이 쿨다운마다 호출한다.
         /// </summary>
@@ -321,9 +344,37 @@ namespace TrainDefense.Game
         }
         #endregion
 
+        #region LevelGrowth
+        // 플레이어 레벨 성장: 레벨당 공격력 +5% 가산(lv1=×1.0, base×(1+0.05×(lv-1))).
+        // 상점 배율과 곱으로 중첩된다. 편성 포탑은 레벨업 카드로 성장하지만 메인 터렛은 카드가 없어 이 축이 대신한다.
+        private const float LevelUpDamagePercent = 0.05f;
+        private int _appliedPlayerLevel = 1;
+
+        private void _OnPlayerLevelUp(LevelUpEvent _) => _SyncLevelGrowth();
+
+        // 현재 플레이어 레벨까지의 성장 배율을 정규화 곱셈으로 _status에 반영한다.
+        // _appliedPlayerLevel 기준 재계산이라 이벤트가 한 번에 여러 번 발행돼도 이중 적용이 없다.
+        private void _SyncLevelGrowth()
+        {
+            if (_data == null || UserDataManager.Instance == null)
+                return;
+
+            int currentLevel = UserDataManager.Instance.CurrentLevel;
+            if (currentLevel == _appliedPlayerLevel)
+                return;
+
+            _status.AttackDamage = _status.AttackDamage
+                / (1f + LevelUpDamagePercent * (_appliedPlayerLevel - 1))
+                * (1f + LevelUpDamagePercent * (currentLevel - 1));
+            _appliedPlayerLevel = currentLevel;
+        }
+        #endregion
+
         #region LifeCycle
         private void OnDestroy()
         {
+            GameEventSystem.Unsubscribe<LevelUpEvent>(_OnPlayerLevelUp);
+
             if (_model != null)
                 _model.DOKill();
         }
