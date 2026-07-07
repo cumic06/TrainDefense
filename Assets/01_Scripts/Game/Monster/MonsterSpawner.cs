@@ -226,7 +226,7 @@ namespace TrainDefense.Game
 
             // 엘리트 스폰: 확률이 아니라 "스폰 루프(틱) eliteSpawnCycle회마다 1마리"를 고정 주기로 스폰.
             // 틱 기준이라 엘리트 시간 간격 = eliteSpawnCycle × 스폰 간격(spawnCount와 무관).
-            // 스테이지1 통과(EliteStartStationCount) 전에는 등장하지 않는다.
+            // EliteStartStationCount(스테이지2 통과) 전에는 등장하지 않는다.
             bool spawnEliteThisTick = false;
             if (_eliteData != null && _stationPassedCount >= EliteStartStationCount)
             {
@@ -284,8 +284,8 @@ namespace TrainDefense.Game
          }
       }
 
-      // 엘리트는 스테이지1 통과 후부터 등장(역 3개 후 4번째 검문에 맵 변경).
-      private const int EliteStartStationCount = 4;
+      // 엘리트는 스테이지2 통과 후(스테이지3)부터 등장. 검문 카운트는 스테이지당 4회(역 3개 + 맵 변경 1회).
+      private const int EliteStartStationCount = 8;
 
       // eliteEligibleOnly = true 면 엘리트 가능(EliteChanceMultiplier>0) 몬스터 중에서만 뽑는다. 적격 후보가 없으면 null.
       private StageSpawnData SelectMonsterData(bool eliteEligibleOnly = false)
