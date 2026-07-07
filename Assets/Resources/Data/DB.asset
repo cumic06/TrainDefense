@@ -29,8 +29,8 @@ MonoBehaviour:
       Damage: 4
       MoveSpeed: 5
       AttackDelay: 1
-      DropExpMin: 9
-      DropExpMax: 9
+      DropExpMin: 8
+      DropExpMax: 8
       DropMoneyMin: 2
       DropMoneyMax: 2
       AttackRange: 2
@@ -49,12 +49,12 @@ MonoBehaviour:
     - {fileID: -3137741453567158835, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     - {fileID: 9216760424783274641, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     monsterStatusData:
-      MaxHp: 14
+      MaxHp: 10
       Damage: 4
       MoveSpeed: 6.3
       AttackDelay: 0.6
-      DropExpMin: 27
-      DropExpMax: 27
+      DropExpMin: 20
+      DropExpMax: 20
       DropMoneyMin: 5
       DropMoneyMax: 5
       AttackRange: 1.6
@@ -75,14 +75,14 @@ MonoBehaviour:
     - {fileID: -1016734687898979182, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     - {fileID: 7477702687696233401, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     monsterStatusData:
-      MaxHp: 32
+      MaxHp: 22
       Damage: 12
       MoveSpeed: 4
       AttackDelay: 2
-      DropExpMin: 32
-      DropExpMax: 32
-      DropMoneyMin: 7
-      DropMoneyMax: 7
+      DropExpMin: 52
+      DropExpMax: 52
+      DropMoneyMin: 13
+      DropMoneyMax: 13
       AttackRange: 5
       AttackType: 1
     prefabId: Gnoll
@@ -103,10 +103,10 @@ MonoBehaviour:
       Damage: 8
       MoveSpeed: 4
       AttackDelay: 2
-      DropExpMin: 18
-      DropExpMax: 18
-      DropMoneyMin: 6
-      DropMoneyMax: 6
+      DropExpMin: 20
+      DropExpMax: 20
+      DropMoneyMin: 5
+      DropMoneyMax: 5
       AttackRange: 2
       AttackType: 0
     prefabId: Hammershark
@@ -123,14 +123,14 @@ MonoBehaviour:
     - {fileID: -5309227702758776139, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     - {fileID: 8516958411369342763, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     monsterStatusData:
-      MaxHp: 22
+      MaxHp: 15
       Damage: 10
       MoveSpeed: 3.8
       AttackDelay: 1.9
-      DropExpMin: 41
-      DropExpMax: 41
-      DropMoneyMin: 8
-      DropMoneyMax: 8
+      DropExpMin: 50
+      DropExpMax: 50
+      DropMoneyMin: 13
+      DropMoneyMax: 13
       AttackRange: 4.8
       AttackType: 1
     prefabId: Shark
@@ -148,14 +148,14 @@ MonoBehaviour:
     - {fileID: 6566697209257710286, guid: eec049525e8bf41429d9c479cff52295, type: 3}
     - {fileID: -1919939128155651028, guid: eec049525e8bf41429d9c479cff52295, type: 3}
     monsterStatusData:
-      MaxHp: 116
+      MaxHp: 81
       Damage: 16
       MoveSpeed: 3.6
       AttackDelay: 2
-      DropExpMin: 153
-      DropExpMax: 153
-      DropMoneyMin: 31
-      DropMoneyMax: 31
+      DropExpMin: 130
+      DropExpMax: 130
+      DropMoneyMin: 33
+      DropMoneyMax: 33
       AttackRange: 2.2
       AttackType: 0
     prefabId: Turtle
@@ -180,8 +180,8 @@ MonoBehaviour:
       AttackDelay: 2.1
       DropExpMin: 16
       DropExpMax: 16
-      DropMoneyMin: 5
-      DropMoneyMax: 5
+      DropMoneyMin: 4
+      DropMoneyMax: 4
       AttackRange: 2.3
       AttackType: 0
     prefabId: Snake
@@ -198,14 +198,14 @@ MonoBehaviour:
     - {fileID: -8315347680731458982, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     - {fileID: -9062487706820149092, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     monsterStatusData:
-      MaxHp: 26
+      MaxHp: 18
       Damage: 10
       MoveSpeed: 5.4
       AttackDelay: 1.4
       DropExpMin: 40
       DropExpMax: 40
-      DropMoneyMin: 8
-      DropMoneyMax: 8
+      DropMoneyMin: 10
+      DropMoneyMax: 10
       AttackRange: 1.7
       AttackType: 0
     prefabId: Panda
@@ -222,14 +222,14 @@ MonoBehaviour:
     - {fileID: -5987072993317950802, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     - {fileID: 308462971345494500, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     monsterStatusData:
-      MaxHp: 80
+      MaxHp: 56
       Damage: 10
       MoveSpeed: 4.2
       AttackDelay: 1
-      DropExpMin: 63
-      DropExpMax: 63
-      DropMoneyMin: 13
-      DropMoneyMax: 13
+      DropExpMin: 104
+      DropExpMax: 104
+      DropMoneyMin: 26
+      DropMoneyMax: 26
       AttackRange: 1.7
       AttackType: 0
     prefabId: Lizard
@@ -245,14 +245,14 @@ MonoBehaviour:
     - {fileID: 6767145381185255370, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
     - {fileID: 888686281029753222, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
     monsterStatusData:
-      MaxHp: 240
+      MaxHp: 168
       Damage: 40
       MoveSpeed: 6.4
       AttackDelay: 2
-      DropExpMin: 99
-      DropExpMax: 99
-      DropMoneyMin: 20
-      DropMoneyMax: 20
+      DropExpMin: 336
+      DropExpMax: 336
+      DropMoneyMin: 84
+      DropMoneyMax: 84
       AttackRange: 2
       AttackType: 0
     prefabId: Bear
@@ -273,10 +273,10 @@ MonoBehaviour:
       Damage: 3
       MoveSpeed: 5.6
       AttackDelay: 0.7
-      DropExpMin: 9
-      DropExpMax: 9
-      DropMoneyMin: 4
-      DropMoneyMax: 4
+      DropExpMin: 12
+      DropExpMax: 12
+      DropMoneyMin: 3
+      DropMoneyMax: 3
       AttackRange: 1.6
       AttackType: 0
     prefabId: Dwarf
@@ -292,14 +292,14 @@ MonoBehaviour:
     - {fileID: -8173720173229929539, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     - {fileID: 4663589299363003436, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     monsterStatusData:
-      MaxHp: 19
+      MaxHp: 13
       Damage: 10
       MoveSpeed: 4.6
       AttackDelay: 1.6
-      DropExpMin: 38
-      DropExpMax: 38
-      DropMoneyMin: 7
-      DropMoneyMax: 7
+      DropExpMin: 30
+      DropExpMax: 30
+      DropMoneyMin: 8
+      DropMoneyMax: 8
       AttackRange: 2.6
       AttackType: 0
     prefabId: Spider
@@ -318,14 +318,14 @@ MonoBehaviour:
     - {fileID: -6476088961041308456, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
     - {fileID: -723742200156331293, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
     monsterStatusData:
-      MaxHp: 72
+      MaxHp: 50
       Damage: 16
       MoveSpeed: 3.9
       AttackDelay: 2
-      DropExpMin: 104
-      DropExpMax: 104
-      DropMoneyMin: 19
-      DropMoneyMax: 19
+      DropExpMin: 78
+      DropExpMax: 78
+      DropMoneyMin: 20
+      DropMoneyMax: 20
       AttackRange: 2
       AttackType: 0
     prefabId: Minotaur
@@ -346,10 +346,10 @@ MonoBehaviour:
       Damage: 8
       MoveSpeed: 4.6
       AttackDelay: 2
-      DropExpMin: 25
-      DropExpMax: 25
-      DropMoneyMin: 7
-      DropMoneyMax: 7
+      DropExpMin: 24
+      DropExpMax: 24
+      DropMoneyMin: 6
+      DropMoneyMax: 6
       AttackRange: 2
       AttackType: 0
     prefabId: GoblinSpear
@@ -364,14 +364,14 @@ MonoBehaviour:
     - {fileID: -2829615651170692943, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
     - {fileID: -6842481794725325692, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
     monsterStatusData:
-      MaxHp: 30
+      MaxHp: 21
       Damage: 12
       MoveSpeed: 4
       AttackDelay: 2.7
-      DropExpMin: 62
-      DropExpMax: 62
-      DropMoneyMin: 13
-      DropMoneyMax: 13
+      DropExpMin: 60
+      DropExpMax: 60
+      DropMoneyMin: 15
+      DropMoneyMax: 15
       AttackRange: 5
       AttackType: 1
     prefabId: GoblinSorcerer
@@ -392,14 +392,14 @@ MonoBehaviour:
     - {fileID: 6601671565499704310, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
     - {fileID: -1199408517139786225, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
     monsterStatusData:
-      MaxHp: 132
+      MaxHp: 92
       Damage: 20
       MoveSpeed: 3.6
       AttackDelay: 2.3
-      DropExpMin: 198
-      DropExpMax: 198
-      DropMoneyMin: 40
-      DropMoneyMax: 40
+      DropExpMin: 156
+      DropExpMax: 156
+      DropMoneyMin: 39
+      DropMoneyMax: 39
       AttackRange: 2
       AttackType: 0
     prefabId: GiantGoblin
@@ -790,7 +790,7 @@ MonoBehaviour:
       AttackRange: 8
       AttackArea: 8
       AttackCount: 1
-      AttackInterval: 0.25
+      AttackInterval: 0.2
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -1616,16 +1616,16 @@ MonoBehaviour:
     spawnInterval: 0.2857
     spawnDatas:
     - MonsterId: 10001
-      Probability: 5
+      Probability: 6
       SpawnLevel: 1
       EliteChanceMultiplier: 1
     - MonsterId: 10002
       Probability: 3
-      SpawnLevel: 3
+      SpawnLevel: 6
       EliteChanceMultiplier: 1
     - MonsterId: 10003
-      Probability: 2
-      SpawnLevel: 6
+      Probability: 1
+      SpawnLevel: 10
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1641,16 +1641,16 @@ MonoBehaviour:
     spawnInterval: 0.7143
     spawnDatas:
     - MonsterId: 10004
-      Probability: 4.5
+      Probability: 6
       SpawnLevel: 1
       EliteChanceMultiplier: 1
     - MonsterId: 10005
-      Probability: 4
-      SpawnLevel: 3
+      Probability: 3
+      SpawnLevel: 6
       EliteChanceMultiplier: 1
     - MonsterId: 10006
-      Probability: 1.5
-      SpawnLevel: 6
+      Probability: 1
+      SpawnLevel: 10
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1670,20 +1670,20 @@ MonoBehaviour:
     spawnInterval: 0.5714
     spawnDatas:
     - MonsterId: 10007
-      Probability: 4
+      Probability: 6
       SpawnLevel: 1
       EliteChanceMultiplier: 1
     - MonsterId: 10008
-      Probability: 3.5
-      SpawnLevel: 3
+      Probability: 3
+      SpawnLevel: 6
       EliteChanceMultiplier: 1
     - MonsterId: 10009
-      Probability: 2
-      SpawnLevel: 5
+      Probability: 1
+      SpawnLevel: 10
       EliteChanceMultiplier: 1
     - MonsterId: 10010
       Probability: 0.5
-      SpawnLevel: 8
+      SpawnLevel: 15
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1699,16 +1699,16 @@ MonoBehaviour:
     spawnInterval: 0.4286
     spawnDatas:
     - MonsterId: 10011
-      Probability: 5.5
+      Probability: 6
       SpawnLevel: 1
       EliteChanceMultiplier: 1
     - MonsterId: 10012
-      Probability: 3.5
-      SpawnLevel: 4
+      Probability: 3
+      SpawnLevel: 6
       EliteChanceMultiplier: 1
     - MonsterId: 10013
       Probability: 1
-      SpawnLevel: 6
+      SpawnLevel: 10
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1724,16 +1724,16 @@ MonoBehaviour:
     spawnInterval: 0.8571
     spawnDatas:
     - MonsterId: 10014
-      Probability: 5
+      Probability: 6
       SpawnLevel: 1
       EliteChanceMultiplier: 1
     - MonsterId: 10015
-      Probability: 4
-      SpawnLevel: 4
+      Probability: 3
+      SpawnLevel: 6
       EliteChanceMultiplier: 1
     - MonsterId: 10016
       Probability: 1
-      SpawnLevel: 6
+      SpawnLevel: 10
       EliteChanceMultiplier: 1
     mapData:
       id: 
