@@ -922,7 +922,7 @@ MonoBehaviour:
       CriticalDamage: 0
       SlowRate: 25
     rangeProjectilePrefabId: ColdAirProjectile
-    attackDamageMultiplier: 0
+    attackDamageMultiplier: 1
   trainSkillDataDB:
     trainActiveSkillDataList:
     - id: 50001
