@@ -143,6 +143,9 @@ namespace TrainDefense.Game
         #endregion
 
         #region Fire
+        // 조준점이 피벗과 수치상 겹칠 때(방향 벡터 ≈ 0)만 회전을 갱신하지 않는 최소 안전값.
+        private const float AimDeadZoneRadius = 0.05f;
+
         /// <summary>
         /// 조준 지점을 바라보도록 포탑을 회전시킨다. (MainTrain이 조준 중 매 프레임 호출)
         /// 발사 순간에만 돌면 공속이 느릴 때 회전이 끊겨 보여서, 누르는 동안 계속 따라 돈다.
@@ -152,12 +155,10 @@ namespace TrainDefense.Game
             if (!_isRotateTurret || _pivot == null)
                 return;
 
-            // 총알과 동일하게 스폰 지점 기준 방향을 쓴다(포탑 정중앙 터치 시 방향 뒤집힘 방지, Fire의 회전 보정과 같은 이유).
-            Transform spawnPoint = _GetSpawnPoint(0);
-            if (spawnPoint == null)
+            if ((aimPosition - (Vector2)_pivot.position).sqrMagnitude < AimDeadZoneRadius * AimDeadZoneRadius)
                 return;
 
-            _pivot.rotation = Quaternion.Euler(0f, 0f, spawnPoint.GetAngle2D(aimPosition));
+            _pivot.LookAt2D(aimPosition);
         }
 
         /// <summary>
@@ -175,8 +176,12 @@ namespace TrainDefense.Game
             float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
             int count = Mathf.Max(1, _status.AttackCount);
 
-            bool hasFireRotation = false;
-            Quaternion fireRotation = Quaternion.identity;
+            // 방향은 하나뿐: 피벗→마우스. 포탑도 이 방향을 보고(AimAt), 총알도 이 방향으로 나간다.
+            // 마우스 위치를 "통과해야 할 지점"으로 취급하지 않는다 — 방향 지시자일 뿐.
+            Vector2 aimDirection = aimPosition - (Vector2)(_pivot != null ? _pivot.position : transform.position);
+            Quaternion fireRotation = aimDirection.sqrMagnitude > AimDeadZoneRadius * AimDeadZoneRadius
+                ? Quaternion.Euler(0f, 0f, Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg)
+                : (_pivot != null ? _pivot.rotation : Quaternion.identity);
 
             for (int i = 0; i < count; i++)
             {
@@ -184,24 +189,10 @@ namespace TrainDefense.Game
                 if (projectile == null)
                     continue;
 
-                projectile.transform.LookAt2D(aimPosition);
-
-                // 첫 투사체의 실제 발사 방향(부채꼴 spread 적용 전)을 포탑 회전 기준으로 삼는다.
-                if (!hasFireRotation)
-                {
-                    fireRotation = projectile.transform.rotation;
-                    hasFireRotation = true;
-                }
+                projectile.transform.rotation = fireRotation;
 
                 TurretCombatFx.ApplySpread(projectile.transform, i, count, spreadAngle);
             }
-
-            // 포탑을 실제로 발사된 총알 방향으로 회전시킨다.
-            // 기존엔 포탑 자기 위치(_pivot.position) 기준으로 조준점을 바라보게 했는데,
-            // 포탑 정중앙 부근을 터치하면 조준점이 포탑 위치와 거의 겹쳐 방향이 180도 뒤집혀
-            // 포탑이 총알과 반대로 도는 문제가 있었다. 총알(스폰 지점→조준점) 방향과 동일하게 맞춰 해결한다.
-            if (_isRotateTurret && _pivot != null && hasFireRotation)
-                _pivot.rotation = fireRotation;
         }
 
         private Projectile _SpawnProjectile(int index)
