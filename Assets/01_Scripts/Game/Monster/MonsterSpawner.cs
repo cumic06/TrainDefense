@@ -248,7 +248,7 @@ namespace TrainDefense.Game
                   ResourceManager.Instance.Spawn(_currentSpawnEffect, spawnPos, parent: transform);
                }
 
-               // 가중치 선택 로직. 엘리트 주기가 찬 틱이면 첫 슬롯은 적격(EliteChanceMultiplier>0) 몬스터 중에서만 뽑아 엘리트화.
+               // 가중치 선택 로직. 엘리트 주기가 찬 틱이면 첫 슬롯은 적격(유저 레벨 ≥ SpawnLevel×1.5) 몬스터 중에서만 뽑아 엘리트화.
                bool spawnAsElite = spawnEliteThisTick && spawnIndex == 0;
                StageSpawnData selectedData = SelectMonsterData(spawnAsElite);
                if (spawnAsElite && selectedData == null)
@@ -287,7 +287,17 @@ namespace TrainDefense.Game
       // 엘리트는 스테이지2 통과 후(스테이지3)부터 등장. 검문 카운트는 스테이지당 4회(역 3개 + 맵 변경 1회).
       private const int EliteStartStationCount = 8;
 
-      // eliteEligibleOnly = true 면 엘리트 가능(EliteChanceMultiplier>0) 몬스터 중에서만 뽑는다. 적격 후보가 없으면 null.
+      // 엘리트 적격 유저 레벨 = SpawnLevel × 1.5(올림). 상위 슬롯 몬스터가 등장하자마자
+      // 엘리트로 나오면 급격한 벽이 돼서, 등장 후 유예를 둔다. (슬롯2 L6→L9, 슬롯3 L10→L15, 곰 L15→L23)
+      private const float EliteLevelMultiplier = 1.5f;
+
+      private bool _IsEliteEligible(StageSpawnData data)
+      {
+         int userLevel = UserDataManager.Instance != null ? UserDataManager.Instance.CurrentLevel : 1;
+         return userLevel >= Mathf.CeilToInt(data.SpawnLevel * EliteLevelMultiplier);
+      }
+
+      // eliteEligibleOnly = true 면 엘리트 적격 레벨에 도달한 몬스터 중에서만 뽑는다. 적격 후보가 없으면 null.
       private StageSpawnData SelectMonsterData(bool eliteEligibleOnly = false)
       {
          if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
@@ -297,7 +307,7 @@ namespace TrainDefense.Game
          float totalProbability = 0f;
          foreach (var data in _currentSpawnDatas)
          {
-            if (eliteEligibleOnly && data.EliteChanceMultiplier <= 0f)
+            if (eliteEligibleOnly && !_IsEliteEligible(data))
                continue;
 
             if (data.Probability > 0)
@@ -319,7 +329,7 @@ namespace TrainDefense.Game
 
          for (int i = 0; i < _currentSpawnDatas.Length; i++)
          {
-            if (eliteEligibleOnly && _currentSpawnDatas[i].EliteChanceMultiplier <= 0f)
+            if (eliteEligibleOnly && !_IsEliteEligible(_currentSpawnDatas[i]))
                continue;
 
             if (_currentSpawnDatas[i].Probability > 0)
