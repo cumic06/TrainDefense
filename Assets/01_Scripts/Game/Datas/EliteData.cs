@@ -75,7 +75,7 @@ namespace TrainDefense.Game.Datas
             {
                type = EliteType.Red,
                weight = 1f,
-               hpMultiplier = 50f,
+               hpMultiplier = 100f,
                damageMultiplier = 4f,
                moveSpeedMultiplier = 1.4f,
                sizeScale = 1.6f,
