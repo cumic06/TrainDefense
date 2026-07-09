@@ -49,7 +49,7 @@ MonoBehaviour:
     - {fileID: -3137741453567158835, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     - {fileID: 9216760424783274641, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     monsterStatusData:
-      MaxHp: 10
+      MaxHp: 13
       Damage: 4
       MoveSpeed: 6.3
       AttackDelay: 0.6
@@ -75,7 +75,7 @@ MonoBehaviour:
     - {fileID: -1016734687898979182, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     - {fileID: 7477702687696233401, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     monsterStatusData:
-      MaxHp: 22
+      MaxHp: 29
       Damage: 12
       MoveSpeed: 4
       AttackDelay: 2
@@ -123,7 +123,7 @@ MonoBehaviour:
     - {fileID: -5309227702758776139, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     - {fileID: 8516958411369342763, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     monsterStatusData:
-      MaxHp: 15
+      MaxHp: 20
       Damage: 10
       MoveSpeed: 3.8
       AttackDelay: 1.9
@@ -148,7 +148,7 @@ MonoBehaviour:
     - {fileID: 6566697209257710286, guid: eec049525e8bf41429d9c479cff52295, type: 3}
     - {fileID: -1919939128155651028, guid: eec049525e8bf41429d9c479cff52295, type: 3}
     monsterStatusData:
-      MaxHp: 81
+      MaxHp: 105
       Damage: 16
       MoveSpeed: 3.6
       AttackDelay: 2
@@ -198,7 +198,7 @@ MonoBehaviour:
     - {fileID: -8315347680731458982, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     - {fileID: -9062487706820149092, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     monsterStatusData:
-      MaxHp: 18
+      MaxHp: 23
       Damage: 10
       MoveSpeed: 5.4
       AttackDelay: 1.4
@@ -222,7 +222,7 @@ MonoBehaviour:
     - {fileID: -5987072993317950802, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     - {fileID: 308462971345494500, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     monsterStatusData:
-      MaxHp: 56
+      MaxHp: 73
       Damage: 10
       MoveSpeed: 4.2
       AttackDelay: 1
@@ -292,7 +292,7 @@ MonoBehaviour:
     - {fileID: -8173720173229929539, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     - {fileID: 4663589299363003436, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     monsterStatusData:
-      MaxHp: 13
+      MaxHp: 17
       Damage: 10
       MoveSpeed: 4.6
       AttackDelay: 1.6
@@ -318,7 +318,7 @@ MonoBehaviour:
     - {fileID: -6476088961041308456, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
     - {fileID: -723742200156331293, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
     monsterStatusData:
-      MaxHp: 50
+      MaxHp: 65
       Damage: 16
       MoveSpeed: 3.9
       AttackDelay: 2
@@ -364,7 +364,7 @@ MonoBehaviour:
     - {fileID: -2829615651170692943, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
     - {fileID: -6842481794725325692, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
     monsterStatusData:
-      MaxHp: 21
+      MaxHp: 27
       Damage: 12
       MoveSpeed: 4
       AttackDelay: 2.7
@@ -392,7 +392,7 @@ MonoBehaviour:
     - {fileID: 6601671565499704310, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
     - {fileID: -1199408517139786225, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
     monsterStatusData:
-      MaxHp: 92
+      MaxHp: 120
       Damage: 20
       MoveSpeed: 3.6
       AttackDelay: 2.3
