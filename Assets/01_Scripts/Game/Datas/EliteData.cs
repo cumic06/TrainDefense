@@ -75,12 +75,13 @@ namespace TrainDefense.Game.Datas
             {
                type = EliteType.Red,
                weight = 1f,
-               hpMultiplier = 12f,
+               hpMultiplier = 50f,
                damageMultiplier = 4f,
                moveSpeedMultiplier = 1.4f,
                sizeScale = 1.6f,
                dropExpMultiplier = 10f,
                dropMoneyMultiplier = 10f,
+               ccResistance = 0.5f,
                tintColor = new Color(1f, 0.3f, 0.3f, 1f),
             },
             // 🟢 초록 — 엄청 튼튼 (weight 0 = 미등장, 빨강만 사용)
@@ -94,6 +95,7 @@ namespace TrainDefense.Game.Datas
                sizeScale = 1.7f,
                dropExpMultiplier = 3f,
                dropMoneyMultiplier = 3f,
+               ccResistance = 1f,
                tintColor = new Color(0.3f, 1f, 0.4f, 1f),
             },
             // 🔵 파랑 — 주기적 원거리 공격 (weight 0 = 미등장, 빨강만 사용)

@@ -74,6 +74,8 @@ namespace TrainDefense.Game
       private Coroutine _auraReceiveCoroutine;
       // 노랑 엘리트 오라로 받은 이동속도 배율(기본 1). _currentMonsterStatus.MoveSpeed에 곱해 Slow와 독립 적용.
       private float _auraSpeedMultiplier = 1f;
+      // 엘리트 CC 저항(0~1). 슬로우 감속량·스턴 시간·넉백을 (1-저항)배로 줄이고, 1이면 완전 면역.
+      private float _ccResistance;
 
       private const string MoneyPrefabPath = "Prefabs/Money";
       private const string StunPrefabPath = "Prefabs/StunPaticle";
@@ -124,6 +126,7 @@ namespace TrainDefense.Game
 
          // 풀 재사용 전 엘리트 상태 초기화(이전 타입의 오라 배율 잔존 방지).
          _auraSpeedMultiplier = 1f;
+         _ccResistance = 0f;
 
          if (_modelAnimator != null)
          {
@@ -205,6 +208,8 @@ namespace TrainDefense.Game
          _currentMonsterStatus.DropMoneyMin = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMin * dropMoneyMul);
          _currentMonsterStatus.DropMoneyMax = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMax * dropMoneyMul);
          _currentHp = _currentMonsterStatus.MaxHp;
+
+         _ccResistance = variant != null ? variant.ccResistance : 0f;
 
          _startScale *= sizeMul;
          model.transform.localScale = _startScale;
@@ -389,6 +394,11 @@ namespace TrainDefense.Game
       {
          if (!gameObject.activeInHierarchy)
             return;
+         if (_ccResistance >= 1f)
+            return;
+
+         // slowValue = 유지 속도 비율(0.5 = 절반) → 감속량(1-slowValue)만 저항으로 줄인다.
+         slowValue = 1f - (1f - slowValue) * (1f - _ccResistance);
 
          if (_slowCoroutine != null)
          {
@@ -474,6 +484,11 @@ namespace TrainDefense.Game
       {
          if (!gameObject.activeInHierarchy)
             return;
+         if (_ccResistance >= 1f)
+            return;
+
+         shovePower *= 1f - _ccResistance;
+         shoveDuration *= 1f - _ccResistance;
 
          if (_targetTrain != null)
          {
@@ -502,6 +517,10 @@ namespace TrainDefense.Game
             return;
          if (_isDead)
             return;
+         if (_ccResistance >= 1f)
+            return;
+
+         stunDuration *= 1f - _ccResistance;
 
          if (_stunCoroutine != null)
          {
