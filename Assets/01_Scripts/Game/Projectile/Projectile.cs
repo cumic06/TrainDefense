@@ -443,6 +443,12 @@ namespace TrainDefense.Game
             transform.localScale = _baseScale * scale;
         }
 
+        // Init 이후 데미지에 배율을 곱한다. (오버라이드 투사체 전용 강화 — 크리 계산도 곱해진 값 기준)
+        public void MultiplyDamage(float multiplier)
+        {
+            _damage *= multiplier;
+        }
+
         public void SetRuntimeShove(float power, float duration)
         {
             _runtimeHasShove = true;

@@ -70,6 +70,8 @@ namespace TrainDefense.Game
         public Transform[] ProjectileSpawnPointNodes => turretProjectileSpawnPoints;
 
         public float ProjectileScale { get; set; } = 1f;
+        // 오버라이드 투사체(폭발탄 등)에만 곱할 데미지 배율. Provider가 프리팹 반환 시 세팅하고 그 발사에서만 적용된다.
+        public float OverrideDamageMultiplier { get; set; } = 1f;
         public float ProjectileKnockbackPower { get; set; }
         public float ProjectileKnockbackDuration { get; set; }
 
@@ -941,6 +943,9 @@ namespace TrainDefense.Game
                 InitializeProjectile(projectile, targetMonster);
             else
                 InitializeProjectileDamage(projectile);
+
+            if (overridePrefab != null && OverrideDamageMultiplier != 1f)
+                projectile.MultiplyDamage(OverrideDamageMultiplier);
 
             if (_useNonMovementProjectilePooling)
             {

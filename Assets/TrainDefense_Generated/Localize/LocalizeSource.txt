@@ -105,7 +105,7 @@ Skill_50008_Desc	즉시 주변에 폭발을 일으킨다	Instantly creates an ex
 Skill_50009_Name	광역 탐지	Wide Detection	広域探知	广域探测
 Skill_50009_Desc	15초간 공격 범위 300% 증가	Increases attack range by 300% for 15 seconds.	15秒間、攻撃範囲を300%増加させる。	15秒内攻击范围增加300%。
 Passive_60001_Name	폭발탄	Explosive Shot	爆発弾	爆炸弹
-Passive_60001_Desc	5회 공격마다 폭발 투사체 발사.	Fires an explosive projectile every 5 attacks.	5回攻撃ごとに爆発投射物を発射する。	每5次攻击发射一枚爆炸弹。
+Passive_60001_Desc	3회 공격마다 폭발 투사체 발사.	Fires an explosive projectile every 3 attacks.	3回攻撃ごとに爆発投射物を発射する。	每3次攻击发射一枚爆炸弹。
 Passive_60002_Name	확장 화염	Wide Flame	範囲炎	范围火焰
 Passive_60002_Desc	사거리가 길어지고 범위가 넓어짐.	Range and area of effect increase.	射程が伸び、範囲が広がる。	射程延长，范围扩大。
 Passive_60003_Name	화력 집중	Focused Fire	火力集中	火力集中
