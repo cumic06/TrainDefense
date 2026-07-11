@@ -533,7 +533,7 @@ MonoBehaviour:
       AttackRange: 11
       AttackArea: 11
       AttackCount: 2
-      AttackInterval: 1.5
+      AttackInterval: 1.3
       TargetCount: 2
       CriticalChance: 0
       CriticalDamage: 0
@@ -712,7 +712,7 @@ MonoBehaviour:
       AttackRange: 11
       AttackArea: 11
       AttackCount: 2
-      AttackInterval: 1.5
+      AttackInterval: 1.3
       TargetCount: 2
       CriticalChance: 0
       CriticalDamage: 0
@@ -1139,8 +1139,8 @@ MonoBehaviour:
       name: Passive_60013_Name
       passiveType: StatModifier
       param1: AttackInterval
-      param2: -20
-      param3: 
+      param2: -30
+      param3: TargetCount:100
       description: Passive_60013_Desc
     - id: 60014
       name: Passive_60014_Name
