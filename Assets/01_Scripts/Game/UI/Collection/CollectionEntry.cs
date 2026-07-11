@@ -130,10 +130,10 @@ namespace TrainDefense.Game.UI.Collection
             return value.ToString("0.##");
         }
 
-        // 공격 속도는 공격 간격(초)으로 표시. 예: 0.34
+        // 공격 속도는 공격 간격(초)으로 표시. 둘째 자리는 0이 아닐 때만. 예: 0.34, 1.3
         private static string _FormatSeconds(float seconds)
         {
-            return $"{seconds:0.00}";
+            return $"{seconds:0.0#}";
         }
 
         private static string _SkillName(IData skill)

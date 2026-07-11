@@ -281,7 +281,7 @@ namespace TrainDefense.Game.UI
                 attackText.text = Mathf.RoundToInt(status.AttackDamage).ToString();
 
             if (attackSpeedText != null)
-                attackSpeedText.text = $"{status.AttackInterval:0.00}";
+                attackSpeedText.text = $"{status.AttackInterval:0.0#}";
 
             if (rangeText != null)
                 rangeText.text = Mathf.RoundToInt(status.AttackRange).ToString();
