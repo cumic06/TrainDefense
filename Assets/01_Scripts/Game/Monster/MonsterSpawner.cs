@@ -78,9 +78,18 @@ namespace TrainDefense.Game
       private int _stationPassedCount = 0;
 
       private EliteData _eliteData;
-      // 스폰 루프(틱) 카운터. eliteSpawnCycle틱마다 1마리를 엘리트로. 스테이지가 바뀌어도 이월.
+      // 엘리트 구간(역) 예산. 정산 때 구간시간 ÷ (eliteSpawnCycle × 스폰간격)을 적립해 정수부만
+      // 이번 구간에 배치하고, 소수 잔여분은 다음 구간으로 이월한다(스테이지가 바뀌어도 이월).
       [ShowInInspector]
-      private int _eliteSpawnCounter;
+      private float _eliteBudget;
+      // 이번 구간에서 엘리트를 승격할 구간 경과 시각(초) 목록. (N+1)등분 지점, 앞에서부터 소비.
+      [ShowInInspector, ReadOnly]
+      private readonly List<float> _eliteSpawnSchedule = new();
+      // 검문 직후 true — 스폰 재개 후 첫 틱에 정산한다(맵 변경 검문에서 새 맵 간격·구간시간 반영).
+      private bool _eliteSettlePending;
+      private float _currentSegmentDuration;
+      // ChangeStageTimeEvent(남은 시간)로 매 프레임 갱신되는 현재 구간 경과 시각.
+      private float _currentSegmentElapsed;
 
       #region UnityLifeCycle
       private void Start()
@@ -92,6 +101,7 @@ namespace TrainDefense.Game
          GameEventSystem.Subscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+         GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
       }
 
       private void OnDestroy()
@@ -100,6 +110,7 @@ namespace TrainDefense.Game
          GameEventSystem.Unsubscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+         GameEventSystem.Unsubscribe<ChangeStageTimeEvent>(OnChangeStageTime);
       }
       #endregion
 
@@ -108,7 +119,9 @@ namespace TrainDefense.Game
          if (DatabaseManager.Instance == null) return;
 
          _eliteData = DatabaseManager.Instance.GetEliteData();
-         _eliteSpawnCounter = 0;
+         _eliteBudget = 0f;
+         _eliteSpawnSchedule.Clear();
+         _eliteSettlePending = true;
          _stationPassedCount = 0;
          spawnCount = _originalSpawnCount;
          StartCoroutine(SpawnMonster());
@@ -120,6 +133,16 @@ namespace TrainDefense.Game
          _stationPassedCount++;
          _UpdateSpawnCountByStation();
          spawnInterval = _GetAcceleratedInterval();
+
+         // 미발동 엘리트는 예산으로 환급하고, 다음 구간 정산을 예약한다.
+         _eliteBudget += _eliteSpawnSchedule.Count;
+         _eliteSpawnSchedule.Clear();
+         _eliteSettlePending = true;
+      }
+
+      private void OnChangeStageTime(ChangeStageTimeEvent changeStageTimeEvent)
+      {
+         _currentSegmentElapsed = _currentSegmentDuration - changeStageTimeEvent.StageTime;
       }
 
       // 검문(역 도착) 누적 횟수로 spawnCount를 결정한다.
@@ -224,18 +247,19 @@ namespace TrainDefense.Game
                continue;
             }
 
-            // 엘리트 스폰: 확률이 아니라 "스폰 루프(틱) eliteSpawnCycle회마다 1마리"를 고정 주기로 스폰.
-            // 틱 기준이라 엘리트 시간 간격 = eliteSpawnCycle × 스폰 간격(spawnCount와 무관).
-            // EliteStartStationCount(스테이지2 통과) 전에는 등장하지 않는다.
-            bool spawnEliteThisTick = false;
-            if (_eliteData != null && _stationPassedCount >= EliteStartStationCount)
+            // 엘리트 스폰: 구간(역) 예산 스케줄 방식. 검문 후 첫 틱에 정산(_ScheduleEliteSpawns)하고,
+            // 배치된 구간 경과 시각을 지나면 그 틱의 첫 슬롯을 엘리트로 승격한다.
+            if (_eliteSettlePending)
             {
-               _eliteSpawnCounter++;
-               if (_eliteSpawnCounter >= Mathf.Max(1, _eliteData.eliteSpawnCycle))
-               {
-                  _eliteSpawnCounter = 0;
-                  spawnEliteThisTick = true;
-               }
+               _ScheduleEliteSpawns();
+               _eliteSettlePending = false;
+            }
+
+            bool spawnEliteThisTick = false;
+            if (_eliteSpawnSchedule.Count > 0 && _currentSegmentElapsed >= _eliteSpawnSchedule[0])
+            {
+               _eliteSpawnSchedule.RemoveAt(0);
+               spawnEliteThisTick = true;
             }
 
             // 한 spawnInterval마다 spawnCount 마리를 각자 다른 위치·몬스터로 소환
@@ -295,6 +319,35 @@ namespace TrainDefense.Game
       {
          int userLevel = UserDataManager.Instance != null ? UserDataManager.Instance.CurrentLevel : 1;
          return userLevel >= Mathf.CeilToInt(data.SpawnLevel * EliteLevelMultiplier);
+      }
+
+      // 검문 후 다음 구간의 엘리트를 정산한다. 예산 = 구간시간 ÷ (eliteSpawnCycle × 현재 스폰간격)을 적립해
+      // 정수부만큼 구간 (N+1)등분 지점에 배치하고, 소수 잔여분은 다음 구간으로 이월한다.
+      // 등장 빈도가 스폰 간격에 비례해 맵별 엘리트 개성(빠른 맵 = 잦은 물몸, 느린 맵 = 드문 탱커)이 유지되고,
+      // 배치가 구간 양끝을 피해서 역 도착 직전 스폰 낭비가 없다.
+      // EliteStartStationCount 전에는 예산을 적립하지 않는다(데뷔 전 이월 방지).
+      private void _ScheduleEliteSpawns()
+      {
+         if (_eliteData == null || _stationPassedCount < EliteStartStationCount)
+            return;
+
+         float segmentDuration = GameEventSystem.Query<GetCurrentInspectionDurationEvent, float>(new GetCurrentInspectionDurationEvent());
+         if (segmentDuration <= 0f || spawnInterval <= 0f)
+            return;
+
+         _currentSegmentDuration = segmentDuration;
+         // 정산은 구간 시작 직후라 경과 0으로 동기화(직전 구간의 낡은 경과값으로 첫 엘리트가 즉시 발동하는 것 방지).
+         _currentSegmentElapsed = 0f;
+         _eliteBudget += segmentDuration / (Mathf.Max(1, _eliteData.eliteSpawnCycle) * spawnInterval);
+
+         int eliteCountThisSegment = Mathf.FloorToInt(_eliteBudget);
+         _eliteBudget -= eliteCountThisSegment;
+
+         _eliteSpawnSchedule.Clear();
+         for (int i = 1; i <= eliteCountThisSegment; i++)
+         {
+            _eliteSpawnSchedule.Add(segmentDuration * i / (eliteCountThisSegment + 1));
+         }
       }
 
       // 선택 가중치. 일반 스폰은 스폰 확률 그대로, 엘리트 후보는 확률의 역수 —

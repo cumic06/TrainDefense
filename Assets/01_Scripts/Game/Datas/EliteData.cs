@@ -6,8 +6,8 @@ namespace TrainDefense.Game.Datas
    [System.Serializable]
    public class EliteData
    {
-      [Header("엘리트 스폰 주기")]
-      [Tooltip("스폰 루프(틱) n회마다 1마리를 엘리트로 스폰한다. 확률이 아니라 고정 주기. 엘리트 시간 간격 = n × 스폰 간격(spawnCount와 무관).")]
+      [Header("엘리트 스폰 밀도")]
+      [Tooltip("스폰 웨이브(틱) n회 분량의 시간당 엘리트 1마리. 웨이브당 마릿수(spawnCount)와 무관한 시간 기준 — 실제 몹 수로는 n×spawnCount마리당 1마리. 역(구간)마다 예산 = 구간시간 ÷ (n × 스폰간격)을 적립해 정수부만큼 구간에 균등 배치하고, 소수 잔여분은 다음 구간으로 이월한다. 절반으로 줄이면 엘리트가 2배 자주 나온다.")]
       [Min(1)]
       public int eliteSpawnCycle = 100;
 
