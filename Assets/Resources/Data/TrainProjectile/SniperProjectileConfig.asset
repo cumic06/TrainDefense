@@ -32,5 +32,5 @@ MonoBehaviour:
   hasStunEffect: 0
   stunDuration: 0.5
   pierce: 1
-  maxPenetration: 5
+  maxPenetration: 8
   spreadAngle: 0
