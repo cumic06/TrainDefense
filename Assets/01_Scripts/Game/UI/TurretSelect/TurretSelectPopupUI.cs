@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Cumic;
 using TrainDefense.Game.Datas;
@@ -98,7 +99,18 @@ namespace TrainDefense.Game.UI
                 return null;
             }
 
-            Canvas canvas = FindObjectOfType<Canvas>();
+            // DDoL 캔버스(AnalyticsManager 자식 ConsentCanvas)에 붙으면 뒤로가기의 씬 전환 후에도
+            // 팝업이 살아남아 로비를 덮는다 → 씬 전환 시 함께 파괴되도록 현재 씬 소속 캔버스에만 붙인다.
+            Canvas canvas = null;
+            foreach (Canvas candidate in FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+            {
+                if (candidate.gameObject.scene == SceneManager.GetActiveScene())
+                {
+                    canvas = candidate;
+                    break;
+                }
+            }
+
             GameObject instance = Instantiate(prefab, canvas != null ? canvas.transform : null);
             instance.transform.SetAsLastSibling();
 
