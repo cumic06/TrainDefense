@@ -29,6 +29,12 @@ namespace TrainDefense.Game.Manager
       public int NormalScore => _scoreData != null ? NormalKillCount * _scoreData.normalKillScore : 0;
 
       public int EliteScore => _scoreData != null ? EliteKillCount * _scoreData.eliteKillScore : 0;
+
+      /// <summary>일반 몬스터 1마리 처치 점수(결산 내역 표기용).</summary>
+      public int NormalKillUnitScore => _scoreData != null ? _scoreData.normalKillScore : 0;
+
+      /// <summary>엘리트 몬스터 1마리 처치 점수(결산 내역 표기용).</summary>
+      public int EliteKillUnitScore => _scoreData != null ? _scoreData.eliteKillScore : 0;
       #endregion
 
       #region LifeCycle

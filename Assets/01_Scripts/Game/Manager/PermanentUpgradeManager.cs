@@ -29,6 +29,9 @@ namespace TrainDefense.Game
 
         public int EliteCoin => _eliteCoin;
 
+        /// <summary>이번 판 동안 획득한 엘리트 재화 합계(게임오버 결산 표시용). 게임 진입 시 리셋된다.</summary>
+        public int RunEliteCoinEarned { get; private set; }
+
         protected override void Awake()
         {
             base.Awake();
@@ -41,12 +44,16 @@ namespace TrainDefense.Game
         private void Start()
         {
             GameEventSystem.Subscribe<MonsterDeadEvent>(_OnMonsterDead);
+            GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
         }
 
         private void OnDestroy()
         {
             GameEventSystem.Unsubscribe<MonsterDeadEvent>(_OnMonsterDead);
+            GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
         }
+
+        private void _OnGameEnter(GameEnterEvent _) => RunEliteCoinEarned = 0;
 
         // 엘리트 처치/구매마다 PlayerPrefs.Save()(디스크 flush)를 부르지 않고, 백그라운드 전환·종료 시 한 번에 기록한다.
         private void OnApplicationPause(bool pause)
@@ -75,6 +82,7 @@ namespace TrainDefense.Game
         {
             if (amount <= 0) return;
             _eliteCoin += amount;
+            RunEliteCoinEarned += amount;
             _SaveEliteCoin();
             // TODO: 엘리트 코인 변경 UI 이벤트 발행
         }

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace TrainDefense.Game.UI
 {
     /// <summary>
-    /// 게임오버 결산 슬라이드쇼의 맵 한 칸. 맵 이미지 + 순번 라벨 + 점수 텍스트를 표시한다.
+    /// 게임오버 결산 슬라이드쇼의 맵 한 칸. 맵 이미지 + 순번 라벨 + 점수 텍스트 + 처치 내역을 표시한다.
     /// 점수는 <see cref="StageResultSlideUI"/>의 카운트업 트윈이 <see cref="SetScore"/>로 갱신한다.
     /// </summary>
     public class StageResultSlotUI : MonoBehaviour
@@ -19,6 +19,9 @@ namespace TrainDefense.Game.UI
         private TMP_Text mapLabel;
         [SerializeField]
         private TMP_Text scoreText;
+        [Tooltip("어떤 적을 몇 마리 잡아 몇 점인지 보여주는 내역 텍스트(선택).")]
+        [SerializeField]
+        private TMP_Text killBreakdownText;
 
         // 카운트업 setter가 매 프레임 호출되므로 접미사("점")는 Bind 시 1회만 해석해 캐시한다.
         private string _scoreSuffix = "점";
@@ -40,6 +43,7 @@ namespace TrainDefense.Game.UI
             }
 
             _scoreSuffix = LocalizeHelper.GetByKey("result_score_suffix", "점");
+            _SetKillBreakdown(record);
             SetScore(0);
         }
 
@@ -57,6 +61,10 @@ namespace TrainDefense.Game.UI
             }
 
             _scoreSuffix = LocalizeHelper.GetByKey("result_score_suffix", "점");
+
+            if (killBreakdownText != null)
+                killBreakdownText.text = string.Empty;
+
             SetScore(0);
         }
 
@@ -67,6 +75,27 @@ namespace TrainDefense.Game.UI
                 return;
 
             scoreText.text = $"{value.ToCommaString()} {_scoreSuffix}";
+        }
+
+        // "일반 몬스터 ×12 +120점 · 엘리트 몬스터 ×3 +150점" 형태로 어떤 적에게서 몇 점을 얻었는지 표기.
+        private void _SetKillBreakdown(StageRunRecord record)
+        {
+            if (killBreakdownText == null)
+                return;
+
+            var scoreManager = ScoreManager.Instance;
+            int normalUnit = scoreManager != null ? scoreManager.NormalKillUnitScore : 0;
+            int eliteUnit = scoreManager != null ? scoreManager.EliteKillUnitScore : 0;
+
+            int normalKill = record?.NormalKill ?? 0;
+            int eliteKill = record?.EliteKill ?? 0;
+
+            string normalLabel = LocalizeHelper.GetByKey("result_kill_normal", "일반 몬스터");
+            string eliteLabel = LocalizeHelper.GetByKey("result_kill_elite", "엘리트 몬스터");
+
+            killBreakdownText.text =
+                $"{normalLabel} ×{normalKill}  +{(normalKill * normalUnit).ToCommaString()}{_scoreSuffix}" +
+                $"  ·  {eliteLabel} ×{eliteKill}  +{(eliteKill * eliteUnit).ToCommaString()}{_scoreSuffix}";
         }
     }
 }
