@@ -84,45 +84,47 @@ namespace TrainDefense.Game.Datas
                ccResistance = 0.5f,
                tintColor = new Color(1f, 0.3f, 0.3f, 1f),
             },
-            // 🟢 초록 — 엄청 튼튼 (weight 0 = 미등장, 빨강만 사용)
+            // 🟢 초록 — 엄청 튼튼. 느려서 노출이 길고 CC 완전 면역이라 HP 로 탱크 정체성을 담당한다. (weight 0 = 미등장)
             new EliteVariant
             {
                type = EliteType.Green,
                weight = 0f,
-               hpMultiplier = 8f,
+               hpMultiplier = 200f,
                damageMultiplier = 1.5f,
                moveSpeedMultiplier = 0.85f,
-               sizeScale = 1.7f,
-               dropExpMultiplier = 3f,
-               dropMoneyMultiplier = 3f,
+               sizeScale = 1.8f,
+               dropExpMultiplier = 10f,
+               dropMoneyMultiplier = 10f,
                ccResistance = 1f,
                tintColor = new Color(0.3f, 1f, 0.4f, 1f),
             },
-            // 🔵 파랑 — 주기적 원거리 공격 (weight 0 = 미등장, 빨강만 사용)
+            // 🔵 파랑 — 주기적 원거리 공격. 접근 전부터 기차를 깎는 대신 몸이 가장 물렁하다. (weight 0 = 미등장)
             new EliteVariant
             {
                type = EliteType.Blue,
                weight = 0f,
-               hpMultiplier = 3f,
+               hpMultiplier = 70f,
                damageMultiplier = 2f,
                moveSpeedMultiplier = 1f,
                sizeScale = 1.5f,
-               dropExpMultiplier = 2.5f,
-               dropMoneyMultiplier = 2.5f,
+               dropExpMultiplier = 10f,
+               dropMoneyMultiplier = 10f,
+               ccResistance = 0.25f,
                tintColor = new Color(0.3f, 0.6f, 1f, 1f),
                rangedAttackInterval = 3f,
             },
-            // 🟡 노랑 — 주변 이속 증가 오라 (weight 0 = 미등장, 빨강만 사용)
+            // 🟡 노랑 — 주변 이속 증가 오라. 본체보다 주변 물량 가속이 위협인 세력 배가형. (weight 0 = 미등장)
             new EliteVariant
             {
                type = EliteType.Yellow,
                weight = 0f,
-               hpMultiplier = 3f,
+               hpMultiplier = 80f,
                damageMultiplier = 1.5f,
                moveSpeedMultiplier = 1.1f,
                sizeScale = 1.5f,
-               dropExpMultiplier = 2.5f,
-               dropMoneyMultiplier = 2.5f,
+               dropExpMultiplier = 10f,
+               dropMoneyMultiplier = 10f,
+               ccResistance = 0.25f,
                tintColor = new Color(1f, 0.95f, 0.3f, 1f),
                auraRadius = 4f,
                auraSpeedMultiplier = 1.4f,
