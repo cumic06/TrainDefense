@@ -84,7 +84,7 @@ namespace TrainDefense.Game
             _eliteCoin += amount;
             RunEliteCoinEarned += amount;
             _SaveEliteCoin();
-            // TODO: 엘리트 코인 변경 UI 이벤트 발행
+            GameEventSystem.Publish(new EliteCoinChangedEvent(_eliteCoin));
         }
 
         public bool SpendEliteCoin(int amount)
@@ -92,7 +92,23 @@ namespace TrainDefense.Game
             if (amount <= 0 || _eliteCoin < amount) return false;
             _eliteCoin -= amount;
             _SaveEliteCoin();
+            GameEventSystem.Publish(new EliteCoinChangedEvent(_eliteCoin));
             return true;
+        }
+
+        /// <summary>현재 재화로 구매 가능한(최대 레벨이 아니고 비용을 충족하는) 영구 업그레이드가 하나라도 있는지. (레드닷 판정용)</summary>
+        public bool HasAffordableUpgrade()
+        {
+            if (DatabaseManager.Instance == null) return false;
+
+            foreach (var data in DatabaseManager.Instance.GetPermanentUpgradeDatas())
+            {
+                if (data == null) continue;
+                if (IsMaxLevel(data.Id)) continue;
+                if (data.GetCostAtLevel(GetLevel(data.Id)) <= _eliteCoin) return true;
+            }
+
+            return false;
         }
         #endregion
 
