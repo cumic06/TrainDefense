@@ -15,7 +15,7 @@ namespace TrainDefense.Game.UI
     /// 죽으면 한 판 동안 거쳐 간 맵들(<see cref="StageManager.RunRecords"/>)을 상단 가로 스크롤 영역에
     /// 늘어놓고, 맵1 → 그 맵에서 번 점수 → 다음 맵으로 넘어가는 식으로 자동 재생한다.
     /// 자동 재생이 끝나면 하단 별도 패널에 총점을 카운트업하고, 가로 스크롤(ScrollRect)을 풀어
-    /// 좌우로 자유롭게 다시 볼 수 있게 한다. 화면을 탭하면 자동 재생을 즉시 끝낸다.
+    /// 좌우로 자유롭게 다시 볼 수 있게 한다. 화면을 탭하면 현재 맵 단계의 연출만 즉시 끝낸다(맵마다 스킵).
     /// </summary>
     public class StageResultSlideUI : MonoBehaviour
     {
@@ -44,6 +44,9 @@ namespace TrainDefense.Game.UI
         private GameObject totalPanel;
         [SerializeField]
         private TMP_Text totalScoreText;
+        [Tooltip("이번 판 획득 엘리트 재화 표시(선택).")]
+        [SerializeField]
+        private TMP_Text eliteCurrencyText;
 
         [Header("로비 버튼")]
         [Tooltip("맵 점수 연출이 모두 끝난 뒤 활성화되는 로비 버튼. (GameObject stripped 회피를 위해 Transform으로 연결)")]
@@ -64,6 +67,10 @@ namespace TrainDefense.Game.UI
         private readonly List<StageResultSlotUI> _slots = new();
         private Sequence _sequence;
         private bool _isPlaying;
+
+        // 맵별 연출 스킵용 — 각 맵 단계(슬라이드+카운트업+홀드)가 끝나는 시퀀스 시간.
+        // 화면을 탭하면 전체가 아니라 현재 진행 중인 단계의 끝으로만 점프한다.
+        private readonly List<float> _stepEndTimes = new();
 
         // 카운트업 setter가 매 프레임 호출되므로 라벨/접미사는 ShowResult에서 1회만 해석해 캐시한다.
         private string _totalLabel = "총점";
@@ -149,6 +156,7 @@ namespace TrainDefense.Game.UI
             _totalLabel = LocalizeHelper.GetByKey("result_total_label", "총점");
             _totalSuffix = LocalizeHelper.GetByKey("result_score_suffix", "점");
             _SetTotalScore(0);
+            _SetEliteCurrencyEarned();
 
             _BuildSlots();
             _PlaySequence();
@@ -202,6 +210,7 @@ namespace TrainDefense.Game.UI
             _isPlaying = true;
 
             _sequence = DOTween.Sequence().SetUpdate(true);
+            _stepEndTimes.Clear();
 
             for (int i = 0; i < count; i++)
             {
@@ -226,6 +235,9 @@ namespace TrainDefense.Game.UI
                 }, targetScore, scoreCountDuration).SetEase(Ease.OutCubic));
 
                 _sequence.AppendInterval(holdInterval);
+
+                // 이 맵 단계가 끝나는 시퀀스 시간(탭 스킵의 점프 지점).
+                _stepEndTimes.Add(_sequence.Duration(false));
             }
 
             // 마지막에 하단 총점 패널 카운트업.
@@ -257,6 +269,20 @@ namespace TrainDefense.Game.UI
             totalScoreText.text = $"{_totalLabel} {value.ToCommaString()}{_totalSuffix}";
         }
 
+        // 이번 판 동안 획득한 엘리트 재화를 총점 패널에 표시한다.
+        private void _SetEliteCurrencyEarned()
+        {
+            if (eliteCurrencyText == null)
+                return;
+
+            string label = LocalizeHelper.GetByKey("result_elite_currency", "획득 엘리트 재화");
+            int earned = PermanentUpgradeManager.Instance != null
+                ? PermanentUpgradeManager.Instance.RunEliteCoinEarned
+                : 0;
+
+            eliteCurrencyText.text = $"{label} +{earned.ToCommaString()}";
+        }
+
         // 슬롯 index를 화면 중앙에 두는 정규화 스크롤 위치(0~1).
         // Content 좌우 패딩을 (뷰포트폭-슬롯폭)/2로 맞춰뒀기 때문에 index/(total-1)이 그 칸을 정확히 중앙에 둔다.
         private float _NormalizedFor(int index, int total)
@@ -276,13 +302,27 @@ namespace TrainDefense.Game.UI
                 lobbyButton.gameObject.SetActive(true);
         }
 
-        // 화면 탭 → 자동 재생을 끝까지 즉시 진행(콜백 포함)해 스크롤 모드로 전환.
+        // 화면 탭 → 현재 진행 중인 맵 단계(슬라이드+점수 카운트업)만 끝으로 점프한다.
+        // 맵마다 탭해서 하나씩 넘길 수 있고, 마지막(총점 카운트업)에서 탭하면 전체를 완료한다.
         private void _OnSkip()
         {
-            if (!_isPlaying)
+            if (!_isPlaying || _sequence == null)
                 return;
 
-            _sequence?.Complete(true);
+            float position = _sequence.position;
+
+            for (int i = 0; i < _stepEndTimes.Count; i++)
+            {
+                if (position < _stepEndTimes[i] - 0.001f)
+                {
+                    // Goto는 목표 시간의 상태로 트윈 값을 평가하므로 점수는 최종값으로 채워진다.
+                    _sequence.Goto(_stepEndTimes[i], true);
+                    return;
+                }
+            }
+
+            // 모든 맵 단계를 지나 총점 카운트업 중 → 콜백(OnComplete) 포함 전체 완료.
+            _sequence.Complete(true);
         }
     }
 }
