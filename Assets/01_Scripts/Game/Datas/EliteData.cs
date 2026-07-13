@@ -75,7 +75,7 @@ namespace TrainDefense.Game.Datas
             {
                type = EliteType.Red,
                weight = 1f,
-               hpMultiplier = 100f,
+               hpMultiplier = 120f,
                damageMultiplier = 4f,
                moveSpeedMultiplier = 1.4f,
                sizeScale = 1.6f,
@@ -84,12 +84,12 @@ namespace TrainDefense.Game.Datas
                ccResistance = 0.5f,
                tintColor = new Color(1f, 0.3f, 0.3f, 1f),
             },
-            // 🟢 초록 — 엄청 튼튼. 느려서 노출이 길고 CC 완전 면역이라 HP 로 탱크 정체성을 담당한다. (weight 0 = 미등장)
+            // 🟢 초록 — 엄청 튼튼. 느려서 노출이 길고 CC 완전 면역이라 HP 로 탱크 정체성을 담당한다.
             new EliteVariant
             {
                type = EliteType.Green,
-               weight = 0f,
-               hpMultiplier = 200f,
+               weight = 1f,
+               hpMultiplier = 250f,
                damageMultiplier = 1.5f,
                moveSpeedMultiplier = 0.85f,
                sizeScale = 1.8f,

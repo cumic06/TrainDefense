@@ -81,6 +81,13 @@ namespace TrainDefense.Game
       private const string StunPrefabPath = "Prefabs/StunPaticle";
       private static GameObject _stunPrefab;
 
+      private const string EliteHealthBarPrefabPath = "Prefabs/EliteHealthBar";
+      // 몬스터 루트 기준 체력바 y 오프셋(아래). 모델 크기와 무관한 고정값이라 인게임 확인 후 조정.
+      private const float EliteHealthBarOffsetY = -0.85f;
+      private static GameObject _eliteHealthBarPrefab;
+      // 엘리트 전용 체력바. 처음 엘리트가 될 때 자식으로 1회 생성해 계속 보유, 엘리트일 때만 켠다(eliteEffect 패턴).
+      private EliteHealthBar _eliteHealthBarInstance;
+
       public string Id => id;
       public bool IsActive => gameObject.activeInHierarchy;
       public Transform TargetTransform => transform;
@@ -127,6 +134,8 @@ namespace TrainDefense.Game
          // 풀 재사용 전 엘리트 상태 초기화(이전 타입의 오라 배율 잔존 방지).
          _auraSpeedMultiplier = 1f;
          _ccResistance = 0f;
+         if (_eliteHealthBarInstance != null)
+            _eliteHealthBarInstance.gameObject.SetActive(false);
 
          if (_modelAnimator != null)
          {
@@ -216,6 +225,7 @@ namespace TrainDefense.Game
 
          _ApplyEliteVisual(variant);
          _ApplyEliteAbility(variant);
+         _SpawnEliteHealthBar();
       }
 
       // 엘리트 불 이펙트를 켜고 타입 색으로 틴트한다. (프리팹마다 EliteEffect 자식에 SpriteRenderer 보유)
@@ -631,6 +641,28 @@ namespace TrainDefense.Game
          _auraSpeedMultiplier = 1f;
       }
 
+      // 엘리트 체력바: 엘리트 불꽃(eliteEffect)과 동일한 자식 SetActive 토글 패턴.
+      // 처음 엘리트가 될 때 한 번만 자식으로 생성해 계속 보유한다 — 풀 반환(SetParent)을 안 쓰므로
+      // 몬스터 비활성화(OnDisable) 중 재부모화 금지 제약과 무관하고, 소멸 시엔 부모 따라 자동으로 꺼진다.
+      private void _SpawnEliteHealthBar()
+      {
+         if (_eliteHealthBarInstance == null)
+         {
+            if (_eliteHealthBarPrefab == null)
+               _eliteHealthBarPrefab = Resources.Load<GameObject>(EliteHealthBarPrefabPath);
+            if (_eliteHealthBarPrefab == null)
+               return;
+
+            GameObject instance = Instantiate(_eliteHealthBarPrefab, transform);
+            instance.transform.localPosition = new Vector3(0f, EliteHealthBarOffsetY, 0f);
+            if (!instance.TryGetComponent(out _eliteHealthBarInstance))
+               return;
+         }
+
+         _eliteHealthBarInstance.gameObject.SetActive(true);
+         _eliteHealthBarInstance.SetRatio(1f);
+      }
+
       private void _StopEliteRoutines()
       {
          if (_rangedEliteCoroutine != null)
@@ -665,6 +697,9 @@ namespace TrainDefense.Game
 
          _currentHp -= damage;
          GameEventSystem.Publish(new HitEvent(_currentHp, _currentMonsterStatus.MaxHp, this, transform.position, damage, isCritical));
+
+         if (_eliteHealthBarInstance != null)
+            _eliteHealthBarInstance.SetRatio(_currentHp / _currentMonsterStatus.MaxHp);
 
          if (_currentHp <= 0)
          {
