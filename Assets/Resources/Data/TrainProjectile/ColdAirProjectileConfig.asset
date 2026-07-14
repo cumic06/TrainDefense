@@ -23,8 +23,10 @@ MonoBehaviour:
   isTargeting: 0
   damageType: 1
   tickDamageInterval: 0.2
+  burstDuration: 3
   hasSlowEffect: 1
   slowValue: 0.5
+  slowDuration: 0.1
   hasShoveEffect: 0
   shovePower: 1
   shoveDuration: 0.5

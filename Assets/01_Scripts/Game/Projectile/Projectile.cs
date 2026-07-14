@@ -53,6 +53,13 @@ namespace TrainDefense.Game
             _age = 0f;
             _damageTimers.Clear();
             _hitSet.Clear();
+
+            // OnDisable이 전략을 비우는데, 버스트 장판(냉기)은 Init 없이 SetActive(true)로만 재활성된다.
+            // 전략이 null이면 FixedUpdate가 조기 return해 _age(틱 시계)가 멈춰 틱 데미지가 안 들어간다.
+            if (data != null && _movementStrategy == null)
+            {
+                _movementStrategy = CreateMovementStrategy(data.MovementType);
+            }
             _hitCount = 0;
             _isSpawnedTrigger = false;
             SuppressShoveEffect = false;
@@ -380,10 +387,11 @@ namespace TrainDefense.Game
             }
 
             // 슬로우 효과 (Stay 중 지속 적용). owner가 둔화율을 제공하면 그 값, 아니면 config 기본값.
+            // 자동복원 슬로우(SlowDuration)를 매 Stay마다 갱신 — 장판이 꺼져도(버스트 종료) 그 시간 후 자연 해제.
             if (data.HasSlowEffect)
             {
                 float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
-                target.Slow(slowValue, 0f);
+                target.Slow(slowValue, data.SlowDuration);
             }
 
             // 넉백 효과 (Stay 중에도 적용)

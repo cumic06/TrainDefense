@@ -54,6 +54,8 @@ namespace TrainDefense.Game
         public delegate Projectile ProjectileOverrideProvider(int attackIndex);
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
         private float _attackCountdown;
+        // 버스트(화염) 남은 분사 시간. > 0이면 분사 유지 중이고 쿨다운은 멈춰 있다(종료 후부터 흐름).
+        private float _burstRemaining;
 
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
         public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
@@ -109,6 +111,8 @@ namespace TrainDefense.Game
             // 사망 시 FixedUpdate(자동 발사·ResetTarget)가 멈춰 마지막에 깔린 NonMovement 장판(냉기/화염 지속 영역)이 그대로 남는다.
             // 죽은 기차는 회색으로 씬에 남아(Destroy 안 됨) OnDestroy 정리도 타지 않으므로 즉시 끈다.
             _DeactivateNonMovementProjectiles();
+            // 분사 도중 죽으면 잔여 버스트가 남아 부활 직후 그 시간만큼 공격 불능이 되므로 함께 리셋한다.
+            _burstRemaining = 0f;
         }
         #endregion
 
@@ -130,6 +134,8 @@ namespace TrainDefense.Game
             }
 
             _nonMovementProjectiles.Clear();
+            // 분사 도중 상점 진입 시 잔여 버스트가 다음 전투 시작을 막지 않도록 리셋.
+            _burstRemaining = 0f;
         }
 
         private void _OnEngageStart(EngageStartEvent _)
@@ -267,6 +273,16 @@ namespace TrainDefense.Game
             // 타겟이 있으면 공격과 무관하게 계속 조준 방향으로 회전한다. (발사 순간에만 돌면 끊겨 보임)
             _RotateTowardNearTarget();
 
+            // 버스트(화염): 발동 후 지속시간 동안 분사를 유지한다(타겟이 빠져도 시간이 다할 때까지 계속 뿜음).
+            // 버스트 중엔 여기서 return하므로 쿨다운(IsAttackDelayZero)이 멈춰 있다가 종료 후부터 흐른다.
+            if (_burstRemaining > 0f)
+            {
+                _burstRemaining -= Time.fixedDeltaTime;
+                if (_burstRemaining <= 0f)
+                    _EndBurst();
+                return;
+            }
+
             // 회전 중에 발사되면 총구와 다른 방향으로 나가 어색해서, 타겟 방향을 (거의) 바라볼 때만 발사한다.
             if (IsAttackDelayZero() && _IsAimedAtNearTarget())
             {
@@ -398,6 +414,34 @@ namespace TrainDefense.Game
 
             Attack();
             _attackCountdown = _currentTurretTrainStatus.AttackInterval;
+
+            float burstDuration = _GetBurstDuration();
+            if (burstDuration > 0f)
+                _burstRemaining = burstDuration;
+        }
+
+        // 버스트 지속시간. NonMovement 풀링(분사형) 투사체의 config에 BurstDuration이 설정된 포탑(화염)만 > 0.
+        private float _GetBurstDuration()
+        {
+            if (!_useNonMovementProjectilePooling)
+                return 0f;
+
+            var projectile = GetProjectile();
+            if (projectile == null)
+                return 0f;
+
+            ProjectileData projectileData = projectile.GetData();
+            return projectileData != null ? projectileData.BurstDuration : 0f;
+        }
+
+        private void _EndBurst()
+        {
+            _burstRemaining = 0f;
+            _DeactivateNonMovementProjectiles();
+            if (TrainData.DamageType == DamageType.Tick)
+            {
+                SoundManager.Instance.StopSFX(turretTrainData.AttackSoundType);
+            }
         }
 
         private void ResetTarget()

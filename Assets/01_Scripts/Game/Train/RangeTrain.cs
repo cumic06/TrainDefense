@@ -141,14 +141,15 @@ namespace TrainDefense.Game
             {
                 if (rangeTrainData.RangeProjectilePrefab != null)
                 {
+                    if (_rangeProjectilePrefab == null)
+                    {
+                        SpawnRangeProjectile();
+                    }
+
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.gameObject.SetActive(true);
                         _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
-                    }
-                    else
-                    {
-                        SpawnRangeProjectile();
                     }
 
                     if (rangeTrainData.AttackSoundType != SoundType.None && TrainData.DamageType == DamageType.Direct)
@@ -165,7 +166,21 @@ namespace TrainDefense.Game
                         {
                             StopCoroutine(_rangeAttackCoroutine);
                         }
-                        _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine());
+                        _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine(1f));
+                    }
+                    else
+                    {
+                        // 버스트(냉기): 장판을 지속시간 동안 켰다가 끄고, 그 뒤부터 쿨다운이 흐른다(총 주기 = 지속시간 + 간격).
+                        float burstDuration = _GetBurstDuration();
+                        if (burstDuration > 0f)
+                        {
+                            _attackCountdown = burstDuration + _currentRangeTrainStatus.AttackInterval;
+                            if (_rangeAttackCoroutine != null)
+                            {
+                                StopCoroutine(_rangeAttackCoroutine);
+                            }
+                            _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine(burstDuration));
+                        }
                     }
                 }
             }
@@ -175,9 +190,10 @@ namespace TrainDefense.Game
             }
         }
 
-        private IEnumerator RangeProjectileCoroutine()
+        // activeDuration초 동안 장판을 켜둔 뒤 끈다. (Direct = 기존 1초 유지, 버스트 냉기 = BurstDuration)
+        private IEnumerator RangeProjectileCoroutine(float activeDuration)
         {
-            yield return new WaitForSeconds(rangeTrainData.RangeTrainStatus.AttackInterval / rangeTrainData.RangeTrainStatus.AttackInterval);
+            yield return new WaitForSeconds(activeDuration);
 
             if (_rangeProjectilePrefab != null)
             {
@@ -250,8 +266,22 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
                     _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
                     _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+
+                    // 버스트(냉기)는 발동 시점에 켜므로, 깔아둔 장판은 꺼둔 채 대기한다.
+                    if (_GetBurstDuration() > 0f)
+                        _rangeProjectilePrefab.gameObject.SetActive(false);
                 }
             }
+        }
+
+        // 버스트 지속시간. 장판 투사체 config에 BurstDuration이 설정된 포탑(냉기)만 > 0.
+        private float _GetBurstDuration()
+        {
+            if (_rangeProjectilePrefab == null)
+                return 0f;
+
+            ProjectileData projectileData = _rangeProjectilePrefab.GetData();
+            return projectileData != null ? projectileData.BurstDuration : 0f;
         }
 
         public override void Upgrade(ITrainUpgradeData upgradeData)

@@ -74,6 +74,8 @@ namespace TrainDefense.Game
       private Coroutine _auraReceiveCoroutine;
       // 노랑 엘리트 오라로 받은 이동속도 배율(기본 1). _currentMonsterStatus.MoveSpeed에 곱해 Slow와 독립 적용.
       private float _auraSpeedMultiplier = 1f;
+      // 슬로우 배율(1 = 정상). 속도 스탯을 덮어쓰지 않아 갱신 중첩·엘리트 배율 잠식이 없다.
+      private float _slowMultiplier = 1f;
       // 엘리트 CC 저항(0~1). 슬로우 감속량·스턴 시간·넉백을 (1-저항)배로 줄이고, 1이면 완전 면역.
       private float _ccResistance;
 
@@ -133,6 +135,7 @@ namespace TrainDefense.Game
 
          // 풀 재사용 전 엘리트 상태 초기화(이전 타입의 오라 배율 잔존 방지).
          _auraSpeedMultiplier = 1f;
+         _slowMultiplier = 1f;
          _ccResistance = 0f;
          if (_eliteHealthBarInstance != null)
             _eliteHealthBarInstance.gameObject.SetActive(false);
@@ -173,6 +176,7 @@ namespace TrainDefense.Game
          _ReleaseStunEffect();
          _StopEliteRoutines();
          _auraSpeedMultiplier = 1f;
+         _slowMultiplier = 1f;
 
          _targetTrain = null;
       }
@@ -298,8 +302,8 @@ namespace TrainDefense.Game
 
       private void _Move()
       {
-         // 노랑 엘리트 오라 배율을 곱한다(기본 1). Slow는 MoveSpeed 자체를 바꾸므로 둘이 곱셈으로 독립 적용된다.
-         float moveSpeed = _currentMonsterStatus.MoveSpeed * _auraSpeedMultiplier;
+         // 오라·슬로우 배율을 곱한다(각각 기본 1). 속도 스탯은 안 건드려 엘리트 이속 배율과도 독립 적용된다.
+         float moveSpeed = _currentMonsterStatus.MoveSpeed * _auraSpeedMultiplier * _slowMultiplier;
          transform.Translate(moveSpeed * Time.deltaTime * _MoveDirection().normalized);
       }
 
@@ -413,37 +417,24 @@ namespace TrainDefense.Game
          if (_slowCoroutine != null)
          {
             StopCoroutine(_slowCoroutine);
+            _slowCoroutine = null;
          }
+         if (_resetMoveSpeedCoroutine != null)
+         {
+            StopCoroutine(_resetMoveSpeedCoroutine);
+            _resetMoveSpeedCoroutine = null;
+         }
+
+         // 속도 스탯을 덮어쓰지 않고 배율만 세팅 — 매 틱 갱신받아도 중첩되지 않고, 엘리트 이속 배율·오라도 보존된다.
+         _slowMultiplier = slowValue;
 
          if (duration > 0f)
          {
-            _slowCoroutine = StartCoroutine(_SlowForDurationCoroutine(slowValue, duration));
+            _slowCoroutine = StartCoroutine(_SlowForDurationCoroutine(duration));
          }
-         else
-         {
-            _slowCoroutine = StartCoroutine(_SlowCoroutine(slowValue));
-         }
+         // duration <= 0(갱신형)은 장판 이탈(ProcessExit)의 ResetMoveSpeed로 해제된다.
 
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = slowColor;
-      }
-
-      private IEnumerator _SlowCoroutine(float slowValue)
-      {
-         // 원래 속도 기준 둔화 (매 프레임 재적용 시 현재 속도 기준이면 0쪽으로 누적 감속됨)
-         var slowSpeed = _monsterData.MonsterStatusData.MoveSpeed * slowValue;
-         var startSpeed = _currentMonsterStatus.MoveSpeed;
-         float elapsedTime = 0f;
-         float duration = 1f;
-
-         while (elapsedTime < duration)
-         {
-            elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / duration);
-            _currentMonsterStatus.MoveSpeed = Mathf.Lerp(startSpeed, slowSpeed, t);
-            yield return null;
-         }
-
-         _currentMonsterStatus.MoveSpeed = slowSpeed;
       }
 
       public void ResetMoveSpeed()
@@ -459,19 +450,17 @@ namespace TrainDefense.Game
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
       }
 
-      // 즉발 슬로우 + duration 초 뒤 자동 복원 (Slow에서 duration > 0일 때 사용).
-      private IEnumerator _SlowForDurationCoroutine(float slowValue, float duration)
+      // duration 초 뒤 자동 복원. 갱신(재호출) 시 코루틴이 재시작돼 타이머가 연장된다.
+      private IEnumerator _SlowForDurationCoroutine(float duration)
       {
-         var slowSpeed = _currentMonsterStatus.MoveSpeed * slowValue;
-         _currentMonsterStatus.MoveSpeed = slowSpeed;
          yield return new WaitForSeconds(duration);
          ResetMoveSpeed();
       }
 
+      // 슬로우 배율을 1초에 걸쳐 1로 되돌린다(부드러운 회복 연출).
       private IEnumerator _ResetMoveSpeedCoroutine()
       {
-         var targetSpeed = _monsterData.MonsterStatusData.MoveSpeed;
-         var startSpeed = _currentMonsterStatus.MoveSpeed;
+         var startMultiplier = _slowMultiplier;
          float elapsedTime = 0f;
          float duration = 1f;
 
@@ -479,11 +468,11 @@ namespace TrainDefense.Game
          {
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / duration);
-            _currentMonsterStatus.MoveSpeed = Mathf.Lerp(startSpeed, targetSpeed, t);
+            _slowMultiplier = Mathf.Lerp(startMultiplier, 1f, t);
             yield return null;
          }
 
-         _currentMonsterStatus.MoveSpeed = targetSpeed;
+         _slowMultiplier = 1f;
       }
 
 

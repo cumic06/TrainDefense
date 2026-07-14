@@ -65,6 +65,12 @@ namespace TrainDefense.Game
         [SerializeField]
         private float tickDamageInterval = 0.1f;
 
+        [BoxGroup("Damage")]
+        [ShowIf("damageType", DamageType.Tick)]
+        [SerializeField]
+        [Tooltip("버스트 지속시간(초). 0보다 크면 틱 포탑이 '쿨다운 → 지속시간 동안 분사/장판 → 종료 → 쿨다운' 방식으로 동작한다 (화염·냉기). 0이면 기존 상시 유지 방식.")]
+        private float burstDuration = 0f;
+
         [BoxGroup("Status Effects")]
         [SerializeField]
         private bool hasSlowEffect = false;
@@ -73,6 +79,12 @@ namespace TrainDefense.Game
         [ShowIf("hasSlowEffect")]
         [SerializeField]
         private float slowValue = 0.5f;
+
+        [BoxGroup("Status Effects")]
+        [ShowIf("hasSlowEffect")]
+        [SerializeField]
+        [Tooltip("Stay 슬로우의 지속시간(초). 자동복원 슬로우를 매 Stay마다 갱신하므로 장판 안에서는 유지되고, 장판이 꺼지면(버스트 종료) 이 시간 후 자연 해제된다. 0이면 옛 갱신형(이탈 시에만 해제).")]
+        private float slowDuration = 0.1f;
 
         [BoxGroup("Status Effects")]
         [SerializeField]
@@ -140,8 +152,10 @@ namespace TrainDefense.Game
         public bool IsTargeting => isTargeting;
         public DamageType DamageType => damageType;
         public float TickDamageInterval => tickDamageInterval;
+        public float BurstDuration => burstDuration;
         public bool HasSlowEffect => hasSlowEffect;
         public float SlowValue => slowValue;
+        public float SlowDuration => slowDuration;
         public bool HasShoveEffect => hasShoveEffect;
         public float ShovePower => shovePower;
         public float ShoveDuration => shoveDuration;
