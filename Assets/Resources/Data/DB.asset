@@ -650,7 +650,6 @@ MonoBehaviour:
     prefabId: EliteMissileTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
-    - 60008
     - 60009
     - 60010
     isMainTrain: 0
@@ -728,7 +727,6 @@ MonoBehaviour:
     prefabId: EliteCannonTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
-    - 60014
     - 60015
     isMainTrain: 0
     turretTrainStatus:
@@ -754,9 +752,7 @@ MonoBehaviour:
     prefabId: EliteSniperTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
-    - 60016
     - 60017
-    - 60018
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 50
@@ -1095,18 +1091,11 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60007_Desc
-    - id: 60008
-      name: Passive_60008_Name
-      passiveType: RepeatAfterAttack:0.15:1:1
-      param1: 
-      param2: 
-      param3: 
-      description: Passive_60008_Desc
     - id: 60009
       name: Passive_60009_Name
-      passiveType: StatModifier:AttackInterval:30|KnockbackOnHit:2:0.3
-      param1: 
-      param2: 
+      passiveType: KnockbackOnHit
+      param1: 2
+      param2: 0.3
       param3: 
       description: Passive_60009_Desc
     - id: 60010
@@ -1137,13 +1126,6 @@ MonoBehaviour:
       param2: -30
       param3: TargetCount:100
       description: Passive_60013_Desc
-    - id: 60014
-      name: Passive_60014_Name
-      passiveType: StatModifier
-      param1: AttackArea
-      param2: 50
-      param3: 
-      description: Passive_60014_Desc
     - id: 60015
       name: Passive_60015_Name
       passiveType: RapidBombard
@@ -1158,14 +1140,7 @@ MonoBehaviour:
       param2: 0.25
       param3: 
       description: Passive_60017_Desc
-    - id: 60018
-      name: Passive_60018_Name
-      passiveType: StatModifier
-      param1: AttackInterval
-      param2: -30
-      param3: 
-      description: Passive_60018_Desc
-  _legacyTrainSkillDataList: []
+    _legacyTrainSkillDataList: []
   _legacyTrainPassiveSkillDataList: []
   trainUpgradeDataList: []
   turretTrainUpgradeDataList:
