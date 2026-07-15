@@ -46,7 +46,7 @@ namespace TrainDefense.Game.Datas
 
             var baseTrain = mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == baseTrainId);
             if (baseTrain == null) return false;
-            if (baseTrain.CurrentLevel < 2) return false;
+            if (baseTrain.CurrentLevel < 6) return false;
 
             // 스킬이 하나라도 있어야 엘리트 카드로 유효
             return databaseManager.GetTrainSkillDataDB().HasSkillForTrain(eliteTrainDataId);
