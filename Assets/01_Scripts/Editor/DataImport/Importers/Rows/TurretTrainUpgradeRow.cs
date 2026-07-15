@@ -13,6 +13,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public int targetCount;
 		public float criticalChance;
 		public float criticalDamage;
+		public float burstDuration;
 		public string passiveSkillDataId;
 
 		public override void FromExcelRow(IRow row, HeaderMap map)
@@ -26,6 +27,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			targetCount = map.GetInt(row, "target_count");
 			criticalChance = map.GetFloat(row, "critical_chance");
 			criticalDamage = map.GetFloat(row, "critical_damage");
+			burstDuration = map.GetFloat(row, "burst_duration");
 			passiveSkillDataId = map.GetString(row, "passive_skill_data_id");
 		}
 
@@ -40,6 +42,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "target_count", targetCount);
 			map.SetCell(row, "critical_chance", criticalChance);
 			map.SetCell(row, "critical_damage", criticalDamage);
+			map.SetCell(row, "burst_duration", burstDuration);
 			map.SetCell(row, "passive_skill_data_id", passiveSkillDataId);
 		}
 	}

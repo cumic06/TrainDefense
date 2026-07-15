@@ -431,7 +431,10 @@ namespace TrainDefense.Game
                 return 0f;
 
             ProjectileData projectileData = projectile.GetData();
-            return projectileData != null ? projectileData.BurstDuration : 0f;
+            float baseBurst = projectileData != null ? projectileData.BurstDuration : 0f;
+
+            // config가 base, 업그레이드 누적(BurstDuration 스탯)이 가산. base 0 = 비버스트 포탑(스탯 무시).
+            return baseBurst > 0f ? baseBurst + _currentTurretTrainStatus.BurstDuration : 0f;
         }
 
         private void _EndBurst()
@@ -1029,6 +1032,7 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.TargetCount += turretStatus.TargetCount;
                 _currentTurretTrainStatus.CriticalChance += turretStatus.CriticalChance;
                 _currentTurretTrainStatus.CriticalDamage += turretStatus.CriticalDamage;
+                _currentTurretTrainStatus.BurstDuration += turretStatus.BurstDuration;
 
                 var passiveId = turretUpgradeData.GetPassiveSkillDataId(upgradeLevelIndex);
                 if (!string.IsNullOrEmpty(passiveId))
@@ -1101,8 +1105,8 @@ namespace TrainDefense.Game
                 (L("Detail_Range", "사거리"), $"{_currentTurretTrainStatus.AttackRange:F1}"),
             };
 
-            // 범위(AttackArea)는 실제로 폭발 반경으로 쓰는 포탑만 표시. (선택 카드와 동일 조건)
-            if (_currentTurretTrainStatus.AttackArea > 0f && turretTrainData != null && turretTrainData.UsesAttackArea)
+            // 범위(AttackArea)는 실제로 쓰는 포탑만 표시 — 미사용 포탑(기관총·전기·저격)은 base가 0으로 정리돼 있어 값 판정으로 충분.
+            if (_currentTurretTrainStatus.AttackArea > 0f)
                 details.Add((L("Detail_Area", "범위"), $"{_currentTurretTrainStatus.AttackArea:F1}"));
 
             details.Add((L("Detail_Speed", "공격속도"), $"{_currentTurretTrainStatus.AttackInterval:F2}"));
@@ -1344,6 +1348,7 @@ namespace TrainDefense.Game
             _currentTurretTrainStatus.TargetCount = newBase.TargetCount + (srcCurrent.TargetCount - srcBase.TargetCount);
             _currentTurretTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
             _currentTurretTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
+            _currentTurretTrainStatus.BurstDuration = newBase.BurstDuration + (srcCurrent.BurstDuration - srcBase.BurstDuration);
 
             _statAttackDamageAccum = srcTurret._statAttackDamageAccum;
             _statAttackCountAccum = srcTurret._statAttackCountAccum;

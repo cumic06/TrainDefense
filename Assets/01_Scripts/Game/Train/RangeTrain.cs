@@ -281,7 +281,10 @@ namespace TrainDefense.Game
                 return 0f;
 
             ProjectileData projectileData = _rangeProjectilePrefab.GetData();
-            return projectileData != null ? projectileData.BurstDuration : 0f;
+            float baseBurst = projectileData != null ? projectileData.BurstDuration : 0f;
+
+            // config가 base, 업그레이드 누적(BurstDuration 스탯)이 가산. base 0 = 비버스트 포탑(스탯 무시).
+            return baseBurst > 0f ? baseBurst + _currentRangeTrainStatus.BurstDuration : 0f;
         }
 
         public override void Upgrade(ITrainUpgradeData upgradeData)
@@ -307,6 +310,7 @@ namespace TrainDefense.Game
                 _currentRangeTrainStatus.CriticalChance += rangeStatus.CriticalChance;
                 _currentRangeTrainStatus.CriticalDamage += rangeStatus.CriticalDamage;
                 _currentRangeTrainStatus.SlowRate += rangeStatus.SlowRate;
+                _currentRangeTrainStatus.BurstDuration += rangeStatus.BurstDuration;
 
                 if (_rangeProjectilePrefab != null)
                 {
@@ -595,6 +599,7 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
             _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
             _currentRangeTrainStatus.SlowRate = newBase.SlowRate + (srcCurrent.SlowRate - srcBase.SlowRate);
+            _currentRangeTrainStatus.BurstDuration = newBase.BurstDuration + (srcCurrent.BurstDuration - srcBase.BurstDuration);
 
             _statAttackDamageAccum = srcRange._statAttackDamageAccum;
             _statAttackCountAccum = srcRange._statAttackCountAccum;

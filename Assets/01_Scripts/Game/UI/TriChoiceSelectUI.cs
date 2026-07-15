@@ -192,37 +192,39 @@ namespace TrainDefense.Game.UI
             var baseStatus = turretTrain.BaseStatus;
             var accumulated = turretUpgrade.GetAccumulatedTurretStatusUpgrade(turretTrain.CurrentLevel);
             float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
+            float currentRange = baseStatus.AttackRange + accumulated.AttackRange;
+            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
 
             var nextUpgrade = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
 
             AddUpgradeDeltaLine(lines, "Upgrade_AttackDamage", nextUpgrade.AttackDamage);
             AddUpgradeDeltaLine(lines, "Upgrade_AttackSpeed", nextUpgrade.AttackInterval, delta => FormatAttackSpeedDelta(currentInterval, delta));
-            AddUpgradeDeltaLine(lines, "Upgrade_AttackRange", nextUpgrade.AttackRange);
-            if (turretTrain.TrainData is TurretTrainData turretData && UsesAttackArea(turretData))
-               AddUpgradeDeltaLine(lines, "Upgrade_AttackArea", nextUpgrade.AttackArea);
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackRange", nextUpgrade.AttackRange, delta => FormatSizeDelta(currentRange, delta));
+            // 범위 업글이 있는 포탑(화염 파티클·레이저 빔 굵기·미사일/포격 폭발)만 델타≠0으로 표시됨 — 별도 게이트 불필요.
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackArea", nextUpgrade.AttackArea, delta => FormatSizeDelta(currentArea, delta));
             AddUpgradeDeltaLine(lines, "Upgrade_TargetCount", nextUpgrade.TargetCount);
+            AddUpgradeDeltaLine(lines, "Upgrade_BurstDuration", nextUpgrade.BurstDuration);
          }
          else if (upgradeData is RangeTrainUpgradeData rangeUpgrade && currentTrain is RangeTrain rangeTrain)
          {
             var baseStatus = rangeTrain.BaseStatus;
             var accumulated = rangeUpgrade.GetAccumulatedRangeStatusUpgrade(rangeTrain.CurrentLevel);
             float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
+            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
 
             var nextUpgrade = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
 
             AddUpgradeDeltaLine(lines, "Upgrade_AttackDamage", nextUpgrade.AttackDamage);
             AddUpgradeDeltaLine(lines, "Upgrade_AttackSpeed", nextUpgrade.AttackInterval, delta => FormatAttackSpeedDelta(currentInterval, delta));
-            AddUpgradeDeltaLine(lines, "Upgrade_AttackArea", nextUpgrade.AttackArea);
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackArea", nextUpgrade.AttackArea, delta => FormatSizeDelta(currentArea, delta));
             AddUpgradeDeltaLine(lines, "Upgrade_Slow", nextUpgrade.SlowRate);
+            AddUpgradeDeltaLine(lines, "Upgrade_BurstDuration", nextUpgrade.BurstDuration);
          }
 
          return string.Join("\n", lines);
       }
 
       // 포탑이 AttackArea 스탯을 실제 폭발 반경으로 쓰는지 판정 (빔 길이·파티클 비율은 제외).
-      private static bool UsesAttackArea(TurretTrainData turretData)
-         => turretData != null && turretData.UsesAttackArea;
-
       // 업그레이드 카드용: 값이 바뀌는 스탯(delta≠0)만 "레이블 +증가량"(upgradeKey)으로 표시.
       // 변화 없는 스탯은 표시하지 않는다. 해당 키가 없으면 조용히 건너뛴다.
       // formatter가 주어지면 증가량 표기를 위임(예: 공격 속도의 % 환산), 없으면 "+0.#" 서식.
@@ -250,6 +252,16 @@ namespace TrainDefense.Game.UI
             return null;
 
          float percent = (currentInterval / nextInterval - 1f) * 100f;
+         return $"{(percent > 0 ? "+" : "")}{percent:0.#}%";
+      }
+
+      // 범위/사거리 증가를 현재값 대비 %로 표기 — 반경(크기) 기준이라 유저가 보는 원 크기 변화와 일치한다.
+      private static string FormatSizeDelta(float currentValue, float delta)
+      {
+         if (currentValue <= 0f)
+            return null;
+
+         float percent = delta / currentValue * 100f;
          return $"{(percent > 0 ? "+" : "")}{percent:0.#}%";
       }
 
