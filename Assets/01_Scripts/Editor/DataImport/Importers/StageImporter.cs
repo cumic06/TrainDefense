@@ -9,7 +9,7 @@ namespace TrainDefense.Editor.DataImport.Importers
       public string ExcelFileName => "StageData.xlsx";
       public string SheetName => "stage_data";
       public string ButtonLabel => "Stage 데이터 가져오기";
-      public string[] Headers => new[] { "id", "base_inspection_time", "station_count", "stage_end_time", "spawn_interval", "spawn_monsters", "spawn_monsters_probability", "spawn_monsters_level", "spawn_monsters_elite_chance", "spawn_monsters_elite_ramp" };
+      public string[] Headers => new[] { "id", "name_key", "base_inspection_time", "station_count", "stage_end_time", "spawn_interval", "spawn_monsters", "spawn_monsters_probability", "spawn_monsters_level", "spawn_monsters_elite_chance", "spawn_monsters_elite_ramp" };
 
       public int Import(DB db, string excelPath)
       {
@@ -42,6 +42,7 @@ namespace TrainDefense.Editor.DataImport.Importers
       {
          var t = typeof(StageData);
          SetPrivateField(t, target, "id", r.id);
+         SetPrivateField(t, target, "nameKey", r.nameKey);
          SetPrivateField(t, target, "baseInspectionTime", r.baseInspectionTime);
          SetPrivateField(t, target, "stationCount", r.stationCount);
          SetPrivateField(t, target, "stageEndTime", r.stageEndTime);
