@@ -109,7 +109,7 @@ Passive_60001_Desc	3회 공격마다 폭발 투사체 발사.	Fires an explosive
 Passive_60002_Name	확장 화염	Wide Flame	範囲炎	范围火焰
 Passive_60002_Desc	사거리가 길어지고 범위가 넓어짐.	Range and area of effect increase.	射程が伸び、範囲が広がる。	射程延长，范围扩大。
 Passive_60003_Name	화력 집중	Focused Fire	火力集中	火力集中
-Passive_60003_Desc	범위가 줄어들지만 공격력이 크게 상승.	Area decreases but attack power greatly increases.	範囲が狭まるが攻撃力が大幅に上昇する。	范围减小，但攻击力大幅提升。
+Passive_60003_Desc	공격력과 사거리가 상승하고 범위가 줄어듦.	Attack power and range increase but area decreases.	攻撃力と射程が上昇し、範囲が狭まる。	攻击力和射程提升，范围减小。
 Passive_60004_Name	혹한	Bitter Cold	極寒	严寒
 Passive_60004_Desc	공격력과 둔화율이 높아짐	Attack power and slow rate increase.	攻撃力と鈍化率が上昇する。	攻击力和减速率均提升。
 Passive_60005_Name	눈덩이	Snowball	スノーボール	雪球
