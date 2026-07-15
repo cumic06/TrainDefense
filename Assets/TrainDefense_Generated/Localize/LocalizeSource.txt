@@ -123,7 +123,7 @@ Passive_60008_Desc	공격할 때 2발을 발사합니다	Fires 2 shots per attac
 Passive_60009_Name	충격 미사일	Impact Missile	衝撃ミサイル	冲击导弹
 Passive_60009_Desc	공격 속도 감소, 강한 넉백	Slower attack, strong knockback.	攻撃速度が減少するが強くノックバックする。	攻击速度降低，强力击退。
 Passive_60010_Name	거대한 미사일	Giant Missile	巨大ミサイル	巨型导弹
-Passive_60010_Desc	공격력 증가, 범위 증가, 미사일 크기 증가	Attack power, range, and missile size all increase.	攻撃力、範囲、ミサイルの大きさが増加する。	攻击力、范围和导弹体积均提升。
+Passive_60010_Desc	공격력과 범위가 증가.	Attack power and area increase.	攻撃力と範囲が上昇する。	攻击力和范围提升。
 Passive_60011_Name	과충전	Overcharge	オーバーチャージ	过度充能
 Passive_60011_Desc	공격 속도가 감소하지만 3번 연속으로 공격합니다.	Attacks 3 times consecutively, but at a reduced attack speed.	攻撃速度は低下するが、3回連続で攻撃する。	攻击速度降低，但连续攻击3次。
 Passive_60012_Name	강한 레이저	Powerful Laser	強力レーザー	强力激光

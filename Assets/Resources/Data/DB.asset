@@ -1111,10 +1111,10 @@ MonoBehaviour:
       description: Passive_60009_Desc
     - id: 60010
       name: Passive_60010_Name
-      passiveType: StatModifier:AttackDamage:100|ScaleProjectile
-      param1: 1.5
-      param2: 
-      param3: 
+      passiveType: StatModifier
+      param1: AttackDamage
+      param2: 100
+      param3: AttackArea:50
       description: Passive_60010_Desc
     - id: 60011
       name: Passive_60011_Name
