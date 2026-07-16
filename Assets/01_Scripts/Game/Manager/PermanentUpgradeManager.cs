@@ -96,7 +96,7 @@ namespace TrainDefense.Game
             return true;
         }
 
-        /// <summary>현재 재화로 구매 가능한(최대 레벨이 아니고 비용을 충족하는) 영구 업그레이드가 하나라도 있는지. (레드닷 판정용)</summary>
+        /// <summary>현재 재화로 구매 가능한(최대 레벨이 아니고 비용을 충족하는) 영구 업그레이드가 하나라도 있는지. (로비 버튼 레드닷 판정용)</summary>
         public bool HasAffordableUpgrade()
         {
             if (DatabaseManager.Instance == null) return false;
@@ -104,11 +104,22 @@ namespace TrainDefense.Game
             foreach (var data in DatabaseManager.Instance.GetPermanentUpgradeDatas())
             {
                 if (data == null) continue;
-                if (IsMaxLevel(data.Id)) continue;
-                if (data.GetCostAtLevel(GetLevel(data.Id)) <= _eliteCoin) return true;
+                if (IsAffordable(data.Id)) return true;
             }
 
             return false;
+        }
+
+        /// <summary>해당 영구 업그레이드를 현재 재화로 구매 가능한지(최대 레벨이 아니고 비용 충족). (슬롯 레드닷 판정용)</summary>
+        public bool IsAffordable(string upgradeId)
+        {
+            if (DatabaseManager.Instance == null) return false;
+
+            var data = DatabaseManager.Instance.GetPermanentUpgradeData(upgradeId);
+            if (data == null) return false;
+            if (IsMaxLevel(upgradeId)) return false;
+
+            return data.GetCostAtLevel(GetLevel(upgradeId)) <= _eliteCoin;
         }
         #endregion
 
