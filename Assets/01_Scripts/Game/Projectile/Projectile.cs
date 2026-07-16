@@ -62,6 +62,9 @@ namespace TrainDefense.Game
             }
             _hitCount = 0;
             _isSpawnedTrigger = false;
+            // 페이드 도중 피격 소멸로 코루틴이 끊기면 알파가 낮은 채 풀에 남는다 → 재사용 시 원복
+            if (_fadeSprites != null)
+                _SetFadeAlpha(1f);
             SuppressShoveEffect = false;
             ShoveScale = 1f;
             _runtimeHasShove = false;
@@ -521,14 +524,67 @@ namespace TrainDefense.Game
                 triggerHandle.transform.localScale *= _scale;
         }
 
-        private IEnumerator DestroyCoroutine()
+        // 사거리 제한: 수명을 "사거리를 날아가는 시간"으로 덮어써 총알이 탐지 사거리 너머 화면 끝까지 타격하지 않게 한다.
+        // 사거리 업그레이드가 있어 config 고정값이 아니라 발사 시점의 AttackRange로 매번 계산한다.
+        // 소멸은 기존 시간 소멸과 동일 경로(ReturnToPool) — 미사일(trigger 스폰형)은 그 자리에서 폭발로 마감된다.
+        public void LimitLifetimeByRange(float attackRange)
         {
-            yield return new WaitForSeconds(data.DestroyDelay);
+            if (data == null || data.Speed <= 0f)
+                return;
+
+            if (_destroyCoroutine != null)
+                StopCoroutine(_destroyCoroutine);
+            _destroyCoroutine = StartCoroutine(DestroyCoroutine(attackRange / data.Speed));
+        }
+
+        private IEnumerator DestroyCoroutine(float overrideDelay = 0f)
+        {
+            yield return new WaitForSeconds(overrideDelay > 0f ? overrideDelay : data.DestroyDelay);
 
             if (this == null)
                 yield break;
 
+            // 만료 소멸은 점점 투명해지며 사라진다. (피격 소멸은 즉시, 미사일(trigger 스폰형)은 폭발이 마감이라 페이드 없음)
+            if (!data.IsSpawnTriggerHandle)
+                yield return _DespawnFadeCoroutine();
+
             ReturnToPool();
+        }
+
+        private const float DespawnFadeDuration = 0.15f;
+        private SpriteRenderer[] _fadeSprites;
+        private float[] _fadeBaseAlphas;
+
+        private IEnumerator _DespawnFadeCoroutine()
+        {
+            if (_fadeSprites == null)
+            {
+                _fadeSprites = GetComponentsInChildren<SpriteRenderer>();
+                _fadeBaseAlphas = new float[_fadeSprites.Length];
+                for (int i = 0; i < _fadeSprites.Length; i++)
+                    _fadeBaseAlphas[i] = _fadeSprites[i].color.a;
+            }
+
+            for (float elapsed = 0f; elapsed < DespawnFadeDuration; elapsed += Time.deltaTime)
+            {
+                _SetFadeAlpha(1f - elapsed / DespawnFadeDuration);
+                yield return null;
+            }
+
+            // 풀 재사용 대비 원복 — 같은 프레임에 비활성화되므로 화면에 되살아나 보이지 않는다.
+            _SetFadeAlpha(1f);
+        }
+
+        private void _SetFadeAlpha(float ratio)
+        {
+            for (int i = 0; i < _fadeSprites.Length; i++)
+            {
+                var sprite = _fadeSprites[i];
+                if (sprite == null) continue;
+                var color = sprite.color;
+                color.a = _fadeBaseAlphas[i] * ratio;
+                sprite.color = color;
+            }
         }
     }
 }

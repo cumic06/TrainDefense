@@ -219,6 +219,10 @@ namespace TrainDefense.Game
             // (Init이 누락되면 투사체가 초기화되지 않아 제자리에 멈추고 데미지도 0이 된다.)
             TurretCombatFx.InitProjectile(projectile, _status, _owner, null);
 
+            // 편성 포탑과 동일하게 총알은 사거리에서 소멸 (NonMovement 부착형은 제자리 지속형이라 무관)
+            if (!isNonMovement)
+                projectile.LimitLifetimeByRange(_status.AttackRange);
+
             return projectile;
         }
 

@@ -1033,6 +1033,10 @@ namespace TrainDefense.Game
             if (ProjectileKnockbackPower > 0f)
                 projectile.SetRuntimeShove(ProjectileKnockbackPower, ProjectileKnockbackDuration);
 
+            // 날아가는 총알만 사거리에서 소멸 (NonMovement 풀링형(레이저·화염)은 제자리 지속형이라 무관)
+            if (!_useNonMovementProjectilePooling)
+                projectile.LimitLifetimeByRange(_currentTurretTrainStatus.AttackRange);
+
             return projectile;
         }
         #endregion
