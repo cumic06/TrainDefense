@@ -174,7 +174,7 @@ namespace TrainDefense.Game
 
             ProjectileData baseData = _projectilePrefab.GetData();
             float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
-            int count = Mathf.Max(1, _status.AttackCount);
+            int count = Mathf.Max(1, _status.TargetCount);
 
             // 방향은 하나뿐: 피벗→마우스. 포탑도 이 방향을 보고(AimAt), 총알도 이 방향으로 나간다.
             // 마우스 위치를 "통과해야 할 지점"으로 취급하지 않는다 — 방향 지시자일 뿐.

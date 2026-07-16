@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cumic;
@@ -56,6 +57,10 @@ namespace TrainDefense.Game
         private float _attackCountdown;
         // 버스트(화염) 남은 분사 시간. > 0이면 분사 유지 중이고 쿨다운은 멈춰 있다(종료 후부터 흐름).
         private float _burstRemaining;
+
+        // 공격 횟수(AttackCount) 반복 간격 = AttackInterval × 이 비율. 공속이 빨라질수록 연타 간격도 조여진다.
+        private const float RepeatAttackDelayRatio = 0.15f;
+        private Coroutine _repeatAttackCoroutine;
 
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
         public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
@@ -418,6 +423,31 @@ namespace TrainDefense.Game
             float burstDuration = _GetBurstDuration();
             if (burstDuration > 0f)
                 _burstRemaining = burstDuration;
+
+            // 공격 횟수(AttackCount) > 1이면 방금 수행한 공격 전체를 공속 비례 간격으로 반복한다.
+            // 버스트(화염)는 분사 유지가 공격의 연장이라 반복 대상에서 제외.
+            if (_currentTurretTrainStatus.AttackCount > 1 && burstDuration <= 0f)
+            {
+                if (_repeatAttackCoroutine != null)
+                    StopCoroutine(_repeatAttackCoroutine);
+                _repeatAttackCoroutine = StartCoroutine(_RepeatAttackCoroutine(
+                    _currentTurretTrainStatus.AttackCount - 1,
+                    _currentTurretTrainStatus.AttackInterval * RepeatAttackDelayRatio));
+            }
+        }
+
+        // 공격 횟수 반복: 한 번의 공격(대상 수만큼 타격)을 통째로 다시 수행한다.
+        // 타겟 목록은 FixedUpdate의 DetectTarget이 계속 갱신하므로 반복마다 현재 타겟 기준으로 나간다.
+        private IEnumerator _RepeatAttackCoroutine(int repeatCount, float delay)
+        {
+            for (int i = 0; i < repeatCount; i++)
+            {
+                yield return new WaitForSeconds(delay);
+                if (_isDead || _targetMonsters.Count == 0)
+                    break;
+                Attack();
+            }
+            _repeatAttackCoroutine = null;
         }
 
         // 버스트 지속시간. NonMovement 풀링(분사형) 투사체의 config에 BurstDuration이 설정된 포탑(화염)만 > 0.
@@ -570,7 +600,7 @@ namespace TrainDefense.Game
 
             ProjectileData baseData = GetProjectile()?.GetData();
             float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
-            int count = _currentTurretTrainStatus.AttackCount;
+            int count = _currentTurretTrainStatus.TargetCount;
             // 파티클 투사체(화염 등)는 스폰포인트가 포탑 중심에서 오프셋되어 있어
             // 투사체 위치 기준 LookAt2D를 쓰면 가까운 타겟에서 포탑이 바라보는 방향과 어긋난다.
             // 포탑 회전을 그대로 따라가도록 처리해 시각적 정합성을 맞춘다.
@@ -638,7 +668,7 @@ namespace TrainDefense.Game
 
         private void DirectDamageAttack(ProjectileData projectileData)
         {
-            int targetCount = Mathf.Max(_currentTurretTrainStatus.TargetCount, _currentTurretTrainStatus.AttackCount);
+            int targetCount = _currentTurretTrainStatus.TargetCount;
 
             for (int i = 0; i < targetCount; i++)
             {
@@ -684,7 +714,7 @@ namespace TrainDefense.Game
             ProjectileData data = projectilePrefab.GetData();
             if (data == null) return;
 
-            for (int i = 0; i < _currentTurretTrainStatus.AttackCount; i++)
+            for (int i = 0; i < _currentTurretTrainStatus.TargetCount; i++)
             {
                 if (i >= _targetMonsters.Count) break;
 
@@ -780,8 +810,8 @@ namespace TrainDefense.Game
             Projectile baseProjectile = GetProjectile();
             if (baseProjectile == null) return;
 
-            // AttackCount와 TargetCount 중 큰 값만큼 미리 생성
-            int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
+            // 한 번의 공격이 동시에 쓰는 개수 = 대상 수(TargetCount). 공격 횟수(AttackCount)는 시간차 반복이라 풀을 늘리지 않는다.
+            int maxCount = _currentTurretTrainStatus.TargetCount;
 
             for (int i = 0; i < maxCount; i++)
             {
@@ -1044,8 +1074,7 @@ namespace TrainDefense.Game
 
                 if (_useNonMovementProjectilePooling)
                 {
-                    int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
-                    EnsureNonMovementProjectileCount(maxCount);
+                    EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
 
                     // AttackDamage나 AttackArea 변경 시 기존 프로젝타일 업데이트
                     if (_nonMovementProjectiles.Count > 0 && (turretStatus.AttackDamage != 0 || turretStatus.AttackArea != 0))
@@ -1075,8 +1104,7 @@ namespace TrainDefense.Game
 
             if (_useNonMovementProjectilePooling)
             {
-                int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
-                EnsureNonMovementProjectileCount(maxCount);
+                EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
 
                 // AttackDamage나 AttackArea 변경 시 기존 프로젝타일 업데이트
                 if (_nonMovementProjectiles.Count > 0 && (upgradeData.AttackDamage != 0 || upgradeData.AttackArea != 0))
@@ -1209,10 +1237,6 @@ namespace TrainDefense.Game
 
                 case StatType.AttackCount:
                     _currentTurretTrainStatus.AttackCount += UtilMath.AccumulateIntDelta(ref _statAttackCountAccum, baseStatus.AttackCount * percent);
-                    if (_useNonMovementProjectilePooling)
-                    {
-                        EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
-                    }
                     break;
 
                 case StatType.AttackInterval:
@@ -1293,8 +1317,6 @@ namespace TrainDefense.Game
                     int newTot = Mathf.RoundToInt(baseStatus.AttackCount * percent * newLevel);
                     int oldTot = Mathf.RoundToInt(baseStatus.AttackCount * percent * prevLevel);
                     _currentTurretTrainStatus.AttackCount += newTot - oldTot;
-                    if (_useNonMovementProjectilePooling)
-                        EnsureNonMovementProjectileCount(_currentTurretTrainStatus.AttackCount);
                     break;
                 }
 
@@ -1360,8 +1382,7 @@ namespace TrainDefense.Game
 
             if (_useNonMovementProjectilePooling)
             {
-                int maxCount = Mathf.Max(_currentTurretTrainStatus.AttackCount, _currentTurretTrainStatus.TargetCount);
-                EnsureNonMovementProjectileCount(maxCount);
+                EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
                 foreach (var projectile in _nonMovementProjectiles)
                 {
                     if (projectile != null) InitializeProjectileDamage(projectile);

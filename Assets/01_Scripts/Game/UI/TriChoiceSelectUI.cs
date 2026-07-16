@@ -203,6 +203,7 @@ namespace TrainDefense.Game.UI
             // 범위 업글이 있는 포탑(화염 파티클·레이저 빔 굵기·미사일/포격 폭발)만 델타≠0으로 표시됨 — 별도 게이트 불필요.
             AddUpgradeDeltaLine(lines, "Upgrade_AttackArea", nextUpgrade.AttackArea, delta => FormatSizeDelta(currentArea, delta));
             AddUpgradeDeltaLine(lines, "Upgrade_TargetCount", nextUpgrade.TargetCount);
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackCount", nextUpgrade.AttackCount);
             AddUpgradeDeltaLine(lines, "Upgrade_BurstDuration", nextUpgrade.BurstDuration);
          }
          else if (upgradeData is RangeTrainUpgradeData rangeUpgrade && currentTrain is RangeTrain rangeTrain)
