@@ -43,8 +43,6 @@ namespace TrainDefense.Game
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statAttackDamageAccum;
-        private float _statAttackCountAccum;
-        private float _statTargetCountAccum;
 
         // 상점 업그레이드의 스탯별 누적 배율. 중복선택(Upgrade)으로 더하는 flat 증가분에도 이 배율을 곱해
         // "(base + 중복선택합) × (1 + 상점%)" 가 강화 순서와 무관하게 성립하도록 한다.
@@ -1235,8 +1233,9 @@ namespace TrainDefense.Game
                     }
                     break;
 
+                // 정수 스탯(공격 횟수·대상 수)은 % 아니라 flat +N (가독성 — 데이터에 +2를 2로 적음)
                 case StatType.AttackCount:
-                    _currentTurretTrainStatus.AttackCount += UtilMath.AccumulateIntDelta(ref _statAttackCountAccum, baseStatus.AttackCount * percent);
+                    _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(stat.Value);
                     break;
 
                 case StatType.AttackInterval:
@@ -1244,7 +1243,7 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.TargetCount:
-                    _currentTurretTrainStatus.TargetCount += UtilMath.AccumulateIntDelta(ref _statTargetCountAccum, baseStatus.TargetCount * percent);
+                    _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(stat.Value);
                     if (_useNonMovementProjectilePooling)
                     {
                         EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
@@ -1373,8 +1372,6 @@ namespace TrainDefense.Game
             _currentTurretTrainStatus.BurstDuration = newBase.BurstDuration + (srcCurrent.BurstDuration - srcBase.BurstDuration);
 
             _statAttackDamageAccum = srcTurret._statAttackDamageAccum;
-            _statAttackCountAccum = srcTurret._statAttackCountAccum;
-            _statTargetCountAccum = srcTurret._statTargetCountAccum;
 
             // 상점 누적 배율도 그대로 승계(엘리트 전환 후에도 중복선택 flat이 올바른 배율을 받도록).
             _shopMultiplier.Clear();

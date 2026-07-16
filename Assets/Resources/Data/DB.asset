@@ -1107,7 +1107,7 @@ MonoBehaviour:
       description: Passive_60010_Desc
     - id: 60011
       name: Passive_60011_Name
-      passiveType: RepeatAfterAttack:0.2:2|StatModifier:AttackInterval:40
+      passiveType: StatModifier:AttackCount:2:AttackInterval:30
       param1: 
       param2: 
       param3: 
@@ -1124,7 +1124,7 @@ MonoBehaviour:
       passiveType: StatModifier
       param1: AttackInterval
       param2: -30
-      param3: TargetCount:100
+      param3: TargetCount:2
       description: Passive_60013_Desc
     - id: 60015
       name: Passive_60015_Name
