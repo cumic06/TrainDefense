@@ -29,7 +29,12 @@ namespace TrainDefense.Game.UI
          }
       }
 
+      // 원 내부 채움 알파. 사거리가 길어져 테두리가 화면 밖으로 나가도 범위가 보이도록 은은하게 칠한다.
+      private const float FillAlpha = 0.15f;
+
       private LineRenderer _line;
+      private SpriteRenderer _fill;
+      private float _fillSpriteDiameter = 1f;
       private Train _target;
       private float _radius;
 
@@ -50,6 +55,17 @@ namespace TrainDefense.Game.UI
          // 배경 Rail(Map 레이어)에 가려지지 않도록 전용 Range 레이어에 배치.
          _line.sortingLayerName = "Range";
          _line.sortingOrder = 500;
+
+         // 원 내부 채움 (SoftCircle 스프라이트를 반투명 틴트, 반지름은 스케일로)
+         _fill = new GameObject("Fill").AddComponent<SpriteRenderer>();
+         _fill.transform.SetParent(transform, false);
+         _fill.sprite = Resources.Load<Sprite>("Sprites/SoftCircle");
+         _fill.color = new Color(color.r, color.g, color.b, FillAlpha);
+         _fill.sortingLayerName = "Range";
+         _fill.sortingOrder = 499; // 테두리 라인 바로 아래
+         if (_fill.sprite != null)
+            _fillSpriteDiameter = _fill.sprite.bounds.size.x;
+
          gameObject.SetActive(false);
       }
 
@@ -103,6 +119,8 @@ namespace TrainDefense.Game.UI
       private void _Redraw()
       {
          Vector3 center = _target.transform.position;
+         _fill.transform.position = center;
+         _fill.transform.localScale = Vector3.one * (_radius * 2f / _fillSpriteDiameter);
          for (int i = 0; i < SegmentCount; i++)
          {
             float angle = (float)i / SegmentCount * Mathf.PI * 2f;
