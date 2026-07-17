@@ -1000,6 +1000,11 @@ namespace TrainDefense.Game
             {
                 // NonMovement: 이미 생성된 프로젝타일 사용 (활성화만)
                 projectile = GetNonMovementProjectile(index);
+
+                // 연타(AttackCount 반복)가 아직 켜져 있는 빔을 다시 쏘면 SetActive(true)가 no-op이라
+                // OnEnable 리셋(수명 코루틴·피격 기록·페이드 알파)이 안 돈다 → 껐다 켜서 새 발사로 시작한다.
+                if (projectile != null && projectile.gameObject.activeSelf)
+                    projectile.gameObject.SetActive(false);
             }
             else
             {
