@@ -11,12 +11,13 @@ namespace TrainDefense.Game.Datas
     }
 
     /// <summary>
-    /// 스킬 노드 분류. 포탑 스탯 강화와 패시브(게임 전반 상시 효과)를 구분한다.
+    /// 스킬 노드 분류. 포탑 스탯 강화와 패시브(게임 전반 상시 효과), 포탑 해금을 구분한다.
     /// </summary>
     public enum SkillNodeCategory
     {
-        TurretStat,   // 포탑·레인지 스탯 강화 (SimpleStat[] → GetBonus(StatType))
-        Passive,      // 게임 전반 상시 효과 (SkillTreePassiveType → GetValue(type))
+        TurretStat,    // 포탑·레인지 스탯 강화 (SimpleStat[] → GetBonus(StatType))
+        Passive,       // 게임 전반 상시 효과 (SkillTreePassiveType → GetValue(type))
+        TurretUnlock,  // 신규 포탑 해금 — 습득 시 unlockTrainId 포탑이 삼중택일 Add 풀에 등장
     }
 
     /// <summary>

@@ -10,6 +10,7 @@ namespace TrainDefense.Game.Datas
     /// 배치는 데이터 주도 — (lane, row, col)로 런타임 그리드 생성, prerequisites 간선으로 레일이 이어진다.
     /// TurretStat: 포탑·레인지 스탯 강화 (SimpleStat[], 레벨당 가산 → GetBonus(StatType)).
     /// Passive: 게임 전반 상시 효과 (SkillTreePassiveType + 레벨당 값 → GetValue(type)).
+    /// TurretUnlock: 신규 포탑 해금 (unlockTrainId → IsTrainUnlocked, 삼중택일 Add 풀 게이트).
     /// </summary>
     [Serializable]
     public class SkillNodeData : IDescribableData, IIconData
@@ -62,6 +63,11 @@ namespace TrainDefense.Game.Datas
         [ShowIf("category", SkillNodeCategory.Passive)]
         [Tooltip("패시브 효과 레벨당 값 (예: +1 개수, +10%)")]
         private float passiveValuePerLevel;
+
+        [SerializeField]
+        [ShowIf("category", SkillNodeCategory.TurretUnlock)]
+        [Tooltip("습득 시 삼중택일에 등장하는 포탑(TrainData) id")]
+        private string unlockTrainId;
         #endregion
 
         public SkillNodeData() { }
@@ -71,7 +77,8 @@ namespace TrainDefense.Game.Datas
             SkillTreeLane lane, int row, int col,
             int needPoint, int maxLevel, float growthRate, string[] prerequisites,
             SkillNodeCategory category, SimpleStat[] stats,
-            SkillTreePassiveType passiveType, float passiveValuePerLevel)
+            SkillTreePassiveType passiveType, float passiveValuePerLevel,
+            string unlockTrainId = "")
         {
             this.id = id;
             this.iconId = iconId;
@@ -88,6 +95,7 @@ namespace TrainDefense.Game.Datas
             this.stats = stats;
             this.passiveType = passiveType;
             this.passiveValuePerLevel = passiveValuePerLevel;
+            this.unlockTrainId = unlockTrainId;
         }
 
         #region IData
@@ -131,6 +139,7 @@ namespace TrainDefense.Game.Datas
         public IStat[] Stats => stats;
         public SkillTreePassiveType PassiveType => passiveType;
         public float PassiveValuePerLevel => passiveValuePerLevel;
+        public string UnlockTrainId => unlockTrainId;
 
         /// <summary>
         /// 현재 레벨 기준 다음 습득 비용: needPoint * GrowthRate^currentLevel

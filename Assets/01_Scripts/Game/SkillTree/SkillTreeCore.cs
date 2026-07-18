@@ -118,6 +118,29 @@ namespace TrainDefense.Game.SkillTree
 
         public void ResetAllLevels() => _levels.Clear();
 
+        /// <summary>
+        /// 해당 포탑(TrainData id)이 삼중택일에 등장 가능한지.
+        /// TurretUnlock 노드가 참조하지 않는 포탑은 항상 true(게이트 없음),
+        /// 참조되는 포탑은 그 노드 중 하나라도 1레벨 이상일 때만 true.
+        /// </summary>
+        public bool IsTrainUnlocked(string trainId)
+        {
+            if (string.IsNullOrEmpty(trainId)) return true;
+
+            bool isGated = false;
+            foreach (var node in _nodes.Values)
+            {
+                if (node.Category != SkillNodeCategory.TurretUnlock) continue;
+                if (node.UnlockTrainId != trainId) continue;
+
+                isGated = true;
+
+                if (GetLevel(node.Id) > 0) return true;
+            }
+
+            return !isGated;
+        }
+
         /// <summary>현재 포인트로 습득(레벨업) 가능한 노드가 하나라도 있는지. (레드닷 판정용)</summary>
         public bool HasAcquirableNode(int availablePoints)
         {

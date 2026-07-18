@@ -14,6 +14,7 @@ namespace TrainDefense.Game
     /// 판정·계산은 SkillTreeCore(순수 C#)가 담당하고, 이 매니저는 재화·저장·이벤트·캐시 어댑터다.
     /// - TurretStat 노드: GetBonus(StatType)로 조회 → 포탑·레인지 스탯에 가산.
     /// - Passive 노드: GetValue(SkillTreePassiveType)로 조회 → 각 시스템이 적용.
+    /// - TurretUnlock 노드: IsTrainUnlocked(trainId)로 조회 → 삼중택일 Add 풀이 게이트.
     /// ⚠️ 스킬 포인트 획득처는 미정 — AddSkillPoint(int)만 뚫려 있고, 획득 훅은 결정 후 1줄 연결한다.
     /// </summary>
     public class SkillTreeManager : Singleton<SkillTreeManager>
@@ -121,6 +122,13 @@ namespace TrainDefense.Game
         /// <summary>현재 포인트로 습득 가능한 노드가 하나라도 있는지. (레드닷 판정용)</summary>
         public bool HasAcquirableNode()
             => _EnsureCore() && _core.HasAcquirableNode(_skillPoint);
+
+        /// <summary>
+        /// 해당 포탑이 삼중택일에 등장 가능한지 (TurretUnlock 게이트).
+        /// 코어 미준비(DB 로드 전) 시 true — 스킬트리 문제로 선택지가 잠기는 일이 없도록 안전 폴백.
+        /// </summary>
+        public bool IsTrainUnlocked(string trainId)
+            => !_EnsureCore() || _core.IsTrainUnlocked(trainId);
         #endregion
 
         #region Acquire / Respec
@@ -209,11 +217,12 @@ namespace TrainDefense.Game
                         _bonusCache[stat.Type] = cur + stat.Value * level;
                     }
                 }
-                else
+                else if (node.Category == SkillNodeCategory.Passive)
                 {
                     _valueCache.TryGetValue(node.PassiveType, out float cur);
                     _valueCache[node.PassiveType] = cur + node.PassiveValuePerLevel * level;
                 }
+                // TurretUnlock은 캐시 불필요 — IsTrainUnlocked가 코어 레벨을 직접 판정
             }
         }
 
