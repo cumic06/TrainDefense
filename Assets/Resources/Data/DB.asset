@@ -632,7 +632,7 @@ MonoBehaviour:
       AttackRange: 8
       AttackArea: 8
       AttackCount: 1
-      AttackInterval: 0.2
+      AttackInterval: 2
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -908,7 +908,7 @@ MonoBehaviour:
       AttackRange: 3
       AttackArea: 5
       AttackCount: 1
-      AttackInterval: 0.2
+      AttackInterval: 2.5
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 25
