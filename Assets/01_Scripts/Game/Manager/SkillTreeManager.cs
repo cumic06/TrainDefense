@@ -25,6 +25,7 @@ namespace TrainDefense.Game
         private int _skillPoint;
         private SkillTreeCore _core;
         private SkillTreeSaveData _pendingSave;   // 코어 생성 전(DB 로드 전)에 읽어 둔 세이브
+        private bool _hasLoggedEmptyNodeData;     // 빈 DB 에러 로그 1회 제한 (조회마다 스팸 방지)
 
         public int SkillPoint => _skillPoint;
 
@@ -61,15 +62,24 @@ namespace TrainDefense.Game
         }
         #endregion
 
-        // DB가 준비된 뒤 첫 조회 시점에 코어를 만든다. DB 목록이 비어 있으면 코드 기본셋 사용 (EliteData 선례).
+        // DB가 준비된 뒤 첫 조회 시점에 코어를 만든다. 노드 데이터 소스는 DB(skillNodeDataList)가 유일하다.
         private bool _EnsureCore()
         {
             if (_core != null) return true;
             if (DatabaseManager.Instance == null) return false;
 
             IReadOnlyList<SkillNodeData> datas = DatabaseManager.Instance.GetSkillNodeDatas();
+
             if (datas == null || datas.Count == 0)
-                datas = SkillTreeDefaultNodes.Nodes;
+            {
+                if (!_hasLoggedEmptyNodeData)
+                {
+                    _hasLoggedEmptyNodeData = true;
+                    Debug.LogError("[SkillTreeManager] DB의 skillNodeDataList가 비어 있습니다 — 스킬트리를 초기화할 수 없습니다.", this);
+                }
+
+                return false;
+            }
 
             _core = new SkillTreeCore(datas);
 

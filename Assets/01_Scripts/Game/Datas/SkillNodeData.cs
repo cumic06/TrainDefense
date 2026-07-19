@@ -70,34 +70,6 @@ namespace TrainDefense.Game.Datas
         private string unlockTrainId;
         #endregion
 
-        public SkillNodeData() { }
-
-        /// <summary>코드 기본 노드셋 구성용 (DB가 비어 있을 때의 폴백 — EliteData 선례).</summary>
-        public SkillNodeData(string id, string iconId, string name, string description,
-            SkillTreeLane lane, int row, int col,
-            int needPoint, int maxLevel, float growthRate, string[] prerequisites,
-            SkillNodeCategory category, SimpleStat[] stats,
-            SkillTreePassiveType passiveType, float passiveValuePerLevel,
-            string unlockTrainId = "")
-        {
-            this.id = id;
-            this.iconId = iconId;
-            this.name = name;
-            this.description = description;
-            this.lane = lane;
-            this.row = row;
-            this.col = col;
-            this.needPoint = needPoint;
-            this.maxLevel = maxLevel;
-            this.growthRate = growthRate;
-            this.prerequisites = prerequisites;
-            this.category = category;
-            this.stats = stats;
-            this.passiveType = passiveType;
-            this.passiveValuePerLevel = passiveValuePerLevel;
-            this.unlockTrainId = unlockTrainId;
-        }
-
         #region IData
         public string Id => id;
         #endregion

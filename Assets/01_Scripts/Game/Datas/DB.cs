@@ -82,7 +82,7 @@ namespace TrainDefense.Game.Datas
         public List<PermanentUpgradeData> permanentUpgradeDataList = new();
 
         [TabGroup("SkillTree Data")]
-        [InfoBox("스킬트리 노드 데이터 관리 — 스킬 포인트로 습득, 런 사이 유지 (비우면 코드 기본셋 사용)")]
+        [InfoBox("스킬트리 노드 데이터 관리 — 스킬 포인트로 습득, 런 사이 유지 (유일한 노드 데이터 소스)")]
         [SerializeField]
         public List<SkillNodeData> skillNodeDataList = new();
 
