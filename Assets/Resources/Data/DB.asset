@@ -2510,7 +2510,67 @@ MonoBehaviour:
     sizeScale: 1.5
     dropExpMultiplier: 2
     dropMoneyMultiplier: 2
-    variants: []
+    variants:
+    - type: 0
+      weight: 0
+      hpMultiplier: 120
+      damageMultiplier: 4
+      moveSpeedMultiplier: 1.4
+      sizeScale: 1.6
+      dropExpMultiplier: 10
+      dropMoneyMultiplier: 10
+      ccResistance: 0.5
+      tintColor: {r: 1, g: 0.3, b: 0.3, a: 1}
+      rangedAttackInterval: 3
+      rangedProjectile: {fileID: 0}
+      auraRadius: 4
+      auraSpeedMultiplier: 1.4
+      auraInterval: 1
+    - type: 1
+      weight: 0
+      hpMultiplier: 250
+      damageMultiplier: 1.5
+      moveSpeedMultiplier: 0.85
+      sizeScale: 1.8
+      dropExpMultiplier: 10
+      dropMoneyMultiplier: 10
+      ccResistance: 1
+      tintColor: {r: 0.22, g: 0.68, b: 0.28, a: 1}
+      rangedAttackInterval: 3
+      rangedProjectile: {fileID: 0}
+      auraRadius: 4
+      auraSpeedMultiplier: 1.4
+      auraInterval: 1
+    - type: 2
+      weight: 1
+      hpMultiplier: 70
+      damageMultiplier: 2
+      moveSpeedMultiplier: 0.8
+      sizeScale: 1.5
+      dropExpMultiplier: 10
+      dropMoneyMultiplier: 10
+      ccResistance: 0.25
+      tintColor: {r: 0.2, g: 0.55, b: 1, a: 0.85}
+      rangedAttackInterval: 1.5
+      rangedProjectile: {fileID: 8711250047576817517, guid: 9e2b74f0c1d84a35a6b7c8d9e0f12345, type: 3}
+      auraRadius: 4
+      auraSpeedMultiplier: 1.4
+      auraInterval: 1
+    - type: 3
+      weight: 0
+      hpMultiplier: 80
+      damageMultiplier: 1.5
+      moveSpeedMultiplier: 1.1
+      sizeScale: 1.5
+      dropExpMultiplier: 10
+      dropMoneyMultiplier: 10
+      ccResistance: 0.25
+      tintColor: {r: 1, g: 0.95, b: 0.45, a: 1}
+      rangedAttackInterval: 3
+      rangedProjectile: {fileID: 0}
+      auraRadius: 4
+      auraSpeedMultiplier: 1.4
+      auraInterval: 1
   scoreData:
     normalKillScore: 10
     eliteKillScore: 50

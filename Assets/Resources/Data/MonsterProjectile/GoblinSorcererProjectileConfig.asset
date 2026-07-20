@@ -21,6 +21,7 @@ MonoBehaviour:
   scaleByRange: 0
   scaleRangeType: 0
   isTargeting: 1
+  isRotateModel: 0
   damageType: 0
   tickDamageInterval: 0.1
   hasSlowEffect: 0

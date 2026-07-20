@@ -129,6 +129,12 @@ namespace TrainDefense.Game
             _movementStrategy = CreateMovementStrategy(data.MovementType);
             _movementStrategy?.Initialize(this, data, _target);
 
+            // 이동이 루트 회전(+X) 기준이라 루트의 LookAt2D는 유지하고 model만 직립시킨다.
+            if (!data.IsRotateModel && model != null)
+            {
+                model.transform.rotation = Quaternion.identity;
+            }
+
             // AttackArea에 따른 스케일 조정
             if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && scaleRadius > 0f)
             {

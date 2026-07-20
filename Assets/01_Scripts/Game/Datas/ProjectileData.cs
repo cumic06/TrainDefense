@@ -51,6 +51,11 @@ namespace TrainDefense.Game
         [SerializeField]
         private bool isTargeting = false;
 
+        [BoxGroup("Visual")]
+        [SerializeField]
+        [LabelText("모델 회전 여부 (false면 발사 방향 무관 직립 유지)")]
+        private bool isRotateModel = true;
+
         [BoxGroup("Damage")]
         [SerializeField]
         [LabelText("포탑에서 직접 데미지 (이펙트 전용 프로젝타일)")]
@@ -150,6 +155,7 @@ namespace TrainDefense.Game
         public bool ScaleByArea => scaleByRange;
         public ScaleByRangeType ScaleRangeType => scaleRangeType;
         public bool IsTargeting => isTargeting;
+        public bool IsRotateModel => isRotateModel;
         public DamageType DamageType => damageType;
         public float TickDamageInterval => tickDamageInterval;
         public float BurstDuration => burstDuration;
