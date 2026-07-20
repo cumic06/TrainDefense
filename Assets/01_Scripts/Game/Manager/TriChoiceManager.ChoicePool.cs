@@ -36,6 +36,12 @@ namespace TrainDefense.Game
                     if (isInvalidEntry)
                         return false;
 
+                    // 스킬트리 TurretUnlock 노드로 잠긴 포탑은 습득 전까지 선택지에 등장하지 않는다
+                    var addChoice = (AddTrainChoice)entry.Option;
+
+                    if (!_IsTrainUnlockedBySkillTree(addChoice.TrainDataId))
+                        return false;
+
                     // Tier 0은 항상 포함
                     if (entry.Tier == 0)
                         return true;
@@ -47,6 +53,17 @@ namespace TrainDefense.Game
                     return false;
                 })
                 .ToList();
+        }
+
+        // 스킬트리 매니저 부재(부트스트랩 전 등) 시 잠그지 않는다 — 스킬트리 문제로 선택지가 막히는 일 방지
+        private bool _IsTrainUnlockedBySkillTree(string trainDataId)
+        {
+            var skillTreeManager = SkillTreeManager.Instance;
+
+            if (skillTreeManager == null)
+                return true;
+
+            return skillTreeManager.IsTrainUnlocked(trainDataId);
         }
 
         private List<ChoiceEntry> _GetEliteTrainChoices()

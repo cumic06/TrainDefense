@@ -1836,6 +1836,220 @@ MonoBehaviour:
     stats: []
     passiveType: 3
     passiveValuePerLevel: 1
+  skillNodeDataList:
+  - id: skill_fire_damage
+    iconId:
+    name: SkillTree_skill_fire_damage_Name
+    description: SkillTree_skill_fire_damage_Desc
+    lane: 0
+    row: 0
+    col: 0
+    needPoint: 1
+    maxLevel: 5
+    growthRate: 1.5
+    prerequisites: []
+    category: 0
+    stats:
+    - <Type>k__BackingField: 2
+      <Value>k__BackingField: 2
+    passiveType: 1
+    passiveValuePerLevel: 0
+    unlockTrainId:
+  - id: skill_fire_speed
+    iconId:
+    name: SkillTree_skill_fire_speed_Name
+    description: SkillTree_skill_fire_speed_Desc
+    lane: 0
+    row: 1
+    col: 0
+    needPoint: 2
+    maxLevel: 3
+    growthRate: 1.5
+    prerequisites:
+    - skill_fire_damage
+    category: 0
+    stats:
+    - <Type>k__BackingField: 4
+      <Value>k__BackingField: -0.03
+    passiveType: 1
+    passiveValuePerLevel: 0
+    unlockTrainId:
+  - id: skill_fire_crit
+    iconId:
+    name: SkillTree_skill_fire_crit_Name
+    description: SkillTree_skill_fire_crit_Desc
+    lane: 0
+    row: 2
+    col: 0
+    needPoint: 3
+    maxLevel: 3
+    growthRate: 1.5
+    prerequisites:
+    - skill_fire_speed
+    category: 0
+    stats:
+    - <Type>k__BackingField: 6
+      <Value>k__BackingField: 2
+    passiveType: 1
+    passiveValuePerLevel: 0
+    unlockTrainId:
+  - id: skill_fire_critdmg
+    iconId:
+    name: SkillTree_skill_fire_critdmg_Name
+    description: SkillTree_skill_fire_critdmg_Desc
+    lane: 0
+    row: 3
+    col: 0
+    needPoint: 4
+    maxLevel: 3
+    growthRate: 1.5
+    prerequisites:
+    - skill_fire_crit
+    category: 0
+    stats:
+    - <Type>k__BackingField: 7
+      <Value>k__BackingField: 10
+    passiveType: 1
+    passiveValuePerLevel: 0
+    unlockTrainId:
+  - id: skill_fire_unlock
+    iconId:
+    name: SkillTree_skill_fire_unlock_Name
+    description: SkillTree_skill_fire_unlock_Desc
+    lane: 0
+    row: 4
+    col: 0
+    needPoint: 5
+    maxLevel: 1
+    growthRate: 1.5
+    prerequisites:
+    - skill_fire_critdmg
+    category: 2
+    stats: []
+    passiveType: 1
+    passiveValuePerLevel: 0
+    unlockTrainId: 40001
+  - id: skill_def_hp
+    iconId:
+    name: SkillTree_skill_def_hp_Name
+    description: SkillTree_skill_def_hp_Desc
+    lane: 1
+    row: 0
+    col: 0
+    needPoint: 1
+    maxLevel: 5
+    growthRate: 1.5
+    prerequisites: []
+    category: 1
+    stats: []
+    passiveType: 1
+    passiveValuePerLevel: 5
+    unlockTrainId:
+  - id: skill_def_regen
+    iconId:
+    name: SkillTree_skill_def_regen_Name
+    description: SkillTree_skill_def_regen_Desc
+    lane: 1
+    row: 1
+    col: 0
+    needPoint: 2
+    maxLevel: 3
+    growthRate: 1.5
+    prerequisites:
+    - skill_def_hp
+    category: 1
+    stats: []
+    passiveType: 2
+    passiveValuePerLevel: 1
+    unlockTrainId:
+  - id: skill_def_turret
+    iconId:
+    name: SkillTree_skill_def_turret_Name
+    description: SkillTree_skill_def_turret_Desc
+    lane: 1
+    row: 2
+    col: 0
+    needPoint: 5
+    maxLevel: 2
+    growthRate: 1.5
+    prerequisites:
+    - skill_def_regen
+    category: 1
+    stats: []
+    passiveType: 0
+    passiveValuePerLevel: 1
+    unlockTrainId:
+  - id: skill_util_range
+    iconId:
+    name: SkillTree_skill_util_range_Name
+    description: SkillTree_skill_util_range_Desc
+    lane: 2
+    row: 0
+    col: 0
+    needPoint: 1
+    maxLevel: 3
+    growthRate: 1.5
+    prerequisites: []
+    category: 0
+    stats:
+    - <Type>k__BackingField: 1
+      <Value>k__BackingField: 0.5
+    passiveType: 1
+    passiveValuePerLevel: 0
+    unlockTrainId:
+  - id: skill_util_reroll
+    iconId:
+    name: SkillTree_skill_util_reroll_Name
+    description: SkillTree_skill_util_reroll_Desc
+    lane: 2
+    row: 1
+    col: 0
+    needPoint: 3
+    maxLevel: 2
+    growthRate: 1.5
+    prerequisites:
+    - skill_util_range
+    category: 1
+    stats: []
+    passiveType: 3
+    passiveValuePerLevel: 1
+    unlockTrainId:
+  - id: skill_util_area
+    iconId:
+    name: SkillTree_skill_util_area_Name
+    description: SkillTree_skill_util_area_Desc
+    lane: 2
+    row: 2
+    col: 0
+    needPoint: 3
+    maxLevel: 3
+    growthRate: 1.5
+    prerequisites:
+    - skill_util_reroll
+    category: 0
+    stats:
+    - <Type>k__BackingField: 8
+      <Value>k__BackingField: 0.2
+    passiveType: 1
+    passiveValuePerLevel: 0
+    unlockTrainId:
+  - id: skill_util_unlock
+    iconId:
+    name: SkillTree_skill_util_unlock_Name
+    description: SkillTree_skill_util_unlock_Desc
+    lane: 2
+    row: 3
+    col: 0
+    needPoint: 5
+    maxLevel: 1
+    growthRate: 1.5
+    prerequisites:
+    - skill_util_area
+    category: 2
+    stats: []
+    passiveType: 1
+    passiveValuePerLevel: 0
+    unlockTrainId: 40002
   triChoiceDB:
     addTrainChoices:
     - Option:
