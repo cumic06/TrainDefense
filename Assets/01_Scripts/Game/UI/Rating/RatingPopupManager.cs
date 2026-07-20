@@ -91,7 +91,11 @@ namespace TrainDefense.Game.UI
                 return;
             }
 
-            Instantiate(popupPrefab, canvas.transform);
+            // 루트 캔버스 자식으로 붙여 전체 화면을 채우게 하고, 맨 위로 올린다.
+            // (프리팹 자체 Canvas의 overrideSorting/sortingOrder가 다른 UI 위 렌더링을 보장 — 클릭 차단 방지)
+            GameObject popup = Instantiate(popupPrefab, canvas.rootCanvas.transform);
+            popup.transform.SetAsLastSibling();
+
             RatingRecord.MarkShown();
         }
     }

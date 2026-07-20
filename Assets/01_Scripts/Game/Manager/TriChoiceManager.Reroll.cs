@@ -38,11 +38,18 @@ namespace TrainDefense.Game
             _currentRerollCost = baseRerollCost;
             _lastEliteChoiceIds.Clear();
 
-            // 영구 업그레이드: 레벨업(트라이초이스 오픈)마다 무료 리롤 횟수 충전
+            // 영구 업그레이드 + 스킬트리: 레벨업(트라이초이스 오픈)마다 무료 리롤 횟수 충전
+            float freeReroll = 0f;
+
             var permanentUpgradeManager = PermanentUpgradeManager.Instance;
-            _freeRerollCount = permanentUpgradeManager != null
-                ? Mathf.RoundToInt(permanentUpgradeManager.GetValue(PermanentUpgradeType.FreeReroll))
-                : 0;
+            if (permanentUpgradeManager != null)
+                freeReroll += permanentUpgradeManager.GetValue(PermanentUpgradeType.FreeReroll);
+
+            var skillTreeManager = SkillTreeManager.Instance;
+            if (skillTreeManager != null)
+                freeReroll += skillTreeManager.GetValue(SkillTreePassiveType.FreeReroll);
+
+            _freeRerollCount = Mathf.RoundToInt(freeReroll);
         }
 
         /// <summary>

@@ -30,6 +30,16 @@ namespace TrainDefense.Game.UI.Achievement
         {
             if (canvasGroup != null)
                 canvasGroup.alpha = 0f;
+
+            // 언어별 폰트(라틴/아랍/태국 등) 교체 + RTL 방향 처리. 한국어는 기본 폰트(DNFBitBitv2) 유지.
+            if (messageText != null)
+                LocalizeFontSwitcher.Register(messageText);
+        }
+
+        private void OnDestroy()
+        {
+            if (messageText != null)
+                LocalizeFontSwitcher.Unregister(messageText);
         }
 
         private void OnEnable()

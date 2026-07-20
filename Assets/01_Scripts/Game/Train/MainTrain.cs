@@ -52,9 +52,12 @@ namespace TrainDefense.Game
       private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
       public List<Train> CurrentAliveTrains => _currentAliveTrains;
       public int MaxTrainCount => maxTrainCount + Mathf.RoundToInt(
-         PermanentUpgradeManager.Instance != null
+         (PermanentUpgradeManager.Instance != null
             ? PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.MaxTurretCount)
-            : 0f);
+            : 0f)
+         + (SkillTreeManager.Instance != null
+            ? SkillTreeManager.Instance.GetValue(SkillTreePassiveType.MaxTurretCount)
+            : 0f));
 
       private readonly List<Train> _currentTrains = new();//모든 Train 목록
       public List<Train> CurrentTrains => _currentTrains;
@@ -119,10 +122,16 @@ namespace TrainDefense.Game
       {
          if (_isDead) return;
 
-         var manager = PermanentUpgradeManager.Instance;
-         if (manager == null) return;
+         float regenPercent = 0f;
 
-         float regenPercent = manager.GetValue(PermanentUpgradeType.HealthRegen);
+         var permanentUpgradeManager = PermanentUpgradeManager.Instance;
+         if (permanentUpgradeManager != null)
+            regenPercent += permanentUpgradeManager.GetValue(PermanentUpgradeType.HealthRegen);
+
+         var skillTreeManager = SkillTreeManager.Instance;
+         if (skillTreeManager != null)
+            regenPercent += skillTreeManager.GetValue(SkillTreePassiveType.HealthRegen);
+
          if (regenPercent <= 0f) return;
 
          _healthRegenTimer += deltaTime;
