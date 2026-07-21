@@ -255,6 +255,10 @@ namespace TrainDefense.Game.UI.SkillTree
             if (manager == null) return;
             if (!manager.ResetAll()) return;
 
+            // 초기화로 잠긴 노드가 선택된 채 남지 않게 — 잠김 노드는 상세 표시 대상이 아니다
+            if (_selectedData != null && !manager.ArePrerequisitesMet(_selectedData.Id))
+                _selectedData = null;
+
             _RefreshSkillPoint();
             foreach (var node in _nodeUIs.Values)
                 node.Refresh();

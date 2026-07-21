@@ -139,6 +139,13 @@ namespace TrainDefense.Game.UI.SkillTree
 
         private void _OnClickSelect()
         {
+            // 잠김 노드(선행 미충족)는 상세 패널을 열지 않는다.
+            // Button.interactable을 끄지 않는 이유: Button의 disabled 틴트가 상태 팔레트 색을 덮어쓴다.
+            var manager = SkillTreeManager.Instance;
+            if (manager == null || _data == null) return;
+
+            if (manager.GetLevel(_data.Id) == 0 && !manager.ArePrerequisitesMet(_data.Id)) return;
+
             _onSelect?.Invoke(_data);
         }
     }
