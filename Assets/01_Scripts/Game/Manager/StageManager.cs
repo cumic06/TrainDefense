@@ -213,6 +213,15 @@ namespace TrainDefense.Game.Manager
             {
                 spawnPosition = TrainManager.Instance.MainTrain.transform.position;
             }
+
+            // 맵 전환 연출 중에는 기차가 화면 밖에 있거나 아직 프리팹 참조 상태라 위치가 화면과 어긋날 수 있다.
+            // 가로는 실제 보이는 기준인 카메라에 맞춰 생성해 맵 끝이 검게 비는 문제를 막는다.
+            var mainCamera = Camera.main;
+            if (mainCamera != null)
+            {
+                spawnPosition.x = mainCamera.transform.position.x;
+            }
+
             _currentMapInstance = Instantiate(prefab, spawnPosition, Quaternion.identity);
         }
 

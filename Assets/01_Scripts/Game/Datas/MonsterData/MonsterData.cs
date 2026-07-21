@@ -19,7 +19,7 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private Sprite icon;
         [SerializeField]
-        [Tooltip("기본(Run) 애니메이션 클립에서 추출한 스프라이트 프레임. 도감에서 재생용. MonsterAnimationFrameBaker로 베이크된다.")]
+        [Tooltip("기본(Run) 애니메이션 클립에서 추출한 스프라이트 프레임. 도감에서 재생용.")]
         private Sprite[] animationFrames;
         [SerializeField]
         private MonsterStatusInfo monsterStatusData;

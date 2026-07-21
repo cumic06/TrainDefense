@@ -162,20 +162,36 @@ namespace TrainDefense.Game
                 _turretmodelScale = turretModel.transform.localScale;
         }
 
-        // 영구(메타) 업그레이드 중 TurretStat 보너스를 base 스탯에 가산한다. (struct라 값 복사 후 직접 가산)
+        // 영구(메타) 업그레이드 + 스킬트리의 TurretStat 보너스를 base 스탯에 가산한다. (struct라 값 복사 후 직접 가산)
         private void _ApplyPermanentUpgrade()
         {
             var manager = PermanentUpgradeManager.Instance;
-            if (manager == null) return;
 
-            _currentTurretTrainStatus.AttackDamage += manager.GetBonus(StatType.AttackDamage);
-            _currentTurretTrainStatus.AttackRange += manager.GetBonus(StatType.AttackRange);
-            _currentTurretTrainStatus.AttackArea += manager.GetBonus(StatType.AttackArea);
-            _currentTurretTrainStatus.AttackInterval += manager.GetBonus(StatType.AttackInterval);
-            _currentTurretTrainStatus.CriticalChance += manager.GetBonus(StatType.CriticalChance);
-            _currentTurretTrainStatus.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
-            _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
-            _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(manager.GetBonus(StatType.TargetCount));
+            if (manager != null)
+            {
+                _currentTurretTrainStatus.AttackDamage += manager.GetBonus(StatType.AttackDamage);
+                _currentTurretTrainStatus.AttackRange += manager.GetBonus(StatType.AttackRange);
+                _currentTurretTrainStatus.AttackArea += manager.GetBonus(StatType.AttackArea);
+                _currentTurretTrainStatus.AttackInterval += manager.GetBonus(StatType.AttackInterval);
+                _currentTurretTrainStatus.CriticalChance += manager.GetBonus(StatType.CriticalChance);
+                _currentTurretTrainStatus.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
+                _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
+                _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(manager.GetBonus(StatType.TargetCount));
+            }
+
+            var skillTreeManager = SkillTreeManager.Instance;
+
+            if (skillTreeManager != null)
+            {
+                _currentTurretTrainStatus.AttackDamage += skillTreeManager.GetBonus(StatType.AttackDamage);
+                _currentTurretTrainStatus.AttackRange += skillTreeManager.GetBonus(StatType.AttackRange);
+                _currentTurretTrainStatus.AttackArea += skillTreeManager.GetBonus(StatType.AttackArea);
+                _currentTurretTrainStatus.AttackInterval += skillTreeManager.GetBonus(StatType.AttackInterval);
+                _currentTurretTrainStatus.CriticalChance += skillTreeManager.GetBonus(StatType.CriticalChance);
+                _currentTurretTrainStatus.CriticalDamage += skillTreeManager.GetBonus(StatType.CriticalDamage);
+                _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(skillTreeManager.GetBonus(StatType.AttackCount));
+                _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(skillTreeManager.GetBonus(StatType.TargetCount));
+            }
         }
 
         public void RegisterProjectileOverride(ProjectileOverrideProvider provider)

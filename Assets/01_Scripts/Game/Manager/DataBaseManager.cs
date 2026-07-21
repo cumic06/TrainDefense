@@ -50,6 +50,9 @@ namespace TrainDefense.Game
         public IReadOnlyList<PermanentUpgradeData> GetPermanentUpgradeDatas() => GetDB().PermanentUpgradeDataList;
         public PermanentUpgradeData GetPermanentUpgradeData(string id) => GetDB().PermanentUpgradeDataList.FirstOrDefault(u => u != null && u.Id == id);
 
+        public IReadOnlyList<SkillNodeData> GetSkillNodeDatas() => GetDB().SkillNodeDataList;
+        public SkillNodeData GetSkillNodeData(string id) => GetDB().SkillNodeDataList.FirstOrDefault(n => n != null && n.Id == id);
+
         public EliteData GetEliteData() => GetDB().EliteData;
 
         public ScoreData GetScoreData() => GetDB().ScoreData;

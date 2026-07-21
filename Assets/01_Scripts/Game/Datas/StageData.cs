@@ -24,6 +24,9 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private Sprite stageImage;
         [SerializeField]
+        [Tooltip("맵 이름 로컬라이즈 키. 비우면 Stage_{id}_Name 규칙 키를 사용한다.")]
+        private string nameKey;
+        [SerializeField]
         [Tooltip("이 맵에서 엘리트 처치 시 주는 재화 배율. 빠른(약한 몹) 맵은 낮게, 느린(강한 몹) 맵은 높게 — 맵별 재화 획득률 균등화용. 0이면 1로 처리.")]
         private float eliteRewardMultiplier = 1f;
         #endregion
@@ -39,6 +42,8 @@ namespace TrainDefense.Game.Datas
         public StageSpawnData[] SpawnDatas => spawnDatas;
         public MapData MapData => mapData;
         public Sprite StageImage => stageImage;
+        /// <summary>맵 이름 로컬라이즈 키. 미지정 시 "Stage_{id}_Name" 규칙 키를 반환한다.</summary>
+        public string NameKey => string.IsNullOrEmpty(nameKey) ? $"Stage_{id}_Name" : nameKey;
         public float EliteRewardMultiplier => eliteRewardMultiplier > 0f ? eliteRewardMultiplier : 1f;
     }
 

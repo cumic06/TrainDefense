@@ -6,6 +6,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 	public class StageRow : IExcelRow
 	{
 		public string id;
+		public string nameKey;
 		public float baseInspectionTime;
 		public int stationCount;
 		public float stageEndTime;
@@ -18,6 +19,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public void FromExcelRow(IRow row, HeaderMap map)
 		{
 			id = map.GetString(row, "id");
+			nameKey = map.GetString(row, "name_key");
 			baseInspectionTime = map.GetFloat(row, "base_inspection_time");
 			stationCount = map.GetInt(row, "station_count");
 			stageEndTime = map.GetFloat(row, "stage_end_time");
@@ -31,6 +33,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public void ToExcelRow(IRow row, HeaderMap map)
 		{
 			map.SetCell(row, "id", id);
+			map.SetCell(row, "name_key", nameKey);
 			map.SetCell(row, "base_inspection_time", baseInspectionTime);
 			map.SetCell(row, "station_count", stationCount);
 			map.SetCell(row, "stage_end_time", stageEndTime);

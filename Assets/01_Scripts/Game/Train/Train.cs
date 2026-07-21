@@ -135,9 +135,19 @@ namespace TrainDefense.Game
 
             _currentMaxHp = _trainData.TrainStatusData.MaxHp;
 
-            // 영구 업그레이드: 포탑 최대 체력 % 증가 (레벨당 %, 메인 기차는 무적이라 제외)
-            if (!(this is MainTrain) && PermanentUpgradeManager.Instance != null)
-                _currentMaxHp *= 1f + PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.MaxHp) / 100f;
+            // 영구 업그레이드 + 스킬트리: 포탑 최대 체력 % 증가 (레벨당 %, 메인 기차는 무적이라 제외)
+            if (!(this is MainTrain))
+            {
+                float maxHpPercent = 0f;
+
+                if (PermanentUpgradeManager.Instance != null)
+                    maxHpPercent += PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.MaxHp);
+
+                if (SkillTreeManager.Instance != null)
+                    maxHpPercent += SkillTreeManager.Instance.GetValue(SkillTreePassiveType.MaxHp);
+
+                _currentMaxHp *= 1f + maxHpPercent / 100f;
+            }
 
             _currentHp = _currentMaxHp;
             _currentLevel = 0;

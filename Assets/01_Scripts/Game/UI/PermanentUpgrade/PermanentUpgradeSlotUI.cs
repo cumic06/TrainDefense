@@ -17,6 +17,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private Button selectButton;
+        [SerializeField] private GameObject redDot;               // 현재 재화로 구매 가능하면 켜지는 뱃지
         #endregion
 
         private PermanentUpgradeData _data;
@@ -51,7 +52,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             Refresh();
         }
 
-        /// <summary>현재 레벨을 갱신한다.</summary>
+        /// <summary>현재 레벨과 구매 가능 레드닷을 갱신한다.</summary>
         public void Refresh()
         {
             var manager = PermanentUpgradeManager.Instance;
@@ -60,6 +61,9 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             int level = manager.GetLevel(_data.Id);
             if (levelText != null)
                 levelText.text = _data.MaxUpgradeCount > 0 ? $"Lv {level}/{_data.MaxUpgradeCount}" : $"Lv {level}";
+
+            if (redDot != null)
+                redDot.SetActive(manager.IsAffordable(_data.Id));
         }
 
         private void _OnClickSelect()

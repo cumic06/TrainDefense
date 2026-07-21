@@ -313,20 +313,36 @@ namespace TrainDefense.Game
             }
         }
 
-        // 영구(메타) 업그레이드 중 TurretStat 보너스를 base 스탯에 가산한다. (struct라 값 복사 후 직접 가산)
+        // 영구(메타) 업그레이드 + 스킬트리의 TurretStat 보너스를 base 스탯에 가산한다. (struct라 값 복사 후 직접 가산)
         private void _ApplyPermanentUpgrade()
         {
             var manager = PermanentUpgradeManager.Instance;
-            if (manager == null) return;
 
-            _currentRangeTrainStatus.AttackDamage += manager.GetBonus(StatType.AttackDamage);
-            _currentRangeTrainStatus.AttackRange += manager.GetBonus(StatType.AttackRange);
-            _currentRangeTrainStatus.AttackArea += manager.GetBonus(StatType.AttackArea);
-            _currentRangeTrainStatus.AttackInterval += manager.GetBonus(StatType.AttackInterval);
-            _currentRangeTrainStatus.CriticalChance += manager.GetBonus(StatType.CriticalChance);
-            _currentRangeTrainStatus.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
-            _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
-            _currentRangeTrainStatus.SlowRate += manager.GetBonus(StatType.SlowRate);
+            if (manager != null)
+            {
+                _currentRangeTrainStatus.AttackDamage += manager.GetBonus(StatType.AttackDamage);
+                _currentRangeTrainStatus.AttackRange += manager.GetBonus(StatType.AttackRange);
+                _currentRangeTrainStatus.AttackArea += manager.GetBonus(StatType.AttackArea);
+                _currentRangeTrainStatus.AttackInterval += manager.GetBonus(StatType.AttackInterval);
+                _currentRangeTrainStatus.CriticalChance += manager.GetBonus(StatType.CriticalChance);
+                _currentRangeTrainStatus.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
+                _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
+                _currentRangeTrainStatus.SlowRate += manager.GetBonus(StatType.SlowRate);
+            }
+
+            var skillTreeManager = SkillTreeManager.Instance;
+
+            if (skillTreeManager != null)
+            {
+                _currentRangeTrainStatus.AttackDamage += skillTreeManager.GetBonus(StatType.AttackDamage);
+                _currentRangeTrainStatus.AttackRange += skillTreeManager.GetBonus(StatType.AttackRange);
+                _currentRangeTrainStatus.AttackArea += skillTreeManager.GetBonus(StatType.AttackArea);
+                _currentRangeTrainStatus.AttackInterval += skillTreeManager.GetBonus(StatType.AttackInterval);
+                _currentRangeTrainStatus.CriticalChance += skillTreeManager.GetBonus(StatType.CriticalChance);
+                _currentRangeTrainStatus.CriticalDamage += skillTreeManager.GetBonus(StatType.CriticalDamage);
+                _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(skillTreeManager.GetBonus(StatType.AttackCount));
+                _currentRangeTrainStatus.SlowRate += skillTreeManager.GetBonus(StatType.SlowRate);
+            }
         }
 
         // 누적 둔화율(%, 기차 base + 강화)을 둔화 배율로 변환.

@@ -51,6 +51,9 @@ namespace TrainDefense.Game.UI.Achievement
         private void Start()
         {
             _Refresh();
+
+            // 팝업을 연 시점에 현재 달성 업적을 모두 확인한 것으로 기록해 업적 버튼 레드닷을 끈다.
+            AchievementRedDotState.MarkAllSeen();
         }
 
         private void OnDestroy()
