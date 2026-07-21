@@ -557,7 +557,7 @@ namespace TrainDefense.Game
             ReturnToPool();
         }
 
-        private const float DespawnFadeDuration = 0.15f;
+        private const float DESPAWN_FADE_DURATION = 0.15f;
         private SpriteRenderer[] _fadeSprites;
         private float[] _fadeBaseAlphas;
 
@@ -571,9 +571,9 @@ namespace TrainDefense.Game
                     _fadeBaseAlphas[i] = _fadeSprites[i].color.a;
             }
 
-            for (float elapsed = 0f; elapsed < DespawnFadeDuration; elapsed += Time.deltaTime)
+            for (float elapsed = 0f; elapsed < DESPAWN_FADE_DURATION; elapsed += Time.deltaTime)
             {
-                _SetFadeAlpha(1f - elapsed / DespawnFadeDuration);
+                _SetFadeAlpha(1f - elapsed / DESPAWN_FADE_DURATION);
                 yield return null;
             }
 

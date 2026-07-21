@@ -178,7 +178,7 @@ namespace TrainDefense.Game.UI
                    .FirstOrDefault(t => t.TrainData.Id == upgradeChoice.TargetTrainId);
                if (currentTrain != null)
                {
-                  currentLevel = currentTrain.CurrentLevel + 1;
+                  currentLevel = currentTrain.CurrentLevel;
                }
             }
          }

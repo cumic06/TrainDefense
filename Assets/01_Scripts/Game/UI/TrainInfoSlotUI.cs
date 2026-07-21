@@ -280,7 +280,7 @@ namespace TrainDefense.Game.UI
             return;
 
          trainLevelImage.gameObject.SetActive(true);
-         trainLevelText.text = $"{trainLevelUpEvent.Level + 1}";
+         trainLevelText.text = $"{trainLevelUpEvent.Level}";
       }
 
       private void _SetDead(TrainDeadEvent trainDeadEvent)

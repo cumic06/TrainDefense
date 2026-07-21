@@ -33,6 +33,9 @@ namespace TrainDefense.Game
         protected int _currentLevel;
         protected float _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
+        // 상점 업그레이드의 스탯별 누적 배율. 중복선택(Upgrade)으로 더하는 flat 증가분에도 이 배율을 곱해
+        // "(base + 중복선택합) × (1 + 상점%)" 가 강화 순서와 무관하게 성립하도록 한다.
+        protected readonly Dictionary<StatType, float> _shopMultiplier = new();
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
         protected string _selectedSkillId = null;
         protected bool _initialized;
@@ -55,7 +58,11 @@ namespace TrainDefense.Game
         public bool IsRotateTurret => isRotateTurret;
 
         public bool IsDead => _isDead;
+        // 레벨 = 받은 업그레이드 횟수(획득 0, 만렙 = upgradeStats 개수 8).
         public int CurrentLevel => _currentLevel;
+        // 업그레이드 7번을 받은 포탑부터 엘리트 승격 가능.
+        public const int ELITE_PROMOTION_LEVEL = 7;
+        public bool IsEliteEligible => _currentLevel >= ELITE_PROMOTION_LEVEL;
         public bool HasActiveSkill => _skillModule.HasActiveSkill;
         public Sprite SkillIcon => _skillModule.SkillIcon;
         public float SkillCooldown => _skillModule.SkillCooldown;
@@ -133,7 +140,7 @@ namespace TrainDefense.Game
                 _currentMaxHp *= 1f + PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.MaxHp) / 100f;
 
             _currentHp = _currentMaxHp;
-            _currentLevel = -1;
+            _currentLevel = 0;
             _skillModule.Initialize(this, _trainData, _skillTypeMask);
         }
 
@@ -351,6 +358,16 @@ namespace TrainDefense.Game
             _flashCoroutine = null;
         }
 
+        protected float GetShopMultiplier(StatType type) => _shopMultiplier.TryGetValue(type, out var multiplier) ? multiplier : 1f;
+        protected void AccumulateShopMultiplier(StatType type, float ratio) => _shopMultiplier[type] = GetShopMultiplier(type) * ratio;
+
+        // 상점 누적 배율 승계(엘리트 전환 후에도 중복선택 flat이 올바른 배율을 받도록).
+        protected void InheritShopMultipliers(Train source)
+        {
+            _shopMultiplier.Clear();
+            foreach (var pair in source._shopMultiplier) _shopMultiplier[pair.Key] = pair.Value;
+        }
+
         public virtual void Upgrade(ITrainUpgradeData upgradeData)
         {
             if (upgradeData == null) return;
@@ -358,10 +375,9 @@ namespace TrainDefense.Game
             int currentLevel = CurrentLevel; // 업그레이드 전 레벨
             _currentLevel++;
 
-            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
-            // View 표시 및 업그레이드 적용 시: 레벨 + 1 인덱스 사용
-            // 레벨 -1이면 인덱스 0, 레벨 0이면 인덱스 1
-            int upgradeLevelIndex = currentLevel + 1;
+            // 레벨 = 받은 업그레이드 횟수(획득 0, 만렙 = upgradeStats 개수).
+            // 다음에 적용할 upgradeStats 인덱스 = 업그레이드 전 레벨.
+            int upgradeLevelIndex = currentLevel;
             var statusUpgrade = upgradeData.GetStatusUpgrade(upgradeLevelIndex);
             _currentMaxHp += statusUpgrade.MaxHp;
             _currentHp += statusUpgrade.MaxHp;

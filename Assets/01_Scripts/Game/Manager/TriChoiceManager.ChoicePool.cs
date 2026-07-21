@@ -17,7 +17,7 @@ namespace TrainDefense.Game
             // 엘리트 조건: 업그레이드 7회(만렙) 진행된 기차가 존재하는지 확인
             return mainTrain.CurrentTrains.Any(train =>
             {
-                bool isEliteEligible = train != null && train.CurrentLevel >= 6;
+                bool isEliteEligible = train != null && train.IsEliteEligible;
 
                 return isEliteEligible;
             });

@@ -29,8 +29,9 @@ namespace TrainDefense.Game.UI
          }
       }
 
-      // 원 내부 채움 알파. 사거리가 길어져 테두리가 화면 밖으로 나가도 범위가 보이도록 은은하게 칠한다.
-      private const float FillAlpha = 0.15f;
+      // 원 내부 채움 프리팹. 사거리가 길어져 테두리가 화면 밖으로 나가도 범위가 보이도록 은은하게 칠한다.
+      // (색·알파·소팅 설정은 프리팹의 SpriteRenderer에서 관리)
+      private const string FILL_PREFAB_PATH = "Prefabs/TrainRangeIndicatorFill";
 
       private LineRenderer _line;
       private SpriteRenderer _fill;
@@ -56,15 +57,14 @@ namespace TrainDefense.Game.UI
          _line.sortingLayerName = "Range";
          _line.sortingOrder = 500;
 
-         // 원 내부 채움 (SoftCircle 스프라이트를 반투명 틴트, 반지름은 스케일로)
-         _fill = new GameObject("Fill").AddComponent<SpriteRenderer>();
-         _fill.transform.SetParent(transform, false);
-         _fill.sprite = Resources.Load<Sprite>("Sprites/SoftCircle");
-         _fill.color = new Color(color.r, color.g, color.b, FillAlpha);
-         _fill.sortingLayerName = "Range";
-         _fill.sortingOrder = 499; // 테두리 라인 바로 아래
-         if (_fill.sprite != null)
-            _fillSpriteDiameter = _fill.sprite.bounds.size.x;
+         // 원 내부 채움 (프리팹의 SoftCircle 반투명 스프라이트, 반지름은 스케일로)
+         GameObject fillPrefab = Resources.Load<GameObject>(FILL_PREFAB_PATH);
+         if (fillPrefab != null)
+         {
+            GameObject fillInstance = Instantiate(fillPrefab, transform);
+            if (fillInstance.TryGetComponent(out _fill) && _fill.sprite != null)
+               _fillSpriteDiameter = _fill.sprite.bounds.size.x;
+         }
 
          gameObject.SetActive(false);
       }
@@ -119,8 +119,11 @@ namespace TrainDefense.Game.UI
       private void _Redraw()
       {
          Vector3 center = _target.transform.position;
-         _fill.transform.position = center;
-         _fill.transform.localScale = Vector3.one * (_radius * 2f / _fillSpriteDiameter);
+         if (_fill != null)
+         {
+            _fill.transform.position = center;
+            _fill.transform.localScale = Vector3.one * (_radius * 2f / _fillSpriteDiameter);
+         }
          for (int i = 0; i < SegmentCount; i++)
          {
             float angle = (float)i / SegmentCount * Mathf.PI * 2f;

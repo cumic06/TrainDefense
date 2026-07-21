@@ -74,11 +74,11 @@ namespace TrainDefense.Game.Datas
          return stats?.RangeStatusUpgrade ?? default;
       }
 
-      // 0~level 까지 각 레벨 업그레이드 증가량의 합 (base 미포함)
+      // 적용된 업그레이드 증가량의 합 (base 미포함). 레벨 = 받은 업그레이드 횟수 → 인덱스 0..level-1.
       public RangeTrainStatus GetAccumulatedRangeStatusUpgrade(int level)
       {
          var total = new RangeTrainStatus();
-         for (int i = 0; i <= level; i++)
+         for (int i = 0; i < level; i++)
          {
             var s = GetRangeStatusUpgrade(i);
             total.AttackDamage += s.AttackDamage;

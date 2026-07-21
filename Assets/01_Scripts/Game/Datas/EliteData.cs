@@ -11,13 +11,13 @@ namespace TrainDefense.Game.Datas
       [Min(1)]
       public int eliteSpawnCycle = 100;
 
-      [Header("엘리트 스탯 배율 (variants 가 비었을 때 빨강 fallback 으로 사용)")]
-      public float hpMultiplier = 3f;
-      public float damageMultiplier = 2f;
-      public float moveSpeedMultiplier = 1f;
-      public float sizeScale = 1.5f;
-      public float dropExpMultiplier = 2f;
-      public float dropMoneyMultiplier = 2f;
+      [Header("엘리트 스탯 배율 (variants 가 비었을 때 빨강 fallback 으로 사용 — 빨강 variant 와 동일하게 유지)")]
+      public float hpMultiplier = 120f;
+      public float damageMultiplier = 4f;
+      public float moveSpeedMultiplier = 1.4f;
+      public float sizeScale = 1.6f;
+      public float dropExpMultiplier = 10f;
+      public float dropMoneyMultiplier = 10f;
 
       [Header("엘리트 타입별 변형 (빨강/초록/파랑/노랑)")]
       [Tooltip("비워두면 코드 기본 4종이 자동 사용된다. 인스펙터에서 채우면 그 목록을 쓴다.")]

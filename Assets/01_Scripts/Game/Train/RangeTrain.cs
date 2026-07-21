@@ -26,12 +26,6 @@ namespace TrainDefense.Game
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statAttackDamageAccum;
 
-        // 상점 업그레이드의 스탯별 누적 배율. 중복선택(Upgrade)으로 더하는 flat 증가분에도 이 배율을 곱해
-        // "(base + 중복선택합) × (1 + 상점%)" 가 강화 순서와 무관하게 성립하도록 한다.
-        private readonly Dictionary<StatType, float> _shopMultiplier = new();
-        private float _ShopMul(StatType type) => _shopMultiplier.TryGetValue(type, out var m) ? m : 1f;
-        private void _MulShop(StatType type, float ratio) => _shopMultiplier[type] = _ShopMul(type) * ratio;
-
         private bool _suppressMainProjectileShove;
 
         // 매 프레임 게이트(_UpdateTickLoopSfx)에서 호출되므로, 전환 시점에만 Play/Stop이 나가도록 상태를 기억한다.
@@ -294,18 +288,17 @@ namespace TrainDefense.Game
             base.Upgrade(upgradeData);
 
             // RangeTrain 전용 업그레이드 데이터가 있다면 적용
-            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
-            // 업그레이드 적용 시: 업그레이드 전 레벨 + 1 인덱스 사용
+            // 다음에 적용할 upgradeStats 인덱스 = 업그레이드 전 레벨 (레벨 = 받은 업그레이드 횟수)
             if (upgradeData is RangeTrainUpgradeData rangeUpgradeData)
             {
-                int upgradeLevelIndex = currentLevel + 1;
+                int upgradeLevelIndex = currentLevel;
                 var rangeStatus = rangeUpgradeData.GetRangeStatusUpgrade(upgradeLevelIndex);
                 // 중복선택 증가분은 base와 동일하게 상점 배율을 받는다(Model B): (base+중복선택)×(1+상점%).
-                _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange * _ShopMul(StatType.AttackRange);
-                _currentRangeTrainStatus.AttackArea += rangeStatus.AttackArea * _ShopMul(StatType.AttackArea);
-                _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage * _ShopMul(StatType.AttackDamage);
+                _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange * GetShopMultiplier(StatType.AttackRange);
+                _currentRangeTrainStatus.AttackArea += rangeStatus.AttackArea * GetShopMultiplier(StatType.AttackArea);
+                _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage * GetShopMultiplier(StatType.AttackDamage);
                 _currentRangeTrainStatus.AttackCount += rangeStatus.AttackCount;
-                _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval * _ShopMul(StatType.AttackInterval);
+                _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval * GetShopMultiplier(StatType.AttackInterval);
                 _currentRangeTrainStatus.CriticalChance += rangeStatus.CriticalChance;
                 _currentRangeTrainStatus.CriticalDamage += rangeStatus.CriticalDamage;
                 _currentRangeTrainStatus.SlowRate += rangeStatus.SlowRate;
@@ -514,7 +507,7 @@ namespace TrainDefense.Game
                 {
                     float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
                     _currentRangeTrainStatus.AttackRange *= shopRatio;
-                    _MulShop(StatType.AttackRange, shopRatio);
+                    AccumulateShopMultiplier(StatType.AttackRange, shopRatio);
                     break;
                 }
 
@@ -522,7 +515,7 @@ namespace TrainDefense.Game
                 {
                     float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
                     _currentRangeTrainStatus.AttackArea *= shopRatio;
-                    _MulShop(StatType.AttackArea, shopRatio);
+                    AccumulateShopMultiplier(StatType.AttackArea, shopRatio);
                     if (_rangeProjectilePrefab != null)
                     {
                         float areaScale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
@@ -535,7 +528,7 @@ namespace TrainDefense.Game
                 {
                     float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
                     _currentRangeTrainStatus.AttackDamage *= shopRatio;
-                    _MulShop(StatType.AttackDamage, shopRatio);
+                    AccumulateShopMultiplier(StatType.AttackDamage, shopRatio);
                     if (_rangeProjectilePrefab != null)
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
                             _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
@@ -555,7 +548,7 @@ namespace TrainDefense.Game
                 {
                     float shopRatio = (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
                     _currentRangeTrainStatus.AttackInterval *= shopRatio;
-                    _MulShop(StatType.AttackInterval, shopRatio);
+                    AccumulateShopMultiplier(StatType.AttackInterval, shopRatio);
                     break;
                 }
 
@@ -584,28 +577,26 @@ namespace TrainDefense.Game
         public override void CopyProgressFrom(Train source)
         {
             base.CopyProgressFrom(source);
-            if (source is not RangeTrain srcRange) return;
-            if (srcRange.rangeTrainData == null || rangeTrainData == null) return;
+            if (source is not RangeTrain sourceRange) return;
+            if (sourceRange.rangeTrainData == null || rangeTrainData == null) return;
 
-            var srcBase = srcRange.rangeTrainData.RangeTrainStatus;
-            var srcCurrent = srcRange._currentRangeTrainStatus;
+            var sourceBase = sourceRange.rangeTrainData.RangeTrainStatus;
+            var sourceCurrent = sourceRange._currentRangeTrainStatus;
             var newBase = rangeTrainData.RangeTrainStatus;
 
-            _currentRangeTrainStatus.AttackRange = newBase.AttackRange + (srcCurrent.AttackRange - srcBase.AttackRange);
-            _currentRangeTrainStatus.AttackArea = newBase.AttackArea + (srcCurrent.AttackArea - srcBase.AttackArea);
-            _currentRangeTrainStatus.AttackDamage = newBase.AttackDamage + (srcCurrent.AttackDamage - srcBase.AttackDamage);
-            _currentRangeTrainStatus.AttackCount = newBase.AttackCount + (srcCurrent.AttackCount - srcBase.AttackCount);
-            _currentRangeTrainStatus.AttackInterval = newBase.AttackInterval + (srcCurrent.AttackInterval - srcBase.AttackInterval);
-            _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
-            _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
-            _currentRangeTrainStatus.SlowRate = newBase.SlowRate + (srcCurrent.SlowRate - srcBase.SlowRate);
-            _currentRangeTrainStatus.BurstDuration = newBase.BurstDuration + (srcCurrent.BurstDuration - srcBase.BurstDuration);
+            _currentRangeTrainStatus.AttackRange = newBase.AttackRange + (sourceCurrent.AttackRange - sourceBase.AttackRange);
+            _currentRangeTrainStatus.AttackArea = newBase.AttackArea + (sourceCurrent.AttackArea - sourceBase.AttackArea);
+            _currentRangeTrainStatus.AttackDamage = newBase.AttackDamage + (sourceCurrent.AttackDamage - sourceBase.AttackDamage);
+            _currentRangeTrainStatus.AttackCount = newBase.AttackCount + (sourceCurrent.AttackCount - sourceBase.AttackCount);
+            _currentRangeTrainStatus.AttackInterval = newBase.AttackInterval + (sourceCurrent.AttackInterval - sourceBase.AttackInterval);
+            _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (sourceCurrent.CriticalChance - sourceBase.CriticalChance);
+            _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (sourceCurrent.CriticalDamage - sourceBase.CriticalDamage);
+            _currentRangeTrainStatus.SlowRate = newBase.SlowRate + (sourceCurrent.SlowRate - sourceBase.SlowRate);
+            _currentRangeTrainStatus.BurstDuration = newBase.BurstDuration + (sourceCurrent.BurstDuration - sourceBase.BurstDuration);
 
-            _statAttackDamageAccum = srcRange._statAttackDamageAccum;
+            _statAttackDamageAccum = sourceRange._statAttackDamageAccum;
 
-            // 상점 누적 배율도 그대로 승계(엘리트 전환 후에도 중복선택 flat이 올바른 배율을 받도록).
-            _shopMultiplier.Clear();
-            foreach (var kv in srcRange._shopMultiplier) _shopMultiplier[kv.Key] = kv.Value;
+            InheritShopMultipliers(sourceRange);
 
             if (_rangeProjectilePrefab != null)
             {

@@ -43,9 +43,8 @@ namespace TrainDefense.Game.Datas
 
             // 현재 레벨에 맞는 업그레이드가 하나라도 있는지 확인
             int currentLevel = train.CurrentLevel;
-            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
-            // View 표시 및 업그레이드 적용 시: 레벨 + 1 인덱스 사용
-            int currentLevelIndex = currentLevel + 1;
+            // 다음에 적용할 upgradeStats 인덱스 = 현재 레벨 (레벨 = 받은 업그레이드 횟수)
+            int currentLevelIndex = currentLevel;
 
             bool hasValidUpgrade = weightedUpgrades.Any(w =>
             {

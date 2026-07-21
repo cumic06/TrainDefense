@@ -47,9 +47,8 @@ namespace TrainDefense.Game
             if (train == null)
                 return false;
 
-            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
-            // View 표시 및 업그레이드 적용 시: 레벨 + 1 인덱스 사용
-            int currentLevelIndex = train.CurrentLevel + 1;
+            // 다음에 적용할 upgradeStats 인덱스 = 현재 레벨 (레벨 = 받은 업그레이드 횟수)
+            int currentLevelIndex = train.CurrentLevel;
 
             if (currentLevelIndex >= upgradeData.MaxLevel)
                 return false;
@@ -74,9 +73,8 @@ namespace TrainDefense.Game
             if (train == null)
                 return null;
 
-            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
-            // View 표시 및 업그레이드 적용 시: 레벨 + 1 인덱스 사용
-            int currentLevelIndex = train.CurrentLevel + 1;
+            // 다음에 적용할 upgradeStats 인덱스 = 현재 레벨 (레벨 = 받은 업그레이드 횟수)
+            int currentLevelIndex = train.CurrentLevel;
 
             var validUpgrades = choice.WeightedUpgrades
                 .Select(w => new { Weight = w, UpgradeData = DatabaseManager.Instance.GetTrainUpgradeDataById(w?.UpgradeDataId) })

@@ -144,7 +144,7 @@ namespace TrainDefense.Game
 
         #region Fire
         // 조준점이 피벗과 수치상 겹칠 때(방향 벡터 ≈ 0)만 회전을 갱신하지 않는 최소 안전값.
-        private const float AimDeadZoneRadius = 0.05f;
+        private const float AIM_DEAD_ZONE_RADIUS = 0.05f;
 
         /// <summary>
         /// 조준 지점을 바라보도록 포탑을 회전시킨다. (MainTrain이 조준 중 매 프레임 호출)
@@ -155,7 +155,7 @@ namespace TrainDefense.Game
             if (!_isRotateTurret || _pivot == null)
                 return;
 
-            if ((aimPosition - (Vector2)_pivot.position).sqrMagnitude < AimDeadZoneRadius * AimDeadZoneRadius)
+            if ((aimPosition - (Vector2)_pivot.position).sqrMagnitude < AIM_DEAD_ZONE_RADIUS * AIM_DEAD_ZONE_RADIUS)
                 return;
 
             _pivot.LookAt2D(aimPosition);
@@ -179,7 +179,7 @@ namespace TrainDefense.Game
             // 방향은 하나뿐: 피벗→마우스. 포탑도 이 방향을 보고(AimAt), 총알도 이 방향으로 나간다.
             // 마우스 위치를 "통과해야 할 지점"으로 취급하지 않는다 — 방향 지시자일 뿐.
             Vector2 aimDirection = aimPosition - (Vector2)(_pivot != null ? _pivot.position : transform.position);
-            Quaternion fireRotation = aimDirection.sqrMagnitude > AimDeadZoneRadius * AimDeadZoneRadius
+            Quaternion fireRotation = aimDirection.sqrMagnitude > AIM_DEAD_ZONE_RADIUS * AIM_DEAD_ZONE_RADIUS
                 ? Quaternion.Euler(0f, 0f, Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg)
                 : (_pivot != null ? _pivot.rotation : Quaternion.identity);
 
@@ -342,7 +342,7 @@ namespace TrainDefense.Game
         #region LevelGrowth
         // 플레이어 레벨 성장: 레벨당 공격력 +5% 가산(lv1=×1.0, base×(1+0.05×(lv-1))).
         // 상점 배율과 곱으로 중첩된다. 편성 포탑은 레벨업 카드로 성장하지만 메인 터렛은 카드가 없어 이 축이 대신한다.
-        private const float LevelUpDamagePercent = 0.05f;
+        private const float LEVEL_UP_DAMAGE_PERCENT = 0.05f;
         private int _appliedPlayerLevel = 1;
 
         private void _OnPlayerLevelUp(LevelUpEvent _) => _SyncLevelGrowth();
@@ -359,8 +359,8 @@ namespace TrainDefense.Game
                 return;
 
             _status.AttackDamage = _status.AttackDamage
-                / (1f + LevelUpDamagePercent * (_appliedPlayerLevel - 1))
-                * (1f + LevelUpDamagePercent * (currentLevel - 1));
+                / (1f + LEVEL_UP_DAMAGE_PERCENT * (_appliedPlayerLevel - 1))
+                * (1f + LEVEL_UP_DAMAGE_PERCENT * (currentLevel - 1));
             _appliedPlayerLevel = currentLevel;
         }
         #endregion

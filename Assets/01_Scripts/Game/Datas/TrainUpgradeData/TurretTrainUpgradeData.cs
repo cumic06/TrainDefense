@@ -79,8 +79,9 @@ namespace TrainDefense.Game.Datas
       // 0~level 까지 각 레벨 업그레이드 증가량의 합 (base 미포함)
       public TurretTrainStatus GetAccumulatedTurretStatusUpgrade(int level)
       {
+         // 레벨 = 받은 업그레이드 횟수 → 적용된 인덱스는 0..level-1.
          var total = new TurretTrainStatus();
-         for (int i = 0; i <= level; i++)
+         for (int i = 0; i < level; i++)
          {
             var s = GetTurretStatusUpgrade(i);
             total.AttackDamage += s.AttackDamage;

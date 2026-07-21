@@ -83,9 +83,9 @@ namespace TrainDefense.Game
       private const string StunPrefabPath = "Prefabs/StunPaticle";
       private static GameObject _stunPrefab;
 
-      private const string EliteHealthBarPrefabPath = "Prefabs/EliteHealthBar";
+      private const string ELITE_HEALTH_BAR_PREFAB_PATH = "Prefabs/EliteHealthBar";
       // 몬스터 루트 기준 체력바 y 오프셋(아래). 모델 크기와 무관한 고정값이라 인게임 확인 후 조정.
-      private const float EliteHealthBarOffsetY = -0.85f;
+      private const float ELITE_HEALTH_BAR_OFFSET_Y = -0.85f;
       private static GameObject _eliteHealthBarPrefab;
       // 엘리트 전용 체력바. 처음 엘리트가 될 때 자식으로 1회 생성해 계속 보유, 엘리트일 때만 켠다(eliteEffect 패턴).
       private EliteHealthBar _eliteHealthBarInstance;
@@ -638,12 +638,12 @@ namespace TrainDefense.Game
          if (_eliteHealthBarInstance == null)
          {
             if (_eliteHealthBarPrefab == null)
-               _eliteHealthBarPrefab = Resources.Load<GameObject>(EliteHealthBarPrefabPath);
+               _eliteHealthBarPrefab = Resources.Load<GameObject>(ELITE_HEALTH_BAR_PREFAB_PATH);
             if (_eliteHealthBarPrefab == null)
                return;
 
             GameObject instance = Instantiate(_eliteHealthBarPrefab, transform);
-            instance.transform.localPosition = new Vector3(0f, EliteHealthBarOffsetY, 0f);
+            instance.transform.localPosition = new Vector3(0f, ELITE_HEALTH_BAR_OFFSET_Y, 0f);
             if (!instance.TryGetComponent(out _eliteHealthBarInstance))
                return;
          }

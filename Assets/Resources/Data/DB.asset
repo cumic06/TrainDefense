@@ -2504,12 +2504,12 @@ MonoBehaviour:
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     eliteSpawnCycle: 100
-    hpMultiplier: 3.5
-    damageMultiplier: 2
-    moveSpeedMultiplier: 1.2
-    sizeScale: 1.5
-    dropExpMultiplier: 2
-    dropMoneyMultiplier: 2
+    hpMultiplier: 120
+    damageMultiplier: 4
+    moveSpeedMultiplier: 1.4
+    sizeScale: 1.6
+    dropExpMultiplier: 10
+    dropMoneyMultiplier: 10
     variants:
     - type: 0
       weight: 1

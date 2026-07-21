@@ -44,12 +44,6 @@ namespace TrainDefense.Game
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statAttackDamageAccum;
 
-        // 상점 업그레이드의 스탯별 누적 배율. 중복선택(Upgrade)으로 더하는 flat 증가분에도 이 배율을 곱해
-        // "(base + 중복선택합) × (1 + 상점%)" 가 강화 순서와 무관하게 성립하도록 한다.
-        private readonly Dictionary<StatType, float> _shopMultiplier = new();
-        private float _ShopMul(StatType type) => _shopMultiplier.TryGetValue(type, out var m) ? m : 1f;
-        private void _MulShop(StatType type, float ratio) => _shopMultiplier[type] = _ShopMul(type) * ratio;
-
         public delegate Projectile ProjectileOverrideProvider(int attackIndex);
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
         private float _attackCountdown;
@@ -57,7 +51,7 @@ namespace TrainDefense.Game
         private float _burstRemaining;
 
         // 공격 횟수(AttackCount) 반복 간격 = AttackInterval × 이 비율. 공속이 빨라질수록 연타 간격도 조여진다.
-        private const float RepeatAttackDelayRatio = 0.15f;
+        private const float REPEAT_ATTACK_DELAY_RATIO = 0.15f;
         private Coroutine _repeatAttackCoroutine;
 
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
@@ -294,9 +288,9 @@ namespace TrainDefense.Game
         }
 
         // 포탑 조준 회전 속도(도/초). 즉시 스냅하면 '휙' 돌아 어색해서 이 속도로 보간한다.
-        private const float TurretRotateSpeed = 1440f;
+        private const float TURRET_ROTATE_SPEED = 1440f;
         // 발사를 허용하는 조준 오차(도).
-        private const float FireAlignmentTolerance = 10f;
+        private const float FIRE_ALIGNMENT_TOLERANCE = 10f;
 
         private void _RotateTowardNearTarget()
         {
@@ -313,7 +307,7 @@ namespace TrainDefense.Game
 
             Quaternion targetRotation = Quaternion.Euler(0f, 0f, turret.transform.GetAngle2D(nearTarget.transform.position));
             turret.transform.rotation = Quaternion.RotateTowards(
-                turret.transform.rotation, targetRotation, TurretRotateSpeed * Time.fixedDeltaTime);
+                turret.transform.rotation, targetRotation, TURRET_ROTATE_SPEED * Time.fixedDeltaTime);
         }
 
         // 포탑이 가장 가까운 타겟을 (거의) 바라보고 있는가. 회전하지 않는 포탑·타겟 없음은 항상 통과.
@@ -327,7 +321,7 @@ namespace TrainDefense.Game
                 return true;
 
             float targetAngle = turret.transform.GetAngle2D(nearTarget.transform.position);
-            return Mathf.Abs(Mathf.DeltaAngle(turret.transform.eulerAngles.z, targetAngle)) <= FireAlignmentTolerance;
+            return Mathf.Abs(Mathf.DeltaAngle(turret.transform.eulerAngles.z, targetAngle)) <= FIRE_ALIGNMENT_TOLERANCE;
         }
 
         // 빔(파티클이 아닌 NonMovement 부착 투사체, 레이저)이 켜져 있는가.
@@ -358,7 +352,7 @@ namespace TrainDefense.Game
 
         // 비슷한 거리의 적 둘 사이에서 최근접이 매 틱 뒤바뀌면 포탑이 둘 사이를 오가며 떨려서,
         // 새 후보가 충분히 더 가까울 때만 타겟을 교체한다. (제곱거리 비율 0.7 = 거리로 약 16% 더 가까울 때)
-        private const float TargetSwitchSqrDistanceRatio = 0.7f;
+        private const float TARGET_SWITCH_SQR_DISTANCE_RATIO = 0.7f;
         private Monster _nearTarget;
 
         private void _UpdateNearTarget()
@@ -377,7 +371,7 @@ namespace TrainDefense.Game
 
             float nearestSqrDistance = transform.position.SqrDistance(nearest.transform.position);
             float currentSqrDistance = transform.position.SqrDistance(_nearTarget.transform.position);
-            if (nearestSqrDistance < currentSqrDistance * TargetSwitchSqrDistanceRatio)
+            if (nearestSqrDistance < currentSqrDistance * TARGET_SWITCH_SQR_DISTANCE_RATIO)
                 _nearTarget = nearest;
         }
 
@@ -430,7 +424,7 @@ namespace TrainDefense.Game
                     StopCoroutine(_repeatAttackCoroutine);
                 _repeatAttackCoroutine = StartCoroutine(_RepeatAttackCoroutine(
                     _currentTurretTrainStatus.AttackCount - 1,
-                    _currentTurretTrainStatus.AttackInterval * RepeatAttackDelayRatio));
+                    _currentTurretTrainStatus.AttackInterval * REPEAT_ATTACK_DELAY_RATIO));
             }
         }
 
@@ -1054,18 +1048,17 @@ namespace TrainDefense.Game
             base.Upgrade(upgradeData);
 
             // TurretTrain 전용 업그레이드 데이터가 있다면 적용
-            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
-            // 업그레이드 적용 시: 업그레이드 전 레벨 + 1 인덱스 사용
+            // 다음에 적용할 upgradeStats 인덱스 = 업그레이드 전 레벨 (레벨 = 받은 업그레이드 횟수)
             if (upgradeData is TurretTrainUpgradeData turretUpgradeData)
             {
-                int upgradeLevelIndex = currentLevel + 1;
+                int upgradeLevelIndex = currentLevel;
                 var turretStatus = turretUpgradeData.GetTurretStatusUpgrade(upgradeLevelIndex);
                 // 중복선택 증가분은 base와 동일하게 상점 배율을 받는다(Model B): (base+중복선택)×(1+상점%).
-                _currentTurretTrainStatus.AttackDamage += turretStatus.AttackDamage * _ShopMul(StatType.AttackDamage);
-                _currentTurretTrainStatus.AttackRange += turretStatus.AttackRange * _ShopMul(StatType.AttackRange);
-                _currentTurretTrainStatus.AttackArea += turretStatus.AttackArea * _ShopMul(StatType.AttackArea);
+                _currentTurretTrainStatus.AttackDamage += turretStatus.AttackDamage * GetShopMultiplier(StatType.AttackDamage);
+                _currentTurretTrainStatus.AttackRange += turretStatus.AttackRange * GetShopMultiplier(StatType.AttackRange);
+                _currentTurretTrainStatus.AttackArea += turretStatus.AttackArea * GetShopMultiplier(StatType.AttackArea);
                 _currentTurretTrainStatus.AttackCount += turretStatus.AttackCount;
-                _currentTurretTrainStatus.AttackInterval += turretStatus.AttackInterval * _ShopMul(StatType.AttackInterval);
+                _currentTurretTrainStatus.AttackInterval += turretStatus.AttackInterval * GetShopMultiplier(StatType.AttackInterval);
                 _currentTurretTrainStatus.TargetCount += turretStatus.TargetCount;
                 _currentTurretTrainStatus.CriticalChance += turretStatus.CriticalChance;
                 _currentTurretTrainStatus.CriticalDamage += turretStatus.CriticalDamage;
@@ -1290,7 +1283,7 @@ namespace TrainDefense.Game
                 {
                     float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
                     _currentTurretTrainStatus.AttackRange *= shopRatio;
-                    _MulShop(StatType.AttackRange, shopRatio);
+                    AccumulateShopMultiplier(StatType.AttackRange, shopRatio);
                     break;
                 }
 
@@ -1298,7 +1291,7 @@ namespace TrainDefense.Game
                 {
                     float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
                     _currentTurretTrainStatus.AttackArea *= shopRatio;
-                    _MulShop(StatType.AttackArea, shopRatio);
+                    AccumulateShopMultiplier(StatType.AttackArea, shopRatio);
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
                         float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
@@ -1313,7 +1306,7 @@ namespace TrainDefense.Game
                 {
                     float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
                     _currentTurretTrainStatus.AttackDamage *= shopRatio;
-                    _MulShop(StatType.AttackDamage, shopRatio);
+                    AccumulateShopMultiplier(StatType.AttackDamage, shopRatio);
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                         foreach (var p in _nonMovementProjectiles)
                             if (p != null) InitializeProjectileDamage(p);
@@ -1332,7 +1325,7 @@ namespace TrainDefense.Game
                 {
                     float shopRatio = (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
                     _currentTurretTrainStatus.AttackInterval *= shopRatio;
-                    _MulShop(StatType.AttackInterval, shopRatio);
+                    AccumulateShopMultiplier(StatType.AttackInterval, shopRatio);
                     break;
                 }
 
@@ -1363,28 +1356,26 @@ namespace TrainDefense.Game
         public override void CopyProgressFrom(Train source)
         {
             base.CopyProgressFrom(source);
-            if (source is not TurretTrain srcTurret) return;
-            if (srcTurret.turretTrainData == null || turretTrainData == null) return;
+            if (source is not TurretTrain sourceTurret) return;
+            if (sourceTurret.turretTrainData == null || turretTrainData == null) return;
 
-            var srcBase = srcTurret.turretTrainData.TurretTrainStatus;
-            var srcCurrent = srcTurret._currentTurretTrainStatus;
+            var sourceBase = sourceTurret.turretTrainData.TurretTrainStatus;
+            var sourceCurrent = sourceTurret._currentTurretTrainStatus;
             var newBase = turretTrainData.TurretTrainStatus;
 
-            _currentTurretTrainStatus.AttackDamage = newBase.AttackDamage + (srcCurrent.AttackDamage - srcBase.AttackDamage);
-            _currentTurretTrainStatus.AttackRange = newBase.AttackRange + (srcCurrent.AttackRange - srcBase.AttackRange);
-            _currentTurretTrainStatus.AttackArea = newBase.AttackArea + (srcCurrent.AttackArea - srcBase.AttackArea);
-            _currentTurretTrainStatus.AttackCount = newBase.AttackCount + (srcCurrent.AttackCount - srcBase.AttackCount);
-            _currentTurretTrainStatus.AttackInterval = newBase.AttackInterval + (srcCurrent.AttackInterval - srcBase.AttackInterval);
-            _currentTurretTrainStatus.TargetCount = newBase.TargetCount + (srcCurrent.TargetCount - srcBase.TargetCount);
-            _currentTurretTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
-            _currentTurretTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
-            _currentTurretTrainStatus.BurstDuration = newBase.BurstDuration + (srcCurrent.BurstDuration - srcBase.BurstDuration);
+            _currentTurretTrainStatus.AttackDamage = newBase.AttackDamage + (sourceCurrent.AttackDamage - sourceBase.AttackDamage);
+            _currentTurretTrainStatus.AttackRange = newBase.AttackRange + (sourceCurrent.AttackRange - sourceBase.AttackRange);
+            _currentTurretTrainStatus.AttackArea = newBase.AttackArea + (sourceCurrent.AttackArea - sourceBase.AttackArea);
+            _currentTurretTrainStatus.AttackCount = newBase.AttackCount + (sourceCurrent.AttackCount - sourceBase.AttackCount);
+            _currentTurretTrainStatus.AttackInterval = newBase.AttackInterval + (sourceCurrent.AttackInterval - sourceBase.AttackInterval);
+            _currentTurretTrainStatus.TargetCount = newBase.TargetCount + (sourceCurrent.TargetCount - sourceBase.TargetCount);
+            _currentTurretTrainStatus.CriticalChance = newBase.CriticalChance + (sourceCurrent.CriticalChance - sourceBase.CriticalChance);
+            _currentTurretTrainStatus.CriticalDamage = newBase.CriticalDamage + (sourceCurrent.CriticalDamage - sourceBase.CriticalDamage);
+            _currentTurretTrainStatus.BurstDuration = newBase.BurstDuration + (sourceCurrent.BurstDuration - sourceBase.BurstDuration);
 
-            _statAttackDamageAccum = srcTurret._statAttackDamageAccum;
+            _statAttackDamageAccum = sourceTurret._statAttackDamageAccum;
 
-            // 상점 누적 배율도 그대로 승계(엘리트 전환 후에도 중복선택 flat이 올바른 배율을 받도록).
-            _shopMultiplier.Clear();
-            foreach (var kv in srcTurret._shopMultiplier) _shopMultiplier[kv.Key] = kv.Value;
+            InheritShopMultipliers(sourceTurret);
 
             if (_useNonMovementProjectilePooling)
             {
