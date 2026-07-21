@@ -26,10 +26,9 @@ namespace TrainDefense.Game.UI.SkillTree
         [SerializeField] private Button selectButton;
         #endregion
 
-        // 잠김 아이콘용 그레이스케일 머티리얼 — 도감·기차 사망과 동일 컨벤션 (Resources 루트)
-        private const string GrayscaleMaterialPath = "Custom_Sprite_Grayscale";
-        private static Material _grayscaleMaterial;
-        private static bool _hasTriedLoadGrayscale;
+        // 잠김 아이콘 = 어두운 실루엣 틴트 (도감 미발견 컨벤션).
+        // ⚠️ SpriteGrayscale 머티리얼 금지 — Stencil/_ClipRect가 없어 UI Mask/RectMask2D 클리핑을 뚫고 그려진다.
+        private static readonly Color LockedIconSilhouette = new Color(0.08f, 0.09f, 0.12f, 1f);
 
         private SkillNodeData _data;
         private Action<SkillNodeData> _onSelect;
@@ -94,13 +93,10 @@ namespace TrainDefense.Game.UI.SkillTree
                 borderImage.color = SkillTreePalette.Accent;
             }
 
-            // 잠김 = 그레이스케일 (색으로만 구분 금지 — 레벨 텍스트가 병행)
+            // 잠김 = 어두운 실루엣 (색으로만 구분 금지 — 레벨 텍스트가 병행)
             bool isLocked = level == 0 && !arePrerequisitesMet;
             if (iconImage != null)
-            {
-                iconImage.material = isLocked ? _GetGrayscaleMaterial() : null;
-                iconImage.color = isLocked ? SkillTreePalette.OnSurfaceMuted : Color.white;
-            }
+                iconImage.color = isLocked ? LockedIconSilhouette : Color.white;
 
             _RefreshLevelText(level, isMax, arePrerequisitesMet, canAcquire);
         }
@@ -128,20 +124,6 @@ namespace TrainDefense.Game.UI.SkillTree
 
             levelText.text = _data.MaxLevel > 0 ? $"Lv {level}/{_data.MaxLevel}" : $"Lv {level}";
             levelText.color = level > 0 ? SkillTreePalette.OnAccent : SkillTreePalette.OnSurfaceMuted;
-        }
-
-        private static Material _GetGrayscaleMaterial()
-        {
-            if (_hasTriedLoadGrayscale) return _grayscaleMaterial;
-
-            _hasTriedLoadGrayscale = true;
-            _grayscaleMaterial = Resources.Load<Material>(GrayscaleMaterialPath);
-            if (_grayscaleMaterial == null)
-            {
-                Debug.LogWarning($"[SkillTreeNodeUI] 그레이스케일 머티리얼을 찾지 못했습니다: Resources/{GrayscaleMaterialPath} — 틴트만 적용합니다.");
-            }
-
-            return _grayscaleMaterial;
         }
 
         /// <summary>습득 순간 펀치 연출. timeScale=0에서도 재생된다 (SetUpdate(true)).</summary>
