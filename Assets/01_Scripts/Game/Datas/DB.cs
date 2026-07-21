@@ -86,6 +86,11 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         public List<SkillNodeData> skillNodeDataList = new();
 
+        [TabGroup("SkillTree Data")]
+        [InfoBox("스킬트리 레인(계열) 표기 — 레인별 이름 로컬라이즈 키")]
+        [SerializeField]
+        public List<SkillTreeLaneData> skillTreeLaneDataList = new();
+
         [TabGroup("TriChoice Database")]
         [InfoBox("3지선다 데이터베이스 (선택지 관리)")]
         [SerializeField]
@@ -122,6 +127,7 @@ namespace TrainDefense.Game.Datas
         public IReadOnlyList<UpgradeData> UpgradeDataList => upgradeDataList;
         public IReadOnlyList<PermanentUpgradeData> PermanentUpgradeDataList => permanentUpgradeDataList;
         public IReadOnlyList<SkillNodeData> SkillNodeDataList => skillNodeDataList;
+        public IReadOnlyList<SkillTreeLaneData> SkillTreeLaneDataList => skillTreeLaneDataList;
         public TriChoiceDB TriChoiceDB => triChoiceDB;
         public SoundDB SoundDB => soundDB;
         public EliteData EliteData => eliteData;

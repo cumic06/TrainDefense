@@ -26,12 +26,19 @@ namespace TrainDefense.Game.UI.SkillTree
         [SerializeField] private Button selectButton;
         #endregion
 
+        // 잠김 아이콘용 그레이스케일 머티리얼 — 도감·기차 사망과 동일 컨벤션 (Resources 루트)
+        private const string GrayscaleMaterialPath = "Custom_Sprite_Grayscale";
+        private static Material _grayscaleMaterial;
+        private static bool _hasTriedLoadGrayscale;
+
         private SkillNodeData _data;
         private Action<SkillNodeData> _onSelect;
         private Tween _punchTween;
 
         public SkillNodeData Data => _data;
         public RectTransform RectTransform => (RectTransform)transform;
+        /// <summary>노드 배경 스프라이트 — 팝업이 출발역 마커를 같은 룩으로 그릴 때 쓴다.</summary>
+        public Sprite BackgroundSprite => backgroundImage != null ? backgroundImage.sprite : null;
 
         private void Awake()
         {
@@ -87,11 +94,54 @@ namespace TrainDefense.Game.UI.SkillTree
                 borderImage.color = SkillTreePalette.Accent;
             }
 
+            // 잠김 = 그레이스케일 (색으로만 구분 금지 — 레벨 텍스트가 병행)
+            bool isLocked = level == 0 && !arePrerequisitesMet;
             if (iconImage != null)
-                iconImage.color = level > 0 || arePrerequisitesMet ? Color.white : SkillTreePalette.OnSurfaceMuted;
+            {
+                iconImage.material = isLocked ? _GetGrayscaleMaterial() : null;
+                iconImage.color = isLocked ? SkillTreePalette.OnSurfaceMuted : Color.white;
+            }
 
-            if (levelText != null)
-                levelText.text = isMax ? "MAX" : _data.MaxLevel > 0 ? $"Lv {level}/{_data.MaxLevel}" : $"Lv {level}";
+            _RefreshLevelText(level, isMax, arePrerequisitesMet, canAcquire);
+        }
+
+        // 목업 상태 표기: 만렙=MAX / 획득 가능=비용 / 그 외=Lv n/m (이중부호화 텍스트)
+        private void _RefreshLevelText(int level, bool isMax, bool arePrerequisitesMet, bool canAcquire)
+        {
+            if (levelText == null) return;
+
+            if (isMax)
+            {
+                levelText.text = "MAX";
+                levelText.color = SkillTreePalette.SurfaceSunken;
+
+                return;
+            }
+
+            if (level == 0 && arePrerequisitesMet)
+            {
+                levelText.text = _data.GetCostAtLevel(0).ToString();
+                levelText.color = canAcquire ? SkillTreePalette.Accent : SkillTreePalette.DangerText;
+
+                return;
+            }
+
+            levelText.text = _data.MaxLevel > 0 ? $"Lv {level}/{_data.MaxLevel}" : $"Lv {level}";
+            levelText.color = level > 0 ? SkillTreePalette.OnAccent : SkillTreePalette.OnSurfaceMuted;
+        }
+
+        private static Material _GetGrayscaleMaterial()
+        {
+            if (_hasTriedLoadGrayscale) return _grayscaleMaterial;
+
+            _hasTriedLoadGrayscale = true;
+            _grayscaleMaterial = Resources.Load<Material>(GrayscaleMaterialPath);
+            if (_grayscaleMaterial == null)
+            {
+                Debug.LogWarning($"[SkillTreeNodeUI] 그레이스케일 머티리얼을 찾지 못했습니다: Resources/{GrayscaleMaterialPath} — 틴트만 적용합니다.");
+            }
+
+            return _grayscaleMaterial;
         }
 
         /// <summary>습득 순간 펀치 연출. timeScale=0에서도 재생된다 (SetUpdate(true)).</summary>

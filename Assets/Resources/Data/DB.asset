@@ -2327,7 +2327,7 @@ MonoBehaviour:
     passiveValuePerLevel: 1
   skillNodeDataList:
   - id: skill_fire_damage
-    iconId:
+    iconId: GameMadang/강화부품_135_14/총알_10_1/UI_Item_Bullet_05
     name: SkillTree_skill_fire_damage_Name
     description: SkillTree_skill_fire_damage_Desc
     lane: 0
@@ -2345,7 +2345,7 @@ MonoBehaviour:
     passiveValuePerLevel: 0
     unlockTrainId:
   - id: skill_fire_speed
-    iconId:
+    iconId: GameMadang/강화부품_135_14/변속기_8_1/UI_Item_Transmission_05
     name: SkillTree_skill_fire_speed_Name
     description: SkillTree_skill_fire_speed_Desc
     lane: 0
@@ -2364,7 +2364,7 @@ MonoBehaviour:
     passiveValuePerLevel: 0
     unlockTrainId:
   - id: skill_fire_crit
-    iconId:
+    iconId: GameMadang/강화부품_135_14/칼날_10_1/UI_Item_Knife_05
     name: SkillTree_skill_fire_crit_Name
     description: SkillTree_skill_fire_crit_Desc
     lane: 0
@@ -2383,7 +2383,7 @@ MonoBehaviour:
     passiveValuePerLevel: 0
     unlockTrainId:
   - id: skill_fire_critdmg
-    iconId:
+    iconId: GameMadang/강화부품_135_14/포탄_10_1/UI_Item_Bomb_05
     name: SkillTree_skill_fire_critdmg_Name
     description: SkillTree_skill_fire_critdmg_Desc
     lane: 0
@@ -2402,7 +2402,7 @@ MonoBehaviour:
     passiveValuePerLevel: 0
     unlockTrainId:
   - id: skill_fire_unlock
-    iconId:
+    iconId: GameMadang/강화부품_135_14/미사일_10_1/UI_Item_Missile_05
     name: SkillTree_skill_fire_unlock_Name
     description: SkillTree_skill_fire_unlock_Desc
     lane: 0
@@ -2419,7 +2419,7 @@ MonoBehaviour:
     passiveValuePerLevel: 0
     unlockTrainId: 40001
   - id: skill_def_hp
-    iconId:
+    iconId: Health
     name: SkillTree_skill_def_hp_Name
     description: SkillTree_skill_def_hp_Desc
     lane: 1
@@ -2435,7 +2435,7 @@ MonoBehaviour:
     passiveValuePerLevel: 5
     unlockTrainId:
   - id: skill_def_regen
-    iconId:
+    iconId: Repair
     name: SkillTree_skill_def_regen_Name
     description: SkillTree_skill_def_regen_Desc
     lane: 1
@@ -2452,7 +2452,7 @@ MonoBehaviour:
     passiveValuePerLevel: 1
     unlockTrainId:
   - id: skill_def_turret
-    iconId:
+    iconId: GameMadang/강화부품_135_14/엔진_8_1/UI_Item_Engine_05
     name: SkillTree_skill_def_turret_Name
     description: SkillTree_skill_def_turret_Desc
     lane: 1
@@ -2469,7 +2469,7 @@ MonoBehaviour:
     passiveValuePerLevel: 1
     unlockTrainId:
   - id: skill_util_range
-    iconId:
+    iconId: GameMadang/강화부품_135_14/에너지_8_1/UI_Item_Energy_05
     name: SkillTree_skill_util_range_Name
     description: SkillTree_skill_util_range_Desc
     lane: 2
@@ -2487,7 +2487,7 @@ MonoBehaviour:
     passiveValuePerLevel: 0
     unlockTrainId:
   - id: skill_util_reroll
-    iconId:
+    iconId: Reroll
     name: SkillTree_skill_util_reroll_Name
     description: SkillTree_skill_util_reroll_Desc
     lane: 2
@@ -2504,7 +2504,7 @@ MonoBehaviour:
     passiveValuePerLevel: 1
     unlockTrainId:
   - id: skill_util_area
-    iconId:
+    iconId: GameMadang/강화부품_135_14/수집기_8_1/UI_Item_Collector_05
     name: SkillTree_skill_util_area_Name
     description: SkillTree_skill_util_area_Desc
     lane: 2
@@ -2523,7 +2523,7 @@ MonoBehaviour:
     passiveValuePerLevel: 0
     unlockTrainId:
   - id: skill_util_unlock
-    iconId:
+    iconId: GameMadang/강화부품_135_14/유압기_10_1/UI_Item_Hydraulic_05
     name: SkillTree_skill_util_unlock_Name
     description: SkillTree_skill_util_unlock_Desc
     lane: 2
@@ -2539,6 +2539,13 @@ MonoBehaviour:
     passiveType: 1
     passiveValuePerLevel: 0
     unlockTrainId: 40002
+  skillTreeLaneDataList:
+  - lane: 0
+    name: UI_SkillTree_Lane_Fire
+  - lane: 1
+    name: UI_SkillTree_Lane_Defense
+  - lane: 2
+    name: UI_SkillTree_Lane_Utility
   triChoiceDB:
     addTrainChoices:
     - Option:
