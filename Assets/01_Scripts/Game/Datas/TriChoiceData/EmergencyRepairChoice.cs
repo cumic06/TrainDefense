@@ -1,4 +1,7 @@
 using System;
+using Cumic.Events;
+using TrainDefense.Game.Events;
+using TrainDefense.Game.Manager;
 using UnityEngine;
 
 namespace TrainDefense.Game.Datas
@@ -20,6 +23,14 @@ namespace TrainDefense.Game.Datas
         public float AliveHealRatio => aliveHealRatio;
         public float RevivedHpRatio => revivedHpRatio;
 
+        // 레벨업 카드 풀에 상시 후보로 들어가므로, 수리 대상(죽은 기차·손상 기차)이 있을 때만 노출한다.
+        public override bool IsValid()
+        {
+            var main = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+
+            return main != null && main.HasRepairTarget;
+        }
+
         public override void Execute()
         {
             var main = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
@@ -31,6 +42,10 @@ namespace TrainDefense.Game.Datas
             }
 
             main.EmergencyRepair(aliveHealRatio, revivedHpRatio);
+
+            // 수리 분석(train_repair) 연속성 유지 — 상점 수리 슬롯 제거 후 유일한 수리 경로. 보상 카드라 비용 0.
+            int stationCount = StageManager.Instance != null ? StageManager.Instance.TotalStationPassedCount : 0;
+            GameEventSystem.Publish(new TrainRepairedEvent(0, stationCount));
         }
     }
 }

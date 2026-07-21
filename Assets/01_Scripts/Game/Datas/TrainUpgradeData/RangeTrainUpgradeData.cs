@@ -68,6 +68,23 @@ namespace TrainDefense.Game.Datas
       public int MaxLevel => upgradeStats?.Length ?? 0;
       #endregion
 
+      // 런타임 단일 스탯 강화(상점 개별 강화)용: 모든 레벨 인덱스에 동일 델타를 채워
+      // 기존 Upgrade(레벨 인덱스) 경로를 그대로 재사용한다. DB 직렬화와 무관.
+      public static RangeTrainUpgradeData CreateRuntimeSingleStat(string id, string name, RangeTrainStatus delta, int levelCount)
+      {
+         var data = new RangeTrainUpgradeData
+         {
+            id = id,
+            name = name,
+            upgradeStats = new RangeTrainUpgradeStats[levelCount],
+         };
+
+         for (int i = 0; i < levelCount; i++)
+            data.upgradeStats[i] = new RangeTrainUpgradeStats(delta);
+
+         return data;
+      }
+
       public RangeTrainStatus GetRangeStatusUpgrade(int level)
       {
          var stats = GetStatsForLevel(level);

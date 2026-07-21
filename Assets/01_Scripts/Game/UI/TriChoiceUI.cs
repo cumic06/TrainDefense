@@ -56,7 +56,15 @@ namespace TrainDefense.Game.UI
       private GameObject coinUI;
       #endregion
 
+      // 삼중택일 팝업의 용도. 리롤은 현재 모드를 그대로 따른다.
+      private enum ChoicePopupMode
+      {
+         FirstTrainPick, // 게임 진입 첫 포탑 무료 선택 (기존 GetChoices 경로)
+         StatUpgrade,    // 레벨업 보상 — 스탯 업그레이드(110xxx) 전용
+      }
+
       #region Variables
+      private ChoicePopupMode _popupMode = ChoicePopupMode.FirstTrainPick;
       private int _choiceLeftCount;
       private bool _isSelecting = false;
       private int _popupRequestId = 0;
@@ -159,6 +167,7 @@ namespace TrainDefense.Game.UI
       private void _OnGameEnter(GameEnterEvent gameEnterEvent)
       {
          // 일시정지 버튼 잠금은 연출 전(Awake)에 이미 처리됨. 여기선 첫 삼중택일만 띄운다.
+         _popupMode = ChoicePopupMode.FirstTrainPick;
          OnInspectionEnter(1, showLevelUpText: false);
       }
 
@@ -184,6 +193,7 @@ namespace TrainDefense.Game.UI
 
       private void _OnLevelUp(LevelUpEvent levelUpEvent)
       {
+         _popupMode = ChoicePopupMode.StatUpgrade;
          OnInspectionEnter(levelUpEvent.LevelUpCount);
       }
 
@@ -250,7 +260,11 @@ namespace TrainDefense.Game.UI
             return;
          }
 
-         List<ChoiceEntry> availableChoices = triChoiceManager.GetChoices(choiceSelectUIs.Length);
+         List<ChoiceEntry> availableChoices = _popupMode switch
+         {
+            ChoicePopupMode.StatUpgrade => triChoiceManager.GetStatUpgradeChoices(choiceSelectUIs.Length),
+            _ => triChoiceManager.GetChoices(choiceSelectUIs.Length),
+         };
 
          if (_IsPopupOutdated(requestId))
             return;

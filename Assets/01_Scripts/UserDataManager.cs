@@ -77,7 +77,6 @@ namespace TrainDefense
             GameEventSystem.Subscribe<AddExpEvent>(AddExp);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(AddTriChoiceData);
             GameEventSystem.Subscribe<ChangeCoinUIEvent>(ChangeCoin);
-            GameEventSystem.Subscribe<BuyShopItemEvent>(BuyShopItem);
             GameEventSystem.Subscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
             GameEventSystem.Subscribe<TrainSpawnedEvent>(OnTrainSpawned);
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
@@ -88,7 +87,6 @@ namespace TrainDefense
             GameEventSystem.Unsubscribe<AddExpEvent>(AddExp);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(AddTriChoiceData);
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(ChangeCoin);
-            GameEventSystem.Unsubscribe<BuyShopItemEvent>(BuyShopItem);
             GameEventSystem.Unsubscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
             GameEventSystem.Unsubscribe<TrainSpawnedEvent>(OnTrainSpawned);
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
@@ -515,14 +513,19 @@ namespace TrainDefense
         }
         #endregion
 
-        private void BuyShopItem(BuyShopItemEvent buyShopItemEvent)
+        /// <summary>
+        /// 코인 지출 단일 경로. 잔액이 충분할 때만 ChangeCoinUIEvent로 차감하고 true를 반환한다.
+        /// (UI가 코인 이벤트를 직접 발행해 검증 없이 음수 코인을 만들 수 없도록 여기로 모은다)
+        /// </summary>
+        public bool TrySpendCoin(int cost)
         {
-            if (_coin >= buyShopItemEvent.NeedMoney)
-            {
-                int beforeCoin = _coin;
-                int afterCoin = _coin - buyShopItemEvent.NeedMoney;
-                GameEventSystem.Publish(new ChangeCoinUIEvent(beforeCoin, afterCoin));
-            }
+            if (cost < 0 || _coin < cost)
+                return false;
+
+            GameEventSystem.Publish(new ChangeCoinUIEvent(_coin, _coin - cost));
+
+            return true;
         }
+
     }
 }

@@ -37,6 +37,15 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         [Tooltip("버튼이 순차적으로 등장하는 간격(초)")]
         private float itemDropStagger = 0.07f;
+
+        [Header("Offer Slots")]
+        [SerializeField]
+        [Tooltip("역 상점에 제시되는 판매 슬롯 수. 구매하면 그 슬롯만 새 상품으로 교체된다")]
+        private int offerSlotCount = 3;
+        [SerializeField]
+        private ShopOfferSlotUI offerSlotPrefab;
+        [SerializeField]
+        private ShopOfferPricing offerPricing = new();
         #endregion
 
         private RectTransform _rectTransform;
@@ -45,7 +54,7 @@ namespace TrainDefense.Game.UI
         private RectTransform[] _itemRects;
         private Vector2[] _itemFinalPositions;
 
-        private List<ShopItemUI> _shopItemUIs = new();
+        private readonly List<ShopOfferSlotUI> _offerSlotUIs = new();
 
         private bool isShopOpen = false;
         public bool IsShopOpen => isShopOpen;
@@ -53,7 +62,6 @@ namespace TrainDefense.Game.UI
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
-            _shopItemUIs = GetComponentsInChildren<ShopItemUI>().ToList();
             _itemGrid = GetComponentInChildren<GridLayoutGroup>(true);
             if (_itemGrid != null)
             {
@@ -78,14 +86,18 @@ namespace TrainDefense.Game.UI
 
         private void OnUpgradeApplied(UpgradeAppliedEvent upgradeAppliedEvent)
         {
-            foreach (var shopItemUI in _shopItemUIs)
+            foreach (var slotUI in _offerSlotUIs)
             {
-                shopItemUI.SetUp();
+                if (slotUI != null && slotUI.gameObject.activeSelf)
+                    slotUI.Refresh();
             }
         }
 
         private void _OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
+            // 역 도착 시점 1회만 새로 추첨 — 상점을 닫았다 다시 열어도(토글 버튼) 이번 역 상품은 유지된다.
+            _RebuildOfferSlots();
+
             if (!isShopOpen)
             {
                 _OpenShop();
@@ -120,11 +132,6 @@ namespace TrainDefense.Game.UI
             if (_rectTransform == null)
             {
                 _rectTransform = GetComponent<RectTransform>();
-            }
-
-            foreach (var shopItemUI in _shopItemUIs)
-            {
-                shopItemUI.SetUp();
             }
 
             // 슬라이드인 동안 버튼이 제자리에 보이지 않도록 미리 숨겨둠
@@ -163,8 +170,7 @@ namespace TrainDefense.Game.UI
             Canvas.ForceUpdateCanvases();
             LayoutRebuilder.ForceRebuildLayoutImmediate(_itemGridRect);
 
-            // 업그레이드 버튼뿐 아니라 기차 수리 버튼(ShopRepairItemUI)까지 드롭인 연출에 포함되도록
-            // Grid의 모든 자식을 대상으로 위치를 캐싱한다.
+            // Grid의 모든 자식(판매 슬롯)을 대상으로 위치를 캐싱한다.
             int count = _itemGridRect.childCount;
             _itemRects = new RectTransform[count];
             _itemFinalPositions = new Vector2[count];
@@ -244,11 +250,102 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        private int GetCurrentMoney()
+        // 이번 역의 판매 슬롯(offerSlotCount개)을 현재 상태 기준으로 새로 추첨한다.
+        private void _RebuildOfferSlots()
         {
-            if (UserDataManager.Instance == null) return 0;
+            if (TriChoiceManager.Instance == null)
+                return;
 
-            return UserDataManager.Instance.Coin;
+            // 역마다 새 제안이므로 카드별 랜덤 캐시(엘리트 부여 스킬 등)를 비우고 새로 뽑는다.
+            // ★ 표시~구매 사이에 다시 Clear하면 표시된 스킬과 실제 부여 스킬이 어긋나므로 이 시점 1회만 호출.
+            TriChoiceManager.Instance.ClearSelectedChoiceData();
+
+            _EnsureOfferSlots();
+
+            var entries = TriChoiceManager.Instance.GetShopChoices(offerSlotCount);
+
+            for (int i = 0; i < _offerSlotUIs.Count; i++)
+            {
+                if (i < entries.Count && entries[i]?.Option != null)
+                    _offerSlotUIs[i].SetOffer(new ShopOffer(entries[i].Option, offerPricing));
+                else
+                    _offerSlotUIs[i].SetEmpty();
+            }
+        }
+
+        // 슬롯 UI는 최초 1회만 프리팹에서 생성해 계속 재사용한다. (역마다 파괴/재생성하지 않음)
+        private void _EnsureOfferSlots()
+        {
+            if (_offerSlotUIs.Count >= offerSlotCount)
+                return;
+
+            var slotPrefab = _GetOfferSlotPrefab();
+
+            if (slotPrefab == null || _itemGridRect == null)
+                return;
+
+            while (_offerSlotUIs.Count < offerSlotCount)
+            {
+                var slotUI = Instantiate(slotPrefab, _itemGridRect);
+                slotUI.Initialize(_OnOfferPurchased);
+                _offerSlotUIs.Add(slotUI);
+            }
+        }
+
+        private ShopOfferSlotUI _GetOfferSlotPrefab()
+        {
+            if (offerSlotPrefab != null)
+                return offerSlotPrefab;
+
+            // 프리팹 미배선 안전망. 정상 경로는 인스펙터 배선이므로 경고로 알린다.
+            var loadedPrefab = Resources.Load<ShopOfferSlotUI>("Prefabs/UI/ShopOfferSlot");
+
+            if (loadedPrefab == null)
+                Debug.LogError("ShopUI: offerSlotPrefab이 배선되지 않았고 Resources/Prefabs/UI/ShopOfferSlot도 없습니다.");
+            else
+                Debug.LogWarning("ShopUI: offerSlotPrefab 미배선 — Resources 폴백을 사용합니다.");
+
+            return loadedPrefab;
+        }
+
+        // 구매 직후: 구매한 슬롯은 새 상품으로 교체하고, 나머지 슬롯은 무효화·가격 변화를 반영한다.
+        private void _OnOfferPurchased(ShopOfferSlotUI purchasedSlot)
+        {
+            _ReplaceOfferSlot(purchasedSlot);
+
+            foreach (var slotUI in _offerSlotUIs)
+            {
+                if (slotUI == null || slotUI == purchasedSlot)
+                    continue;
+
+                // 다른 구매로 무효해진 상품(예: 엘리트 승격으로 교체된 포탑의 강화)이나
+                // 상품이 떨어져 비워둔 슬롯도 다시 채워본다.
+                if (!slotUI.gameObject.activeSelf || !slotUI.HasValidOffer)
+                    _ReplaceOfferSlot(slotUI);
+                else
+                    slotUI.Refresh();
+            }
+        }
+
+        // 슬롯에 "현재 표시 중이 아닌" 새 상품을 넣는다. 더 팔 상품이 없으면 슬롯을 비운다.
+        // 교체되는 슬롯 자신의 현재 상품도 제외 목록에 포함되어 "구매하면 다른 상품으로 바뀜"이 보장된다.
+        private void _ReplaceOfferSlot(ShopOfferSlotUI slot)
+        {
+            var displayedOptions = _offerSlotUIs
+                .Where(slotUI => slotUI != null && slotUI.gameObject.activeSelf && slotUI.CurrentOffer != null)
+                .Select(slotUI => slotUI.CurrentOffer.Option)
+                .ToList();
+
+            var entry = TriChoiceManager.Instance?.GetShopChoiceExcluding(displayedOptions);
+
+            if (entry?.Option == null)
+            {
+                slot.SetEmpty();
+
+                return;
+            }
+
+            slot.SetOffer(new ShopOffer(entry.Option, offerPricing));
         }
     }
 }

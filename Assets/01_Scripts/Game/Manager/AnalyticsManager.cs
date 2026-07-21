@@ -74,7 +74,8 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Subscribe<StageSelectEvent>(_OnStageSelect);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
-            GameEventSystem.Subscribe<BuyShopItemEvent>(_OnBuyShopItem);
+            GameEventSystem.Subscribe<StatUpgradeSelectEvent>(_OnStatUpgradeSelect);
+            GameEventSystem.Subscribe<ShopOfferPurchasedEvent>(_OnShopOfferPurchased);
             GameEventSystem.Subscribe<TrainRepairedEvent>(_OnTrainRepaired);
             GameEventSystem.Subscribe<RerollEvent>(_OnReroll);
             GameEventSystem.Subscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
@@ -92,7 +93,8 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Unsubscribe<StageSelectEvent>(_OnStageSelect);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
-            GameEventSystem.Unsubscribe<BuyShopItemEvent>(_OnBuyShopItem);
+            GameEventSystem.Unsubscribe<StatUpgradeSelectEvent>(_OnStatUpgradeSelect);
+            GameEventSystem.Unsubscribe<ShopOfferPurchasedEvent>(_OnShopOfferPurchased);
             GameEventSystem.Unsubscribe<TrainRepairedEvent>(_OnTrainRepaired);
             GameEventSystem.Unsubscribe<RerollEvent>(_OnReroll);
             GameEventSystem.Unsubscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
@@ -244,11 +246,22 @@ namespace TrainDefense.Game.Manager
                 ("play_time_sec", _PlayTimeSec()));
         }
 
-        private void _OnBuyShopItem(BuyShopItemEvent buyShopItemEvent)
+        // 리워크 후 110xxx 스탯 업글은 레벨업 카드(무료)로 획득 — 이벤트 키도 의미에 맞게 교체.
+        private void _OnStatUpgradeSelect(StatUpgradeSelectEvent statUpgradeSelectEvent)
+        {
+            _Log("stat_upgrade_select",
+                ("upgrade_id", statUpgradeSelectEvent.UpgradeId),
+                ("stage", _CurrentStage()),
+                ("play_time_sec", _PlayTimeSec()));
+        }
+
+        // 역 상점 골드 구매(포탑/스탯 강화/엘리트 승격) — 옛 shop_purchase 로그의 후계.
+        private void _OnShopOfferPurchased(ShopOfferPurchasedEvent shopOfferPurchasedEvent)
         {
             _Log("shop_purchase",
-                ("upgrade_id", buyShopItemEvent.UpgradeId),
-                ("cost", buyShopItemEvent.NeedMoney),
+                ("offer_id", shopOfferPurchasedEvent.Option != null ? shopOfferPurchasedEvent.Option.Id : "none"),
+                ("offer_type", _ChoiceType(shopOfferPurchasedEvent.Option)),
+                ("cost", shopOfferPurchasedEvent.Cost),
                 ("stage", _CurrentStage()),
                 ("play_time_sec", _PlayTimeSec()));
         }
@@ -327,6 +340,8 @@ namespace TrainDefense.Game.Manager
                 AddTrainChoice => "add_train",
                 UpgradeTrainChoice => "upgrade_train",
                 EliteTrainChoice => "elite_train",
+                StatUpgradeChoice => "stat_upgrade",
+                TrainStatUpgradeChoice => "train_stat_upgrade",
                 GoldRewardChoice => "gold_reward",
                 RewardChoiceBase => "reward",
                 _ => option.GetType().Name,

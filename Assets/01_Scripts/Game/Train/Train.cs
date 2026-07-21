@@ -60,6 +60,8 @@ namespace TrainDefense.Game
         public bool IsDead => _isDead;
         // 레벨 = 받은 업그레이드 횟수(획득 0, 만렙 = upgradeStats 개수 8).
         public int CurrentLevel => _currentLevel;
+        // 포탑 만렙 = upgradeStats 슬롯 수 규격. (업그레이드 데이터 배열 길이와 함께 바꿔야 함)
+        public const int MAX_LEVEL = 8;
         // 업그레이드 7번을 받은 포탑부터 엘리트 승격 가능.
         public const int ELITE_PROMOTION_LEVEL = 7;
         public bool IsEliteEligible => _currentLevel >= ELITE_PROMOTION_LEVEL;

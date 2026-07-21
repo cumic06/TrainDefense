@@ -29,14 +29,12 @@ namespace TrainDefense.Game
         public int CurrentRerollCost => _freeRerollCount > 0 ? 0 : _currentRerollCost;
 
         /// <summary>
-        /// 삼중택일이 새로 열릴 때 호출. 리롤 비용을 기본값으로 초기화하고
-        /// 직전 엘리트 기억도 비운다(리롤이 아니므로 제약 없이 시작).
-        /// (리롤 시에는 호출하지 않으므로 비용·엘리트 기억이 유지됨)
+        /// 삼중택일이 새로 열릴 때 호출. 리롤 비용을 기본값으로 초기화한다.
+        /// (리롤 시에는 호출하지 않으므로 비용이 유지됨)
         /// </summary>
         public void ResetRerollCost()
         {
             _currentRerollCost = baseRerollCost;
-            _lastEliteChoiceIds.Clear();
 
             // 영구 업그레이드 + 스킬트리: 레벨업(트라이초이스 오픈)마다 무료 리롤 횟수 충전
             float freeReroll = 0f;
@@ -83,10 +81,11 @@ namespace TrainDefense.Game
             if (!CanReroll())
                 return false;
 
-            int beforeCoin = UserDataManager.Instance.Coin;
+            // 코인 차감은 단일 경로(UserDataManager.TrySpendCoin)로 통일 — 상점 슬롯 구매와 동일.
             int paidCost = _currentRerollCost;
-            int afterCoin = beforeCoin - paidCost;
-            GameEventSystem.Publish(new ChangeCoinUIEvent(beforeCoin, afterCoin));
+
+            if (UserDataManager.Instance == null || !UserDataManager.Instance.TrySpendCoin(paidCost))
+                return false;
 
             _currentRerollCost = Mathf.Max(1, Mathf.RoundToInt(_currentRerollCost * rerollCostMultiplier));
 

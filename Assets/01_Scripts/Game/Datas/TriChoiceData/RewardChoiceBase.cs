@@ -59,6 +59,9 @@ namespace TrainDefense.Game.Datas
             }
         }
 
+        // 만렙 보상은 매 레벨업마다 반복 획득 가능.
+        public bool IsRepeatable => true;
+
         // 만렙 보상은 기본적으로 항상 노출 가능. 필요 시 파생 클래스가 조건을 덧붙인다.
         public virtual bool IsValid() => true;
 

@@ -42,7 +42,7 @@ namespace TrainDefense.Game
 
         private void Start()
         {
-            GameEventSystem.Subscribe<BuyShopItemEvent>(OnBuyShopItem);
+            GameEventSystem.Subscribe<StatUpgradeSelectEvent>(OnStatUpgradeSelect);
             GameEventSystem.Subscribe<AddTrainEvent>(OnAddTrain);
             GameEventSystem.Subscribe<ReplaceTrainEvent>(OnReplaceTrain);
             GameEventSystem.Subscribe<UpgradeTrainEvent>(OnUpgradeTrain);
@@ -50,7 +50,7 @@ namespace TrainDefense.Game
 
         private void OnDestroy()
         {
-            GameEventSystem.Unsubscribe<BuyShopItemEvent>(OnBuyShopItem);
+            GameEventSystem.Unsubscribe<StatUpgradeSelectEvent>(OnStatUpgradeSelect);
             GameEventSystem.Unsubscribe<AddTrainEvent>(OnAddTrain);
             GameEventSystem.Unsubscribe<ReplaceTrainEvent>(OnReplaceTrain);
             GameEventSystem.Unsubscribe<UpgradeTrainEvent>(OnUpgradeTrain);
@@ -65,15 +65,15 @@ namespace TrainDefense.Game
             }
         }
 
-        private void OnBuyShopItem(BuyShopItemEvent buyShopItemEvent)
+        private void OnStatUpgradeSelect(StatUpgradeSelectEvent statUpgradeSelectEvent)
         {
-            if (buyShopItemEvent == null || string.IsNullOrEmpty(buyShopItemEvent.UpgradeId))
+            if (statUpgradeSelectEvent == null || string.IsNullOrEmpty(statUpgradeSelectEvent.UpgradeId))
             {
-                Debug.LogWarning("UpgradeManager: BuyShopItemEvent is null or UpgradeId is empty");
+                Debug.LogWarning("UpgradeManager: StatUpgradeSelectEvent is null or UpgradeId is empty");
                 return;
             }
 
-            string upgradeId = buyShopItemEvent.UpgradeId;
+            string upgradeId = statUpgradeSelectEvent.UpgradeId;
             UpgradeData upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
 
             if (upgradeData == null)

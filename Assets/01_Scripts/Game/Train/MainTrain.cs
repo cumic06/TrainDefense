@@ -486,6 +486,11 @@ namespace TrainDefense.Game
          SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
       }
 
+      // 수리(회복/부활)가 의미 있는 상태인가 — 죽은 기차가 있거나 손상된 생존 기차가 있으면 true.
+      // (긴급 수리 카드가 풀피 상태에서 죽은 카드로 뜨지 않도록 노출 조건에 사용)
+      public bool HasRepairTarget => _deadTrains.Count > 0
+         || _currentAliveTrains.Any(train => train != null && train.CurrentHpRatio < 1f);
+
       public bool CheckHasTrain(TrainData trainData)
       {
          return _currentAliveTrains.Any(train => train.TrainData.Id == trainData.Id);
@@ -555,7 +560,7 @@ namespace TrainDefense.Game
             }
 
             // UserDataManager에서 해당 업그레이드의 레벨 확인
-            // UpgradeManager.OnBuyShopItem에서 UserDataManager.Instance.UpgradeLevel(upgradeId)로 기록됨
+            // TrainUpgradeManager.OnStatUpgradeSelect에서 UserDataManager.Instance.UpgradeLevel(upgradeId)로 기록됨
             int upgradeLevel = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
 
             if (upgradeLevel <= 0)

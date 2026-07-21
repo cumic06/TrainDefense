@@ -81,6 +81,38 @@ namespace TrainDefense.Game.Datas
         }
 
         /// <summary>
+        /// 레벨당 증가량(부호 유지, 스탯 합). UI 포맷용 숫자 계산 전용 — 문자열 조립은 호출자 책임.
+        /// </summary>
+        public float GetPerLevelValue()
+        {
+            if (upgradeDataType == UpgradeDataType.NonTrainUpgrade)
+                return upgradeValue;
+
+            float perLevelValue = 0f;
+
+            if (stats != null)
+            {
+                foreach (var stat in stats)
+                {
+                    if (stat.Value == 0)
+                        continue;
+
+                    perLevelValue += stat.Value;
+                }
+            }
+
+            return perLevelValue;
+        }
+
+        /// <summary>
+        /// 레벨 기준 누적 총 증가량(부호 유지). 이름 포맷 {0}에 쓰인다.
+        /// </summary>
+        public float GetTotalValueAtLevel(int level)
+        {
+            return level * GetPerLevelValue();
+        }
+
+        /// <summary>
         /// SimpleStat 기반 스탯 업그레이드
         /// </summary>
         public IStat[] Stats => stats;

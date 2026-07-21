@@ -19,6 +19,14 @@ namespace TrainDefense.Game.Datas
 
         public TrainStatusData StatusUpgrade => statusUpgrade;
         public RangeTrainStatus RangeStatusUpgrade => rangeStatusUpgrade;
+
+        public RangeTrainUpgradeStats() { }
+
+        // 런타임 단일 스탯 강화(상점 개별 강화)용
+        public RangeTrainUpgradeStats(RangeTrainStatus rangeStatus)
+        {
+            rangeStatusUpgrade = rangeStatus;
+        }
     }
 }
 

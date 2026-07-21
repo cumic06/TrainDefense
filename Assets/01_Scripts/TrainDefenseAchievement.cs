@@ -189,7 +189,7 @@ namespace Cumic
             GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Subscribe<AddTrainEvent>(OnTrainAdded);
             GameEventSystem.Subscribe<TrainDeadEvent>(OnTrainDead);
-            GameEventSystem.Subscribe<BuyShopItemEvent>(OnShopItemBought);
+            GameEventSystem.Subscribe<ShopOfferPurchasedEvent>(OnShopOfferPurchased);
             GameEventSystem.Subscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
             GameEventSystem.Subscribe<NewMonsterDiscoveredEvent>(OnMonsterDiscovered);
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
@@ -201,7 +201,7 @@ namespace Cumic
             GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Unsubscribe<AddTrainEvent>(OnTrainAdded);
             GameEventSystem.Unsubscribe<TrainDeadEvent>(OnTrainDead);
-            GameEventSystem.Unsubscribe<BuyShopItemEvent>(OnShopItemBought);
+            GameEventSystem.Unsubscribe<ShopOfferPurchasedEvent>(OnShopOfferPurchased);
             GameEventSystem.Unsubscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
             GameEventSystem.Unsubscribe<NewMonsterDiscoveredEvent>(OnMonsterDiscovered);
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
@@ -217,7 +217,8 @@ namespace Cumic
         }
         private void OnTrainAdded(AddTrainEvent e) => AddProgressByKey("train_added");
         private void OnTrainDead(TrainDeadEvent e) => AddProgressByKey("train_lost");
-        private void OnShopItemBought(BuyShopItemEvent e) => AddProgressByKey("shop_item_bought");
+        // 리워크 후 "상점 아이템 구매" = 역 상점의 골드 구매(포탑/스탯 강화/엘리트 승격). 진행도 키는 저장 호환 유지.
+        private void OnShopOfferPurchased(ShopOfferPurchasedEvent e) => AddProgressByKey("shop_item_bought");
         private void OnUpgradeApplied(UpgradeAppliedEvent e) => AddProgressByKey("upgrade_purchased");
         private void OnMonsterDiscovered(NewMonsterDiscoveredEvent e) => AddProgressByKey("monster_discovered");
         // 로비 GameEnterEvent(isLobby:true)는 카운트하지 않는다. UserDataManager 갱신 순서와 무관하게

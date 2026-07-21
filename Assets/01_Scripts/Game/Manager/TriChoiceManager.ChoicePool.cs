@@ -80,60 +80,8 @@ namespace TrainDefense.Game
                 .ToList();
         }
 
-        // 직전 GetChoices에서 화면에 나온 엘리트 선택지 Id. 리롤 시 직전에 떴던 엘리트를
-        // 한 번 건너뛰어(ABAB) 같은 엘리트가 연속으로 뜨지 않게 한다.
-        private readonly HashSet<string> _lastEliteChoiceIds = new();
-
-        // 직전에 떴던 엘리트를 제외하고 셔플한 엘리트 후보를 반환한다.
-        // 제외 후 후보가 비면(엘리트가 1종뿐인 경우 등) 엘리트가 아예 안 뜨는 걸 막기 위해
-        // 원본 목록을 그대로 사용한다.
-        private List<ChoiceEntry> _GetEliteTrainChoicesExcludingLast()
-        {
-            var eliteChoices = _GetEliteTrainChoices();
-
-            if (_lastEliteChoiceIds.Count > 0)
-            {
-                var filtered = eliteChoices
-                    .Where(entry => entry?.Option != null && !_lastEliteChoiceIds.Contains(entry.Option.Id))
-                    .ToList();
-
-                if (filtered.Count > 0)
-                    eliteChoices = filtered;
-            }
-
-            // 후보가 여럿일 때 항상 같은 엘리트만 뜨지 않도록 셔플
-            for (int i = eliteChoices.Count - 1; i > 0; i--)
-            {
-                int j = Random.Range(0, i + 1);
-                (eliteChoices[i], eliteChoices[j]) = (eliteChoices[j], eliteChoices[i]);
-            }
-
-            return eliteChoices;
-        }
-
-        // 이번 화면에 실제로 포함된 엘리트 선택지를 기억해 다음 리롤에서 제외한다.
-        private void _RememberEliteChoices(List<ChoiceEntry> result)
-        {
-            _lastEliteChoiceIds.Clear();
-
-            foreach (var entry in result)
-            {
-                if (entry?.Option is EliteTrainChoice elite)
-                    _lastEliteChoiceIds.Add(elite.Id);
-            }
-        }
-
-        private List<ChoiceEntry> _GetUpgradeTrainChoices()
-        {
-            var upgradeDatas = DatabaseManager.Instance.GetTriChoiceDB().UpgradeTrainChoices;
-
-            return upgradeDatas
-                .Where(entry => entry.Option != null && entry.Option.IsValid())
-                .ToList();
-        }
-
-        // 만렙 보상 선택지(골드/엘리트 재화/긴급 수리) 후보를 반환한다.
-        // 보유 기차가 전부 만렙이라 정상 선택지로 슬롯을 채우지 못할 때 빈 슬롯을 채우는 데 쓰인다.
+        // 보상 선택지 후보를 반환한다. 리워크 후 실사용은 긴급 수리 카드뿐(DB rewardChoices에 수리만 등록 — 사용자 결정 2026-07-21).
+        // 골드/엘리트 재화 클래스는 dev/merge 팀 코드라 잔존하지만 데이터 미등록으로 비활성.
         private List<ChoiceEntry> _GetRewardChoices()
         {
             var rewardDatas = DatabaseManager.Instance.GetTriChoiceDB().RewardChoices;
@@ -143,14 +91,48 @@ namespace TrainDefense.Game
                 .ToList();
         }
 
-        private bool _SelectByProb(int prob1, int prob2)
+        // 레벨업 삼중택일용: 스탯 업그레이드(110xxx) 중 만렙이 아닌 것에서 count개를 균등 랜덤으로 뽑는다.
+        // 후보가 부족하면(전부 만렙) 남는 슬롯은 보상 선택지(현재 = 긴급 수리)로 채워보고, 없으면 그만큼 슬롯이 준다.
+        public List<ChoiceEntry> GetStatUpgradeChoices(int count)
         {
-            float weight1 = 1f / prob1;
-            float weight2 = 1f / prob2;
-            float totalWeight = weight1 + weight2;
-            float randomValue = Random.Range(0f, totalWeight);
+            List<ChoiceEntry> result = new();
 
-            return randomValue <= weight1;
+            List<ChoiceEntry> candidates = new();
+
+            foreach (var upgradeData in DatabaseManager.Instance.GetUpgradeDatas())
+            {
+                var choice = new StatUpgradeChoice(upgradeData);
+
+                if (choice.IsValid())
+                    candidates.Add(new ChoiceEntry { Option = choice, Weight = 1, Tier = 0 });
+            }
+
+            // 긴급 수리 카드는 레벨업 풀 상시 후보(사용자 결정 2026-07-21).
+            // 노출 여부는 IsValid(수리 대상 존재)가, 등장 확률은 DB rewardChoices의 Weight가 결정한다.
+            foreach (var rewardEntry in _GetRewardChoices())
+            {
+                if (rewardEntry.Option is EmergencyRepairChoice)
+                    candidates.Add(rewardEntry);
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                if (!_AddChoiceToResult(result, candidates))
+                    break;
+            }
+
+            if (result.Count < count)
+            {
+                var rewardChoices = _GetRewardChoices();
+
+                for (int i = result.Count; i < count; i++)
+                {
+                    if (!_AddChoiceToResult(result, rewardChoices))
+                        break;
+                }
+            }
+
+            return result;
         }
 
         private bool _AddChoiceToResult(List<ChoiceEntry> result, List<ChoiceEntry> choices)
@@ -200,12 +182,8 @@ namespace TrainDefense.Game
                 if (_HasChoiceReferenceConflict(x.Option, excludeResult))
                     return false;
 
-                // UpgradeTrainChoice는 레벨업 후 다시 선택 가능하므로 제외하지 않음
-                if (x.Option is UpgradeTrainChoice)
-                    return true;
-
-                // 만렙 보상 선택지(골드/엘리트 재화/긴급 수리)는 만렙 후 매 레벨업마다 반복 획득 가능하므로 제외하지 않음
-                if (x.Option is RewardChoiceBase)
+                // 반복 선택 가능한 카드(만렙 보상·스탯 업글·포탑 강화)는 "이미 선택됨" 제외를 적용하지 않음
+                if (x.Option.IsRepeatable)
                     return true;
 
                 // Add/EliteTrainChoice는 한 번만 선택 가능하므로 제외
@@ -263,6 +241,9 @@ namespace TrainDefense.Game
 
             return excludeResult
                 .Where(entry => entry?.Option != null)
+                // 같은 포탑이라도 "스탯 강화"끼리는 서로 다른 상품(다른 스탯)이라 동시 노출을 허용한다.
+                // (같은 스탯 중복은 Id 비교가 이미 거른다 — 이 검사는 강화↔엘리트 승격 같은 이종 충돌만 막는다)
+                .Where(entry => !(option is TrainStatUpgradeChoice && entry.Option is TrainStatUpgradeChoice))
                 .SelectMany(entry => _GetChoiceReferenceIds(entry.Option))
                 .Any(optionRefs.Contains);
         }
@@ -281,9 +262,11 @@ namespace TrainDefense.Game
                 _AddReferenceId(refs, eliteChoice.BaseTrainId);
                 _AddReferenceId(refs, eliteChoice.EliteTrainDataId);
             }
-            else if (option is UpgradeTrainChoice upgradeChoice)
+            else if (option is TrainStatUpgradeChoice trainStatUpgradeChoice)
             {
-                _AddReferenceId(refs, upgradeChoice.TargetTrainId);
+                // 같은 포탑의 "스탯 강화"와 "엘리트 승격"이 한 화면에 동시에 노출되지 않게 한다.
+                if (trainStatUpgradeChoice.TargetTrain != null && trainStatUpgradeChoice.TargetTrain.TrainData != null)
+                    _AddReferenceId(refs, trainStatUpgradeChoice.TargetTrain.TrainData.Id);
             }
 
             return refs;

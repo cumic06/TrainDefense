@@ -24,6 +24,14 @@ namespace TrainDefense.Game.Datas
         public TrainStatusData StatusUpgrade => statusUpgrade;
         public TurretTrainStatus TurretStatusUpgrade => turretStatusUpgrade;
         public string PassiveSkillDataId => passiveSkillDataId;
+
+        public TurretTrainUpgradeStats() { }
+
+        // 런타임 단일 스탯 강화(상점 개별 강화)용
+        public TurretTrainUpgradeStats(TurretTrainStatus turretStatus)
+        {
+            turretStatusUpgrade = turretStatus;
+        }
     }
 }
 

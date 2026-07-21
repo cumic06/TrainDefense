@@ -66,7 +66,7 @@ namespace TrainDefense.Editor.DataImport.Importers
             string formattedName = r.name;
             try
             {
-                // 사용자 요청: B(name)의 {1}에는 (upgradeValue * maxUpgradeCount) 값을 넣고, {0}은 그대로 둠 (ShopItemUI에서 처리)
+                // 사용자 요청: B(name)의 {1}에는 (upgradeValue * maxUpgradeCount) 값을 넣고, {0}은 그대로 둠 (표시 시점에 포맷)
                 // string.Format에서 literal "{0}"을 첫 번째 인자로 넘겨서 {0} 자리는 그대로 유지되게 함
                 float maxTotalValue = r.upgradeValue * r.maxUpgradeCount;
                 formattedName = string.Format(r.name, "{0}", maxTotalValue);

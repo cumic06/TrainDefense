@@ -7,19 +7,13 @@ namespace TrainDefense.Game
 {
     public partial class TriChoiceManager : Singleton<TriChoiceManager>
     {
-        #region Fields
-        [SerializeField]
-        private int upgradeProb = 2;
-        [SerializeField]
-        private int addProb = 2;
-        #endregion
-
         #region Variables
-        private Dictionary<string, ITrainUpgradeData> _selectedUpgrades = new();
         private Dictionary<string, (IData skillData, TrainChoiceSkillType skillType)> _selectedEliteSkills = new();
         private Dictionary<string, (IData skillData, TrainChoiceSkillType skillType)> _selectedAddSkills = new();
         #endregion
 
+        // 게임 진입 첫 포탑 무료 선택 전용 — AddTrainChoice만 뽑는다.
+        // (레벨업 카드 = GetStatUpgradeChoices, 역 상점 = GetShopChoices)
         public List<ChoiceEntry> GetChoices(int count)
         {
             List<ChoiceEntry> result = new();
@@ -31,113 +25,18 @@ namespace TrainDefense.Game
                 return result;
             }
 
-            int trainCount = TrainManager.Instance.GetTrainCount();
+            var addChoices = _GetAddTrainChoices();
 
-            // Train 미보유: 무조건 AddTrainChoice만
-            if (trainCount == 0)
+            for (int i = 0; i < count; i++)
             {
-                var addChoices = _GetAddTrainChoices();
-
-                for (int i = 0; i < count; i++)
-                {
-                    _AddChoiceToResult(result, addChoices);
-                }
-
-                return result;
+                _AddChoiceToResult(result, addChoices);
             }
-
-            // EliteTrain: 가능한 EliteTrain Choice를 모두 추가 (count 초과 방지)
-            // 직전 리롤에서 떴던 엘리트는 제외해 같은 엘리트가 연속으로 뜨지 않게 한다.
-            if (_CanUpgradeToEliteTrain())
-            {
-                var eliteChoices = _GetEliteTrainChoicesExcludingLast();
-
-                foreach (var eliteChoice in eliteChoices)
-                {
-                    if (result.Count >= count)
-                        break;
-
-                    if (!_HasChoiceReferenceConflict(eliteChoice.Option, result))
-                        result.Add(eliteChoice);
-                }
-            }
-
-            // 나머지 슬롯 채우기
-            for (int i = result.Count; i < count; i++)
-            {
-                // MaxTrainCount 도달: UpgradeChoice만
-                if (TrainManager.Instance.IsMaxTrainCountReached())
-                {
-                    var upgradeChoices = _GetUpgradeTrainChoices();
-                    _AddChoiceToResult(result, upgradeChoices);
-                }
-                else
-                {
-                    var addChoices = _GetAddTrainChoices();
-                    var upgradeChoices = _GetUpgradeTrainChoices();
-
-                    bool hasAddChoices = addChoices.Count > 0;
-                    bool hasUpgradeChoices = upgradeChoices.Count > 0;
-
-                    if (hasAddChoices && hasUpgradeChoices)
-                    {
-                        bool selectUpgrade = _SelectByProb(upgradeProb, addProb);
-
-                        if (selectUpgrade)
-                        {
-                            if (!_AddChoiceToResult(result, upgradeChoices))
-                            {
-                                _AddChoiceToResult(result, addChoices);
-                            }
-                        }
-                        else
-                        {
-                            if (!_AddChoiceToResult(result, addChoices))
-                            {
-                                _AddChoiceToResult(result, upgradeChoices);
-                            }
-                        }
-                    }
-                    else if (hasUpgradeChoices)
-                    {
-                        _AddChoiceToResult(result, upgradeChoices);
-                    }
-                    else if (hasAddChoices)
-                    {
-                        _AddChoiceToResult(result, addChoices);
-                    }
-                }
-            }
-
-            // 정상 선택지(추가/강화/엘리트)로 모든 슬롯을 채우지 못했다면(보유 기차가 전부 만렙 등)
-            // 부족분을 만렙 보상 선택지(골드/엘리트 재화/긴급 수리)로 채운다.
-            if (result.Count < count)
-            {
-                var rewardChoices = _GetRewardChoices();
-
-                for (int i = result.Count; i < count; i++)
-                {
-                    if (!_AddChoiceToResult(result, rewardChoices))
-                        break; // 더 채울 보상 선택지가 없으면 중단
-                }
-            }
-
-            // 엘리트 트레인이 항상 0번 슬롯에 고정되지 않도록 셔플
-            for (int i = result.Count - 1; i > 0; i--)
-            {
-                int j = Random.Range(0, i + 1);
-                (result[i], result[j]) = (result[j], result[i]);
-            }
-
-            // 이번 화면의 엘리트를 기억해 다음 리롤에서 직전 엘리트를 제외한다.
-            _RememberEliteChoices(result);
 
             return result;
         }
 
         public void ClearSelectedChoiceData()
         {
-            _selectedUpgrades.Clear();
             _selectedEliteSkills.Clear();
             _selectedAddSkills.Clear();
         }
@@ -184,20 +83,6 @@ namespace TrainDefense.Game
 
                 return info;
             }
-            else if (choiceOption is UpgradeTrainChoice upgradeTrainChoice)
-            {
-                var upgradeData = GetSelectedUpgrade(upgradeTrainChoice);
-
-                if (upgradeData == null)
-                    return null;
-
-                return new ChoiceUIInfo
-                {
-                    Icon = upgradeData.Icon,
-                    Name = upgradeData.Name,
-                    Description = upgradeData.Description
-                };
-            }
             else if (choiceOption is RewardChoiceBase rewardChoice)
             {
                 return new ChoiceUIInfo
@@ -207,8 +92,77 @@ namespace TrainDefense.Game
                     Description = rewardChoice.Description
                 };
             }
+            else if (choiceOption is StatUpgradeChoice statUpgradeChoice)
+            {
+                var upgradeData = statUpgradeChoice.UpgradeData;
+
+                if (upgradeData == null)
+                    return null;
+
+                int currentLevel = UserDataManager.Instance != null
+                    ? UserDataManager.Instance.GetUpgradeLevel(upgradeData.Id)
+                    : 0;
+
+                return new ChoiceUIInfo
+                {
+                    Icon = upgradeData.Icon,
+                    Name = _SafeFormat(upgradeData.Name, upgradeData.GetTotalValueAtLevel(currentLevel)),
+                    Description = _BuildStatUpgradeDescription(upgradeData, currentLevel)
+                };
+            }
+            else if (choiceOption is TrainStatUpgradeChoice trainStatUpgradeChoice)
+            {
+                var trainData = trainStatUpgradeChoice.TargetTrain != null
+                    ? trainStatUpgradeChoice.TargetTrain.TrainData
+                    : null;
+
+                if (trainData == null)
+                    return null;
+
+                return new ChoiceUIInfo
+                {
+                    Icon = trainData.Icon,
+                    Name = trainData.Name,
+                    Description = trainStatUpgradeChoice.BuildStatLineText()
+                };
+            }
 
             return null;
+        }
+
+        // 스탯 업그레이드 카드 설명. 포맷 {1}=레벨당 증가량(+표기), {2}=현재 누적값, {3}=최대 누적값.
+        // {0}은 옛 표기(다음 누적 총값)의 잔여 자리 — 31개 언어 로컬라이즈 템플릿의 인덱스 호환을 위해 빈칸으로 채운다.
+        // ★ {2}/{3}(현재/최대) 표기는 2026-07-21 사용자 지시로 템플릿에서 제거됨 — 인자는 템플릿 복구 대비 계속 전달한다.
+        // 증가/감소 방향은 설명 문구가 표현하므로 값은 크기(양수)만 표시한다. (예: 공속 -1 → "+1")
+        private static string _BuildStatUpgradeDescription(UpgradeData upgradeData, int currentLevel)
+        {
+            float perLevelAmount = Mathf.Abs(upgradeData.GetPerLevelValue());
+            string increaseAmountText = perLevelAmount != 0 ? $"+{perLevelAmount}" : "";
+
+            float currentValue = Mathf.Abs(upgradeData.GetTotalValueAtLevel(currentLevel));
+            float maxValue = Mathf.Abs(upgradeData.GetTotalValueAtLevel(upgradeData.MaxUpgradeCount));
+
+            if (currentLevel >= upgradeData.MaxUpgradeCount)
+                return _SafeFormat(upgradeData.Description, string.Empty, increaseAmountText, maxValue, maxValue);
+
+            return _SafeFormat(upgradeData.Description, string.Empty, increaseAmountText, currentValue, maxValue);
+        }
+
+        // 로컬라이즈 템플릿의 placeholder 개수/형식이 어긋나도 카드 생성이 죽지 않도록 하는 안전 포맷.
+        // (FormatException이 카드 활성화 흐름까지 전파되면 일시정지 미해제 소프트락 위험)
+        private static string _SafeFormat(string format, params object[] formatArguments)
+        {
+            if (string.IsNullOrEmpty(format))
+                return format;
+
+            try
+            {
+                return string.Format(format, formatArguments);
+            }
+            catch (System.FormatException)
+            {
+                return System.Text.RegularExpressions.Regex.Replace(format, @"\{[0-9]+\}", "-");
+            }
         }
 
         private void _ApplySkillToInfo(ChoiceUIInfo info, IData skillData, TrainChoiceSkillType skillType)

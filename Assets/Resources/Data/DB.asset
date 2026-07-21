@@ -2714,7 +2714,11 @@ MonoBehaviour:
         rid: 5100000000000000002
       Weight: 1
       Tier: 0
-    rewardChoices: []
+    rewardChoices:
+    - Option:
+        rid: 7300000000000000003
+      Weight: 1
+      Tier: 0
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     eliteSpawnCycle: 100
@@ -3067,3 +3071,13 @@ MonoBehaviour:
         id: 62002a
         baseTrainId: 40002
         eliteTrainDataId: 41002
+    - rid: 7300000000000000003
+      type: {class: EmergencyRepairChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 70003
+        nameKey: Reward_EmergencyRepair_Name
+        descriptionKey: Reward_EmergencyRepair_Desc
+        iconId: 
+        icon: {fileID: 0}
+        aliveHealRatio: 0.1
+        revivedHpRatio: 0.1
