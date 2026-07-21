@@ -22,13 +22,27 @@ namespace TrainDefense.Game
       private int spawnCount = 1;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
+      [Tooltip("spawnCount 상한")]
+      private int maxSpawnCount = 4;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
+      [Tooltip("spawnCount가 처음 +1 되는 검문(역 도착) 횟수")]
+      private int spawnCountFirstIncreaseStation = 2;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
+      [Tooltip("첫 증가 이후 spawnCount가 다시 +1 되는 검문 간격")]
+      private int spawnCountIncreaseStationInterval = 3;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
       private float spawnRange;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
-      private float stationSpawnAccelPercent = 8f;
+      [Tooltip("검문(역 도착) 1회당 스폰 간격 단축 %")]
+      private float stationSpawnAccelPercent = 3f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
-      private float maxSpawnAccelPercent = 80f;
+      [Tooltip("스폰 간격 단축 상한 %")]
+      private float maxSpawnAccelPercent = 60f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
       private MonsterSpawnType spawnMode = MonsterSpawnType.CameraBased;
@@ -64,13 +78,18 @@ namespace TrainDefense.Game
       private int _stationPassedCount = 0;
 
       private EliteData _eliteData;
+      // 엘리트 구간(역) 예산. 정산 때 구간시간 ÷ (eliteSpawnCycle × 스폰간격)을 적립해 정수부만
+      // 이번 구간에 배치하고, 소수 잔여분은 다음 구간으로 이월한다(스테이지가 바뀌어도 이월).
       [ShowInInspector]
-      private float _currentEliteSpawnChance;
-      private float _eliteRampElapsed;
-      // 엘리트 배율 진행도(0~1). 한 판 동안 누적 증가하며 각 몬스터의 EliteChanceMultiplier에 곱해진다.
-      [ShowInInspector]
-      private float _currentEliteMultiplierProgress;
-      private float _eliteMultiplierRampElapsed;
+      private float _eliteBudget;
+      // 이번 구간에서 엘리트를 승격할 구간 경과 시각(초) 목록. (N+1)등분 지점, 앞에서부터 소비.
+      [ShowInInspector, ReadOnly]
+      private readonly List<float> _eliteSpawnSchedule = new();
+      // 검문 직후 true — 스폰 재개 후 첫 틱에 정산한다(맵 변경 검문에서 새 맵 간격·구간시간 반영).
+      private bool _eliteSettlePending;
+      private float _currentSegmentDuration;
+      // ChangeStageTimeEvent(남은 시간)로 매 프레임 갱신되는 현재 구간 경과 시각.
+      private float _currentSegmentElapsed;
 
       #region UnityLifeCycle
       private void Start()
@@ -82,7 +101,7 @@ namespace TrainDefense.Game
          GameEventSystem.Subscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
-         GameEventSystem.Subscribe<StageSelectEvent>(OnStageSelect);
+         GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
       }
 
       private void OnDestroy()
@@ -91,7 +110,7 @@ namespace TrainDefense.Game
          GameEventSystem.Unsubscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
-         GameEventSystem.Unsubscribe<StageSelectEvent>(OnStageSelect);
+         GameEventSystem.Unsubscribe<ChangeStageTimeEvent>(OnChangeStageTime);
       }
       #endregion
 
@@ -100,10 +119,9 @@ namespace TrainDefense.Game
          if (DatabaseManager.Instance == null) return;
 
          _eliteData = DatabaseManager.Instance.GetEliteData();
-         _currentEliteSpawnChance = 0f;
-         _eliteRampElapsed = 0f;
-         _currentEliteMultiplierProgress = _eliteData != null ? Mathf.Clamp01(_eliteData.multiplierStartProgress) : 1f;
-         _eliteMultiplierRampElapsed = 0f;
+         _eliteBudget = 0f;
+         _eliteSpawnSchedule.Clear();
+         _eliteSettlePending = true;
          _stationPassedCount = 0;
          spawnCount = _originalSpawnCount;
          StartCoroutine(SpawnMonster());
@@ -113,7 +131,30 @@ namespace TrainDefense.Game
       {
          DestroyAllMonsters();
          _stationPassedCount++;
+         _UpdateSpawnCountByStation();
          spawnInterval = _GetAcceleratedInterval();
+
+         // 미발동 엘리트는 예산으로 환급하고, 다음 구간 정산을 예약한다.
+         _eliteBudget += _eliteSpawnSchedule.Count;
+         _eliteSpawnSchedule.Clear();
+         _eliteSettlePending = true;
+      }
+
+      private void OnChangeStageTime(ChangeStageTimeEvent changeStageTimeEvent)
+      {
+         _currentSegmentElapsed = _currentSegmentDuration - changeStageTimeEvent.StageTime;
+      }
+
+      // 검문(역 도착) 누적 횟수로 spawnCount를 결정한다.
+      // spawnCountFirstIncreaseStation번째 검문에 처음 +1, 이후 spawnCountIncreaseStationInterval 검문마다 +1, maxSpawnCount 상한.
+      private void _UpdateSpawnCountByStation()
+      {
+         int increase = 0;
+         if (_stationPassedCount >= spawnCountFirstIncreaseStation)
+            increase = spawnCountIncreaseStationInterval > 0
+               ? 1 + (_stationPassedCount - spawnCountFirstIncreaseStation) / spawnCountIncreaseStationInterval
+               : 1;
+         spawnCount = Mathf.Min(_originalSpawnCount + increase, maxSpawnCount);
       }
 
       private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
@@ -122,12 +163,6 @@ namespace TrainDefense.Game
          {
             StartSpawnMonster();
          }
-      }
-
-      // 스테이지(맵) 변경마다 한 번에 소환하는 몬스터 수를 1 늘린다.
-      private void OnStageSelect(StageSelectEvent stageSelectEvent)
-      {
-         spawnCount++;
       }
 
       public void SetSpawnRule(StageSpawnData[] spawnDatas, float monsterSpawnInterval, List<SpawnAreaInfo> mapSpawnAreas = null, GameObject mapSpawnEffect = null)
@@ -206,13 +241,25 @@ namespace TrainDefense.Game
 
             WaitForSeconds spawnWait = new(spawnInterval);
 
-            UpdateEliteChance(spawnInterval);
-            UpdateEliteMultiplierProgress(spawnInterval);
-
             if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
             {
                yield return spawnWait;
                continue;
+            }
+
+            // 엘리트 스폰: 구간(역) 예산 스케줄 방식. 검문 후 첫 틱에 정산(_ScheduleEliteSpawns)하고,
+            // 배치된 구간 경과 시각을 지나면 그 틱의 첫 슬롯을 엘리트로 승격한다.
+            if (_eliteSettlePending)
+            {
+               _ScheduleEliteSpawns();
+               _eliteSettlePending = false;
+            }
+
+            bool spawnEliteThisTick = false;
+            if (_eliteSpawnSchedule.Count > 0 && _currentSegmentElapsed >= _eliteSpawnSchedule[0])
+            {
+               _eliteSpawnSchedule.RemoveAt(0);
+               spawnEliteThisTick = true;
             }
 
             // 한 spawnInterval마다 spawnCount 마리를 각자 다른 위치·몬스터로 소환
@@ -225,8 +272,15 @@ namespace TrainDefense.Game
                   ResourceManager.Instance.Spawn(_currentSpawnEffect, spawnPos, parent: transform);
                }
 
-               // 가중치 선택 로직
-               StageSpawnData selectedData = SelectMonsterData();
+               // 가중치 선택 로직. 엘리트 주기가 찬 틱이면 첫 슬롯은 적격(유저 레벨 ≥ SpawnLevel×1.5) 몬스터 중에서만 뽑아 엘리트화.
+               bool spawnAsElite = spawnEliteThisTick && spawnIndex == 0;
+               StageSpawnData selectedData = SelectMonsterData(spawnAsElite);
+               if (spawnAsElite && selectedData == null)
+               {
+                  // 이 맵에 엘리트 가능 몬스터가 없으면 일반 스폰으로 대체.
+                  spawnAsElite = false;
+                  selectedData = SelectMonsterData();
+               }
                if (selectedData != null)
                {
                   // MonsterData 가져오기 (DatabaseManager를 통해 ID로 조회)
@@ -236,13 +290,7 @@ namespace TrainDefense.Game
                      Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
                      spawnMonster.Initialize(monsterData);
 
-                     // 램프 ON(강한 몬스터): 한 판 누적 진행도를 곱해 초반엔 낮고 후반으로 갈수록 설정 배율까지 증가.
-                     // 램프 OFF(약한 몬스터): 진행도 무관하게 설정 배율 그대로 적용.
-                     float eliteProgress = selectedData.EliteChanceRamp ? _currentEliteMultiplierProgress : 1f;
-                     float eliteMultiplier = selectedData.EliteChanceMultiplier * eliteProgress;
-                     float eliteChance = _currentEliteSpawnChance * eliteMultiplier;
-                     bool isElite = _eliteData != null && eliteChance > 0f && Random.value * 100f < eliteChance;
-                     if (isElite)
+                     if (spawnAsElite)
                      {
                         EliteVariant eliteVariant = _eliteData.SelectVariant();
                         spawnMonster.ApplyElite(_eliteData, eliteVariant);
@@ -260,47 +308,61 @@ namespace TrainDefense.Game
          }
       }
 
-      // 엘리트는 스테이지1 통과 후부터 등장(역 3개 후 4번째 검문에 맵 변경). 통과 직후 5%로 시작해 spawnMaxChance(15%)까지 ramp.
-      private const int EliteStartStationCount = 4;
-      private const float EliteStartChance = 5f;
+      // 엘리트는 스테이지2 통과 후(스테이지3)부터 등장. 검문 카운트는 스테이지당 4회(역 3개 + 맵 변경 1회).
+      private const int ELITE_START_STATION_COUNT = 8;
 
-      private void UpdateEliteChance(float elapsed)
+      // 엘리트 적격 유저 레벨 = SpawnLevel × 2.2(올림). 상위 슬롯 몬스터가 등장하자마자
+      // 엘리트로 나오면 급격한 벽이 돼서, 등장 후 유예를 둔다. (슬롯2 L6→L14, 슬롯3 L10→L22, 곰 L15→L33)
+      private const float ELITE_LEVEL_MULTIPLIER = 2.2f;
+
+      private bool _IsEliteEligible(StageSpawnData data)
       {
-         if (_eliteData == null || _eliteData.spawnInterval <= 0f) return;
+         int userLevel = UserDataManager.Instance != null ? UserDataManager.Instance.CurrentLevel : 1;
+         return userLevel >= Mathf.CeilToInt(data.SpawnLevel * ELITE_LEVEL_MULTIPLIER);
+      }
 
-         // 스테이지1 통과 전엔 엘리트 없음
-         if (_stationPassedCount < EliteStartStationCount) return;
+      // 검문 후 다음 구간의 엘리트를 정산한다. 예산 = 구간시간 ÷ (eliteSpawnCycle × 현재 스폰간격)을 적립해
+      // 정수부만큼 구간 (N+1)등분 지점에 배치하고, 소수 잔여분은 다음 구간으로 이월한다.
+      // 등장 빈도가 스폰 간격에 비례해 맵별 엘리트 개성(빠른 맵 = 잦은 물몸, 느린 맵 = 드문 탱커)이 유지되고,
+      // 배치가 구간 양끝을 피해서 역 도착 직전 스폰 낭비가 없다.
+      // ELITE_START_STATION_COUNT 전에는 예산을 적립하지 않는다(데뷔 전 이월 방지).
+      private void _ScheduleEliteSpawns()
+      {
+         if (_eliteData == null || _stationPassedCount < ELITE_START_STATION_COUNT)
+            return;
 
-         // 스테이지1 통과 직후 5%로 시작
-         if (_currentEliteSpawnChance < EliteStartChance)
-            _currentEliteSpawnChance = EliteStartChance;
+         float segmentDuration = GameEventSystem.Query<GetCurrentInspectionDurationEvent, float>(new GetCurrentInspectionDurationEvent());
+         if (segmentDuration <= 0f || spawnInterval <= 0f)
+            return;
 
-         _eliteRampElapsed += elapsed;
-         while (_eliteRampElapsed >= _eliteData.spawnInterval)
+         _currentSegmentDuration = segmentDuration;
+         // 정산은 구간 시작 직후라 경과 0으로 동기화(직전 구간의 낡은 경과값으로 첫 엘리트가 즉시 발동하는 것 방지).
+         _currentSegmentElapsed = 0f;
+         _eliteBudget += segmentDuration / (Mathf.Max(1, _eliteData.eliteSpawnCycle) * spawnInterval);
+
+         int eliteCountThisSegment = Mathf.FloorToInt(_eliteBudget);
+         _eliteBudget -= eliteCountThisSegment;
+
+         _eliteSpawnSchedule.Clear();
+         for (int i = 1; i <= eliteCountThisSegment; i++)
          {
-            _currentEliteSpawnChance = Mathf.Min(
-               _currentEliteSpawnChance + _eliteData.chanceGrowthPerInterval,
-               _eliteData.spawnMaxChance);
-            _eliteRampElapsed -= _eliteData.spawnInterval;
+            _eliteSpawnSchedule.Add(segmentDuration * i / (eliteCountThisSegment + 1));
          }
       }
 
-      private void UpdateEliteMultiplierProgress(float elapsed)
+      // 선택 가중치. 일반 스폰은 스폰 확률 그대로, 엘리트 후보는 확률의 역수 —
+      // 자주 나오는 잡몹(확률 6)일수록 엘리트로는 덜 뽑히고 드문 상위 슬롯(확률 1)일수록 자주 뽑혀
+      // 엘리트가 탱커 기반으로 정렬된다. (6/3/1 → 1:2:6)
+      private float _GetSelectionWeight(StageSpawnData data, bool eliteEligibleOnly)
       {
-         if (_eliteData == null || _eliteData.multiplierRampInterval <= 0f) return;
-         if (_currentEliteMultiplierProgress >= 1f) return;
+         if (data.Probability <= 0)
+            return 0f;
 
-         _eliteMultiplierRampElapsed += elapsed;
-         while (_eliteMultiplierRampElapsed >= _eliteData.multiplierRampInterval)
-         {
-            _currentEliteMultiplierProgress = Mathf.Min(
-               1f,
-               _currentEliteMultiplierProgress + _eliteData.multiplierGrowthPerInterval);
-            _eliteMultiplierRampElapsed -= _eliteData.multiplierRampInterval;
-         }
+         return eliteEligibleOnly ? 1f / data.Probability : data.Probability;
       }
 
-      private StageSpawnData SelectMonsterData()
+      // eliteEligibleOnly = true 면 엘리트 적격 레벨에 도달한 몬스터 중에서만 뽑는다. 적격 후보가 없으면 null.
+      private StageSpawnData SelectMonsterData(bool eliteEligibleOnly = false)
       {
          if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0)
             return null;
@@ -309,15 +371,22 @@ namespace TrainDefense.Game
          float totalProbability = 0f;
          foreach (var data in _currentSpawnDatas)
          {
-            if (data.Probability > 0)
+            if (eliteEligibleOnly && !_IsEliteEligible(data))
+               continue;
+
+            float weight = _GetSelectionWeight(data, eliteEligibleOnly);
+            if (weight > 0)
             {
                useProbability = true;
-               totalProbability += data.Probability;
+               totalProbability += weight;
             }
          }
 
          if (!useProbability)
          {
+            if (eliteEligibleOnly)
+               return null;
+
             return _currentSpawnDatas[Random.Range(0, _currentSpawnDatas.Length)];
          }
 
@@ -325,13 +394,17 @@ namespace TrainDefense.Game
 
          for (int i = 0; i < _currentSpawnDatas.Length; i++)
          {
-            if (_currentSpawnDatas[i].Probability > 0)
+            if (eliteEligibleOnly && !_IsEliteEligible(_currentSpawnDatas[i]))
+               continue;
+
+            float weight = _GetSelectionWeight(_currentSpawnDatas[i], eliteEligibleOnly);
+            if (weight > 0)
             {
-               if (randomPoint < _currentSpawnDatas[i].Probability)
+               if (randomPoint < weight)
                {
                   return _currentSpawnDatas[i];
                }
-               randomPoint -= _currentSpawnDatas[i].Probability;
+               randomPoint -= weight;
             }
          }
 

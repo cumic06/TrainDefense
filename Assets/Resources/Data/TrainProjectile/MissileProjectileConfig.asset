@@ -18,7 +18,7 @@ MonoBehaviour:
   destroyOnTriggerEnter: 1
   isSpawnTriggerHandle: 1
   triggerHandlePrefab: {fileID: 4234567116659896457, guid: 9207244270465c84282cc75810256add, type: 3}
-  scaleByRange: 0
+  scaleByRange: 1
   scaleRangeType: 0
   isTargeting: 0
   directDamage: 0

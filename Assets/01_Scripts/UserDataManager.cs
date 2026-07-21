@@ -498,7 +498,7 @@ namespace TrainDefense
             return _upgradeLevels.Keys;
         }
 
-        private const float baseExp = 290f;
+        private const float BASE_EXP = 203f;
         private const float expPower = 1.6f;
 
         public float GetNextLevelUpExp()
@@ -509,8 +509,9 @@ namespace TrainDefense
         // 특정 레벨 기준 필요 경험치. 게임 진입 표시처럼 _currentLevel 리셋 타이밍에 의존하면 안 되는 곳에서 사용.
         public float GetNextLevelUpExp(int level)
         {
-            // 레벨업 필요 경험치 = 290 × lv^1.6 (드랍=HP·스폰80% 기준, lv35 ≈ 55분 도달, 후반 정체 없음)
-            return baseExp * Mathf.Pow(level, expPower);
+            // 레벨업 필요 경험치 = 203 × lv^1.6 — 판 20~30분 기준 lv35(풀빌드 = 카드 35장) ≈ 30분 안팎,
+            // 최상위 판에서만 풀업이 완성되는 페이스. (옛 290은 60분 판 기준이라 풀업 불가였음)
+            return BASE_EXP * Mathf.Pow(level, expPower);
         }
         #endregion
 

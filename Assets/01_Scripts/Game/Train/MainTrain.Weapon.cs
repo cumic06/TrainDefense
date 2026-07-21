@@ -87,6 +87,9 @@ namespace TrainDefense.Game
             return;
          }
 
+         // 누르는 동안 포탑이 조준점을 계속 따라 돈다. (발사 순간에만 돌면 끊겨 보임)
+         _turret.AimAt(aimPosition);
+
          if (_fireCooldown <= 0f)
          {
             _turret.Fire(aimPosition);

@@ -21,6 +21,11 @@ namespace TrainDefense.Game.Datas
       public float dropExpMultiplier = 2.5f;
       public float dropMoneyMultiplier = 2.5f;
 
+      [Header("CC 저항")]
+      [Tooltip("0~1. 슬로우/스턴/넉백 효과를 (1-저항)배로 줄인다. 1이면 완전 면역.")]
+      [Range(0f, 1f)]
+      public float ccResistance = 0f;
+
       [Header("불 이펙트 색")]
       [Tooltip("엘리트 불 이펙트(eliteEffect)의 SpriteRenderer 색. 타입을 한눈에 구분한다.")]
       public Color tintColor = Color.white;

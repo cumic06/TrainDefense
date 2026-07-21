@@ -74,10 +74,21 @@ namespace TrainDefense.Game
       private Coroutine _auraReceiveCoroutine;
       // 노랑 엘리트 오라로 받은 이동속도 배율(기본 1). _currentMonsterStatus.MoveSpeed에 곱해 Slow와 독립 적용.
       private float _auraSpeedMultiplier = 1f;
+      // 슬로우 배율(1 = 정상). 속도 스탯을 덮어쓰지 않아 갱신 중첩·엘리트 배율 잠식이 없다.
+      private float _slowMultiplier = 1f;
+      // 엘리트 CC 저항(0~1). 슬로우 감속량·스턴 시간·넉백을 (1-저항)배로 줄이고, 1이면 완전 면역.
+      private float _ccResistance;
 
       private const string MoneyPrefabPath = "Prefabs/Money";
       private const string StunPrefabPath = "Prefabs/StunPaticle";
       private static GameObject _stunPrefab;
+
+      private const string ELITE_HEALTH_BAR_PREFAB_PATH = "Prefabs/EliteHealthBar";
+      // 몬스터 루트 기준 체력바 y 오프셋(아래). 모델 크기와 무관한 고정값이라 인게임 확인 후 조정.
+      private const float ELITE_HEALTH_BAR_OFFSET_Y = -0.85f;
+      private static GameObject _eliteHealthBarPrefab;
+      // 엘리트 전용 체력바. 처음 엘리트가 될 때 자식으로 1회 생성해 계속 보유, 엘리트일 때만 켠다(eliteEffect 패턴).
+      private EliteHealthBar _eliteHealthBarInstance;
 
       public string Id => id;
       public bool IsActive => gameObject.activeInHierarchy;
@@ -124,6 +135,10 @@ namespace TrainDefense.Game
 
          // 풀 재사용 전 엘리트 상태 초기화(이전 타입의 오라 배율 잔존 방지).
          _auraSpeedMultiplier = 1f;
+         _slowMultiplier = 1f;
+         _ccResistance = 0f;
+         if (_eliteHealthBarInstance != null)
+            _eliteHealthBarInstance.gameObject.SetActive(false);
 
          if (_modelAnimator != null)
          {
@@ -161,6 +176,7 @@ namespace TrainDefense.Game
          _ReleaseStunEffect();
          _StopEliteRoutines();
          _auraSpeedMultiplier = 1f;
+         _slowMultiplier = 1f;
 
          _targetTrain = null;
       }
@@ -206,11 +222,14 @@ namespace TrainDefense.Game
          _currentMonsterStatus.DropMoneyMax = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMax * dropMoneyMul);
          _currentHp = _currentMonsterStatus.MaxHp;
 
+         _ccResistance = variant != null ? variant.ccResistance : 0f;
+
          _startScale *= sizeMul;
          model.transform.localScale = _startScale;
 
          _ApplyEliteVisual(variant);
          _ApplyEliteAbility(variant);
+         _SpawnEliteHealthBar();
       }
 
       // 엘리트 불 이펙트를 켜고 타입 색으로 틴트한다. (프리팹마다 EliteEffect 자식에 SpriteRenderer 보유)
@@ -283,8 +302,8 @@ namespace TrainDefense.Game
 
       private void _Move()
       {
-         // 노랑 엘리트 오라 배율을 곱한다(기본 1). Slow는 MoveSpeed 자체를 바꾸므로 둘이 곱셈으로 독립 적용된다.
-         float moveSpeed = _currentMonsterStatus.MoveSpeed * _auraSpeedMultiplier;
+         // 오라·슬로우 배율을 곱한다(각각 기본 1). 속도 스탯은 안 건드려 엘리트 이속 배율과도 독립 적용된다.
+         float moveSpeed = _currentMonsterStatus.MoveSpeed * _auraSpeedMultiplier * _slowMultiplier;
          transform.Translate(moveSpeed * Time.deltaTime * _MoveDirection().normalized);
       }
 
@@ -389,41 +408,33 @@ namespace TrainDefense.Game
       {
          if (!gameObject.activeInHierarchy)
             return;
+         if (_ccResistance >= 1f)
+            return;
+
+         // slowValue = 유지 속도 비율(0.5 = 절반) → 감속량(1-slowValue)만 저항으로 줄인다.
+         slowValue = 1f - (1f - slowValue) * (1f - _ccResistance);
 
          if (_slowCoroutine != null)
          {
             StopCoroutine(_slowCoroutine);
+            _slowCoroutine = null;
          }
+         if (_resetMoveSpeedCoroutine != null)
+         {
+            StopCoroutine(_resetMoveSpeedCoroutine);
+            _resetMoveSpeedCoroutine = null;
+         }
+
+         // 속도 스탯을 덮어쓰지 않고 배율만 세팅 — 매 틱 갱신받아도 중첩되지 않고, 엘리트 이속 배율·오라도 보존된다.
+         _slowMultiplier = slowValue;
 
          if (duration > 0f)
          {
-            _slowCoroutine = StartCoroutine(_SlowForDurationCoroutine(slowValue, duration));
+            _slowCoroutine = StartCoroutine(_SlowForDurationCoroutine(duration));
          }
-         else
-         {
-            _slowCoroutine = StartCoroutine(_SlowCoroutine(slowValue));
-         }
+         // duration <= 0(갱신형)은 장판 이탈(ProcessExit)의 ResetMoveSpeed로 해제된다.
 
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = slowColor;
-      }
-
-      private IEnumerator _SlowCoroutine(float slowValue)
-      {
-         // 원래 속도 기준 둔화 (매 프레임 재적용 시 현재 속도 기준이면 0쪽으로 누적 감속됨)
-         var slowSpeed = _monsterData.MonsterStatusData.MoveSpeed * slowValue;
-         var startSpeed = _currentMonsterStatus.MoveSpeed;
-         float elapsedTime = 0f;
-         float duration = 1f;
-
-         while (elapsedTime < duration)
-         {
-            elapsedTime += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsedTime / duration);
-            _currentMonsterStatus.MoveSpeed = Mathf.Lerp(startSpeed, slowSpeed, t);
-            yield return null;
-         }
-
-         _currentMonsterStatus.MoveSpeed = slowSpeed;
       }
 
       public void ResetMoveSpeed()
@@ -439,19 +450,17 @@ namespace TrainDefense.Game
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
       }
 
-      // 즉발 슬로우 + duration 초 뒤 자동 복원 (Slow에서 duration > 0일 때 사용).
-      private IEnumerator _SlowForDurationCoroutine(float slowValue, float duration)
+      // duration 초 뒤 자동 복원. 갱신(재호출) 시 코루틴이 재시작돼 타이머가 연장된다.
+      private IEnumerator _SlowForDurationCoroutine(float duration)
       {
-         var slowSpeed = _currentMonsterStatus.MoveSpeed * slowValue;
-         _currentMonsterStatus.MoveSpeed = slowSpeed;
          yield return new WaitForSeconds(duration);
          ResetMoveSpeed();
       }
 
+      // 슬로우 배율을 1초에 걸쳐 1로 되돌린다(부드러운 회복 연출).
       private IEnumerator _ResetMoveSpeedCoroutine()
       {
-         var targetSpeed = _monsterData.MonsterStatusData.MoveSpeed;
-         var startSpeed = _currentMonsterStatus.MoveSpeed;
+         var startMultiplier = _slowMultiplier;
          float elapsedTime = 0f;
          float duration = 1f;
 
@@ -459,11 +468,11 @@ namespace TrainDefense.Game
          {
             elapsedTime += Time.deltaTime;
             float t = Mathf.Clamp01(elapsedTime / duration);
-            _currentMonsterStatus.MoveSpeed = Mathf.Lerp(startSpeed, targetSpeed, t);
+            _slowMultiplier = Mathf.Lerp(startMultiplier, 1f, t);
             yield return null;
          }
 
-         _currentMonsterStatus.MoveSpeed = targetSpeed;
+         _slowMultiplier = 1f;
       }
 
 
@@ -474,6 +483,11 @@ namespace TrainDefense.Game
       {
          if (!gameObject.activeInHierarchy)
             return;
+         if (_ccResistance >= 1f)
+            return;
+
+         shovePower *= 1f - _ccResistance;
+         shoveDuration *= 1f - _ccResistance;
 
          if (_targetTrain != null)
          {
@@ -502,6 +516,10 @@ namespace TrainDefense.Game
             return;
          if (_isDead)
             return;
+         if (_ccResistance >= 1f)
+            return;
+
+         stunDuration *= 1f - _ccResistance;
 
          if (_stunCoroutine != null)
          {
@@ -612,6 +630,28 @@ namespace TrainDefense.Game
          _auraSpeedMultiplier = 1f;
       }
 
+      // 엘리트 체력바: 엘리트 불꽃(eliteEffect)과 동일한 자식 SetActive 토글 패턴.
+      // 처음 엘리트가 될 때 한 번만 자식으로 생성해 계속 보유한다 — 풀 반환(SetParent)을 안 쓰므로
+      // 몬스터 비활성화(OnDisable) 중 재부모화 금지 제약과 무관하고, 소멸 시엔 부모 따라 자동으로 꺼진다.
+      private void _SpawnEliteHealthBar()
+      {
+         if (_eliteHealthBarInstance == null)
+         {
+            if (_eliteHealthBarPrefab == null)
+               _eliteHealthBarPrefab = Resources.Load<GameObject>(ELITE_HEALTH_BAR_PREFAB_PATH);
+            if (_eliteHealthBarPrefab == null)
+               return;
+
+            GameObject instance = Instantiate(_eliteHealthBarPrefab, transform);
+            instance.transform.localPosition = new Vector3(0f, ELITE_HEALTH_BAR_OFFSET_Y, 0f);
+            if (!instance.TryGetComponent(out _eliteHealthBarInstance))
+               return;
+         }
+
+         _eliteHealthBarInstance.gameObject.SetActive(true);
+         _eliteHealthBarInstance.SetRatio(1f);
+      }
+
       private void _StopEliteRoutines()
       {
          if (_rangedEliteCoroutine != null)
@@ -646,6 +686,9 @@ namespace TrainDefense.Game
 
          _currentHp -= damage;
          GameEventSystem.Publish(new HitEvent(_currentHp, _currentMonsterStatus.MaxHp, this, transform.position, damage, isCritical));
+
+         if (_eliteHealthBarInstance != null)
+            _eliteHealthBarInstance.SetRatio(_currentHp / _currentMonsterStatus.MaxHp);
 
          if (_currentHp <= 0)
          {

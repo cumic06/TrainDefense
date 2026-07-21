@@ -10,7 +10,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string ExcelFileName => "TrainUpgradeData.xlsx";
 		public string SheetName => "range_train_upgrade_data";
 		public string ButtonLabel => "RangeTrainUpgrade 데이터 가져오기";
-		public string[] Headers => new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_damage", "attack_range", "attack_area", "attack_count", "attack_interval", "critical_chance", "critical_damage", "slow_rate" };
+		public string[] Headers => new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_damage", "attack_range", "attack_area", "attack_count", "attack_interval", "critical_chance", "critical_damage", "slow_rate", "burst_duration" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -100,7 +100,8 @@ namespace TrainDefense.Editor.DataImport.Importers
 					AttackInterval = r.attackInterval,
 					CriticalChance = r.criticalChance,
 					CriticalDamage = r.criticalDamage,
-					SlowRate = r.slowRate
+					SlowRate = r.slowRate,
+					BurstDuration = r.burstDuration
 				};
 				SetPrivateField(statsType, upgradeStats, "rangeStatusUpgrade", rangeStatus);
 

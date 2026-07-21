@@ -27,6 +27,8 @@ namespace TrainDefense.Game
         public float ShoveScale { get; set; } = 1f;
         protected Coroutine _destroyCoroutine;
         protected Dictionary<IProjectileTarget, float> _damageTimers = new();
+        // 틱 범위 안에 현재 피해를 받는 대상이 있는지. (RangeTrain이 공격 루프 사운드 게이트로 사용)
+        public bool HasTickTargets => _damageTimers.Count > 0;
         protected float _age;
         protected bool _isSpawnedTrigger;
         protected float _scaleRadius;
@@ -51,8 +53,18 @@ namespace TrainDefense.Game
             _age = 0f;
             _damageTimers.Clear();
             _hitSet.Clear();
+
+            // OnDisable이 전략을 비우는데, 버스트 장판(냉기)은 Init 없이 SetActive(true)로만 재활성된다.
+            // 전략이 null이면 FixedUpdate가 조기 return해 _age(틱 시계)가 멈춰 틱 데미지가 안 들어간다.
+            if (data != null && _movementStrategy == null)
+            {
+                _movementStrategy = CreateMovementStrategy(data.MovementType);
+            }
             _hitCount = 0;
             _isSpawnedTrigger = false;
+            // 페이드 도중 피격 소멸로 코루틴이 끊기면 알파가 낮은 채 풀에 남는다 → 재사용 시 원복
+            if (_fadeSprites != null)
+                _SetFadeAlpha(1f);
             SuppressShoveEffect = false;
             ShoveScale = 1f;
             _runtimeHasShove = false;
@@ -116,6 +128,12 @@ namespace TrainDefense.Game
             // 이동 전략 초기화
             _movementStrategy = CreateMovementStrategy(data.MovementType);
             _movementStrategy?.Initialize(this, data, _target);
+
+            // 이동이 루트 회전(+X) 기준이라 루트의 LookAt2D는 유지하고 model만 직립시킨다.
+            if (!data.IsRotateModel && model != null)
+            {
+                model.transform.rotation = Quaternion.identity;
+            }
 
             // AttackArea에 따른 스케일 조정
             if (data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && scaleRadius > 0f)
@@ -378,10 +396,11 @@ namespace TrainDefense.Game
             }
 
             // 슬로우 효과 (Stay 중 지속 적용). owner가 둔화율을 제공하면 그 값, 아니면 config 기본값.
+            // 자동복원 슬로우(SlowDuration)를 매 Stay마다 갱신 — 장판이 꺼져도(버스트 종료) 그 시간 후 자연 해제.
             if (data.HasSlowEffect)
             {
                 float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
-                target.Slow(slowValue, 0f);
+                target.Slow(slowValue, data.SlowDuration);
             }
 
             // 넉백 효과 (Stay 중에도 적용)
@@ -439,6 +458,12 @@ namespace TrainDefense.Game
         {
             _scale = scale;
             transform.localScale = _baseScale * scale;
+        }
+
+        // Init 이후 데미지에 배율을 곱한다. (오버라이드 투사체 전용 강화 — 크리 계산도 곱해진 값 기준)
+        public void MultiplyDamage(float multiplier)
+        {
+            _damage *= multiplier;
         }
 
         public void SetRuntimeShove(float power, float duration)
@@ -505,14 +530,67 @@ namespace TrainDefense.Game
                 triggerHandle.transform.localScale *= _scale;
         }
 
-        private IEnumerator DestroyCoroutine()
+        // 사거리 제한: 수명을 "사거리를 날아가는 시간"으로 덮어써 총알이 탐지 사거리 너머 화면 끝까지 타격하지 않게 한다.
+        // 사거리 업그레이드가 있어 config 고정값이 아니라 발사 시점의 AttackRange로 매번 계산한다.
+        // 소멸은 기존 시간 소멸과 동일 경로(ReturnToPool) — 미사일(trigger 스폰형)은 그 자리에서 폭발로 마감된다.
+        public void LimitLifetimeByRange(float attackRange)
         {
-            yield return new WaitForSeconds(data.DestroyDelay);
+            if (data == null || data.Speed <= 0f)
+                return;
+
+            if (_destroyCoroutine != null)
+                StopCoroutine(_destroyCoroutine);
+            _destroyCoroutine = StartCoroutine(DestroyCoroutine(attackRange / data.Speed));
+        }
+
+        private IEnumerator DestroyCoroutine(float overrideDelay = 0f)
+        {
+            yield return new WaitForSeconds(overrideDelay > 0f ? overrideDelay : data.DestroyDelay);
 
             if (this == null)
                 yield break;
 
+            // 만료 소멸은 점점 투명해지며 사라진다. (피격 소멸은 즉시, 미사일(trigger 스폰형)은 폭발이 마감이라 페이드 없음)
+            if (!data.IsSpawnTriggerHandle)
+                yield return _DespawnFadeCoroutine();
+
             ReturnToPool();
+        }
+
+        private const float DESPAWN_FADE_DURATION = 0.15f;
+        private SpriteRenderer[] _fadeSprites;
+        private float[] _fadeBaseAlphas;
+
+        private IEnumerator _DespawnFadeCoroutine()
+        {
+            if (_fadeSprites == null)
+            {
+                _fadeSprites = GetComponentsInChildren<SpriteRenderer>();
+                _fadeBaseAlphas = new float[_fadeSprites.Length];
+                for (int i = 0; i < _fadeSprites.Length; i++)
+                    _fadeBaseAlphas[i] = _fadeSprites[i].color.a;
+            }
+
+            for (float elapsed = 0f; elapsed < DESPAWN_FADE_DURATION; elapsed += Time.deltaTime)
+            {
+                _SetFadeAlpha(1f - elapsed / DESPAWN_FADE_DURATION);
+                yield return null;
+            }
+
+            // 풀 재사용 대비 원복 — 같은 프레임에 비활성화되므로 화면에 되살아나 보이지 않는다.
+            _SetFadeAlpha(1f);
+        }
+
+        private void _SetFadeAlpha(float ratio)
+        {
+            for (int i = 0; i < _fadeSprites.Length; i++)
+            {
+                var sprite = _fadeSprites[i];
+                if (sprite == null) continue;
+                var color = sprite.color;
+                color.a = _fadeBaseAlphas[i] * ratio;
+                sprite.color = color;
+            }
         }
     }
 }

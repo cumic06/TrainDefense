@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Cumic;
 using TrainDefense.Game.Datas;
@@ -98,7 +99,18 @@ namespace TrainDefense.Game.UI
                 return null;
             }
 
-            Canvas canvas = FindObjectOfType<Canvas>();
+            // DDoL 캔버스(AnalyticsManager 자식 ConsentCanvas)에 붙으면 뒤로가기의 씬 전환 후에도
+            // 팝업이 살아남아 로비를 덮는다 → 씬 전환 시 함께 파괴되도록 현재 씬 소속 캔버스에만 붙인다.
+            Canvas canvas = null;
+            foreach (Canvas candidate in FindObjectsByType<Canvas>(FindObjectsSortMode.None))
+            {
+                if (candidate.gameObject.scene == SceneManager.GetActiveScene())
+                {
+                    canvas = candidate;
+                    break;
+                }
+            }
+
             GameObject instance = Instantiate(prefab, canvas != null ? canvas.transform : null);
             instance.transform.SetAsLastSibling();
 
@@ -182,6 +194,10 @@ namespace TrainDefense.Game.UI
                 if (turretData == null || string.IsNullOrEmpty(turretData.Id))
                     continue;
 
+                // 메인 터렛(50xxx)만 시작 선택창에 노출. 일반 편성 포탑(30xxx)은 제외한다.
+                if (!_IsMainTurretId(turretData.Id))
+                    continue;
+
                 if (_IsEliteTurretId(turretData.Id))
                     continue;
 
@@ -219,6 +235,15 @@ namespace TrainDefense.Game.UI
                 return false;
 
             return (numericId / 1000) % 10 == 1;
+        }
+
+        // 메인 터렛 판정: id 50xxx(50000~50999) 대역을 메인 터렛(시작 선택창 전용 주무기)으로 본다.
+        private static bool _IsMainTurretId(string id)
+        {
+            if (!int.TryParse(id, out int numericId))
+                return false;
+
+            return numericId / 1000 == 50;
         }
 
         private void _BuildSlots()
@@ -268,7 +293,7 @@ namespace TrainDefense.Game.UI
                 attackText.text = Mathf.RoundToInt(status.AttackDamage).ToString();
 
             if (attackSpeedText != null)
-                attackSpeedText.text = status.AttackInterval.ToString("0.0");
+                attackSpeedText.text = $"{status.AttackInterval:0.0#}";
 
             if (rangeText != null)
                 rangeText.text = Mathf.RoundToInt(status.AttackRange).ToString();

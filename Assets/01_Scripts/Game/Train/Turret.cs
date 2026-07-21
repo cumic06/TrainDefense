@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using Cumic;
+using Cumic.Events;
 using DG.Tweening;
 using TrainDefense;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Events;
 using TrainDefense.Game.Stats;
 using UnityEngine;
 
@@ -64,6 +66,14 @@ namespace TrainDefense.Game
             _isRotateTurret = source.IsRotateTurret;
             _BuildVisual(source);
             _isReady = _projectilePrefab != null;
+
+            // 메인 터렛도 편성 포탑과 동일하게 상점 업그레이드(공격력·공속·치명타 등)를 받는다.
+            // 장착 시점에 이미 구매돼 있는 상점 레벨을 소급 적용(MainTrain.ApplyExistingUpgradesToTrain와 동일 방식).
+            _ApplyExistingShopUpgrades();
+
+            // 장착 시점의 플레이어 레벨까지 레벨 성장을 소급 적용하고, 이후 레벨업을 구독한다.
+            _SyncLevelGrowth();
+            GameEventSystem.Subscribe<LevelUpEvent>(_OnPlayerLevelUp);
         }
 
         // 선택 포탑 프리팹의 turret(회전 pivot) 서브트리만 복제해 자식으로 붙이고,
@@ -133,6 +143,24 @@ namespace TrainDefense.Game
         #endregion
 
         #region Fire
+        // 조준점이 피벗과 수치상 겹칠 때(방향 벡터 ≈ 0)만 회전을 갱신하지 않는 최소 안전값.
+        private const float AIM_DEAD_ZONE_RADIUS = 0.05f;
+
+        /// <summary>
+        /// 조준 지점을 바라보도록 포탑을 회전시킨다. (MainTrain이 조준 중 매 프레임 호출)
+        /// 발사 순간에만 돌면 공속이 느릴 때 회전이 끊겨 보여서, 누르는 동안 계속 따라 돈다.
+        /// </summary>
+        public void AimAt(Vector2 aimPosition)
+        {
+            if (!_isRotateTurret || _pivot == null)
+                return;
+
+            if ((aimPosition - (Vector2)_pivot.position).sqrMagnitude < AIM_DEAD_ZONE_RADIUS * AIM_DEAD_ZONE_RADIUS)
+                return;
+
+            _pivot.LookAt2D(aimPosition);
+        }
+
         /// <summary>
         /// aim(월드 좌표) 방향으로 1회 발사한다. MainTrain이 쿨다운마다 호출한다.
         /// </summary>
@@ -146,10 +174,14 @@ namespace TrainDefense.Game
 
             ProjectileData baseData = _projectilePrefab.GetData();
             float spreadAngle = baseData != null ? baseData.SpreadAngle : 0f;
-            int count = Mathf.Max(1, _status.AttackCount);
+            int count = Mathf.Max(1, _status.TargetCount);
 
-            bool hasFireRotation = false;
-            Quaternion fireRotation = Quaternion.identity;
+            // 방향은 하나뿐: 피벗→마우스. 포탑도 이 방향을 보고(AimAt), 총알도 이 방향으로 나간다.
+            // 마우스 위치를 "통과해야 할 지점"으로 취급하지 않는다 — 방향 지시자일 뿐.
+            Vector2 aimDirection = aimPosition - (Vector2)(_pivot != null ? _pivot.position : transform.position);
+            Quaternion fireRotation = aimDirection.sqrMagnitude > AIM_DEAD_ZONE_RADIUS * AIM_DEAD_ZONE_RADIUS
+                ? Quaternion.Euler(0f, 0f, Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg)
+                : (_pivot != null ? _pivot.rotation : Quaternion.identity);
 
             for (int i = 0; i < count; i++)
             {
@@ -157,24 +189,10 @@ namespace TrainDefense.Game
                 if (projectile == null)
                     continue;
 
-                projectile.transform.LookAt2D(aimPosition);
-
-                // 첫 투사체의 실제 발사 방향(부채꼴 spread 적용 전)을 포탑 회전 기준으로 삼는다.
-                if (!hasFireRotation)
-                {
-                    fireRotation = projectile.transform.rotation;
-                    hasFireRotation = true;
-                }
+                projectile.transform.rotation = fireRotation;
 
                 TurretCombatFx.ApplySpread(projectile.transform, i, count, spreadAngle);
             }
-
-            // 포탑을 실제로 발사된 총알 방향으로 회전시킨다.
-            // 기존엔 포탑 자기 위치(_pivot.position) 기준으로 조준점을 바라보게 했는데,
-            // 포탑 정중앙 부근을 터치하면 조준점이 포탑 위치와 거의 겹쳐 방향이 180도 뒤집혀
-            // 포탑이 총알과 반대로 도는 문제가 있었다. 총알(스폰 지점→조준점) 방향과 동일하게 맞춰 해결한다.
-            if (_isRotateTurret && _pivot != null && hasFireRotation)
-                _pivot.rotation = fireRotation;
         }
 
         private Projectile _SpawnProjectile(int index)
@@ -201,6 +219,10 @@ namespace TrainDefense.Game
             // (Init이 누락되면 투사체가 초기화되지 않아 제자리에 멈추고 데미지도 0이 된다.)
             TurretCombatFx.InitProjectile(projectile, _status, _owner, null);
 
+            // 편성 포탑과 동일하게 총알은 사거리에서 소멸 (NonMovement 부착형은 제자리 지속형이라 무관)
+            if (!isNonMovement)
+                projectile.LimitLifetimeByRange(_status.AttackRange);
+
             return projectile;
         }
 
@@ -224,9 +246,130 @@ namespace TrainDefense.Game
         }
         #endregion
 
+        #region ShopUpgrade
+        // 상점 업그레이드를 편성 포탑(TurretTrain.ApplyStatLevelAware)과 동일한 정규화 곱셈으로 _status에 반영한다.
+        // 메인 터렛은 Train을 상속하지 않아 편성 강화 파이프라인 밖이므로 같은 계산을 여기서 미러링한다.
+        // (풀링 side-effect는 없음 — 매 발사 투사체를 새로 스폰해 _status를 즉시 반영한다.)
+
+        /// <summary>
+        /// 상점 업그레이드 스탯을 현재 레벨 기준으로 _status에 적용한다. (장착 시 소급 / MainTrain.ApplyUpgrade가 구매 시 호출)
+        /// prevLevel→newLevel 정규화로 반복 구매 시 이중 적용을 막는다.
+        /// </summary>
+        public void ApplyShopStats(IStat[] stats, int newLevel, int prevLevel = 0)
+        {
+            if (stats == null || stats.Length == 0)
+                return;
+
+            foreach (var stat in stats)
+                _ApplyShopStat(stat, newLevel, prevLevel);
+        }
+
+        private void _ApplyShopStat(IStat stat, int newLevel, int prevLevel)
+        {
+            if (stat == null)
+                return;
+
+            TurretTrainStatus baseStatus = _data.TurretTrainStatus;
+            float percent = stat.Value / 100f;
+            int times = newLevel - prevLevel;
+
+            switch (stat.Type)
+            {
+                case StatType.AttackRange:
+                    _status.AttackRange = _status.AttackRange / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                    break;
+
+                case StatType.AttackArea:
+                    _status.AttackArea = _status.AttackArea / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                    break;
+
+                case StatType.AttackDamage:
+                    _status.AttackDamage = _status.AttackDamage / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                    break;
+
+                case StatType.AttackCount:
+                    _status.AttackCount += Mathf.RoundToInt(baseStatus.AttackCount * percent * newLevel)
+                                         - Mathf.RoundToInt(baseStatus.AttackCount * percent * prevLevel);
+                    break;
+
+                case StatType.AttackInterval:
+                    _status.AttackInterval = _status.AttackInterval * (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
+                    break;
+
+                case StatType.TargetCount:
+                    _status.TargetCount += Mathf.RoundToInt(baseStatus.TargetCount * percent * newLevel)
+                                         - Mathf.RoundToInt(baseStatus.TargetCount * percent * prevLevel);
+                    break;
+
+                case StatType.CriticalChance:
+                    _status.CriticalChance += stat.Value * times;
+                    break;
+
+                case StatType.CriticalDamage:
+                    _status.CriticalDamage += stat.Value * times;
+                    break;
+            }
+        }
+
+        // 장착 시점에 이미 구매돼 있는 상점 업그레이드(UserDataManager._upgradeLevels)를 소급 적용한다.
+        private void _ApplyExistingShopUpgrades()
+        {
+            if (UserDataManager.Instance == null || DatabaseManager.Instance == null)
+                return;
+
+            var upgradeIds = UserDataManager.Instance.GetAllUpgradeIds();
+            if (upgradeIds == null)
+                return;
+
+            foreach (var upgradeId in upgradeIds)
+            {
+                if (string.IsNullOrEmpty(upgradeId))
+                    continue;
+
+                int level = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
+                if (level <= 0)
+                    continue;
+
+                UpgradeData upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
+                if (upgradeData == null || upgradeData.UpgradeDataType != UpgradeDataType.TrainUpgrade)
+                    continue;
+
+                ApplyShopStats(upgradeData.Stats, level);
+            }
+        }
+        #endregion
+
+        #region LevelGrowth
+        // 플레이어 레벨 성장: 레벨당 공격력 +5% 가산(lv1=×1.0, base×(1+0.05×(lv-1))).
+        // 상점 배율과 곱으로 중첩된다. 편성 포탑은 레벨업 카드로 성장하지만 메인 터렛은 카드가 없어 이 축이 대신한다.
+        private const float LEVEL_UP_DAMAGE_PERCENT = 0.05f;
+        private int _appliedPlayerLevel = 1;
+
+        private void _OnPlayerLevelUp(LevelUpEvent _) => _SyncLevelGrowth();
+
+        // 현재 플레이어 레벨까지의 성장 배율을 정규화 곱셈으로 _status에 반영한다.
+        // _appliedPlayerLevel 기준 재계산이라 이벤트가 한 번에 여러 번 발행돼도 이중 적용이 없다.
+        private void _SyncLevelGrowth()
+        {
+            if (_data == null || UserDataManager.Instance == null)
+                return;
+
+            int currentLevel = UserDataManager.Instance.CurrentLevel;
+            if (currentLevel == _appliedPlayerLevel)
+                return;
+
+            _status.AttackDamage = _status.AttackDamage
+                / (1f + LEVEL_UP_DAMAGE_PERCENT * (_appliedPlayerLevel - 1))
+                * (1f + LEVEL_UP_DAMAGE_PERCENT * (currentLevel - 1));
+            _appliedPlayerLevel = currentLevel;
+        }
+        #endregion
+
         #region LifeCycle
         private void OnDestroy()
         {
+            GameEventSystem.Unsubscribe<LevelUpEvent>(_OnPlayerLevelUp);
+
             if (_model != null)
                 _model.DOKill();
         }

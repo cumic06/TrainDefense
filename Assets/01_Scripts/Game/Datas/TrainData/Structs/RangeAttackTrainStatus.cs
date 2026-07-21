@@ -16,5 +16,7 @@ namespace TrainDefense.Game.Datas
         public float CriticalChance;
         public float CriticalDamage;
         public float SlowRate;
+        // 버스트 지속시간 증가량(초). config의 BurstDuration(base)에 가산 — 버스트 포탑(냉기)만 의미 있음.
+        public float BurstDuration;
     }
 }

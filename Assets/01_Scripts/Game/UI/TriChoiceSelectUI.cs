@@ -92,7 +92,8 @@ namespace TrainDefense.Game.UI
             var selectedUpgrade = triChoiceManager?.GetSelectedUpgrade(upgradeTrainChoice);
             if (selectedUpgrade != null)
             {
-               descriptionText.text = $"<line-height=120%><size=80%>{GetUpgradeDescription(selectedUpgrade)}</size>";
+               // 끝의 빈 줄이 세로 중앙 정렬 계산에 포함돼 내용이 반 줄가량 위로 올라간다(살짝 위 배치용).
+               descriptionText.text = $"<line-height=120%>{GetUpgradeDescription(selectedUpgrade)}\n";
                upgradeImage.gameObject.SetActive(true);
             }
             else
@@ -141,12 +142,6 @@ namespace TrainDefense.Game.UI
                   descriptionText.text = skillDescription;
             }
 
-            if (choiceOption is AddTrainChoice addTrainChoice)
-            {
-               string statText = GetTrainStatsDescription(addTrainChoice.TrainDataId);
-               if (!string.IsNullOrEmpty(statText))
-                  descriptionText.text += $"\n<size=50%>\n</size><line-height=70%><size=70%><color=#D7D3B3>{statText}</color></size>";
-            }
          }
       }
 
@@ -183,133 +178,92 @@ namespace TrainDefense.Game.UI
                    .FirstOrDefault(t => t.TrainData.Id == upgradeChoice.TargetTrainId);
                if (currentTrain != null)
                {
-                  currentLevel = currentTrain.CurrentLevel + 1;
+                  currentLevel = currentTrain.CurrentLevel;
                }
             }
          }
 
          var lines = new System.Collections.Generic.List<string>();
 
-         // 카드에 표시할 "현재값"은 상점 효과(배율)를 제외한, 포탑 업그레이드(트라이초이스)만 반영된 스탯.
-         // = base 스탯 + 0~현재레벨까지 각 레벨 업그레이드 증가량의 합.
-         // (train.CurrentStatus에는 상점 배율이 섞여 분리 불가하므로 upgradeData의 누적 메서드 사용)
+         // 값이 바뀌는 스탯만 "레이블 +증가량"으로 표시. (현재값 표기는 상점 배율 제외라 실전투값과 달라 혼동 + 긴 언어 오버플로우로 폐기)
+         // 공격 속도만 간격(초) 감소를 속도 증가율(%)로 환산 — 현재 간격이 필요해 누적 메서드 사용.
          if (upgradeData is TurretTrainUpgradeData turretUpgrade && currentTrain is TurretTrain turretTrain)
          {
             var baseStatus = turretTrain.BaseStatus;
             var accumulated = turretUpgrade.GetAccumulatedTurretStatusUpgrade(turretTrain.CurrentLevel);
-            float currentDamage = baseStatus.AttackDamage + accumulated.AttackDamage;
-            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
             float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
             float currentRange = baseStatus.AttackRange + accumulated.AttackRange;
-            int currentTargetCount = baseStatus.TargetCount + accumulated.TargetCount;
+            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
 
             var nextUpgrade = turretUpgrade.GetTurretStatusUpgrade(currentLevel);
-            float currentSpeed = ToAttackSpeed(currentInterval);
-            float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
 
-            // 처음 선택 카드(GetTrainStatsDescription)와 같은 스탯 목록을 전체 화살표(Upgrade_, "현재 → 다음")로 표시.
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackRange", "Stat_AttackRange", currentRange, nextUpgrade.AttackRange);
-            if (currentArea > 0f && turretTrain.TrainData is TurretTrainData turretData && UsesAttackArea(turretData))
-               AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
-            if (currentTargetCount > 1)
-               AddUpgradeOrStatLine(lines, "Upgrade_TargetCount", "Stat_TargetCount", currentTargetCount, nextUpgrade.TargetCount);
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackDamage", nextUpgrade.AttackDamage);
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackSpeed", nextUpgrade.AttackInterval, delta => FormatAttackSpeedDelta(currentInterval, delta));
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackRange", nextUpgrade.AttackRange, delta => FormatSizeDelta(currentRange, delta));
+            // 범위 업글이 있는 포탑(화염 파티클·레이저 빔 굵기·미사일/포격 폭발)만 델타≠0으로 표시됨 — 별도 게이트 불필요.
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackArea", nextUpgrade.AttackArea, delta => FormatSizeDelta(currentArea, delta));
+            AddUpgradeDeltaLine(lines, "Upgrade_TargetCount", nextUpgrade.TargetCount);
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackCount", nextUpgrade.AttackCount);
+            AddUpgradeDeltaLine(lines, "Upgrade_BurstDuration", nextUpgrade.BurstDuration);
          }
          else if (upgradeData is RangeTrainUpgradeData rangeUpgrade && currentTrain is RangeTrain rangeTrain)
          {
             var baseStatus = rangeTrain.BaseStatus;
             var accumulated = rangeUpgrade.GetAccumulatedRangeStatusUpgrade(rangeTrain.CurrentLevel);
-            float currentDamage = baseStatus.AttackDamage + accumulated.AttackDamage;
-            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
             float currentInterval = baseStatus.AttackInterval + accumulated.AttackInterval;
+            float currentArea = baseStatus.AttackArea + accumulated.AttackArea;
 
             var nextUpgrade = rangeUpgrade.GetRangeStatusUpgrade(currentLevel);
-            float currentSpeed = ToAttackSpeed(currentInterval);
-            float speedDelta = ToAttackSpeed(currentInterval + nextUpgrade.AttackInterval) - currentSpeed;
-            float currentSlow = baseStatus.SlowRate + accumulated.SlowRate;
 
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackDamage", "Stat_AttackDamage", currentDamage, nextUpgrade.AttackDamage);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackSpeed", "Stat_AttackSpeed", currentSpeed, speedDelta);
-            AddUpgradeOrStatLine(lines, "Upgrade_AttackArea", "Stat_AttackArea", currentArea, nextUpgrade.AttackArea);
-            // 둔화 포탑(냉기)만 둔화율 표시.
-            if (currentSlow > 0f)
-               AddUpgradeOrStatLine(lines, "Upgrade_Slow", "Stat_Slow", currentSlow, nextUpgrade.SlowRate);
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackDamage", nextUpgrade.AttackDamage);
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackSpeed", nextUpgrade.AttackInterval, delta => FormatAttackSpeedDelta(currentInterval, delta));
+            AddUpgradeDeltaLine(lines, "Upgrade_AttackArea", nextUpgrade.AttackArea, delta => FormatSizeDelta(currentArea, delta));
+            AddUpgradeDeltaLine(lines, "Upgrade_Slow", nextUpgrade.SlowRate);
+            AddUpgradeDeltaLine(lines, "Upgrade_BurstDuration", nextUpgrade.BurstDuration);
          }
 
          return string.Join("\n", lines);
       }
-
-      // 새 포탑 선택 카드용: 해당 포탑의 base 스탯을 줄 단위로 반환.
-      private string GetTrainStatsDescription(string trainDataId)
-      {
-         var trainData = DatabaseManager.Instance?.GetTrainData(trainDataId);
-         if (trainData == null) return null;
-
-         var lines = new System.Collections.Generic.List<string>();
-         if (trainData is TurretTrainData turretData)
-         {
-            var s = turretData.TurretTrainStatus;
-            AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
-            AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
-            AddStatValueLine(lines, "Stat_AttackRange", s.AttackRange);
-            if (s.AttackArea > 0f && UsesAttackArea(turretData))
-               AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
-            if (s.TargetCount > 1)
-               AddStatValueLine(lines, "Stat_TargetCount", s.TargetCount);
-         }
-         else if (trainData is RangeTrainData rangeData)
-         {
-            var s = rangeData.RangeTrainStatus;
-            AddStatValueLine(lines, "Stat_AttackDamage", s.AttackDamage);
-            AddStatValueLine(lines, "Stat_AttackSpeed", ToAttackSpeed(s.AttackInterval));
-            AddStatValueLine(lines, "Stat_AttackArea", s.AttackArea);
-            if (s.SlowRate > 0f)
-               AddStatValueLine(lines, "Stat_Slow", s.SlowRate);
-         }
-         return string.Join("\n", lines);
-      }
-
-      // 공격 딜레이(초)를 초당 공격 횟수(공격속도)로 변환. 시스템 값이 아닌 UI 표시 전용.
-      private static float ToAttackSpeed(float interval) => interval > 0f ? 1f / interval : 0f;
-
-      // 값을 공백 PadLeft → txt의 <mspace>(고정폭) 안에서 자릿수가 달라도 우측 끝이 정렬됨. 소수는 첫째 자리까지.
-      private const int StatValueWidth = 3;
-      private static string AlignStatValue(float value)
-         => value.ToString("0.#").PadLeft(StatValueWidth, ' ');
 
       // 포탑이 AttackArea 스탯을 실제 폭발 반경으로 쓰는지 판정 (빔 길이·파티클 비율은 제외).
-      private static bool UsesAttackArea(TurretTrainData turretData)
-         => turretData != null && turretData.UsesAttackArea;
-
-      // 업그레이드 카드용: 값이 바뀌는 스탯(delta≠0)만 "현재값 → 다음값"(upgradeKey) 화살표로 표시.
-      // 변화 없는 스탯은 statKey로 현재값만 표시. 해당 키가 없으면 조용히 건너뛴다.
-      private static void AddUpgradeOrStatLine(System.Collections.Generic.List<string> lines, string upgradeKey, string statKey, float currentValue, float delta)
+      // 업그레이드 카드용: 값이 바뀌는 스탯(delta≠0)만 "레이블 +증가량"(upgradeKey)으로 표시.
+      // 변화 없는 스탯은 표시하지 않는다. 해당 키가 없으면 조용히 건너뛴다.
+      // formatter가 주어지면 증가량 표기를 위임(예: 공격 속도의 % 환산), 없으면 "+0.#" 서식.
+      private static void AddUpgradeDeltaLine(System.Collections.Generic.List<string> lines, string upgradeKey, float delta, System.Func<float, string> formatter = null)
       {
-         if (delta != 0)
-         {
-            string upgradeTemplate = Localization.GetByKey(upgradeKey);
-            if (!string.IsNullOrEmpty(upgradeTemplate))
-            {
-               // 현재값({0})은 우측 정렬(PadLeft), 바뀔 값({1})은 좌측 정렬(PadLeft 없이 raw).
-               lines.Add(SafeFormat(upgradeTemplate, new object[] { AlignStatValue(currentValue), (currentValue + delta).ToString("0.#") }));
-               return;
-            }
-         }
-
-         string statTemplate = Localization.GetByKey(statKey);
-         if (!string.IsNullOrEmpty(statTemplate))
-            lines.Add(SafeFormat(statTemplate, new object[] { AlignStatValue(currentValue) }));
-      }
-
-      // 단일 스탯 값을 "레이블 값" 한 줄로 추가 (새 포탑 카드용).
-      private static void AddStatValueLine(System.Collections.Generic.List<string> lines, string statKey, float value)
-      {
-         string template = Localization.GetByKey(statKey);
-         if (string.IsNullOrEmpty(template))
+         if (delta == 0)
             return;
 
-         lines.Add(SafeFormat(template, new object[] { AlignStatValue(value) }));
+         string upgradeTemplate = Localization.GetByKey(upgradeKey);
+         if (string.IsNullOrEmpty(upgradeTemplate))
+            return;
+
+         string deltaText = formatter != null ? formatter(delta) : $"{(delta > 0 ? "+" : "")}{delta:0.#}";
+         if (string.IsNullOrEmpty(deltaText))
+            return;
+
+         lines.Add(SafeFormat(upgradeTemplate, new object[] { deltaText }));
+      }
+
+      // 공격 간격(초) 감소를 공격 속도 증가율(%)로 환산해 표기. 예: 0.25→0.2초 = +25%
+      private static string FormatAttackSpeedDelta(float currentInterval, float deltaInterval)
+      {
+         float nextInterval = currentInterval + deltaInterval;
+         if (currentInterval <= 0f || nextInterval <= 0f)
+            return null;
+
+         float percent = (currentInterval / nextInterval - 1f) * 100f;
+         return $"{(percent > 0 ? "+" : "")}{percent:0.#}%";
+      }
+
+      // 범위/사거리 증가를 현재값 대비 %로 표기 — 반경(크기) 기준이라 유저가 보는 원 크기 변화와 일치한다.
+      private static string FormatSizeDelta(float currentValue, float delta)
+      {
+         if (currentValue <= 0f)
+            return null;
+
+         float percent = delta / currentValue * 100f;
+         return $"{(percent > 0 ? "+" : "")}{percent:0.#}%";
       }
 
       private void OnSelectButtonClick()

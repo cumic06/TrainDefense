@@ -15,7 +15,6 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string spawnMonstersProbability;
 		public string spawnMonstersLevel;
 		public string spawnMonstersEliteChance;
-		public string spawnMonstersEliteRamp;
 
 		public void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -29,7 +28,6 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			spawnMonstersProbability = map.GetString(row, "spawn_monsters_probability");
 			spawnMonstersLevel = map.GetString(row, "spawn_monsters_level");
 			spawnMonstersEliteChance = map.GetString(row, "spawn_monsters_elite_chance");
-			spawnMonstersEliteRamp = map.GetString(row, "spawn_monsters_elite_ramp");
 		}
 
 		public void ToExcelRow(IRow row, HeaderMap map)
@@ -44,7 +42,6 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "spawn_monsters_probability", spawnMonstersProbability);
 			map.SetCell(row, "spawn_monsters_level", spawnMonstersLevel);
 			map.SetCell(row, "spawn_monsters_elite_chance", spawnMonstersEliteChance);
-			map.SetCell(row, "spawn_monsters_elite_ramp", spawnMonstersEliteRamp);
 		}
 	}
 }

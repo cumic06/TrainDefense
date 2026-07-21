@@ -6,29 +6,18 @@ namespace TrainDefense.Game.Datas
    [System.Serializable]
    public class EliteData
    {
-      [Header("스폰 타이밍")]
-      public float spawnInterval = 60f;
-      [Range(0f, 100f)]
-      public float spawnMaxChance = 30f;
-      [Range(0f, 100f)]
-      public float chanceGrowthPerInterval = 5f;
+      [Header("엘리트 스폰 밀도")]
+      [Tooltip("스폰 웨이브(틱) n회 분량의 시간당 엘리트 1마리. 웨이브당 마릿수(spawnCount)와 무관한 시간 기준 — 실제 몹 수로는 n×spawnCount마리당 1마리. 역(구간)마다 예산 = 구간시간 ÷ (n × 스폰간격)을 적립해 정수부만큼 구간에 균등 배치하고, 소수 잔여분은 다음 구간으로 이월한다. 절반으로 줄이면 엘리트가 2배 자주 나온다.")]
+      [Min(1)]
+      public int eliteSpawnCycle = 100;
 
-      [Header("엘리트 배율 램프 (한 판 내내 누적)")]
-      [Tooltip("이 시간(초)마다 엘리트 배율 진행도가 증가. 0 이하면 램프 비활성(진행도가 시작값에 고정).")]
-      public float multiplierRampInterval = 60f;
-      [Tooltip("interval마다 증가하는 진행도(0~1). 진행도가 1이면 각 몬스터의 EliteChanceMultiplier가 100% 적용된다.")]
-      public float multiplierGrowthPerInterval = 0.1f;
-      [Range(0f, 1f)]
-      [Tooltip("게임 시작 시 진행도. 0이면 초반에는 엘리트 배율이 0(엘리트 거의 없음)에서 시작해 점점 증가한다.")]
-      public float multiplierStartProgress = 0f;
-
-      [Header("엘리트 스탯 배율 (variants 가 비었을 때 빨강 fallback 으로 사용)")]
-      public float hpMultiplier = 3f;
-      public float damageMultiplier = 2f;
-      public float moveSpeedMultiplier = 1f;
-      public float sizeScale = 1.5f;
-      public float dropExpMultiplier = 2f;
-      public float dropMoneyMultiplier = 2f;
+      [Header("엘리트 스탯 배율 (variants 가 비었을 때 빨강 fallback 으로 사용 — 빨강 variant 와 동일하게 유지)")]
+      public float hpMultiplier = 120f;
+      public float damageMultiplier = 4f;
+      public float moveSpeedMultiplier = 1.4f;
+      public float sizeScale = 1.6f;
+      public float dropExpMultiplier = 10f;
+      public float dropMoneyMultiplier = 10f;
 
       [Header("엘리트 타입별 변형 (빨강/초록/파랑/노랑)")]
       [Tooltip("비워두면 코드 기본 4종이 자동 사용된다. 인스펙터에서 채우면 그 목록을 쓴다.")]
@@ -86,52 +75,56 @@ namespace TrainDefense.Game.Datas
             {
                type = EliteType.Red,
                weight = 1f,
-               hpMultiplier = 3f,
-               damageMultiplier = 2.5f,
-               moveSpeedMultiplier = 1.2f,
-               sizeScale = 1.5f,
-               dropExpMultiplier = 2.5f,
-               dropMoneyMultiplier = 2.5f,
+               hpMultiplier = 120f,
+               damageMultiplier = 4f,
+               moveSpeedMultiplier = 1.4f,
+               sizeScale = 1.6f,
+               dropExpMultiplier = 10f,
+               dropMoneyMultiplier = 10f,
+               ccResistance = 0.5f,
                tintColor = new Color(1f, 0.3f, 0.3f, 1f),
             },
-            // 🟢 초록 — 엄청 튼튼
+            // 🟢 초록 — 엄청 튼튼. 느려서 노출이 길고 CC 완전 면역이라 HP 로 탱크 정체성을 담당한다.
             new EliteVariant
             {
                type = EliteType.Green,
                weight = 1f,
-               hpMultiplier = 8f,
+               hpMultiplier = 250f,
                damageMultiplier = 1.5f,
                moveSpeedMultiplier = 0.85f,
-               sizeScale = 1.7f,
-               dropExpMultiplier = 3f,
-               dropMoneyMultiplier = 3f,
+               sizeScale = 1.8f,
+               dropExpMultiplier = 10f,
+               dropMoneyMultiplier = 10f,
+               ccResistance = 1f,
                tintColor = new Color(0.3f, 1f, 0.4f, 1f),
             },
-            // 🔵 파랑 — 주기적 원거리 공격
+            // 🔵 파랑 — 주기적 원거리 공격. 접근 전부터 기차를 깎는 대신 몸이 가장 물렁하다. (weight 0 = 미등장)
             new EliteVariant
             {
                type = EliteType.Blue,
-               weight = 1f,
-               hpMultiplier = 3f,
+               weight = 0f,
+               hpMultiplier = 70f,
                damageMultiplier = 2f,
                moveSpeedMultiplier = 1f,
                sizeScale = 1.5f,
-               dropExpMultiplier = 2.5f,
-               dropMoneyMultiplier = 2.5f,
+               dropExpMultiplier = 10f,
+               dropMoneyMultiplier = 10f,
+               ccResistance = 0.25f,
                tintColor = new Color(0.3f, 0.6f, 1f, 1f),
                rangedAttackInterval = 3f,
             },
-            // 🟡 노랑 — 주변 이속 증가 오라
+            // 🟡 노랑 — 주변 이속 증가 오라. 본체보다 주변 물량 가속이 위협인 세력 배가형. (weight 0 = 미등장)
             new EliteVariant
             {
                type = EliteType.Yellow,
-               weight = 1f,
-               hpMultiplier = 3f,
+               weight = 0f,
+               hpMultiplier = 80f,
                damageMultiplier = 1.5f,
                moveSpeedMultiplier = 1.1f,
                sizeScale = 1.5f,
-               dropExpMultiplier = 2.5f,
-               dropMoneyMultiplier = 2.5f,
+               dropExpMultiplier = 10f,
+               dropMoneyMultiplier = 10f,
+               ccResistance = 0.25f,
                tintColor = new Color(1f, 0.95f, 0.3f, 1f),
                auraRadius = 4f,
                auraSpeedMultiplier = 1.4f,

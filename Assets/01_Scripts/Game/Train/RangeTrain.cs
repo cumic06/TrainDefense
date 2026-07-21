@@ -3,6 +3,7 @@ using UnityEngine;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Stats;
 using System.Collections;
+using System.Collections.Generic;
 using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
@@ -24,9 +25,12 @@ namespace TrainDefense.Game
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statAttackDamageAccum;
-        private float _statAttackCountAccum;
 
         private bool _suppressMainProjectileShove;
+
+        // 매 프레임 게이트(_UpdateTickLoopSfx)에서 호출되므로, 전환 시점에만 Play/Stop이 나가도록 상태를 기억한다.
+        // (TurretTrain은 공격 인터벌 시점에만 Play해서 이런 가드가 필요 없다)
+        private bool _isLoopSfxPlaying;
 
         public event Action OnAttacked;
 
@@ -43,8 +47,6 @@ namespace TrainDefense.Game
             if (TrainData.DamageType == DamageType.Direct) return;
 
             SpawnRangeProjectile();
-
-            PlayLoopSFX();
 
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Subscribe<EngageReadyEvent>(_OnEngageReady);
@@ -80,29 +82,50 @@ namespace TrainDefense.Game
 
             if (_rangeProjectilePrefab == null)
                 SpawnRangeProjectile();
-
-            PlayLoopSFX();
         }
 
         private void PlayLoopSFX()
         {
-            if (rangeTrainData.AttackSoundType == SoundType.None) return;
+            if (_isLoopSfxPlaying) return;
+            if (rangeTrainData == null || rangeTrainData.AttackSoundType == SoundType.None) return;
+
+            _isLoopSfxPlaying = true;
             SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType, true);
         }
 
         private void StopLoopSFX()
         {
-            if (TrainData == null) return;
-            if (TrainData.DamageType == DamageType.Direct) return;
-            if (rangeTrainData.AttackSoundType == SoundType.None) return;
+            if (!_isLoopSfxPlaying) return;
+            if (rangeTrainData == null || rangeTrainData.AttackSoundType == SoundType.None) return;
+
+            _isLoopSfxPlaying = false;
             SoundManager.Instance.StopSFX(rangeTrainData.AttackSoundType);
         }
 
         protected override void Update()
         {
             base.Update();
-            if (_isDead) return;
+            if (_isDead)
+            {
+                StopLoopSFX();
+                return;
+            }
             RangeAttackHandler();
+            _UpdateTickLoopSfx();
+        }
+
+        // 틱(지속형) 포탑의 공격 루프 사운드를 실제 공격 중(범위 안에 틱 대상이 있을 때)에만 재생한다.
+        private void _UpdateTickLoopSfx()
+        {
+            if (TrainData == null || TrainData.DamageType == DamageType.Direct) return;
+
+            bool attacking = _rangeProjectilePrefab != null
+                             && _rangeProjectilePrefab.gameObject.activeInHierarchy
+                             && _rangeProjectilePrefab.HasTickTargets;
+            if (attacking)
+                PlayLoopSFX();
+            else
+                StopLoopSFX();
         }
 
         private void RangeAttackHandler()
@@ -111,14 +134,15 @@ namespace TrainDefense.Game
             {
                 if (rangeTrainData.RangeProjectilePrefab != null)
                 {
+                    if (_rangeProjectilePrefab == null)
+                    {
+                        SpawnRangeProjectile();
+                    }
+
                     if (_rangeProjectilePrefab != null)
                     {
                         _rangeProjectilePrefab.gameObject.SetActive(true);
                         _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
-                    }
-                    else
-                    {
-                        SpawnRangeProjectile();
                     }
 
                     if (rangeTrainData.AttackSoundType != SoundType.None && TrainData.DamageType == DamageType.Direct)
@@ -135,7 +159,21 @@ namespace TrainDefense.Game
                         {
                             StopCoroutine(_rangeAttackCoroutine);
                         }
-                        _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine());
+                        _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine(1f));
+                    }
+                    else
+                    {
+                        // 버스트(냉기): 장판을 지속시간 동안 켰다가 끄고, 그 뒤부터 쿨다운이 흐른다(총 주기 = 지속시간 + 간격).
+                        float burstDuration = _GetBurstDuration();
+                        if (burstDuration > 0f)
+                        {
+                            _attackCountdown = burstDuration + _currentRangeTrainStatus.AttackInterval;
+                            if (_rangeAttackCoroutine != null)
+                            {
+                                StopCoroutine(_rangeAttackCoroutine);
+                            }
+                            _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine(burstDuration));
+                        }
                     }
                 }
             }
@@ -145,9 +183,10 @@ namespace TrainDefense.Game
             }
         }
 
-        private IEnumerator RangeProjectileCoroutine()
+        // activeDuration초 동안 장판을 켜둔 뒤 끈다. (Direct = 기존 1초 유지, 버스트 냉기 = BurstDuration)
+        private IEnumerator RangeProjectileCoroutine(float activeDuration)
         {
-            yield return new WaitForSeconds(rangeTrainData.RangeTrainStatus.AttackInterval / rangeTrainData.RangeTrainStatus.AttackInterval);
+            yield return new WaitForSeconds(activeDuration);
 
             if (_rangeProjectilePrefab != null)
             {
@@ -220,8 +259,25 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
                     _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
                     _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+
+                    // 버스트(냉기)는 발동 시점에 켜므로, 깔아둔 장판은 꺼둔 채 대기한다.
+                    if (_GetBurstDuration() > 0f)
+                        _rangeProjectilePrefab.gameObject.SetActive(false);
                 }
             }
+        }
+
+        // 버스트 지속시간. 장판 투사체 config에 BurstDuration이 설정된 포탑(냉기)만 > 0.
+        private float _GetBurstDuration()
+        {
+            if (_rangeProjectilePrefab == null)
+                return 0f;
+
+            ProjectileData projectileData = _rangeProjectilePrefab.GetData();
+            float baseBurst = projectileData != null ? projectileData.BurstDuration : 0f;
+
+            // config가 base, 업그레이드 누적(BurstDuration 스탯)이 가산. base 0 = 비버스트 포탑(스탯 무시).
+            return baseBurst > 0f ? baseBurst + _currentRangeTrainStatus.BurstDuration : 0f;
         }
 
         public override void Upgrade(ITrainUpgradeData upgradeData)
@@ -232,20 +288,21 @@ namespace TrainDefense.Game
             base.Upgrade(upgradeData);
 
             // RangeTrain 전용 업그레이드 데이터가 있다면 적용
-            // Train 초기 레벨은 -1, upgradeStats 배열은 0부터 시작
-            // 업그레이드 적용 시: 업그레이드 전 레벨 + 1 인덱스 사용
+            // 다음에 적용할 upgradeStats 인덱스 = 업그레이드 전 레벨 (레벨 = 받은 업그레이드 횟수)
             if (upgradeData is RangeTrainUpgradeData rangeUpgradeData)
             {
-                int upgradeLevelIndex = currentLevel + 1;
+                int upgradeLevelIndex = currentLevel;
                 var rangeStatus = rangeUpgradeData.GetRangeStatusUpgrade(upgradeLevelIndex);
-                _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange;
-                _currentRangeTrainStatus.AttackArea += rangeStatus.AttackArea;
-                _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage;
+                // 중복선택 증가분은 base와 동일하게 상점 배율을 받는다(Model B): (base+중복선택)×(1+상점%).
+                _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange * GetShopMultiplier(StatType.AttackRange);
+                _currentRangeTrainStatus.AttackArea += rangeStatus.AttackArea * GetShopMultiplier(StatType.AttackArea);
+                _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage * GetShopMultiplier(StatType.AttackDamage);
                 _currentRangeTrainStatus.AttackCount += rangeStatus.AttackCount;
-                _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval;
+                _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval * GetShopMultiplier(StatType.AttackInterval);
                 _currentRangeTrainStatus.CriticalChance += rangeStatus.CriticalChance;
                 _currentRangeTrainStatus.CriticalDamage += rangeStatus.CriticalDamage;
                 _currentRangeTrainStatus.SlowRate += rangeStatus.SlowRate;
+                _currentRangeTrainStatus.BurstDuration += rangeStatus.BurstDuration;
 
                 if (_rangeProjectilePrefab != null)
                 {
@@ -330,7 +387,7 @@ namespace TrainDefense.Game
                 (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(_currentRangeTrainStatus.AttackDamage)}"),
                 (L("Detail_Range", "사거리"), $"{_currentRangeTrainStatus.AttackRange:F1}"),
                 (L("Detail_Area", "범위"), $"{_currentRangeTrainStatus.AttackArea:F1}"),
-                (L("Detail_Speed", "공격속도"), $"{ToAttackSpeed(_currentRangeTrainStatus.AttackInterval):F2}"),
+                (L("Detail_Speed", "공격속도"), $"{_currentRangeTrainStatus.AttackInterval:F2}"),
                 (L("Detail_CritChance", "크리티컬 확률"), $"{_currentRangeTrainStatus.CriticalChance:F0}%"),
                 (L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentRangeTrainStatus.CriticalDamage:F0}%"),
             };
@@ -418,8 +475,9 @@ namespace TrainDefense.Game
                     }
                     break;
 
+                // 정수 스탯(공격 횟수)은 % 아니라 flat +N (TurretTrain과 동일)
                 case StatType.AttackCount:
-                    _currentRangeTrainStatus.AttackCount += UtilMath.AccumulateIntDelta(ref _statAttackCountAccum, baseStatus.AttackCount * percent);
+                    _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(stat.Value);
                     break;
 
                 case StatType.AttackInterval:
@@ -462,21 +520,31 @@ namespace TrainDefense.Game
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    _currentRangeTrainStatus.AttackRange = _currentRangeTrainStatus.AttackRange / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                {
+                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    _currentRangeTrainStatus.AttackRange *= shopRatio;
+                    AccumulateShopMultiplier(StatType.AttackRange, shopRatio);
                     break;
+                }
 
                 case StatType.AttackArea:
-                    _currentRangeTrainStatus.AttackArea = _currentRangeTrainStatus.AttackArea / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                {
+                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    _currentRangeTrainStatus.AttackArea *= shopRatio;
+                    AccumulateShopMultiplier(StatType.AttackArea, shopRatio);
                     if (_rangeProjectilePrefab != null)
                     {
                         float areaScale = _currentRangeTrainStatus.AttackArea / _baseColliderRadius;
                         _rangeProjectilePrefab.transform.localScale = new Vector3(areaScale, areaScale, 1f);
                     }
                     break;
+                }
 
                 case StatType.AttackDamage:
                 {
-                    _currentRangeTrainStatus.AttackDamage = _currentRangeTrainStatus.AttackDamage / (1f + percent * prevLevel) * (1f + percent * newLevel);
+                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    _currentRangeTrainStatus.AttackDamage *= shopRatio;
+                    AccumulateShopMultiplier(StatType.AttackDamage, shopRatio);
                     if (_rangeProjectilePrefab != null)
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
                             _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
@@ -493,8 +561,12 @@ namespace TrainDefense.Game
                 }
 
                 case StatType.AttackInterval:
-                    _currentRangeTrainStatus.AttackInterval = _currentRangeTrainStatus.AttackInterval * (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
+                {
+                    float shopRatio = (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
+                    _currentRangeTrainStatus.AttackInterval *= shopRatio;
+                    AccumulateShopMultiplier(StatType.AttackInterval, shopRatio);
                     break;
+                }
 
                 case StatType.CriticalChance:
                     _currentRangeTrainStatus.CriticalChance += stat.Value * times;
@@ -521,24 +593,26 @@ namespace TrainDefense.Game
         public override void CopyProgressFrom(Train source)
         {
             base.CopyProgressFrom(source);
-            if (source is not RangeTrain srcRange) return;
-            if (srcRange.rangeTrainData == null || rangeTrainData == null) return;
+            if (source is not RangeTrain sourceRange) return;
+            if (sourceRange.rangeTrainData == null || rangeTrainData == null) return;
 
-            var srcBase = srcRange.rangeTrainData.RangeTrainStatus;
-            var srcCurrent = srcRange._currentRangeTrainStatus;
+            var sourceBase = sourceRange.rangeTrainData.RangeTrainStatus;
+            var sourceCurrent = sourceRange._currentRangeTrainStatus;
             var newBase = rangeTrainData.RangeTrainStatus;
 
-            _currentRangeTrainStatus.AttackRange = newBase.AttackRange + (srcCurrent.AttackRange - srcBase.AttackRange);
-            _currentRangeTrainStatus.AttackArea = newBase.AttackArea + (srcCurrent.AttackArea - srcBase.AttackArea);
-            _currentRangeTrainStatus.AttackDamage = newBase.AttackDamage + (srcCurrent.AttackDamage - srcBase.AttackDamage);
-            _currentRangeTrainStatus.AttackCount = newBase.AttackCount + (srcCurrent.AttackCount - srcBase.AttackCount);
-            _currentRangeTrainStatus.AttackInterval = newBase.AttackInterval + (srcCurrent.AttackInterval - srcBase.AttackInterval);
-            _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (srcCurrent.CriticalChance - srcBase.CriticalChance);
-            _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (srcCurrent.CriticalDamage - srcBase.CriticalDamage);
-            _currentRangeTrainStatus.SlowRate = newBase.SlowRate + (srcCurrent.SlowRate - srcBase.SlowRate);
+            _currentRangeTrainStatus.AttackRange = newBase.AttackRange + (sourceCurrent.AttackRange - sourceBase.AttackRange);
+            _currentRangeTrainStatus.AttackArea = newBase.AttackArea + (sourceCurrent.AttackArea - sourceBase.AttackArea);
+            _currentRangeTrainStatus.AttackDamage = newBase.AttackDamage + (sourceCurrent.AttackDamage - sourceBase.AttackDamage);
+            _currentRangeTrainStatus.AttackCount = newBase.AttackCount + (sourceCurrent.AttackCount - sourceBase.AttackCount);
+            _currentRangeTrainStatus.AttackInterval = newBase.AttackInterval + (sourceCurrent.AttackInterval - sourceBase.AttackInterval);
+            _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (sourceCurrent.CriticalChance - sourceBase.CriticalChance);
+            _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (sourceCurrent.CriticalDamage - sourceBase.CriticalDamage);
+            _currentRangeTrainStatus.SlowRate = newBase.SlowRate + (sourceCurrent.SlowRate - sourceBase.SlowRate);
+            _currentRangeTrainStatus.BurstDuration = newBase.BurstDuration + (sourceCurrent.BurstDuration - sourceBase.BurstDuration);
 
-            _statAttackDamageAccum = srcRange._statAttackDamageAccum;
-            _statAttackCountAccum = srcRange._statAttackCountAccum;
+            _statAttackDamageAccum = sourceRange._statAttackDamageAccum;
+
+            InheritShopMultipliers(sourceRange);
 
             if (_rangeProjectilePrefab != null)
             {

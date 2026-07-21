@@ -8,7 +8,7 @@ namespace TrainDefense.Game
     /// <summary>
     /// 공격 속도/범위 스탯 변경 + 기본 TargetPosAttack을 랜덤 위치 공격으로 대체.
     /// DSL: "RapidBombard:intervalPct:areaPct:count:halfX:halfY"
-    /// 예: "RapidBombard:-50:-50:2:10:7"  (count/halfX/halfY는 범위에만 사용, 발사 수는 AttackCount)
+    /// 예: "RapidBombard:-50:-50:2:10:7"  (count/halfX/halfY는 범위에만 사용, 발사 수는 TargetCount)
     /// </summary>
     public class RapidBombardPassive : TrainPassiveSkill
     {

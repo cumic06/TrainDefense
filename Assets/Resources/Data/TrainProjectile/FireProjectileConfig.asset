@@ -24,6 +24,7 @@ MonoBehaviour:
   directDamage: 0
   damageType: 1
   tickDamageInterval: 0.2
+  burstDuration: 4
   hasSlowEffect: 0
   slowValue: 0.5
   hasShoveEffect: 0

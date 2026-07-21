@@ -1969,7 +1969,6 @@ RectTransform:
   - {fileID: 8810000000000000011}
   - {fileID: 8820000000000000011}
   - {fileID: 8830000000000000011}
-  - {fileID: 2050887357}
   - {fileID: 742654797}
   - {fileID: 1681234259}
   - {fileID: 1142119251}
@@ -2428,12 +2427,13 @@ RectTransform:
   - {fileID: 845771124}
   - {fileID: 1740519620}
   - {fileID: 968503757}
+  - {fileID: 2050887357}
   m_Father: {fileID: 428184894}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 15}
-  m_SizeDelta: {x: 950, y: 200}
+  m_SizeDelta: {x: 800, y: 200}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &742654798
 MonoBehaviour:
@@ -2560,9 +2560,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.MonsterSpawner
   dontDestroyOnLoad: 0
   spawnInterval: 2
+  spawnCount: 1
+  maxSpawnCount: 4
+  spawnCountFirstIncreaseStation: 2
+  spawnCountIncreaseStationInterval: 3
   spawnRange: 2
-  stationSpawnAccelPercent: 8
-  maxSpawnAccelPercent: 80
+  stationSpawnAccelPercent: 3
+  maxSpawnAccelPercent: 60
   spawnMode: 1
   customSpawnAreas:
   - Offset: {x: 0, y: 10}
@@ -2605,9 +2609,9 @@ RectTransform:
   - {fileID: 2050801380}
   m_Father: {fileID: 742654797}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 180, y: -190}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 130, y: -90}
   m_SizeDelta: {x: 260, y: 180}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &845771126
@@ -2859,9 +2863,9 @@ RectTransform:
   - {fileID: 372542955}
   m_Father: {fileID: 742654797}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 740, y: -190}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -130, y: -90}
   m_SizeDelta: {x: 260, y: 180}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &968503758
@@ -3762,9 +3766,9 @@ RectTransform:
   - {fileID: 211117477}
   m_Father: {fileID: 742654797}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 460, y: -30}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -20}
   m_SizeDelta: {x: 300, y: 190}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1740519621
@@ -4370,11 +4374,11 @@ RectTransform:
   m_Children:
   - {fileID: 1342347518}
   - {fileID: 2050900002}
-  m_Father: {fileID: 428184894}
+  m_Father: {fileID: 742654797}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 945, y: -965}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 190}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2050900001

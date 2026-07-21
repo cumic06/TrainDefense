@@ -508,6 +508,9 @@ namespace TrainDefense.Game
          {
             train.ApplyStatsLevelAware(upgradeData.Stats, newLevel, prevLevel);
          }
+
+         // 메인 터렛(선택 주무기)도 편성 포탑과 동일하게 상점 업그레이드를 받는다.
+         _turret?.ApplyShopStats(upgradeData.Stats, newLevel, prevLevel);
       }
 
       /// <summary>
