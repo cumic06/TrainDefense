@@ -311,6 +311,9 @@ namespace TrainDefense.Game.UI
         // 구매 직후: 구매한 슬롯은 새 상품으로 교체하고, 나머지 슬롯은 무효화·가격 변화를 반영한다.
         private void _OnOfferPurchased(ShopOfferSlotUI purchasedSlot)
         {
+            // 인플레이션 반영이 슬롯 교체·Refresh보다 먼저여야 새 가격이 표시된다.
+            offerPricing.RegisterPurchase();
+
             _ReplaceOfferSlot(purchasedSlot);
 
             foreach (var slotUI in _offerSlotUIs)

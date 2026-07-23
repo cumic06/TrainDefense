@@ -23,7 +23,31 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private int elitePromotionCost = 400;
 
+        [Tooltip("★ 플레이스홀더 수치 — 상점 구매 1회마다 이후 모든 상품 가격이 이 퍼센트씩 복리로 오른다 (남발 구매 억제)")]
+        [SerializeField]
+        private float purchaseInflationPercent = 10f;
+
+        // 이번 게임에서 상점 구매가 일어난 횟수. GameScene 소속 ShopUI의 재직렬화로 게임 시작마다 0에서 출발한다.
+        [NonSerialized]
+        private int _purchaseCount;
+
+        // 구매 성공 1회당 호출 — 이후 모든 상품 가격에 인플레이션이 붙는다.
+        public void RegisterPurchase()
+        {
+            _purchaseCount++;
+        }
+
         public int GetPrice(IChoiceOption option)
+        {
+            return Mathf.RoundToInt(_GetBasePrice(option) * _GetInflationMultiplier());
+        }
+
+        private float _GetInflationMultiplier()
+        {
+            return Mathf.Pow(1f + purchaseInflationPercent / 100f, _purchaseCount);
+        }
+
+        private int _GetBasePrice(IChoiceOption option)
         {
             switch (option)
             {
