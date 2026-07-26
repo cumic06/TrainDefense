@@ -13434,7 +13434,7 @@ MonoBehaviour:
   mapSelectInterval: 3
   hpScale: 0.08
   attackScale: 0.04
-  goldScale: 0.1
+  goldScale: 0
   stationInspectionTimeIncrement: 1
 --- !u!1 &1398835984
 GameObject:

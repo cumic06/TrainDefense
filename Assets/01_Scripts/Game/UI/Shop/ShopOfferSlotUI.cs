@@ -10,7 +10,7 @@ namespace TrainDefense.Game.UI
 {
     /// <summary>
     /// 역 상점의 판매 슬롯 1칸 — 상품(ShopOffer) 표시와 구매를 담당한다.
-    /// 구매 즉시 슬롯 상품이 교체되므로 홀드 연속 구매는 오구매 위험이 있어 단발 클릭만 받는다.
+    /// 구매하면 슬롯이 비워지고(교체 없음), 새 상품은 리롤(전체 재추첨)로만 채워진다.
     /// </summary>
     public class ShopOfferSlotUI : MonoBehaviour
     {

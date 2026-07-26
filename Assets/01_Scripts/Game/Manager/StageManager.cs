@@ -43,6 +43,9 @@ namespace TrainDefense.Game.Manager
         // 난이도 스케일링용 누적 역 통과 수. 스테이지가 바뀌어도 리셋되지 않고 한 판 동안 계속 누적된다.
         // (스테이지 흐름 제어용 _currentStageInspectionTimeIndex 와 분리)
         private int _totalStationPassedCount = 0;
+        // 상점 가격 인상용 누적 상점 방문 수. 역 도착 상점과 맵 선택 상점을 모두 세므로 스테이지당 4씩 늘어난다.
+        // (_totalStationPassedCount는 역 도착만 세서 3씩 — 맵 선택 상점에서 가격이 안 오르는 문제를 피하려고 분리)
+        private int _totalInspectionPassedCount = 0;
         private bool _shouldShowStageSelectionOnStageEnd;
         private bool _pendingStageSelectionAfterShop;
         private bool _isGameOver;
@@ -61,6 +64,9 @@ namespace TrainDefense.Game.Manager
 
         /// <summary>한 판 동안 지나온 누적 역 통과 수. (상점 기차 수리 가격 산정 등에 사용)</summary>
         public int TotalStationPassedCount => _totalStationPassedCount;
+
+        /// <summary>한 판 동안 열린 누적 상점 수(역 도착 + 맵 선택). 상점 상품 가격·리롤 비용의 시간 축.</summary>
+        public int TotalInspectionPassedCount => _totalInspectionPassedCount;
 
         /// <summary>게임오버 결산용 — 한 판 동안 거쳐 간 맵별 점수/처치 기록(방문 순서).</summary>
         public IReadOnlyList<StageRunRecord> RunRecords => _runRecords;
@@ -143,6 +149,7 @@ namespace TrainDefense.Game.Manager
         {
             // 새 게임 시작 시에만 누적 난이도 카운터 초기화 (스테이지 변경 시에는 유지)
             _totalStationPassedCount = 0;
+            _totalInspectionPassedCount = 0;
             _UpdateSpawnRules();
 
             // 맵별 결산 기록 초기화. 첫 맵은 게임 시작과 동시이므로 진입 스냅샷을 0으로 둔다.
@@ -264,6 +271,9 @@ namespace TrainDefense.Game.Manager
                 TimelineManager.Instance.StartShopEnterTimeline(() => GameEventSystem.Publish(new InspectionStartEvent()));
             else
                 GameEventSystem.Publish(new InspectionStartEvent());
+
+            // 역 도착·맵 선택 두 경로의 공통 진입점이라 여기서 센다(증가 시점은 _totalStationPassedCount와 동일).
+            _totalInspectionPassedCount++;
         }
 
         // 현재 진행 중인 역 구간의 도착 시간.

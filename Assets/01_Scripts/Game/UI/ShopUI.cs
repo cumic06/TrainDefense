@@ -1,9 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using DG.Tweening;
+using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
@@ -40,12 +41,31 @@ namespace TrainDefense.Game.UI
 
         [Header("Offer Slots")]
         [SerializeField]
-        [Tooltip("역 상점에 제시되는 판매 슬롯 수. 구매하면 그 슬롯만 새 상품으로 교체된다")]
+        [Tooltip("역 상점에 제시되는 판매 슬롯 수. 구매한 상품은 슬롯에서 사라지고, 리롤로만 전체 재추첨된다")]
         private int offerSlotCount = 3;
         [SerializeField]
         private ShopOfferSlotUI offerSlotPrefab;
         [SerializeField]
         private ShopOfferPricing offerPricing = new();
+
+        [Header("Reroll")]
+        [SerializeField]
+        [Tooltip("이번 역 상점의 슬롯 전체를 다시 추첨하는 버튼")]
+        private Button rerollButton;
+        [SerializeField]
+        private TextMeshProUGUI rerollLabelText;
+        [SerializeField]
+        [Tooltip("첫 리롤 비용 = 이 값 × (누적 상점 방문 수 + 1). 수입이 커지는 후반에 리롤이 껌값이 되지 않게 진행도 비례")]
+        private int rerollBaseCostPerStation = 20;
+        [SerializeField]
+        [Tooltip("리롤할 때마다 현재 비용에 더해지는 증가분 = 이 값 × (누적 상점 방문 수 + 1). 상점을 새로 열면 첫 비용으로 초기화")]
+        private int rerollCostIncreasePerStation = 10;
+        [SerializeField]
+        [Tooltip("보유 코인이 부족할 때 리롤 비용 텍스트에 적용할 색상")]
+        private Color rerollInsufficientColor = Color.red;
+        [SerializeField]
+        [Tooltip("리롤 비용 표기 크기(라벨 대비 배율)")]
+        private float rerollCostFontScale = 0.5f;
         #endregion
 
         private RectTransform _rectTransform;
@@ -55,6 +75,10 @@ namespace TrainDefense.Game.UI
         private Vector2[] _itemFinalPositions;
 
         private readonly List<ShopOfferSlotUI> _offerSlotUIs = new();
+
+        private int _currentRerollCost;
+        private string _rerollLabelPrefix;
+        private Color _rerollLabelOriginalColor;
 
         private bool isShopOpen = false;
         public bool IsShopOpen => isShopOpen;
@@ -75,6 +99,21 @@ namespace TrainDefense.Game.UI
             shopButtonUI.OnClickShopButton += _ShopOpenHandler;
             GameEventSystem.Subscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Subscribe<ChangeCoinUIEvent>(_OnChangeCoin);
+
+            if (rerollButton != null)
+            {
+                rerollButton.onClick.AddListener(_OnRerollButtonClick);
+
+                if (rerollLabelText == null)
+                    rerollLabelText = rerollButton.GetComponentInChildren<TextMeshProUGUI>(true);
+            }
+
+            if (rerollLabelText != null)
+            {
+                _rerollLabelPrefix = rerollLabelText.text;
+                _rerollLabelOriginalColor = rerollLabelText.color;
+            }
         }
 
         private void OnDestroy()
@@ -82,6 +121,7 @@ namespace TrainDefense.Game.UI
             shopButtonUI.OnClickShopButton -= _ShopOpenHandler;
             GameEventSystem.Unsubscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(_OnChangeCoin);
         }
 
         private void OnUpgradeApplied(UpgradeAppliedEvent upgradeAppliedEvent)
@@ -95,8 +135,11 @@ namespace TrainDefense.Game.UI
 
         private void _OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
-            // 역 도착 시점 1회만 새로 추첨 — 상점을 닫았다 다시 열어도(토글 버튼) 이번 역 상품은 유지된다.
+            // 역 도착 시점에 새로 추첨. (상점은 역당 1회 — 닫으면 바로 출발이라 재오픈은 없다)
+            // 리롤 비용은 상점이 열릴 때마다(맵 선택 상점 포함) 기본값으로 초기화된다.
+            _currentRerollCost = rerollBaseCostPerStation * _GetRerollStationMultiplier();
             _RebuildOfferSlots();
+            _RefreshRerollUI();
 
             if (!isShopOpen)
             {
@@ -250,14 +293,15 @@ namespace TrainDefense.Game.UI
             }
         }
 
-        // 이번 역의 판매 슬롯(offerSlotCount개)을 현재 상태 기준으로 새로 추첨한다.
+        // 판매 슬롯(offerSlotCount개) 전체를 현재 상태 기준으로 새로 추첨한다. (역 도착 + 리롤)
         private void _RebuildOfferSlots()
         {
             if (TriChoiceManager.Instance == null)
                 return;
 
-            // 역마다 새 제안이므로 카드별 랜덤 캐시(엘리트 부여 스킬 등)를 비우고 새로 뽑는다.
-            // ★ 표시~구매 사이에 다시 Clear하면 표시된 스킬과 실제 부여 스킬이 어긋나므로 이 시점 1회만 호출.
+            // 전체 재추첨이므로 카드별 랜덤 캐시(엘리트 부여 스킬 등)를 비우고 새로 뽑는다.
+            // ★ 표시 중인 상품을 유지한 채 Clear하면 표시된 스킬과 실제 부여 스킬이 어긋나므로
+            //   반드시 모든 슬롯을 다시 채우는 이 경로에서만 호출한다.
             TriChoiceManager.Instance.ClearSelectedChoiceData();
 
             _EnsureOfferSlots();
@@ -308,47 +352,77 @@ namespace TrainDefense.Game.UI
             return loadedPrefab;
         }
 
-        // 구매 직후: 구매한 슬롯은 새 상품으로 교체하고, 나머지 슬롯은 무효화·가격 변화를 반영한다.
+        // 구매 직후: 구매한 슬롯은 비우고(교체 없음), 나머지 슬롯은 무효화·가격 변화를 반영한다.
+        // 새 상품은 리롤(전체 재추첨)로만 채워진다.
         private void _OnOfferPurchased(ShopOfferSlotUI purchasedSlot)
         {
-            // 인플레이션 반영이 슬롯 교체·Refresh보다 먼저여야 새 가격이 표시된다.
-            offerPricing.RegisterPurchase();
-
-            _ReplaceOfferSlot(purchasedSlot);
+            purchasedSlot.SetEmpty();
 
             foreach (var slotUI in _offerSlotUIs)
             {
-                if (slotUI == null || slotUI == purchasedSlot)
+                if (slotUI == null || slotUI == purchasedSlot || !slotUI.gameObject.activeSelf)
                     continue;
 
-                // 다른 구매로 무효해진 상품(예: 엘리트 승격으로 교체된 포탑의 강화)이나
-                // 상품이 떨어져 비워둔 슬롯도 다시 채워본다.
-                if (!slotUI.gameObject.activeSelf || !slotUI.HasValidOffer)
-                    _ReplaceOfferSlot(slotUI);
+                // 다른 구매로 무효해진 상품(예: 엘리트 승격으로 교체된 포탑의 강화)도 함께 내린다.
+                if (!slotUI.HasValidOffer)
+                    slotUI.SetEmpty();
                 else
                     slotUI.Refresh();
             }
         }
 
-        // 슬롯에 "현재 표시 중이 아닌" 새 상품을 넣는다. 더 팔 상품이 없으면 슬롯을 비운다.
-        // 교체되는 슬롯 자신의 현재 상품도 제외 목록에 포함되어 "구매하면 다른 상품으로 바뀜"이 보장된다.
-        private void _ReplaceOfferSlot(ShopOfferSlotUI slot)
+        // 리롤: 코인을 차감하고 슬롯 전체를 다시 추첨한다. 비용은 리롤마다 역 수 비례 증가분만큼 오른다.
+        private void _OnRerollButtonClick()
         {
-            var displayedOptions = _offerSlotUIs
-                .Where(slotUI => slotUI != null && slotUI.gameObject.activeSelf && slotUI.CurrentOffer != null)
-                .Select(slotUI => slotUI.CurrentOffer.Option)
-                .ToList();
-
-            var entry = TriChoiceManager.Instance?.GetShopChoiceExcluding(displayedOptions);
-
-            if (entry?.Option == null)
-            {
-                slot.SetEmpty();
-
+            // 코인 부족 시엔 버튼 interactable이 이미 꺼져 있지만, 방어적으로 다시 확인한다.
+            // 차감·검증 = UserDataManager 단일 경로 (상점 슬롯 구매와 동일).
+            if (UserDataManager.Instance == null || !UserDataManager.Instance.TrySpendCoin(_currentRerollCost))
                 return;
+
+            _currentRerollCost += rerollCostIncreasePerStation * _GetRerollStationMultiplier();
+
+            _RebuildOfferSlots();
+            _RefreshRerollUI();
+        }
+
+        // 리롤 비용의 진행도 비례 계수. 상품 가격 인상(ShopOfferPricing)과 같은 축(누적 상점 방문 수)을 쓴다.
+        private int _GetRerollStationMultiplier()
+        {
+            var stageManager = StageManager.Instance;
+            int totalInspectionPassedCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
+
+            return totalInspectionPassedCount + 1;
+        }
+
+        private void _OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)
+        {
+            // 코인 변경은 전투 중 처치마다 발행되는 고빈도 이벤트 — 상점이 닫혀 있으면 스킵.
+            if (!isShopOpen)
+                return;
+
+            // 구독 순서에 의존하지 않도록 이벤트의 AfterCoin을 직접 기준으로 사용한다.
+            _ApplyRerollUI(changeCoinEvent.AfterCoin);
+        }
+
+        private void _RefreshRerollUI()
+        {
+            _ApplyRerollUI(UserDataManager.Instance != null ? UserDataManager.Instance.Coin : 0);
+        }
+
+        // 현재 리롤 비용을 라벨에 표기한다. 코인이 부족하면 금액을 빨간색으로 표기하고 버튼을 비활성화한다.
+        private void _ApplyRerollUI(int coin)
+        {
+            bool canReroll = coin >= _currentRerollCost;
+
+            if (rerollLabelText != null)
+            {
+                int costSizePercent = Mathf.RoundToInt(rerollCostFontScale * 100f);
+                rerollLabelText.text = $"{_rerollLabelPrefix}\n<size={costSizePercent}%><sprite name=\"Coin\"> {_currentRerollCost.ToCommaString()}$</size>";
+                rerollLabelText.color = canReroll ? _rerollLabelOriginalColor : rerollInsufficientColor;
             }
 
-            slot.SetOffer(new ShopOffer(entry.Option, offerPricing));
+            if (rerollButton != null)
+                rerollButton.interactable = canReroll;
         }
     }
 }
