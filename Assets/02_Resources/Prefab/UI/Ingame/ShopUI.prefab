@@ -132,9 +132,9 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 250, y: 350}
-  m_Spacing: {x: 125, y: 50}
+  m_Spacing: {x: 75, y: 50}
   m_Constraint: 1
-  m_ConstraintCount: 4
+  m_ConstraintCount: 5
 --- !u!1 &4800735570238386227
 GameObject:
   m_ObjectHideFlags: 0
@@ -205,7 +205,7 @@ MonoBehaviour:
   itemDropHeight: 250
   itemDropDuration: 0.35
   itemDropStagger: 0.07
-  offerSlotCount: 3
+  offerSlotCount: 5
   offerSlotPrefab: {fileID: -8685490612574751861, guid: 773092aaa222fadaadb28f8d86a37329, type: 3}
   offerPricing:
     turretPurchaseCost: 150

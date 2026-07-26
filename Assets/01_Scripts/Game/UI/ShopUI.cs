@@ -42,7 +42,7 @@ namespace TrainDefense.Game.UI
         [Header("Offer Slots")]
         [SerializeField]
         [Tooltip("역 상점에 제시되는 판매 슬롯 수. 구매한 상품은 슬롯에서 사라지고, 리롤로만 전체 재추첨된다")]
-        private int offerSlotCount = 3;
+        private int offerSlotCount = 5;
         [SerializeField]
         private ShopOfferSlotUI offerSlotPrefab;
         [SerializeField]
