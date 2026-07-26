@@ -2543,39 +2543,39 @@ MonoBehaviour:
     addTrainChoices:
     - Option:
         rid: 2066870334413602903
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 2066870334413602905
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 2066870334413602906
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 2066870334413602907
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 2066870334413602908
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 2066870365229940814
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 439507874151399537
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 439507899332690073
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 439508061413965932
-      Weight: 0
+      Weight: 1
       Tier: 0
     - Option:
         rid: 3319472319078334560
