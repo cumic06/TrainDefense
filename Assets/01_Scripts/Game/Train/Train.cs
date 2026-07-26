@@ -305,7 +305,7 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
         }
 
-        /// <summary>최대 체력의 ratio(0~1) 만큼 체력을 회복한다. (업그레이드 선택 시 일부 회복용)</summary>
+        /// <summary>최대 체력의 ratio(0~1) 만큼 체력을 회복한다. (자가 복구 패시브·긴급 수리용)</summary>
         public virtual void RestoreHpByRatio(float ratio)
         {
             if (_isDead || ratio <= 0f) return;
