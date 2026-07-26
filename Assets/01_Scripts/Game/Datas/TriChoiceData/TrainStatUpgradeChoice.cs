@@ -13,7 +13,13 @@ namespace TrainDefense.Game.Datas
     {
         // ★ 플레이스홀더 밸런스 — 1회 구매당 base 대비 증가율. 인게임 테스트 후 사용자가 조정.
         public const float DAMAGE_UPGRADE_RATE = 0.15f;
-        public const float ATTACK_INTERVAL_REDUCE_RATE = 0.05f; // base 간격 -5%/회 (만렙 몰빵 시 -40%)
+        // 공속 = "발사 속도(1/간격) 가산" → 간격 = base ÷ (1 + 이 값 × 구매 횟수).
+        // 간격을 base 대비 고정량으로 깎는 방식은 20회에 간격이 0이 되어 DPS가 폭발한다(옛 LoL 쿨감과 같은 결함).
+        // 브로타토·LoL 어빌리티 헤이스트가 쓰는 이 형태는 간격이 0에 닿지 않고 DPS가 구매 횟수에 정확히 선형이라,
+        // 공격력(가산)과 곱으로 합쳐질 때 한 스탯 몰빵이 분산 구매보다 항상 불리해진다.
+        public const float ATTACK_SPEED_UPGRADE_RATE = 0.15f;
+        // 발사 속도 상한(base 대비 배율). 프레임 천장(FixedUpdate 50Hz)에 닿기 전에 카드가 사라지게 하는 안전장치.
+        public const float MAX_ATTACK_SPEED_MULTIPLIER = 10f;
         public const float ATTACK_AREA_UPGRADE_RATE = 0.10f;
 
         // ★ 포탑별 스탯 풀 규칙이 코드에 하드코딩된 상태(플레이스홀더 단계). 신규 포탑 추가 시 여기도 갱신 필요 —
@@ -95,6 +101,10 @@ namespace TrainDefense.Game.Datas
             if (!trainManager.CheckHasTrainById(_train.TrainData.Id))
                 return false;
 
+            // 공속은 발사 속도 상한에 닿으면 더 사도 효과가 없으므로 카드를 내린다(돈 낭비 방지).
+            if (_statType == StatType.AttackInterval && _GetAttackSpeedMultiplier() >= MAX_ATTACK_SPEED_MULTIPLIER)
+                return false;
+
             // 레벨 = 받은 업그레이드 횟수(획득 0). 만렙이면 더 못 산다.
             return _train.CurrentLevel < Train.MAX_LEVEL;
         }
@@ -109,7 +119,27 @@ namespace TrainDefense.Game.Datas
             var upgradeData = _BuildUpgradeData();
 
             if (upgradeData != null)
+            {
                 mainTrain.UpgradeTrain(_train.TrainData.Id, upgradeData);
+                // 공속 증가분이 구매 횟수에서 나오므로 적용 후 반드시 센다.
+                _train.IncrementStatUpgradeCount(_statType);
+            }
+        }
+
+        // 발사 속도 배율 = 1 + rate × 구매 횟수. (간격 = base ÷ 이 값)
+        private float _GetAttackSpeedMultiplier()
+        {
+            return 1f + ATTACK_SPEED_UPGRADE_RATE * _train.GetStatUpgradeCount(StatType.AttackInterval);
+        }
+
+        // 이번 구매로 줄어드는 간격(음수). 간격 = base ÷ (1 + rate×n) 곡선의 n → n+1 차분이라
+        // 구매를 거듭할수록 감소폭이 작아지지만 발사 횟수(=DPS)는 매번 base 대비 rate만큼 선형으로 늘어난다.
+        private float _GetAttackIntervalDelta(float baseInterval)
+        {
+            float currentMultiplier = _GetAttackSpeedMultiplier();
+            float nextMultiplier = currentMultiplier + ATTACK_SPEED_UPGRADE_RATE;
+
+            return baseInterval / nextMultiplier - baseInterval / currentMultiplier;
         }
 
         // 상점 슬롯 설명용 "레이블 +값" 한 줄 (Upgrade_* 로컬라이즈 템플릿 재사용, 리치 태그 제거)
@@ -128,7 +158,7 @@ namespace TrainDefense.Game.Datas
             string deltaText = _statType switch
             {
                 StatType.AttackDamage => $"+{_GetBaseAttackDamage() * DAMAGE_UPGRADE_RATE:0.#}",
-                StatType.AttackInterval => $"+{ATTACK_INTERVAL_REDUCE_RATE * 100f:0}%",
+                StatType.AttackInterval => $"+{ATTACK_SPEED_UPGRADE_RATE * 100f:0}%",
                 StatType.AttackArea => $"+{ATTACK_AREA_UPGRADE_RATE * 100f:0}%",
                 _ => "+1",
             };
@@ -163,7 +193,7 @@ namespace TrainDefense.Game.Datas
                 switch (_statType)
                 {
                     case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * DAMAGE_UPGRADE_RATE; break;
-                    case StatType.AttackInterval: delta.AttackInterval = -baseStatus.AttackInterval * ATTACK_INTERVAL_REDUCE_RATE; break;
+                    case StatType.AttackInterval: delta.AttackInterval = _GetAttackIntervalDelta(baseStatus.AttackInterval); break;
                     case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * ATTACK_AREA_UPGRADE_RATE; break;
                     case StatType.TargetCount: delta.TargetCount = 1; break;
                     case StatType.AttackCount: delta.AttackCount = 1; break;
@@ -181,7 +211,7 @@ namespace TrainDefense.Game.Datas
                 switch (_statType)
                 {
                     case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * DAMAGE_UPGRADE_RATE; break;
-                    case StatType.AttackInterval: delta.AttackInterval = -baseStatus.AttackInterval * ATTACK_INTERVAL_REDUCE_RATE; break;
+                    case StatType.AttackInterval: delta.AttackInterval = _GetAttackIntervalDelta(baseStatus.AttackInterval); break;
                     case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * ATTACK_AREA_UPGRADE_RATE; break;
                     default: return null;
                 }

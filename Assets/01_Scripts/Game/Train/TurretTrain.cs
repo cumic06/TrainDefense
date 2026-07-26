@@ -1202,7 +1202,9 @@ namespace TrainDefense.Game
                             foreach (var p in _nonMovementProjectiles) { if (p != null) InitializeProjectileDamage(p); }
                         break;
                     case StatType.AttackInterval:
-                        // 공속은 상점과 동일하게 현재값 기준 역수 곱셈(DPS 선형, 0 이하 방지). percent 음수=공속 증가.
+                        // 공속은 현재값 기준 역수 곱셈(간격이 0 이하로 안 내려감). percent 음수=공속 증가.
+                        // ★ 상점 스탯 강화는 이 방식이 아니다 — TrainStatUpgradeChoice가 base 대비 가산 감소
+                        //   델타를 만들어 Upgrade 경로로 더하므로, 그쪽은 반복 구매 시 간격이 0에 도달한다.
                         _currentTurretTrainStatus.AttackInterval *= 1f / (1f + (-percent));
                         break;
                     default:
