@@ -602,11 +602,11 @@ MonoBehaviour:
     - 60001
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 10
+      AttackDamage: 6
       AttackRange: 8
-      AttackArea: 2.2
+      AttackArea: 0
       AttackCount: 1
-      AttackInterval: 0.25
+      AttackInterval: 0.3
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -654,9 +654,9 @@ MonoBehaviour:
     - 60010
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 30
+      AttackDamage: 20
       AttackRange: 8
-      AttackArea: 2.2
+      AttackArea: 2
       AttackCount: 1
       AttackInterval: 1
       TargetCount: 1
@@ -682,7 +682,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 20
-      AttackArea: 3
+      AttackArea: 1.5
       AttackCount: 1
       AttackInterval: 2
       TargetCount: 1
@@ -705,11 +705,11 @@ MonoBehaviour:
     - 60013
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 10
+      AttackDamage: 8
       AttackRange: 11
-      AttackArea: 11
+      AttackArea: 0
       AttackCount: 1
-      AttackInterval: 1.3
+      AttackInterval: 1.4
       TargetCount: 2
       CriticalChance: 0
       CriticalDamage: 0
@@ -730,7 +730,7 @@ MonoBehaviour:
     - 60015
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 40
       AttackRange: 13
       AttackArea: 3
       AttackCount: 1
@@ -755,11 +755,11 @@ MonoBehaviour:
     - 60017
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 30
       AttackRange: 12
-      AttackArea: 12
+      AttackArea: 0
       AttackCount: 1
-      AttackInterval: 1
+      AttackInterval: 1.2
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -878,7 +878,7 @@ MonoBehaviour:
     - 60007
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 30
       AttackRange: 4
       AttackArea: 4
       AttackCount: 1
@@ -904,14 +904,14 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 3
+      AttackDamage: 2
       AttackRange: 3
       AttackArea: 5
       AttackCount: 1
       AttackInterval: 2.5
       CriticalChance: 0
       CriticalDamage: 0
-      SlowRate: 25
+      SlowRate: 30
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   trainSkillDataDB:
