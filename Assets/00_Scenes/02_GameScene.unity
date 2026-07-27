@@ -13432,7 +13432,8 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   monsterRushInterval: 0
   mapSelectInterval: 3
-  hpScale: 0.08
+  hpScale: 0.03
+  hpScaleIncrement: 0.008
   attackScale: 0.04
   goldScale: 0
   stationInspectionTimeIncrement: 1

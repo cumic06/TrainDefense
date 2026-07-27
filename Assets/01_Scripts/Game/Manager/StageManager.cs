@@ -24,6 +24,10 @@ namespace TrainDefense.Game.Manager
         [SerializeField]
         private float hpScale;
 
+        // 상점을 지날 때마다 hpScale에 더해지는 증가폭. 0이면 매 상점 같은 비율(단순 지수 성장)이 된다.
+        [SerializeField]
+        private float hpScaleIncrement;
+
         [SerializeField]
         private float attackScale;
 
@@ -40,11 +44,9 @@ namespace TrainDefense.Game.Manager
         private int _currentStageInspectionTimeIndex = 0;
         private GameObject _currentMapInstance;
         private int _inspectionCount = 0;
-        // 난이도 스케일링용 누적 역 통과 수. 스테이지가 바뀌어도 리셋되지 않고 한 판 동안 계속 누적된다.
+        // 난이도·가격 스케일링용 누적 상점 방문 수. 역 도착 상점과 맵 선택 상점을 모두 세므로
+        // 스테이지당 4씩 늘어난다. 스테이지가 바뀌어도 리셋되지 않고 한 판 동안 계속 누적된다.
         // (스테이지 흐름 제어용 _currentStageInspectionTimeIndex 와 분리)
-        private int _totalStationPassedCount = 0;
-        // 상점 가격 인상용 누적 상점 방문 수. 역 도착 상점과 맵 선택 상점을 모두 세므로 스테이지당 4씩 늘어난다.
-        // (_totalStationPassedCount는 역 도착만 세서 3씩 — 맵 선택 상점에서 가격이 안 오르는 문제를 피하려고 분리)
         private int _totalInspectionPassedCount = 0;
         private bool _shouldShowStageSelectionOnStageEnd;
         private bool _pendingStageSelectionAfterShop;
@@ -62,10 +64,9 @@ namespace TrainDefense.Game.Manager
 
         public StageData CurrentStageData => _stageDatas[_currentStageIndex];
 
-        /// <summary>한 판 동안 지나온 누적 역 통과 수. (상점 기차 수리 가격 산정 등에 사용)</summary>
-        public int TotalStationPassedCount => _totalStationPassedCount;
-
-        /// <summary>한 판 동안 열린 누적 상점 수(역 도착 + 맵 선택). 상점 상품 가격·리롤 비용의 시간 축.</summary>
+        /// <summary>
+        /// 한 판 동안 열린 누적 상점 수(역 도착 + 맵 선택). 난이도 스케일과 상품 가격이 공유하는 시간 축.
+        /// </summary>
         public int TotalInspectionPassedCount => _totalInspectionPassedCount;
 
         /// <summary>게임오버 결산용 — 한 판 동안 거쳐 간 맵별 점수/처치 기록(방문 순서).</summary>
@@ -148,7 +149,6 @@ namespace TrainDefense.Game.Manager
         private void _OnGameEnter(GameEnterEvent gameEnterEvent)
         {
             // 새 게임 시작 시에만 누적 난이도 카운터 초기화 (스테이지 변경 시에는 유지)
-            _totalStationPassedCount = 0;
             _totalInspectionPassedCount = 0;
             _UpdateSpawnRules();
 
@@ -272,15 +272,15 @@ namespace TrainDefense.Game.Manager
             else
                 GameEventSystem.Publish(new InspectionStartEvent());
 
-            // 역 도착·맵 선택 두 경로의 공통 진입점이라 여기서 센다(증가 시점은 _totalStationPassedCount와 동일).
+            // 역 도착·맵 선택 두 경로의 공통 진입점. 난이도와 가격이 같은 축을 쓰도록 여기서만 센다.
             _totalInspectionPassedCount++;
         }
 
         // 현재 진행 중인 역 구간의 도착 시간.
-        // 한 판 동안 통과한 누적 역 수(_totalStationPassedCount)에 비례해 증가하며, 스테이지가 바뀌어도 리셋되지 않는다.
+        // 한 판 동안 열린 누적 상점 수(_totalInspectionPassedCount)에 비례해 증가하며, 스테이지가 바뀌어도 리셋되지 않는다.
         private float _GetCurrentStationDuration()
         {
-            return CurrentStageData.BaseInspectionTime + stationInspectionTimeIncrement * _totalStationPassedCount;
+            return CurrentStageData.BaseInspectionTime + stationInspectionTimeIncrement * _totalInspectionPassedCount;
         }
 
         private void _CurrentStageInspectionUp()
@@ -290,7 +290,6 @@ namespace TrainDefense.Game.Manager
             _StartInspectionWithTimeline();
 
             _inspectionCount++;
-            _totalStationPassedCount++;
         }
 
         private void _OnGameOverStart(GameOverStartEvent _) => _isGameOver = true;
@@ -501,37 +500,45 @@ namespace TrainDefense.Game.Manager
 
         #region Scaling
         /// <summary>
-        /// 누적 통과 역 수에 따른 HP 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)
+        /// 누적 상점 방문 수에 따른 HP 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)
         /// </summary>
         public float GetHPScale()
         {
             // 한 판 시작(누적 0)은 1.0 (기본값)
-            if (_totalStationPassedCount <= 0) return 1.0f;
+            if (_totalInspectionPassedCount <= 0) return 1.0f;
 
-            // 지수(복리) 스케일 — 플레이어 DPS가 곱셈(공격력×공속×치명타×포탑수)으로 커지므로
-            // 난이도도 곱으로 추격해야 균형. base = 1 + hpScale (예: 0.10 → 1.10^역수, 역44≈×44)
-            return Mathf.Pow(1f + hpScale, _totalStationPassedCount);
+            // 가속 복리 스케일 — 상점을 지날수록 증가율 자체가 hpScaleIncrement만큼 커진다.
+            // 유저 성장이 2차식이라 단일 비율 지수로는 초반이 가파르고 후반이 밋밋해서 그 반대 모양을 만든다.
+            // hpScaleIncrement가 0이면 Pow(1 + hpScale, 상점수)와 정확히 같다.
+            float scale = 1f;
+            for (int i = 0; i < _totalInspectionPassedCount; i++)
+            {
+                scale *= 1f + hpScale + hpScaleIncrement * i;
+            }
+
+            return scale;
         }
 
         /// <summary>
-        /// 누적 통과 역 수에 따른 공격력 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)
+        /// 누적 상점 방문 수에 따른 공격력 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)
         /// </summary>
         public float GetAttackScale()
         {
             // 한 판 시작(누적 0)은 1.0 (기본값)
-            if (_totalStationPassedCount <= 0) return 1.0f;
+            if (_totalInspectionPassedCount <= 0) return 1.0f;
 
-            // TODO: 구체적인 수식 적용 필요
-            return 1.0f + (_totalStationPassedCount * attackScale);
+            // HP와 달리 선형 — 둘 다 곱으로 커지면 후반에 기차가 즉사한다.
+            // 부하는 HP가 지고 공격력은 완만하게 따라간다.
+            return 1.0f + (_totalInspectionPassedCount * attackScale);
         }
 
         /// <summary>
-        /// 누적 통과 역 수에 따른 골드 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)
+        /// 누적 상점 방문 수에 따른 골드 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)
         /// </summary>
         public float GetGoldScale()
         {
-            // 골드 배율 = 1.0 + goldScale(0.223)×역수. 드랍골드(엑셀)가 곧 초반 실드랍, 역수 비례 가속.
-            return 1.0f + (_totalStationPassedCount * goldScale);
+            // 골드 배율 = 1.0 + goldScale×상점수. 드랍골드(엑셀)가 곧 초반 실드랍, 상점수 비례 가속.
+            return 1.0f + (_totalInspectionPassedCount * goldScale);
         }
         #endregion
     }

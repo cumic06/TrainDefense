@@ -41,8 +41,7 @@ namespace TrainDefense.Game.UI
         }
 
         // 누적 상점 방문 수 비례 선형 인상. 스테이지가 바뀌어도 리셋되지 않는다.
-        // ★ 역 통과 수(TotalStationPassedCount)가 아니라 상점 방문 수를 쓴다 — 맵 선택 상점은 역 카운터를
-        //   올리지 않아서, 역 기준으로 재면 스테이지마다 한 번은 같은 가격으로 상점을 두 번 보게 된다.
+        // 적 HP·공격력·골드 스케일과 같은 축을 쓴다 — 상점이 열릴 때마다 적도 세지고 가격도 오른다.
         private float _GetStationPriceMultiplier()
         {
             var stageManager = StageManager.Instance;

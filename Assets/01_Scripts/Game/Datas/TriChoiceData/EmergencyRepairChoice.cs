@@ -44,7 +44,7 @@ namespace TrainDefense.Game.Datas
             main.EmergencyRepair(aliveHealRatio, revivedHpRatio);
 
             // 수리 분석(train_repair) 연속성 유지 — 상점 수리 슬롯 제거 후 유일한 수리 경로. 보상 카드라 비용 0.
-            int stationCount = StageManager.Instance != null ? StageManager.Instance.TotalStationPassedCount : 0;
+            int stationCount = StageManager.Instance != null ? StageManager.Instance.TotalInspectionPassedCount : 0;
             GameEventSystem.Publish(new TrainRepairedEvent(0, stationCount));
         }
     }

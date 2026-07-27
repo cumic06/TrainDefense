@@ -225,7 +225,8 @@ namespace TrainDefense.Game.Manager
         {
             _Log("stage_reached",
                 ("stage", _CurrentStage()),
-                ("total_station_passed", StageManager.Instance != null ? StageManager.Instance.TotalStationPassedCount : 0),
+                // 값은 누적 상점 수(역 도착 + 맵 선택). 난이도 축과 같은 값이라야 지표와 체감이 맞는다.
+                ("total_station_passed", StageManager.Instance != null ? StageManager.Instance.TotalInspectionPassedCount : 0),
                 ("play_time_sec", _PlayTimeSec()));
         }
 
