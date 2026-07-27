@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -30,9 +30,6 @@ namespace TrainDefense.Editor
 			{ "turret_train_data", 2 },
 			{ "active_skill_data", 2 },
 			{ "passive_skill_data", 2 },
-			{ "train_upgrade_data", 3 },
-			{ "turret_train_upgrade_data", 3 },
-			{ "range_train_upgrade_data", 3 },
 			{ "upgrade_data", 3 },
 			{ "permanent_upgrade_data", 3 },
 			{ "stage_data", 4 },
@@ -204,13 +201,10 @@ namespace TrainDefense.Editor
 					{
 						using (new EditorGUILayout.HorizontalScope())
 						{
-							if (GUILayout.Button("train_upgrade_data 덮어쓰기", GUILayout.Height(24))) WriteTrainUpgradeSheetFromDb();
 							if (GUILayout.Button("upgrade_data 덮어쓰기", GUILayout.Height(24))) WriteUpgradeSheetFromDb();
 						}
 						using (new EditorGUILayout.HorizontalScope())
 						{
-							if (GUILayout.Button("turret_train_upgrade_data 덮어쓰기", GUILayout.Height(24))) WriteTurretTrainUpgradeSheetFromDb();
-							if (GUILayout.Button("range_train_upgrade_data 덮어쓰기", GUILayout.Height(24))) WriteRangeTrainUpgradeSheetFromDb();
 						}
 					}
 					// 스테이지 탭
@@ -499,35 +493,6 @@ namespace TrainDefense.Editor
 			EditorUtility.DisplayDialog("완료", "turret_train_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
-		private void WriteTrainUpgradeSheetFromDb()
-		{
-			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
-			if (db == null || db.trainUpgradeDataList == null)
-			{
-				EditorUtility.DisplayDialog("오류", "Database 또는 TrainUpgrade 데이터가 없습니다.", "확인");
-				return;
-			}
-			var rows = new System.Collections.Generic.List<TrainUpgradeRow>(db.trainUpgradeDataList.Count);
-			foreach (var u in db.trainUpgradeDataList)
-			{
-				// 에디터에서는 레벨 0의 스탯을 사용 (첫 번째 업그레이드 레벨)
-				int level = 0;
-				var statusUpgrade = u.GetStatusUpgrade(level);
-				rows.Add(new TrainUpgradeRow
-				{
-					id = u.Id,
-					name = u.Name,
-					description = u.Description,
-					maxHp = statusUpgrade.MaxHp,
-					iconId = u.IconId
-				});
-			}
-			string excelPath = GetExcelAbsPath("TrainUpgradeData.xlsx");
-			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id" });
-			ExcelWriter.WriteToSheet(excelPath, "train_upgrade_data", rows);
-			EditorUtility.DisplayDialog("완료", "train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
-		}
-
 		private void WriteUpgradeSheetFromDb()
 		{
 			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
@@ -572,41 +537,6 @@ namespace TrainDefense.Editor
 			EditorUtility.DisplayDialog("완료", "upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
 		}
 
-		private void WriteTurretTrainUpgradeSheetFromDb()
-		{
-			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
-			if (db == null || db.turretTrainUpgradeDataList == null)
-			{
-				EditorUtility.DisplayDialog("오류", "Database 또는 TurretTrainUpgrade 데이터가 없습니다.", "확인");
-				return;
-			}
-			var rows = new System.Collections.Generic.List<TurretTrainUpgradeRow>(db.turretTrainUpgradeDataList.Count);
-			foreach (var u in db.turretTrainUpgradeDataList)
-			{
-				// 에디터에서는 레벨 0의 스탯을 사용 (첫 번째 업그레이드 레벨)
-				int level = 0;
-				var statusUpgrade = u.GetStatusUpgrade(level);
-				var turretStatus = u.GetTurretStatusUpgrade(level);
-				rows.Add(new TurretTrainUpgradeRow
-				{
-					id = u.Id,
-					name = u.Name,
-					description = u.Description,
-					maxHp = statusUpgrade.MaxHp,
-					iconId = u.IconId,
-					attackRange = turretStatus.AttackRange,
-					attackArea = turretStatus.AttackArea,
-					attackDamage = turretStatus.AttackDamage,
-					attackCount = turretStatus.AttackCount,
-					attackInterval = turretStatus.AttackInterval
-				});
-			}
-			string excelPath = GetExcelAbsPath("TrainUpgradeData.xlsx");
-			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "turret_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_area", "attack_damage", "attack_count", "attack_delay" });
-			ExcelWriter.WriteToSheet(excelPath, "turret_train_upgrade_data", rows);
-			EditorUtility.DisplayDialog("완료", "turret_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
-		}
-
 		// ---------- LOCALIZATION KEY APPLICATION ----------
 
 		private static readonly (string file, string sheet, string idCol, string nameCol, string descCol, string prefix)[] LocalizeSheetMappings =
@@ -617,8 +547,6 @@ namespace TrainDefense.Editor
 			("TrainData.xlsx",      "turret_train_data",         "id", "train_name",   "description", "Train"),
 			("TrainSkillData.xlsx", "active_skill_data",         "id", "name",         "description", "Skill"),
 			("TrainSkillData.xlsx", "passive_skill_data",        "id", "name",         "description", "Passive"),
-			("TrainUpgradeData.xlsx","turret_train_upgrade_data","id", "upgrade_name", "description", "TUpgrade"),
-			("TrainUpgradeData.xlsx","range_train_upgrade_data", "id", "upgrade_name", "description", "RUpgrade"),
 			("UpgradeData.xlsx",    "upgrade_data",              "id", "upgrade_name", "description", "Upgrade"),
 		};
 
@@ -702,40 +630,6 @@ namespace TrainDefense.Editor
 			Debug.Log($"<color=cyan>[LocalizeKey] {sheetName}: {changed}행 키 적용 완료</color>");
 		}
 
-		private void WriteRangeTrainUpgradeSheetFromDb()
-		{
-			var db = AssetDatabase.LoadAssetAtPath<DB>(_databaseAssetPath);
-			if (db == null || db.rangeTrainUpgradeDataList == null)
-			{
-				EditorUtility.DisplayDialog("오류", "Database 또는 RangeTrainUpgrade 데이터가 없습니다.", "확인");
-				return;
-			}
-			var rows = new System.Collections.Generic.List<RangeTrainUpgradeRow>(db.rangeTrainUpgradeDataList.Count);
-			foreach (var u in db.rangeTrainUpgradeDataList)
-			{
-				// 에디터에서는 레벨 0의 스탯을 사용 (첫 번째 업그레이드 레벨)
-				int level = 0;
-				var statusUpgrade = u.GetStatusUpgrade(level);
-				var rangeStatus = u.GetRangeStatusUpgrade(level);
-				rows.Add(new RangeTrainUpgradeRow
-				{
-					id = u.Id,
-					name = u.Name,
-					description = u.Description,
-					maxHp = statusUpgrade.MaxHp,
-					iconId = u.IconId,
-					attackRange = rangeStatus.AttackRange,
-					attackArea = rangeStatus.AttackArea,
-					attackDamage = rangeStatus.AttackDamage,
-					attackCount = rangeStatus.AttackCount,
-					attackInterval = rangeStatus.AttackInterval
-				});
-			}
-			string excelPath = GetExcelAbsPath("TrainUpgradeData.xlsx");
-			ExcelTemplate.EnsureSheetWithHeaders(excelPath, "range_train_upgrade_data", new[] { "id", "upgrade_name", "description", "max_hp", "icon_id", "attack_range", "attack_area", "attack_damage", "attack_count", "attack_interval" });
-			ExcelWriter.WriteToSheet(excelPath, "range_train_upgrade_data", rows);
-			EditorUtility.DisplayDialog("완료", "range_train_upgrade_data 시트를 현재 데이터로 덮어썼습니다.", "확인");
-		}
 	}
 }
 #endif

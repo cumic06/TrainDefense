@@ -36,9 +36,10 @@ namespace TrainDefense.Game
         // 상점 업그레이드의 스탯별 누적 배율. 중복선택(Upgrade)으로 더하는 flat 증가분에도 이 배율을 곱해
         // "(base + 중복선택합) × (1 + 상점%)" 가 강화 순서와 무관하게 성립하도록 한다.
         protected readonly Dictionary<StatType, float> _shopMultiplier = new();
-        // 상점에서 이 포탑의 각 스탯을 몇 번 강화했는지. 공속처럼 "구매 횟수에서 현재값을 역산해야 하는"
-        // 스탯이 상점 배율·스킬 보정과 섞여도 정확한 증가분을 낼 수 있게 횟수를 따로 센다.
-        protected readonly Dictionary<StatType, int> _statUpgradeCount = new();
+        // 상점에서 이 포탑의 각 스탯을 얼마나 강화했는지(기본 증가량 1단위 = 1.0, 상품 등급 배수만큼 누적).
+        // 공속처럼 "누적량에서 현재값을 역산해야 하는" 스탯이 상점 배율·스킬 보정과 섞여도
+        // 정확한 증가분을 낼 수 있게 누적량을 따로 센다.
+        protected readonly Dictionary<StatType, float> _statUpgradeAmount = new();
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
         protected string _selectedSkillId = null;
         protected bool _initialized;
@@ -383,9 +384,9 @@ namespace TrainDefense.Game
             foreach (var pair in source._shopMultiplier) _shopMultiplier[pair.Key] = pair.Value;
         }
 
-        public int GetStatUpgradeCount(StatType type) => _statUpgradeCount.TryGetValue(type, out var count) ? count : 0;
+        public float GetStatUpgradeAmount(StatType type) => _statUpgradeAmount.TryGetValue(type, out var amount) ? amount : 0f;
 
-        public void IncrementStatUpgradeCount(StatType type) => _statUpgradeCount[type] = GetStatUpgradeCount(type) + 1;
+        public void AddStatUpgradeAmount(StatType type, float amount) => _statUpgradeAmount[type] = GetStatUpgradeAmount(type) + amount;
 
         public virtual void Upgrade(ITrainUpgradeData upgradeData)
         {
@@ -546,10 +547,10 @@ namespace TrainDefense.Game
 
             _statMaxHpAccum = source._statMaxHpAccum;
 
-            // 스탯별 강화 횟수도 승계 — 안 옮기면 승격 후 공속 구매가 1회차 증가분(가장 큰 폭)부터
+            // 스탯별 누적 강화량도 승계 — 안 옮기면 승격 후 공속 구매가 1회차 증가분(가장 큰 폭)부터
             // 다시 시작해 간격이 이중으로 줄어든다. (스탯값 자체는 서브클래스가 delta로 옮긴다)
-            _statUpgradeCount.Clear();
-            foreach (var pair in source._statUpgradeCount) _statUpgradeCount[pair.Key] = pair.Value;
+            _statUpgradeAmount.Clear();
+            foreach (var pair in source._statUpgradeAmount) _statUpgradeAmount[pair.Key] = pair.Value;
         }
     }
 }

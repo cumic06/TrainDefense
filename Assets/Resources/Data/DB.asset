@@ -1142,929 +1142,6 @@ MonoBehaviour:
       description: Passive_60017_Desc
     _legacyTrainSkillDataList: []
   _legacyTrainPassiveSkillDataList: []
-  trainUpgradeDataList: []
-  turretTrainUpgradeDataList:
-  - id: 90001
-    iconId: Weapon_KMD_08_UI
-    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
-    name: TUpgrade_90001_Name
-    description: TUpgrade_90001_Desc
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 2
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.05
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 3
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.05
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 4
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 5
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.0519
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-  - id: 90002
-    iconId: Weapon_MEL_05_UI
-    icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
-    name: TUpgrade_90002_Name
-    description: TUpgrade_90002_Desc
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 2
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 2
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 2
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.5
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 2.5
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 2
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.5
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 4
-        AttackRange: 0
-        AttackArea: 6.25
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-  - id: 90003
-    iconId: Weapon_KMD_10_UI
-    icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
-    name: TUpgrade_90003_Name
-    description: TUpgrade_90003_Desc
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0.2
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.1304
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 5
-        AttackRange: 0
-        AttackArea: 0.22
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.2007
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0.484
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 15
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 1.162
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-  - id: 90004
-    iconId: Weapon_288_19_UI
-    icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
-    name: TUpgrade_90004_Name
-    description: TUpgrade_90004_Desc
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0.3
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0.45
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 25
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.4
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0.9
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 50
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 2.047
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-  - id: 90005
-    iconId: Weapon_MEL_16_UI
-    icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
-    name: TUpgrade_90005_Name
-    description: TUpgrade_90005_Desc
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.1273
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 1
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 2
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.2121
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 1
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 4
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 2
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-  - id: 90006
-    iconId: Weapon_MEL_14_UI
-    icon: {fileID: -1397285560422006139, guid: 30bda8e7d94c88b43a1a822c25d973c2, type: 3}
-    name: TUpgrade_90006_Name
-    description: TUpgrade_90006_Desc
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0.6
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 1
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.2273
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 1.08
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.2964
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 1
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 1.404
-        AttackCount: 1
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-  - id: 90007
-    iconId: Weapon_KMD_12_UI
-    icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
-    name: TUpgrade_90007_Name
-    description: TUpgrade_90007_Desc
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 6
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.1091
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 12
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.1818
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 22
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.1818
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.2257
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        BurstDuration: 0
-      passiveSkillDataId: 
-  - id: 90008
-    iconId: Weapon_288_19_UI
-    icon: {fileID: 0}
-    name: TUpgrade_90008_Name
-    description: TUpgrade_90008_Desc \uCD94\uAC00 \uBC1C\uC0AC"
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-      passiveSkillDataId: 60004
-  - id: 90009
-    iconId: Weapon_288_19_UI
-    icon: {fileID: 0}
-    name: TUpgrade_90009_Name
-    description: TUpgrade_90009_Desc \uACF5\uACA9 \uBC94\uC704 <color=#FF5851><bounce>{1}
-      \uC99D\uAC00</bounce></color>"
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 150
-        AttackRange: 15
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 200
-        AttackRange: 10
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-      passiveSkillDataId: 
-    - statusUpgrade:
-        MaxHp: 0
-      turretStatusUpgrade:
-        AttackDamage: 300
-        AttackRange: 10
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        TargetCount: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-      passiveSkillDataId: 
-  rangeTrainUpgradeDataList:
-  - id: 100001
-    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_\uBA5C\uB9AC\uC5D0\uC2A4\uD074\uB798\uC2DD_\uBAB8\uD1B5\uB274"
-    icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
-    name: RUpgrade_100001_Name
-    description: RUpgrade_100001_Desc
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0.8
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 10
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 1.2
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.5
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 1.5
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 20
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 3
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-  - id: 100002
-    iconId: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13"
-    icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
-    name: RUpgrade_100002_Name
-    description: RUpgrade_100002_Desc
-    upgradeStats:
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 1
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 10
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 1
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 10
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 1
-        AttackRange: 0
-        AttackArea: 0
-        AttackCount: 0
-        AttackInterval: -0.5
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 1.5
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 0
-        BurstDuration: 0
-    - statusUpgrade:
-        MaxHp: 0
-      rangeStatusUpgrade:
-        AttackDamage: 0
-        AttackRange: 0
-        AttackArea: 3
-        AttackCount: 0
-        AttackInterval: 0
-        CriticalChance: 0
-        CriticalDamage: 0
-        SlowRate: 10
-        BurstDuration: 0
   stageDataList:
   - id: 50001
     baseInspectionTime: 30
@@ -2539,6 +1616,154 @@ MonoBehaviour:
     passiveType: 1
     passiveValuePerLevel: 0
     unlockTrainId: 40002
+  statUpgradeTierDataList:
+  - id: stat_upgrade_tier_1
+    grade: 1
+    valueMultiplier: 1
+    costMultiplier: 1
+    firstShopVisit: 1
+    lastShopVisit: 8
+  - id: stat_upgrade_tier_2
+    grade: 2
+    valueMultiplier: 3
+    costMultiplier: 3
+    firstShopVisit: 6
+    lastShopVisit: 14
+  - id: stat_upgrade_tier_3
+    grade: 3
+    valueMultiplier: 6
+    costMultiplier: 6
+    firstShopVisit: 12
+    lastShopVisit: 22
+  - id: stat_upgrade_tier_4
+    grade: 4
+    valueMultiplier: 10
+    costMultiplier: 10
+    firstShopVisit: 20
+    lastShopVisit: 30
+  - id: stat_upgrade_tier_5
+    grade: 5
+    valueMultiplier: 15
+    costMultiplier: 15
+    firstShopVisit: 28
+    lastShopVisit: 0
+  statUpgradeStatDataList:
+  - id: stat_upgrade_stat_attack_damage
+    statType: 2
+    minGrade: 1
+  - id: stat_upgrade_stat_attack_interval
+    statType: 4
+    minGrade: 1
+  - id: stat_upgrade_stat_attack_area
+    statType: 8
+    minGrade: 1
+  - id: stat_upgrade_stat_target_count
+    statType: 5
+    minGrade: 4
+  - id: stat_upgrade_stat_attack_count
+    statType: 3
+    minGrade: 5
+  trainStatUpgradeRuleDataList:
+  - id: stat_upgrade_30001_attack_damage
+    trainDataId: 30001
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30001_attack_interval
+    trainDataId: 30001
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30002_attack_damage
+    trainDataId: 30002
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30002_attack_interval
+    trainDataId: 30002
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30002_attack_area
+    trainDataId: 30002
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_30003_attack_damage
+    trainDataId: 30003
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30003_attack_interval
+    trainDataId: 30003
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30003_attack_area
+    trainDataId: 30003
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_30004_attack_damage
+    trainDataId: 30004
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30004_attack_interval
+    trainDataId: 30004
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30004_attack_area
+    trainDataId: 30004
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_30005_attack_damage
+    trainDataId: 30005
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30005_attack_interval
+    trainDataId: 30005
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30005_target_count
+    trainDataId: 30005
+    statType: 5
+    increaseRate: 1
+  - id: stat_upgrade_30006_attack_damage
+    trainDataId: 30006
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30006_attack_area
+    trainDataId: 30006
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_30006_attack_count
+    trainDataId: 30006
+    statType: 3
+    increaseRate: 1
+  - id: stat_upgrade_30007_attack_damage
+    trainDataId: 30007
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30007_attack_interval
+    trainDataId: 30007
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_40001_attack_damage
+    trainDataId: 40001
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_40001_attack_interval
+    trainDataId: 40001
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_40001_attack_area
+    trainDataId: 40001
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_40002_attack_damage
+    trainDataId: 40002
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_40002_attack_interval
+    trainDataId: 40002
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_40002_attack_area
+    trainDataId: 40002
+    statType: 8
+    increaseRate: 0.1
   triChoiceDB:
     addTrainChoices:
     - Option:

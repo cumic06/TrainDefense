@@ -16,15 +16,11 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private int turretPurchaseCost = 190;
 
-        [Tooltip("포탑 스탯 강화 기본 비용. 실제 가격 = 이 값 × 성장률^포탑레벨 — 저레벨은 부담 없이 여러 개, 고레벨은 저축해야 사는 급경사 곡선")]
+        [Tooltip("1등급 스탯 강화 비용. 상위 등급은 등급표의 가격 배수가 곱해진다. 효과 배수와 같게 두면 등급은 밸런스에 개입하지 않고 슬롯 수 제약만 풀어주는 묶음이 된다")]
         [SerializeField]
         private int statUpgradeBaseCost = 50;
 
-        [Tooltip("스탯 강화 가격의 레벨당 성장률 (1.8 = 만렙행 강화 3061, 역당 인상 별도)")]
-        [SerializeField]
-        private float statUpgradeGrowthPerLevel = 1.8f;
-
-        [Tooltip("엘리트 승격 비용 — 만렙행 강화(약 3천)의 두 배쯤인 최상위 목표템. 실지불은 역당 인상 포함 2~3역치 수입")]
+        [Tooltip("엘리트 승격 비용 — 고레벨 강화 여러 번 값에 해당하는 최상위 목표템. 실지불은 상점 방문당 인상 포함 2~3구간치 수입")]
         [SerializeField]
         private int elitePromotionCost = 5000;
 
@@ -37,11 +33,11 @@ namespace TrainDefense.Game.UI
             return Mathf.RoundToInt(_GetBasePrice(option) * _GetStationPriceMultiplier());
         }
 
+        // 가격은 상품 등급만으로 정해진다 — 대상 포탑의 레벨과 무관해야 같은 포탑의 다른 스탯 카드를
+        // 하나 샀다고 나머지 카드 가격이 따라 오르지 않는다(슬롯 간 간섭 제거).
         private float _GetStatUpgradePrice(TrainStatUpgradeChoice statUpgradeChoice)
         {
-            int trainLevel = statUpgradeChoice.TargetTrain != null ? statUpgradeChoice.TargetTrain.CurrentLevel : 0;
-
-            return statUpgradeBaseCost * Mathf.Pow(statUpgradeGrowthPerLevel, trainLevel);
+            return statUpgradeBaseCost * statUpgradeChoice.CostMultiplier;
         }
 
         // 누적 상점 방문 수 비례 선형 인상. 스테이지가 바뀌어도 리셋되지 않는다.
@@ -62,8 +58,6 @@ namespace TrainDefense.Game.UI
                 case EliteTrainChoice:
                     return elitePromotionCost;
 
-                // 레벨 = 이 포탑이 상점에서 받은 강화 횟수(획득 시 0). 레벨업 카드(110xxx)는 전역 스탯
-                // 업그레이드라 포탑 레벨을 올리지 않으므로 이 가격에 영향을 주지 않는다.
                 case TrainStatUpgradeChoice statUpgradeChoice:
                     return _GetStatUpgradePrice(statUpgradeChoice);
 

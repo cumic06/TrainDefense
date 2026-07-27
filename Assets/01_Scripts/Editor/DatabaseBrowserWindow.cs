@@ -45,9 +45,8 @@ namespace TrainDefense.Editor
             {
                 ("일반", "upgradeDataList"),
                 ("영구", "permanentUpgradeDataList"),
-                ("기차", "trainUpgradeDataList"),
-                ("터렛 기차", "turretTrainUpgradeDataList"),
-                ("원거리 기차", "rangeTrainUpgradeDataList"),
+                ("강화 등급", "statUpgradeTierDataList"),
+                ("포탑 강화 규칙", "trainStatUpgradeRuleDataList"),
             }),
             ("스테이지", new[] { ("스테이지", "stageDataList") }),
             ("스킬트리", new[] { ("노드", "skillNodeDataList") }),

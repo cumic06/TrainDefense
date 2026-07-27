@@ -51,21 +51,6 @@ namespace TrainDefense.Game.Datas
         private List<TrainPassiveSkillData> _legacyTrainPassiveSkillDataList = new();
         #endregion
 
-        [TabGroup("Train Upgrade Data")]
-        [InfoBox("기차 업그레이드 데이터 관리 (기본 Train 및 MainTrain용)")]
-        [SerializeField]
-        public List<TrainUpgradeData> trainUpgradeDataList = new();
-
-        [TabGroup("Train Upgrade Data")]
-        [InfoBox("터렛 기차 업그레이드 데이터 관리")]
-        [SerializeField]
-        public List<TurretTrainUpgradeData> turretTrainUpgradeDataList = new();
-
-        [TabGroup("Train Upgrade Data")]
-        [InfoBox("원거리 기차 업그레이드 데이터 관리")]
-        [SerializeField]
-        public List<RangeTrainUpgradeData> rangeTrainUpgradeDataList = new();
-
         [TabGroup("Stage Data")]
         [InfoBox("스테이지 데이터 관리")]
         [SerializeField]
@@ -91,6 +76,21 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         private TriChoiceDB triChoiceDB = new();
 
+        [TabGroup("TriChoice Database")]
+        [InfoBox("상점 스탯 강화 등급 (배수·등장 구간)")]
+        [SerializeField]
+        public List<StatUpgradeTierData> statUpgradeTierDataList = new();
+
+        [TabGroup("TriChoice Database")]
+        [InfoBox("스탯별 최소 등급 (강한 스탯을 고등급으로 미는 장치)")]
+        [SerializeField]
+        public List<StatUpgradeStatData> statUpgradeStatDataList = new();
+
+        [TabGroup("TriChoice Database")]
+        [InfoBox("포탑별 강화 가능 스탯과 증가율")]
+        [SerializeField]
+        public List<TrainStatUpgradeRuleData> trainStatUpgradeRuleDataList = new();
+
         [TabGroup("Sound Database")]
         [InfoBox("사운드 데이터베이스")]
         [SerializeField]
@@ -110,14 +110,14 @@ namespace TrainDefense.Game.Datas
 
         #region Public Properties
 
+        public IReadOnlyList<StatUpgradeTierData> StatUpgradeTierDataList => statUpgradeTierDataList;
+        public IReadOnlyList<StatUpgradeStatData> StatUpgradeStatDataList => statUpgradeStatDataList;
+        public IReadOnlyList<TrainStatUpgradeRuleData> TrainStatUpgradeRuleDataList => trainStatUpgradeRuleDataList;
         public IReadOnlyList<MonsterData> MonsterDataList => monsterDataList;
         public IReadOnlyList<TrainData> TrainDataList => trainDataList;
         public IReadOnlyList<RangeTrainData> RangeTrainDataList => rangeTrainDataList;
         public TrainSkillDataDB TrainSkillDataDB => trainSkillDataDB;
         public IReadOnlyList<TurretTrainData> TurretTrainDataList => turretTrainDataList;
-        public IReadOnlyList<TrainUpgradeData> TrainUpgradeDataList => trainUpgradeDataList;
-        public IReadOnlyList<TurretTrainUpgradeData> TurretTrainUpgradeDataList => turretTrainUpgradeDataList;
-        public IReadOnlyList<RangeTrainUpgradeData> RangeTrainUpgradeDataList => rangeTrainUpgradeDataList;
         public IReadOnlyList<StageData> StageDataList => stageDataList;
         public IReadOnlyList<UpgradeData> UpgradeDataList => upgradeDataList;
         public IReadOnlyList<PermanentUpgradeData> PermanentUpgradeDataList => permanentUpgradeDataList;

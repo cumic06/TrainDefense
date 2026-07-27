@@ -210,7 +210,6 @@ MonoBehaviour:
   offerPricing:
     turretPurchaseCost: 190
     statUpgradeBaseCost: 50
-    statUpgradeGrowthPerLevel: 1.8
     elitePromotionCost: 5000
     stationPriceIncreasePercent: 10
   rerollButton: {fileID: 7710000000000000005}

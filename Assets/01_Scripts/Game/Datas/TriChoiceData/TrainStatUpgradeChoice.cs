@@ -1,5 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using UnityEngine;
+using TrainDefense.Game.Manager;
 using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game.Datas
@@ -11,55 +13,41 @@ namespace TrainDefense.Game.Datas
     /// </summary>
     public class TrainStatUpgradeChoice : IChoiceOption
     {
-        // ★ 플레이스홀더 밸런스 — 1회 구매당 base 대비 증가율. 인게임 테스트 후 사용자가 조정.
-        public const float DAMAGE_UPGRADE_RATE = 0.15f;
-        // 공속 = "발사 속도(1/간격) 가산" → 간격 = base ÷ (1 + 이 값 × 구매 횟수).
-        // 간격을 base 대비 고정량으로 깎는 방식은 20회에 간격이 0이 되어 DPS가 폭발한다(옛 LoL 쿨감과 같은 결함).
-        // 브로타토·LoL 어빌리티 헤이스트가 쓰는 이 형태는 간격이 0에 닿지 않고 DPS가 구매 횟수에 정확히 선형이라,
-        // 공격력(가산)과 곱으로 합쳐질 때 한 스탯 몰빵이 분산 구매보다 항상 불리해진다.
-        public const float ATTACK_SPEED_UPGRADE_RATE = 0.15f;
-        // 발사 속도 상한(base 대비 배율). 프레임 천장(FixedUpdate 50Hz)에 닿기 전에 카드가 사라지게 하는 안전장치.
+        // ★ 테스트 스위치 — true면 포탑 만렙(Train.MAX_LEVEL)을 무시하고 무한히 강화할 수 있다.
+        // 엘리트 승격 조건(Train.ELITE_PROMOTION_LEVEL)은 이 값과 무관하게 그대로 적용된다.
+        public const bool UNLIMITED_UPGRADE_LEVEL = true;
+
+        // 발사 속도 상한(base 대비 배율). 밸런스가 아니라 프레임 천장(FixedUpdate 50Hz)에 닿기 전에
+        // 공속 카드를 내리는 안전장치라 데이터가 아닌 상수로 둔다.
         public const float MAX_ATTACK_SPEED_MULTIPLIER = 10f;
-        public const float ATTACK_AREA_UPGRADE_RATE = 0.10f;
-
-        // ★ 포탑별 스탯 풀 규칙이 코드에 하드코딩된 상태(플레이스홀더 단계). 신규 포탑 추가 시 여기도 갱신 필요 —
-        // 규칙이 굳으면 TrainData의 데이터 필드로 옮기는 게 정석.
-        private const string MACHINE_GUN_TRAIN_ID = "30001";
-        private const string ELITE_MACHINE_GUN_TRAIN_ID = "31001";
-        private const string ELECTRIC_TRAIN_ID = "30005";
-        private const string ELITE_ELECTRIC_TRAIN_ID = "31005";
-        private const string CANNON_TRAIN_ID = "30006";
-        private const string ELITE_CANNON_TRAIN_ID = "31006";
-        private const string SNIPER_TRAIN_ID = "30007";
-        private const string ELITE_SNIPER_TRAIN_ID = "31007";
-
-        // 범위 스탯이 실효가 없는 포탑(기관총·전기·저격 계열 — 일반/엘리트)
-        private static readonly HashSet<string> NoAreaTrainIds = new()
-        {
-            MACHINE_GUN_TRAIN_ID, ELITE_MACHINE_GUN_TRAIN_ID,
-            ELECTRIC_TRAIN_ID, ELITE_ELECTRIC_TRAIN_ID,
-            SNIPER_TRAIN_ID, ELITE_SNIPER_TRAIN_ID,
-        };
 
         private readonly Train _train;
         private readonly StatType _statType;
+        private readonly StatUpgradeTierData _tier;
+        private readonly TrainStatUpgradeRuleData _rule;
 
-        public TrainStatUpgradeChoice(Train targetTrain, StatType statType)
+        public TrainStatUpgradeChoice(Train targetTrain, TrainStatUpgradeRuleData rule, StatUpgradeTierData tier)
         {
             _train = targetTrain;
-            _statType = statType;
+            _rule = rule;
+            _statType = rule.StatType;
+            _tier = tier;
         }
 
         public Train TargetTrain => _train;
         public StatType StatType => _statType;
+        public int Grade => _tier.Grade;
 
-        public string Id => $"StatUpgrade_{(_train != null && _train.TrainData != null ? _train.TrainData.Id : "?")}_{_statType}";
+        // 가격 배수 = 증가량 배수. 상점(ShopOfferPricing)이 기본가에 곱해 최종 가격을 낸다.
+        public float CostMultiplier => _tier.CostMultiplier;
+
+        public string Id => $"StatUpgrade_{(_train != null && _train.TrainData != null ? _train.TrainData.Id : "?")}_{_statType}_T{_tier.Grade}";
 
         // 만렙 전까지 반복 구매 가능.
         public bool IsRepeatable => true;
 
-        // 보유 포탑 하나가 상점에 낼 수 있는 스탯 강화 선택지 목록.
-        // 공격력은 공통, 포격은 공속 대신 공격 횟수(묵직한 발사 리듬 유지 — 포탑 리워크 플랜), 전기는 타겟 수 추가.
+        // 보유 포탑 하나가 상점에 낼 수 있는 스탯 강화 선택지 — DB의 포탑별 스탯 규칙 × 지금 등장 가능한 등급.
+        // 어떤 스탯을 강화할 수 있는지, 증가율이 얼마인지는 전부 train_stat_upgrade_data 시트가 정한다.
         public static List<TrainStatUpgradeChoice> CreateOptionsFor(Train train)
         {
             var options = new List<TrainStatUpgradeChoice>();
@@ -67,22 +55,49 @@ namespace TrainDefense.Game.Datas
             if (train == null || train.TrainData == null)
                 return options;
 
-            string trainId = train.TrainData.Id;
+            var databaseManager = DatabaseManager.Instance;
 
-            options.Add(new TrainStatUpgradeChoice(train, StatType.AttackDamage));
+            if (databaseManager == null)
+                return options;
 
-            if (trainId == CANNON_TRAIN_ID || trainId == ELITE_CANNON_TRAIN_ID)
-                options.Add(new TrainStatUpgradeChoice(train, StatType.AttackCount));
-            else
-                options.Add(new TrainStatUpgradeChoice(train, StatType.AttackInterval));
+            var tiers = databaseManager.GetStatUpgradeTiers();
 
-            if (trainId == ELECTRIC_TRAIN_ID || trainId == ELITE_ELECTRIC_TRAIN_ID)
-                options.Add(new TrainStatUpgradeChoice(train, StatType.TargetCount));
+            if (tiers == null)
+                return options;
 
-            if (!NoAreaTrainIds.Contains(trainId))
-                options.Add(new TrainStatUpgradeChoice(train, StatType.AttackArea));
+            var stageManager = StageManager.Instance;
+            int shopVisitCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
+
+            foreach (var tier in tiers)
+            {
+                if (tier == null || !tier.IsAvailableAt(shopVisitCount))
+                    continue;
+
+                foreach (var rule in databaseManager.GetTrainStatUpgradeRules(train.TrainData.Id))
+                {
+                    if (rule == null)
+                        continue;
+
+                    int minGrade = databaseManager.GetStatMinGrade(rule.StatType);
+
+                    if (tier.Grade < minGrade)
+                        continue;
+
+                    // 정수 스탯은 증가량이 +1 고정이라 상위 등급은 비싸기만 하다 → 최소 등급에서만 낸다.
+                    if (IsCountStat(rule.StatType) && tier.Grade != minGrade)
+                        continue;
+
+                    options.Add(new TrainStatUpgradeChoice(train, rule, tier));
+                }
+            }
 
             return options;
+        }
+
+        // 개수로 오르는 스탯 — 등급 배수를 개수로 쓰면 폭발하므로(포격 연타 1→11) 항상 +1이다.
+        public static bool IsCountStat(StatType statType)
+        {
+            return statType == StatType.TargetCount || statType == StatType.AttackCount;
         }
 
         public bool IsValid()
@@ -106,7 +121,7 @@ namespace TrainDefense.Game.Datas
                 return false;
 
             // 레벨 = 받은 업그레이드 횟수(획득 0). 만렙이면 더 못 산다.
-            return _train.CurrentLevel < Train.MAX_LEVEL;
+            return UNLIMITED_UPGRADE_LEVEL || _train.CurrentLevel < Train.MAX_LEVEL;
         }
 
         public void Execute()
@@ -121,23 +136,23 @@ namespace TrainDefense.Game.Datas
             if (upgradeData != null)
             {
                 mainTrain.UpgradeTrain(_train.TrainData.Id, upgradeData);
-                // 공속 증가분이 구매 횟수에서 나오므로 적용 후 반드시 센다.
-                _train.IncrementStatUpgradeCount(_statType);
+                // 공속 증가분이 누적량에서 나오므로 적용 후 반드시 등급 배수만큼 더한다.
+                _train.AddStatUpgradeAmount(_statType, IsCountStat(_statType) ? 1f : _tier.ValueMultiplier);
             }
         }
 
-        // 발사 속도 배율 = 1 + rate × 구매 횟수. (간격 = base ÷ 이 값)
+        // 발사 속도 배율 = 1 + rate × 누적 강화량. (간격 = base ÷ 이 값)
         private float _GetAttackSpeedMultiplier()
         {
-            return 1f + ATTACK_SPEED_UPGRADE_RATE * _train.GetStatUpgradeCount(StatType.AttackInterval);
+            return 1f + _rule.IncreaseRate * _train.GetStatUpgradeAmount(StatType.AttackInterval);
         }
 
-        // 이번 구매로 줄어드는 간격(음수). 간격 = base ÷ (1 + rate×n) 곡선의 n → n+1 차분이라
-        // 구매를 거듭할수록 감소폭이 작아지지만 발사 횟수(=DPS)는 매번 base 대비 rate만큼 선형으로 늘어난다.
+        // 이번 구매로 줄어드는 간격(음수). 간격 = base ÷ (1 + rate×누적량) 곡선의 차분이라
+        // 구매를 거듭할수록 감소폭이 작아지지만 발사 횟수(=DPS)는 등급 배수에 정확히 비례해 늘어난다.
         private float _GetAttackIntervalDelta(float baseInterval)
         {
             float currentMultiplier = _GetAttackSpeedMultiplier();
-            float nextMultiplier = currentMultiplier + ATTACK_SPEED_UPGRADE_RATE;
+            float nextMultiplier = currentMultiplier + _rule.IncreaseRate * _tier.ValueMultiplier;
 
             return baseInterval / nextMultiplier - baseInterval / currentMultiplier;
         }
@@ -157,9 +172,9 @@ namespace TrainDefense.Game.Datas
 
             string deltaText = _statType switch
             {
-                StatType.AttackDamage => $"+{_GetBaseAttackDamage() * DAMAGE_UPGRADE_RATE:0.#}",
-                StatType.AttackInterval => $"+{ATTACK_SPEED_UPGRADE_RATE * 100f:0}%",
-                StatType.AttackArea => $"+{ATTACK_AREA_UPGRADE_RATE * 100f:0}%",
+                StatType.AttackDamage => $"+{_GetBaseAttackDamage() * _rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
+                StatType.AttackInterval => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
+                StatType.AttackArea => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 _ => "+1",
             };
 
@@ -183,6 +198,11 @@ namespace TrainDefense.Game.Datas
             return 0f;
         }
 
+        // 런타임 강화 데이터에서 실제로 읽히는 인덱스는 "이번에 적용할 레벨"(= 현재 레벨) 하나뿐이다.
+        // 고정 길이(MAX_LEVEL)로 만들면 만렙을 넘어선 레벨에서 인덱스가 배열 밖이 되어
+        // 증가량이 0으로 조용히 사라지므로(코인만 빠짐), 항상 그 인덱스까지 채운다.
+        private int _GetUpgradeLevelCount() => _train.CurrentLevel + 1;
+
         private ITrainUpgradeData _BuildUpgradeData()
         {
             if (_train is TurretTrain turretTrain)
@@ -192,15 +212,15 @@ namespace TrainDefense.Game.Datas
 
                 switch (_statType)
                 {
-                    case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * DAMAGE_UPGRADE_RATE; break;
+                    case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.AttackInterval: delta.AttackInterval = _GetAttackIntervalDelta(baseStatus.AttackInterval); break;
-                    case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * ATTACK_AREA_UPGRADE_RATE; break;
+                    case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.TargetCount: delta.TargetCount = 1; break;
                     case StatType.AttackCount: delta.AttackCount = 1; break;
                     default: return null;
                 }
 
-                return TurretTrainUpgradeData.CreateRuntimeSingleStat(Id, _train.TrainData.Name, delta, Train.MAX_LEVEL);
+                return TurretTrainUpgradeData.CreateRuntimeSingleStat(Id, _train.TrainData.Name, delta, _GetUpgradeLevelCount());
             }
 
             if (_train is RangeTrain rangeTrain)
@@ -210,13 +230,13 @@ namespace TrainDefense.Game.Datas
 
                 switch (_statType)
                 {
-                    case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * DAMAGE_UPGRADE_RATE; break;
+                    case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.AttackInterval: delta.AttackInterval = _GetAttackIntervalDelta(baseStatus.AttackInterval); break;
-                    case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * ATTACK_AREA_UPGRADE_RATE; break;
+                    case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     default: return null;
                 }
 
-                return RangeTrainUpgradeData.CreateRuntimeSingleStat(Id, _train.TrainData.Name, delta, Train.MAX_LEVEL);
+                return RangeTrainUpgradeData.CreateRuntimeSingleStat(Id, _train.TrainData.Name, delta, _GetUpgradeLevelCount());
             }
 
             return null;

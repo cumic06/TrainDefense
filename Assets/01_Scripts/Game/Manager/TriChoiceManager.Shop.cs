@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using TrainDefense.Game.Datas;
 
 namespace TrainDefense.Game
@@ -12,6 +13,7 @@ namespace TrainDefense.Game
         // 현재 셋 다 1 = 후보 개수 균등 추첨이다. 비율을 바꿀 때는 DB(엑셀) 값과 이 값을 함께 맞춰야 한다.
         // ChoiceEntry.Weight가 int라 소수 비율은 10배 등으로 스케일해서 표현해야 한다.
         private const int STAT_UPGRADE_WEIGHT = 1;
+
 
         // 역 상점용: 판매 후보 중에서 count개를 랜덤으로 뽑는다.
         public List<ChoiceEntry> GetShopChoices(int count)

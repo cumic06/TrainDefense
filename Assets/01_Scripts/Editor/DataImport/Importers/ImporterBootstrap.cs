@@ -18,15 +18,15 @@ namespace TrainDefense.Editor.DataImport.Importers
 			ExcelImporterRegistry.Register(new TrainImporter());
 			ExcelImporterRegistry.Register(new RangeTrainImporter());
 			ExcelImporterRegistry.Register(new TurretTrainImporter());
-			ExcelImporterRegistry.Register(new TrainUpgradeImporter());
-			ExcelImporterRegistry.Register(new TurretTrainUpgradeImporter());
-			ExcelImporterRegistry.Register(new RangeTrainUpgradeImporter());
 			ExcelImporterRegistry.Register(new StageImporter());
 			ExcelImporterRegistry.Register(new UpgradeDataImporter());
 			ExcelImporterRegistry.Register(new PermanentUpgradeImporter());
 			ExcelImporterRegistry.Register(new AddTrainChoiceImporter());
 			ExcelImporterRegistry.Register(new UpgradeTrainChoiceImporter());
 			ExcelImporterRegistry.Register(new RewardChoiceImporter());
+			ExcelImporterRegistry.Register(new StatUpgradeTierImporter());
+			ExcelImporterRegistry.Register(new StatUpgradeStatImporter());
+			ExcelImporterRegistry.Register(new TrainStatUpgradeRuleImporter());
 		}
 	}
 }

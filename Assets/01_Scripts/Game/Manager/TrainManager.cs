@@ -127,11 +127,6 @@ namespace TrainDefense.Game
          return mainTrain.CurrentTrainCount;
       }
 
-      public int GetMaxUpgradeTrainCount()
-      {
-         return GetMaxUpgradeTrains().Length;
-      }
-
       public bool TryUseTrainSkill(Train train)
       {
          if (mainTrain == null || train == null)
@@ -188,16 +183,6 @@ namespace TrainDefense.Game
       public Train[] GetTrains()
       {
          return mainTrain.CurrentTrains.ToArray();
-      }
-
-      /// <summary>
-      /// 최대 업그레이드 레벨에 도달한 기차들을 반환한다.
-      /// </summary>
-      /// <returns></returns>
-      public Train[] GetMaxUpgradeTrains()
-      {
-         var allUpgradeData = DatabaseManager.Instance.GetAllTrainUpgradeData();
-         return mainTrain.CurrentTrains.Where(train => allUpgradeData.Any(upgrade => upgrade.MaxLevel == train.CurrentLevel)).ToArray();
       }
 
       public void ApplyUpgrade(UpgradeData upgradeData, int newLevel, int prevLevel)

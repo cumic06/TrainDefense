@@ -1,7 +1,8 @@
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 using Cumic;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Stats;
 using System.Collections.Generic;
 
 namespace TrainDefense.Game
@@ -62,6 +63,42 @@ namespace TrainDefense.Game
         public IChoiceOption[] GetAddTrainChoices() => GetDB().TriChoiceDB.TrainChoiceEntries.Select(x => x.Option).OfType<AddTrainChoice>().Cast<IChoiceOption>().ToArray();
         public IChoiceOption[] GetEliteTrainChoices() => GetDB().TriChoiceDB.TrainChoiceEntries.Select(x => x.Option).OfType<EliteTrainChoice>().Cast<IChoiceOption>().ToArray();
         public IChoiceOption[] GetUpgradeTrainChoices() => GetDB().TriChoiceDB.UpgradeTrainChoices.Select(x => x.Option).ToArray();
+
+        public IReadOnlyList<StatUpgradeTierData> GetStatUpgradeTiers() => GetDB().StatUpgradeTierDataList;
+
+        // 이 스탯이 나오기 시작하는 등급. 설정이 없으면 1등급부터.
+        public int GetStatMinGrade(StatType statType)
+        {
+            var setting = GetDB().StatUpgradeStatDataList.FirstOrDefault(s => s != null && s.StatType == statType);
+
+            return setting != null ? setting.MinGrade : 1;
+        }
+
+        // 이 포탑이 상점에서 강화할 수 있는 스탯 규칙들. 목록에 없는 스탯은 카드로 뜨지 않는다.
+        // 엘리트(31xxx·41xxx)는 시트에 행을 두지 않고 base 포탑(30xxx·40xxx) 규칙을 그대로 쓴다.
+        public IEnumerable<TrainStatUpgradeRuleData> GetTrainStatUpgradeRules(string trainDataId)
+        {
+            var rules = GetDB().TrainStatUpgradeRuleDataList.Where(rule => rule != null && rule.TrainDataId == trainDataId);
+
+            if (rules.Any())
+                return rules;
+
+            string baseTrainDataId = GetBaseTrainDataId(trainDataId);
+
+            if (baseTrainDataId == trainDataId)
+                return rules;
+
+            return GetDB().TrainStatUpgradeRuleDataList.Where(rule => rule != null && rule.TrainDataId == baseTrainDataId);
+        }
+
+        // 엘리트 ID → base ID (31001 → 30001, 41002 → 40002). 규격이 다르면 원본을 그대로 돌려준다.
+        private static string GetBaseTrainDataId(string trainDataId)
+        {
+            if (string.IsNullOrEmpty(trainDataId) || trainDataId.Length < 2 || trainDataId[1] != '1')
+                return trainDataId;
+
+            return trainDataId[0] + "0" + trainDataId.Substring(2);
+        }
         #endregion
 
         public TrainData[] GetTrainDatas() => GetDB().TrainDataList.ToArray();
@@ -72,12 +109,6 @@ namespace TrainDefense.Game
         public TrainSkillDataDB GetTrainSkillDataDB() => GetDB().TrainSkillDataDB;
         public TrainSkillData[] GetTrainSkillDatas() => GetDB().TrainSkillDataDB.TrainActiveSkillDataList.ToArray();
         public TrainSkillData GetTrainSkillData(string id) => string.IsNullOrEmpty(id) ? null : GetDB().TrainSkillDataDB.trainActiveSkillDataList.Find(s => s != null && s.Id == id);
-
-        public TrainUpgradeData[] GetTrainUpgradeDatas() => GetDB().TrainUpgradeDataList.ToArray();
-
-        public TurretTrainUpgradeData[] GetTurretTrainUpgradeDatas() => GetDB().TurretTrainUpgradeDataList.ToArray();
-
-        public RangeTrainUpgradeData[] GetRangeTrainUpgradeDatas() => GetDB().RangeTrainUpgradeDataList.ToArray();
 
 
         #region Data Access Methods
@@ -102,150 +133,6 @@ namespace TrainDefense.Game
             return result;
         }
 
-        /// <summary>
-        /// ID로 기차 업그레이드 데이터 검색 (모든 타입에서 통합 검색)
-        /// 1. TriChoiceDB에서 ID로 UpgradeTrainChoice를 찾으면, MainTrain.CurrentTrains에 있는 Train의 레벨과 같은 업그레이드 데이터를 반환
-        /// 2. 그렇지 않으면 업그레이드 데이터 ID로 직접 검색하여 반환
-        /// </summary>
-        public ITrainUpgradeData GetTrainUpgradeData(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                Debug.LogWarning("Train Upgrade ID is null or empty");
-                return null;
-            }
-
-            // 먼저 TriChoiceDB에서 UpgradeTrainChoice를 찾아봄
-            var choiceEntry = GetTriChoiceDB().UpgradeTrainChoices.FirstOrDefault(x => x.Option.Id == id);
-            if (choiceEntry != null)
-            {
-                var upgradeChoice = choiceEntry.Option as UpgradeTrainChoice;
-                if (upgradeChoice != null)
-                {
-                    // TrainManager를 통해 MainTrain 접근
-                    if (TrainManager.Instance == null)
-                    {
-                        Debug.LogWarning("TrainManager.Instance is null");
-                        return null;
-                    }
-
-                    var mainTrain = TrainManager.Instance.MainTrain;
-                    if (mainTrain == null)
-                    {
-                        Debug.LogWarning("MainTrain is null");
-                        return null;
-                    }
-
-                    // MainTrain.CurrentTrains에서 targetTrainId로 Train 찾기
-                    var train = mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == upgradeChoice.TargetTrainId);
-                    if (train == null)
-                    {
-                        Debug.LogWarning($"Train with ID '{upgradeChoice.TargetTrainId}' not found in MainTrain.CurrentTrains");
-                        return null;
-                    }
-
-                    // Train의 CurrentLevel 확인
-                    int currentLevel = train.CurrentLevel;
-
-                    // weightedUpgrades에서 현재 레벨에 해당하는 업그레이드 데이터 찾기
-                    if (upgradeChoice.WeightedUpgrades == null || upgradeChoice.WeightedUpgrades.Length == 0)
-                    {
-                        Debug.LogWarning($"UpgradeTrainChoice [{id}]: WeightedUpgrades is null or empty");
-                        return null;
-                    }
-
-                    // 현재 레벨에 해당하는 업그레이드 데이터 찾기
-                    // upgradeStats 배열의 인덱스 = 레벨 (CurrentLevel은 0-based)
-                    foreach (var weightedUpgrade in upgradeChoice.WeightedUpgrades)
-                    {
-                        var upgradeData = GetTrainUpgradeDataById(weightedUpgrade.UpgradeDataId);
-                        if (upgradeData != null && currentLevel >= 0 && currentLevel < upgradeData.MaxLevel)
-                        {
-                            return upgradeData;
-                        }
-                    }
-
-                    Debug.LogWarning($"Train upgrade data with ID '{id}' and level '{currentLevel}' not found");
-                    return null;
-                }
-            }
-
-            // TriChoiceDB에서 찾지 못했으면 업그레이드 데이터 ID로 직접 검색
-            return GetTrainUpgradeDataById(id);
-        }
-
-        /// <summary>
-        /// UpgradeDataId로 업그레이드 데이터를 검색
-        /// </summary>
-        public ITrainUpgradeData GetTrainUpgradeDataById(string upgradeDataId)
-        {
-            if (string.IsNullOrEmpty(upgradeDataId))
-            {
-                return null;
-            }
-
-            var allUpgradeData = GetAllTrainUpgradeData();
-            return allUpgradeData.FirstOrDefault(u => u.Id == upgradeDataId);
-        }
-
-        /// <summary>
-        /// TrainDataId로 해당 기차의 현재 레벨에 맞는 업그레이드 데이터 목록을 반환
-        /// MainTrain을 통해 현재 Train 인스턴스의 레벨을 확인하고, DB의 모든 업그레이드 데이터에서 해당 레벨에 맞는 데이터를 필터링하여 반환
-        /// </summary>
-        public List<ITrainUpgradeData> GetTrainUpgradeDataByTrainDataId(string trainDataId)
-        {
-            if (string.IsNullOrEmpty(trainDataId))
-            {
-                Debug.LogWarning("TrainDataId is null or empty");
-                return new List<ITrainUpgradeData>();
-            }
-
-            // TrainManager를 통해 MainTrain 접근
-            if (TrainManager.Instance == null)
-            {
-                Debug.LogWarning("TrainManager.Instance is null");
-                return new List<ITrainUpgradeData>();
-            }
-
-            var mainTrain = TrainManager.Instance.MainTrain;
-            if (mainTrain == null)
-            {
-                Debug.LogWarning("MainTrain is null");
-                return new List<ITrainUpgradeData>();
-            }
-
-            // MainTrain.CurrentTrains에서 trainDataId로 Train 찾기
-            var train = mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == trainDataId);
-            if (train == null)
-            {
-                Debug.LogWarning($"Train with ID '{trainDataId}' not found in MainTrain.CurrentTrains");
-                return new List<ITrainUpgradeData>();
-            }
-
-            // Train의 CurrentLevel 확인
-            int currentLevel = train.CurrentLevel;
-
-            // DB의 모든 업그레이드 데이터에서 현재 레벨에 해당하는 업그레이드 필터링
-            // upgradeStats 배열의 인덱스 = 레벨 (CurrentLevel은 0-based)
-            var allUpgradeData = GetAllTrainUpgradeData();
-            var filteredUpgrades = allUpgradeData
-                .Where(upgrade => currentLevel >= 0 && currentLevel < upgrade.MaxLevel)
-                .ToList();
-
-            return filteredUpgrades;
-        }
-
-        /// <summary>
-        /// 모든 기차 업그레이드 데이터를 통합하여 반환 (기본 + 타입별)
-        /// </summary>
-        public List<ITrainUpgradeData> GetAllTrainUpgradeData()
-        {
-            var allUpgradeData = new List<ITrainUpgradeData>();
-            allUpgradeData.AddRange(GetTrainUpgradeDatas().Cast<ITrainUpgradeData>());
-            allUpgradeData.AddRange(GetTurretTrainUpgradeDatas().Cast<ITrainUpgradeData>());
-            allUpgradeData.AddRange(GetRangeTrainUpgradeDatas().Cast<ITrainUpgradeData>());
-            return allUpgradeData;
-        }
 
         /// <summary>
         /// ID로 업그레이드 데이터 검색
