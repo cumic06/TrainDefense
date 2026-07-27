@@ -441,6 +441,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 1
   - id: 30002
@@ -457,14 +458,15 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 4
-      AttackRange: 8
-      AttackArea: 8
+      AttackDamage: 6
+      AttackRange: 6
+      AttackArea: 9
       AttackCount: 1
       AttackInterval: 2
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 30003
@@ -489,6 +491,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 1
   - id: 30004
@@ -513,6 +516,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 1
   - id: 30005
@@ -537,6 +541,7 @@ MonoBehaviour:
       TargetCount: 2
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 1
   - id: 30006
@@ -561,6 +566,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: CannonProjectile
     attackDamageMultiplier: 1
   - id: 30007
@@ -585,6 +591,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
   - id: 31001
@@ -610,6 +617,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 1
   - id: 31002
@@ -628,14 +636,15 @@ MonoBehaviour:
     - 60003
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 4
-      AttackRange: 8
-      AttackArea: 8
+      AttackDamage: 6
+      AttackRange: 6
+      AttackArea: 9
       AttackCount: 1
       AttackInterval: 2
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 31003
@@ -662,6 +671,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 1
   - id: 31004
@@ -688,6 +698,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 1
   - id: 31005
@@ -713,6 +724,7 @@ MonoBehaviour:
       TargetCount: 2
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 1
   - id: 31006
@@ -738,6 +750,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: CannonProjectile
     attackDamageMultiplier: 1
   - id: 31007
@@ -763,6 +776,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
   - id: 50001
@@ -787,6 +801,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: MainNormalProjectile
     attackDamageMultiplier: 1
   - id: 50002
@@ -811,6 +826,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
+      BurstDuration: 0
     turretProjectilePrefabId: MainMissileProjectile
     attackDamageMultiplier: 1
   rangeTrainDataList:
@@ -836,6 +852,7 @@ MonoBehaviour:
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 0
+      BurstDuration: 0
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 40002
@@ -860,6 +877,7 @@ MonoBehaviour:
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 30
+      BurstDuration: 0
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   - id: 41001
@@ -886,6 +904,7 @@ MonoBehaviour:
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 0
+      BurstDuration: 0
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 41002
@@ -912,6 +931,7 @@ MonoBehaviour:
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 30
+      BurstDuration: 0
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   trainSkillDataDB:
@@ -1140,7 +1160,7 @@ MonoBehaviour:
       param2: 0.25
       param3: 
       description: Passive_60017_Desc
-    _legacyTrainSkillDataList: []
+  _legacyTrainSkillDataList: []
   _legacyTrainPassiveSkillDataList: []
   stageDataList:
   - id: 50001
@@ -1167,6 +1187,7 @@ MonoBehaviour:
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: 1169708250249569854, guid: b1afade6230499848a8b7c09f05c25f5, type: 3}
+    nameKey: 
     eliteRewardMultiplier: 2
   - id: 50002
     baseInspectionTime: 30
@@ -1196,6 +1217,7 @@ MonoBehaviour:
         Size: {x: 25, y: 4}
       spawnEffectPrefab: {fileID: 5497501282563620409, guid: 61ec9a5b3b8a7454ba21d3c1bad637c6, type: 3}
     stageImage: {fileID: -8210071984612457726, guid: e44f3d3e5e510c747b272409f41010fd, type: 3}
+    nameKey: 
     eliteRewardMultiplier: 5
   - id: 50003
     baseInspectionTime: 30
@@ -1225,6 +1247,7 @@ MonoBehaviour:
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: 921028978873285461, guid: 91ac1a6ea09e2394ea9e27fe7d4a7848, type: 3}
+    nameKey: 
     eliteRewardMultiplier: 4
   - id: 50004
     baseInspectionTime: 30
@@ -1250,6 +1273,7 @@ MonoBehaviour:
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: -2424202261327721187, guid: 7e8a0409500c44f41ad4f08f3355ed80, type: 3}
+    nameKey: 
     eliteRewardMultiplier: 3
   - id: 50005
     baseInspectionTime: 30
@@ -1275,6 +1299,7 @@ MonoBehaviour:
       customSpawnAreas: []
       spawnEffectPrefab: {fileID: 0}
     stageImage: {fileID: -2663140553942567082, guid: d7d6afe20884f4140beef75663e91020, type: 3}
+    nameKey: 
     eliteRewardMultiplier: 6
   upgradeDataList:
   - id: 110001
@@ -1404,7 +1429,7 @@ MonoBehaviour:
     passiveValuePerLevel: 1
   skillNodeDataList:
   - id: skill_fire_damage
-    iconId:
+    iconId: 
     name: SkillTree_skill_fire_damage_Name
     description: SkillTree_skill_fire_damage_Desc
     lane: 0
@@ -1420,9 +1445,9 @@ MonoBehaviour:
       <Value>k__BackingField: 2
     passiveType: 1
     passiveValuePerLevel: 0
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_fire_speed
-    iconId:
+    iconId: 
     name: SkillTree_skill_fire_speed_Name
     description: SkillTree_skill_fire_speed_Desc
     lane: 0
@@ -1439,9 +1464,9 @@ MonoBehaviour:
       <Value>k__BackingField: -0.03
     passiveType: 1
     passiveValuePerLevel: 0
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_fire_crit
-    iconId:
+    iconId: 
     name: SkillTree_skill_fire_crit_Name
     description: SkillTree_skill_fire_crit_Desc
     lane: 0
@@ -1458,9 +1483,9 @@ MonoBehaviour:
       <Value>k__BackingField: 2
     passiveType: 1
     passiveValuePerLevel: 0
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_fire_critdmg
-    iconId:
+    iconId: 
     name: SkillTree_skill_fire_critdmg_Name
     description: SkillTree_skill_fire_critdmg_Desc
     lane: 0
@@ -1477,9 +1502,9 @@ MonoBehaviour:
       <Value>k__BackingField: 10
     passiveType: 1
     passiveValuePerLevel: 0
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_fire_unlock
-    iconId:
+    iconId: 
     name: SkillTree_skill_fire_unlock_Name
     description: SkillTree_skill_fire_unlock_Desc
     lane: 0
@@ -1496,7 +1521,7 @@ MonoBehaviour:
     passiveValuePerLevel: 0
     unlockTrainId: 40001
   - id: skill_def_hp
-    iconId:
+    iconId: 
     name: SkillTree_skill_def_hp_Name
     description: SkillTree_skill_def_hp_Desc
     lane: 1
@@ -1510,9 +1535,9 @@ MonoBehaviour:
     stats: []
     passiveType: 1
     passiveValuePerLevel: 5
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_def_regen
-    iconId:
+    iconId: 
     name: SkillTree_skill_def_regen_Name
     description: SkillTree_skill_def_regen_Desc
     lane: 1
@@ -1527,9 +1552,9 @@ MonoBehaviour:
     stats: []
     passiveType: 2
     passiveValuePerLevel: 1
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_def_turret
-    iconId:
+    iconId: 
     name: SkillTree_skill_def_turret_Name
     description: SkillTree_skill_def_turret_Desc
     lane: 1
@@ -1544,9 +1569,9 @@ MonoBehaviour:
     stats: []
     passiveType: 0
     passiveValuePerLevel: 1
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_util_range
-    iconId:
+    iconId: 
     name: SkillTree_skill_util_range_Name
     description: SkillTree_skill_util_range_Desc
     lane: 2
@@ -1562,9 +1587,9 @@ MonoBehaviour:
       <Value>k__BackingField: 0.5
     passiveType: 1
     passiveValuePerLevel: 0
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_util_reroll
-    iconId:
+    iconId: 
     name: SkillTree_skill_util_reroll_Name
     description: SkillTree_skill_util_reroll_Desc
     lane: 2
@@ -1579,9 +1604,9 @@ MonoBehaviour:
     stats: []
     passiveType: 3
     passiveValuePerLevel: 1
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_util_area
-    iconId:
+    iconId: 
     name: SkillTree_skill_util_area_Name
     description: SkillTree_skill_util_area_Desc
     lane: 2
@@ -1598,9 +1623,9 @@ MonoBehaviour:
       <Value>k__BackingField: 0.2
     passiveType: 1
     passiveValuePerLevel: 0
-    unlockTrainId:
+    unlockTrainId: 
   - id: skill_util_unlock
-    iconId:
+    iconId: 
     name: SkillTree_skill_util_unlock_Name
     description: SkillTree_skill_util_unlock_Desc
     lane: 2
@@ -1616,154 +1641,6 @@ MonoBehaviour:
     passiveType: 1
     passiveValuePerLevel: 0
     unlockTrainId: 40002
-  statUpgradeTierDataList:
-  - id: stat_upgrade_tier_1
-    grade: 1
-    valueMultiplier: 1
-    costMultiplier: 1
-    firstShopVisit: 1
-    lastShopVisit: 8
-  - id: stat_upgrade_tier_2
-    grade: 2
-    valueMultiplier: 3
-    costMultiplier: 3
-    firstShopVisit: 6
-    lastShopVisit: 14
-  - id: stat_upgrade_tier_3
-    grade: 3
-    valueMultiplier: 6
-    costMultiplier: 6
-    firstShopVisit: 12
-    lastShopVisit: 22
-  - id: stat_upgrade_tier_4
-    grade: 4
-    valueMultiplier: 10
-    costMultiplier: 10
-    firstShopVisit: 20
-    lastShopVisit: 30
-  - id: stat_upgrade_tier_5
-    grade: 5
-    valueMultiplier: 15
-    costMultiplier: 15
-    firstShopVisit: 28
-    lastShopVisit: 0
-  statUpgradeStatDataList:
-  - id: stat_upgrade_stat_attack_damage
-    statType: 2
-    minGrade: 1
-  - id: stat_upgrade_stat_attack_interval
-    statType: 4
-    minGrade: 1
-  - id: stat_upgrade_stat_attack_area
-    statType: 8
-    minGrade: 1
-  - id: stat_upgrade_stat_target_count
-    statType: 5
-    minGrade: 4
-  - id: stat_upgrade_stat_attack_count
-    statType: 3
-    minGrade: 5
-  trainStatUpgradeRuleDataList:
-  - id: stat_upgrade_30001_attack_damage
-    trainDataId: 30001
-    statType: 2
-    increaseRate: 0.1
-  - id: stat_upgrade_30001_attack_interval
-    trainDataId: 30001
-    statType: 4
-    increaseRate: 0.05
-  - id: stat_upgrade_30002_attack_damage
-    trainDataId: 30002
-    statType: 2
-    increaseRate: 0.1
-  - id: stat_upgrade_30002_attack_interval
-    trainDataId: 30002
-    statType: 4
-    increaseRate: 0.05
-  - id: stat_upgrade_30002_attack_area
-    trainDataId: 30002
-    statType: 8
-    increaseRate: 0.1
-  - id: stat_upgrade_30003_attack_damage
-    trainDataId: 30003
-    statType: 2
-    increaseRate: 0.1
-  - id: stat_upgrade_30003_attack_interval
-    trainDataId: 30003
-    statType: 4
-    increaseRate: 0.05
-  - id: stat_upgrade_30003_attack_area
-    trainDataId: 30003
-    statType: 8
-    increaseRate: 0.1
-  - id: stat_upgrade_30004_attack_damage
-    trainDataId: 30004
-    statType: 2
-    increaseRate: 0.1
-  - id: stat_upgrade_30004_attack_interval
-    trainDataId: 30004
-    statType: 4
-    increaseRate: 0.05
-  - id: stat_upgrade_30004_attack_area
-    trainDataId: 30004
-    statType: 8
-    increaseRate: 0.1
-  - id: stat_upgrade_30005_attack_damage
-    trainDataId: 30005
-    statType: 2
-    increaseRate: 0.1
-  - id: stat_upgrade_30005_attack_interval
-    trainDataId: 30005
-    statType: 4
-    increaseRate: 0.05
-  - id: stat_upgrade_30005_target_count
-    trainDataId: 30005
-    statType: 5
-    increaseRate: 1
-  - id: stat_upgrade_30006_attack_damage
-    trainDataId: 30006
-    statType: 2
-    increaseRate: 0.1
-  - id: stat_upgrade_30006_attack_area
-    trainDataId: 30006
-    statType: 8
-    increaseRate: 0.1
-  - id: stat_upgrade_30006_attack_count
-    trainDataId: 30006
-    statType: 3
-    increaseRate: 1
-  - id: stat_upgrade_30007_attack_damage
-    trainDataId: 30007
-    statType: 2
-    increaseRate: 0.1
-  - id: stat_upgrade_30007_attack_interval
-    trainDataId: 30007
-    statType: 4
-    increaseRate: 0.05
-  - id: stat_upgrade_40001_attack_damage
-    trainDataId: 40001
-    statType: 2
-    increaseRate: 0.1
-  - id: stat_upgrade_40001_attack_interval
-    trainDataId: 40001
-    statType: 4
-    increaseRate: 0.05
-  - id: stat_upgrade_40001_attack_area
-    trainDataId: 40001
-    statType: 8
-    increaseRate: 0.1
-  - id: stat_upgrade_40002_attack_damage
-    trainDataId: 40002
-    statType: 2
-    increaseRate: 0.1
-  - id: stat_upgrade_40002_attack_interval
-    trainDataId: 40002
-    statType: 4
-    increaseRate: 0.05
-  - id: stat_upgrade_40002_attack_area
-    trainDataId: 40002
-    statType: 8
-    increaseRate: 0.1
   triChoiceDB:
     addTrainChoices:
     - Option:
@@ -1944,6 +1821,154 @@ MonoBehaviour:
         rid: 7300000000000000003
       Weight: 1
       Tier: 0
+  statUpgradeTierDataList:
+  - id: stat_upgrade_tier_1
+    grade: 1
+    valueMultiplier: 1
+    costMultiplier: 1
+    firstShopVisit: 1
+    lastShopVisit: 8
+  - id: stat_upgrade_tier_2
+    grade: 2
+    valueMultiplier: 3
+    costMultiplier: 3
+    firstShopVisit: 6
+    lastShopVisit: 14
+  - id: stat_upgrade_tier_3
+    grade: 3
+    valueMultiplier: 6
+    costMultiplier: 6
+    firstShopVisit: 12
+    lastShopVisit: 22
+  - id: stat_upgrade_tier_4
+    grade: 4
+    valueMultiplier: 10
+    costMultiplier: 10
+    firstShopVisit: 20
+    lastShopVisit: 30
+  - id: stat_upgrade_tier_5
+    grade: 5
+    valueMultiplier: 15
+    costMultiplier: 15
+    firstShopVisit: 28
+    lastShopVisit: 0
+  statUpgradeStatDataList:
+  - id: stat_upgrade_stat_attack_damage
+    statType: 2
+    minGrade: 1
+  - id: stat_upgrade_stat_attack_interval
+    statType: 4
+    minGrade: 1
+  - id: stat_upgrade_stat_attack_area
+    statType: 8
+    minGrade: 1
+  - id: stat_upgrade_stat_target_count
+    statType: 5
+    minGrade: 4
+  - id: stat_upgrade_stat_attack_count
+    statType: 3
+    minGrade: 5
+  trainStatUpgradeRuleDataList:
+  - id: stat_upgrade_30001_attack_damage
+    trainDataId: 30001
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30001_attack_interval
+    trainDataId: 30001
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30002_attack_damage
+    trainDataId: 30002
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30002_attack_interval
+    trainDataId: 30002
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30002_attack_area
+    trainDataId: 30002
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_30003_attack_damage
+    trainDataId: 30003
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30003_attack_interval
+    trainDataId: 30003
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30003_attack_area
+    trainDataId: 30003
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_30004_attack_damage
+    trainDataId: 30004
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30004_attack_interval
+    trainDataId: 30004
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30004_attack_area
+    trainDataId: 30004
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_30005_attack_damage
+    trainDataId: 30005
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30005_attack_interval
+    trainDataId: 30005
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_30005_target_count
+    trainDataId: 30005
+    statType: 5
+    increaseRate: 1
+  - id: stat_upgrade_30006_attack_damage
+    trainDataId: 30006
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30006_attack_area
+    trainDataId: 30006
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_30006_attack_count
+    trainDataId: 30006
+    statType: 3
+    increaseRate: 1
+  - id: stat_upgrade_30007_attack_damage
+    trainDataId: 30007
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_30007_attack_interval
+    trainDataId: 30007
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_40001_attack_damage
+    trainDataId: 40001
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_40001_attack_interval
+    trainDataId: 40001
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_40001_attack_area
+    trainDataId: 40001
+    statType: 8
+    increaseRate: 0.1
+  - id: stat_upgrade_40002_attack_damage
+    trainDataId: 40002
+    statType: 2
+    increaseRate: 0.1
+  - id: stat_upgrade_40002_attack_interval
+    trainDataId: 40002
+    statType: 4
+    increaseRate: 0.05
+  - id: stat_upgrade_40002_attack_area
+    trainDataId: 40002
+    statType: 8
+    increaseRate: 0.1
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     eliteSpawnCycle: 100
