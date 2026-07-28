@@ -189,6 +189,16 @@ namespace TrainDefense.Game.Datas
             return _train is RangeTrain rangeTrain ? rangeTrain.BaseStatus.SlowRate : 0f;
         }
 
+        // 이번 구매로 늘어나는 범위(반경). 커버 면적 ∝ 반경²이라 반경을 그대로 가산하면 실효가 제곱으로 폭주한다.
+        // 반경 = base × √(1 + rate×누적) 곡선의 차분 — 커버 면적이 등급 배수에 정확히 비례해 늘어난다(공속과 동일 구조).
+        private float _GetAttackAreaDelta(float baseArea)
+        {
+            float currentMultiplier = 1f + _rule.IncreaseRate * _train.GetStatUpgradeAmount(StatType.AttackArea);
+            float nextMultiplier = currentMultiplier + _rule.IncreaseRate * _tier.ValueMultiplier;
+
+            return baseArea * (Mathf.Sqrt(nextMultiplier) - Mathf.Sqrt(currentMultiplier));
+        }
+
         // 상점 슬롯 설명용 "레이블 +값" 한 줄 (Upgrade_* 로컬라이즈 템플릿 재사용, 리치 태그 제거)
         public string BuildStatLineText()
         {
@@ -208,7 +218,8 @@ namespace TrainDefense.Game.Datas
             {
                 StatType.AttackDamage => $"+{_GetBaseAttackDamage() * _rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 StatType.AttackInterval => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
-                StatType.AttackArea => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
+                // √ 곡선의 실제 반경 증가분을 표시 (base 100 대입 = base 대비 %) — 살수록 %가 줄어드는 걸 정직하게 보여준다.
+                StatType.AttackArea => $"+{_GetAttackAreaDelta(100f):0.#}%",
                 // 절대초 가산 — 템플릿("지속시간 {0}초")이 단위를 붙이므로 숫자만 만든다.
                 StatType.BurstDuration => $"+{_rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 // 점근 곡선의 실제 차분을 표시 — 살수록 %p가 줄어드는 걸 카드가 정직하게 보여준다.
@@ -252,7 +263,7 @@ namespace TrainDefense.Game.Datas
                 {
                     case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.AttackInterval: delta.AttackInterval = _GetAttackIntervalDelta(baseStatus.AttackInterval); break;
-                    case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * _rule.IncreaseRate * _tier.ValueMultiplier; break;
+                    case StatType.AttackArea: delta.AttackArea = _GetAttackAreaDelta(baseStatus.AttackArea); break;
                     case StatType.TargetCount: delta.TargetCount = 1; break;
                     case StatType.AttackCount: delta.AttackCount = 1; break;
                     // 분사 지속시간은 base 비율이 아니라 절대초 — rate가 1등급이 더할 초.
@@ -272,7 +283,7 @@ namespace TrainDefense.Game.Datas
                 {
                     case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.AttackInterval: delta.AttackInterval = _GetAttackIntervalDelta(baseStatus.AttackInterval); break;
-                    case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * _rule.IncreaseRate * _tier.ValueMultiplier; break;
+                    case StatType.AttackArea: delta.AttackArea = _GetAttackAreaDelta(baseStatus.AttackArea); break;
                     // 분사 지속시간은 base 비율이 아니라 절대초 — rate가 1등급이 더할 초.
                     case StatType.BurstDuration: delta.BurstDuration = _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     // 둔화율은 지연 배율 곡선의 차분 — 공속과 동일 구조(점근, 상한 불필요).
