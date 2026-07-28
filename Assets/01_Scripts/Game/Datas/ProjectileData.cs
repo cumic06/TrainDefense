@@ -70,12 +70,6 @@ namespace TrainDefense.Game
         [SerializeField]
         private float tickDamageInterval = 0.1f;
 
-        [BoxGroup("Damage")]
-        [ShowIf("damageType", DamageType.Tick)]
-        [SerializeField]
-        [Tooltip("버스트 지속시간(초). 0보다 크면 틱 포탑이 '쿨다운 → 지속시간 동안 분사/장판 → 종료 → 쿨다운' 방식으로 동작한다 (화염·냉기). 0이면 기존 상시 유지 방식.")]
-        private float burstDuration = 0f;
-
         [BoxGroup("Status Effects")]
         [SerializeField]
         private bool hasSlowEffect = false;
@@ -158,7 +152,6 @@ namespace TrainDefense.Game
         public bool IsRotateModel => isRotateModel;
         public DamageType DamageType => damageType;
         public float TickDamageInterval => tickDamageInterval;
-        public float BurstDuration => burstDuration;
         public bool HasSlowEffect => hasSlowEffect;
         public float SlowValue => slowValue;
         public float SlowDuration => slowDuration;

@@ -24,5 +24,8 @@ namespace TrainDefense.Game.Stats
 
         // 둔화율 (RangeTrain 전용, 맨 뒤 고정)
         SlowRate = 9,
+
+        // 분사 지속시간 (버스트 포탑 전용, 맨 뒤 고정)
+        BurstDuration = 10,
     }
 }

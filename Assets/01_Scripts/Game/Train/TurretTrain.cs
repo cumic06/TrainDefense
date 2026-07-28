@@ -458,21 +458,14 @@ namespace TrainDefense.Game
             _repeatAttackCoroutine = null;
         }
 
-        // 버스트 지속시간. NonMovement 풀링(분사형) 투사체의 config에 BurstDuration이 설정된 포탑(화염)만 > 0.
+        // 버스트 지속시간. 포탑 데이터의 BurstDuration이 base(화염 4초)이고 업그레이드 누적이 가산된다.
+        // base 0 = 비버스트 포탑(강화 규칙도 없어 항상 0).
         private float _GetBurstDuration()
         {
             if (!_useNonMovementProjectilePooling)
                 return 0f;
 
-            var projectile = GetProjectile();
-            if (projectile == null)
-                return 0f;
-
-            ProjectileData projectileData = projectile.GetData();
-            float baseBurst = projectileData != null ? projectileData.BurstDuration : 0f;
-
-            // config가 base, 업그레이드 누적(BurstDuration 스탯)이 가산. base 0 = 비버스트 포탑(스탯 무시).
-            return baseBurst > 0f ? baseBurst + _currentTurretTrainStatus.BurstDuration : 0f;
+            return _currentTurretTrainStatus.BurstDuration;
         }
 
         private void _EndBurst()

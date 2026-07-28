@@ -462,11 +462,11 @@ MonoBehaviour:
       AttackRange: 6
       AttackArea: 9
       AttackCount: 1
-      AttackInterval: 2
+      AttackInterval: 1
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-      BurstDuration: 0
+      BurstDuration: 4
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 30003
@@ -640,11 +640,11 @@ MonoBehaviour:
       AttackRange: 6
       AttackArea: 9
       AttackCount: 1
-      AttackInterval: 2
+      AttackInterval: 1
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-      BurstDuration: 0
+      BurstDuration: 4
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 31003
@@ -877,7 +877,7 @@ MonoBehaviour:
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 30
-      BurstDuration: 0
+      BurstDuration: 5
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   - id: 41001
@@ -931,7 +931,7 @@ MonoBehaviour:
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 30
-      BurstDuration: 0
+      BurstDuration: 5
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   trainSkillDataDB:
@@ -1830,26 +1830,26 @@ MonoBehaviour:
     lastShopVisit: 8
   - id: stat_upgrade_tier_2
     grade: 2
-    valueMultiplier: 3
+    valueMultiplier: 2
     costMultiplier: 3
     firstShopVisit: 6
     lastShopVisit: 14
   - id: stat_upgrade_tier_3
     grade: 3
-    valueMultiplier: 6
-    costMultiplier: 6
+    valueMultiplier: 3
+    costMultiplier: 5
     firstShopVisit: 12
     lastShopVisit: 22
   - id: stat_upgrade_tier_4
     grade: 4
-    valueMultiplier: 10
-    costMultiplier: 10
+    valueMultiplier: 4
+    costMultiplier: 7
     firstShopVisit: 20
     lastShopVisit: 30
   - id: stat_upgrade_tier_5
     grade: 5
-    valueMultiplier: 15
-    costMultiplier: 15
+    valueMultiplier: 5
+    costMultiplier: 9
     firstShopVisit: 28
     lastShopVisit: 0
   statUpgradeStatDataList:
@@ -1868,6 +1868,9 @@ MonoBehaviour:
   - id: stat_upgrade_stat_attack_count
     statType: 3
     minGrade: 5
+  - id: stat_upgrade_stat_burst_duration
+    statType: 10
+    minGrade: 1
   trainStatUpgradeRuleDataList:
   - id: stat_upgrade_30001_attack_damage
     trainDataId: 30001
@@ -1881,10 +1884,6 @@ MonoBehaviour:
     trainDataId: 30002
     statType: 2
     increaseRate: 0.1
-  - id: stat_upgrade_30002_attack_interval
-    trainDataId: 30002
-    statType: 4
-    increaseRate: 0.05
   - id: stat_upgrade_30002_attack_area
     trainDataId: 30002
     statType: 8
@@ -1969,6 +1968,14 @@ MonoBehaviour:
     trainDataId: 40002
     statType: 8
     increaseRate: 0.1
+  - id: stat_upgrade_30002_burst_duration
+    trainDataId: 30002
+    statType: 10
+    increaseRate: 1
+  - id: stat_upgrade_40002_burst_duration
+    trainDataId: 40002
+    statType: 10
+    increaseRate: 1
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     eliteSpawnCycle: 100

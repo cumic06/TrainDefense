@@ -19,6 +19,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			("attack_area", StatType.AttackArea),
 			("target_count", StatType.TargetCount),
 			("attack_count", StatType.AttackCount),
+			("burst_duration", StatType.BurstDuration),
 		};
 
 		public string trainDataId;

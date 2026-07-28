@@ -167,6 +167,7 @@ namespace TrainDefense.Game.Datas
                 StatType.AttackArea => "Upgrade_AttackArea",
                 StatType.TargetCount => "Upgrade_TargetCount",
                 StatType.AttackCount => "Upgrade_AttackCount",
+                StatType.BurstDuration => "Upgrade_BurstDuration",
                 _ => null,
             };
 
@@ -175,6 +176,8 @@ namespace TrainDefense.Game.Datas
                 StatType.AttackDamage => $"+{_GetBaseAttackDamage() * _rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 StatType.AttackInterval => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 StatType.AttackArea => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
+                // 절대초 가산 — 템플릿("지속시간 {0}초")이 단위를 붙이므로 숫자만 만든다.
+                StatType.BurstDuration => $"+{_rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 _ => "+1",
             };
 
@@ -217,6 +220,8 @@ namespace TrainDefense.Game.Datas
                     case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.TargetCount: delta.TargetCount = 1; break;
                     case StatType.AttackCount: delta.AttackCount = 1; break;
+                    // 분사 지속시간은 base 비율이 아니라 절대초 — rate가 1등급이 더할 초.
+                    case StatType.BurstDuration: delta.BurstDuration = _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     default: return null;
                 }
 
@@ -233,6 +238,8 @@ namespace TrainDefense.Game.Datas
                     case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.AttackInterval: delta.AttackInterval = _GetAttackIntervalDelta(baseStatus.AttackInterval); break;
                     case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * _rule.IncreaseRate * _tier.ValueMultiplier; break;
+                    // 분사 지속시간은 base 비율이 아니라 절대초 — rate가 1등급이 더할 초.
+                    case StatType.BurstDuration: delta.BurstDuration = _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     default: return null;
                 }
 

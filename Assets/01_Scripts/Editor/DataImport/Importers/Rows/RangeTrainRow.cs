@@ -14,6 +14,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public float criticalChance;
 		public float criticalDamage;
 		public float slowRate;
+		public float burstDuration;
 
 		public override void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -27,6 +28,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			criticalChance = map.GetFloat(row, "critical_chance");
 			criticalDamage = map.GetFloat(row, "critical_damage");
 			slowRate = map.GetFloat(row, "slow_rate");
+			burstDuration = map.GetFloat(row, "burst_duration");
 		}
 
 		public override void ToExcelRow(IRow row, HeaderMap map)
@@ -41,6 +43,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "critical_chance", criticalChance);
 			map.SetCell(row, "critical_damage", criticalDamage);
 			map.SetCell(row, "slow_rate", slowRate);
+			map.SetCell(row, "burst_duration", burstDuration);
 		}
 	}
 }

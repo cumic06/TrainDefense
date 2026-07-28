@@ -211,7 +211,7 @@ MonoBehaviour:
     turretPurchaseCost: 190
     statUpgradeBaseCost: 50
     elitePromotionCost: 5000
-    stationPriceIncreasePercent: 10
+    stationPriceIncreasePercent: 20
   rerollButton: {fileID: 7710000000000000005}
   rerollLabelText: {fileID: 7710000000000000014}
   rerollBaseCostPerStation: 20

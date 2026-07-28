@@ -267,17 +267,14 @@ namespace TrainDefense.Game
             }
         }
 
-        // 버스트 지속시간. 장판 투사체 config에 BurstDuration이 설정된 포탑(냉기)만 > 0.
+        // 버스트 지속시간. 포탑 데이터의 BurstDuration이 base(냉기 5초)이고 업그레이드 누적이 가산된다.
+        // base 0 = 비버스트 포탑(강화 규칙도 없어 항상 0). 장판이 없으면 켤 대상이 없으므로 0.
         private float _GetBurstDuration()
         {
             if (_rangeProjectilePrefab == null)
                 return 0f;
 
-            ProjectileData projectileData = _rangeProjectilePrefab.GetData();
-            float baseBurst = projectileData != null ? projectileData.BurstDuration : 0f;
-
-            // config가 base, 업그레이드 누적(BurstDuration 스탯)이 가산. base 0 = 비버스트 포탑(스탯 무시).
-            return baseBurst > 0f ? baseBurst + _currentRangeTrainStatus.BurstDuration : 0f;
+            return _currentRangeTrainStatus.BurstDuration;
         }
 
         public override void Upgrade(ITrainUpgradeData upgradeData)

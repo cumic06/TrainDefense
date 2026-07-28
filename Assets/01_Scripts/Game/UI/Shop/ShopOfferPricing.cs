@@ -16,7 +16,7 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private int turretPurchaseCost = 190;
 
-        [Tooltip("1등급 스탯 강화 비용. 상위 등급은 등급표의 가격 배수가 곱해진다. 효과 배수와 같게 두면 등급은 밸런스에 개입하지 않고 슬롯 수 제약만 풀어주는 묶음이 된다")]
+        [Tooltip("1등급 스탯 강화 비용. 상위 등급은 등급표의 가격 배수가 곱해진다. 가격 배수를 효과 배수보다 가파르게 두면 상위 등급일수록 효과당 단가가 비싸진다(계층 가격)")]
         [SerializeField]
         private int statUpgradeBaseCost = 50;
 
@@ -26,7 +26,7 @@ namespace TrainDefense.Game.UI
 
         [Tooltip("상점이 한 번 열릴 때마다 전 상품 가격이 이 퍼센트씩 오른다 (선형, 역 도착 상점 + 맵 선택 상점 모두 포함). 안 사고 모으면 자동으로 손해가 되는 시간 축 인상 — 상점 내 남발 억제는 슬롯 소진+리롤 비용이 담당")]
         [SerializeField]
-        private float stationPriceIncreasePercent = 10f;
+        private float stationPriceIncreasePercent = 20f;
 
         public int GetPrice(IChoiceOption option)
         {
