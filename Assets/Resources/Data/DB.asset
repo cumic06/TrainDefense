@@ -462,7 +462,7 @@ MonoBehaviour:
       AttackRange: 6
       AttackArea: 9
       AttackCount: 1
-      AttackInterval: 1
+      AttackInterval: 1.5
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -640,7 +640,7 @@ MonoBehaviour:
       AttackRange: 6
       AttackArea: 9
       AttackCount: 1
-      AttackInterval: 1
+      AttackInterval: 1.5
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -869,7 +869,7 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 3
       AttackRange: 3
       AttackArea: 5
       AttackCount: 1
@@ -923,7 +923,7 @@ MonoBehaviour:
     - 60005
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 2
+      AttackDamage: 3
       AttackRange: 3
       AttackArea: 5
       AttackCount: 1
@@ -1865,7 +1865,7 @@ MonoBehaviour:
   - id: stat_upgrade_stat_attack_interval
     statType: 4
     minGrade: 1
-    costMultiplier: 1
+    costMultiplier: 1.5
   - id: stat_upgrade_stat_attack_area
     statType: 8
     minGrade: 1
@@ -1890,7 +1890,7 @@ MonoBehaviour:
   - id: stat_upgrade_30001_attack_interval
     trainDataId: 30001
     statType: 4
-    increaseRate: 0.05
+    increaseRate: 0.1
   - id: stat_upgrade_30002_attack_damage
     trainDataId: 30002
     statType: 2
@@ -1906,7 +1906,7 @@ MonoBehaviour:
   - id: stat_upgrade_30003_attack_interval
     trainDataId: 30003
     statType: 4
-    increaseRate: 0.05
+    increaseRate: 0.1
   - id: stat_upgrade_30003_attack_area
     trainDataId: 30003
     statType: 8
@@ -1918,7 +1918,7 @@ MonoBehaviour:
   - id: stat_upgrade_30004_attack_interval
     trainDataId: 30004
     statType: 4
-    increaseRate: 0.05
+    increaseRate: 0.1
   - id: stat_upgrade_30004_attack_area
     trainDataId: 30004
     statType: 8
@@ -1930,7 +1930,7 @@ MonoBehaviour:
   - id: stat_upgrade_30005_attack_interval
     trainDataId: 30005
     statType: 4
-    increaseRate: 0.05
+    increaseRate: 0.1
   - id: stat_upgrade_30005_target_count
     trainDataId: 30005
     statType: 5
@@ -1954,7 +1954,7 @@ MonoBehaviour:
   - id: stat_upgrade_30007_attack_interval
     trainDataId: 30007
     statType: 4
-    increaseRate: 0.05
+    increaseRate: 0.1
   - id: stat_upgrade_40001_attack_damage
     trainDataId: 40001
     statType: 2
@@ -1962,7 +1962,7 @@ MonoBehaviour:
   - id: stat_upgrade_40001_attack_interval
     trainDataId: 40001
     statType: 4
-    increaseRate: 0.05
+    increaseRate: 0.1
   - id: stat_upgrade_40001_attack_area
     trainDataId: 40001
     statType: 8
@@ -1971,10 +1971,6 @@ MonoBehaviour:
     trainDataId: 40002
     statType: 2
     increaseRate: 0.1
-  - id: stat_upgrade_40002_attack_interval
-    trainDataId: 40002
-    statType: 4
-    increaseRate: 0.05
   - id: stat_upgrade_40002_attack_area
     trainDataId: 40002
     statType: 8
@@ -1987,6 +1983,10 @@ MonoBehaviour:
     trainDataId: 40002
     statType: 10
     increaseRate: 1
+  - id: stat_upgrade_40002_slow_rate
+    trainDataId: 40002
+    statType: 9
+    increaseRate: 0.1
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     eliteSpawnCycle: 100

@@ -363,9 +363,10 @@ namespace TrainDefense.Game.UI
                 if (slotUI == null || slotUI == purchasedSlot || !slotUI.gameObject.activeSelf)
                     continue;
 
-                // 다른 구매로 무효해진 상품(예: 엘리트 승격으로 교체된 포탑의 강화)도 함께 내린다.
+                // 다른 구매로 무효해진 상품(예: 엘리트 승격으로 교체된 포탑의 강화, 상한 도달)은 비우지 않고
+                // 구매만 막는다 — 눈앞에서 상품이 사라지면 오동작처럼 보인다. 리롤/새 상점부터는 아예 안 뜬다.
                 if (!slotUI.HasValidOffer)
-                    slotUI.SetEmpty();
+                    slotUI.SetUnavailable();
                 else
                     slotUI.Refresh();
             }

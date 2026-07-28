@@ -342,10 +342,15 @@ namespace TrainDefense.Game
             }
         }
 
+        // 몬스터가 완전히 멈추면 무한 생존이 되므로 이속을 최소 10%는 남긴다.
+        // 상점 카드는 점근 곡선이라 100%를 못 넘지만, 패시브(현재값 곱셈)·영구업글·스킬트리 가산이
+        // 곡선 밖에서 더해지면 넘을 수 있어 소비 지점에서 한 번에 막는다.
+        private const float MAX_TOTAL_SLOW_RATE = 90f;
+
         // 누적 둔화율(%, 기차 base + 강화)을 둔화 배율로 변환.
         public float GetSlowValue()
         {
-            return 1f - _currentRangeTrainStatus.SlowRate / 100f;
+            return 1f - Mathf.Min(_currentRangeTrainStatus.SlowRate, MAX_TOTAL_SLOW_RATE) / 100f;
         }
 
         public override void StatusUpgrade(RangeTrainStatus upgradeData)

@@ -59,10 +59,11 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(_OnChangeCoin);
         }
 
-        // 상품 교체 + 즉시 표시 갱신.
+        // 상품 교체 + 즉시 표시 갱신. (슬롯은 재사용되므로 품절 상태를 반드시 되돌린다)
         public void SetOffer(ShopOffer offer)
         {
             _offer = offer;
+            buyButton.interactable = true;
             gameObject.SetActive(true);
             Refresh();
         }
@@ -72,6 +73,13 @@ namespace TrainDefense.Game.UI
         {
             _offer = null;
             gameObject.SetActive(false);
+        }
+
+        // 다른 구매로 무효해진 상품은 화면에 남기되 구매만 막는다 — 눈앞에서 사라지면 오동작처럼 보인다.
+        // 실제 제거는 리롤/새 상점의 재추첨이 담당한다(무효 상품은 후보에서 걸러짐).
+        public void SetUnavailable()
+        {
+            buyButton.interactable = false;
         }
 
         // 가격·설명 재표시 (다른 슬롯 구매로 레벨/코인이 변한 뒤 호출).

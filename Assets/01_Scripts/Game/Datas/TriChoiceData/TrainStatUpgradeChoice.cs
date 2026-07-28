@@ -21,6 +21,10 @@ namespace TrainDefense.Game.Datas
         // 공속 카드를 내리는 안전장치라 데이터가 아닌 상수로 둔다.
         public const float MAX_ATTACK_SPEED_MULTIPLIER = 10f;
 
+        // 공격 횟수 상한. 연타 간격이 주기의 15%(REPEAT_ATTACK_DELAY_RATIO)라 8회부터는
+        // 연타가 다음 주기에 잘려 낭비되므로, 주기 안에 다 들어가는 한계에서 카드를 내린다.
+        public const int MAX_ATTACK_COUNT = 7;
+
         private readonly Train _train;
         private readonly StatType _statType;
         private readonly StatUpgradeTierData _tier;
@@ -126,6 +130,11 @@ namespace TrainDefense.Game.Datas
             if (_statType == StatType.AttackInterval && _GetAttackSpeedMultiplier() >= MAX_ATTACK_SPEED_MULTIPLIER)
                 return false;
 
+            // 공격 횟수는 연타가 주기를 넘치는 한계에 닿으면 카드를 내린다. 누적 = base + 구매 횟수(+1씩).
+            if (_statType == StatType.AttackCount && _train is TurretTrain countTrain
+                && countTrain.BaseStatus.AttackCount + Mathf.RoundToInt(_train.GetStatUpgradeAmount(StatType.AttackCount)) >= MAX_ATTACK_COUNT)
+                return false;
+
             // 레벨 = 받은 업그레이드 횟수(획득 0). 만렙이면 더 못 산다.
             return UNLIMITED_UPGRADE_LEVEL || _train.CurrentLevel < Train.MAX_LEVEL;
         }
@@ -163,6 +172,23 @@ namespace TrainDefense.Game.Datas
             return baseInterval / nextMultiplier - baseInterval / currentMultiplier;
         }
 
+        // 이번 구매로 오르는 둔화율(%p). 둔화율 = 1 − 1/지연배율 곡선의 차분이라(공속과 동일 구조)
+        // 구매를 거듭할수록 %p는 작아지지만 적 지연 시간은 등급 배수에 정확히 비례해 늘어난다.
+        // 100%(완전 정지)에는 점근만 하므로 상한 가드가 필요 없다.
+        private float _GetSlowRateDelta(float baseSlowRate)
+        {
+            float baseMultiplier = 1f / (1f - baseSlowRate / 100f);
+            float currentMultiplier = baseMultiplier + _rule.IncreaseRate * _train.GetStatUpgradeAmount(StatType.SlowRate);
+            float nextMultiplier = currentMultiplier + _rule.IncreaseRate * _tier.ValueMultiplier;
+
+            return (1f / currentMultiplier - 1f / nextMultiplier) * 100f;
+        }
+
+        private float _GetBaseSlowRate()
+        {
+            return _train is RangeTrain rangeTrain ? rangeTrain.BaseStatus.SlowRate : 0f;
+        }
+
         // 상점 슬롯 설명용 "레이블 +값" 한 줄 (Upgrade_* 로컬라이즈 템플릿 재사용, 리치 태그 제거)
         public string BuildStatLineText()
         {
@@ -174,6 +200,7 @@ namespace TrainDefense.Game.Datas
                 StatType.TargetCount => "Upgrade_TargetCount",
                 StatType.AttackCount => "Upgrade_AttackCount",
                 StatType.BurstDuration => "Upgrade_BurstDuration",
+                StatType.SlowRate => "Upgrade_Slow",
                 _ => null,
             };
 
@@ -184,6 +211,8 @@ namespace TrainDefense.Game.Datas
                 StatType.AttackArea => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 // 절대초 가산 — 템플릿("지속시간 {0}초")이 단위를 붙이므로 숫자만 만든다.
                 StatType.BurstDuration => $"+{_rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
+                // 점근 곡선의 실제 차분을 표시 — 살수록 %p가 줄어드는 걸 카드가 정직하게 보여준다.
+                StatType.SlowRate => $"+{_GetSlowRateDelta(_GetBaseSlowRate()):0.#}%",
                 _ => "+1",
             };
 
@@ -246,6 +275,8 @@ namespace TrainDefense.Game.Datas
                     case StatType.AttackArea: delta.AttackArea = baseStatus.AttackArea * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     // 분사 지속시간은 base 비율이 아니라 절대초 — rate가 1등급이 더할 초.
                     case StatType.BurstDuration: delta.BurstDuration = _rule.IncreaseRate * _tier.ValueMultiplier; break;
+                    // 둔화율은 지연 배율 곡선의 차분 — 공속과 동일 구조(점근, 상한 불필요).
+                    case StatType.SlowRate: delta.SlowRate = _GetSlowRateDelta(baseStatus.SlowRate); break;
                     default: return null;
                 }
 
