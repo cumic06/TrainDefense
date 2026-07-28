@@ -510,7 +510,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 20
-      AttackArea: 1.5
+      AttackArea: 1
       AttackCount: 1
       AttackInterval: 2
       TargetCount: 1
@@ -692,7 +692,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 20
-      AttackArea: 1.5
+      AttackArea: 1
       AttackCount: 1
       AttackInterval: 2
       TargetCount: 1

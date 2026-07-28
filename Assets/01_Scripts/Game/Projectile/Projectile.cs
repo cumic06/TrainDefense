@@ -43,7 +43,7 @@ namespace TrainDefense.Game
         private Vector3 _baseScale = Vector3.one;
         private bool _baseScaleCaptured;
         [SerializeField] private float baseScaleArea = 3f;
-        // 빔 원본 굵기(레이저 model 스케일 x). 폭 = baseRangeScale * AttackArea.
+        // 빔 굵기 기준 스케일(콜라이더 폭 1유닛 기준). 전체 굵기(유닛) = baseRangeScale × widthMul(= 2×AttackArea 반폭).
         [SerializeField] private float baseRangeScale = 1f;
 
         #region Enable/Disable
@@ -157,7 +157,8 @@ namespace TrainDefense.Game
                 transform.localScale = _baseScale * (scaleRadius / baseScaleArea);
                 return;
             }
-            StretchBeamModel(scaleRange > 0f ? scaleRange : scaleRadius, scaleRadius);
+            // scaleRadius는 반경(중심~가장자리) 의미로 통일 — 빔 전체 굵기는 ×2.
+            StretchBeamModel(scaleRange > 0f ? scaleRange : scaleRadius, scaleRadius * 2f);
         }
 
         protected virtual void ApplyScaleByTargetRange(Vector3 targetPos)
