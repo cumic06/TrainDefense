@@ -1110,6 +1110,7 @@ namespace TrainDefense.Game
             _currentTurretTrainStatus.TargetCount += upgradeData.TargetCount;
             _currentTurretTrainStatus.CriticalChance += upgradeData.CriticalChance;
             _currentTurretTrainStatus.CriticalDamage += upgradeData.CriticalDamage;
+            _currentTurretTrainStatus.BurstDuration += upgradeData.BurstDuration;
 
             if (_useNonMovementProjectilePooling)
             {
@@ -1147,6 +1148,10 @@ namespace TrainDefense.Game
                 details.Add((L("Detail_Area", "범위"), $"{_currentTurretTrainStatus.AttackArea:F1}"));
 
             details.Add((L("Detail_Speed", "공격속도"), $"{_currentTurretTrainStatus.AttackInterval:F2}"));
+
+            // 분사 지속시간은 버스트 포탑(화염)만 표시 — 비버스트는 base가 0이라 값 판정으로 충분.
+            if (_currentTurretTrainStatus.BurstDuration > 0f)
+                details.Add((L("Detail_BurstDuration", "지속시간"), $"{_currentTurretTrainStatus.BurstDuration:F1}"));
 
             // 대상 수는 다중 타겟 포탑만 표시. (선택 카드와 동일 조건)
             if (_currentTurretTrainStatus.TargetCount > 1)

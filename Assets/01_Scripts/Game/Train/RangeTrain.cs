@@ -358,6 +358,7 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus.CriticalChance += upgradeData.CriticalChance;
             _currentRangeTrainStatus.CriticalDamage += upgradeData.CriticalDamage;
             _currentRangeTrainStatus.SlowRate += upgradeData.SlowRate;
+            _currentRangeTrainStatus.BurstDuration += upgradeData.BurstDuration;
 
             if (_rangeProjectilePrefab != null)
             {
@@ -378,16 +379,22 @@ namespace TrainDefense.Game
         public override (string label, string value)[] GetStatDetails()
         {
             System.Func<string, string, string> L = TrainDefense.Localize.LocalizeHelper.GetByKey;
-            return new[]
+            var details = new System.Collections.Generic.List<(string label, string value)>
             {
                 (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}"),
                 (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(_currentRangeTrainStatus.AttackDamage)}"),
                 (L("Detail_Range", "사거리"), $"{_currentRangeTrainStatus.AttackRange:F1}"),
                 (L("Detail_Area", "범위"), $"{_currentRangeTrainStatus.AttackArea:F1}"),
                 (L("Detail_Speed", "공격속도"), $"{_currentRangeTrainStatus.AttackInterval:F2}"),
-                (L("Detail_CritChance", "크리티컬 확률"), $"{_currentRangeTrainStatus.CriticalChance:F0}%"),
-                (L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentRangeTrainStatus.CriticalDamage:F0}%"),
             };
+
+            // 분사 지속시간은 버스트 포탑(냉기)만 표시 — 비버스트는 base가 0이라 값 판정으로 충분.
+            if (_currentRangeTrainStatus.BurstDuration > 0f)
+                details.Add((L("Detail_BurstDuration", "지속시간"), $"{_currentRangeTrainStatus.BurstDuration:F1}"));
+
+            details.Add((L("Detail_CritChance", "크리티컬 확률"), $"{_currentRangeTrainStatus.CriticalChance:F0}%"));
+            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentRangeTrainStatus.CriticalDamage:F0}%"));
+            return details.ToArray();
         }
 
         public override void ApplyPassiveSkills()

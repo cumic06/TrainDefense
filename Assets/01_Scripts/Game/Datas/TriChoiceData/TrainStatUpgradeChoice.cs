@@ -38,7 +38,7 @@ namespace TrainDefense.Game.Datas
         public StatType StatType => _statType;
         public int Grade => _tier.Grade;
 
-        // 가격 배수 = 증가량 배수. 상점(ShopOfferPricing)이 기본가에 곱해 최종 가격을 낸다.
+        // 가격 배수(증가량 배수보다 가파른 계층 가격). 상점(ShopOfferPricing)이 기본가에 곱해 최종 가격을 낸다.
         public float CostMultiplier => _tier.CostMultiplier;
 
         public string Id => $"StatUpgrade_{(_train != null && _train.TrainData != null ? _train.TrainData.Id : "?")}_{_statType}_T{_tier.Grade}";
@@ -94,7 +94,7 @@ namespace TrainDefense.Game.Datas
             return options;
         }
 
-        // 개수로 오르는 스탯 — 등급 배수를 개수로 쓰면 폭발하므로(포격 연타 1→11) 항상 +1이다.
+        // 개수로 오르는 스탯 — 등급 배수를 개수로 쓰면 폭발하므로(포격 연타 1→6) 항상 +1이다.
         public static bool IsCountStat(StatType statType)
         {
             return statType == StatType.TargetCount || statType == StatType.AttackCount;

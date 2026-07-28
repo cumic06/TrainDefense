@@ -10,7 +10,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 {
 	/// <summary>
 	/// 상점 스탯 강화 등급을 StatUpgradeData.xlsx의 stat_upgrade_tier_data 시트에서 임포트한다.
-	/// 증가량과 가격에 같은 배수(multiplier)가 곱해지므로 1원당 효율은 전 등급 동일하다.
+	/// 가격 배수가 증가량 배수보다 가파르므로 상위 등급일수록 1원당 효율이 떨어진다(계층 가격).
 	/// </summary>
 	public class StatUpgradeTierImporter : IExcelSheetImporter
 	{

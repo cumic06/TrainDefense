@@ -99,6 +99,9 @@ namespace TrainDefense.Game.UI.Collection
 
             if (status.SlowRate > 0f)
                 statLines.Add(new CollectionStatLine(_Loc("Collection_Slow", "둔화"), _Format(status.SlowRate)));
+
+            if (status.BurstDuration > 0f)
+                statLines.Add(new CollectionStatLine(_Loc("Detail_BurstDuration", "지속시간"), _FormatSeconds(status.BurstDuration)));
         }
 
         private static void _AppendTurretStats(List<CollectionStatLine> statLines, TurretTrainData data)
@@ -118,6 +121,9 @@ namespace TrainDefense.Game.UI.Collection
 
             if (status.TargetCount > 1)
                 statLines.Add(new CollectionStatLine(_Loc("Detail_Targets", "타겟 수"), _Format(status.TargetCount)));
+
+            if (status.BurstDuration > 0f)
+                statLines.Add(new CollectionStatLine(_Loc("Detail_BurstDuration", "지속시간"), _FormatSeconds(status.BurstDuration)));
         }
 
         private static string _Loc(string key, string fallback)
