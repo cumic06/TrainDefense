@@ -42,7 +42,8 @@ namespace TrainDefense.Game.Datas
         [Obsolete("Use TurretProjectilePrefab property instead")]
         public Projectile TurretProjectilePrefabComponent => TurretProjectilePrefab?.GetComponent<Projectile>();
 
-        // 이 포탑이 AttackArea 스탯을 실제 폭발 반경으로 쓰는지 판정 (빔 길이·파티클 비율은 제외).
+        // 이 포탑이 AttackArea 스탯을 실제 반경(유닛)으로 쓰는지 판정 — 폭발(트리거 핸들)과
+        // 분사(파티클 틱 — 역산으로 실단위 보장)가 해당. 빔(레이저)은 원본 굵기 배수라 제외.
         public bool UsesAttackArea
         {
             get
@@ -51,7 +52,8 @@ namespace TrainDefense.Game.Datas
                 if (prefab == null) return false;
                 if (!prefab.TryGetComponent<Projectile>(out var projectile)) return false;
                 var data = projectile.GetData();
-                return data != null && data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area && data.IsSpawnTriggerHandle;
+                return data != null && data.ScaleByArea && data.ScaleRangeType == ScaleByRangeType.Area
+                    && (data.IsSpawnTriggerHandle || data.DamageType == DamageType.Tick);
             }
         }
     }

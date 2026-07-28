@@ -51,8 +51,6 @@ MonoBehaviour:
   model: {fileID: 0}
   colliderUpdateInterval: 0.2
   particleRadius: 0.5
-  baseScaleRadius: 8
-  baseRangeRadius: 8
 --- !u!198 &7808667237599030221
 ParticleSystem:
   m_ObjectHideFlags: 0

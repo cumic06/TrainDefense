@@ -871,18 +871,10 @@ namespace TrainDefense.Game
             Projectile baseProjectile = GetProjectile();
             if (baseProjectile == null) return;
 
-            // 필요한 개수만큼 추가 생성
+            // 필요한 개수만큼 추가 생성 — persistent 등록 포함 생성 경로 공유 (공용 풀 이중 소유 방지).
             while (_nonMovementProjectiles.Count < requiredCount)
             {
-                Projectile spawned = ResourceManager.Instance.Spawn(baseProjectile);
-                if (spawned == null) break;
-
-                spawned.gameObject.SetActive(false);
-
-                // 생성 시점에 AttackDamage와 AttackRange 초기화
-                InitializeProjectileDamage(spawned);
-
-                _nonMovementProjectiles.Add(spawned);
+                if (CreatePooledNonMovementProjectile(baseProjectile) == null) break;
             }
         }
         #endregion
@@ -987,6 +979,18 @@ namespace TrainDefense.Game
         private void InitializeProjectileDamage(Projectile projectile)
         {
             TurretCombatFx.InitProjectile(projectile, _currentTurretTrainStatus, this, null);
+        }
+
+        /// <summary>
+        /// ScaleByArea 투사체(화염·레이저)는 크기 재계산을 Init이 전담하므로
+        /// 범위·사거리 스탯이 바뀌면 풀의 투사체를 다시 초기화한다. (안 하면 다음 재초기화까지 옛 크기 유지)
+        /// </summary>
+        private void _ReinitScaleByAreaProjectiles()
+        {
+            if (!_useNonMovementProjectilePooling) return;
+
+            foreach (var projectile in _nonMovementProjectiles)
+                if (projectile != null && projectile.IsScaleByArea()) InitializeProjectileDamage(projectile);
         }
 
         protected Projectile SpawnNormalProjectile(int index, Monster target = null)
@@ -1184,6 +1188,7 @@ namespace TrainDefense.Game
                 {
                     case StatType.AttackRange:
                         _currentTurretTrainStatus.AttackRange += _currentTurretTrainStatus.AttackRange * percent;
+                        _ReinitScaleByAreaProjectiles();
                         break;
                     case StatType.AttackArea:
                         _currentTurretTrainStatus.AttackArea += _currentTurretTrainStatus.AttackArea * percent;
@@ -1193,6 +1198,7 @@ namespace TrainDefense.Game
                             // ScaleByArea(빔 등)는 Projectile.StretchBeamModel이 크기를 전담 → root 스케일 제외(이중 스케일 방지).
                             foreach (var p in _nonMovementProjectiles) { if (p != null && !p.IsScaleByArea()) p.transform.localScale = new Vector3(ratio, ratio, 1f); }
                         }
+                        _ReinitScaleByAreaProjectiles();
                         break;
                     case StatType.AttackDamage:
                         _currentTurretTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentTurretTrainStatus.AttackDamage * percent);
@@ -1223,6 +1229,7 @@ namespace TrainDefense.Game
             {
                 case StatType.AttackRange:
                     _currentTurretTrainStatus.AttackRange += baseStatus.AttackRange * percent;
+                    _ReinitScaleByAreaProjectiles();
                     break;
 
                 case StatType.AttackArea:
@@ -1234,6 +1241,7 @@ namespace TrainDefense.Game
                         foreach (var projectile in _nonMovementProjectiles)
                             if (projectile != null && !projectile.IsScaleByArea()) projectile.transform.localScale = new Vector3(ratio, ratio, 1f);
                     }
+                    _ReinitScaleByAreaProjectiles();
                     break;
 
                 case StatType.AttackDamage:
@@ -1300,6 +1308,7 @@ namespace TrainDefense.Game
                     float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
                     _currentTurretTrainStatus.AttackRange *= shopRatio;
                     AccumulateShopMultiplier(StatType.AttackRange, shopRatio);
+                    _ReinitScaleByAreaProjectiles();
                     break;
                 }
 
@@ -1315,6 +1324,7 @@ namespace TrainDefense.Game
                         foreach (var p in _nonMovementProjectiles)
                             if (p != null && !p.IsScaleByArea()) p.transform.localScale = new Vector3(ratio, ratio, 1f);
                     }
+                    _ReinitScaleByAreaProjectiles();
                     break;
                 }
 
