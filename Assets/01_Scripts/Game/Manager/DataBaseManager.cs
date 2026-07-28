@@ -74,6 +74,14 @@ namespace TrainDefense.Game
             return setting != null ? setting.MinGrade : 1;
         }
 
+        // 이 스탯의 가격 프리미엄 배수. 설정이 없으면 1(프리미엄 없음).
+        public float GetStatCostMultiplier(StatType statType)
+        {
+            var setting = GetDB().StatUpgradeStatDataList.FirstOrDefault(s => s != null && s.StatType == statType);
+
+            return setting != null && setting.CostMultiplier > 0f ? setting.CostMultiplier : 1f;
+        }
+
         // 이 포탑이 상점에서 강화할 수 있는 스탯 규칙들. 목록에 없는 스탯은 카드로 뜨지 않는다.
         // 엘리트(31xxx·41xxx)는 시트에 행을 두지 않고 base 포탑(30xxx·40xxx) 규칙을 그대로 쓴다.
         public IEnumerable<TrainStatUpgradeRuleData> GetTrainStatUpgradeRules(string trainDataId)

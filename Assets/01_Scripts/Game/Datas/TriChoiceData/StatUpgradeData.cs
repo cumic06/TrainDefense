@@ -5,11 +5,10 @@ using TrainDefense.Game.Stats;
 namespace TrainDefense.Game.Datas
 {
     /// <summary>
-    /// 강화 상품 등급 하나. 상점 슬롯 수가 제약이라 후반에는 고등급을 살 수밖에 없는데,
-    /// 가격 배수를 효과 배수보다 가파르게 두어 고등급일수록 1원당 효율이 떨어지게 만든다
-    /// (수입이 그대로 성장으로 환전되는 것을 막는 브레이크).
+    /// 강화 상품 등급 하나. 고등급 = 낮은 weight(희귀) + 낮은 1원당 가격 — 뜨면 이득인 희귀 상품.
+    /// 수입-성장 환전의 브레이크는 가격이 아니라 희소성(weight)과 방문당 인상률이 담당한다.
     /// 등장 구간은 누적 상점 방문 수(StageManager.TotalInspectionPassedCount) 기준.
-    /// ChoiceData.xlsx의 stat_upgrade_tier_data 시트에서 임포트한다.
+    /// StatUpgradeData.xlsx의 stat_upgrade_tier_data 시트에서 임포트한다.
     /// </summary>
     [Serializable]
     public class StatUpgradeTierData : IData
@@ -26,7 +25,7 @@ namespace TrainDefense.Game.Datas
         private float valueMultiplier = 1f;
 
         [SerializeField]
-        [Tooltip("기본 가격에 곱해지는 배수. 효과 배수보다 크게 두면 고등급일수록 1원당 효율이 떨어진다")]
+        [Tooltip("기본 가격에 곱해지는 배수. 효과 배수보다 작게 두면 고등급일수록 1원당 가격이 싸진다(희귀 보상)")]
         private float costMultiplier = 1f;
 
         [SerializeField]
@@ -37,10 +36,15 @@ namespace TrainDefense.Game.Datas
         [Tooltip("이 등급이 마지막으로 나오는 누적 상점 방문 수. 0 이하면 판이 끝날 때까지 계속 나온다")]
         private int lastShopVisit;
 
+        [SerializeField]
+        [Tooltip("상점 추첨 가중치 — 높을수록 자주 나온다. 창이 겹친 등급끼리의 노출 비율을 정한다(고등급 = 희귀)")]
+        private int weight = 1;
+
         public string Id => id;
         public int Grade => grade;
         public float ValueMultiplier => valueMultiplier;
         public float CostMultiplier => costMultiplier;
+        public int Weight => weight;
 
         public bool IsAvailableAt(int shopVisitCount)
         {
@@ -52,8 +56,8 @@ namespace TrainDefense.Game.Datas
     }
 
     /// <summary>
-    /// 스탯 한 종류의 공통 설정 — 몇 등급부터 상점에 나오는지.
-    /// 강력한 정수 스탯(대상 수·공격 횟수)을 고등급으로 밀어 비싸게 만드는 장치다.
+    /// 스탯 한 종류의 공통 설정 — 몇 등급부터 상점에 나오는지, 가격 프리미엄이 얼마인지.
+    /// 강력한 정수 스탯(대상 수·공격 횟수)을 고등급으로 밀고 비싸게 만드는 장치다.
     /// StatUpgradeData.xlsx의 stat_upgrade_stat_data 시트에서 임포트한다.
     /// </summary>
     [Serializable]
@@ -69,9 +73,14 @@ namespace TrainDefense.Game.Datas
         [Tooltip("이 스탯이 나오기 시작하는 등급. 정수 스탯은 이 등급에서만 나온다(증가량이 +1 고정이라 상위 등급은 비싸기만 하다)")]
         private int minGrade = 1;
 
+        [SerializeField]
+        [Tooltip("기본 가격에 곱해지는 스탯 프리미엄. +1의 가치가 % 스탯보다 큰 정수 스탯을 비싸게 만든다. 1 = 프리미엄 없음")]
+        private float costMultiplier = 1f;
+
         public string Id => id;
         public StatType StatType => statType;
         public int MinGrade => minGrade;
+        public float CostMultiplier => costMultiplier;
     }
 
     /// <summary>

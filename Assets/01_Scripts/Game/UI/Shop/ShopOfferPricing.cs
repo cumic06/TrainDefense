@@ -16,7 +16,7 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private int turretPurchaseCost = 190;
 
-        [Tooltip("1등급 스탯 강화 비용. 상위 등급은 등급표의 가격 배수가 곱해진다. 가격 배수를 효과 배수보다 가파르게 두면 상위 등급일수록 효과당 단가가 비싸진다(계층 가격)")]
+        [Tooltip("1등급 스탯 강화 비용. 상위 등급은 등급표의 가격 배수(효과 배수보다 완만 = 고등급 단가 할인)와 스탯 프리미엄이 곱해진다")]
         [SerializeField]
         private int statUpgradeBaseCost = 50;
 

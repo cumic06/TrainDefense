@@ -1645,39 +1645,39 @@ MonoBehaviour:
     addTrainChoices:
     - Option:
         rid: 2066870334413602903
-      Weight: 1
+      Weight: 7
       Tier: 0
     - Option:
         rid: 2066870334413602905
-      Weight: 1
+      Weight: 7
       Tier: 0
     - Option:
         rid: 2066870334413602906
-      Weight: 1
+      Weight: 7
       Tier: 0
     - Option:
         rid: 2066870334413602907
-      Weight: 1
+      Weight: 7
       Tier: 0
     - Option:
         rid: 2066870334413602908
-      Weight: 1
+      Weight: 7
       Tier: 0
     - Option:
         rid: 2066870365229940814
-      Weight: 1
+      Weight: 7
       Tier: 0
     - Option:
         rid: 439507874151399537
-      Weight: 1
+      Weight: 7
       Tier: 0
     - Option:
         rid: 439507899332690073
-      Weight: 1
+      Weight: 7
       Tier: 0
     - Option:
         rid: 439508061413965932
-      Weight: 1
+      Weight: 7
       Tier: 0
     - Option:
         rid: 3319472319078334560
@@ -1717,59 +1717,59 @@ MonoBehaviour:
       Tier: 1
     - Option:
         rid: 3319472431904325762
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 3319472431904325763
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104299
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104300
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104301
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104302
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104303
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104304
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104305
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104306
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104307
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104308
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104309
-      Weight: 1
+      Weight: 7
       Tier: 1
     - Option:
         rid: 6103417219460104310
-      Weight: 1
+      Weight: 7
       Tier: 1
     upgradeTrainChoices:
     - Option:
@@ -1828,49 +1828,60 @@ MonoBehaviour:
     costMultiplier: 1
     firstShopVisit: 1
     lastShopVisit: 8
+    weight: 6
   - id: stat_upgrade_tier_2
     grade: 2
     valueMultiplier: 2
-    costMultiplier: 3
+    costMultiplier: 1.8
     firstShopVisit: 6
     lastShopVisit: 14
+    weight: 5
   - id: stat_upgrade_tier_3
     grade: 3
     valueMultiplier: 3
-    costMultiplier: 5
+    costMultiplier: 2.6
     firstShopVisit: 12
-    lastShopVisit: 22
+    lastShopVisit: 0
+    weight: 4
   - id: stat_upgrade_tier_4
     grade: 4
     valueMultiplier: 4
-    costMultiplier: 7
+    costMultiplier: 3.4
     firstShopVisit: 20
-    lastShopVisit: 30
+    lastShopVisit: 0
+    weight: 2
   - id: stat_upgrade_tier_5
     grade: 5
     valueMultiplier: 5
-    costMultiplier: 9
+    costMultiplier: 4
     firstShopVisit: 28
     lastShopVisit: 0
+    weight: 1
   statUpgradeStatDataList:
   - id: stat_upgrade_stat_attack_damage
     statType: 2
     minGrade: 1
+    costMultiplier: 1
   - id: stat_upgrade_stat_attack_interval
     statType: 4
     minGrade: 1
+    costMultiplier: 1
   - id: stat_upgrade_stat_attack_area
     statType: 8
     minGrade: 1
+    costMultiplier: 1
   - id: stat_upgrade_stat_target_count
     statType: 5
     minGrade: 4
+    costMultiplier: 3
   - id: stat_upgrade_stat_attack_count
     statType: 3
     minGrade: 5
+    costMultiplier: 3
   - id: stat_upgrade_stat_burst_duration
     statType: 10
     minGrade: 1
+    costMultiplier: 1
   trainStatUpgradeRuleDataList:
   - id: stat_upgrade_30001_attack_damage
     trainDataId: 30001

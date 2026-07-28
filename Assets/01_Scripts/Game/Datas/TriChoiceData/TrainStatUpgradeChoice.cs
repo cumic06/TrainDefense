@@ -25,6 +25,7 @@ namespace TrainDefense.Game.Datas
         private readonly StatType _statType;
         private readonly StatUpgradeTierData _tier;
         private readonly TrainStatUpgradeRuleData _rule;
+        private readonly float _statCostMultiplier;
 
         public TrainStatUpgradeChoice(Train targetTrain, TrainStatUpgradeRuleData rule, StatUpgradeTierData tier)
         {
@@ -32,14 +33,19 @@ namespace TrainDefense.Game.Datas
             _rule = rule;
             _statType = rule.StatType;
             _tier = tier;
+            _statCostMultiplier = DatabaseManager.Instance != null ? DatabaseManager.Instance.GetStatCostMultiplier(_statType) : 1f;
         }
 
         public Train TargetTrain => _train;
         public StatType StatType => _statType;
         public int Grade => _tier.Grade;
 
-        // 가격 배수(증가량 배수보다 가파른 계층 가격). 상점(ShopOfferPricing)이 기본가에 곱해 최종 가격을 낸다.
-        public float CostMultiplier => _tier.CostMultiplier;
+        // 상점 추첨 가중치 — 등급 데이터가 정한다(고등급 = 희귀).
+        public int TierWeight => _tier.Weight;
+
+        // 가격 배수 = 등급 배수(고등급일수록 단가 할인 — 희귀 보상) × 스탯 프리미엄(+1 가치가 큰 정수 스탯).
+        // 상점(ShopOfferPricing)이 기본가에 곱해 최종 가격을 낸다.
+        public float CostMultiplier => _tier.CostMultiplier * _statCostMultiplier;
 
         public string Id => $"StatUpgrade_{(_train != null && _train.TrainData != null ? _train.TrainData.Id : "?")}_{_statType}_T{_tier.Grade}";
 

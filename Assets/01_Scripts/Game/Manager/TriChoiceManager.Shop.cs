@@ -9,11 +9,10 @@ namespace TrainDefense.Game
     // 가격 책정은 상점(ShopOfferPricing)의 책임 — 여기서는 후보 추첨만 담당한다.
     public partial class TriChoiceManager
     {
-        // 스탯 강화 후보의 가중치. 포탑 구매·엘리트 승격은 DB addTrainChoices에 직렬화된 Weight를 쓰며
-        // 현재 셋 다 1 = 후보 개수 균등 추첨이다. 비율을 바꿀 때는 DB(엑셀) 값과 이 값을 함께 맞춰야 한다.
-        // ChoiceEntry.Weight가 int라 소수 비율은 10배 등으로 스케일해서 표현해야 한다.
-        private const int STAT_UPGRADE_WEIGHT = 1;
-
+        // 스탯 강화 후보의 가중치는 등급 데이터(stat_upgrade_tier_data.weight, 고등급 = 희귀)가 정한다.
+        // 포탑 구매·엘리트 승격은 DB addTrainChoices에 직렬화된 Weight(7 = 열린 티어 가중치 합과 등가)를 쓴다.
+        // 비율을 바꿀 때는 DB(엑셀) 값과 등급 weight를 함께 맞춰야 하며, ChoiceEntry.Weight가 int라
+        // 소수 비율은 10배 등으로 스케일해서 표현해야 한다.
 
         // 역 상점용: 판매 후보 중에서 count개를 랜덤으로 뽑는다.
         public List<ChoiceEntry> GetShopChoices(int count)
@@ -65,7 +64,7 @@ namespace TrainDefense.Game
                 foreach (var option in TrainStatUpgradeChoice.CreateOptionsFor(train))
                 {
                     if (option.IsValid())
-                        result.Add(new ChoiceEntry { Option = option, Weight = STAT_UPGRADE_WEIGHT, Tier = 0 });
+                        result.Add(new ChoiceEntry { Option = option, Weight = option.TierWeight, Tier = 0 });
                 }
             }
 

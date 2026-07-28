@@ -10,14 +10,14 @@ namespace TrainDefense.Editor.DataImport.Importers
 {
 	/// <summary>
 	/// 상점 스탯 강화 등급을 StatUpgradeData.xlsx의 stat_upgrade_tier_data 시트에서 임포트한다.
-	/// 가격 배수가 증가량 배수보다 가파르므로 상위 등급일수록 1원당 효율이 떨어진다(계층 가격).
+	/// 고등급 = 낮은 weight(희귀) + 낮은 1원당 가격 — 뜨면 이득인 희귀 상품이다.
 	/// </summary>
 	public class StatUpgradeTierImporter : IExcelSheetImporter
 	{
 		public string ExcelFileName => "StatUpgradeData.xlsx";
 		public string SheetName => "stat_upgrade_tier_data";
 		public string ButtonLabel => "StatUpgradeTier 데이터 가져오기";
-		public string[] Headers => new[] { "id", "grade", "value_multiplier", "cost_multiplier", "first_shop_visit", "last_shop_visit" };
+		public string[] Headers => new[] { "id", "grade", "value_multiplier", "cost_multiplier", "first_shop_visit", "last_shop_visit", "weight" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -45,6 +45,8 @@ namespace TrainDefense.Editor.DataImport.Importers
 				StatUpgradeImportUtil.SetPrivateField(existing, "costMultiplier", r.costMultiplier);
 				StatUpgradeImportUtil.SetPrivateField(existing, "firstShopVisit", r.firstShopVisit);
 				StatUpgradeImportUtil.SetPrivateField(existing, "lastShopVisit", r.lastShopVisit);
+				// GetUninitializedObject가 생성자 초기화(1)를 우회하므로 항상 주입한다. 빈 셀(0)은 1로 보정.
+				StatUpgradeImportUtil.SetPrivateField(existing, "weight", r.weight > 0 ? r.weight : 1);
 				imported++;
 			}
 
@@ -61,7 +63,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string ExcelFileName => "StatUpgradeData.xlsx";
 		public string SheetName => "stat_upgrade_stat_data";
 		public string ButtonLabel => "StatUpgradeStat 데이터 가져오기";
-		public string[] Headers => new[] { "stat_type", "min_grade" };
+		public string[] Headers => new[] { "stat_type", "min_grade", "cost_multiplier" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -91,6 +93,10 @@ namespace TrainDefense.Editor.DataImport.Importers
 				StatUpgradeImportUtil.SetPrivateField(existing, "id", $"stat_upgrade_stat_{name}");
 				StatUpgradeImportUtil.SetPrivateField(existing, "statType", statType);
 				StatUpgradeImportUtil.SetPrivateField(existing, "minGrade", map.GetInt(row, "min_grade"));
+
+				// GetUninitializedObject가 생성자 초기화(1f)를 우회하므로 항상 주입한다. 빈 셀(0)은 프리미엄 없음 = 1.
+				float costMultiplier = map.GetFloat(row, "cost_multiplier");
+				StatUpgradeImportUtil.SetPrivateField(existing, "costMultiplier", costMultiplier > 0f ? costMultiplier : 1f);
 				imported++;
 			}
 
