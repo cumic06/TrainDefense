@@ -184,11 +184,6 @@ namespace TrainDefense.Game.Datas
             return (1f / currentMultiplier - 1f / nextMultiplier) * 100f;
         }
 
-        private float _GetBaseSlowRate()
-        {
-            return _train is RangeTrain rangeTrain ? rangeTrain.BaseStatus.SlowRate : 0f;
-        }
-
         // 이번 구매로 늘어나는 범위(반경). 커버 면적 ∝ 반경²이라 반경을 그대로 가산하면 실효가 제곱으로 폭주한다.
         // 반경 = base × √(1 + rate×누적) 곡선의 차분 — 커버 면적이 등급 배수에 정확히 비례해 늘어난다(공속과 동일 구조).
         private float _GetAttackAreaDelta(float baseArea)
@@ -218,12 +213,12 @@ namespace TrainDefense.Game.Datas
             {
                 StatType.AttackDamage => $"+{_GetBaseAttackDamage() * _rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 StatType.AttackInterval => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
-                // √ 곡선의 실제 반경 증가분을 표시 (base 100 대입 = base 대비 %) — 살수록 %가 줄어드는 걸 정직하게 보여준다.
-                StatType.AttackArea => $"+{_GetAttackAreaDelta(100f):0.#}%",
+                // 커버 면적(실효) 기준 고정 표시 — 이 축에선 매 장 정확히 rate×등급배수만큼 는다(공속과 동일 철학).
+                StatType.AttackArea => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 // 절대초 가산 — 템플릿("지속시간 {0}초")이 단위를 붙이므로 숫자만 만든다.
                 StatType.BurstDuration => $"+{_rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
-                // 점근 곡선의 실제 차분을 표시 — 살수록 %p가 줄어드는 걸 카드가 정직하게 보여준다.
-                StatType.SlowRate => $"+{_GetSlowRateDelta(_GetBaseSlowRate()):0.#}%",
+                // 적 지연 시간(실효) 기준 고정 표시 — 이 축에선 매 장 정확히 rate×등급배수만큼 는다(공속과 동일 철학).
+                StatType.SlowRate => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 _ => "+1",
             };
 
