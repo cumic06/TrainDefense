@@ -14,7 +14,7 @@ namespace TrainDefense.Game.UI
     {
         [Tooltip("★ 플레이스홀더 가격 — 미보유 포탑 구매 비용. 테스트 후 조정")]
         [SerializeField]
-        private int turretPurchaseCost = 190;
+        private int turretPurchaseCost = 160;
 
         [Tooltip("1등급 스탯 강화 비용. 상위 등급은 등급표의 가격 배수(효과 배수보다 완만 = 고등급 단가 할인)와 스탯 프리미엄이 곱해진다")]
         [SerializeField]

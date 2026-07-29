@@ -433,11 +433,11 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 8
+      AttackDamage: 6
       AttackRange: 8
       AttackArea: 0
       AttackCount: 1
-      AttackInterval: 0.3
+      AttackInterval: 0.25
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -533,7 +533,7 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 10
+      AttackDamage: 11
       AttackRange: 11
       AttackArea: 0
       AttackCount: 1
@@ -583,11 +583,11 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 30
+      AttackDamage: 35
       AttackRange: 12
       AttackArea: 0
       AttackCount: 1
-      AttackInterval: 1.2
+      AttackInterval: 1.4
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -609,11 +609,11 @@ MonoBehaviour:
     - 60001
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 8
+      AttackDamage: 6
       AttackRange: 8
       AttackArea: 0
       AttackCount: 1
-      AttackInterval: 0.3
+      AttackInterval: 0.25
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -716,7 +716,7 @@ MonoBehaviour:
     - 60013
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 10
+      AttackDamage: 11
       AttackRange: 11
       AttackArea: 0
       AttackCount: 1
@@ -768,11 +768,11 @@ MonoBehaviour:
     - 60017
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 30
+      AttackDamage: 35
       AttackRange: 12
       AttackArea: 0
       AttackCount: 1
-      AttackInterval: 1.2
+      AttackInterval: 1.4
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -846,7 +846,7 @@ MonoBehaviour:
     rangeTrainStatus:
       AttackDamage: 30
       AttackRange: 4
-      AttackArea: 4
+      AttackArea: 5
       AttackCount: 1
       AttackInterval: 3
       CriticalChance: 0
@@ -898,7 +898,7 @@ MonoBehaviour:
     rangeTrainStatus:
       AttackDamage: 30
       AttackRange: 4
-      AttackArea: 4
+      AttackArea: 5
       AttackCount: 1
       AttackInterval: 3
       CriticalChance: 0
@@ -1717,59 +1717,59 @@ MonoBehaviour:
       Tier: 1
     - Option:
         rid: 3319472431904325762
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 3319472431904325763
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104299
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104300
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104301
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104302
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104303
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104304
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104305
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104306
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104307
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104308
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104309
-      Weight: 7
+      Weight: 14
       Tier: 1
     - Option:
         rid: 6103417219460104310
-      Weight: 7
+      Weight: 14
       Tier: 1
     upgradeTrainChoices:
     - Option:
@@ -1828,35 +1828,35 @@ MonoBehaviour:
     costMultiplier: 1
     firstShopVisit: 1
     lastShopVisit: 8
-    weight: 6
+    weight: 12
   - id: stat_upgrade_tier_2
     grade: 2
     valueMultiplier: 2
     costMultiplier: 1.8
     firstShopVisit: 6
     lastShopVisit: 14
-    weight: 5
+    weight: 10
   - id: stat_upgrade_tier_3
     grade: 3
     valueMultiplier: 3
     costMultiplier: 2.6
     firstShopVisit: 12
     lastShopVisit: 0
-    weight: 4
+    weight: 8
   - id: stat_upgrade_tier_4
     grade: 4
     valueMultiplier: 4
     costMultiplier: 3.4
     firstShopVisit: 20
     lastShopVisit: 0
-    weight: 2
+    weight: 4
   - id: stat_upgrade_tier_5
     grade: 5
     valueMultiplier: 5
     costMultiplier: 4
     firstShopVisit: 28
     lastShopVisit: 0
-    weight: 1
+    weight: 2
   statUpgradeStatDataList:
   - id: stat_upgrade_stat_attack_damage
     statType: 2

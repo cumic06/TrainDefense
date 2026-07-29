@@ -24,7 +24,7 @@ MonoBehaviour:
   hasSlowEffect: 0
   slowValue: 0.5
   hasShoveEffect: 1
-  shovePower: 1
+  shovePower: 3
   shoveDuration: 0.5
   hasStunEffect: 0
   stunDuration: 0.5

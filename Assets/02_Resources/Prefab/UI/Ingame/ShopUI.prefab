@@ -208,7 +208,7 @@ MonoBehaviour:
   offerSlotCount: 5
   offerSlotPrefab: {fileID: -8685490612574751861, guid: 773092aaa222fadaadb28f8d86a37329, type: 3}
   offerPricing:
-    turretPurchaseCost: 190
+    turretPurchaseCost: 160
     statUpgradeBaseCost: 50
     elitePromotionCost: 5000
     stationPriceIncreasePercent: 20
