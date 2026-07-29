@@ -427,13 +427,13 @@ MonoBehaviour:
     attackSoundType: 301
     description: Train_30001_Desc
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: NormalTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 6
+      AttackDamage: 8
       AttackRange: 8
       AttackArea: 0
       AttackCount: 1
@@ -452,7 +452,7 @@ MonoBehaviour:
     attackSoundType: 302
     description: Train_30002_Desc
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: FireTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -477,7 +477,7 @@ MonoBehaviour:
     attackSoundType: 303
     description: Train_30003_Desc
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: MissileTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -502,7 +502,7 @@ MonoBehaviour:
     attackSoundType: 304
     description: Train_30004_Desc
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: LaserTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -527,17 +527,17 @@ MonoBehaviour:
     attackSoundType: 305
     description: Train_30005_Desc
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: ElectrickTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 8
+      AttackDamage: 10
       AttackRange: 11
       AttackArea: 0
       AttackCount: 1
-      AttackInterval: 1.4
+      AttackInterval: 1.3
       TargetCount: 2
       CriticalChance: 0
       CriticalDamage: 0
@@ -552,7 +552,7 @@ MonoBehaviour:
     attackSoundType: 306
     description: Train_30006_Desc
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: CannonTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -577,7 +577,7 @@ MonoBehaviour:
     attackSoundType: 307
     description: Train_30007_Desc
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: SniperTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -602,14 +602,14 @@ MonoBehaviour:
     attackSoundType: 301
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: EliteNormalTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
     - 60001
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 6
+      AttackDamage: 8
       AttackRange: 8
       AttackArea: 0
       AttackCount: 1
@@ -628,7 +628,7 @@ MonoBehaviour:
     attackSoundType: 302
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: EliteFireTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -655,7 +655,7 @@ MonoBehaviour:
     attackSoundType: 303
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: EliteMissileTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -682,7 +682,7 @@ MonoBehaviour:
     attackSoundType: 304
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: EliteLaserTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -709,18 +709,18 @@ MonoBehaviour:
     attackSoundType: 305
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: EliteElectrickTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
     - 60013
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 8
+      AttackDamage: 10
       AttackRange: 11
       AttackArea: 0
       AttackCount: 1
-      AttackInterval: 1.4
+      AttackInterval: 1.3
       TargetCount: 2
       CriticalChance: 0
       CriticalDamage: 0
@@ -735,7 +735,7 @@ MonoBehaviour:
     attackSoundType: 306
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: EliteCannonTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -761,7 +761,7 @@ MonoBehaviour:
     attackSoundType: 307
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: EliteSniperTurretTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -838,7 +838,7 @@ MonoBehaviour:
     attackSoundType: 308
     description: Train_40001_Desc
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: ExplosionRangeTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -863,7 +863,7 @@ MonoBehaviour:
     attackSoundType: 309
     description: Train_40002_Desc
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: ColdAirRangeTrain
     activeSkillDataIds: []
     passiveSkillDataIds: []
@@ -888,7 +888,7 @@ MonoBehaviour:
     attackSoundType: 0
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: EliteExplosionRangeTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
@@ -915,7 +915,7 @@ MonoBehaviour:
     attackSoundType: 309
     description: 
     trainStatusData:
-      MaxHp: 150
+      MaxHp: 200
     prefabId: EliteColdAirRangeTrain
     activeSkillDataIds: []
     passiveSkillDataIds:
