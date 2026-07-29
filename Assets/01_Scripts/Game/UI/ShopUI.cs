@@ -56,7 +56,7 @@ namespace TrainDefense.Game.UI
         private TextMeshProUGUI rerollLabelText;
         [SerializeField]
         [Tooltip("첫 리롤 비용 = 이 값 × (누적 상점 방문 수 + 1). 수입이 커지는 후반에 리롤이 껌값이 되지 않게 진행도 비례")]
-        private int rerollBaseCostPerStation = 20;
+        private int rerollBaseCostPerStation = 10;
         [SerializeField]
         [Tooltip("리롤할 때마다 현재 비용에 더해지는 증가분 = 이 값 × (누적 상점 방문 수 + 1). 상점을 새로 열면 첫 비용으로 초기화")]
         private int rerollCostIncreasePerStation = 10;

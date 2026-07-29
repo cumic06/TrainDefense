@@ -3409,9 +3409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cadff9b4676495418c1bc9a1f7fdbde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.TriChoiceManager
-  dontDestroyOnLoad: 0
-  baseRerollCost: 50
-  rerollCostMultiplier: 2
+  dontDestroyOnLoad: 0
   upgradeProb: 2
   addProb: 2
 --- !u!4 &1325946670

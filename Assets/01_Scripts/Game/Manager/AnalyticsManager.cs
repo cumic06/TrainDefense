@@ -77,7 +77,6 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Subscribe<StatUpgradeSelectEvent>(_OnStatUpgradeSelect);
             GameEventSystem.Subscribe<ShopOfferPurchasedEvent>(_OnShopOfferPurchased);
             GameEventSystem.Subscribe<TrainRepairedEvent>(_OnTrainRepaired);
-            GameEventSystem.Subscribe<RerollEvent>(_OnReroll);
             GameEventSystem.Subscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
             GameEventSystem.Subscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Subscribe<TutorialStartEvent>(_OnTutorialStart);
@@ -96,7 +95,6 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<StatUpgradeSelectEvent>(_OnStatUpgradeSelect);
             GameEventSystem.Unsubscribe<ShopOfferPurchasedEvent>(_OnShopOfferPurchased);
             GameEventSystem.Unsubscribe<TrainRepairedEvent>(_OnTrainRepaired);
-            GameEventSystem.Unsubscribe<RerollEvent>(_OnReroll);
             GameEventSystem.Unsubscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
             GameEventSystem.Unsubscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Unsubscribe<TutorialStartEvent>(_OnTutorialStart);
@@ -272,15 +270,6 @@ namespace TrainDefense.Game.Manager
             _Log("train_repair",
                 ("cost", trainRepairedEvent.Cost),
                 ("total_station_passed", trainRepairedEvent.StationCount),
-                ("stage", _CurrentStage()),
-                ("play_time_sec", _PlayTimeSec()));
-        }
-
-        private void _OnReroll(RerollEvent rerollEvent)
-        {
-            _Log("reroll",
-                ("cost", rerollEvent.Cost),
-                ("is_free", rerollEvent.IsFree),
                 ("stage", _CurrentStage()),
                 ("play_time_sec", _PlayTimeSec()));
         }
