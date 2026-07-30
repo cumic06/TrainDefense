@@ -21,9 +21,9 @@ namespace TrainDefense.Game.Datas
         // 공속 카드를 내리는 안전장치라 데이터가 아닌 상수로 둔다.
         public const float MAX_ATTACK_SPEED_MULTIPLIER = 10f;
 
-        // 공격 횟수 상한. 연타 간격이 주기의 15%(REPEAT_ATTACK_DELAY_RATIO)라 8회부터는
-        // 연타가 다음 주기에 잘려 낭비되므로, 주기 안에 다 들어가는 한계에서 카드를 내린다.
-        public const int MAX_ATTACK_COUNT = 7;
+        // 상점 공격 횟수 카드 상한(밸런스 컷). 물리 천장은 7(연타 간격이 주기의 15%라 8회부터 다음 주기에
+        // 잘림)이고, 엘리트 패시브 가산(+2)을 합해도 천장 아래에 머물도록 카드는 3에서 멈춘다.
+        public const int MAX_ATTACK_COUNT = 3;
 
         private readonly Train _train;
         private readonly StatType _statType;
