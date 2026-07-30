@@ -15,6 +15,8 @@ namespace TrainDefense.Game.UI
         private float tweenDuration = 0.4f;
         [SerializeField]
         private TMP_Text expText;
+        [SerializeField]
+        private TMP_Text levelText;
         #endregion
 
         private Slider _slider;
@@ -27,6 +29,7 @@ namespace TrainDefense.Game.UI
         private void Start()
         {
             GameEventSystem.Subscribe<AddExpEvent>(OnAddExp);
+            GameEventSystem.Subscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
 
             Setup();
@@ -47,11 +50,14 @@ namespace TrainDefense.Game.UI
             // 구독 순서에 따라 로비 시뮬레이션에서 누적된 레벨(2 이상)의 필요량(약 879)이 잠깐 보인다.
             if (expText != null && UserDataManager.Instance != null)
                 expText.text = $"0 / {((int)UserDataManager.Instance.GetNextLevelUpExp(1)).ToCommaString()}";
+            if (levelText != null)
+                levelText.text = "Lv 1";
         }
 
         private void OnDestroy()
         {
             GameEventSystem.Unsubscribe<AddExpEvent>(OnAddExp);
+            GameEventSystem.Unsubscribe<LevelUpEvent>(OnLevelUp);
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
         }
 
@@ -69,6 +75,15 @@ namespace TrainDefense.Game.UI
 
             _slider.DOValue(UserDataManager.Instance.ExpPercent, tweenDuration).SetUpdate(true);
             UpdateExpText();
+        }
+
+        // 레벨 표시는 AddExpEvent가 아니라 LevelUpEvent로 갱신한다. LevelUpEvent는 UserDataManager가
+        // 레벨을 올린 뒤 발행하므로 구독 순서와 무관하게 CurrentLevel이 항상 갱신 완료 상태다.
+        private void OnLevelUp(LevelUpEvent levelUpEvent)
+        {
+            if (levelText == null || UserDataManager.Instance == null) return;
+
+            levelText.text = $"Lv {UserDataManager.Instance.CurrentLevel}";
         }
 
         private void UpdateExpText()
