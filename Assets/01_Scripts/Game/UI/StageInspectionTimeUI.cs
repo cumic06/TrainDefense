@@ -11,11 +11,6 @@ namespace TrainDefense.Game.UI
    {
       #region Variable
 
-      #region Fields
-      [SerializeField]
-      private Image stationIcon;
-      #endregion
-
       private Slider _slider;
       private TextMeshProUGUI _nextInspectionTimeText;
       private float _maxTime;
@@ -137,14 +132,6 @@ namespace TrainDefense.Game.UI
          else
          {
             _slider.value = 0;
-         }
-      }
-
-      private void SetStationIcon(Sprite sprite)
-      {
-         if (stationIcon != null)
-         {
-            stationIcon.sprite = sprite;
          }
       }
    }
