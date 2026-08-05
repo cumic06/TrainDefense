@@ -15,6 +15,7 @@ namespace TrainDefense.Game.UI
       private TextMeshProUGUI _nextInspectionTimeText;
       private float _maxTime;
       private bool _isActive;
+      private int _lastShownRemainingSeconds = -1;
       #endregion
 
 
@@ -60,6 +61,7 @@ namespace TrainDefense.Game.UI
          _isActive = false;
          _maxTime = 0f;
          _slider.value = 0f;
+         _SetRemainingTimeText(0f);
       }
 
       private void _OnEngageReady(EngageReadyEvent _)
@@ -67,6 +69,7 @@ namespace TrainDefense.Game.UI
          _isActive = false;
          _maxTime = 0f;
          _slider.value = 0f;
+         _SetRemainingTimeText(0f);
       }
 
       private void OnEngageStart(EngageStartEvent engageStartEvent)
@@ -93,12 +96,14 @@ namespace TrainDefense.Game.UI
          _isActive = true;
          RefreshMaxValue();
          StartCoroutine(ResetSliderValue());
+         _SetRemainingTimeText(0f);
       }
 
       private void OnStageSelected(StageSelectEvent stageSelectEvent)
       {
          _maxTime = 0f;
          StartCoroutine(ResetSliderValue());
+         _SetRemainingTimeText(0f);
       }
 
       private void RefreshMaxValue()
@@ -128,11 +133,26 @@ namespace TrainDefense.Game.UI
          {
             float remainingTime = 1f - (changeStageTimeEvent.StageTime / _maxTime);
             _slider.value = Mathf.Clamp01(remainingTime);
+            _SetRemainingTimeText(changeStageTimeEvent.StageTime);
          }
          else
          {
             _slider.value = 0;
+            _SetRemainingTimeText(0f);
          }
+      }
+
+      private void _SetRemainingTimeText(float remainingSeconds)
+      {
+         if (_nextInspectionTimeText == null) return;
+
+         int remainingSecondsCeiled = remainingSeconds > 0f ? Mathf.CeilToInt(remainingSeconds) : 0;
+         if (remainingSecondsCeiled == _lastShownRemainingSeconds) return;
+
+         _lastShownRemainingSeconds = remainingSecondsCeiled;
+         _nextInspectionTimeText.text = remainingSecondsCeiled > 0
+            ? $"{remainingSecondsCeiled / 60:00}:{remainingSecondsCeiled % 60:00}"
+            : string.Empty;
       }
    }
 }
