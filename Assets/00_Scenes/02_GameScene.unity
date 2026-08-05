@@ -12090,10 +12090,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 214686401}
     m_Modifications:
-    - target: {fileID: 1990002002, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 240
-      objectReference: {fileID: 0}
     - target: {fileID: 1990002033, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_fontColor.b
       value: 0
@@ -12110,10 +12106,6 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 4278190080
       objectReference: {fileID: 0}
-    - target: {fileID: 1990003002, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 160.00002
-      objectReference: {fileID: 0}
     - target: {fileID: 1990003013, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_fontColor.b
       value: 0
@@ -12129,10 +12121,6 @@ PrefabInstance:
     - target: {fileID: 1990003013, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4278190080
-      objectReference: {fileID: 0}
-    - target: {fileID: 1990004002, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 80.000015
       objectReference: {fileID: 0}
     - target: {fileID: 1990004013, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_fontSize
@@ -12182,10 +12170,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1990008002, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0.000015258789
-      objectReference: {fileID: 0}
     - target: {fileID: 1990008033, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_fontColor.b
       value: 0
@@ -12201,10 +12185,6 @@ PrefabInstance:
     - target: {fileID: 1990008033, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_fontColor32.rgba
       value: 4278190080
-      objectReference: {fileID: 0}
-    - target: {fileID: 1990009002, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -79.999985
       objectReference: {fileID: 0}
     - target: {fileID: 1990009013, guid: 60d8fa8850023104eafc41f56eb48411, type: 3}
       propertyPath: m_fontColor.b
