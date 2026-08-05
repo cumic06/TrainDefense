@@ -4,6 +4,7 @@ using Cumic.Achievement;
 using Cumic.Events;
 using TrainDefense;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.RunSave;
 using UnityEngine;
 
 namespace Cumic
@@ -225,6 +226,10 @@ namespace Cumic
         private void OnGameEnter(GameEnterEvent e)
         {
             if (e.IsLobby) return;
+
+            // 이어하기로 재개한 판은 새 판이 아니다. 저장·복귀를 반복해 플레이 횟수 업적을 부풀리지 못하게 막는다.
+            if (RunSaveManager.Instance != null && RunSaveManager.Instance.IsContinuePending) return;
+
             AddProgressByKey("game_played");
         }
 
