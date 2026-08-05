@@ -28,6 +28,7 @@ namespace TrainDefense.Game.UI
         {
             GameEventSystem.Subscribe<AddExpEvent>(OnAddExp);
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Subscribe<RunRestoredEvent>(_OnRunRestored);
 
             Setup();
         }
@@ -53,6 +54,17 @@ namespace TrainDefense.Game.UI
         {
             GameEventSystem.Unsubscribe<AddExpEvent>(OnAddExp);
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Unsubscribe<RunRestoredEvent>(_OnRunRestored);
+        }
+
+        // 이어하기 복원 직후. 경험치는 이벤트로만 갱신되므로 복원된 값으로 게이지·텍스트를 다시 그린다.
+        private void _OnRunRestored(RunRestoredEvent runRestoredEvent)
+        {
+            if (UserDataManager.Instance == null)
+                return;
+
+            _slider.value = UserDataManager.Instance.ExpPercent;
+            UpdateExpText();
         }
 
         // 게임 진입 시 0부터 시작. UserDataManager의 _currentExp=0 리셋(OnGameEnter)이 이 콜백보다

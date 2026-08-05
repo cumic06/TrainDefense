@@ -8,6 +8,7 @@ using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.RunSave;
 
 namespace TrainDefense.Game.UI
 {
@@ -131,6 +132,7 @@ namespace TrainDefense.Game.UI
          GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
          GameEventSystem.Subscribe<StageEndEvent>(_OnStageEnd);
          GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
+         GameEventSystem.Subscribe<RunRestoredEvent>(_OnRunRestored);
       }
 
       private void _UnsubscribeEvents()
@@ -139,6 +141,7 @@ namespace TrainDefense.Game.UI
          GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
          GameEventSystem.Unsubscribe<StageEndEvent>(_OnStageEnd);
          GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
+         GameEventSystem.Unsubscribe<RunRestoredEvent>(_OnRunRestored);
       }
       #endregion
 
@@ -158,8 +161,19 @@ namespace TrainDefense.Game.UI
 
       private void _OnGameEnter(GameEnterEvent gameEnterEvent)
       {
+         // 이어하기로 들어온 판은 진행 중이던 상태를 복원하므로 첫 삼중택일을 다시 주지 않는다.
+         // (잠금 해제는 복원 완료 시 _OnRunRestored가 담당)
+         if (RunSaveManager.Instance != null && RunSaveManager.Instance.IsContinuePending)
+            return;
+
          // 일시정지 버튼 잠금은 연출 전(Awake)에 이미 처리됨. 여기선 첫 삼중택일만 띄운다.
          OnInspectionEnter(1, showLevelUpText: false);
+      }
+
+      // 이어하기 복원 완료. 첫 삼중택일을 건너뛴 탓에 잠긴 채로 남는 일시정지 버튼을 여기서 푼다.
+      private void _OnRunRestored(RunRestoredEvent runRestoredEvent)
+      {
+         _SetPauseButtonLocked(false);
       }
 
       // 첫 삼중택일(게임 진입 시 자동 선택지)이 떠 있는 동안만 일시정지 버튼을 잠근다.

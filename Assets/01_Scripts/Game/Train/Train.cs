@@ -60,6 +60,12 @@ namespace TrainDefense.Game
         public bool IsDead => _isDead;
         // 레벨 = 받은 업그레이드 횟수(획득 0, 만렙 = upgradeStats 개수 8).
         public int CurrentLevel => _currentLevel;
+
+        /// <summary>런 세이브용 — 이 기차에 부여된 삼중택일 스킬 종류 마스크.</summary>
+        public TrainChoiceSkillType SkillTypeMask => _skillTypeMask;
+
+        /// <summary>런 세이브용 — 부여받은 액티브 스킬 id(없으면 null).</summary>
+        public string SelectedSkillId => _selectedSkillId;
         // 업그레이드 7번을 받은 포탑부터 엘리트 승격 가능.
         public const int ELITE_PROMOTION_LEVEL = 7;
         public bool IsEliteEligible => _currentLevel >= ELITE_PROMOTION_LEVEL;

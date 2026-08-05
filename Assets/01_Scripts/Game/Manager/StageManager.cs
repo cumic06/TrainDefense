@@ -489,6 +489,115 @@ namespace TrainDefense.Game.Manager
             _ShowStageSelection();
         }
 
+        #region Run Save
+        /// <summary>런 세이브용 스테이지 진행 상태 스냅샷.</summary>
+        public class RunState
+        {
+            public string CurrentStageId;
+            public float CurrentStageTime;
+            public int CurrentStageInspectionTimeIndex;
+            public int InspectionCount;
+            public int TotalStationPassedCount;
+            public bool ShouldShowStageSelectionOnStageEnd;
+            public bool PendingStageSelectionAfterShop;
+            public int MapStartScore;
+            public int MapStartNormalKill;
+            public int MapStartEliteKill;
+            public List<RunRecordState> RunRecords = new();
+        }
+
+        /// <summary>맵별 결산 기록의 직렬화 가능한 형태(StageImage는 StageId로 다시 찾는다).</summary>
+        public class RunRecordState
+        {
+            public string StageId;
+            public int ScoreEarned;
+            public int NormalKill;
+            public int EliteKill;
+        }
+
+        public RunState CaptureRunState()
+        {
+            var state = new RunState
+            {
+                CurrentStageId = CurrentStageData != null ? CurrentStageData.Id : string.Empty,
+                CurrentStageTime = _currentStageTime,
+                CurrentStageInspectionTimeIndex = _currentStageInspectionTimeIndex,
+                InspectionCount = _inspectionCount,
+                TotalStationPassedCount = _totalStationPassedCount,
+                ShouldShowStageSelectionOnStageEnd = _shouldShowStageSelectionOnStageEnd,
+                PendingStageSelectionAfterShop = _pendingStageSelectionAfterShop,
+                MapStartScore = _mapStartScore,
+                MapStartNormalKill = _mapStartNormalKill,
+                MapStartEliteKill = _mapStartEliteKill,
+            };
+
+            foreach (var record in _runRecords)
+            {
+                state.RunRecords.Add(new RunRecordState
+                {
+                    StageId = record.StageId,
+                    ScoreEarned = record.ScoreEarned,
+                    NormalKill = record.NormalKill,
+                    EliteKill = record.EliteKill,
+                });
+            }
+
+            return state;
+        }
+
+        /// <summary>
+        /// 이어하기 복원 — 저장 당시 맵과 역 진행 상태로 되돌리고 맵 인스턴스를 다시 만든다.
+        /// 스테이지는 배열 인덱스가 아니라 Id로 찾으므로 DB 순서가 바뀌어도 엉뚱한 맵으로 복원되지 않는다.
+        /// </summary>
+        public void RestoreRunState(RunState state)
+        {
+            if (state == null || _stageDatas == null || _stageDatas.Length == 0)
+                return;
+
+            int index = System.Array.FindIndex(_stageDatas, stage => stage != null && stage.Id == state.CurrentStageId);
+
+            if (index >= 0)
+                _currentStageIndex = index;
+            else
+                Debug.LogWarning($"StageManager: 복원할 StageData [{state.CurrentStageId}]를 찾지 못해 현재 맵을 유지합니다.");
+
+            _currentStageTime = Mathf.Max(0f, state.CurrentStageTime);
+            _currentStageInspectionTimeIndex = Mathf.Max(0, state.CurrentStageInspectionTimeIndex);
+            _inspectionCount = Mathf.Max(0, state.InspectionCount);
+            _totalStationPassedCount = Mathf.Max(0, state.TotalStationPassedCount);
+            _shouldShowStageSelectionOnStageEnd = state.ShouldShowStageSelectionOnStageEnd;
+            _pendingStageSelectionAfterShop = state.PendingStageSelectionAfterShop;
+            _mapStartScore = state.MapStartScore;
+            _mapStartNormalKill = state.MapStartNormalKill;
+            _mapStartEliteKill = state.MapStartEliteKill;
+            _isGameOver = false;
+            _runFinalized = false;
+
+            _runRecords.Clear();
+            if (state.RunRecords != null)
+            {
+                foreach (var record in state.RunRecords)
+                {
+                    if (record == null)
+                        continue;
+
+                    var stageData = System.Array.Find(_stageDatas, stage => stage != null && stage.Id == record.StageId);
+                    _runRecords.Add(new StageRunRecord
+                    {
+                        StageId = record.StageId,
+                        StageImage = stageData != null ? stageData.StageImage : null,
+                        ScoreEarned = record.ScoreEarned,
+                        NormalKill = record.NormalKill,
+                        EliteKill = record.EliteKill,
+                    });
+                }
+            }
+
+            _UpdateSpawnRules();
+            _SetCurrentStage();
+        }
+        #endregion
+
         #region Scaling
         /// <summary>
         /// 누적 통과 역 수에 따른 HP 배율 반환 (스테이지가 바뀌어도 리셋되지 않음)

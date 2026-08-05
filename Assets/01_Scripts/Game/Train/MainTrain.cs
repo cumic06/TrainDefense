@@ -227,6 +227,8 @@ namespace TrainDefense.Game
          if (upgradeTrain != null)
          {
             upgradeTrain.Upgrade(upgradeData);
+            // 런 세이브 복원용 이력. 레벨 숫자만으로는 어떤 업그레이드였는지 되돌릴 수 없다.
+            _RecordUpgradeHistory(upgradeTrain, upgradeData);
             // 업그레이드 선택 보상: 최대 체력의 일부를 회복.
             upgradeTrain.RestoreHpByRatio(UpgradeHealRatio);
             GameEventSystem.Publish(new UpgradeTrainEvent(upgradeTrain, upgradeData));
@@ -293,6 +295,9 @@ namespace TrainDefense.Game
          newTrain.ApplyPassiveSkills();
          // 엘리트로 업그레이드되면 풀피로 회복. (패시브 적용 후 최대 체력 확정된 상태에서 호출)
          newTrain.RestoreHpToMax();
+
+         // 런 세이브 복원용: 업그레이드 이력과 base 출처를 새 인스턴스로 승계한다.
+         _TransferUpgradeHistory(oldTrain, newTrain, oldTrainId);
 
          // Elite 생성에 소비된 base ID는 이후 TriChoice에서 영구 차단 (다른 Elite 변형 / base 업그레이드 / 재추가 모두 금지).
          _replacedTrainIds.Add(oldTrainId);

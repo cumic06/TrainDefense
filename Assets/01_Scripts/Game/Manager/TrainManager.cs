@@ -94,6 +94,15 @@ namespace TrainDefense.Game
          mainTrain.EquipWeapon(turretData);
       }
 
+      /// <summary>이번 판 누적 생존 시간(초). 런 세이브 저장·복원 대상.</summary>
+      public float SurvivalElapsed => _survivalElapsed;
+
+      /// <summary>이어하기 복원 — 저장 당시까지의 누적 생존 시간을 이어받는다.</summary>
+      public void RestoreSurvivalElapsed(float seconds)
+      {
+         _survivalElapsed = Mathf.Max(0f, seconds);
+      }
+
       public bool CheckHasTrain(TrainData trainData)
       {
          return mainTrain.CheckHasTrain(trainData);
