@@ -26,7 +26,7 @@ namespace TrainDefense.Game.UI
         [Tooltip("페이드 인용(선택). 없으면 그냥 즉시 표시.")]
         [SerializeField]
         private CanvasGroup canvasGroup;
-        [Tooltip("자동 재생을 스킵하는 풀스크린 버튼.")]
+        [Tooltip("자동 재생 중에만 켜지는 최상단 풀스크린 스킵 오버레이(SkipOverlay).")]
         [SerializeField]
         private Button skipArea;
         [SerializeField]
@@ -132,6 +132,8 @@ namespace TrainDefense.Game.UI
                 totalPanel.SetActive(false);
             if (lobbyButton != null)
                 lobbyButton.gameObject.SetActive(false);
+            if (skipArea != null)
+                skipArea.gameObject.SetActive(false);
         }
 
         public void ShowResult()
@@ -197,6 +199,16 @@ namespace TrainDefense.Game.UI
             var records = StageManager.Instance != null ? StageManager.Instance.FinalizeAndGetRecords() : null;
             int count = records?.Count ?? 0;
 
+            // 슬롯 중앙 정렬(_NormalizedFor)은 좌우 패딩 = (뷰포트폭-슬롯폭)/2 전제라 실제 뷰포트 폭으로 매번 계산한다.
+            if (scrollRect != null && scrollRect.viewport != null && content != null
+                && content.TryGetComponent(out HorizontalLayoutGroup contentLayoutGroup))
+            {
+                float slotWidth = ((RectTransform)slotPrefab.transform).rect.width;
+                int sidePadding = Mathf.RoundToInt((scrollRect.viewport.rect.width - slotWidth) * 0.5f);
+                contentLayoutGroup.padding.left = sidePadding;
+                contentLayoutGroup.padding.right = sidePadding;
+            }
+
             // 가로 레이아웃을 확정해 content/viewport 폭(정규화 스크롤 계산의 기준)을 먼저 잡는다.
             Canvas.ForceUpdateCanvases();
             LayoutRebuilder.ForceRebuildLayoutImmediate(content);
@@ -208,6 +220,10 @@ namespace TrainDefense.Game.UI
                 scrollRect.horizontalNormalizedPosition = _NormalizedFor(0, count);
             }
             _isPlaying = true;
+
+            // 자동 재생 동안에만 최상단 스킵 오버레이를 켠다 — 화면 어디를 탭해도 스킵.
+            if (skipArea != null)
+                skipArea.gameObject.SetActive(true);
 
             _sequence = DOTween.Sequence().SetUpdate(true);
             _stepEndTimes.Clear();
@@ -294,6 +310,10 @@ namespace TrainDefense.Game.UI
         private void _OnSequenceComplete()
         {
             _isPlaying = false;
+
+            // 스킵 오버레이를 꺼서 드래그 스크롤과 로비 버튼이 탭을 받게 한다.
+            if (skipArea != null)
+                skipArea.gameObject.SetActive(false);
 
             // 자동 재생이 끝나면 가로로 좌우 자유 스크롤 허용 + 로비 버튼 노출.
             if (scrollRect != null)
