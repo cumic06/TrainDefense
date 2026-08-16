@@ -30,9 +30,13 @@ namespace TrainDefense
       private Button sfxMuteButton;
 
       [SerializeField]
-      private Sprite muteSprite;
+      private Sprite bgmMuteSprite;
       [SerializeField]
-      private Sprite unMuteSprite;
+      private Sprite bgmUnMuteSprite;
+      [SerializeField]
+      private Sprite sfxMuteSprite;
+      [SerializeField]
+      private Sprite sfxUnMuteSprite;
       #endregion
 
       private void OnEnable()
@@ -94,13 +98,13 @@ namespace TrainDefense
 
       private void _SetBGMMuteSprite()
       {
-         Sprite sprite = SoundManager.Instance.IsBgmMuted ? muteSprite : unMuteSprite;
+         Sprite sprite = SoundManager.Instance.IsBgmMuted ? bgmMuteSprite : bgmUnMuteSprite;
          bgmMuteButton.image.sprite = sprite;
       }
 
       private void _SetSFXMuteSprite()
       {
-         Sprite sprite = SoundManager.Instance.IsSfxMuted ? muteSprite : unMuteSprite;
+         Sprite sprite = SoundManager.Instance.IsSfxMuted ? sfxMuteSprite : sfxUnMuteSprite;
          sfxMuteButton.image.sprite = sprite;
       }
 
