@@ -32,16 +32,16 @@ identity:
 # 출처: 팝업 컨벤션(Popup_PermanentUpgrade/Collection 실측) + 게임 아트 팔레트(turret-sprite-ai-prompt.md)
 colors:
   dim:              "#000000"   # @60% — 전체화면 딤. PopupTween 주석에 명시된 고정 컨벤션 [기존]
-  surface:          "#212330"   # @98% — 팝업 메인 패널 [기존 컨벤션]
-  surface-sunken:   "#0f131c"   # 트리 캔버스 배경. 아트 팔레트 배경색 — 패널보다 깊게 파서 선로가 떠 보이게 [v1]
-  surface-raised:   "#262f40"   # 노드 배경 (아트 팔레트 미드톤) [v1]
-  surface-line:     "#343f52"   # 헤어라인/구분선 (아트 팔레트 하이라이트) [v1]
+  surface:          "#2C2E3A"   # @98% — 팝업 메인 패널 [v1 #212330 → v3 2026-08-16: 채도 14%·명도 +4% ("너무 파랑"→"칙칙" 피드백 절충)]
+  surface-sunken:   "#1B1E24"   # 트리 캔버스 배경 — 패널보다 깊게 파서 선로가 떠 보이게 [v1 #0f131c → v3]
+  surface-raised:   "#353B46"   # 노드 배경 [v1 #262f40 → v3]
+  surface-line:     "#424B58"   # 헤어라인/구분선·버튼·슬롯 카드 [v1 #343f52 → v3]
   accent:           "#e47a3c"   # 습득/활성/점등된 선로 전용. 아트 팔레트 확정 포인트 오렌지. 장식 금지 [v1]
   mastered:         "#FFDE33"   # 만렙 노드 전용 골드 [기존 LuckyUI]
   danger-fill:      "#B34040"   # 위험/비용부족 — 면(fill)에만 [기존 컨벤션]
   danger-text:      "#E06666"   # 위험 텍스트. ⚠️ #B34040은 surface 위 2.78:1로 대비 미달 → 텍스트는 반드시 이 값 [v1]
-  on-surface:       "#D9D9E6"   # 본문 [기존 컨벤션] — surface 위 11.3:1
-  on-surface-muted: "#999AA6"   # 잠김/비활성 [기존 컨벤션] — surface 위 5.7:1
+  on-surface:       "#DDDDE2"   # 본문 [기존 #D9D9E6 → v2 탈채도] — surface 위 ≈11:1
+  on-surface-muted: "#999AA6"   # 잠김/비활성 [기존 컨벤션, 채도 7%라 v2 탈채도 대상 아님] — surface 위 5.7:1
   on-accent:        "#f8e0bd"   # accent 면 위 텍스트 (아트 팔레트 라이트) [v1]
   # focus-ring: 없음 — 터치 전용이라 게임패드 포커스 링 미해당
 
