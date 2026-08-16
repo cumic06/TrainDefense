@@ -26,6 +26,8 @@ namespace TrainDefense.Game
       private Turret _turret;
       private GameObject _aimMarker;
       private float _fireCooldown;
+      // 현재 누름이 UI 위에서 시작됐는지. 누르는 동안 유지되므로 게임 화면에서 시작한 드래그가 UI를 스쳐도 발사가 끊기지 않는다.
+      private bool _pressStartedOverUI;
       #endregion
 
       // 무기 입력 갱신은 본체(MainTrain.cs)의 Update()에서 호출한다.
@@ -100,7 +102,8 @@ namespace TrainDefense.Game
       }
 
       /// <summary>
-      /// 화면을 누르고 있고 그 지점이 UI 위가 아니면 true와 월드 좌표를 반환한다.
+      /// 화면을 누르고 있고 그 누름이 UI 위에서 시작되지 않았으면 true와 월드 좌표를 반환한다.
+      /// (UI 판정은 누르기 시작한 프레임에만 하고 누르는 동안 유지 — 드래그 중 UI를 지나가도 발사 유지)
       /// </summary>
       private bool _TryGetAimPosition(out Vector2 worldPosition)
       {
@@ -117,20 +120,28 @@ namespace TrainDefense.Game
             if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
                return false;
 
-            if (_IsPointerOverUI(touch.fingerId))
+            if (touch.phase == TouchPhase.Began)
+               _pressStartedOverUI = _IsPointerOverUI(touch.fingerId);
+
+            if (_pressStartedOverUI)
                return false;
 
             screenPosition = touch.position;
          }
          else if (Input.GetMouseButton(0))
          {
-            if (_IsPointerOverUI(-1))
+            if (Input.GetMouseButtonDown(0))
+               _pressStartedOverUI = _IsPointerOverUI(-1);
+
+            if (_pressStartedOverUI)
                return false;
 
             screenPosition = Input.mousePosition;
          }
          else
          {
+            _pressStartedOverUI = false;
+
             return false;
          }
 
