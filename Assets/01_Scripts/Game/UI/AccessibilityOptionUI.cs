@@ -139,7 +139,6 @@ namespace TrainDefense
          if (cameraShakeLabel != null)
          {
             cameraShakeLabel.text = LocalizeHelper.GetByKey("UI_Option_CameraShake", "카메라 흔들림");
-            cameraShakeLabel.color = Color.black;
          }
 
          _RefreshColorblindLabel();
@@ -161,7 +160,6 @@ namespace TrainDefense
             _ => ("UI_Colorblind_None", "색약 보정: 없음"),
          };
          colorblindLabel.text = LocalizeHelper.GetByKey(key, fallback);
-         colorblindLabel.color = Color.black;
          // 긴 언어(영어 색맹 명칭 등)에서 버튼 밖으로 텍스트가 넘치지 않도록 자동 축소.
          colorblindLabel.enableAutoSizing = true;
          colorblindLabel.fontSizeMin = 16;

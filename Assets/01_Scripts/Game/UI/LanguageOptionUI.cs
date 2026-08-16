@@ -14,7 +14,7 @@ using UnityEngine.UI;
 
 namespace TrainDefense
 {
-   // 옵션 창 언어 탭(Panel_Language)의 언어 선택 버튼·드롭다운을 담당한다.
+   // 옵션 창 언어 영역(Panel_Language)의 언어 선택 버튼·드롭다운을 담당한다.
    // Panel_Language 오브젝트에 부착하고, 언어 관련 SerializeField만 이 컴포넌트에 연결한다.
    public class LanguageOptionUI : MonoBehaviour
    {
