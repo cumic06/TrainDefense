@@ -14,6 +14,7 @@ namespace TrainDefense.Game.UI.Collection
     {
         #region Fields
         [SerializeField] private Image iconImage;
+        [SerializeField] private Material outlineMaterial;
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI descriptionText;
         [SerializeField] private TextMeshProUGUI statsText;
@@ -25,12 +26,24 @@ namespace TrainDefense.Game.UI.Collection
         #endregion
 
         private readonly StringBuilder _statBuilder = new();
+        private Vector2 _iconBaseSize;
+        private float _iconBaselineY;
+
+        private void Awake()
+        {
+            if (iconImage != null)
+            {
+                _iconBaseSize = iconImage.rectTransform.sizeDelta;
+                _iconBaselineY = iconImage.rectTransform.anchoredPosition.y;
+            }
+        }
 
         private System.Collections.Generic.IReadOnlyList<Sprite> _playingFrames;
         private int _frameIndex;
         private float _frameTimer;
 
-        public void Show(CollectionEntry entry)
+        /// <param name="tabMaxBody">현재 탭 몬스터 그림 경계 최대 크기 — CollectionIconStyle.MaxBodySize</param>
+        public void Show(CollectionEntry entry, Vector2 tabMaxBody)
         {
             if (entry == null)
             {
@@ -49,6 +62,8 @@ namespace TrainDefense.Game.UI.Collection
                 iconImage.sprite = entry.Icon;
                 iconImage.enabled = entry.Icon != null;
                 iconImage.color = discovered ? Color.white : lockedColor;
+                CollectionIconStyle.Fit(iconImage, entry, _iconBaseSize, _iconBaselineY, tabMaxBody);
+                iconImage.material = entry.IsMonster && discovered ? outlineMaterial : null;   // 발견한 몬스터만 흰 외곽선
             }
 
             // 발견한 몬스터이고 베이크된 프레임이 있으면 순환 재생, 아니면 첫 프레임으로 정지한다.
@@ -111,7 +126,10 @@ namespace TrainDefense.Game.UI.Collection
             _StopAnimation();
 
             if (iconImage != null)
+            {
                 iconImage.enabled = false;
+                iconImage.material = null;
+            }
 
             if (nameText != null)
                 nameText.text = string.Empty;

@@ -19,6 +19,7 @@ namespace TrainDefense.Game.UI.Collection
         private readonly bool _isDiscovered;
         private readonly List<CollectionStatLine> _statLines;
         private readonly IReadOnlyList<Sprite> _frames;
+        private readonly bool _isMonster;
         #endregion
 
         public string Id => _id;
@@ -31,8 +32,10 @@ namespace TrainDefense.Game.UI.Collection
         /// <summary>기본 애니메이션 프레임. 그리드는 첫 프레임만, 상세는 전체를 순환 재생한다. 없으면 Icon을 쓴다.</summary>
         public IReadOnlyList<Sprite> Frames => _frames;
         public bool HasAnimation => _frames != null && _frames.Count > 0;
+        /// <summary>몬스터 항목 여부. 인게임에서 외곽선(Outline.mat)이 붙는 건 몬스터뿐이라 도감 아이콘 외곽선도 여기에만 준다.</summary>
+        public bool IsMonster => _isMonster;
 
-        private CollectionEntry(string id, Sprite icon, string name, string description, bool isDiscovered, List<CollectionStatLine> statLines, IReadOnlyList<Sprite> frames = null)
+        private CollectionEntry(string id, Sprite icon, string name, string description, bool isDiscovered, List<CollectionStatLine> statLines, IReadOnlyList<Sprite> frames = null, bool isMonster = false)
         {
             _id = id;
             _icon = icon;
@@ -41,6 +44,7 @@ namespace TrainDefense.Game.UI.Collection
             _isDiscovered = isDiscovered;
             _statLines = statLines;
             _frames = frames;
+            _isMonster = isMonster;
         }
 
         public static CollectionEntry FromTrain(TrainData data, bool isDiscovered)
@@ -84,7 +88,7 @@ namespace TrainDefense.Game.UI.Collection
                 new CollectionStatLine(_Loc("Collection_AttackType", "공격 타입"), status.AttackType == MonsterAttackType.Ranged ? _Loc("Collection_Ranged", "원거리") : _Loc("Collection_Melee", "근접")),
             };
 
-            return new CollectionEntry(data.Id, data.DisplaySprite, data.Name, string.Empty, isDiscovered, statLines, data.AnimationFrames);
+            return new CollectionEntry(data.Id, data.DisplaySprite, data.Name, string.Empty, isDiscovered, statLines, data.AnimationFrames, isMonster: true);
         }
 
         private static void _AppendRangeStats(List<CollectionStatLine> statLines, RangeTrainStatus status)

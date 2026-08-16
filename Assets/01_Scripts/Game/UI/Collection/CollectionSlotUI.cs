@@ -14,12 +14,15 @@ namespace TrainDefense.Game.UI.Collection
         #region Fields
         [SerializeField] private Button slotButton;
         [SerializeField] private Image iconImage;
+        [SerializeField] private Material outlineMaterial;
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private GameObject selectedFrame;
         [SerializeField] private Color lockedColor = Color.black;
         #endregion
 
         private CollectionEntry _entry;
+        private Vector2 _iconBaseSize;
+        private float _iconBaselineY;
         private Action<CollectionSlotUI> _onSelect;
 
         public CollectionEntry Entry => _entry;
@@ -28,6 +31,12 @@ namespace TrainDefense.Game.UI.Collection
         {
             if (slotButton != null)
                 slotButton.onClick.AddListener(_OnClick);
+
+            if (iconImage != null)
+            {
+                _iconBaseSize = iconImage.rectTransform.sizeDelta;
+                _iconBaselineY = iconImage.rectTransform.anchoredPosition.y;
+            }
         }
 
         private void OnDestroy()
@@ -36,7 +45,7 @@ namespace TrainDefense.Game.UI.Collection
                 slotButton.onClick.RemoveListener(_OnClick);
         }
 
-        public void Init(CollectionEntry entry, Action<CollectionSlotUI> onSelect)
+        public void Init(CollectionEntry entry, Action<CollectionSlotUI> onSelect, Vector2 tabMaxBody)
         {
             _entry = entry;
             _onSelect = onSelect;
@@ -47,6 +56,11 @@ namespace TrainDefense.Game.UI.Collection
                 iconImage.enabled = entry.Icon != null;
                 iconImage.color = entry.IsDiscovered ? Color.white : lockedColor;
             }
+
+            // 몬스터는 인게임 상대 크기·바닥 정렬 + 발견 시 흰 외곽선(인게임과 동일), 트레인은 칸 채움
+            CollectionIconStyle.Fit(iconImage, entry, _iconBaseSize, _iconBaselineY, tabMaxBody);
+            if (iconImage != null)
+                iconImage.material = entry.IsMonster && entry.IsDiscovered ? outlineMaterial : null;
 
             if (nameText != null)
                 nameText.text = entry.IsDiscovered ? entry.Name : "???";

@@ -38,6 +38,7 @@ namespace TrainDefense.Game.UI.Collection
         private readonly List<CollectionSlotUI> _slots = new();
         private CollectionTabType _currentTab;
         private CollectionSlotUI _selectedSlot;
+        private Vector2 _tabMaxBody;
 
         private void OnEnable()
         {
@@ -255,6 +256,8 @@ namespace TrainDefense.Game.UI.Collection
 
         private void _PopulateGrid(List<CollectionEntry> entries)
         {
+            _tabMaxBody = CollectionIconStyle.MaxBodySize(entries);   // 탭에서 가장 큰 몬스터가 칸을 채우는 기준
+
             while (_slots.Count < entries.Count)
             {
                 CollectionSlotUI slot = Instantiate(slotPrefab, gridContent);
@@ -266,7 +269,7 @@ namespace TrainDefense.Game.UI.Collection
                 if (i < entries.Count)
                 {
                     _slots[i].gameObject.SetActive(true);
-                    _slots[i].Init(entries[i], _OnSelectSlot);
+                    _slots[i].Init(entries[i], _OnSelectSlot, _tabMaxBody);
                 }
                 else
                 {
@@ -282,7 +285,7 @@ namespace TrainDefense.Game.UI.Collection
             }
             else if (detailUI != null)
             {
-                detailUI.Show(null);
+                detailUI.Show(null, _tabMaxBody);
             }
         }
 
@@ -298,7 +301,7 @@ namespace TrainDefense.Game.UI.Collection
             _selectedSlot.SetSelected(true);
 
             if (detailUI != null)
-                detailUI.Show(slot.Entry);
+                detailUI.Show(slot.Entry, _tabMaxBody);
         }
     }
 }
