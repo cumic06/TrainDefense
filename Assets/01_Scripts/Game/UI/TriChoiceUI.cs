@@ -284,6 +284,9 @@ namespace TrainDefense.Game.UI
             }
          }
 
+         foreach (var (_, slotIndex) in _activeChoices)
+            choiceSelectUIs[slotIndex].SetButtonInteractable(true);
+
          // 활성화된 카드가 하나도 없으면 사용자가 클릭할 대상이 없어 영구 pause 상태가 됨.
          // availableChoices가 비어있는 경우(상단 분기) 외에도 모든 항목이 unknown/null로 걸러진 케이스에서 발생 가능.
          if (activatedCount == 0)
@@ -327,7 +330,8 @@ namespace TrainDefense.Game.UI
 
          choiceSelectUI.SetData(choiceOption, choiceUIInfo, this);
          _activeChoices.Add((choiceOption, slotIndex));
-         choiceSelectUI.SetButtonInteractable(true);
+         // 카드가 전부 나온 뒤에 한꺼번에 켠다 (나오는 도중 클릭 방지 — 아직 안 켜진 카드에 접근하는 선택 처리도 함께 차단)
+         choiceSelectUI.SetButtonInteractable(false);
 
          await choiceSelectUI.transform.DOScale(1, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
          {
