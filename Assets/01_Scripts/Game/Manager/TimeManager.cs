@@ -32,6 +32,9 @@ namespace TrainDefense.Game
         private bool _isInBackground;
         private bool _isGameOverSlowing;
 
+        // 게임오버 슬로모션 진행 중 여부. 이 동안에는 일시정지 메뉴를 열지 않도록 PauseUI가 확인한다.
+        public bool IsGameOverSlowing => _isGameOverSlowing;
+
         #endregion
 
         #region LifeCycle

@@ -1,80 +1,138 @@
+using Cumic;
 using Cumic.Sequence;
-using DG.Tweening;
+using TMPro;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Manager;
+using TrainDefense.Localize;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace TrainDefense.Game.UI
 {
+    // 인게임 우상단 일시정지 버튼으로 여닫는 일시정지 메뉴(딤 + 옵션/도감/로비로 버튼).
+    // 도감 버튼 클릭은 같은 GO의 CollectionButton이 처리하고, 여기서는 라벨만 로컬라이즈한다.
+    // 열려 있는 동안 OverlayPhase.MenuPause로 게임을 멈추고, 옵션 창은 이 위에 겹쳐 뜬다.
     public class PauseUI : MonoBehaviour
     {
         #region Fields
+        [Header("메뉴 버튼")]
         [SerializeField]
-        private GameObject pausePanel;
+        private Button optionButton;
+        [SerializeField]
+        private TMP_Text optionText;
+        [SerializeField]
+        private TMP_Text collectionText;
+        [SerializeField]
+        private Button lobbyButton;
+        [SerializeField]
+        private TMP_Text lobbyText;
+        [SerializeField]
+        private Button closeButton;
 
+        [Header("옵션 창 (씬의 Group_Option)")]
         [SerializeField]
-        private float uiActiveDelay;
+        private OptionUI optionUI;
         #endregion
 
-        private bool _isPauseUIActive = false;
+        // 로비 씬의 빌드 인덱스 (ChangeSceneButton.LobbySceneIndex와 동일)
+        private const int LobbySceneBuildIndex = 1;
 
-        public void OnClickPauseButton()
+        private void Awake()
         {
-            SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+            if (optionButton != null)
+                optionButton.onClick.AddListener(_OnClickOption);
 
-            if (_isPauseUIActive)
-            {
-                HidePauseUI();
-            }
-            else
-            {
-                ShowPauseUI();
-            }
+            if (lobbyButton != null)
+                lobbyButton.onClick.AddListener(_OnClickLobby);
+
+            if (closeButton != null)
+                closeButton.onClick.AddListener(HidePauseUI);
+
+            Localization.OnLanguageChanged += _RefreshTexts;
+            Localization.OnInitialized += _RefreshTexts;
         }
 
-        /// <summary>
-        /// 버튼 눌렀을 때
-        /// 일시정지 UI 표시 
-        /// </summary>
-        private void ShowPauseUI()
+        private void OnEnable()
         {
+            _RefreshTexts();
+            PopupTween.PlayShow(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            Localization.OnLanguageChanged -= _RefreshTexts;
+            Localization.OnInitialized -= _RefreshTexts;
+        }
+
+        // 우상단 일시정지 버튼: 열려 있으면 닫고, 닫혀 있으면 연다.
+        public void OnClickPauseButton()
+        {
+            if (gameObject.activeSelf)
+            {
+                HidePauseUI();
+                return;
+            }
+
+            // 게임오버 슬로모션·결과 화면 중에는 일시정지를 열지 않는다. (슬로모션 중 로비로 나가면 DDOL TimeManager 코루틴이 GameEndEvent를 다음 씬에 쏘는 것도 함께 차단)
+            if (TimeManager.Instance != null && TimeManager.Instance.IsGameOverSlowing)
+                return;
+
+            if (InGameSequence.Instance != null && InGameSequence.Instance.CurrentBase == BasePhase.GameOver)
+                return;
+
+            ShowPauseUI();
+        }
+
+        public void ShowPauseUI()
+        {
+            SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_WindowOpen, ignoreSuppress: true);
+
             gameObject.SetActive(true);
 
             if (InGameSequence.Instance != null)
                 InGameSequence.Instance.PushOverlay(OverlayPhase.MenuPause);
-            else
+            else if (TimeManager.Instance != null)
                 TimeManager.Instance.Pause();
-
-            pausePanel.SetActive(true);
-
-            pausePanel.transform.localScale = Vector3.zero;
-
-            pausePanel.transform.DOScale(1, uiActiveDelay).SetEase(Ease.InBack).OnComplete(() =>
-            {
-                pausePanel.transform.localScale = Vector3.one;
-            }).SetUpdate(true);
-
-            _isPauseUIActive = true;
         }
 
-        /// <summary>
-        /// 버튼 눌렀을 때
-        /// 일시정지 UI 숨기기
-        /// </summary>
-        private void HidePauseUI()
+        public void HidePauseUI()
         {
-            pausePanel.transform.localScale = Vector3.one;
+            SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_WindowClose, ignoreSuppress: true);
 
-            pausePanel.transform.DOScale(0, uiActiveDelay).SetEase(Ease.OutBack).OnComplete(() =>
-            {
-                pausePanel.transform.localScale = Vector3.zero;
-                if (InGameSequence.Instance != null)
-                    InGameSequence.Instance.PopOverlay(OverlayPhase.MenuPause);
-                else
-                    TimeManager.Instance.Resume();
-                pausePanel.SetActive(false);
-                _isPauseUIActive = false;
-            }).SetUpdate(true);
+            PopupTween.PlayHide(gameObject, () => gameObject.SetActive(false));
+
+            if (InGameSequence.Instance != null)
+                InGameSequence.Instance.PopOverlay(OverlayPhase.MenuPause);
+            else if (TimeManager.Instance != null)
+                TimeManager.Instance.Resume();
+        }
+
+        // 옵션 창을 일시정지 메뉴 위에 연다. MenuPause 오버레이는 유지되므로 옵션을 닫아도 계속 멈춰 있다.
+        private void _OnClickOption()
+        {
+            if (optionUI != null)
+                optionUI.ShowOptionUI();
+        }
+
+        // 로비로 이동 (LobbyButton 프리팹의 ChangeSceneButton.OnClickLoadScene(1)과 동일 동작).
+        private void _OnClickLobby()
+        {
+            SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
+            SoundManager.Instance?.PlayBGM(SoundType.BGM_Lobby);
+
+            SceneController.LoadScene(LobbySceneBuildIndex, false);
+        }
+
+        private void _RefreshTexts()
+        {
+            if (optionText != null)
+                optionText.text = LocalizeHelper.GetByKey("UI_Reset_Option", "옵션");
+
+            if (collectionText != null)
+                collectionText.text = LocalizeHelper.GetByKey("Collection_Title", "도감");
+
+            if (lobbyText != null)
+                lobbyText.text = LocalizeHelper.GetByKey("UI_Lobby", "로비로");
         }
     }
 }
