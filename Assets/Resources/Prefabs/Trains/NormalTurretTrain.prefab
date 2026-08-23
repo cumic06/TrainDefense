@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1320086736712645910}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2020121147355014587}
   - component: {fileID: 5544764496340837410}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ProjectileSpawnPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7372760562790509435}
   - component: {fileID: 3553420226458691729}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

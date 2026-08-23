@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6144960767255260594}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2991044897033039510}
   - component: {fileID: 7154709157054889188}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretHead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -133,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6076066683537242865}
   - component: {fileID: 2630610610305650557}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TurretModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

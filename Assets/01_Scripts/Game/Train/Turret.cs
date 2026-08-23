@@ -161,6 +161,13 @@ namespace TrainDefense.Game
             _pivot.LookAt2D(aimPosition);
         }
 
+        /// <summary>포탑을 기본 방향으로 되돌린다. 상점 진입 시 마지막 조준 각도가 남아 프리뷰에서 돌아가 보이지 않게. (MainTrain.ResetVisualForInspection에서 호출)</summary>
+        public void ResetAim()
+        {
+            if (_pivot != null)
+                _pivot.localRotation = Quaternion.identity;
+        }
+
         /// <summary>
         /// aim(월드 좌표) 방향으로 1회 발사한다. MainTrain이 쿨다운마다 호출한다.
         /// </summary>

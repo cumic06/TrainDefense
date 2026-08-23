@@ -330,6 +330,9 @@ namespace TrainDefense.Game
         /// <summary>상점 진입 시 활성 시한버프를 즉시 해제하고 액티브 스킬 쿨타임을 초기화한다. (MainTrain.OnInspectionStart에서 호출)</summary>
         public void ResetSkillStateForInspection() => _skillModule.ResetForInspection();
 
+        /// <summary>상점 진입 시 전투 중 바뀐 비주얼(포탑 조준 각도 등)을 기본 상태로 되돌린다. (MainTrain.OnInspectionStart에서 호출)</summary>
+        public virtual void ResetVisualForInspection() { }
+
         protected virtual void Update()
         {
             _skillModule.Tick(Time.deltaTime);

@@ -30,6 +30,9 @@ namespace TrainDefense.Game
       private bool _pressStartedOverUI;
       #endregion
 
+      // 상점 진입 시 주무기 포탑도 기본 방향으로. (본체 OnInspectionStart에서 호출)
+      public override void ResetVisualForInspection() => _turret?.ResetAim();
+
       // 무기 입력 갱신은 본체(MainTrain.cs)의 Update()에서 호출한다.
       // partial 클래스는 Update()를 중복 정의할 수 없으므로, 발사 로직은 _UpdateWeaponInput()으로 분리만 한다.
 

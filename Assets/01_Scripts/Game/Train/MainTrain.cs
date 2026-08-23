@@ -438,7 +438,10 @@ namespace TrainDefense.Game
          foreach (var train in _currentAliveTrains)
          {
             train.ResetSkillStateForInspection();
+            train.ResetVisualForInspection();
          }
+
+         ResetVisualForInspection();
 
          // 모든 기차를 원래 순서대로 재정렬
          RearrangeAllTrainsToOriginalOrder();

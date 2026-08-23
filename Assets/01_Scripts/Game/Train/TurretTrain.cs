@@ -40,6 +40,9 @@ namespace TrainDefense.Game
         private bool _useNonMovementProjectilePooling;
         protected int _attackCounter;
         private Vector3 _turretmodelScale;
+        // 포탑 기본 방향(프리팹 로컬 회전). 전투 중엔 조준 각도로 돌아가 있으므로 상점 진입 시 이 값으로 되돌린다.
+        private Quaternion _turretDefaultLocalRotation;
+        private bool _isTurretDefaultRotationCached;
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statAttackDamageAccum;
@@ -160,6 +163,20 @@ namespace TrainDefense.Game
 
             if (turretModel != null)
                 _turretmodelScale = turretModel.transform.localScale;
+
+            // 최초 Setup 시점(조준 전)의 로컬 회전만 기본 방향으로 기억한다. (재Setup은 전투 중일 수 있음)
+            if (!_isTurretDefaultRotationCached && turret != null)
+            {
+                _turretDefaultLocalRotation = turret.transform.localRotation;
+                _isTurretDefaultRotationCached = true;
+            }
+        }
+
+        // 상점(정비) 진입 시 포탑을 기본 방향으로. 전투 마지막 조준 각도가 남아 상점 기차 프리뷰에서 포탑이 제각각 돌아가 보이던 문제.
+        public override void ResetVisualForInspection()
+        {
+            if (turret != null && _isTurretDefaultRotationCached)
+                turret.transform.localRotation = _turretDefaultLocalRotation;
         }
 
         // 영구(메타) 업그레이드 + 스킬트리의 TurretStat 보너스를 base 스탯에 가산한다. (struct라 값 복사 후 직접 가산)

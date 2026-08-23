@@ -34,9 +34,6 @@ namespace TrainDefense.Game
       private int spawnCountIncreaseStationInterval = 3;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
-      private float spawnRange;
-      [SerializeField]
-      [BoxGroup("SpawnSetting")]
       [Tooltip("검문(역 도착) 1회당 스폰 간격 단축 %")]
       private float stationSpawnAccelPercent = 3f;
       [SerializeField]
@@ -45,7 +42,27 @@ namespace TrainDefense.Game
       private float maxSpawnAccelPercent = 60f;
       [SerializeField]
       [BoxGroup("SpawnSetting")]
+      [Tooltip("CameraBased: 메인 카메라가 실제로 보는 화면 가장자리 바깥에 스폰(줌·종횡비가 바뀌어도 항상 화면 밖).\n" +
+               "CustomArea: 기차 기준 고정 오프셋 영역에 스폰.\n" +
+               "맵 데이터(MapData.customSpawnAreas)에 전용 영역이 있으면 모드와 무관하게 그 영역을 우선 사용한다.")]
       private MonsterSpawnType spawnMode = MonsterSpawnType.CameraBased;
+
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
+      [ShowIf("spawnMode", MonsterSpawnType.CameraBased)]
+      [Tooltip("CameraBased: 화면 가장자리에서 바깥으로 이만큼 떨어진 곳부터 스폰(월드 단위). 몬스터가 화면 안에서 튀어나오지 않게 하는 여백.")]
+      private float spawnRange;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
+      [ShowIf("spawnMode", MonsterSpawnType.CameraBased)]
+      [Tooltip("CameraBased: spawnRange 바깥으로 이어지는 스폰 띠의 두께. 이 두께 안에서 랜덤 위치에 스폰(0이면 선 위에만).")]
+      private float spawnDepth = 1f;
+      [SerializeField]
+      [BoxGroup("SpawnSetting")]
+      [ShowIf("spawnMode", MonsterSpawnType.CameraBased)]
+      [EnumToggleButtons]
+      [Tooltip("CameraBased: 스폰할 화면 가장자리(복수 선택). 매 스폰마다 선택된 가장자리 중 하나를 균등 확률로 고른다. 아무것도 없으면 Top+Bottom으로 동작.")]
+      private SpawnEdge spawnEdges = SpawnEdge.Top | SpawnEdge.Bottom;
 
       [SerializeField]
       [BoxGroup("SpawnSetting")]
@@ -59,6 +76,20 @@ namespace TrainDefense.Game
          public Vector2 Size;
       }
 
+      // CameraBased 모드에서 스폰할 화면 가장자리. 플래그라 복수 선택 가능.
+      [System.Flags]
+      public enum SpawnEdge
+      {
+         None = 0,
+         Top = 1 << 0,
+         Bottom = 1 << 1,
+         Left = 1 << 2,
+         Right = 1 << 3
+      }
+
+      private static readonly SpawnEdge[] AllSpawnEdges = { SpawnEdge.Top, SpawnEdge.Bottom, SpawnEdge.Left, SpawnEdge.Right };
+      private const SpawnEdge DefaultSpawnEdges = SpawnEdge.Top | SpawnEdge.Bottom;
+
       #endregion
 
       [ShowInInspector]
@@ -67,6 +98,8 @@ namespace TrainDefense.Game
       private StageSpawnData[] _currentSpawnDatas;
       // 씬에 설정된 공통 스폰 영역. 첫 SetSpawnRule 때 보존하고, 맵별 영역이 없을 때 이 값으로 복귀.
       private List<SpawnAreaInfo> _defaultSpawnAreas;
+      // 현재 맵이 전용 스폰 영역(MapData.customSpawnAreas)을 지정했는지. true면 spawnMode와 무관하게 그 영역(기차 기준)을 쓴다.
+      private bool _usingMapSpawnAreas;
       // 현재 맵의 스폰 이펙트(없으면 null). 몬스터 스폰 시 spawnPos에 생성.
       private GameObject _currentSpawnEffect;
 
@@ -172,9 +205,10 @@ namespace TrainDefense.Game
          // 스폰풀/인터벌만 갱신(레벨업·스테이지 변경 시 호출). 역 누적 가속은 유지하고 현재 가속을 반영.
          spawnInterval = _GetAcceleratedInterval();
 
-         // 맵별 영역(MapData.CustomSpawnAreas)이 있으면 그걸 쓰고, 없으면 씬 기본(공통)으로 복귀.
+         // 맵별 영역(MapData.CustomSpawnAreas)이 있으면 그걸 쓰고(spawnMode 무관 우선), 없으면 씬 기본(공통 규칙)으로 복귀.
          _defaultSpawnAreas ??= customSpawnAreas != null ? new List<SpawnAreaInfo>(customSpawnAreas) : new List<SpawnAreaInfo>();
-         customSpawnAreas = (mapSpawnAreas != null && mapSpawnAreas.Count > 0) ? mapSpawnAreas : _defaultSpawnAreas;
+         _usingMapSpawnAreas = mapSpawnAreas != null && mapSpawnAreas.Count > 0;
+         customSpawnAreas = _usingMapSpawnAreas ? mapSpawnAreas : _defaultSpawnAreas;
 
          // 맵별 스폰 이펙트(MapData.SpawnEffectPrefab). null이면 이펙트 없음.
          _currentSpawnEffect = mapSpawnEffect;
@@ -411,78 +445,164 @@ namespace TrainDefense.Game
          return _currentSpawnDatas[^1]; // fallback
       }
 
+      // 맵 전용 영역이 지정돼 있거나 CustomArea 모드면 기차 기준 영역, 아니면 카메라 화면 기준.
+      private bool _UseCustomAreaSpawn => _usingMapSpawnAreas || spawnMode == MonsterSpawnType.CustomArea;
+
       private Vector3 RandomSpawnPos()
       {
+         if (!_UseCustomAreaSpawn)
+         {
+            Camera mainCamera = Camera.main;
+            if (mainCamera != null)
+               return _RandomCameraEdgePos(mainCamera);
+            // 메인 카메라가 없으면(비정상) 씬 기본 영역으로 폴백.
+         }
+
+         return _RandomCustomAreaPos();
+      }
+
+      // 기차(MainTrain) 위치 + 영역 Offset/Size 안의 랜덤 위치.
+      private Vector3 _RandomCustomAreaPos()
+      {
          Vector3 spawnPos = Vector3.zero;
-         if (spawnMode == MonsterSpawnType.CustomArea)
+         if (TrainManager.Instance != null && customSpawnAreas != null && customSpawnAreas.Count > 0)
          {
-            if (TrainManager.Instance != null && customSpawnAreas != null && customSpawnAreas.Count > 0)
+            Train mainTrain = TrainManager.Instance.MainTrain;
+            if (mainTrain != null)
             {
-               Train mainTrain = TrainManager.Instance.MainTrain;
-               if (mainTrain != null)
-               {
-                  var area = customSpawnAreas[Random.Range(0, customSpawnAreas.Count)];
-                  float rx = Random.Range(-area.Size.x / 2f, area.Size.x / 2f);
-                  float ry = Random.Range(-area.Size.y / 2f, area.Size.y / 2f);
+               var area = customSpawnAreas[Random.Range(0, customSpawnAreas.Count)];
+               float rx = Random.Range(-area.Size.x / 2f, area.Size.x / 2f);
+               float ry = Random.Range(-area.Size.y / 2f, area.Size.y / 2f);
 
-                  Vector3 selectedPos = (Vector3)area.Offset + new Vector3(rx, ry, 0);
-                  spawnPos = mainTrain.transform.position + selectedPos;
-               }
+               Vector3 selectedPos = (Vector3)area.Offset + new Vector3(rx, ry, 0);
+               spawnPos = mainTrain.transform.position + selectedPos;
             }
          }
-         else
-         {
-            Camera camera = Camera.main;
-
-            Vector3 bottomLeft = camera.ViewportToWorldPoint(new Vector3(0, 0, camera.transform.position.z));
-            Vector3 topRight = camera.ViewportToWorldPoint(new Vector3(1, 1, camera.transform.position.z));
-
-            float minX = bottomLeft.x;
-            float maxX = topRight.x;
-            float minY = bottomLeft.y;
-            float maxY = topRight.y;
-
-            int randomDirection = Random.Range(0, 4);
-
-            switch (randomDirection)
-            {
-               case 0:
-                  spawnPos = new(Random.Range(minX, maxX), maxY + spawnRange, 0);
-                  break;
-               case 1:
-                  spawnPos = new(Random.Range(minX, maxX), minY - spawnRange, 0);
-                  break;
-               case 2:
-                  spawnPos = new(minX - spawnRange, Random.Range(minY, maxY), 0);
-                  break;
-               case 3:
-                  spawnPos = new(maxX + spawnRange, Random.Range(minY, maxY), 0);
-                  break;
-            }
-            return spawnPos;
-         }
-
          return spawnPos;
+      }
+
+      // 카메라가 실제로 보는 화면(뷰포트 0~1) 가장자리 바깥 [spawnRange, spawnRange + spawnDepth] 띠 안의 랜덤 위치.
+      // 줌아웃·종횡비 변화(AspectFit)에도 항상 화면 밖에서 스폰된다.
+      private Vector3 _RandomCameraEdgePos(Camera mainCamera)
+      {
+         _GetCameraViewRect(mainCamera, out float minX, out float maxX, out float minY, out float maxY);
+
+         SpawnEdge edge = _PickRandomSpawnEdge();
+         float distance = spawnRange + Random.Range(0f, Mathf.Max(0f, spawnDepth));
+
+         switch (edge)
+         {
+            case SpawnEdge.Bottom:
+               return new Vector3(Random.Range(minX, maxX), minY - distance, 0f);
+            case SpawnEdge.Left:
+               return new Vector3(minX - distance, Random.Range(minY, maxY), 0f);
+            case SpawnEdge.Right:
+               return new Vector3(maxX + distance, Random.Range(minY, maxY), 0f);
+            case SpawnEdge.Top:
+            default:
+               return new Vector3(Random.Range(minX, maxX), maxY + distance, 0f);
+         }
+      }
+
+      // 활성화된 가장자리 중 하나를 균등 확률로 고른다. 하나도 없으면(미설정) Top+Bottom으로 동작.
+      private SpawnEdge _PickRandomSpawnEdge()
+      {
+         SpawnEdge enabledEdges = spawnEdges == SpawnEdge.None ? DefaultSpawnEdges : spawnEdges;
+
+         int enabledCount = 0;
+         foreach (SpawnEdge edge in AllSpawnEdges)
+         {
+            if ((enabledEdges & edge) != 0)
+               enabledCount++;
+         }
+
+         int pickIndex = Random.Range(0, enabledCount);
+         foreach (SpawnEdge edge in AllSpawnEdges)
+         {
+            if ((enabledEdges & edge) == 0)
+               continue;
+            if (pickIndex == 0)
+               return edge;
+            pickIndex--;
+         }
+
+         return SpawnEdge.Top;
+      }
+
+      // 카메라 뷰포트 (0,0)~(1,1)의 월드 XY 범위. z는 카메라→게임 평면(z=0) 거리(직교 카메라면 XY에 영향 없음).
+      private static void _GetCameraViewRect(Camera mainCamera, out float minX, out float maxX, out float minY, out float maxY)
+      {
+         float depth = Mathf.Abs(mainCamera.transform.position.z);
+         Vector3 bottomLeft = mainCamera.ViewportToWorldPoint(new Vector3(0f, 0f, depth));
+         Vector3 topRight = mainCamera.ViewportToWorldPoint(new Vector3(1f, 1f, depth));
+
+         minX = Mathf.Min(bottomLeft.x, topRight.x);
+         maxX = Mathf.Max(bottomLeft.x, topRight.x);
+         minY = Mathf.Min(bottomLeft.y, topRight.y);
+         maxY = Mathf.Max(bottomLeft.y, topRight.y);
       }
 
 #if UNITY_EDITOR
       private void OnDrawGizmos()
       {
-         if (spawnMode == MonsterSpawnType.CustomArea && customSpawnAreas != null)
+         if (_UseCustomAreaSpawn)
          {
-            Gizmos.color = Color.cyan;
-
-            Vector3 basePos = Vector3.zero;
-            if (Application.isPlaying && TrainManager.Instance != null && TrainManager.Instance.MainTrain != null)
-            {
-               basePos = TrainManager.Instance.MainTrain.transform.position;
-            }
-
-            foreach (var area in customSpawnAreas)
-            {
-               Gizmos.DrawCube(basePos + (Vector3)area.Offset, area.Size);
-            }
+            _DrawCustomAreaGizmos();
          }
+         else
+         {
+            _DrawCameraEdgeGizmos();
+         }
+      }
+
+      private void _DrawCustomAreaGizmos()
+      {
+         if (customSpawnAreas == null)
+            return;
+
+         Gizmos.color = Color.cyan;
+
+         Vector3 basePos = Vector3.zero;
+         if (Application.isPlaying && TrainManager.Instance != null && TrainManager.Instance.MainTrain != null)
+         {
+            basePos = TrainManager.Instance.MainTrain.transform.position;
+         }
+
+         foreach (var area in customSpawnAreas)
+         {
+            Gizmos.DrawCube(basePos + (Vector3)area.Offset, area.Size);
+         }
+      }
+
+      // 카메라 화면(흰 선)과 가장자리별 스폰 띠(하늘색)를 그린다. 에디터 모드에서도 Main Camera 기준으로 표시.
+      private void _DrawCameraEdgeGizmos()
+      {
+         Camera mainCamera = Camera.main;
+         if (mainCamera == null)
+            return;
+
+         _GetCameraViewRect(mainCamera, out float minX, out float maxX, out float minY, out float maxY);
+         float width = maxX - minX;
+         float height = maxY - minY;
+         float centerX = (minX + maxX) * 0.5f;
+         float centerY = (minY + maxY) * 0.5f;
+
+         Gizmos.color = Color.white;
+         Gizmos.DrawWireCube(new Vector3(centerX, centerY, 0f), new Vector3(width, height, 0f));
+
+         SpawnEdge enabledEdges = spawnEdges == SpawnEdge.None ? DefaultSpawnEdges : spawnEdges;
+         float depth = Mathf.Max(0f, spawnDepth);
+         float bandCenterOffset = spawnRange + depth * 0.5f;
+
+         Gizmos.color = Color.cyan;
+         if ((enabledEdges & SpawnEdge.Top) != 0)
+            Gizmos.DrawWireCube(new Vector3(centerX, maxY + bandCenterOffset, 0f), new Vector3(width, depth, 0f));
+         if ((enabledEdges & SpawnEdge.Bottom) != 0)
+            Gizmos.DrawWireCube(new Vector3(centerX, minY - bandCenterOffset, 0f), new Vector3(width, depth, 0f));
+         if ((enabledEdges & SpawnEdge.Left) != 0)
+            Gizmos.DrawWireCube(new Vector3(minX - bandCenterOffset, centerY, 0f), new Vector3(depth, height, 0f));
+         if ((enabledEdges & SpawnEdge.Right) != 0)
+            Gizmos.DrawWireCube(new Vector3(maxX + bandCenterOffset, centerY, 0f), new Vector3(depth, height, 0f));
       }
 #endif
 

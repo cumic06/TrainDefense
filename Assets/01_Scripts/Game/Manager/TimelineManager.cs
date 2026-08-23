@@ -59,6 +59,9 @@ namespace TrainDefense
         public void StartTimeline(Action onComplete = null)
         {
             TimeManager.Instance?.Pause();
+            // 카메라 등장 줌인은 LoadingTimeline의 카메라 트랙(음소거) 대신 CameraController가 이 이벤트로 연출한다.
+            // (타임라인이 Lens.OrthographicSize를 직접 키잉하면 연출 후 씬 카메라 크기 설정이 무시된 채 키값에 고정됨)
+            GameEventSystem.Publish(new TrainEntranceStartEvent());
             _Play(playableDirector, onComplete);
         }
 
