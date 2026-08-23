@@ -255,6 +255,7 @@ namespace TrainDefense.Game.UI
             {
                 TurretSelectSlotUI slot = Instantiate(slotPrefab, slotContainer);
                 slot.Setup(entry.TurretDataId, entry.Icon, _OnSlotClicked);
+                slot.SetName(entry.Name);
                 _slots.Add(slot);
             }
         }
@@ -312,6 +313,10 @@ namespace TrainDefense.Game.UI
 
             if (_selected != null && cardHeaderText != null)
                 cardHeaderText.text = _selected.Name;
+
+            // 카드 하단 띠의 포탑 이름도 헤더와 같은 기준으로 다시 적용한다(슬롯 순서 = 엔트리 순서).
+            for (int i = 0; i < _slots.Count && i < _entries.Count; i++)
+                _slots[i].SetName(_entries[i].Name);
         }
 
         // 프리팹에 한국어로 박혀 있는 정적 라벨(스탯 이름·생존 시간·버튼)을 현재 언어로 갱신한다.

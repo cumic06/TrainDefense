@@ -15,7 +15,7 @@ namespace TrainDefense.Game.UI
         private const string TitleFallback = "이 게임을 평가해주세요!";
         private const string ThanksKey = "UI_RatingThanks";
 
-        private static readonly Color EmptyStarColor = new(0.4f, 0.4f, 0.45f, 1f);
+        private static readonly Color EmptyStarColor = new(0.68f, 0.58f, 0.45f, 1f);   // 빈 별: 회색 → 팩 웜 탄(크림 패널 위, 08-22 팩 톤 전환)
         private static readonly Color FilledStarColor = new(1f, 0.78f, 0.2f, 1f);
 
         private int _selectedRating;

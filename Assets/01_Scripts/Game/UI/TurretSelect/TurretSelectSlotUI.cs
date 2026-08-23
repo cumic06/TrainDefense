@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,9 @@ namespace TrainDefense.Game.UI
         private Button selectButton;
         [SerializeField]
         private GameObject selectedHighlight;
+        [SerializeField]
+        [Tooltip("카드 하단 띠에 표시할 포탑 이름. 비워 두면 이름 없이 아이콘만 표시한다.")]
+        private TextMeshProUGUI nameText;
         #endregion
 
         private Action<TurretSelectSlotUI> _onClick;
@@ -43,6 +47,12 @@ namespace TrainDefense.Game.UI
         {
             if (selectedHighlight != null)
                 selectedHighlight.SetActive(isSelected);
+        }
+
+        public void SetName(string displayName)
+        {
+            if (nameText != null)
+                nameText.text = displayName;
         }
 
         private void _HandleClick()

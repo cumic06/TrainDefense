@@ -36,9 +36,10 @@ namespace TrainDefense.Game.UI.Collection
             Vector2 size = sprite.rect.size / sprite.pixelsPerUnit * pixelsPerUnit;
             Vector2 pivot = sprite.pivot / sprite.rect.size;
 
+            // 가로는 셀 중심(= 인게임 SpriteRenderer 위치)을 칸 중앙에. 그림 경계 중심을 쓰면 무기·꼬리가 몸통을 반대쪽으로 밀어낸다.
             rectTransform.sizeDelta = size;
             rectTransform.anchoredPosition = new Vector2(
-                -((pivot.x - 0.5f) * size.x + body.center.x * pixelsPerUnit),
+                -(pivot.x - 0.5f) * size.x,
                 baselineY - (pivot.y * size.y + body.yMin * pixelsPerUnit));
         }
 

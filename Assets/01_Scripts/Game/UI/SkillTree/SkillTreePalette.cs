@@ -8,13 +8,14 @@ namespace TrainDefense.Game.UI.SkillTree
     /// </summary>
     public static class SkillTreePalette
     {
+        // 2026-08-22 팩 톤(GameMadang 나무판+크림) 전환 — 의미는 유지, 값만 크림 바탕용으로 교체 (accent 오렌지·용도 규칙은 그대로)
         public static readonly Color Accent = new Color32(0xE4, 0x7A, 0x3C, 0xFF);         // 습득/점등 전용 오렌지
-        public static readonly Color Mastered = new Color32(0xFF, 0xDE, 0x33, 0xFF);       // 만렙 골드
-        public static readonly Color SurfaceSunken = new Color32(0x0F, 0x13, 0x1C, 0xFF);  // 트리 캔버스 배경
-        public static readonly Color SurfaceRaised = new Color32(0x26, 0x2F, 0x40, 0xFF);  // 노드 배경
-        public static readonly Color SurfaceLine = new Color32(0x34, 0x3F, 0x52, 0xFF);    // 미점등 선로/헤어라인
-        public static readonly Color OnSurface = new Color32(0xD9, 0xD9, 0xE6, 0xFF);      // 본문 텍스트
-        public static readonly Color OnSurfaceMuted = new Color32(0x99, 0x9A, 0xA6, 0xFF); // 잠김/비활성
-        public static readonly Color DangerText = new Color32(0xE0, 0x66, 0x66, 0xFF);     // 비용 부족 텍스트 (⚠️ #B34040은 대비 2.78:1 미달 — 텍스트 금지)
+        public static readonly Color Mastered = new Color32(0xFF, 0xCC, 0x40, 0xFF);       // 만렙 골드 (GOLD_SELECT 토큰과 동일)
+        public static readonly Color SurfaceSunken = new Color32(0xEC, 0xE0, 0xC4, 0xFF);  // 트리 캔버스 배경 (크림 박스)
+        public static readonly Color SurfaceRaised = new Color32(0xD6, 0xB8, 0x8C, 0xFF);  // 노드 배경 (중간 탄 카드 — 포탑·도감 슬롯과 동일)
+        public static readonly Color SurfaceLine = new Color32(0xA0, 0x90, 0x7C, 0xFF);    // 미점등 선로/잠김 노드 (탈채도 탄)
+        public static readonly Color OnSurface = new Color32(0x3A, 0x28, 0x1E, 0xFF);      // 본문 텍스트 (INK)
+        public static readonly Color OnSurfaceMuted = new Color32(0x64, 0x4E, 0x3C, 0xFF); // 잠김/비활성 (INK2)
+        public static readonly Color DangerText = new Color32(0xC8, 0x38, 0x38, 0xFF);     // 비용 부족 텍스트 (팩 빨강, 크림 위 4.6:1)
     }
 }

@@ -43,6 +43,11 @@ namespace TrainDefense.Game.UI
       // 엘리트 교체 시 슬롯에 부여하는 고정 이름. 튜토리얼이 GameObject.Find로 엘리트 슬롯을 찾기 위함.
       public const string EliteSlotObjectName = "EliteTrainInfoSlotUI";
       private const float LongPressDuration = 0.25f;
+      // 체력바 단계 색 — GameMadang 팩 팔레트 기준(형광 Color.green/red 대신). 높음=GM_CheckV 체크 녹색, 중간=GM_ButtonSimpleYellow 면색, 낮음=GM_ButtonSimpleRed 면색
+      private static readonly Color HealthColorHigh = new Color(0.47058824f, 0.72156863f, 0.1882353f);
+      private static readonly Color HealthColorMiddle = new Color(0.84705882f, 0.59607843f, 0.1882353f);
+      private static readonly Color HealthColorMiddleLow = new Color(0.81568627f, 0.40784314f, 0.15686275f);
+      private static readonly Color HealthColorLow = new Color(0.78431374f, 0.21960784f, 0.21960784f);
       private Coroutine _longPressCoroutine;
       private bool _longPressFired;
       #endregion
@@ -169,12 +174,12 @@ namespace TrainDefense.Game.UI
       private static Color _GetHealthColor(float ratio)
       {
          if (ratio <= 0.25f)
-            return Color.red;
+            return HealthColorLow;
          if (ratio <= 0.5f)
-            return new Color(1f, 0.5f, 0f);
+            return HealthColorMiddleLow;
          if (ratio <= 0.7f)
-            return Color.yellow;
-         return Color.green;
+            return HealthColorMiddle;
+         return HealthColorHigh;
       }
 
       private void _RefreshSkillUI()
