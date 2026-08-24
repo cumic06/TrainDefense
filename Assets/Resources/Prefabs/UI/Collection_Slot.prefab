@@ -141,7 +141,7 @@ MonoBehaviour:
   outlineMaterial: {fileID: 2100000, guid: 5cc27be95ddc4ad8aca3fe894e2ac9f3, type: 2}
   nameText: {fileID: 7720003}
   selectedFrame: {fileID: 7730000}
-  lockedColor: {r: 0, g: 0, b: 0, a: 1}
+  lockedColor: {r: 0.373, g: 0.267, b: 0.169, a: 1}
 --- !u!1 &7730000
 GameObject:
   m_ObjectHideFlags: 0
