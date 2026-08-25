@@ -252,9 +252,9 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 442794067
-  m_SortingLayer: 10
-  m_SortingOrder: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -5233,8 +5233,8 @@ RectTransform:
   - {fileID: 807435033}
   - {fileID: 8850000000000000002}
   - {fileID: 995391900}
-  - {fileID: 1451208235}
   - {fileID: 481792703}
+  - {fileID: 1451208235}
   - {fileID: 1696234802}
   - {fileID: 1990000011}
   - {fileID: 1990000101}
@@ -5816,9 +5816,9 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 442794067
-  m_SortingLayer: 10
-  m_SortingOrder: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
   m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -13399,7 +13399,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 18.312762
+  orthographic size: 18.312761
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -13573,7 +13573,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 40
-    OrthographicSize: 18.312762
+    OrthographicSize: 18.312761
     NearClipPlane: 0.1
     FarClipPlane: 5000
     Dutch: 0
@@ -13623,6 +13623,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.CameraController
   gameOverZoomOrthoSize: 4
+  entranceZoomOutMultiplier: 1.64
+  entranceZoomDuration: 1
   _enableAspectFit: 1
   _referenceResolution: {x: 1920, y: 1080}
 --- !u!114 &1580891173
@@ -13908,10 +13910,10 @@ MonoBehaviour:
   maxSpawnCount: 4
   spawnCountFirstIncreaseStation: 2
   spawnCountIncreaseStationInterval: 3
-  spawnRange: 2
   stationSpawnAccelPercent: 3
   maxSpawnAccelPercent: 60
   spawnMode: 0
+  spawnRange: 2
   spawnDepth: 1
   spawnEdges: 3
   customSpawnAreas:
@@ -14727,6 +14729,14 @@ PrefabInstance:
     - target: {fileID: 5000000000000000100, guid: 3e7d9a1f5c2b48069d4a7f1e3c8b5026, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5000000000000000103, guid: 3e7d9a1f5c2b48069d4a7f1e3c8b5026, type: 3}
+      propertyPath: m_Color.b
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5000000000000000103, guid: 3e7d9a1f5c2b48069d4a7f1e3c8b5026, type: 3}
+      propertyPath: m_Color.g
+      value: 0.661
       objectReference: {fileID: 0}
     - target: {fileID: 8015052970734370987, guid: 3e7d9a1f5c2b48069d4a7f1e3c8b5026, type: 3}
       propertyPath: m_IsActive
@@ -15955,16 +15965,16 @@ PrefabInstance:
       value: 21.5
       objectReference: {fileID: 0}
     - target: {fileID: 4498321175170663621, guid: 68fb54eb251478a41850b8b2aa643359, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 21.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4498321175170663621, guid: 68fb54eb251478a41850b8b2aa643359, type: 3}
       propertyPath: m_fontSizeMax
       value: 21.5
       objectReference: {fileID: 0}
     - target: {fileID: 4498321175170663621, guid: 68fb54eb251478a41850b8b2aa643359, type: 3}
       propertyPath: m_fontSizeMin
       value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4498321175170663621, guid: 68fb54eb251478a41850b8b2aa643359, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 21.5
       objectReference: {fileID: 0}
     - target: {fileID: 4950988275231329416, guid: 68fb54eb251478a41850b8b2aa643359, type: 3}
       propertyPath: m_Name
@@ -16541,22 +16551,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5656890492521856621}
   m_CullTransparentMesh: 1
---- !u!1660057539 &9223372036854775807
-SceneRoots:
-  m_ObjectHideFlags: 0
-  m_Roots:
-  - {fileID: 1517589542}
-  - {fileID: 1193950677}
-  - {fileID: 1433751804}
-  - {fileID: 1035467650}
-  - {fileID: 1463806545}
-  - {fileID: 1792648381}
-  - {fileID: 44021195}
-  - {fileID: 901976898}
-  - {fileID: 2084221808}
-  - {fileID: 219963910}
-  - {fileID: 916000002}
-  - {fileID: 1990000002}
 --- !u!1001 &8850000000000000001
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16573,10 +16567,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 102, guid: 6239c88a44ba4dc5887b53c70ebaec87, type: 3}
-      propertyPath: optionUI
-      value: 
-      objectReference: {fileID: 995391901}
+    - target: {fileID: 101, guid: 6239c88a44ba4dc5887b53c70ebaec87, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 101, guid: 6239c88a44ba4dc5887b53c70ebaec87, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 101, guid: 6239c88a44ba4dc5887b53c70ebaec87, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -16597,14 +16595,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 101, guid: 6239c88a44ba4dc5887b53c70ebaec87, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 101, guid: 6239c88a44ba4dc5887b53c70ebaec87, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
+    - target: {fileID: 102, guid: 6239c88a44ba4dc5887b53c70ebaec87, type: 3}
+      propertyPath: optionUI
+      value: 
+      objectReference: {fileID: 995391901}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -16626,3 +16620,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8447ce3bafc330542b65753ec8bc5bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.UI.PauseUI
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 1517589542}
+  - {fileID: 1193950677}
+  - {fileID: 1433751804}
+  - {fileID: 1035467650}
+  - {fileID: 1463806545}
+  - {fileID: 1792648381}
+  - {fileID: 44021195}
+  - {fileID: 901976898}
+  - {fileID: 2084221808}
+  - {fileID: 219963910}
+  - {fileID: 916000002}
+  - {fileID: 1990000002}
