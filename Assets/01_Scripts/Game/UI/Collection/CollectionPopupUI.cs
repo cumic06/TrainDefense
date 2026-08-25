@@ -153,6 +153,21 @@ namespace TrainDefense.Game.UI.Collection
             }
 
             _PopulateGrid(entries);
+            _ResetGridScroll();
+        }
+
+        // 탭을 바꾸면 목록을 맨 위부터 보여준다. 이전 탭에서 내려둔 위치가 남으면 새 탭이 아래쪽부터 보인다.
+        private void _ResetGridScroll()
+        {
+            if (gridContent == null)
+                return;
+
+            ScrollRect scrollRect = gridContent.GetComponentInParent<ScrollRect>();
+            if (scrollRect == null)
+                return;
+
+            Canvas.ForceUpdateCanvases();   // 방금 채운 슬롯들의 레이아웃을 확정한 뒤 위치를 잡는다.
+            scrollRect.verticalNormalizedPosition = 1f;
         }
 
         private void _UpdateTabVisual()

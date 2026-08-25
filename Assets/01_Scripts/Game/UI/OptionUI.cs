@@ -47,8 +47,8 @@ namespace TrainDefense
 
       private void _SubscribeListeners()
       {
-         if (deletePlayerPrefsButton != null)
-            deletePlayerPrefsButton.onClick.AddListener(OnDeletePlayerPrefsClicked);
+         // deletePlayerPrefsButton(로비 초기화 버튼)은 씬 onClick에 OnDeletePlayerPrefsClicked가 이미 연결돼 있다.
+         // 여기서 또 AddListener하면 옵션창이 열려 있는 동안 클릭 1회에 팝업이 두 장 뜬다.
 
          if (tutorialReplayButton != null)
             tutorialReplayButton.onClick.AddListener(_OnTutorialReplayClick);
@@ -59,8 +59,8 @@ namespace TrainDefense
 
       private void _UnSubscribeListeners()
       {
-         if (deletePlayerPrefsButton != null)
-            deletePlayerPrefsButton.onClick.RemoveAllListeners();
+         // deletePlayerPrefsButton은 등록하지 않으므로 해제도 하지 않는다.
+         // (RemoveAllListeners를 부르면 씬에 연결된 것 외의 런타임 리스너까지 지운다)
 
          if (tutorialReplayButton != null)
             tutorialReplayButton.onClick.RemoveListener(_OnTutorialReplayClick);
@@ -72,7 +72,9 @@ namespace TrainDefense
       public void OnDeletePlayerPrefsClicked()
       {
          // 무엇을 초기화할지 고르는 선택형 팝업을 띄운다. (실제 초기화는 팝업 내부에서 UserDataManager를 통해 수행)
-         ResetSelectPopupUI.Show();
+         // 옵션창이 올라가 있는 캔버스에 붙인다. 넘기지 않으면 DontDestroyOnLoad 캔버스가 잡혀 씬을 넘어가도 팝업이 남는다.
+         Canvas parentCanvas = GetComponentInParent<Canvas>();
+         ResetSelectPopupUI.Show(parentCanvas != null ? parentCanvas.transform : null);
       }
 
       public void ShowOptionUI()

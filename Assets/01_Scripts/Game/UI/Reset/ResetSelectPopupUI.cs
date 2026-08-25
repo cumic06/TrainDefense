@@ -51,8 +51,20 @@ namespace TrainDefense.Game.UI
         private TextMeshProUGUI cancelText;
         #endregion
 
-        public static ResetSelectPopupUI Show()
+        // 이미 열려 있는 팝업. 버튼에 리스너가 중복으로 걸려 Show가 두 번 불려도 한 장만 뜨게 한다.
+        private static ResetSelectPopupUI _openedPopup;
+
+        /// <param name="parent">팝업을 붙일 캔버스. 넘기지 않으면 씬에서 찾지만,
+        /// DontDestroyOnLoad 캔버스가 잡히면 씬을 넘어가도 남으므로 호출자가 지정하는 편이 안전하다.</param>
+        public static ResetSelectPopupUI Show(Transform parent = null)
         {
+            if (_openedPopup != null)
+            {
+                _openedPopup.transform.SetAsLastSibling();
+
+                return _openedPopup;
+            }
+
             GameObject prefab = Resources.Load<GameObject>(ResourceName);
             if (prefab == null)
             {
@@ -61,11 +73,24 @@ namespace TrainDefense.Game.UI
                 return null;
             }
 
-            Canvas canvas = FindObjectOfType<Canvas>();
-            GameObject instance = Instantiate(prefab, canvas != null ? canvas.transform : null);
+            if (parent == null)
+            {
+                Canvas canvas = FindObjectOfType<Canvas>();
+                parent = canvas != null ? canvas.transform : null;
+            }
+
+            GameObject instance = Instantiate(prefab, parent);
             instance.transform.SetAsLastSibling();
 
-            return instance.GetComponent<ResetSelectPopupUI>();
+            _openedPopup = instance.GetComponent<ResetSelectPopupUI>();
+
+            return _openedPopup;
+        }
+
+        private void OnDestroy()
+        {
+            if (_openedPopup == this)
+                _openedPopup = null;
         }
 
         private void OnEnable()
