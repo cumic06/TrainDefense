@@ -24,6 +24,11 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         [Tooltip("기차 전체 경계에 곱해 여백을 두는 배율")]
         private float paddingRatio = 1.5f;
+
+        [SerializeField]
+        [Tooltip("인게임과 같은 배율에 곱하는 값. 1이면 인게임 크기 그대로, 작을수록 크게 보인다.")]
+        [Range(0.15f, 1f)]
+        private float previewZoomRatio = 0.25f;
         #endregion
 
         private Camera _previewCamera;
@@ -151,7 +156,11 @@ namespace TrainDefense.Game.UI
             // 기본은 인게임 화면과 같은 배율(메인 카메라가 화면 전체에 담는 높이 × 프리뷰가 화면에서 차지하는 높이 비율)로 보여주고,
             // 편성이 길어져 프리뷰 폭을 넘치면 그때만 전체가 들어오도록 축소한다. (예전엔 항상 경계에 맞춰 확대돼 기차·포탑이 인게임보다 훨씬 크게 보였음)
             float fitSize = Mathf.Max(bounds.extents.y, bounds.extents.x / _aspect) * paddingRatio;
-            float sameScaleSize = _GetSameScaleOrthographicSize();
+
+            // 인게임 배율을 그대로 쓰면 게임 화면이 넓어진 뒤로 기차가 프리뷰 영역의 1/7밖에 안 찬다.
+            // 상점은 편성을 확인하는 화면이라 그만큼 당겨서 보여준다.
+            float sameScaleSize = _GetSameScaleOrthographicSize() * previewZoomRatio;
+
             _previewCamera.orthographicSize = Mathf.Max(fitSize, sameScaleSize);
         }
 

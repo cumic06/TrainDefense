@@ -9,6 +9,7 @@ using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Manager;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI
 {
@@ -418,7 +419,12 @@ namespace TrainDefense.Game.UI
             if (rerollLabelText != null)
             {
                 int costSizePercent = Mathf.RoundToInt(rerollCostFontScale * 100f);
-                rerollLabelText.text = $"{_rerollLabelPrefix}\n<size={costSizePercent}%><sprite name=\"Coin\"> {_currentRerollCost.ToCommaString()}$</size>";
+
+                // 라벨은 매번 조회한다. 언어를 바꾼 뒤 상점을 다시 열어도 갱신되도록.
+                // 키가 없거나 초기화 전이면 프리팹 원문(_rerollLabelPrefix)으로 떨어진다.
+                string rerollLabel = LocalizeHelper.GetByKey("UI_Reroll", _rerollLabelPrefix);
+
+                rerollLabelText.text = $"{rerollLabel}\n<size={costSizePercent}%><sprite name=\"Coin\"> {_currentRerollCost.ToCommaString()}$</size>";
                 rerollLabelText.color = canReroll ? _rerollLabelOriginalColor : rerollInsufficientColor;
             }
 
