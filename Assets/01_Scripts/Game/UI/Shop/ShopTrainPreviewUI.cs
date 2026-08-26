@@ -22,8 +22,9 @@ namespace TrainDefense.Game.UI
         private int textureHeight = 600;
 
         [SerializeField]
-        [Tooltip("기차 전체 경계에 곱해 여백을 두는 배율")]
-        private float paddingRatio = 1.5f;
+        [Tooltip("기차 전체 경계에 곱해 여백을 두는 배율. 편성이 길어 경계 맞춤이 걸리는 구간에서는 "
+            + "화면상 기차 폭이 프리뷰 폭 / 이 값으로 고정되므로, 편성 길이와 무관한 좌우 여백을 정한다")]
+        private float paddingRatio = 1.15f;
 
         [SerializeField]
         [Tooltip("인게임과 같은 배율에 곱하는 값. 1이면 인게임 크기 그대로, 작을수록 크게 보인다.")]
