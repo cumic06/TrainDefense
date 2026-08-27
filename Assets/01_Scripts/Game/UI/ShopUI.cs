@@ -127,6 +127,9 @@ namespace TrainDefense.Game.UI
 
             if (turretSlotText != null)
                 _turretSlotOriginalColor = turretSlotText.color;
+
+            // 코드가 채우는 문구라 LocalizeText처럼 자동 갱신되지 않는다 — 언어가 바뀌면 직접 다시 그린다.
+            Localization.OnLanguageChanged += _RefreshTurretSlotText;
         }
 
         private void OnDestroy()
@@ -135,6 +138,7 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(_OnChangeCoin);
+            Localization.OnLanguageChanged -= _RefreshTurretSlotText;
         }
 
         private void OnUpgradeApplied(UpgradeAppliedEvent upgradeAppliedEvent)
