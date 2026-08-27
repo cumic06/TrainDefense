@@ -36,6 +36,10 @@ namespace TrainDefense.Game.Datas
             var trainManager = TrainManager.Instance;
             if (trainManager == null) return false;
 
+            // 자리가 꽉 차면 MainTrain.SpawnTrain이 경고만 남기고 조용히 무시한다.
+            // 상점은 코인 차감 -> Execute 순서라, 여기서 막지 않으면 코인만 나간다(IChoiceOption 계약).
+            if (trainManager.IsMaxTrainCountReached()) return false;
+
             // 이미 해당 Train을 보유하고 있으면 유효하지 않음
             if (trainManager.CheckHasTrainById(trainDataId)) return false;
 

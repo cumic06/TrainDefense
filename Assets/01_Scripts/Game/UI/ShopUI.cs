@@ -49,6 +49,14 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private ShopOfferPricing offerPricing = new();
 
+        [Header("Turret Slot")]
+        [SerializeField]
+        [Tooltip("헤더에 포탑 칸 수(보유/최대)를 표시하는 텍스트. 자리가 꽉 차면 회색 카드의 이유를 설명한다")]
+        private TextMeshProUGUI turretSlotText;
+        [SerializeField]
+        [Tooltip("포탑 칸이 꽉 찼을 때 칸 수 텍스트에 적용할 색상")]
+        private Color turretSlotFullColor = Color.red;
+
         [Header("Reroll")]
         [SerializeField]
         [Tooltip("이번 역 상점의 슬롯 전체를 다시 추첨하는 버튼")]
@@ -80,6 +88,7 @@ namespace TrainDefense.Game.UI
         private int _currentRerollCost;
         private string _rerollLabelPrefix;
         private Color _rerollLabelOriginalColor;
+        private Color _turretSlotOriginalColor;
 
         private bool isShopOpen = false;
         public bool IsShopOpen => isShopOpen;
@@ -115,6 +124,9 @@ namespace TrainDefense.Game.UI
                 _rerollLabelPrefix = rerollLabelText.text;
                 _rerollLabelOriginalColor = rerollLabelText.color;
             }
+
+            if (turretSlotText != null)
+                _turretSlotOriginalColor = turretSlotText.color;
         }
 
         private void OnDestroy()
@@ -141,6 +153,7 @@ namespace TrainDefense.Game.UI
             _currentRerollCost = rerollBaseCostPerStation * _GetRerollStationMultiplier();
             _RebuildOfferSlots();
             _RefreshRerollUI();
+            _RefreshTurretSlotText();
 
             if (!isShopOpen)
             {
@@ -371,6 +384,26 @@ namespace TrainDefense.Game.UI
                 else
                     slotUI.Refresh();
             }
+
+            _RefreshTurretSlotText();
+        }
+
+        // 헤더의 포탑 칸 수 표시. 꽉 차면 색이 바뀌어, 포탑 카드가 회색인 이유를 설명한다.
+        private void _RefreshTurretSlotText()
+        {
+            if (turretSlotText == null || TrainManager.Instance == null)
+                return;
+
+            int currentTrainCount = TrainManager.Instance.GetTrainCount();
+            int maxTrainCount = TrainManager.Instance.GetMaxTrainCount();
+
+            // 라벨은 시트에 키가 생기면 자동으로 번역된다(없으면 fallback).
+            string label = LocalizeHelper.GetByKey("UI_Shop_TurretSlot", "포탑");
+
+            turretSlotText.text = $"{label} {currentTrainCount}/{maxTrainCount}";
+            turretSlotText.color = currentTrainCount >= maxTrainCount
+                ? turretSlotFullColor
+                : _turretSlotOriginalColor;
         }
 
         // 리롤: 코인을 차감하고 슬롯 전체를 다시 추첨한다. 비용은 리롤마다 역 수 비례 증가분만큼 오른다.
