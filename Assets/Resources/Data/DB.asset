@@ -1882,6 +1882,10 @@ MonoBehaviour:
     statType: 10
     minGrade: 1
     costMultiplier: 1
+  - id: stat_upgrade_stat_attack_range
+    statType: 1
+    minGrade: 1
+    costMultiplier: 1
   trainStatUpgradeRuleDataList:
   - id: stat_upgrade_30001_attack_damage
     trainDataId: 30001
@@ -1986,6 +1990,22 @@ MonoBehaviour:
   - id: stat_upgrade_40002_slow_rate
     trainDataId: 40002
     statType: 9
+    increaseRate: 0.1
+  - id: stat_upgrade_30001_attack_range
+    trainDataId: 30001
+    statType: 1
+    increaseRate: 0.1
+  - id: stat_upgrade_30002_attack_range
+    trainDataId: 30002
+    statType: 1
+    increaseRate: 0.1
+  - id: stat_upgrade_30003_attack_range
+    trainDataId: 30003
+    statType: 1
+    increaseRate: 0.1
+  - id: stat_upgrade_30005_attack_range
+    trainDataId: 30005
+    statType: 1
     increaseRate: 0.1
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:

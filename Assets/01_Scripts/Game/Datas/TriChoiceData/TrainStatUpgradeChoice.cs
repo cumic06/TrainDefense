@@ -202,6 +202,7 @@ namespace TrainDefense.Game.Datas
                 StatType.AttackDamage => "Upgrade_AttackDamage",
                 StatType.AttackInterval => "Upgrade_AttackSpeed",
                 StatType.AttackArea => "Upgrade_AttackArea",
+                StatType.AttackRange => "Upgrade_AttackRange",
                 StatType.TargetCount => "Upgrade_TargetCount",
                 StatType.AttackCount => "Upgrade_AttackCount",
                 StatType.BurstDuration => "Upgrade_BurstDuration",
@@ -215,6 +216,9 @@ namespace TrainDefense.Game.Datas
                 StatType.AttackInterval => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 // 커버 면적(실효) 기준 고정 표시 — 이 축에선 매 장 정확히 rate×등급배수만큼 는다(공속과 동일 철학).
                 StatType.AttackArea => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
+                // 사거리는 범위와 달리 제곱 보정을 하지 않는다 — 실효(적이 사정권에 머무는 시간)가
+                // 반경에 비례하므로 표시값이 곧 실제 증가율이다.
+                StatType.AttackRange => $"+{_rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 // 절대초 가산 — 템플릿("지속시간 {0}초")이 단위를 붙이므로 숫자만 만든다.
                 StatType.BurstDuration => $"+{_rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 // 적 지연 시간(실효) 기준 고정 표시 — 이 축에선 매 장 정확히 rate×등급배수만큼 는다(공속과 동일 철학).
@@ -259,6 +263,9 @@ namespace TrainDefense.Game.Datas
                     case StatType.AttackDamage: delta.AttackDamage = baseStatus.AttackDamage * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.AttackInterval: delta.AttackInterval = _GetAttackIntervalDelta(baseStatus.AttackInterval); break;
                     case StatType.AttackArea: delta.AttackArea = _GetAttackAreaDelta(baseStatus.AttackArea); break;
+                    // 사거리는 base 대비 선형 가산(공격력과 동일) — 범위처럼 면적이 아니라
+                    // 사정권 체류 시간이 반경에 비례해 늘어나므로 제곱 보정이 필요 없다.
+                    case StatType.AttackRange: delta.AttackRange = baseStatus.AttackRange * _rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.TargetCount: delta.TargetCount = 1; break;
                     case StatType.AttackCount: delta.AttackCount = 1; break;
                     // 분사 지속시간은 base 비율이 아니라 절대초 — rate가 1등급이 더할 초.

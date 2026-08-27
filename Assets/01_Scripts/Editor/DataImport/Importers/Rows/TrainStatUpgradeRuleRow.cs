@@ -17,6 +17,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			("attack_damage", StatType.AttackDamage),
 			("attack_interval", StatType.AttackInterval),
 			("attack_area", StatType.AttackArea),
+			("attack_range", StatType.AttackRange),
 			("target_count", StatType.TargetCount),
 			("attack_count", StatType.AttackCount),
 			("burst_duration", StatType.BurstDuration),
