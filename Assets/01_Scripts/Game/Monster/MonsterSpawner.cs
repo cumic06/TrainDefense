@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Cumic;
 using Cumic.Events;
@@ -345,14 +345,16 @@ namespace TrainDefense.Game
       // 엘리트는 스테이지2 통과 후(스테이지3)부터 등장. 검문 카운트는 스테이지당 4회(역 3개 + 맵 변경 1회).
       private const int ELITE_START_STATION_COUNT = 8;
 
-      // 엘리트 적격 유저 레벨 = SpawnLevel × 2.2(올림). 상위 슬롯 몬스터가 등장하자마자
-      // 엘리트로 나오면 급격한 벽이 돼서, 등장 후 유예를 둔다. (슬롯2 L6→L14, 슬롯3 L10→L22, 곰 L15→L33)
+      // 엘리트 적격 역 도착 수 = SpawnLevel × 2.2(올림). 상위 슬롯 몬스터가 등장하자마자
+      // 엘리트로 나오면 급격한 벽이 돼서, 등장 후 유예를 둔다. (슬롯2 6→14, 슬롯3 10→22, 곰 15→33)
+      // 해금 기준이 유저 레벨에서 누적 역 도착 수로 바뀌면서 이 유예도 같은 축을 쓴다.
       private const float ELITE_LEVEL_MULTIPLIER = 2.2f;
 
       private bool _IsEliteEligible(StageSpawnData data)
       {
-         int userLevel = UserDataManager.Instance != null ? UserDataManager.Instance.CurrentLevel : 1;
-         return userLevel >= Mathf.CeilToInt(data.SpawnLevel * ELITE_LEVEL_MULTIPLIER);
+         var stageManager = TrainDefense.Game.Manager.StageManager.Instance;
+         int progressCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
+         return progressCount >= Mathf.CeilToInt(data.SpawnLevel * ELITE_LEVEL_MULTIPLIER);
       }
 
       // 검문 후 다음 구간의 엘리트를 정산한다. 예산 = 구간시간 ÷ (eliteSpawnCycle × 현재 스폰간격)을 적립해

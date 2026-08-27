@@ -1167,7 +1167,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.2857
+    spawnInterval: 0.2041
     spawnDatas:
     - MonsterId: 10001
       Probability: 6
@@ -1193,7 +1193,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.7143
+    spawnInterval: 0.5102
     spawnDatas:
     - MonsterId: 10004
       Probability: 6
@@ -1223,7 +1223,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.5714
+    spawnInterval: 0.4081
     spawnDatas:
     - MonsterId: 10007
       Probability: 6
@@ -1253,7 +1253,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.4286
+    spawnInterval: 0.3061
     spawnDatas:
     - MonsterId: 10011
       Probability: 6
@@ -1279,7 +1279,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.8571
+    spawnInterval: 0.6122
     spawnDatas:
     - MonsterId: 10014
       Probability: 6

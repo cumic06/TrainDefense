@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Cumic;
@@ -100,7 +100,6 @@ namespace TrainDefense.Game.Manager
         {
             GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Subscribe<GetCurrentInspectionDurationEvent, float>(_GetCurrentInspectionDuration);
-            GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
             GameEventSystem.Subscribe<StageSelectEvent>(_OnStageSelected);
             GameEventSystem.Subscribe<InspectionEndEvent>(_OnInspectionEnd);
             GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOverStart);
@@ -110,7 +109,6 @@ namespace TrainDefense.Game.Manager
         {
             GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Unsubscribe<GetCurrentInspectionDurationEvent, float>(_GetCurrentInspectionDuration);
-            GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
             GameEventSystem.Unsubscribe<StageSelectEvent>(_OnStageSelected);
             GameEventSystem.Unsubscribe<InspectionEndEvent>(_OnInspectionEnd);
             GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOverStart);
@@ -141,11 +139,6 @@ namespace TrainDefense.Game.Manager
             _SetCurrentStage();
         }
 
-        private void _OnLevelUp(LevelUpEvent levelUpEvent)
-        {
-            _UpdateSpawnRules();
-        }
-
         private void _OnGameEnter(GameEnterEvent gameEnterEvent)
         {
             // 새 게임 시작 시에만 누적 난이도 카운터 초기화 (스테이지 변경 시에는 유지)
@@ -167,11 +160,14 @@ namespace TrainDefense.Game.Manager
 
             var allSpawnDatas = CurrentStageData.SpawnDatas;
             var filteredList = new List<StageSpawnData>();
-            int userLevel = UserDataManager.Instance.CurrentLevel;
+
+            // 몬스터 해금 기준 = 누적 역 도착 수. 역 도착이 곧 성장(상점·강화) 시점이 되면서
+            // 유저 레벨보다 진행도를 잘 나타내게 됐다. SpawnLevel 값은 그대로 역 도착 횟수로 읽는다.
+            int progressCount = _totalInspectionPassedCount;
 
             foreach (var data in allSpawnDatas)
             {
-                if (userLevel >= data.SpawnLevel)
+                if (progressCount >= data.SpawnLevel)
                 {
                     filteredList.Add(data);
                 }
@@ -274,6 +270,9 @@ namespace TrainDefense.Game.Manager
 
             // 역 도착·맵 선택 두 경로의 공통 진입점. 난이도와 가격이 같은 축을 쓰도록 여기서만 센다.
             _totalInspectionPassedCount++;
+
+            // 몬스터 해금이 이 카운트를 기준으로 하므로 늘린 직후 목록을 다시 만든다.
+            _UpdateSpawnRules();
         }
 
         // 현재 진행 중인 역 구간의 도착 시간.
