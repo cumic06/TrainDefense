@@ -1185,7 +1185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeText
-  _key: 17
+  _key: 18
   _autoSizeForLongText: 1
 --- !u!1 &7710000000000000041
 GameObject:
