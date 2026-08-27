@@ -66,6 +66,13 @@ namespace TrainDefense.Game
                     if (option.IsValid())
                         result.Add(new ChoiceEntry { Option = option, Weight = option.TierWeight, Tier = 0 });
                 }
+
+                // 스탯 두 개가 한 장에 담긴 복합 카드. 가중치가 같은 티어 단일의 절반이라 가끔 섞여 나온다.
+                foreach (var option in TrainStatUpgradeChoice.CreateComboOptionsFor(train))
+                {
+                    if (option.IsValid())
+                        result.Add(new ChoiceEntry { Option = option, Weight = option.TierWeight, Tier = 0 });
+                }
             }
 
             return result;
