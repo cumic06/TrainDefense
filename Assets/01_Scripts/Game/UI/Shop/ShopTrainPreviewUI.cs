@@ -152,7 +152,9 @@ namespace TrainDefense.Game.UI
             if (!hasBounds)
                 return;
 
-            _previewCamera.transform.position = new Vector3(bounds.center.x, bounds.center.y, bounds.center.z - 10f);
+            // 세로는 스프라이트 경계 중심이 아니라 선로(기차 트랜스폼) y에 맞춘다. 칸은 전부 MainTrain 기준 y 0에 놓이므로
+            // 이 값이 곧 선로 높이다. 경계 중심을 쓰면 포탑이 높은 칸이 있을 때 차체가 프리뷰 중심(=상점 UI 선로)보다 아래로 내려앉는다.
+            _previewCamera.transform.position = new Vector3(bounds.center.x, mainTrain.transform.position.y, bounds.center.z - 10f);
 
             // 기본은 인게임 화면과 같은 배율(메인 카메라가 화면 전체에 담는 높이 × 프리뷰가 화면에서 차지하는 높이 비율)로 보여주고,
             // 편성이 길어져 프리뷰 폭을 넘치면 그때만 전체가 들어오도록 축소한다. (예전엔 항상 경계에 맞춰 확대돼 기차·포탑이 인게임보다 훨씬 크게 보였음)
