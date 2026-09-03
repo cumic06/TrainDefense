@@ -35,16 +35,11 @@ namespace TrainDefense.Game.Datas
         public List<RangeTrainData> rangeTrainDataList = new();
 
         [TabGroup("Train Skill Data")]
-        [InfoBox("액티브/패시브 스킬 데이터 통합 관리")]
+        [InfoBox("패시브 스킬 데이터 관리")]
         [SerializeField]
         private TrainSkillDataDB trainSkillDataDB = new();
 
         // 마이그레이션용 레거시 필드 — 이미 이전 완료된 에셋에서는 비어있음
-        [HideInInspector]
-        [FormerlySerializedAs("trainSkillDataList")]
-        [SerializeField]
-        private List<TrainSkillData> _legacyTrainSkillDataList = new();
-
         [HideInInspector]
         [FormerlySerializedAs("trainPassiveSkillDataList")]
         [SerializeField]
@@ -135,14 +130,6 @@ namespace TrainDefense.Game.Datas
         {
             if (trainSkillDataDB == null)
                 trainSkillDataDB = new TrainSkillDataDB();
-
-            if (_legacyTrainSkillDataList != null && _legacyTrainSkillDataList.Count > 0
-                && trainSkillDataDB.trainActiveSkillDataList.Count == 0)
-            {
-                trainSkillDataDB.trainActiveSkillDataList.AddRange(_legacyTrainSkillDataList);
-                _legacyTrainSkillDataList.Clear();
-                UnityEngine.Debug.Log($"[DB] 마이그레이션: Active 스킬 {trainSkillDataDB.trainActiveSkillDataList.Count}개 이전 완료");
-            }
 
             if (_legacyTrainPassiveSkillDataList != null && _legacyTrainPassiveSkillDataList.Count > 0
                 && trainSkillDataDB.trainPassiveSkillDataList.Count == 0)

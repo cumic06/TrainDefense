@@ -152,7 +152,8 @@ namespace TrainDefense.Game
         private void ProcessEnter(IProjectileTarget target)
         {
             if (target == null || !target.IsActive) return;
-            if (_owner is Train && target is Train) return;
+            // 몬스터가 쏜 게 아니면 기차를 때리지 않는다. (owner는 Projectile에서 전파되며, 플레이어 개입 포격은 owner가 없다)
+            if (_owner is not Monster && target is Train) return;
 
             if (damageType == DamageType.Tick)
             {

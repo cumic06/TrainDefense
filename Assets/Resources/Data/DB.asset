@@ -415,7 +415,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 250
     prefabId: MainTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
   turretTrainDataList:
@@ -429,7 +428,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: NormalTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -454,7 +452,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: FireTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -479,7 +476,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: MissileTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -504,7 +500,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: LaserTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -529,7 +524,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: ElectrickTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -554,7 +548,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: CannonTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -579,7 +572,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: SniperTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
@@ -604,7 +596,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: EliteNormalTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60001
     isMainTrain: 0
@@ -630,7 +621,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: EliteFireTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60002
     - 60003
@@ -657,7 +647,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: EliteMissileTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60009
     - 60010
@@ -684,7 +673,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: EliteLaserTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60011
     - 60012
@@ -711,7 +699,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: EliteElectrickTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60013
     isMainTrain: 0
@@ -737,7 +724,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: EliteCannonTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60015
     isMainTrain: 0
@@ -763,7 +749,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: EliteSniperTurretTrain
-    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60017
     isMainTrain: 0
@@ -779,56 +764,6 @@ MonoBehaviour:
       BurstDuration: 0
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
-  - id: 50001
-    name: Train_30001_Name
-    iconId: Weapon_KMD_08_UI
-    icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
-    damageType: 0
-    attackSoundType: 301
-    description: Train_30001_Desc
-    trainStatusData:
-      MaxHp: 150
-    prefabId: NormalTurretTrain
-    activeSkillDataIds: []
-    passiveSkillDataIds: []
-    isMainTrain: 0
-    turretTrainStatus:
-      AttackDamage: 10
-      AttackRange: 8
-      AttackArea: 8
-      AttackCount: 1
-      AttackInterval: 0.2
-      TargetCount: 1
-      CriticalChance: 0
-      CriticalDamage: 0
-      BurstDuration: 0
-    turretProjectilePrefabId: MainNormalProjectile
-    attackDamageMultiplier: 1
-  - id: 50002
-    name: Train_30003_Name
-    iconId: Weapon_KMD_10_UI
-    icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
-    damageType: 0
-    attackSoundType: 303
-    description: Train_30003_Desc
-    trainStatusData:
-      MaxHp: 150
-    prefabId: MissileTurretTrain
-    activeSkillDataIds: []
-    passiveSkillDataIds: []
-    isMainTrain: 0
-    turretTrainStatus:
-      AttackDamage: 30
-      AttackRange: 8
-      AttackArea: 8
-      AttackCount: 1
-      AttackInterval: 1
-      TargetCount: 1
-      CriticalChance: 0
-      CriticalDamage: 0
-      BurstDuration: 0
-    turretProjectilePrefabId: MainMissileProjectile
-    attackDamageMultiplier: 1
   rangeTrainDataList:
   - id: 40001
     name: Train_40001_Name
@@ -840,7 +775,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: ExplosionRangeTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
@@ -865,7 +799,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: ColdAirRangeTrain
-    activeSkillDataIds: []
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
@@ -890,7 +823,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: EliteExplosionRangeTrain
-    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60006
     - 60007
@@ -917,7 +849,6 @@ MonoBehaviour:
     trainStatusData:
       MaxHp: 200
     prefabId: EliteColdAirRangeTrain
-    activeSkillDataIds: []
     passiveSkillDataIds:
     - 60004
     - 60005
@@ -935,132 +866,6 @@ MonoBehaviour:
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   trainSkillDataDB:
-    trainActiveSkillDataList:
-    - id: 50001
-      name: Skill_50001_Name
-      description: Skill_50001_Desc
-      skillType: 2
-      skillCooldown: 20
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
-      buffDuration: 5
-      buffs:
-      - statType: 4
-        percent: -50
-    - id: 50002
-      name: Skill_50002_Name
-      description: Skill_50002_Desc
-      skillType: 2
-      skillCooldown: 25
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
-      buffDuration: 6
-      buffs:
-      - statType: 2
-        percent: 100
-    - id: 50003
-      name: Skill_50003_Name
-      description: Skill_50003_Desc
-      skillType: 2
-      skillCooldown: 20
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
-      buffDuration: 10
-      buffs:
-      - statType: 8
-        percent: 250
-    - id: 50004
-      name: Skill_50004_Name
-      description: Skill_50004_Desc
-      skillType: 3
-      skillCooldown: 20
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
-      buffDuration: 0
-      buffs: []
-    - id: 50005
-      name: Skill_50005_Name
-      description: Skill_50005_Desc
-      skillType: 4
-      skillCooldown: 10
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 100
-        range: 30
-        projectileCount: 1
-      buffDuration: 0
-      buffs: []
-    - id: 50006
-      name: Skill_50006_Name
-      description: Skill_50006_Desc
-      skillType: 5
-      skillCooldown: 15
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
-      buffDuration: 5
-      buffs: []
-    - id: 50007
-      name: Skill_50007_Name
-      description: Skill_50007_Desc
-      skillType: 3
-      skillCooldown: 15
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
-      buffDuration: 0
-      buffs: []
-    - id: 50008
-      name: Skill_50008_Name
-      description: Skill_50008_Desc
-      skillType: 3
-      skillCooldown: 20
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
-      buffDuration: 0
-      buffs: []
-    - id: 50009
-      name: Skill_50009_Name
-      description: Skill_50009_Desc
-      skillType: 2
-      skillCooldown: 30
-      skillIconId: 
-      projectileData:
-        projectilePrefabId: 
-        damage: 0
-        range: 0
-        projectileCount: 0
-      buffDuration: 15
-      buffs:
-      - statType: 1
-        percent: 300
     trainPassiveSkillDataList:
     - id: 60001
       name: Passive_60001_Name
@@ -1160,7 +965,6 @@ MonoBehaviour:
       param2: 0.25
       param3: 
       description: Passive_60017_Desc
-  _legacyTrainSkillDataList: []
   _legacyTrainPassiveSkillDataList: []
   stageDataList:
   - id: 50001
@@ -1816,11 +1620,7 @@ MonoBehaviour:
         rid: 5100000000000000002
       Weight: 1
       Tier: 0
-    rewardChoices:
-    - Option:
-        rid: 7300000000000000003
-      Weight: 1
-      Tier: 0
+    rewardChoices: []
   statUpgradeTierDataList:
   - id: stat_upgrade_tier_1
     grade: 1
@@ -2359,13 +2159,3 @@ MonoBehaviour:
         id: 62002a
         baseTrainId: 40002
         eliteTrainDataId: 41002
-    - rid: 7300000000000000003
-      type: {class: EmergencyRepairChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
-      data:
-        id: 70003
-        nameKey: Reward_EmergencyRepair_Name
-        descriptionKey: Reward_EmergencyRepair_Desc
-        iconId: 
-        icon: {fileID: 0}
-        aliveHealRatio: 0.1
-        revivedHpRatio: 0.1

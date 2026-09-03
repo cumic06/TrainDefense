@@ -1,9 +1,8 @@
 namespace TrainDefense.Game
 {
     /// <summary>
-    /// 액티브/패시브 스킬 공통 베이스. Owner 보유, Tick 라이프사이클, 이벤트 Subscribe/Unsubscribe 훅 제공.
+    /// 스킬 공통 베이스. Owner 보유, Tick 라이프사이클, 이벤트 Subscribe/Unsubscribe 훅 제공.
     /// 하위:
-    ///   - TrainSkillAction (액티브: 쿨다운/TryUse)
     ///   - TrainPassiveSkill (패시브: Subscribe로 owner 이벤트 구독)
     /// </summary>
     public abstract class TrainSkill

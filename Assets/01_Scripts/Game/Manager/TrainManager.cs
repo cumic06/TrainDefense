@@ -1,11 +1,9 @@
 using UnityEngine;
 using Cumic;
-using Cumic.Sequence;
 using TrainDefense;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Controller;
 using Cumic.Events;
-using System.Linq;
 
 namespace TrainDefense.Game
 {
@@ -20,26 +18,14 @@ namespace TrainDefense.Game
 
       public MainTrain MainTrain => mainTrain;
 
-      // 이번 판 누적 생존 시간(초). Engage 중에만 unscaled 시간으로 누적해 일시정지/상점/배속에 영향받지 않게 한다.
-      private float _survivalElapsed;
-      private bool _isSurvivalTiming;
-
       private void Start()
       {
          GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
-         GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
       }
 
       private void OnDestroy()
       {
          GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
-         GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
-      }
-
-      private void Update()
-      {
-         if (_isSurvivalTiming && InGameSequence.Instance != null && InGameSequence.Instance.IsRunning)
-            _survivalElapsed += Time.unscaledDeltaTime;
       }
 
       private void OnGameEnter(GameEnterEvent gameEnterEvent)
@@ -59,39 +45,6 @@ namespace TrainDefense.Game
          ResourceManager.Instance.RegisterPersistent(mainTrain.gameObject);
          mainTrain.Initialize(trainData);
          cameraController?.SetFollowTarget(mainTrain.transform);
-
-         _EquipSelectedWeapon();
-
-         _survivalElapsed = 0f;
-         _isSurvivalTiming = !gameEnterEvent.IsLobby;
-      }
-
-      private void OnGameEnd(GameEndEvent gameEndEvent)
-      {
-         if (!_isSurvivalTiming)
-            return;
-
-         _isSurvivalTiming = false;
-
-         if (UserDataManager.Instance != null)
-            UserDataManager.Instance.ReportSurvivalTime(UserDataManager.Instance.SelectedTurretId, _survivalElapsed);
-      }
-
-      // 포탑 선택창에서 고른 주무기를 MainTrain에 장착한다. 미선택이면 무기 없이 진행.
-      private void _EquipSelectedWeapon()
-      {
-         string selectedId = UserDataManager.Instance != null ? UserDataManager.Instance.SelectedTurretId : null;
-         if (string.IsNullOrEmpty(selectedId))
-            return;
-
-         var turretData = DatabaseManager.Instance.GetTrainData(selectedId) as TurretTrainData;
-         if (turretData == null)
-         {
-            Debug.LogWarning($"TrainManager: Selected turret '{selectedId}' is not a TurretTrainData");
-            return;
-         }
-
-         mainTrain.EquipWeapon(turretData);
       }
 
       public bool CheckHasTrain(TrainData trainData)
@@ -125,20 +78,6 @@ namespace TrainDefense.Game
       public int GetTrainCount()
       {
          return mainTrain.CurrentTrainCount;
-      }
-
-      public bool TryUseTrainSkill(Train train)
-      {
-         if (mainTrain == null || train == null)
-            return false;
-
-         if (!mainTrain.CurrentAliveTrains.Contains(train))
-            return false;
-
-         if (!train.HasActiveSkill || !train.CanUseSkill)
-            return false;
-
-         return train.TryUseSkill();
       }
 
       public Train GetNearTrain(Vector3 position)

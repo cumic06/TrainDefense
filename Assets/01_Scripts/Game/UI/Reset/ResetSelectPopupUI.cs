@@ -18,8 +18,6 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private Toggle collectionToggle;
         [SerializeField]
-        private Toggle survivalToggle;
-        [SerializeField]
         private Toggle optionToggle;
         [SerializeField]
         private Toggle achievementToggle;
@@ -37,8 +35,6 @@ namespace TrainDefense.Game.UI
         private TextMeshProUGUI titleText;
         [SerializeField]
         private TextMeshProUGUI collectionLabel;
-        [SerializeField]
-        private TextMeshProUGUI survivalLabel;
         [SerializeField]
         private TextMeshProUGUI optionLabel;
         [SerializeField]
@@ -130,9 +126,6 @@ namespace TrainDefense.Game.UI
             if (collectionLabel != null)
                 collectionLabel.text = LocalizeHelper.GetByKey("Collection_Title", "도감");
 
-            if (survivalLabel != null)
-                survivalLabel.text = LocalizeHelper.GetByKey("UI_Reset_Survival", "최장 생존 기록");
-
             if (optionLabel != null)
                 optionLabel.text = LocalizeHelper.GetByKey("UI_Reset_Option", "옵션");
 
@@ -165,9 +158,6 @@ namespace TrainDefense.Game.UI
                         userData.ResetDiscoveredMonsters();
                         userData.ResetDiscoveredTrains();
                     }
-
-                    if (survivalToggle != null && survivalToggle.isOn)
-                        userData.ResetAllSurvivalTimes();
 
                     if (optionToggle != null && optionToggle.isOn)
                         userData.ResetOptions();

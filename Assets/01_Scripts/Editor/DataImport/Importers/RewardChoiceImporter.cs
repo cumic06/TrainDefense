@@ -8,8 +8,8 @@ using TrainDefense.Editor.DataImport.Importers.Rows;
 namespace TrainDefense.Editor.DataImport.Importers
 {
 	/// <summary>
-	/// 만렙 보상 선택지(긴급 수리 / 골드 / 엘리트 재화)를 ChoiceData.xlsx의 reward_choice_data 시트에서 임포트한다.
-	/// reward_type 컬럼으로 구체 IChoiceOption(EmergencyRepairChoice / GoldRewardChoice / EliteCurrencyRewardChoice)을 분기 생성한다.
+	/// 만렙 보상 선택지(골드 / 엘리트 재화)를 ChoiceData.xlsx의 reward_choice_data 시트에서 임포트한다.
+	/// reward_type 컬럼으로 구체 IChoiceOption(GoldRewardChoice / EliteCurrencyRewardChoice)을 분기 생성한다.
 	/// </summary>
 	public class RewardChoiceImporter : IExcelSheetImporter
 	{
@@ -80,14 +80,6 @@ namespace TrainDefense.Editor.DataImport.Importers
 		{
 			switch (r.rewardType?.Trim().ToLowerInvariant())
 			{
-				case "emergency_repair":
-				{
-					var choice = (EmergencyRepairChoice)FormatterServices.GetUninitializedObject(typeof(EmergencyRepairChoice));
-					CopyBase(r, choice);
-					SetPrivateField(typeof(EmergencyRepairChoice), choice, "aliveHealRatio", r.aliveHealRatio);
-					SetPrivateField(typeof(EmergencyRepairChoice), choice, "revivedHpRatio", r.revivedHpRatio);
-					return choice;
-				}
 				case "gold":
 				{
 					var choice = (GoldRewardChoice)FormatterServices.GetUninitializedObject(typeof(GoldRewardChoice));

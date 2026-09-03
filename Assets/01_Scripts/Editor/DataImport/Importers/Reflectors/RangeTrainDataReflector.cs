@@ -25,9 +25,6 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			var trainStatusData = new TrainStatusData { MaxHp = r.maxHp };
 			SetPrivateField(t, target, "trainStatusData", trainStatusData);
 
-			SetPrivateField(t, target, "activeSkillDataIds", r.activeSkillDataIds);
-			SetPrivateField(t, target, "activeSkillDatasResolved", false);
-
 			var rangeTrainType = typeof(RangeTrainData);
 			var rangeTrainStatus = new RangeTrainStatus
 			{

@@ -111,7 +111,6 @@ namespace TrainDefense.Game
       {
          base.Update();
          _TickHealthRegen(Time.deltaTime);
-         _UpdateWeaponInput();
       }
 
       // 자가 복구 레벨이 있으면 5초마다 살아있는 모든 포탑을 한 번에 회복. (메인 기차는 _currentAliveTrains에 미포함이라 자동 제외)
@@ -372,15 +371,6 @@ namespace TrainDefense.Game
             modelPos.x = halfLength;
             trainModel.localPosition = modelPos;
          }
-
-         // 주무기 마운트도 기차 비주얼과 같은 x로 맞춰 포탑이 항상 기차(trainModel) 중앙 위에 오게 한다.
-         // (trainModel만 halfLength로 밀면 turretMount는 루트 원점(x=0)에 남아 포탑이 기차에서 어긋난다.)
-         if (turretMount != null)
-         {
-            Vector3 mountPos = turretMount.localPosition;
-            mountPos.x = halfLength;
-            turretMount.localPosition = mountPos;
-         }
       }
 
       public void RearrangeAllTrainsToOriginalOrder()
@@ -432,16 +422,10 @@ namespace TrainDefense.Game
          // 이 시점은 timeScale=0 + SuppressSFX(true) 상태이므로 ignoreSuppress로 우회 재생한다.
          SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
 
-         // 상점 진입 시 자기강화(시한버프)를 즉시 해제하고 액티브 스킬 쿨타임을 초기화한다.
-         // (timeScale=0이라 스킬 Tick이 멈춰 버프가 다음 맵까지 유지되고, Time.time 기반 쿨타임이
-         //  진행되지 않아 상점을 다녀와도 쿨타임이 그대로 남던 문제 해결)
          foreach (var train in _currentAliveTrains)
          {
-            train.ResetSkillStateForInspection();
             train.ResetVisualForInspection();
          }
-
-         ResetVisualForInspection();
 
          // 모든 기차를 원래 순서대로 재정렬
          RearrangeAllTrainsToOriginalOrder();
@@ -470,30 +454,6 @@ namespace TrainDefense.Game
          }
       }
 
-      /// <summary>
-      /// 긴급 수리: 부서진 기차를 모두 부활시키고, (부활 전부터) 살아있던 기차를 aliveHealRatio만큼 회복한다.
-      /// 부활시킨 기차의 HP는 revivedHpRatio로 맞춘다.
-      /// </summary>
-      public void EmergencyRepair(float aliveHealRatio, float revivedHpRatio)
-      {
-         // 부활 전 기존 생존 기차만 비율 회복 (부활한 기차는 ReviveAllDeadTrains에서 HP를 따로 설정)
-         foreach (var train in _currentAliveTrains.ToList())
-         {
-            train.RestoreHpByRatio(aliveHealRatio);
-         }
-
-         ReviveAllDeadTrains(revivedHpRatio);
-
-         RearrangeAllTrainsToOriginalOrder();
-
-         SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
-      }
-
-      // 수리(회복/부활)가 의미 있는 상태인가 — 죽은 기차가 있거나 손상된 생존 기차가 있으면 true.
-      // (긴급 수리 카드가 풀피 상태에서 죽은 카드로 뜨지 않도록 노출 조건에 사용)
-      public bool HasRepairTarget => _deadTrains.Count > 0
-         || _currentAliveTrains.Any(train => train != null && train.CurrentHpRatio < 1f);
-
       public bool CheckHasTrain(TrainData trainData)
       {
          return _currentAliveTrains.Any(train => train.TrainData.Id == trainData.Id);
@@ -516,9 +476,6 @@ namespace TrainDefense.Game
          {
             train.ApplyStatsLevelAware(upgradeData.Stats, newLevel, prevLevel);
          }
-
-         // 메인 터렛(선택 주무기)도 편성 포탑과 동일하게 상점 업그레이드를 받는다.
-         _turret?.ApplyShopStats(upgradeData.Stats, newLevel, prevLevel);
       }
 
       /// <summary>
@@ -652,17 +609,6 @@ namespace TrainDefense.Game
                .SetEase(Ease.InOutSine)
                .SetUpdate(true);
          }
-
-         // 주무기 마운트(포탑)도 기차와 함께 슬라이드 인. (누락 시 연출 중 포탑만 제자리에 남는다.)
-         if (turretMount != null)
-         {
-            float targetX = turretMount.localPosition.x;
-            turretMount.localPosition += new Vector3(offsetX, 0f, 0f);
-            turretMount.DOLocalMoveX(targetX, duration)
-               .SetDelay(delay)
-               .SetEase(Ease.InOutSine)
-               .SetUpdate(true);
-         }
       }
 
       /// <summary>
@@ -695,16 +641,6 @@ namespace TrainDefense.Game
          {
             _slideOutOrigins.Add((trainModel, trainModel.localPosition.x));
             trainModel.DOLocalMoveX(trainModel.localPosition.x + offsetX, duration)
-               .SetDelay(delay)
-               .SetEase(Ease.InOutSine)
-               .SetUpdate(true);
-         }
-
-         // 주무기 마운트(포탑)도 기차와 함께 슬라이드 아웃. ResetSlidePosition이 _slideOutOrigins로 자동 복귀시킨다.
-         if (turretMount != null)
-         {
-            _slideOutOrigins.Add((turretMount, turretMount.localPosition.x));
-            turretMount.DOLocalMoveX(turretMount.localPosition.x + offsetX, duration)
                .SetDelay(delay)
                .SetEase(Ease.InOutSine)
                .SetUpdate(true);

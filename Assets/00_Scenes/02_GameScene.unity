@@ -5140,11 +5140,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7710000000000000042, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 72
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7710000000000000045, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
       propertyPath: previewZoomRatio
-      value: 0.18
+      value: 0.36
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11090,7 +11090,6 @@ MonoBehaviour:
   _sequences:
   - {fileID: 11400000, guid: 288a0eab5eb5046409802b68716e4d21, type: 2}
   - {fileID: 11400000, guid: eb63f3b76a46fc7488c5ac4bd3c8bee9, type: 2}
-  - {fileID: 11400000, guid: ad012b01cab172c4bb97d5872c89d4ce, type: 2}
   - {fileID: 11400000, guid: b59344bc07d34bba9163279222b8dee8, type: 2}
   - {fileID: 11400000, guid: 301c02ae47e44b64b1ff64616ded9d2a, type: 2}
   - {fileID: 11400000, guid: d7f25f4ecaef4d9c8b65fd88452bd4f9, type: 2}
@@ -11995,6 +11994,51 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &952009060
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 952009061}
+  - component: {fileID: 952009062}
+  m_Layer: 0
+  m_Name: PlayerBombardManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &952009061
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952009060}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1035467650}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &952009062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952009060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b4acd624dac7e945ac725cdfd0f7d74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.PlayerBombardManager
+  dontDestroyOnLoad: 0
 --- !u!1 &961553006
 GameObject:
   m_ObjectHideFlags: 0
@@ -12383,6 +12427,7 @@ Transform:
   - {fileID: 692818405}
   - {fileID: 1398835986}
   - {fileID: 1873479376}
+  - {fileID: 952009061}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1035467651

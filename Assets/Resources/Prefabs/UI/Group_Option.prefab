@@ -4212,7 +4212,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7700000000000000005, guid: 00fd69d71ae7cc741b3599d7ea3e2a7b, type: 3}
       propertyPath: _key
-      value: 63
+      value: 59
       objectReference: {fileID: 0}
     - target: {fileID: 7700000000000000014, guid: 00fd69d71ae7cc741b3599d7ea3e2a7b, type: 3}
       propertyPath: m_AnchorMax.x

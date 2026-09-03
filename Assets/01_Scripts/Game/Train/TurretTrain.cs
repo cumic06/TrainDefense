@@ -590,18 +590,6 @@ namespace TrainDefense.Game
             return null;
         }
 
-        /// <summary>
-        /// 스킬 InstantAttack용 외부 공개 래퍼.
-        /// </summary>
-        public bool ForceAttack()
-        {
-            if (_isDead) return false;
-            DetectTarget();
-            if (_targetMonsters.Count == 0) return false;
-            Attack();
-            return true;
-        }
-
         protected virtual void NormalAttack(Monster forcedTarget = null, Vector2? aimPosition = null)
         {
             Vector2 aimPos;
@@ -1441,28 +1429,6 @@ namespace TrainDefense.Game
             if (playSound && turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
                 SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
             SpawnProjectileAtWorldPosition(target, worldPosition);
-        }
-
-        public override Transform GetSkillSpawnPoint(int index)
-        {
-            if (turretProjectileSpawnPoints == null || turretProjectileSpawnPoints.Length == 0)
-            {
-                return base.GetSkillSpawnPoint(index);
-            }
-
-            if (index < 0)
-            {
-                index = 0;
-            }
-
-            if (index >= turretProjectileSpawnPoints.Length)
-            {
-                index = turretProjectileSpawnPoints.Length - 1;
-            }
-
-            return turretProjectileSpawnPoints[index] != null
-                ? turretProjectileSpawnPoints[index]
-                : base.GetSkillSpawnPoint(index);
         }
 
         private void OnDrawGizmos()

@@ -8,23 +8,14 @@ using UnityEngine.UI;
 
 namespace TrainDefense.Game.UI
 {
-   [RequireComponent(typeof(Button))]
    public class TrainInfoSlotUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
    {
       #region Verialbes
       #region Field
       [SerializeField]
-      private Button slotButton;
-      [SerializeField]
       private Image healthImage;
       [SerializeField]
       private Image iconImage;
-      [SerializeField]
-      private Image skillIcon;
-      [SerializeField]
-      private Image skillCooldownImage;
-      [SerializeField]
-      private TextMeshProUGUI skillCooldownText;
 
       [SerializeField]
       private Image trainLevelImage;
@@ -52,35 +43,14 @@ namespace TrainDefense.Game.UI
       private bool _longPressFired;
       #endregion
 
-      private void Awake()
-      {
-         if (slotButton == null)
-         {
-            slotButton = GetComponent<Button>();
-         }
-
-         slotButton.onClick.AddListener(_OnClickSlot);
-      }
-
       private void Start()
       {
          _SubscribeEvents();
          _RefreshHealthUI();
-         _RefreshSkillUI();
-      }
-
-      private void Update()
-      {
-         _UpdateSkillCooldownUI();
       }
 
       private void OnDestroy()
       {
-         if (slotButton != null)
-         {
-            slotButton.onClick.RemoveListener(_OnClickSlot);
-         }
-
          if (_longPressCoroutine != null)
          {
             StopCoroutine(_longPressCoroutine);
@@ -153,7 +123,6 @@ namespace TrainDefense.Game.UI
          }
 
          _RefreshHealthUI();
-         _RefreshSkillUI();
       }
 
       public void SetIcon(Sprite icon)
@@ -180,83 +149,6 @@ namespace TrainDefense.Game.UI
          if (ratio <= 0.7f)
             return HealthColorMiddle;
          return HealthColorHigh;
-      }
-
-      private void _RefreshSkillUI()
-      {
-         bool hasSkill = _train != null && _train.HasActiveSkill;
-
-         if (skillIcon != null)
-         {
-            skillIcon.gameObject.SetActive(hasSkill);
-            if (hasSkill)
-            {
-               skillIcon.sprite = _train.SkillIcon;
-            }
-         }
-
-         if (skillCooldownImage != null)
-         {
-            skillCooldownImage.gameObject.SetActive(hasSkill);
-            skillCooldownImage.fillAmount = hasSkill ? _train.SkillCooldownRatio : 0f;
-         }
-
-         if (skillCooldownText != null)
-         {
-            // 텍스트는 쿨다운이 남아있을 때만 노출, 초기/스킬 없음 상태는 숨김
-            skillCooldownText.gameObject.SetActive(false);
-         }
-      }
-
-      private void _UpdateSkillCooldownUI()
-      {
-         if (_train == null || !_train.HasActiveSkill)
-            return;
-
-         if (skillCooldownImage != null)
-         {
-            skillCooldownImage.fillAmount = _train.SkillCooldownRatio;
-         }
-
-         if (skillCooldownText != null)
-         {
-            float remaining = _train.SkillRemainingCooldown;
-            bool onCooldown = remaining > 0f;
-
-            if (skillCooldownText.gameObject.activeSelf != onCooldown)
-            {
-               skillCooldownText.gameObject.SetActive(onCooldown);
-            }
-
-            if (onCooldown)
-            {
-               skillCooldownText.text = $"{remaining:0.0}s";
-            }
-         }
-      }
-
-      private void _OnClickSlot()
-      {
-         if (_longPressFired)
-         {
-            _longPressFired = false;
-            return;
-         }
-
-         if (_train == null)
-         {
-            Debug.LogWarning("[TrainInfoSlotUI] _train is null, cannot use skill");
-            return;
-         }
-
-         if (!_train.HasActiveSkill)
-         {
-            Debug.LogWarning($"[TrainInfoSlotUI] {_train.name} does not have skill");
-            return;
-         }
-
-         TrainManager.Instance.TryUseTrainSkill(_train);
-         _UpdateSkillCooldownUI();
       }
 
       private void _SetHp(HitEvent hitEvent)
@@ -327,7 +219,6 @@ namespace TrainDefense.Game.UI
          trainLevelImage.gameObject.SetActive(true);
          trainLevelText.text = "E";
          _RefreshHealthUI();
-         _RefreshSkillUI();
       }
    }
 }

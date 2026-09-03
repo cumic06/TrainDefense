@@ -194,18 +194,6 @@ namespace TrainDefense.Game
             }
         }
 
-        /// <summary>
-        /// 스킬 InstantAttack용: 쿨다운을 기다리지 않고 즉시 1회 공격을 강제한다. (TurretTrain.ForceAttack 대칭)
-        /// </summary>
-        public bool ForceAttack()
-        {
-            if (_isDead) return false;
-            if (rangeTrainData == null || rangeTrainData.RangeProjectilePrefab == null) return false;
-            _attackCountdown = 0f;
-            RangeAttackHandler();
-            return true;
-        }
-
         public void SetSuppressMainProjectileShove(bool suppress)
         {
             _suppressMainProjectileShove = suppress;

@@ -170,15 +170,7 @@ namespace TrainDefense.Game
             if (skillData == null)
                 return;
 
-            if (skillType == TrainChoiceSkillType.Active && skillData is TrainSkillData activeSkill)
-            {
-                if (!string.IsNullOrEmpty(activeSkill.Name))
-                    info.ActiveSkillName = activeSkill.Name;
-
-                if (!string.IsNullOrEmpty(activeSkill.Description))
-                    info.ActiveSkillDescription = activeSkill.Description;
-            }
-            else if (skillType == TrainChoiceSkillType.Passive && skillData is TrainPassiveSkillData passiveSkill)
+            if (skillType == TrainChoiceSkillType.Passive && skillData is TrainPassiveSkillData passiveSkill)
             {
                 if (!string.IsNullOrEmpty(passiveSkill.Name))
                     info.PassiveName = passiveSkill.Name;

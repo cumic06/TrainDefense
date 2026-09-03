@@ -64,12 +64,11 @@ namespace TrainDefense.Game.UI
                 var sb = new StringBuilder();
 
                 // TrainData 전체 스킬이 아니라, 이 인스턴스에 실제 적용된 스킬만 표시(마스크 반영).
-                string activeLabel = LocalizeHelper.GetByKey("skill_type_active", "액티브");
                 string passiveLabel = LocalizeHelper.GetByKey("skill_type_passive", "패시브");
 
-                foreach (var (isActive, name, description) in train.GetAppliedSkillDisplays())
+                foreach (var (name, description) in train.GetAppliedSkillDisplays())
                 {
-                    sb.AppendLine(isActive ? $"[{activeLabel}] {name}" : $"[{passiveLabel}] {name}");
+                    sb.AppendLine($"[{passiveLabel}] {name}");
                     if (!string.IsNullOrEmpty(description))
                         sb.AppendLine(description);
                 }

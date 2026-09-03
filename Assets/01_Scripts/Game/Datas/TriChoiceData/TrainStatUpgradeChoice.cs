@@ -28,6 +28,10 @@ namespace TrainDefense.Game.Datas
         // 복합 카드가 같은 티어 단일 카드 대비 얼마나 자주 뜨는가. 1이면 단일 카드가 밀려나므로 절반으로 둔다.
         public const float COMBO_WEIGHT_RATIO = 0.5f;
 
+        // 복합 카드 가격 할인. 두 장 값을 그대로 받으면 원당 효율이 한 등급 아래 단일과 같아져,
+        // 등장 확률이 절반인 카드에 희귀 보상이 없어진다. 조합이 무작위라 반쪽이 노는 경우도 함께 친다.
+        public const float COMBO_COST_RATIO = 0.8f;
+
         private readonly Train _train;
         private readonly StatType _statType;
         private readonly StatUpgradeTierData _tier;
@@ -78,10 +82,11 @@ namespace TrainDefense.Game.Datas
             : _displayTier.Weight;
 
         // 가격 배수 = 등급 배수(고등급일수록 단가 할인 — 희귀 보상) × 스탯 프리미엄(+1 가치가 큰 정수 스탯).
-        // 복합은 "카드 두 장 값"이라 두 스탯의 프리미엄을 더한다 — 총량이 같은 단일 등급보다 조금 비싸고,
-        // 그 차액이 서로 다른 축을 동시에 올리는 곱연산 이득과 슬롯 하나를 아끼는 값이다.
+        // 복합은 "카드 두 장 값"이라 두 스탯의 프리미엄을 더한 뒤 COMBO_COST_RATIO로 깎는다 — 두 장 값을
+        // 그대로 받으면 한 등급 아래 단일과 원당 효율이 같아져, 확률이 절반인 카드를 살 이유가 남지 않는다.
         // 상점(ShopOfferPricing)이 기본가에 곱해 최종 가격을 낸다.
-        public float CostMultiplier => _tier.CostMultiplier * (_statCostMultiplier + _secondStatCostMultiplier);
+        public float CostMultiplier => _tier.CostMultiplier * (_statCostMultiplier + _secondStatCostMultiplier)
+            * (IsCombo ? COMBO_COST_RATIO : 1f);
 
         public string Id => IsCombo
             ? $"StatUpgrade_{(_train != null && _train.TrainData != null ? _train.TrainData.Id : "?")}_{_statType}+{_secondRule.StatType}_T{_displayTier.Grade}"

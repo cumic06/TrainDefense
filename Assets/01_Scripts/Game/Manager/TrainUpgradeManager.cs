@@ -12,7 +12,6 @@ namespace TrainDefense.Game
 {
     public class TrainUpgradeManager : Singleton<TrainUpgradeManager>
     {
-        private bool _skillTutorialStarted = false;
         private bool _trainInfoSlotTutorialStarted = false;
         private bool _eliteTrainTutorialStarted = false;
 
@@ -45,7 +44,6 @@ namespace TrainDefense.Game
             GameEventSystem.Subscribe<StatUpgradeSelectEvent>(OnStatUpgradeSelect);
             GameEventSystem.Subscribe<AddTrainEvent>(OnAddTrain);
             GameEventSystem.Subscribe<ReplaceTrainEvent>(OnReplaceTrain);
-            GameEventSystem.Subscribe<UpgradeTrainEvent>(OnUpgradeTrain);
         }
 
         private void OnDestroy()
@@ -53,7 +51,6 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<StatUpgradeSelectEvent>(OnStatUpgradeSelect);
             GameEventSystem.Unsubscribe<AddTrainEvent>(OnAddTrain);
             GameEventSystem.Unsubscribe<ReplaceTrainEvent>(OnReplaceTrain);
-            GameEventSystem.Unsubscribe<UpgradeTrainEvent>(OnUpgradeTrain);
 
             GameEventSystem.Unsubscribe<MainTrainFiredEvent>(OnMainTrainFired);
 
@@ -107,12 +104,6 @@ namespace TrainDefense.Game
 
             // 첫 기차 추가 시 TrainInfoSlot → InspectionTime 튜토리얼 연쇄 시작
             CheckAndStartTrainInfoSlotTutorial();
-
-            // 추가된 기차가 스킬을 가지면 튜토리얼 시작
-            if (addTrainEvent.Train.HasActiveSkill)
-            {
-                CheckAndStartSkillTutorial(addTrainEvent.Train);
-            }
         }
 
         private void OnReplaceTrain(ReplaceTrainEvent replaceTrainEvent)
@@ -124,30 +115,7 @@ namespace TrainDefense.Game
             }
 
             // 트레인 교체는 엘리트 획득 경로(EliteTrainChoice)에서만 발생한다.
-            // 엘리트 획득 시 전용 튜토리얼을 시작하고, 스킬 튜토리얼과 중복되지 않게 우선 처리한다.
-            if (CheckAndStartEliteTrainTutorial())
-                return;
-
-            // 대체된 새 기차가 스킬을 가지면 튜토리얼 시작
-            if (replaceTrainEvent.NewTrain.HasActiveSkill)
-            {
-                CheckAndStartSkillTutorial(replaceTrainEvent.NewTrain);
-            }
-        }
-
-        private void OnUpgradeTrain(UpgradeTrainEvent upgradeTrainEvent)
-        {
-            if (upgradeTrainEvent?.Train == null)
-            {
-                Debug.LogWarning("TrainUpgradeManager: UpgradeTrainEvent Train is null");
-                return;
-            }
-
-            // 업그레이드된 기차가 스킬을 가지면 튜토리얼 시작
-            if (upgradeTrainEvent.Train.HasActiveSkill)
-            {
-                CheckAndStartSkillTutorial(upgradeTrainEvent.Train);
-            }
+            CheckAndStartEliteTrainTutorial();
         }
 
         private void ApplyUpgrade(UpgradeData upgradeData, int newLevel)
@@ -279,69 +247,6 @@ namespace TrainDefense.Game
             _eliteTrainTutorialStarted = true;
             Debug.Log("TrainUpgradeManager: Starting elite train tutorial");
             return TutorialManager.Instance.StartTutorial("eliteTrainTutorial");
-        }
-
-        /// <summary>
-        /// 스킬이 있는 기차가 있으면 튜토리얼을 시작합니다.
-        /// </summary>
-        private void CheckAndStartSkillTutorial(Train trainToCheck = null)
-        {
-            // 이미 튜토리얼을 시작했으면 중복 실행 방지
-            if (_skillTutorialStarted)
-            {
-                Debug.LogWarning("TrainUpgradeManager: Skill tutorial already started");
-                return;
-            }
-
-            // 1. 전달된 기차가 스킬을 가지면 튜토리얼 시작
-            if (trainToCheck != null && trainToCheck.HasActiveSkill)
-            {
-                StartSkillTutorial();
-                return;
-            }
-
-            // 2. 전달된 기차가 없으면 전체 기차 검사
-            if (TrainManager.Instance == null)
-            {
-                Debug.LogWarning("TrainUpgradeManager: TrainManager.Instance is null");
-                return;
-            }
-
-            var trains = TrainManager.Instance.GetTrains();
-            if (trains == null || trains.Length == 0)
-            {
-                Debug.LogWarning("TrainUpgradeManager: No trains found");
-                return;
-            }
-
-            // 스킬을 가진 기차가 있는지 확인
-            foreach (var train in trains)
-            {
-                if (train != null && train.HasActiveSkill)
-                {
-                    StartSkillTutorial();
-                    return;
-                }
-            }
-
-            Debug.LogWarning("TrainUpgradeManager: No trains with skills found");
-        }
-
-        /// <summary>
-        /// 스킬 튜토리얼을 시작합니다.
-        /// </summary>
-        private void StartSkillTutorial()
-        {
-            _skillTutorialStarted = true;
-            if (TutorialManager.Instance != null)
-            {
-                Debug.Log("TrainUpgradeManager: Starting skill tutorial");
-                TutorialManager.Instance.StartTutorial("skillTutorial");
-            }
-            else
-            {
-                Debug.LogError("TrainUpgradeManager: TutorialManager.Instance is null");
-            }
         }
     }
 }

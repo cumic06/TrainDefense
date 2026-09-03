@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialSequenceData
   _sequenceId: stageSelectTutorial
   _displayName: "\uB9F5 \uC120\uD0DD \uD29C\uD1A0\uB9AC\uC5BC"
-  _displayNameKey: 26
+  _displayNameKey: 24
   _steps:
   - _id: 30000
     _targetObject: {fileID: 0}
@@ -27,7 +27,7 @@ MonoBehaviour:
     _message: "\uB2E4\uC74C\uC5D0 \uB3C4\uC804\uD560 \uB9F5\uC744 \uC120\uD0DD\uD558\uC138\uC694!\n\uB450
       \uAC1C\uC758 \uC2A4\uD14C\uC774\uC9C0 \uC911 \uC6D0\uD558\uB294 \uAC83\uC744
       \uACE0\uB97C \uC218 \uC788\uC2B5\uB2C8\uB2E4."
-    _messageKey: 27
+    _messageKey: 25
     _arrowDirection: 1
     _arrowLookDirection: 1
     _useDimming: 1
@@ -49,7 +49,7 @@ MonoBehaviour:
         m_Calls: []
     _message: "\uC2A4\uD14C\uC774\uC9C0\uBCC4\uB85C \uB4F1\uC7A5\uD558\uB294 \uBAAC\uC2A4\uD130\uAC00
       \uB2E4\uB974\uAC8C \uB098\uC624\uB2C8 \uC2E0\uC911\uD558\uAC8C \uACE0\uB974\uC138\uC694!"
-    _messageKey: 28
+    _messageKey: 26
     _arrowDirection: 1
     _arrowLookDirection: 1
     _useDimming: 1

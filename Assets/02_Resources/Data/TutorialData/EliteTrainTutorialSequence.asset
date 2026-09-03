@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialSequenceData
   _sequenceId: eliteTrainTutorial
   _displayName: "엘리트 기차 튜토리얼"
-  _displayNameKey: 209
+  _displayNameKey: 108
   _steps:
   - _id: 21000
     _targetObject: {fileID: 0}
@@ -25,7 +25,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
     _message: "엘리트 기차를 획득했어요!\\n슬롯을 꾹 눌러 상세 정보를 확인해보세요."
-    _messageKey: 210
+    _messageKey: 109
     _arrowDirection: 1
     _arrowLookDirection: 1
     _useDimming: 1
@@ -46,7 +46,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls: []
     _message: "엘리트 기차는 패시브와 액티브 스킬을\\n모두 획득할 수 있어요!"
-    _messageKey: 211
+    _messageKey: 110
     _arrowDirection: 1
     _arrowLookDirection: 1
     _useDimming: 1

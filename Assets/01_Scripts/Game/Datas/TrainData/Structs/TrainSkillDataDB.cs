@@ -8,15 +8,12 @@ namespace TrainDefense.Game.Datas
     public class TrainSkillDataDB
     {
         [SerializeField]
-        public List<TrainSkillData> trainActiveSkillDataList = new();
-        [SerializeField]
         public List<TrainPassiveSkillData> trainPassiveSkillDataList = new();
 
         // trainDataId → (skillData, skillType) 런타임 인덱스
         [NonSerialized]
         private Dictionary<string, List<(IData skillData, TrainChoiceSkillType skillType)>> _index;
 
-        public IReadOnlyList<TrainSkillData> TrainActiveSkillDataList => trainActiveSkillDataList;
         public IReadOnlyList<TrainPassiveSkillData> TrainPassiveSkillDataList => trainPassiveSkillDataList;
 
         /// <summary>
@@ -32,20 +29,6 @@ namespace TrainDefense.Game.Datas
                 if (trainData == null) continue;
 
                 var skills = new List<(IData, TrainChoiceSkillType)>();
-
-                var activeIds = trainData.ActiveSkillDataIds;
-                if (activeIds != null)
-                {
-                    foreach (var skillId in activeIds)
-                    {
-                        if (string.IsNullOrEmpty(skillId)) continue;
-                        var skill = trainActiveSkillDataList.Find(s => s != null && s.Id == skillId);
-                        if (skill != null)
-                            skills.Add((skill, TrainChoiceSkillType.Active));
-                        else
-                            UnityEngine.Debug.LogWarning($"[TrainSkillDataDB] TrainData[{trainData.Id}]: ActiveSkill '{skillId}' not found");
-                    }
-                }
 
                 var passiveIds = trainData.PassiveSkillDataIds;
                 if (passiveIds != null)

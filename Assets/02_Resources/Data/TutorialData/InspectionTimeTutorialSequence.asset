@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialSequenceData
   _sequenceId: inspectionTimeTutorial
   _displayName: "\uAC80\uC0AC \uC2DC\uAC04 \uD29C\uD1A0\uB9AC\uC5BC"
-  _displayNameKey: 23
+  _displayNameKey: 21
   _steps:
   - _id: 30000
     _targetObject: {fileID: 0}
@@ -26,7 +26,7 @@ MonoBehaviour:
         m_Calls: []
     _message: "\uC774 \uAC8C\uC774\uC9C0\uB294 \uC0C1\uC810 \uAC8C\uC774\uC9C0\uC785\uB2C8\uB2E4.\n\uD574\uB2F9
       \uC2DC\uAC04\uC774 \uB2E4 \uCC28\uBA74 \uC0C1\uC810\uC5D0 \uB3C4\uCC29\uD569\uB2C8\uB2E4!"
-    _messageKey: 24
+    _messageKey: 22
     _arrowDirection: 1
     _useDimming: 1
     _useHighlight: 1

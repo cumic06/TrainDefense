@@ -545,7 +545,6 @@ namespace TrainDefense.Editor
 			("TrainData.xlsx",      "train_data",                "id", "train_name",   "description", "Train"),
 			("TrainData.xlsx",      "range_train_data",          "id", "train_name",   "description", "Train"),
 			("TrainData.xlsx",      "turret_train_data",         "id", "train_name",   "description", "Train"),
-			("TrainSkillData.xlsx", "active_skill_data",         "id", "name",         "description", "Skill"),
 			("TrainSkillData.xlsx", "passive_skill_data",        "id", "name",         "description", "Passive"),
 			("UpgradeData.xlsx",    "upgrade_data",              "id", "upgrade_name", "description", "Upgrade"),
 		};

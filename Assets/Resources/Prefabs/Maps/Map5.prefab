@@ -141,7 +141,7 @@ MonoBehaviour:
   _maps:
   - {fileID: 5973745689582902677}
   - {fileID: 1760125859614873583}
-  speed: 3
+  speed: 6
 --- !u!1 &5973745689582902677
 GameObject:
   m_ObjectHideFlags: 0

@@ -115,8 +115,6 @@ namespace TrainDefense.Game
 
         public RangeTrainData[] GetRangeTrainDatas() => GetDB().RangeTrainDataList.ToArray();
         public TrainSkillDataDB GetTrainSkillDataDB() => GetDB().TrainSkillDataDB;
-        public TrainSkillData[] GetTrainSkillDatas() => GetDB().TrainSkillDataDB.TrainActiveSkillDataList.ToArray();
-        public TrainSkillData GetTrainSkillData(string id) => string.IsNullOrEmpty(id) ? null : GetDB().TrainSkillDataDB.trainActiveSkillDataList.Find(s => s != null && s.Id == id);
 
 
         #region Data Access Methods

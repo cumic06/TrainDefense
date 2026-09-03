@@ -69,12 +69,6 @@ namespace TrainDefense.Game
         // 업그레이드 7번을 받은 포탑부터 엘리트 승격 가능.
         public const int ELITE_PROMOTION_LEVEL = 7;
         public bool IsEliteEligible => _currentLevel >= ELITE_PROMOTION_LEVEL;
-        public bool HasActiveSkill => _skillModule.HasActiveSkill;
-        public Sprite SkillIcon => _skillModule.SkillIcon;
-        public float SkillCooldown => _skillModule.SkillCooldown;
-        public bool CanUseSkill => _skillModule.CanUse;
-        public float SkillCooldownRatio => _skillModule.CooldownRatio;
-        public float SkillRemainingCooldown => _skillModule.RemainingCooldown;
         public float CurrentHpRatio => _currentMaxHp > 0f ? _currentHp / _currentMaxHp : 0f;
 
         // 현재(업그레이드 반영) 공격 사거리. 서브클래스에서 실제 스탯으로 오버라이드.
@@ -135,7 +129,7 @@ namespace TrainDefense.Game
             _isDead = false;
             if (_trainData == null)
             {
-                _skillModule.Initialize(this, null);
+                _skillModule.Initialize(this);
                 return;
             }
 
@@ -157,16 +151,11 @@ namespace TrainDefense.Game
 
             _currentHp = _currentMaxHp;
             _currentLevel = 0;
-            _skillModule.Initialize(this, _trainData, _skillTypeMask);
+            _skillModule.Initialize(this);
         }
 
         public Transform TargetTransform => transform;
         public bool IsActive => !IsDead;
-
-        public virtual Transform GetSkillSpawnPoint(int index)
-        {
-            return transform;
-        }
 
         public void Slow(float slowValue, float duration)
         {
@@ -322,14 +311,6 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 복원 이벤트 재사용
         }
 
-        public virtual bool TryUseSkill() => _skillModule.TryUse();
-
-        public void ApplyTimedStat(StatType type, float percent, float duration)
-            => _skillModule.ApplyTimedStat(type, percent, duration);
-
-        /// <summary>상점 진입 시 활성 시한버프를 즉시 해제하고 액티브 스킬 쿨타임을 초기화한다. (MainTrain.OnInspectionStart에서 호출)</summary>
-        public void ResetSkillStateForInspection() => _skillModule.ResetForInspection();
-
         /// <summary>상점 진입 시 전투 중 바뀐 비주얼(포탑 조준 각도 등)을 기본 상태로 되돌린다. (MainTrain.OnInspectionStart에서 호출)</summary>
         public virtual void ResetVisualForInspection() { }
 
@@ -475,12 +456,9 @@ namespace TrainDefense.Game
         public virtual void ClearAttachedProjectiles() { }
 
         // 마스크에 따른 패시브 적용 규칙 (서브클래스 ApplyPassiveSkills·Detail 표시 공용).
-        // Active 픽 = 패시브 미적용, Passive 픽 = 선택한 1개만, None(일반 스폰) = 전부.
+        // Passive 픽 = 선택한 1개만, None(일반 스폰) = 전부.
         protected bool _IsPassiveApplied(string passiveId)
         {
-            if (_skillTypeMask == TrainChoiceSkillType.Active)
-                return false;
-
             if (_skillTypeMask == TrainChoiceSkillType.Passive)
                 return passiveId == _selectedSkillId;
 
@@ -488,17 +466,10 @@ namespace TrainDefense.Game
         }
 
         // 이 인스턴스에 실제로 적용된 스킬 표시 정보. Detail 팝업이 전체 스킬 대신 이걸 사용한다.
-        public virtual IEnumerable<(bool isActive, string name, string description)> GetAppliedSkillDisplays()
+        public virtual IEnumerable<(string name, string description)> GetAppliedSkillDisplays()
         {
             if (_trainData == null)
                 yield break;
-
-            if (_skillModule.HasActiveSkill)
-            {
-                var active = _trainData.TrainSkillData;
-                if (active != null)
-                    yield return (true, active.Name, active.Description);
-            }
 
             var passives = _trainData.PassiveSkillDatas;
             if (passives == null)
@@ -506,7 +477,7 @@ namespace TrainDefense.Game
 
             foreach (var passive in passives)
                 if (passive != null && _IsPassiveApplied(passive.Id))
-                    yield return (false, passive.Name, passive.Description);
+                    yield return (passive.Name, passive.Description);
         }
 
         public virtual string GetStatSummary() => $"MaxHp={_currentMaxHp}";

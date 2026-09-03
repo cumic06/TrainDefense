@@ -86,24 +86,6 @@ Train_40002_Name	냉기 포탑	Frost Turret	冷気タレット	冰霜炮塔
 Train_40002_Desc	주변 적을 둔화시키고\n피해를 줍니다.	Slows nearby enemies\nand deals damage.	周囲の敵を減速させ、\nダメージを与える。	减速周围的敌人\n并造成伤害。
 Train_41001_Name	엘리트 폭발 포탑	Elite Explosive Turret	エリート爆発タレット	精英爆炸炮塔
 Train_41002_Name	엘리트 냉기 포탑	Elite Frost Turret	エリート冷気タレット	精英冰霜炮塔
-Skill_50001_Name	속사 모드	Rapid Fire	速射モード	速射模式
-Skill_50001_Desc	5초간 공격 간격 50% 감소	Reduces attack interval by 50% for 5 seconds.	5秒間、攻撃間隔を50%減少させる。	5秒内攻击间隔减少50%。
-Skill_50002_Name	화력 집중	Focused Firepower	火力集中	火力集中
-Skill_50002_Desc	6초간 공격력 100% 증가	Increases attack power by 100% for 6 seconds.	6秒間、攻撃力を100%増加させる。	6秒内攻击力提升100%。
-Skill_50003_Name	블리자드	Blizzard	ブリザード	暴风雪
-Skill_50003_Desc	15초 동안 범위가 맵을 뒤덮을 정도로 넓어짐	Range expands to cover the entire map for 15 seconds.	15秒間、範囲がマップ全体を覆うほど広がる。	15秒内范围扩大至覆盖整个地图。
-Skill_50004_Name	즉발 폭발	Instant Explosion	即発爆発	即时爆炸
-Skill_50004_Desc	즉시 주변에 폭발을 일으킨다	Instantly creates an explosion in the surrounding area.	即座に周囲に爆発を引き起こす。	即时在周围引发爆炸。
-Skill_50005_Name	전기 충격	Electric Shock	電気ショック	电击
-Skill_50005_Desc	하늘에서 번개가 떨어져 넓은 원형 범위에 피해를 준다.	Lightning strikes from the sky, dealing damage in a wide circular area.	空から雷が落ちて広い円形範囲にダメージを与える。	天降闪电，对大范围圆形区域造成伤害。
-Skill_50006_Name	폭격 미사일	Missile Bombardment	爆撃ミサイル	轰炸导弹
-Skill_50006_Desc	5초 동안 강력한 포격을 퍼붓습니다.	Unleashes powerful bombardment for 5 seconds.	5秒間、強力な砲撃を浴びせます。	5秒内进行强力炮击。
-Skill_50007_Name	즉발 사격	Instant Shot	即発射撃	即时射击
-Skill_50007_Desc	즉시 강력한 일격을 가한다	Delivers an instant, powerful strike.	即座に強力な一撃を加える。	即时发动强力一击。
-Skill_50008_Name	즉발 폭발	Instant Explosion	即発爆発	即时爆炸
-Skill_50008_Desc	즉시 주변에 폭발을 일으킨다	Instantly creates an explosion in the surrounding area.	即座に周囲に爆発を引き起こす。	即时在周围引发爆炸。
-Skill_50009_Name	광역 탐지	Wide Detection	広域探知	广域探测
-Skill_50009_Desc	15초간 공격 범위 300% 증가	Increases attack range by 300% for 15 seconds.	15秒間、攻撃範囲を300%増加させる。	15秒内攻击范围增加300%。
 Passive_60001_Name	폭발탄	Explosive Shot	爆発弾	爆炸弹
 Passive_60001_Desc	3회 공격마다 폭발 투사체 발사.	Fires an explosive projectile every 3 attacks.	3回攻撃ごとに爆発投射物を発射する。	每3次攻击发射一枚爆炸弹。
 Passive_60002_Name	확장 화염	Wide Flame	範囲炎	范围火焰
@@ -154,9 +136,6 @@ Upgrade_110001_Name	공격력 증가	Attack Power Increase	攻撃力増加	攻�
 Upgrade_110001_Desc	포탑들의 공격력이 {1} 만큼 증가합니다.	Increases turret attack power by {1}.	タレットの攻撃力が{1}増加します。	炮塔攻击力提升{1}。
 Upgrade_110002_Name	공격 딜레이 감소	Attack Delay Decrease	攻撃ディレイ減少	攻击延迟减少
 Upgrade_110002_Desc	포탑들의 공격 딜레이가 {1} 만큼 감소합니다.	Decreases turret attack delay by {1}.	タレットの攻撃ディレイが{1}減少します。	炮塔攻击延迟减少{1}。
-Tutorial_Skill_Title	스킬 튜토리얼	Skill Tutorial	スキルチュートリアル	技能教程
-Tutorial_Skill_Msg1	스킬을 사용해보세요!	Try using a skill!	スキルを使ってみましょう！	试试使用技能吧！
-Tutorial_Skill_Msg2	기차 아이콘을 눌러 스킬을 사용하세요!	Press the train icon to use a skill!	列車アイコンを押してスキルを使用してください！	按列车图标使用技能！
 Tutorial_Inspection_Title	검사 시간 튜토리얼	Inspection Time Tutorial	検査時間チュートリアル	检查时间教程
 Tutorial_Inspection_Msg1	이 게이지는 상점 게이지입니다. 해당 시간이 다 차면 상점에 도착합니다!	This is the shop gauge. When it fills up, you'll arrive at the shop!	これはショップゲージです。ゲージが満タンになるとショップに到着します！	这是商店计量表。充满后即可到达商店！
 Tutorial_Inspection_Msg2	상점에 도달하면 모든 기차의 내구도가 회복합니다!	When you reach the shop, all trains are repaired!	ショップに到達すると、すべての列車の耐久度が回復します！	到达商店后，所有列车的耐久度将恢复！

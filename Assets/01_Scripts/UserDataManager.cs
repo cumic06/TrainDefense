@@ -14,8 +14,6 @@ namespace TrainDefense
         private const string DISCOVERED_MONSTERS_KEY = "DiscoveredMonsters";
         private const string DISCOVERED_TRAINS_KEY = "DiscoveredTrains";
         private const string TUTORIAL_SAVE_KEY = "TutorialSaveData";
-        // 포탑별 최장 생존 시간(초) 저장 키 접두사. 실제 키는 BEST_SURVIVAL_PREFIX + turretId.
-        private const string BEST_SURVIVAL_PREFIX = "BestSurvival_";
 
         private Dictionary<string, int> _triChoiceData = new();
         private TutorialSaveData _tutorialSaveData;
@@ -43,9 +41,6 @@ namespace TrainDefense
         public int ColorblindType => _userOptionData == null ? 0 : _userOptionData.ColorblindType;
         public UserOptionData UserOptionData => _userOptionData;
         public TutorialSaveData TutorialSaveData => _tutorialSaveData;
-
-        // 이번 판 포탑 선택창에서 고른 주무기 포탑 ID. 게임 시작 게이트 → MainTrain 무기 장착 → 생존시간 기록에 사용. (세션값, 영구저장 안 함)
-        public string SelectedTurretId { get; set; }
 
         protected override void Awake()
         {
@@ -305,57 +300,6 @@ namespace TrainDefense
             _discoveredMonsterIds.Clear();
             _discoveredTrainIds.Clear();
         }
-
-        #region Survival Time
-        /// <summary>
-        /// 해당 포탑으로 기록한 최장 생존 시간(초)을 반환합니다. 기록이 없으면 0.
-        /// </summary>
-        public float GetBestSurvivalTime(string turretId)
-        {
-            if (string.IsNullOrEmpty(turretId))
-                return 0f;
-
-            return PlayerPrefs.GetFloat(BEST_SURVIVAL_PREFIX + turretId, 0f);
-        }
-
-        /// <summary>
-        /// 이번 판 생존 시간을 보고합니다. 기존 기록보다 길 때만 갱신·저장합니다.
-        /// </summary>
-        public void ReportSurvivalTime(string turretId, float seconds)
-        {
-            if (string.IsNullOrEmpty(turretId) || seconds <= 0f)
-                return;
-
-            if (seconds <= GetBestSurvivalTime(turretId))
-                return;
-
-            PlayerPrefs.SetFloat(BEST_SURVIVAL_PREFIX + turretId, seconds);
-            PlayerPrefs.Save();
-        }
-
-        /// <summary>
-        /// 모든 포탑(터렛·원거리)의 최장 생존 시간 기록을 삭제합니다.
-        /// </summary>
-        public void ResetAllSurvivalTimes()
-        {
-            if (DatabaseManager.Instance == null)
-                return;
-
-            foreach (var data in DatabaseManager.Instance.GetTurretTrainDatas())
-            {
-                if (data != null && !string.IsNullOrEmpty(data.Id))
-                    PlayerPrefs.DeleteKey(BEST_SURVIVAL_PREFIX + data.Id);
-            }
-
-            foreach (var data in DatabaseManager.Instance.GetRangeTrainDatas())
-            {
-                if (data != null && !string.IsNullOrEmpty(data.Id))
-                    PlayerPrefs.DeleteKey(BEST_SURVIVAL_PREFIX + data.Id);
-            }
-
-            PlayerPrefs.Save();
-        }
-        #endregion
 
         #region Reset
         /// <summary>

@@ -196,7 +196,7 @@ namespace TrainDefense.Game.Manager
                 return;
 
             _gameStartTime = Time.unscaledTime;
-            _Log("game_start", ("turret_id", _SelectedTurretId()));
+            _Log("game_start");
         }
 
         private void _OnGameOver(GameOverStartEvent gameOverStartEvent)
@@ -314,13 +314,6 @@ namespace TrainDefense.Game.Manager
 
         private int _Coin()
             => UserDataManager.Instance != null ? UserDataManager.Instance.Coin : 0;
-
-        private string _SelectedTurretId()
-        {
-            string id = UserDataManager.Instance != null ? UserDataManager.Instance.SelectedTurretId : null;
-
-            return string.IsNullOrEmpty(id) ? "none" : id;
-        }
 
         private string _ChoiceType(IChoiceOption option)
         {

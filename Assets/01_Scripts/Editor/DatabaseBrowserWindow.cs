@@ -38,7 +38,6 @@ namespace TrainDefense.Editor
             }),
             ("기차 스킬", new[]
             {
-                ("액티브", "trainSkillDataDB.trainActiveSkillDataList"),
                 ("패시브", "trainSkillDataDB.trainPassiveSkillDataList"),
             }),
             ("업그레이드", new[]

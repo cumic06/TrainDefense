@@ -150,7 +150,6 @@ namespace TrainDefense.Game.UI.Collection
         {
             return skill switch
             {
-                TrainSkillData active => active.Name,
                 TrainPassiveSkillData passive => passive.Name,
                 _ => string.Empty,
             };
@@ -160,7 +159,6 @@ namespace TrainDefense.Game.UI.Collection
         {
             return skill switch
             {
-                TrainSkillData active => active.Description,
                 TrainPassiveSkillData passive => passive.Description,
                 _ => string.Empty,
             };

@@ -107,14 +107,6 @@ namespace TrainDefense.Game
                     candidates.Add(new ChoiceEntry { Option = choice, Weight = 1, Tier = 0 });
             }
 
-            // 긴급 수리 카드는 레벨업 풀 상시 후보(사용자 결정 2026-07-21).
-            // 노출 여부는 IsValid(수리 대상 존재)가, 등장 확률은 DB rewardChoices의 Weight가 결정한다.
-            foreach (var rewardEntry in _GetRewardChoices())
-            {
-                if (rewardEntry.Option is EmergencyRepairChoice)
-                    candidates.Add(rewardEntry);
-            }
-
             for (int i = 0; i < count; i++)
             {
                 if (!_AddChoiceToResult(result, candidates))

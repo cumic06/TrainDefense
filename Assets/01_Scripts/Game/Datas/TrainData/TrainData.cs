@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
@@ -30,18 +29,11 @@ namespace TrainDefense.Game.Datas
         private string prefabId;
         private GameObject prefab;
         [SerializeField]
-        private string[] activeSkillDataIds;
-        [NonSerialized]
-        private TrainSkillData[] activeSkillDatasCache;
-        [NonSerialized]
-        private bool activeSkillDatasResolved;
-        [SerializeField]
         private string[] passiveSkillDataIds;
         [NonSerialized]
         private TrainPassiveSkillData[] passiveSkillDatasCache;
         [NonSerialized]
         private bool passiveSkillDatasResolved;
-        private Sprite skillIcon;
         [SerializeField]
         private bool isMainTrain;
         #endregion
@@ -85,40 +77,7 @@ namespace TrainDefense.Game.Datas
         public DamageType DamageType => damageType;
         public SoundType AttackSoundType => attackSoundType;
         public TrainStatusData TrainStatusData => trainStatusData;
-        public string ActiveSkillDataId => activeSkillDataIds != null && activeSkillDataIds.Length > 0 ? activeSkillDataIds[0] : null;
-        public string[] ActiveSkillDataIds => activeSkillDataIds;
         public string[] PassiveSkillDataIds => passiveSkillDataIds;
-        public TrainSkillData TrainSkillData => TrainSkillDatas.Length > 0 ? TrainSkillDatas[0] : null;
-        public TrainSkillData[] TrainSkillDatas
-        {
-            get
-            {
-                if (activeSkillDatasResolved) return activeSkillDatasCache;
-                activeSkillDatasResolved = true;
-                if (activeSkillDataIds == null || activeSkillDataIds.Length == 0)
-                {
-                    activeSkillDatasCache = System.Array.Empty<TrainSkillData>();
-                    return activeSkillDatasCache;
-                }
-                var dbm = TrainDefense.Game.DatabaseManager.Instance;
-                var db = dbm != null ? dbm.GetDB() : null;
-                if (db == null || db.TrainSkillDataDB == null)
-                {
-                    activeSkillDatasCache = System.Array.Empty<TrainSkillData>();
-                    return activeSkillDatasCache;
-                }
-                var result = new System.Collections.Generic.List<TrainSkillData>();
-                foreach (var skillId in activeSkillDataIds)
-                {
-                    if (string.IsNullOrEmpty(skillId)) continue;
-                    var data = db.TrainSkillDataDB.trainActiveSkillDataList.Find(s => s != null && s.Id == skillId);
-                    if (data != null) result.Add(data);
-                    else Debug.LogWarning($"TrainData [{id}]: ActiveSkillData '{skillId}' not found in DB");
-                }
-                activeSkillDatasCache = result.ToArray();
-                return activeSkillDatasCache;
-            }
-        }
 
         public TrainPassiveSkillData[] PassiveSkillDatas
         {
@@ -150,24 +109,6 @@ namespace TrainDefense.Game.Datas
             }
         }
         public TrainPassiveSkillData PassiveSkillData => PassiveSkillDatas.Length > 0 ? PassiveSkillDatas[0] : null;
-        public Sprite SkillIcon
-        {
-            get
-            {
-                var skillIconId = TrainSkillData?.SkillIconId;
-                if (skillIcon == null && !string.IsNullOrEmpty(skillIconId))
-                {
-                    skillIcon = Resources.LoadAll<Sprite>("")
-                                    .FirstOrDefault(item => item.name == skillIconId);
-
-                    if (skillIcon == null)
-                    {
-                        Debug.LogWarning($"TrainData [{id}]: SkillIcon not found for '{skillIconId}'");
-                    }
-                }
-                return skillIcon;
-            }
-        }
 
         [Obsolete("Use Prefab property instead")]
         public Train TrainPrefab => Prefab?.GetComponent<Train>();
