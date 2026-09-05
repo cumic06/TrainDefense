@@ -76,7 +76,6 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
             GameEventSystem.Subscribe<StatUpgradeSelectEvent>(_OnStatUpgradeSelect);
             GameEventSystem.Subscribe<ShopOfferPurchasedEvent>(_OnShopOfferPurchased);
-            GameEventSystem.Subscribe<TrainRepairedEvent>(_OnTrainRepaired);
             GameEventSystem.Subscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
             GameEventSystem.Subscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Subscribe<TutorialStartEvent>(_OnTutorialStart);
@@ -94,7 +93,6 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
             GameEventSystem.Unsubscribe<StatUpgradeSelectEvent>(_OnStatUpgradeSelect);
             GameEventSystem.Unsubscribe<ShopOfferPurchasedEvent>(_OnShopOfferPurchased);
-            GameEventSystem.Unsubscribe<TrainRepairedEvent>(_OnTrainRepaired);
             GameEventSystem.Unsubscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
             GameEventSystem.Unsubscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Unsubscribe<TutorialStartEvent>(_OnTutorialStart);
@@ -261,15 +259,6 @@ namespace TrainDefense.Game.Manager
                 ("offer_id", shopOfferPurchasedEvent.Option != null ? shopOfferPurchasedEvent.Option.Id : "none"),
                 ("offer_type", _ChoiceType(shopOfferPurchasedEvent.Option)),
                 ("cost", shopOfferPurchasedEvent.Cost),
-                ("stage", _CurrentStage()),
-                ("play_time_sec", _PlayTimeSec()));
-        }
-
-        private void _OnTrainRepaired(TrainRepairedEvent trainRepairedEvent)
-        {
-            _Log("train_repair",
-                ("cost", trainRepairedEvent.Cost),
-                ("total_station_passed", trainRepairedEvent.StationCount),
                 ("stage", _CurrentStage()),
                 ("play_time_sec", _PlayTimeSec()));
         }
