@@ -33,9 +33,12 @@ namespace TrainDefense.Game.Controller
             _WrapTilesAroundCamera();
         }
 
-        private void FixedUpdate()
+        // 배경은 물리와 무관한 순수 비주얼이라 렌더 프레임마다 옮긴다.
+        // FixedUpdate(50Hz)로 옮기면 렌더 프레임(60Hz+)과 박자가 어긋나 이동량이 0/한 틱으로 들쭉날쭉해져
+        // 속도가 빠를수록 배경이 드르륵 떨리고, 그 위에 가만히 있는 기차가 떨려 보인다.
+        private void Update()
         {
-            transform.Translate(Vector3.left * Time.fixedDeltaTime * speed);
+            transform.Translate(Vector3.left * Time.deltaTime * speed);
         }
 
         private void LateUpdate()

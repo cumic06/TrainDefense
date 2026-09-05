@@ -32,6 +32,11 @@ namespace TrainDefense
         [SerializeField]
         [Tooltip("상점 퇴장 시 기차가 화면 왼쪽 밖에서 정위치(중앙)로 슬라이드 인하는 시간(클수록 천천히 중앙으로 들어옴)")]
         private float shopExitSlideOutDuration = 2.5f;
+
+        [Header("등장 연출 타이밍")]
+        [SerializeField]
+        [Tooltip("게임 시작 기차 등장 타임라인(LoadingTimeline, 3초)의 재생 배속. 2면 절반, 1.2면 약 2.5초")]
+        private float entranceTimelineSpeed = 1.2f;
         #endregion
 
         #region LifeCycle
@@ -58,6 +63,10 @@ namespace TrainDefense
             // (타임라인이 Lens.OrthographicSize를 직접 키잉하면 연출 후 씬 카메라 크기 설정이 무시된 채 키값에 고정됨)
             GameEventSystem.Publish(new TrainEntranceStartEvent());
             _Play(playableDirector, onComplete);
+
+            // 등장 타임라인만 배속한다. 그래프는 Play() 직후 만들어지므로 여기서 잡을 수 있다.
+            if (entranceTimelineSpeed > 0f && playableDirector.playableGraph.IsValid() && playableDirector.playableGraph.GetRootPlayableCount() > 0)
+                playableDirector.playableGraph.GetRootPlayable(0).SetSpeed(entranceTimelineSpeed);
         }
 
         /// <summary>
