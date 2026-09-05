@@ -223,7 +223,12 @@ namespace TrainDefense.Game
             // 타겟 위치 이동 타입의 경우 충돌 없이 타겟 위치에 도달했을 때 처리
             if (_movementStrategy.ShouldImpact(this))
             {
-                ProcessTargetPosImpact();
+                // 쏘아 보내는 포탄(DetonateAtTargetDistance)은 목표 지점에서 그대로 터진다.
+                // 데미지는 폭발(TriggerHandle)이 처리하므로 반경 1 즉시 판정은 쓰지 않는다.
+                if (data.DetonateAtTargetDistance)
+                    ReturnToPool();
+                else
+                    ProcessTargetPosImpact();
             }
         }
 
@@ -460,6 +465,17 @@ namespace TrainDefense.Game
         {
             _scale = scale;
             transform.localScale = _baseScale * scale;
+        }
+
+        /// <summary>
+        /// 곡사 포탄이 떠 있는 높이를 그림으로만 표현한다. 루트(=충돌 판정)는 지면 직선 위에 그대로 두고
+        /// model만 화면 위로 올리므로 명중 판정과 착탄 지점은 변하지 않는다.
+        /// 루트가 목표 방향으로 회전해 있어 로컬 축이 방향마다 달라지므로 월드 좌표로 올린다.
+        /// </summary>
+        public void SetLobHeight(float height)
+        {
+            if (model == null) return;
+            model.transform.position = transform.position + Vector3.up * height;
         }
 
         // Init 이후 데미지에 배율을 곱한다. (오버라이드 투사체 전용 강화 — 크리 계산도 곱해진 값 기준)

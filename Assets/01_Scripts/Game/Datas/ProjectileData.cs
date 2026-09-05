@@ -51,6 +51,25 @@ namespace TrainDefense.Game
         [SerializeField]
         private bool isTargeting = false;
 
+        [BoxGroup("Targeting")]
+        [SerializeField]
+        [LabelText("발사 지점에서 목표까지만 날아가고 그 자리에서 터짐 (Linear 전용)")]
+        private bool detonateAtTargetDistance = false;
+
+        [BoxGroup("Targeting")]
+        [ShowIf("detonateAtTargetDistance")]
+        [SerializeField]
+        [LabelText("비행 시간 고정(초). 0이면 speed를 그대로 쓴다")]
+        [Tooltip("거리에 상관없이 늘 같은 시간에 도달하게 한다. 가까운 적에게 순식간에 꽂히는 느낌을 없앤다.")]
+        private float fixedFlightDuration = 0f;
+
+        [BoxGroup("Targeting")]
+        [ShowIf("detonateAtTargetDistance")]
+        [SerializeField]
+        [LabelText("곡사 최고 높이. 0이면 평평하게 날아감")]
+        [Tooltip("비행 중간에 이만큼 화면 위로 떠올랐다 착탄 지점에서 0으로 내려온다. 그림만 띄우는 것이라 충돌 판정은 직선 그대로.")]
+        private float lobPeakHeight = 0f;
+
         [BoxGroup("Visual")]
         [SerializeField]
         [LabelText("모델 회전 여부 (false면 발사 방향 무관 직립 유지)")]
@@ -149,6 +168,9 @@ namespace TrainDefense.Game
         public bool ScaleByArea => scaleByRange;
         public ScaleByRangeType ScaleRangeType => scaleRangeType;
         public bool IsTargeting => isTargeting;
+        public bool DetonateAtTargetDistance => detonateAtTargetDistance;
+        public float FixedFlightDuration => fixedFlightDuration;
+        public float LobPeakHeight => lobPeakHeight;
         public bool IsRotateModel => isRotateModel;
         public DamageType DamageType => damageType;
         public float TickDamageInterval => tickDamageInterval;

@@ -560,7 +560,7 @@ MonoBehaviour:
       CriticalChance: 0
       CriticalDamage: 0
       BurstDuration: 0
-    turretProjectilePrefabId: CannonProjectile
+    turretProjectilePrefabId: CannonShellProjectile
     attackDamageMultiplier: 1
   - id: 30007
     name: Train_30007_Name
@@ -737,7 +737,7 @@ MonoBehaviour:
       CriticalChance: 0
       CriticalDamage: 0
       BurstDuration: 0
-    turretProjectilePrefabId: CannonProjectile
+    turretProjectilePrefabId: CannonShellProjectile
     attackDamageMultiplier: 1
   - id: 31007
     name: Train_31007_Name
@@ -975,15 +975,15 @@ MonoBehaviour:
     spawnDatas:
     - MonsterId: 10001
       Probability: 6
-      SpawnLevel: 1
+      SpawnLevel: 0
       EliteChanceMultiplier: 1
     - MonsterId: 10002
       Probability: 3
-      SpawnLevel: 6
+      SpawnLevel: 5
       EliteChanceMultiplier: 1
     - MonsterId: 10003
       Probability: 1
-      SpawnLevel: 10
+      SpawnLevel: 9
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1001,15 +1001,15 @@ MonoBehaviour:
     spawnDatas:
     - MonsterId: 10004
       Probability: 6
-      SpawnLevel: 1
+      SpawnLevel: 0
       EliteChanceMultiplier: 1
     - MonsterId: 10005
       Probability: 3
-      SpawnLevel: 6
+      SpawnLevel: 5
       EliteChanceMultiplier: 1
     - MonsterId: 10006
       Probability: 1
-      SpawnLevel: 10
+      SpawnLevel: 9
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1031,19 +1031,19 @@ MonoBehaviour:
     spawnDatas:
     - MonsterId: 10007
       Probability: 6
-      SpawnLevel: 1
+      SpawnLevel: 0
       EliteChanceMultiplier: 1
     - MonsterId: 10008
       Probability: 3
-      SpawnLevel: 6
+      SpawnLevel: 5
       EliteChanceMultiplier: 1
     - MonsterId: 10009
       Probability: 1
-      SpawnLevel: 10
+      SpawnLevel: 9
       EliteChanceMultiplier: 1
     - MonsterId: 10010
       Probability: 0.5
-      SpawnLevel: 15
+      SpawnLevel: 14
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1061,15 +1061,15 @@ MonoBehaviour:
     spawnDatas:
     - MonsterId: 10011
       Probability: 6
-      SpawnLevel: 1
+      SpawnLevel: 0
       EliteChanceMultiplier: 1
     - MonsterId: 10012
       Probability: 3
-      SpawnLevel: 6
+      SpawnLevel: 5
       EliteChanceMultiplier: 1
     - MonsterId: 10013
       Probability: 1
-      SpawnLevel: 10
+      SpawnLevel: 9
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1087,15 +1087,15 @@ MonoBehaviour:
     spawnDatas:
     - MonsterId: 10014
       Probability: 6
-      SpawnLevel: 1
+      SpawnLevel: 0
       EliteChanceMultiplier: 1
     - MonsterId: 10015
       Probability: 3
-      SpawnLevel: 6
+      SpawnLevel: 5
       EliteChanceMultiplier: 1
     - MonsterId: 10016
       Probability: 1
-      SpawnLevel: 10
+      SpawnLevel: 9
       EliteChanceMultiplier: 1
     mapData:
       id: 

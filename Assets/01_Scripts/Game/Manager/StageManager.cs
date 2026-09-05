@@ -162,7 +162,9 @@ namespace TrainDefense.Game.Manager
             var filteredList = new List<StageSpawnData>();
 
             // 몬스터 해금 기준 = 누적 역 도착 수. 역 도착이 곧 성장(상점·강화) 시점이 되면서
-            // 유저 레벨보다 진행도를 잘 나타내게 됐다. SpawnLevel 값은 그대로 역 도착 횟수로 읽는다.
+            // 유저 레벨보다 진행도를 잘 나타내게 됐다.
+            // SpawnLevel은 필요한 역 도착 수를 그대로 적는다(0 = 판 시작부터). 유저 레벨(1부터)을
+            // 쓰던 시절 값을 그대로 두는 바람에 0회차에 아무것도 안 나오던 것을 09-03에 0 기준으로 재매김.
             int progressCount = _totalInspectionPassedCount;
 
             foreach (var data in allSpawnDatas)
