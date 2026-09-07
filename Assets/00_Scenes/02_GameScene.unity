@@ -170,6 +170,7 @@ MonoBehaviour:
   screenFade: {fileID: 916000018}
   shopEnterSlideInDuration: 2
   shopExitSlideOutDuration: 1.5
+  entranceTimelineSpeed: 1.2
 --- !u!1 &47782937
 GameObject:
   m_ObjectHideFlags: 0
@@ -5019,6 +5020,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 214686401}
     m_Modifications:
     - target: {fileID: 3478269449431848385, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
+      propertyPath: panelOvershoot
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3478269449431848385, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
+      propertyPath: shopMoveInterval
+      value: 0.55
+      objectReference: {fileID: 0}
+    - target: {fileID: 3478269449431848385, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
       propertyPath: rerollCostFontScale
       value: 0.68
       objectReference: {fileID: 0}
@@ -5138,13 +5147,13 @@ PrefabInstance:
       propertyPath: m_Colors.m_DisabledColor.r
       value: 0.5882353
       objectReference: {fileID: 0}
-    - target: {fileID: 7710000000000000042, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 7710000000000000045, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
       propertyPath: previewZoomRatio
       value: 0.36
+      objectReference: {fileID: 0}
+    - target: {fileID: 7757395149280584090, guid: 4b7cacb1fe8a04e4d968d5fa8a5c1341, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

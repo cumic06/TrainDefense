@@ -49,6 +49,17 @@ namespace TrainDefense.Game.UI
             _Hide();
         }
 
+        /// <summary>
+        /// 상점이 배경을 켠 직후 ShopUI가 직접 부른다.
+        /// ★ 이 오브젝트는 상점 배경(Img_Background)의 자식이라 상점이 닫혀 있는 동안 비활성이고,
+        ///   비활성 오브젝트는 Awake·OnEnable이 실행되지 않아 InspectionStartEvent를 놓친다.
+        ///   (이벤트 구독으로는 첫 표시를 보장할 수 없어 진입 경로를 하나 더 둔다)
+        /// </summary>
+        public void ShowNow()
+        {
+            _Show();
+        }
+
         private void OnDestroy()
         {
             if (_previewCamera != null)

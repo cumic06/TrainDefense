@@ -17,11 +17,17 @@ namespace TrainDefense.Game.UI
     {
         #region Fields
         [SerializeField]
-        private float shopMoveXStartPos = -100;
+        [Tooltip("상점 패널이 내려오기 시작하는 y. 참조 해상도가 1080이라 1200이면 화면 위 완전히 밖")]
+        private float shopMoveStartPosY = 1200f;
         [SerializeField]
-        private float shopMoveXEndPos;
+        [Tooltip("상점 패널이 멈추는 y(제자리)")]
+        private float shopMoveEndPosY;
         [SerializeField]
         private float shopMoveInterval = 1f;
+        [SerializeField]
+        [Tooltip("상점 패널이 멈출 때 살짝 넘쳤다 돌아오는 정도. 1.1은 2200px 이동에서 61px(11ms)이라 눈에 안 보였다")]
+        private float panelOvershoot = 4f;
+
         [SerializeField]
         private Image backgroundImage;
         [SerializeField]
@@ -39,6 +45,9 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         [Tooltip("버튼이 순차적으로 등장하는 간격(초)")]
         private float itemDropStagger = 0.07f;
+        [SerializeField]
+        [Tooltip("상점 배경과 코인 표시가 서서히 나타나고 사라지는 시간(초)")]
+        private float uiFadeDuration = 0.25f;
 
         [Header("Offer Slots")]
         [SerializeField]
@@ -78,6 +87,10 @@ namespace TrainDefense.Game.UI
         #endregion
 
         private RectTransform _rectTransform;
+        private CanvasGroup _coinGroup;
+        private CanvasGroup _backgroundGroup;
+        private CanvasGroup _panelGroup;
+        private ShopTrainPreviewUI _trainPreview;
         private GridLayoutGroup _itemGrid;
         private RectTransform _itemGridRect;
         private RectTransform[] _itemRects;
@@ -170,8 +183,9 @@ namespace TrainDefense.Game.UI
         {
             if (isShopOpen)
             {
+                // 시작 버튼을 여기서 끄면 _CloseShop이 async void라 첫 await에 바로 돌아와,
+                // 패널이 미끄러지기 시작하는 프레임에 버튼만 사라진다. 끄는 것은 _CloseShop이 한다.
                 _CloseShop();
-                shopButtonUI.gameObject.SetActive(false);
             }
             else
             {
@@ -188,7 +202,7 @@ namespace TrainDefense.Game.UI
 
             gameObject.SetActive(true);
 
-            if (groupCoin != null) groupCoin.SetActive(true);
+            _SetCoinGroupVisible(true);
 
             if (_rectTransform == null)
             {
@@ -198,13 +212,22 @@ namespace TrainDefense.Game.UI
             // 슬라이드인 동안 버튼이 제자리에 보이지 않도록 미리 숨겨둠
             _PrepareItemsHidden();
 
-            // 1) 기존 상점 패널 슬라이드인 연출 먼저
-            await _rectTransform.DOAnchorPosX(shopMoveXEndPos, shopMoveInterval).SetUpdate(true);
+            // 1) 테이블·선로·기차를 먼저 깔고, 그 위로 상점 패널(카드)이 내려온다
+            _SetBackgroundVisible(true, uiFadeDuration);
 
-            if (backgroundImage != null)
-            {
-                backgroundImage.gameObject.SetActive(true);
-            }
+            // 기차는 배경 자식이라 배경이 꺼져 있는 동안 비활성이고, 그 상태에서는 OnEnable이 안 돌아
+            // InspectionStartEvent를 놓친다. 배경을 켠 지금 직접 표시를 요청한다.
+            _GetTrainPreview()?.ShowNow();
+
+            // 닫을 때는 제자리에서 옅어지기만 하므로, 내려올 위치는 열 때 직접 세운다.
+            _SetPanelVisible(true, 0f);
+            _rectTransform.anchoredPosition = new Vector2(_rectTransform.anchoredPosition.x, shopMoveStartPosY);
+
+            // 끝에서 살짝 넘쳤다 돌아오게 해서 '슉' 미끄러지는 느낌을 없앤다.
+            // 패널이 커서 기본 overshoot(1.7)은 과하므로 낮춰 쓴다.
+            await _rectTransform.DOAnchorPosY(shopMoveEndPosY, shopMoveInterval)
+                .SetEase(Ease.OutBack, panelOvershoot)
+                .SetUpdate(true);
 
             // 2) 패널이 자리잡은 뒤 버튼들을 위에서 순차적으로 떨어뜨림
             _PlayItemsDropIn();
@@ -276,6 +299,119 @@ namespace TrainDefense.Game.UI
             }
         }
 
+        /// <summary>
+        /// 상점 패널(카드·버튼)을 통째로 옅게 하거나 되돌린다. duration이 0이면 즉시 적용한다.
+        /// </summary>
+        private void _SetPanelVisible(bool visible, float duration)
+        {
+            if (_panelGroup == null)
+            {
+                _panelGroup = GetComponent<CanvasGroup>();
+                if (_panelGroup == null)
+                {
+                    _panelGroup = gameObject.AddComponent<CanvasGroup>();
+                }
+            }
+
+            _panelGroup.DOKill();
+
+            // 나갈 때 제자리에서 옅어지기만 하므로 패널은 안 보일 때도 화면 위에 그대로 있다.
+            // 알파만 내리면 보이지 않는 버튼이 클릭을 먹으므로 입력도 같이 끊는다.
+            _panelGroup.interactable = visible;
+            _panelGroup.blocksRaycasts = visible;
+
+            if (duration <= 0f)
+            {
+                _panelGroup.alpha = visible ? 1f : 0f;
+                return;
+            }
+
+            _panelGroup.DOFade(visible ? 1f : 0f, duration).SetUpdate(true);
+        }
+
+        /// <summary>
+        /// 상점 배경을 서서히 띄우거나 지운다.
+        /// ★ Image.DOFade가 아니라 CanvasGroup을 쓰는 이유: 배경 아래 선로·기차가 자식이라
+        ///   Image 색만 바꾸면 배경만 옅어지고 선로가 어두운 화면에 그대로 남는다.
+        /// </summary>
+        private void _SetBackgroundVisible(bool visible, float duration)
+        {
+            if (backgroundImage == null)
+            {
+                return;
+            }
+
+            if (_backgroundGroup == null)
+            {
+                _backgroundGroup = backgroundImage.GetComponent<CanvasGroup>();
+                if (_backgroundGroup == null)
+                {
+                    _backgroundGroup = backgroundImage.gameObject.AddComponent<CanvasGroup>();
+                }
+            }
+
+            _backgroundGroup.DOKill();
+
+            if (visible)
+            {
+                backgroundImage.gameObject.SetActive(true);
+                _backgroundGroup.alpha = 0f;
+                _backgroundGroup.DOFade(1f, duration).SetUpdate(true);
+            }
+            else
+            {
+                _backgroundGroup.DOFade(0f, duration).SetUpdate(true)
+                    .OnComplete(() => backgroundImage.gameObject.SetActive(false));
+            }
+        }
+
+        /// <summary>
+        /// 배경(선로) 아래에 있는 기차 프리뷰를 찾아 캐시한다. 없으면 null.
+        /// </summary>
+        private ShopTrainPreviewUI _GetTrainPreview()
+        {
+            if (_trainPreview == null && backgroundImage != null)
+            {
+                _trainPreview = backgroundImage.GetComponentInChildren<ShopTrainPreviewUI>(true);
+            }
+
+            return _trainPreview;
+        }
+
+        /// <summary>
+        /// 코인 표시를 서서히 띄우거나 지운다. CanvasGroup이 없으면 붙여서 쓴다.
+        /// </summary>
+        private void _SetCoinGroupVisible(bool visible)
+        {
+            if (groupCoin == null)
+            {
+                return;
+            }
+
+            if (_coinGroup == null)
+            {
+                _coinGroup = groupCoin.GetComponent<CanvasGroup>();
+                if (_coinGroup == null)
+                {
+                    _coinGroup = groupCoin.AddComponent<CanvasGroup>();
+                }
+            }
+
+            _coinGroup.DOKill();
+
+            if (visible)
+            {
+                groupCoin.SetActive(true);
+                _coinGroup.alpha = 0f;
+                _coinGroup.DOFade(1f, uiFadeDuration).SetUpdate(true);
+            }
+            else
+            {
+                _coinGroup.DOFade(0f, uiFadeDuration).SetUpdate(true)
+                    .OnComplete(() => groupCoin.SetActive(false));
+            }
+        }
+
         private async void _CloseShop()
         {
             if (!isShopOpen)
@@ -283,16 +419,16 @@ namespace TrainDefense.Game.UI
                 return;
             }
 
-            await _rectTransform.DOAnchorPosX(shopMoveXStartPos, shopMoveInterval).SetUpdate(true);
-
-            if (backgroundImage != null)
-            {
-                backgroundImage.gameObject.SetActive(false);
-            }
-
             isShopOpen = false;
 
-            if (groupCoin != null) groupCoin.SetActive(false);
+            // 나갈 때는 움직이지 않고 패널·배경이 제자리에서 함께 옅어진다.
+            // (버튼은 패널 자식이라 같이 사라지므로, 끄는 것은 다 옅어진 뒤에 한다)
+            _SetPanelVisible(false, uiFadeDuration);
+            _SetBackgroundVisible(false, uiFadeDuration);
+            await UniTask.Delay(Mathf.RoundToInt(uiFadeDuration * 1000f), DelayType.UnscaledDeltaTime);
+
+            shopButtonUI.gameObject.SetActive(false);
+            _SetCoinGroupVisible(false);
 
             // 스테이지 선택용 상점이라면 전투로 복귀하지 않고 스테이지 선택 UI로 전환되어야 하므로
             // InspectionEndEvent 발행 전에 대기 여부를 먼저 확인한다.
