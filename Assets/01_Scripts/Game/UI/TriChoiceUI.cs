@@ -189,7 +189,9 @@ namespace TrainDefense.Game.UI
       public void OnInspectionEnter(int count, bool showLevelUpText = true)
       {
          backgroundImage.SetActive(true);
-         _ShowCoinUI(true);
+
+         // 삼중택일에서는 코인을 쓸 수 없으므로 보유량을 띄우지 않는다(상점에서만 표시).
+         _ShowCoinUI(false);
 
          int requestId = ++_popupRequestId;
          _OnChoiceUIPopup(count, requestId, showLevelUpText).Forget();
