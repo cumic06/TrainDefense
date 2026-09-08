@@ -6,6 +6,7 @@ using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.SkillTree;
 using TrainDefense.Game.Stats;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game
 {
@@ -132,6 +133,31 @@ namespace TrainDefense.Game
         /// <summary>현재 포인트로 습득 가능한 노드가 하나라도 있는지. (레드닷 판정용)</summary>
         public bool HasAcquirableNode()
             => _EnsureCore() && _core.HasAcquirableNode(_skillPoint);
+
+        /// <summary>레인(계열) 표시 이름 — DB의 skillTreeLaneDataList에서 조회, 미등록 레인은 기본 키 폴백.</summary>
+        public string GetLaneName(SkillTreeLane lane)
+        {
+            if (DatabaseManager.Instance != null)
+            {
+                IReadOnlyList<SkillTreeLaneData> laneDatas = DatabaseManager.Instance.GetSkillTreeLaneDatas();
+                if (laneDatas != null)
+                {
+                    foreach (var laneData in laneDatas)
+                    {
+                        if (laneData != null && laneData.Lane == lane)
+                            return laneData.Name;
+                    }
+                }
+            }
+
+            return lane switch
+            {
+                SkillTreeLane.Firepower => LocalizeHelper.GetByKey("UI_SkillTree_Lane_Fire", "화력"),
+                SkillTreeLane.Defense => LocalizeHelper.GetByKey("UI_SkillTree_Lane_Defense", "방어"),
+                SkillTreeLane.Utility => LocalizeHelper.GetByKey("UI_SkillTree_Lane_Utility", "유틸"),
+                _ => lane.ToString(),
+            };
+        }
 
         /// <summary>
         /// 해당 포탑이 삼중택일에 등장 가능한지 (TurretUnlock 게이트).

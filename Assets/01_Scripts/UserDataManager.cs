@@ -440,6 +440,49 @@ namespace TrainDefense
             return _upgradeLevels.Keys;
         }
 
+        #region Run Save
+        /// <summary>런 세이브용 — 삼중택일 선택 횟수 스냅샷.</summary>
+        public IReadOnlyDictionary<string, int> GetTriChoiceCounts() => _triChoiceData;
+
+        /// <summary>런 세이브용 — 상점 업그레이드 레벨 스냅샷.</summary>
+        public IReadOnlyDictionary<string, int> GetUpgradeLevels() => _upgradeLevels;
+
+        /// <summary>
+        /// 이어하기 복원 — 한 판치 진행도를 저장 당시 값으로 되돌린다.
+        /// GameEnterEvent가 모두 처리돼 값이 0으로 리셋된 뒤에 호출되는 것을 전제로 한다.
+        /// </summary>
+        public void RestoreRunState(
+            int coin,
+            int currentExp,
+            int currentLevel,
+            Dictionary<string, int> triChoiceCounts,
+            Dictionary<string, int> upgradeLevels)
+        {
+            int beforeCoin = _coin;
+            _coin = coin;
+            _currentExp = currentExp;
+            _currentLevel = Mathf.Max(1, currentLevel);
+
+
+            _triChoiceData.Clear();
+            if (triChoiceCounts != null)
+            {
+                foreach (var pair in triChoiceCounts)
+                    _triChoiceData[pair.Key] = pair.Value;
+            }
+
+            _upgradeLevels.Clear();
+            if (upgradeLevels != null)
+            {
+                foreach (var pair in upgradeLevels)
+                    _upgradeLevels[pair.Key] = pair.Value;
+            }
+
+            // 코인 HUD는 이벤트로만 갱신되므로 복원값으로 한 번 흘려준다. (차감이 아니라 표시 동기화)
+            GameEventSystem.Publish(new ChangeCoinUIEvent(beforeCoin, _coin));
+        }
+        #endregion
+
         private const float BASE_EXP = 203f;
         private const float expPower = 1.6f;
 

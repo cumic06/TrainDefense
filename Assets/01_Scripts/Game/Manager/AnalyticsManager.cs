@@ -194,7 +194,9 @@ namespace TrainDefense.Game.Manager
                 return;
 
             _gameStartTime = Time.unscaledTime;
-            _Log("game_start");
+            // 이어하기로 재개한 판은 새로 시작한 판이 아니다. 판 수 지표가 부풀지 않도록 구분해서 남긴다.
+            bool isContinue = RunSave.RunSaveManager.Instance != null && RunSave.RunSaveManager.Instance.IsContinuePending;
+            _Log("game_start", ("is_continue", isContinue ? 1 : 0));
         }
 
         private void _OnGameOver(GameOverStartEvent gameOverStartEvent)

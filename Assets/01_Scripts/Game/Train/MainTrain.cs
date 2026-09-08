@@ -223,6 +223,8 @@ namespace TrainDefense.Game
          if (upgradeTrain != null)
          {
             upgradeTrain.Upgrade(upgradeData);
+            // 런 세이브 복원용 이력. 레벨 숫자만으로는 어떤 업그레이드였는지 되돌릴 수 없다.
+            _RecordUpgradeHistory(upgradeTrain, upgradeData);
             GameEventSystem.Publish(new UpgradeTrainEvent(upgradeTrain, upgradeData));
          }
       }
@@ -285,6 +287,9 @@ namespace TrainDefense.Game
          // CopyProgressFrom의 delta가 영구 + 카드를 모두 옮긴다. 둘 다 호출하면 영구분이 중복 적용된다.
          newTrain.CopyProgressFrom(oldTrain);
          newTrain.ApplyPassiveSkills();
+
+         // 런 세이브 복원용: 업그레이드 이력과 base 출처를 새 인스턴스로 승계한다.
+         _TransferUpgradeHistory(oldTrain, newTrain, oldTrainId);
 
          // Elite 생성에 소비된 base ID는 이후 TriChoice에서 영구 차단 (다른 Elite 변형 / base 업그레이드 / 재추가 모두 금지).
          _replacedTrainIds.Add(oldTrainId);

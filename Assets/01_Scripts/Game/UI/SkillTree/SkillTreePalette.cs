@@ -16,6 +16,7 @@ namespace TrainDefense.Game.UI.SkillTree
         public static readonly Color SurfaceLine = new Color32(0xA0, 0x90, 0x7C, 0xFF);    // 미점등 선로/잠김 노드 (탈채도 탄)
         public static readonly Color OnSurface = new Color32(0x3A, 0x28, 0x1E, 0xFF);      // 본문 텍스트 (INK)
         public static readonly Color OnSurfaceMuted = new Color32(0x64, 0x4E, 0x3C, 0xFF); // 잠김/비활성 (INK2)
+        public static readonly Color OnAccent = new Color32(0xF8, 0xE0, 0xBD, 0xFF);       // accent 면 위 텍스트 (크림)
         public static readonly Color DangerText = new Color32(0xC8, 0x38, 0x38, 0xFF);     // 비용 부족 텍스트 (팩 빨강, 크림 위 4.6:1)
     }
 }

@@ -66,6 +66,12 @@ namespace TrainDefense.Game
         public int CurrentLevel => _currentLevel;
         // 포탑 만렙 = upgradeStats 슬롯 수 규격. (업그레이드 데이터 배열 길이와 함께 바꿔야 함)
         public const int MAX_LEVEL = 8;
+
+        /// <summary>런 세이브용 — 이 기차에 부여된 삼중택일 스킬 종류 마스크.</summary>
+        public TrainChoiceSkillType SkillTypeMask => _skillTypeMask;
+
+        /// <summary>런 세이브용 — 부여받은 액티브 스킬 id(없으면 null).</summary>
+        public string SelectedSkillId => _selectedSkillId;
         // 업그레이드 7번을 받은 포탑부터 엘리트 승격 가능.
         public const int ELITE_PROMOTION_LEVEL = 7;
         public bool IsEliteEligible => _currentLevel >= ELITE_PROMOTION_LEVEL;

@@ -19,6 +19,7 @@ namespace TrainDefense.Game.UI
         {
             ResourceManager.Instance.RegisterPersistent(gameObject);
             GameEventSystem.Subscribe<AddTrainEvent>(OnAddTrain);
+            GameEventSystem.Subscribe<TrainFormationClearedEvent>(_OnFormationCleared);
         }
 
         private void Start()
@@ -42,6 +43,15 @@ namespace TrainDefense.Game.UI
         private void OnDestroy()
         {
             GameEventSystem.Unsubscribe<AddTrainEvent>(OnAddTrain);
+            GameEventSystem.Unsubscribe<TrainFormationClearedEvent>(_OnFormationCleared);
+        }
+
+        // 편성이 비워지면 슬롯도 함께 비운다. 슬롯은 AddTrainEvent로 늘어나기만 하므로 여기서 정리하지 않으면
+        // 이어하기 복원 후 예전 슬롯과 새 슬롯이 겹쳐 남는다.
+        private void _OnFormationCleared(TrainFormationClearedEvent trainFormationClearedEvent)
+        {
+            for (int i = transform.childCount - 1; i >= 0; i--)
+                Destroy(transform.GetChild(i).gameObject);
         }
 
         private void OnAddTrain(AddTrainEvent addTrainEvent)

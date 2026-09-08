@@ -26,12 +26,18 @@ namespace TrainDefense.Game.UI.SkillTree
         [SerializeField] private Button selectButton;
         #endregion
 
+        // 잠김 아이콘 = 어두운 실루엣 틴트 (도감 미발견 컨벤션).
+        // ⚠️ SpriteGrayscale 머티리얼 금지 — Stencil/_ClipRect가 없어 UI Mask/RectMask2D 클리핑을 뚫고 그려진다.
+        private static readonly Color LockedIconSilhouette = new Color(0.08f, 0.09f, 0.12f, 1f);
+
         private SkillNodeData _data;
         private Action<SkillNodeData> _onSelect;
         private Tween _punchTween;
 
         public SkillNodeData Data => _data;
         public RectTransform RectTransform => (RectTransform)transform;
+        /// <summary>노드 배경 스프라이트 — 팝업이 출발역 마커를 같은 룩으로 그릴 때 쓴다.</summary>
+        public Sprite BackgroundSprite => backgroundImage != null ? backgroundImage.sprite : null;
 
         private void Awake()
         {
@@ -87,11 +93,37 @@ namespace TrainDefense.Game.UI.SkillTree
                 borderImage.color = SkillTreePalette.Accent;
             }
 
+            // 잠김 = 어두운 실루엣 (색으로만 구분 금지 — 레벨 텍스트가 병행)
+            bool isLocked = level == 0 && !arePrerequisitesMet;
             if (iconImage != null)
-                iconImage.color = level > 0 || arePrerequisitesMet ? Color.white : SkillTreePalette.OnSurfaceMuted;
+                iconImage.color = isLocked ? LockedIconSilhouette : Color.white;
 
-            if (levelText != null)
-                levelText.text = isMax ? "MAX" : _data.MaxLevel > 0 ? $"Lv {level}/{_data.MaxLevel}" : $"Lv {level}";
+            _RefreshLevelText(level, isMax, arePrerequisitesMet, canAcquire);
+        }
+
+        // 목업 상태 표기: 만렙=MAX / 획득 가능=비용 / 그 외=Lv n/m (이중부호화 텍스트)
+        private void _RefreshLevelText(int level, bool isMax, bool arePrerequisitesMet, bool canAcquire)
+        {
+            if (levelText == null) return;
+
+            if (isMax)
+            {
+                levelText.text = "MAX";
+                levelText.color = SkillTreePalette.SurfaceSunken;
+
+                return;
+            }
+
+            if (level == 0 && arePrerequisitesMet)
+            {
+                levelText.text = _data.GetCostAtLevel(0).ToString();
+                levelText.color = canAcquire ? SkillTreePalette.Accent : SkillTreePalette.DangerText;
+
+                return;
+            }
+
+            levelText.text = _data.MaxLevel > 0 ? $"Lv {level}/{_data.MaxLevel}" : $"Lv {level}";
+            levelText.color = level > 0 ? SkillTreePalette.OnAccent : SkillTreePalette.OnSurfaceMuted;
         }
 
         /// <summary>습득 순간 펀치 연출. timeScale=0에서도 재생된다 (SetUpdate(true)).</summary>
@@ -107,6 +139,13 @@ namespace TrainDefense.Game.UI.SkillTree
 
         private void _OnClickSelect()
         {
+            // 잠김 노드(선행 미충족)는 상세 패널을 열지 않는다.
+            // Button.interactable을 끄지 않는 이유: Button의 disabled 틴트가 상태 팔레트 색을 덮어쓴다.
+            var manager = SkillTreeManager.Instance;
+            if (manager == null || _data == null) return;
+
+            if (manager.GetLevel(_data.Id) == 0 && !manager.ArePrerequisitesMet(_data.Id)) return;
+
             _onSelect?.Invoke(_data);
         }
     }

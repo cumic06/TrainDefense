@@ -76,6 +76,19 @@ namespace TrainDefense.Game.Manager
          GameEventSystem.Publish<ChangeKillCountUIEvent>(new(TotalKillCount));
       }
 
+      /// <summary>
+      /// 이어하기 복원 — 저장 당시 점수·처치 수로 되돌린다.
+      /// GameEnterEvent로 0 리셋이 끝난 뒤 호출되는 것을 전제로 한다.
+      /// </summary>
+      public void RestoreRunState(int currentScore, int normalKillCount, int eliteKillCount)
+      {
+         CurrentScore = Mathf.Max(0, currentScore);
+         NormalKillCount = Mathf.Max(0, normalKillCount);
+         EliteKillCount = Mathf.Max(0, eliteKillCount);
+
+         GameEventSystem.Publish<ChangeKillCountUIEvent>(new(TotalKillCount));
+      }
+
       private void _OnMonsterDead(MonsterDeadEvent monsterDeadEvent)
       {
          if (_scoreData == null || _isLobby)

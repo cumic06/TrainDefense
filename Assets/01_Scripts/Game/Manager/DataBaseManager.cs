@@ -53,6 +53,7 @@ namespace TrainDefense.Game
 
         public IReadOnlyList<SkillNodeData> GetSkillNodeDatas() => GetDB().SkillNodeDataList;
         public SkillNodeData GetSkillNodeData(string id) => GetDB().SkillNodeDataList.FirstOrDefault(n => n != null && n.Id == id);
+        public IReadOnlyList<SkillTreeLaneData> GetSkillTreeLaneDatas() => GetDB().SkillTreeLaneDataList;
 
         public EliteData GetEliteData() => GetDB().EliteData;
 
