@@ -360,7 +360,7 @@ MonoBehaviour:
   itemDropHeight: 250
   itemDropDuration: 0.35
   itemDropStagger: 0.07
-  uiFadeDuration: 0.25
+  uiFadeDuration: 1
   offerSlotCount: 5
   offerSlotPrefab: {fileID: -8685490612574751861, guid: 773092aaa222fadaadb28f8d86a37329, type: 3}
   offerPricing:

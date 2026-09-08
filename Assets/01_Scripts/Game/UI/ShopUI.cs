@@ -211,6 +211,7 @@ namespace TrainDefense.Game.UI
 
             // 슬라이드인 동안 버튼이 제자리에 보이지 않도록 미리 숨겨둠
             _PrepareItemsHidden();
+            _PrepareButtonsHidden();
 
             // 1) 테이블·선로·기차를 먼저 깔고, 그 위로 상점 패널(카드)이 내려온다
             _SetBackgroundVisible(true, uiFadeDuration);
@@ -231,6 +232,7 @@ namespace TrainDefense.Game.UI
 
             // 2) 패널이 자리잡은 뒤 버튼들을 위에서 순차적으로 떨어뜨림
             _PlayItemsDropIn();
+            _PlayButtonsPopIn();
 
             isShopOpen = true;
         }
@@ -297,6 +299,45 @@ namespace TrainDefense.Game.UI
                     .SetUpdate(true)
                     .OnStart(() => rect.localScale = Vector3.one);
             }
+        }
+
+        /// <summary>
+        /// 시작·다시 뽑기 버튼은 패널 자식이라 슬라이드인에 그대로 딸려 내려온다.
+        /// 카드처럼 미리 숨겨뒀다가 패널이 자리잡은 뒤 등장시킨다.
+        /// 자리는 그대로 두고 크기만 쓴다(버튼 위치는 따로 정한 값이라 흔들지 않는다).
+        /// </summary>
+        private void _PrepareButtonsHidden()
+        {
+            foreach (var button in _GetPanelButtons())
+            {
+                button.DOKill();
+                button.localScale = Vector3.zero;
+            }
+        }
+
+        /// <summary>
+        /// 카드가 다 떨어진 뒤 버튼을 제자리에서 튀어나오게 한다.
+        /// </summary>
+        private void _PlayButtonsPopIn()
+        {
+            float delay = _itemRects != null ? _itemRects.Length * itemDropStagger : 0f;
+
+            foreach (var button in _GetPanelButtons())
+            {
+                button.DOScale(Vector3.one, itemDropDuration)
+                    .SetDelay(delay)
+                    .SetEase(Ease.OutBack)
+                    .SetUpdate(true);
+            }
+        }
+
+        private IEnumerable<Transform> _GetPanelButtons()
+        {
+            if (shopButtonUI != null)
+                yield return shopButtonUI.transform;
+
+            if (rerollButton != null)
+                yield return rerollButton.transform;
         }
 
         /// <summary>
