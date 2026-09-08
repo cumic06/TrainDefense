@@ -250,12 +250,6 @@ namespace TrainDefense.Game.UI
          if (_IsPopupOutdated(requestId))
             return;
 
-         if (coinParticleSystem != null)
-         {
-            coinParticleSystem.gameObject.SetActive(true);
-            coinParticleSystem.Play();
-         }
-
          int activatedCount = 0;
 
          for (int i = 0; i < choiceSelectUIs.Length; i++)
@@ -307,14 +301,6 @@ namespace TrainDefense.Game.UI
       {
          if (choiceSelectUI == null)
             return null;
-
-         var userDataManager = UserDataManager.Instance;
-
-         if (userDataManager != null)
-         {
-            bool isFirstTime = userDataManager.IsFirstTimeSelected(choiceOption.Id);
-            choiceSelectUI.SetNewText(isFirstTime);
-         }
 
          ChoiceUIInfo choiceUIInfo = TriChoiceManager.Instance.GetChoiceUIInfo(choiceOption);
 
