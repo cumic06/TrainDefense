@@ -22,11 +22,11 @@ namespace TrainDefense.Game.UI.SkillTree
         private const float LaneSpacing = 360f;
         private const float RailThickness = 56f;   // 기찻길 스프라이트가 침목까지 보이는 목업 폭
         private const float ContentPadding = 96f;
-        // 목업 골격: 하단 출발역 / 상단 레인 타이틀 공간 — 노드 그리드가 그만큼 위로 밀린다
-        private const float StationExtraBottom = 160f;
+        // 상단 레인 타이틀 공간 — 노드 그리드가 그만큼 위로 밀린다
+        // 하단 출발역은 없앴다(첫 업그레이드가 그 자리로 내려옴). 되살리려면 160f로 되돌리고
+        // 프리팹의 Station_* / StationLabel_* 를 다시 켠 뒤 루트 노드 선로 생성을 복원한다.
+        private const float StationExtraBottom = 0f;
         private const float LaneTitleExtraTop = 170f;
-        // 출발역 중심 y = ContentPadding + StationExtraBottom - StationOffset = 106 (프리팹 정적 배치와 일치해야 함)
-        private const float StationOffset = 150f;
 
         #region Fields
         [SerializeField] private Button closeButton;
@@ -173,13 +173,9 @@ namespace TrainDefense.Game.UI.SkillTree
                 {
                     if (data == null) continue;
 
+                    // 출발역을 없애고 첫 노드를 그 자리로 내렸으므로, 루트 노드로 올라오는 선로는 없다.
                     if (data.Prerequisites == null || data.Prerequisites.Length == 0)
-                    {
-                        // 선행이 없는 루트 노드는 출발역(프리팹 정적 마커)에서 선로가 올라온다
-                        _CreateRail(string.Empty, data.Id, _GetStationPosition(data.Lane), _GetNodePosition(data));
-
                         continue;
-                    }
 
                     foreach (string fromId in data.Prerequisites)
                     {
@@ -215,10 +211,6 @@ namespace TrainDefense.Game.UI.SkillTree
             return new Vector2(x, y);
         }
 
-        private Vector2 _GetStationPosition(SkillTreeLane lane)
-        {
-            return new Vector2(((int)lane - 1) * LaneSpacing, ContentPadding + StationExtraBottom - StationOffset);
-        }
         #endregion
 
         #region Refresh

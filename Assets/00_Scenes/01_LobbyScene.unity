@@ -4350,9 +4350,9 @@ GameObject:
   - component: {fileID: 2050887360}
   - component: {fileID: 2050887359}
   - component: {fileID: 2050887358}
-  - component: {fileID: 2050887361}
   - component: {fileID: 2050887362}
-  - component: {fileID: 2050900005}
+  - component: {fileID: 2050887364}
+  - component: {fileID: 2050887363}
   m_Layer: 5
   m_Name: UpgradeButton
   m_TagString: Untagged
@@ -4463,19 +4463,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2050887356}
   m_CullTransparentMesh: 1
---- !u!114 &2050887361
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050887356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ddcbe2ca7ff1b649ba8efdfc2b79bbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.PermanentUpgradeButton
-  button: {fileID: 2050887358}
 --- !u!114 &2050887362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4584,6 +4571,32 @@ MonoBehaviour:
   optionalScrambleMode: 0
   optionalShakeRandomnessMode: 0
   optionalString: 
+--- !u!114 &2050887363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050887356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0ecd2b5f79549fc8f945f6234213a3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.SkillTreeRedDot
+  redDot: {fileID: 2050900001}
+--- !u!114 &2050887364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050887356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 894002a3328e4e8f9aad2b98b8726091, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.SkillTreeButton
+  button: {fileID: 0}
 --- !u!1 &2050900001
 GameObject:
   m_ObjectHideFlags: 0
@@ -4659,19 +4672,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2050900005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2050887356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 479143cfa446480ebbed2e2626f13f24, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  redDot: {fileID: 2050900001}
 --- !u!1 &2137557630
 GameObject:
   m_ObjectHideFlags: 0
@@ -5167,6 +5167,10 @@ PrefabInstance:
     - target: {fileID: 8830000000000000010, guid: 3721d2a9e0ff4ca78d7e4acf6b8cf0c6, type: 3}
       propertyPath: m_Name
       value: Btn_SkillTree
+      objectReference: {fileID: 0}
+    - target: {fileID: 8830000000000000010, guid: 3721d2a9e0ff4ca78d7e4acf6b8cf0c6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
