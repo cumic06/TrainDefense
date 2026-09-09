@@ -1,4 +1,5 @@
 using Cumic;
+using Cumic.Events;
 using Cumic.Sequence;
 using TMPro;
 using TrainDefense.Game.Datas;
@@ -9,7 +10,7 @@ using UnityEngine.UI;
 
 namespace TrainDefense.Game.UI
 {
-    // 인게임 우상단 일시정지 버튼으로 여닫는 일시정지 메뉴(딤 + 옵션/도감/로비로 버튼).
+    // 인게임 우상단 일시정지 버튼으로 여닫는 일시정지 메뉴(딤 + 옵션/도감/포기 버튼).
     // 도감 버튼 클릭은 같은 GO의 CollectionButton이 처리하고, 여기서는 라벨만 로컬라이즈한다.
     // 열려 있는 동안 OverlayPhase.MenuPause로 게임을 멈추고, 옵션 창은 이 위에 겹쳐 뜬다.
     public class PauseUI : MonoBehaviour
@@ -22,6 +23,7 @@ namespace TrainDefense.Game.UI
         private TMP_Text optionText;
         [SerializeField]
         private TMP_Text collectionText;
+        // 포기 버튼. 필드 이름은 로비로 나가던 시절 그대로다 — 바꾸면 인스펙터 배선이 끊긴다.
         [SerializeField]
         private Button lobbyButton;
         [SerializeField]
@@ -34,16 +36,13 @@ namespace TrainDefense.Game.UI
         private OptionUI optionUI;
         #endregion
 
-        // 로비 씬의 빌드 인덱스 (ChangeSceneButton.LobbySceneIndex와 동일)
-        private const int LobbySceneBuildIndex = 1;
-
         private void Awake()
         {
             if (optionButton != null)
                 optionButton.onClick.AddListener(_OnClickOption);
 
             if (lobbyButton != null)
-                lobbyButton.onClick.AddListener(_OnClickLobby);
+                lobbyButton.onClick.AddListener(_OnClickGiveUp);
 
             if (closeButton != null)
                 closeButton.onClick.AddListener(HidePauseUI);
@@ -114,13 +113,14 @@ namespace TrainDefense.Game.UI
                 optionUI.ShowOptionUI();
         }
 
-        // 로비로 이동 (LobbyButton 프리팹의 ChangeSceneButton.OnClickLoadScene(1)과 동일 동작).
-        private void _OnClickLobby()
+        // 포기 — 씬을 떠나지 않고 그 자리에서 판을 끝낸다. 패배와 같은 결과창이 뜬다.
+        // 세이브 삭제는 GameEndEvent를 받은 RunSaveManager가 한다(판이 끝났으니 이어할 대상이 없다).
+        private void _OnClickGiveUp()
         {
-            SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
-            SoundManager.Instance?.PlayBGM(SoundType.BGM_Lobby);
+            // 결과 화면(BasePhase.GameOver)으로 먼저 넘긴다 — 메뉴 오버레이를 먼저 걷으면 그 사이 게임이 한 번 재개된다.
+            GameEventSystem.Publish(new GameEndEvent(false));
 
-            SceneController.LoadScene(LobbySceneBuildIndex, false);
+            HidePauseUI();
         }
 
         private void _RefreshTexts()
@@ -132,7 +132,7 @@ namespace TrainDefense.Game.UI
                 collectionText.text = LocalizeHelper.GetByKey("Collection_Title", "도감");
 
             if (lobbyText != null)
-                lobbyText.text = LocalizeHelper.GetByKey("UI_Lobby", "로비로");
+                lobbyText.text = LocalizeHelper.GetByKey("UI_GiveUp", "포기");
         }
     }
 }
