@@ -285,18 +285,17 @@ namespace TrainDefense.Game.UI
             totalScoreText.text = $"{_totalLabel} {value.ToCommaString()}{_totalSuffix}";
         }
 
-        // 이번 판 동안 획득한 엘리트 재화를 총점 패널에 표시한다.
+        // 이번 판 동안 획득한 엘리트 재화를 총점 패널에 표시한다. 무엇을 얻었는지는 옆의 아이콘이 알려준다.
         private void _SetEliteCurrencyEarned()
         {
             if (eliteCurrencyText == null)
                 return;
 
-            string label = LocalizeHelper.GetByKey("result_elite_currency", "획득 엘리트 재화");
             int earned = PermanentUpgradeManager.Instance != null
                 ? PermanentUpgradeManager.Instance.RunEliteCoinEarned
                 : 0;
 
-            eliteCurrencyText.text = $"{label} +{earned.ToCommaString()}";
+            eliteCurrencyText.text = $"+{earned.ToCommaString()}";
         }
 
         // 슬롯 index를 화면 중앙에 두는 정규화 스크롤 위치(0~1).
