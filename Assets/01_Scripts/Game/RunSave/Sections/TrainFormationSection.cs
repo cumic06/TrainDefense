@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TrainDefense.Game.Datas;
+using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game.RunSave.Sections
 {
@@ -31,7 +33,23 @@ namespace TrainDefense.Game.RunSave.Sections
             public bool isDead;
             public int skillTypeMask;
             public string selectedSkillId;
-            public List<string> upgradeDataIds = new();
+            public List<UpgradeStepEntry> upgradeDeltas = new();
+            public List<StatUpgradeAmountEntry> statUpgradeAmounts = new();
+        }
+
+        // 업그레이드 한 번의 증가량. 상점 강화 데이터는 구매하는 순간 만들어져 DB에 없으므로 id로는 되찾을 수 없다.
+        [Serializable]
+        private class UpgradeStepEntry
+        {
+            public TurretTrainStatus turret;
+            public RangeTrainStatus range;
+        }
+
+        [Serializable]
+        private class StatUpgradeAmountEntry
+        {
+            public int statType;
+            public float amount;
         }
 
         public string Capture()
@@ -51,7 +69,7 @@ namespace TrainDefense.Game.RunSave.Sections
 
             foreach (var train in state.Trains)
             {
-                payload.trains.Add(new TrainEntry
+                var entry = new TrainEntry
                 {
                     trainDataId = train.TrainDataId,
                     replacedFromTrainDataId = train.ReplacedFromTrainDataId,
@@ -60,8 +78,25 @@ namespace TrainDefense.Game.RunSave.Sections
                     isDead = train.IsDead,
                     skillTypeMask = train.SkillTypeMask,
                     selectedSkillId = train.SelectedSkillId,
-                    upgradeDataIds = new List<string>(train.UpgradeDataIds),
-                });
+                };
+
+                foreach (var step in train.UpgradeDeltas)
+                {
+                    if (step != null)
+                        entry.upgradeDeltas.Add(new UpgradeStepEntry { turret = step.Turret, range = step.Range });
+                }
+
+                foreach (var statUpgradeAmount in train.StatUpgradeAmounts)
+                {
+                    if (statUpgradeAmount != null)
+                        entry.statUpgradeAmounts.Add(new StatUpgradeAmountEntry
+                        {
+                            statType = (int)statUpgradeAmount.Type,
+                            amount = statUpgradeAmount.Amount,
+                        });
+                }
+
+                payload.trains.Add(entry);
             }
 
             return JsonUtility.ToJson(payload);
@@ -102,7 +137,7 @@ namespace TrainDefense.Game.RunSave.Sections
                     if (train == null || string.IsNullOrEmpty(train.trainDataId))
                         continue;
 
-                    state.Trains.Add(new MainTrain.FormationTrainState
+                    var entry = new MainTrain.FormationTrainState
                     {
                         TrainDataId = train.trainDataId,
                         ReplacedFromTrainDataId = train.replacedFromTrainDataId,
@@ -111,8 +146,31 @@ namespace TrainDefense.Game.RunSave.Sections
                         IsDead = train.isDead,
                         SkillTypeMask = train.skillTypeMask,
                         SelectedSkillId = train.selectedSkillId,
-                        UpgradeDataIds = train.upgradeDataIds ?? new List<string>(),
-                    });
+                    };
+
+                    if (train.upgradeDeltas != null)
+                    {
+                        foreach (var step in train.upgradeDeltas)
+                        {
+                            if (step != null)
+                                entry.UpgradeDeltas.Add(new MainTrain.UpgradeStepDelta { Turret = step.turret, Range = step.range });
+                        }
+                    }
+
+                    if (train.statUpgradeAmounts != null)
+                    {
+                        foreach (var statUpgradeAmount in train.statUpgradeAmounts)
+                        {
+                            if (statUpgradeAmount != null)
+                                entry.StatUpgradeAmounts.Add(new MainTrain.StatUpgradeAmountEntry
+                                {
+                                    Type = (StatType)statUpgradeAmount.statType,
+                                    Amount = statUpgradeAmount.amount,
+                                });
+                        }
+                    }
+
+                    state.Trains.Add(entry);
                 }
             }
 

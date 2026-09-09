@@ -378,6 +378,9 @@ namespace TrainDefense.Game
 
         public void AddStatUpgradeAmount(StatType type, float amount) => _statUpgradeAmount[type] = GetStatUpgradeAmount(type) + amount;
 
+        /// <summary>런 세이브용 — 스탯별 누적 강화량 전체. (복원은 AddStatUpgradeAmount로 되돌린다)</summary>
+        public IReadOnlyDictionary<StatType, float> StatUpgradeAmounts => _statUpgradeAmount;
+
         public virtual void Upgrade(ITrainUpgradeData upgradeData)
         {
             if (upgradeData == null) return;

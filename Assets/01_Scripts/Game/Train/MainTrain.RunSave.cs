@@ -4,6 +4,7 @@ using Cumic.Events;
 using UnityEngine;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game
 {
@@ -16,8 +17,11 @@ namespace TrainDefense.Game
     {
         #region Run Save Variables
 
-        // 기차별로 적용된 업그레이드 데이터 id 이력. 레벨 숫자만으로는 어떤 업그레이드였는지 알 수 없어 복원이 불가능하다.
-        private readonly Dictionary<Train, List<string>> _upgradeHistory = new();
+        // 기차별로 적용된 업그레이드 증가량 이력. 레벨 숫자만으로는 어떤 업그레이드였는지 알 수 없어 복원이 불가능하다.
+        private readonly Dictionary<Train, List<UpgradeStepDelta>> _upgradeHistory = new();
+
+        // 복원으로 다시 얹는 업그레이드에 붙이는 id 접두어. 로그에서 구매분과 구분하기 위한 것으로, 조회에는 쓰이지 않는다.
+        private const string RESTORED_UPGRADE_ID_PREFIX = "restored_";
 
         // 엘리트 교체로 만들어진 기차 → 그 출발점이 된 base 기차의 데이터 id.
         // 엘리트는 스탯을 base에서 통째로 승계(CopyProgressFrom)하므로, 복원도 "base를 올린 뒤 교체"라는 같은 경로를 밟아야 한다.
@@ -42,7 +46,26 @@ namespace TrainDefense.Game
             public bool IsDead;
             public int SkillTypeMask;
             public string SelectedSkillId;
-            public List<string> UpgradeDataIds = new();
+            public List<UpgradeStepDelta> UpgradeDeltas = new();
+            public List<StatUpgradeAmountEntry> StatUpgradeAmounts = new();
+        }
+
+        /// <summary>
+        /// 업그레이드 한 번이 더한 증가량. 상점 강화 데이터는 구매하는 순간 만들어져(CreateRuntimeSingleStat) DB에 남지 않으므로,
+        /// id로는 되찾을 수 없고 증가량 자체를 남겨야 복원할 수 있다.
+        /// 상점 배율은 담지 않는다 — 여기 값은 배율을 곱하기 전 증가량이고, 복원 때 Upgrade가 같은 배율을 다시 곱한다.
+        /// </summary>
+        public class UpgradeStepDelta
+        {
+            public TurretTrainStatus Turret;
+            public RangeTrainStatus Range;
+        }
+
+        /// <summary>스탯 하나의 누적 강화량. (Dictionary는 JsonUtility가 직렬화하지 못해 목록으로 편다)</summary>
+        public class StatUpgradeAmountEntry
+        {
+            public StatType Type;
+            public float Amount;
         }
 
         #endregion
@@ -52,16 +75,43 @@ namespace TrainDefense.Game
         /// <summary>업그레이드 적용 이력을 기록한다. (UpgradeTrain·ReplaceTrain에서 호출)</summary>
         private void _RecordUpgradeHistory(Train train, ITrainUpgradeData upgradeData)
         {
-            if (train == null || upgradeData == null || string.IsNullOrEmpty(upgradeData.Id))
+            if (train == null || upgradeData == null)
+                return;
+
+            // 이 호출은 Upgrade가 끝난 뒤라 레벨이 이미 하나 올라 있다 — 방금 적용된 인덱스는 그 직전 값이다.
+            int appliedLevelIndex = Mathf.Max(0, train.CurrentLevel - 1);
+            var step = new UpgradeStepDelta();
+
+            switch (upgradeData)
+            {
+                case TurretTrainUpgradeData turretUpgradeData:
+                    step.Turret = turretUpgradeData.GetTurretStatusUpgrade(appliedLevelIndex);
+                    break;
+
+                case RangeTrainUpgradeData rangeUpgradeData:
+                    step.Range = rangeUpgradeData.GetRangeStatusUpgrade(appliedLevelIndex);
+                    break;
+            }
+
+            // 지금 업그레이드 경로(상점 스탯 강화)는 체력을 올리지 않는다. 올리는 업그레이드가 생기면 여기서 조용히 빠지므로 알린다.
+            if (upgradeData.GetStatusUpgrade(appliedLevelIndex).MaxHp != 0f)
+                Debug.LogWarning($"MainTrain: [{upgradeData.Id}]의 체력 증가량은 런 세이브에 담기지 않아 이어하기에서 빠집니다.");
+
+            _AppendUpgradeStep(train, step);
+        }
+
+        private void _AppendUpgradeStep(Train train, UpgradeStepDelta step)
+        {
+            if (train == null || step == null)
                 return;
 
             if (!_upgradeHistory.TryGetValue(train, out var history))
             {
-                history = new List<string>();
+                history = new List<UpgradeStepDelta>();
                 _upgradeHistory[train] = history;
             }
 
-            history.Add(upgradeData.Id);
+            history.Add(step);
         }
 
         /// <summary>엘리트 교체 등으로 기차 인스턴스가 바뀔 때 업그레이드 이력과 base 출처를 새 인스턴스로 옮긴다.</summary>
@@ -72,7 +122,7 @@ namespace TrainDefense.Game
 
             if (_upgradeHistory.TryGetValue(oldTrain, out var history))
             {
-                _upgradeHistory[newTrain] = new List<string>(history);
+                _upgradeHistory[newTrain] = new List<UpgradeStepDelta>(history);
                 _upgradeHistory.Remove(oldTrain);
             }
 
@@ -110,7 +160,11 @@ namespace TrainDefense.Game
                 };
 
                 if (_upgradeHistory.TryGetValue(train, out var history))
-                    entry.UpgradeDataIds = new List<string>(history);
+                    entry.UpgradeDeltas = new List<UpgradeStepDelta>(history);
+
+                // 누적 강화량은 스탯이 아니라 "다음 강화가 얼마나 오를지"를 정한다 — 빠뜨리면 이어한 판에서 공속·연사가 처음처럼 크게 오른다.
+                foreach (var pair in train.StatUpgradeAmounts)
+                    entry.StatUpgradeAmounts.Add(new StatUpgradeAmountEntry { Type = pair.Key, Amount = pair.Value });
 
                 state.Trains.Add(entry);
             }
@@ -187,7 +241,7 @@ namespace TrainDefense.Game
             }
 
             var train = _currentTrains[_currentTrains.Count - 1];
-            _RestoreUpgrades(train, entry, databaseManager);
+            _RestoreUpgrades(train, entry);
 
             if (isElitePromoted)
             {
@@ -210,28 +264,65 @@ namespace TrainDefense.Game
             return true;
         }
 
-        // 저장된 업그레이드 이력을 순서대로 다시 적용한다.
-        //
-        // ⚠️ 현재 미지원 — id로 ITrainUpgradeData를 되찾는 경로가 이 브랜치에 없다.
-        // 이 기능이 만들어질 당시 있던 DatabaseManager.GetTrainUpgradeDataById가
-        // 상점 스탯 강화 등급 체계 도입(e4efa240) 때 사라졌고, 대체 조회가 아직 없다.
-        // 이력은 저장되고 있으므로, 조회 경로만 되살리면 아래 주석 처리된 흐름을 그대로 쓸 수 있다.
-        private void _RestoreUpgrades(Train train, FormationTrainState entry, DatabaseManager databaseManager)
+        // 저장된 증가량을 순서대로 다시 얹는다. 평소 경로(Train.Upgrade)를 그대로 태워야 레벨과 상점 배율이 함께 맞는다.
+        private void _RestoreUpgrades(Train train, FormationTrainState entry)
         {
-            if (train == null || entry.UpgradeDataIds == null)
+            if (train == null)
                 return;
 
-            if (entry.UpgradeDataIds.Count > 0)
+            // 스탯값과 별개로 되돌려야 하는 값 — 공속 증가분이 이 누적량에서 역산되므로, 빠뜨리면 이어한 판의 다음 강화가 1회차 폭으로 되돌아간다.
+            if (entry.StatUpgradeAmounts != null)
             {
-                // 조용히 초기 스탯으로 부활시키면 이어하기가 손해처럼 보이므로 남긴다.
-                Debug.LogWarning($"MainTrain: [{entry.TrainDataId}]의 업그레이드 {entry.UpgradeDataIds.Count}건을 복원하지 못했습니다 — id로 업그레이드 데이터를 찾는 경로가 없습니다.");
+                foreach (var statUpgradeAmount in entry.StatUpgradeAmounts)
+                {
+                    if (statUpgradeAmount != null && statUpgradeAmount.Amount != 0f)
+                        train.AddStatUpgradeAmount(statUpgradeAmount.Type, statUpgradeAmount.Amount);
+                }
+            }
+
+            if (entry.UpgradeDeltas == null || entry.UpgradeDeltas.Count == 0)
+            {
+                // 증가량 없이 레벨만 남은 세이브(delta 포맷 이전)는 스탯을 재현할 수 없다 — 조용히 초기 스탯으로 두면 이어하기가 손해로 보인다.
+                if (entry.Level > 0)
+                    Debug.LogWarning($"MainTrain: [{entry.TrainDataId}]의 업그레이드 이력이 없어 레벨 {entry.Level}을 재현하지 못했습니다.");
 
                 return;
             }
 
-            // 이력이 유실된 세이브 대비: 레벨 숫자만 남아 있으면 최소한 로그로 알린다(스탯은 이력 기준으로만 재현된다).
-            if (entry.Level > 0)
-                Debug.LogWarning($"MainTrain: [{entry.TrainDataId}]의 업그레이드 이력이 없어 레벨 {entry.Level}을 재현하지 못했습니다.");
+            foreach (var step in entry.UpgradeDeltas)
+            {
+                if (step == null)
+                    continue;
+
+                var upgradeData = _CreateRestoreUpgradeData(train, step);
+
+                if (upgradeData == null)
+                {
+                    Debug.LogWarning($"MainTrain: [{entry.TrainDataId}]는 업그레이드를 받을 수 없는 종류라 증가량을 되돌리지 못했습니다.");
+
+                    break;
+                }
+
+                train.Upgrade(upgradeData);
+                // 복원한 판을 다시 저장할 때도 이 증가량이 남아야 한다.
+                _AppendUpgradeStep(train, step);
+            }
+        }
+
+        // 저장된 증가량 하나를 담은 1회용 업그레이드 데이터. 상점 강화가 구매할 때 만드는 것과 같은 형태다.
+        private ITrainUpgradeData _CreateRestoreUpgradeData(Train train, UpgradeStepDelta step)
+        {
+            // 실제로 읽히는 인덱스는 "이번에 적용할 레벨"(= 현재 레벨) 하나뿐이라 그 인덱스까지 채운다.
+            int levelCount = train.CurrentLevel + 1;
+            string id = $"{RESTORED_UPGRADE_ID_PREFIX}{train.TrainData?.Id}";
+            string name = train.TrainData != null ? train.TrainData.Name : string.Empty;
+
+            return train switch
+            {
+                TurretTrain => TurretTrainUpgradeData.CreateRuntimeSingleStat(id, name, step.Turret, levelCount),
+                RangeTrain => RangeTrainUpgradeData.CreateRuntimeSingleStat(id, name, step.Range, levelCount),
+                _ => null,
+            };
         }
 
         private void _RestoreHpAndDeath(Train train, FormationTrainState entry)
