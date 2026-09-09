@@ -20,11 +20,11 @@ namespace TrainDefense.Game.RunSave
     {
         private const string LOBBY_SCENE_NAME = "01_LobbyScene";
 
-        // 02_GameScene. RunContinueButton이 쓰던 값과 같다.
+        // 02_GameScene.
         private const int GAME_SCENE_INDEX = 2;
 
-        // LoadingScene은 빌드 목록에서 꺼져 있어 이름으로 로드하면 실패한다("couldn't be loaded because it has not
-        // been added to the active build profile"). 이 프로젝트의 다른 씬 전환도 전부 로딩 씬을 거치지 않는다.
+        // 이 프로젝트의 다른 씬 전환도 전부 로딩 씬을 거치지 않는다.
+        // (LoadingScene은 빌드 목록에서 꺼져 있다 — SceneController가 그 경우를 걸러낸다.)
         private const bool USE_LOADING_SCENE = false;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

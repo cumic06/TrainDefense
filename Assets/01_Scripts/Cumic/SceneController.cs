@@ -8,6 +8,19 @@ namespace Cumic
     {
         private const string LoadingSceneName = "LoadingScene";
 
+        // LoadingScene은 빌드 목록에서 꺼져 있을 수 있다. 그 상태로 이름 로드를 하면
+        // 에러 로그만 남고 화면이 그대로 멈춰, 호출부는 전환에 성공한 줄 안다.
+        // 쓸 수 없으면 로딩 화면을 건너뛰고 목표 씬으로 곧장 넘긴다.
+        private static bool _CanUseLoadingScene()
+        {
+            if (Application.CanStreamedLevelBeLoaded(LoadingSceneName))
+                return true;
+
+            Debug.LogWarning($"SceneController: '{LoadingSceneName}'이 빌드 목록에 없어 로딩 화면을 건너뜁니다.");
+
+            return false;
+        }
+
         private static void PrepareForSceneChange()
         {
             if (TimeManager.Instance != null)
@@ -35,7 +48,7 @@ namespace Cumic
 
             PrepareForSceneChange();
 
-            if (isLoadingScene)
+            if (isLoadingScene && _CanUseLoadingScene())
             {
                 SceneManager.LoadScene(LoadingSceneName);
                 LoadingSceneController.SetTargetSceneIndex(sceneIndex);
@@ -58,7 +71,7 @@ namespace Cumic
             int nextIndex = currentIndex + 1;
             PrepareForSceneChange();
 
-            if (isLoadingScene)
+            if (isLoadingScene && _CanUseLoadingScene())
             {
                 LoadingSceneController.SetTargetSceneIndex(nextIndex);
                 SceneManager.LoadScene(LoadingSceneName);
@@ -73,7 +86,7 @@ namespace Cumic
         {
             int currentIndex = SceneManager.GetActiveScene().buildIndex;
             PrepareForSceneChange();
-            if (isLoadingScene)
+            if (isLoadingScene && _CanUseLoadingScene())
             {
                 LoadingSceneController.SetTargetSceneIndex(currentIndex);
                 SceneManager.LoadScene(LoadingSceneName);
