@@ -10,7 +10,7 @@ namespace TrainDefense.Game.UI.SkillTree
     /// <summary>
     /// 스킬트리 노드 한 칸. 상태(잠김/획득가능/습득/만렙) 비주얼과 선택 알림, 습득 펀치 연출을 담당한다.
     /// 설명·비용·습득 버튼은 팝업(SkillTreePopupUI) 하단 상세 패널 몫이다 (PermanentUpgradeSlotUI 선례).
-    /// 상태는 색으로만 구분하지 않는다 — 레벨 텍스트(Lv n/m·MAX)가 항상 병행한다 (이중부호화).
+    /// 상태는 색으로만 구분하지 않는다 — 레벨 텍스트(n/m·MAX)가 항상 병행한다 (이중부호화).
     /// </summary>
     public class SkillTreeNodeUI : MonoBehaviour
     {
@@ -20,19 +20,20 @@ namespace TrainDefense.Game.UI.SkillTree
 
         #region Fields
         [SerializeField] private Image backgroundImage;   // 노드 배경 (TurretSelectSlotBg 9-slice 권장)
-        [SerializeField] private Image borderImage;       // 획득 가능 강조 테두리 (TurretSelectHighlight 권장)
+        [SerializeField] private Image borderImage;       // 테두리 링 (TurretSelectHighlight) — 선택이면 흰 글로우, 아니면 획득 가능 accent
         [SerializeField] private Image iconImage;
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private Button selectButton;
         #endregion
 
-        // 잠김 아이콘 = 어두운 실루엣 틴트 (도감 미발견 컨벤션).
+        // 잠김 아이콘 = 어두운 실루엣 틴트 (도감 미발견 컨벤션). 회색 곱 틴트는 09-11에 반려됨 — 검은 실루엣 유지.
         // ⚠️ SpriteGrayscale 머티리얼 금지 — Stencil/_ClipRect가 없어 UI Mask/RectMask2D 클리핑을 뚫고 그려진다.
         private static readonly Color LockedIconSilhouette = new Color(0.08f, 0.09f, 0.12f, 1f);
 
         private SkillNodeData _data;
         private Action<SkillNodeData> _onSelect;
         private Tween _punchTween;
+        private bool _isSelected;
 
         public SkillNodeData Data => _data;
         public RectTransform RectTransform => (RectTransform)transform;
@@ -86,11 +87,12 @@ namespace TrainDefense.Game.UI.SkillTree
                 else backgroundImage.color = SkillTreePalette.SurfaceLine;
             }
 
-            // accent 테두리 = "지금 습득 가능" 신호 (비용까지 충족)
+            // 테두리 링은 하나 — 선택이면 흰 글로우(상세 패널이 가리키는 노드), 아니면 "지금 습득 가능"(비용까지 충족) accent.
+            // 두 상태가 겹치면 선택이 이긴다 (습득 가능 여부는 상세 패널의 버튼이 말해준다)
             if (borderImage != null)
             {
-                borderImage.enabled = level == 0 && canAcquire;
-                borderImage.color = SkillTreePalette.Accent;
+                borderImage.enabled = _isSelected || (level == 0 && canAcquire);
+                borderImage.color = _isSelected ? SkillTreePalette.Selected : SkillTreePalette.Accent;
             }
 
             // 잠김 = 어두운 실루엣 (색으로만 구분 금지 — 레벨 텍스트가 병행)
@@ -98,11 +100,13 @@ namespace TrainDefense.Game.UI.SkillTree
             if (iconImage != null)
                 iconImage.color = isLocked ? LockedIconSilhouette : Color.white;
 
-            _RefreshLevelText(level, isMax, arePrerequisitesMet, canAcquire);
+            _RefreshLevelText(level, isMax);
         }
 
-        // 목업 상태 표기: 만렙=MAX / 획득 가능=비용 / 그 외=Lv n/m (이중부호화 텍스트)
-        private void _RefreshLevelText(int level, bool isMax, bool arePrerequisitesMet, bool canAcquire)
+        // 상태 표기: 만렙=MAX / 그 외=n/m (이중부호화 텍스트). 같은 자리에 비용을 번갈아 적지 않는다 —
+        // 아이콘 없는 숫자 하나는 레벨로 읽히고, 비용은 상세 패널이 아이콘+수량으로 보여준다.
+        // "Lv" 접두는 뺐다 — DNF 폰트의 소문자 v가 u처럼 보이고, "Lv 10/10"은 28px에서 120px 칸을 넘친다.
+        private void _RefreshLevelText(int level, bool isMax)
         {
             if (levelText == null) return;
 
@@ -114,16 +118,17 @@ namespace TrainDefense.Game.UI.SkillTree
                 return;
             }
 
-            if (level == 0 && arePrerequisitesMet)
-            {
-                levelText.text = _data.GetCostAtLevel(0).ToString();
-                levelText.color = canAcquire ? SkillTreePalette.Accent : SkillTreePalette.DangerText;
+            levelText.text = _data.MaxLevel > 0 ? $"{level}/{_data.MaxLevel}" : level.ToString();
+            levelText.color = level > 0 ? SkillTreePalette.OnAccent : SkillTreePalette.OnSurface;
+        }
 
-                return;
-            }
+        /// <summary>선택 표시 — 상세 패널이 어느 노드를 말하는지 테두리 링을 흰 글로우로 바꿔 알린다 (Refresh가 색·표시를 결정).</summary>
+        public void SetSelected(bool isSelected)
+        {
+            if (_isSelected == isSelected) return;
 
-            levelText.text = _data.MaxLevel > 0 ? $"Lv {level}/{_data.MaxLevel}" : $"Lv {level}";
-            levelText.color = level > 0 ? SkillTreePalette.OnAccent : SkillTreePalette.OnSurfaceMuted;
+            _isSelected = isSelected;
+            Refresh();
         }
 
         /// <summary>습득 순간 펀치 연출. timeScale=0에서도 재생된다 (SetUpdate(true)).</summary>

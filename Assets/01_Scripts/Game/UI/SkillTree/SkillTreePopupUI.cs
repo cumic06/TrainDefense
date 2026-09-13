@@ -9,49 +9,50 @@ using TrainDefense.Localize;
 namespace TrainDefense.Game.UI.SkillTree
 {
     /// <summary>
-    /// 스킬트리 팝업. 보유 스킬 포인트를 표시하고 (lane, row, col) 데이터 주도로 노드·레일을 런타임 생성한다.
+    /// 스킬트리 팝업. 보유 재화를 표시하고 (lane, row, col) 데이터 주도로 노드·레일을 런타임 생성한다.
     /// 레인 타이틀·출발역 마커는 프리팹에 정적 배치돼 있고 (런타임 생성 금지), 여기서는 문구·점등만 갱신한다.
-    /// 노드 클릭 → 상세 패널에서 습득, 리스펙 버튼으로 전액 환급 초기화 (v1 무료).
+    /// 노드 탭 → 트리 아래 상세 띠(이름 … LV / 현재 효과 / 다음 효과 + 레벨업 버튼[문구 / ◆비용])에서 레벨업한다.
+    /// (리스펙 버튼은 09-11에 제거 — 강화 초기화 기능 자체를 없애기로 함)
     /// SkillTreeButton이 Resources의 Popup_SkillTree 프리팹을 Instantiate해서 띄운다.
-    /// 흐름은 아래→위 (출발역이 하단) — treeContent는 pivot (0.5, 0) 하단 기준을 권장한다.
+    /// 흐름은 왼쪽→오른쪽 (첫 노드가 왼쪽 열) — treeContent는 pivot (0, 0.5) 왼쪽 기준, 노드·선로 프리팹도 앵커 (0, 0.5).
     /// </summary>
     public class SkillTreePopupUI : MonoBehaviour
     {
-        // DESIGN.md 그리드: 노드 144px + 간격 48 = 피치 192, 레인 3개(화력/방어/유틸) 세로 선로
-        private const float NodePitch = 192f;
-        private const float LaneSpacing = 360f;
-        private const float RailThickness = 56f;   // 기찻길 스프라이트가 침목까지 보이는 목업 폭
-        private const float ContentPadding = 96f;
-        // 상단 레인 타이틀 공간 — 노드 그리드가 그만큼 위로 밀린다
-        // 하단 출발역은 없앴다(첫 업그레이드가 그 자리로 내려옴). 되살리려면 160f로 되돌리고
-        // 프리팹의 Station_* / StationLabel_* 를 다시 켠 뒤 루트 노드 선로 생성을 복원한다.
-        private const float StationExtraBottom = 0f;
-        private const float LaneTitleExtraTop = 170f;
+        // DESIGN.md 그리드: 노드 136px. 09-13 가로 선로 전환 — 레인 3개(화력/방어/유틸)가 가로 선로 세 줄이 되고 행(row)이 왼쪽→오른쪽 역이다.
+        // 남는 가로는 선로 길이에 돌린다 (세로 배치 때 "남는 세로는 선로 노출에"와 같은 원칙): 트리 판 폭 1170 = 여백 61·2 + 4·136 + 선로 168·3
+        private const float NodeSize = 136f;
+        private const float NodePitch = 304f;       // 노드 136 + 선로 168
+        private const float LanePitch = 176f;       // 노드 136 + 레인 간격 40 (트리 판 높이 588 = 여백 50·2 + 3·136 + 2·40 — 아래 상세 띠 176 자리를 남긴다)
+        private const float RailThickness = 56f;    // 기찻길 스프라이트가 침목까지 보이는 목업 폭
+        // 왼쪽 여백 61 = 트리 판 9-slice 외곽선(rect 안쪽 10) + 선택 링(+14) 바깥 여유. 세로 여백은 LanePitch가 결정한다
+        private const float ContentPaddingLeft = 61f;
 
         #region Fields
         [SerializeField] private Button closeButton;
-        [SerializeField] private TextMeshProUGUI skillPointText;
+        [SerializeField] private TextMeshProUGUI coinText;
         [Header("정적 라벨 (로컬라이즈)")]
         [SerializeField] private TextMeshProUGUI titleText;
         [SerializeField] private TextMeshProUGUI acquireText;
-        [SerializeField] private TextMeshProUGUI respecText;
         [Header("레인 타이틀·출발역 (프리팹 정적 배치 — index = (int)SkillTreeLane)")]
         [SerializeField] private TextMeshProUGUI[] laneTitleTexts;
         [SerializeField] private Image[] stationImages;
         [SerializeField] private TextMeshProUGUI[] stationLabelTexts;
         [Header("트리 (런타임 생성)")]
-        [SerializeField] private RectTransform treeContent;        // 스크롤 컨텐츠 — pivot (0.5, 0) 권장
+        [SerializeField] private RectTransform treeContent;        // 스크롤 컨텐츠 — pivot (0, 0.5) 왼쪽 기준, 세로는 뷰포트에 늘림
         [SerializeField] private SkillTreeNodeUI nodePrefab;
         [SerializeField] private SkillTreeRailUI railPrefab;
-        [Header("상세 패널 (노드 클릭 시 표시)")]
-        [SerializeField] private GameObject detailPanel;           // 선택 전에는 숨김
+        [Header("상세 띠 (트리 아래 — 세로 레이아웃 그룹: 이름 … LV / 현재 효과 / ◆비용 다음 효과. 라벨·화살표 없음)")]
+        [SerializeField] private GameObject detailPanel;           // 선택이 없을 때만 숨김 (열자마자 첫 노드를 기본 선택)
         [SerializeField] private Image detailIcon;
         [SerializeField] private TextMeshProUGUI detailNameText;
-        [SerializeField] private TextMeshProUGUI detailDescriptionText;
+        [SerializeField] private TextMeshProUGUI detailDescriptionText;      // 효과 한 줄 — 현재 레벨 값, 미습득이면 1레벨 값 ("모든 포탑의 공격력이 N 증가합니다")
         [SerializeField] private TextMeshProUGUI detailLevelText;
+        [Tooltip("습득 버튼 안 비용 줄(재화 아이콘 + 수량) — 만렙이면 줄을 꺼서 버튼 문구만 가운데 온다")]
+        [SerializeField] private GameObject detailCostRow;
+        [Tooltip("비용 옆 재화 아이콘 — 재화 이름을 글자로 쓰지 않고 아이콘 + 수량으로만 보여준다.")]
+        [SerializeField] private Image detailCostIcon;
         [SerializeField] private TextMeshProUGUI detailCostText;
         [SerializeField] private Button acquireButton;
-        [SerializeField] private Button respecButton;
         #endregion
 
         private readonly Dictionary<string, SkillTreeNodeUI> _nodeUIs = new();
@@ -80,14 +81,12 @@ namespace TrainDefense.Game.UI.SkillTree
                 closeButton.onClick.AddListener(Close);
             if (acquireButton != null)
                 acquireButton.onClick.AddListener(_OnClickAcquire);
-            if (respecButton != null)
-                respecButton.onClick.AddListener(_OnClickRespec);
         }
 
         private void Start()
         {
             _BuildTree();
-            _RefreshSkillPoint();
+            _RefreshCoin();
             _RefreshRails(sweepToNodeId: null);
             _RefreshDetail();
         }
@@ -98,8 +97,6 @@ namespace TrainDefense.Game.UI.SkillTree
                 closeButton.onClick.RemoveListener(Close);
             if (acquireButton != null)
                 acquireButton.onClick.RemoveListener(_OnClickAcquire);
-            if (respecButton != null)
-                respecButton.onClick.RemoveListener(_OnClickRespec);
         }
         #endregion
 
@@ -108,13 +105,11 @@ namespace TrainDefense.Game.UI.SkillTree
             PopupTween.PlayHide(gameObject, () => Destroy(gameObject));
         }
 
-        // 프리팹에 박힌 정적 라벨(타이틀·레인 타이틀·출발역·초기화 버튼)을 현재 언어로 갱신한다.
+        // 프리팹에 박힌 정적 라벨(타이틀·레인 타이틀·출발역)을 현재 언어로 갱신한다.
         private void _ApplyStaticTexts()
         {
             if (titleText != null)
                 titleText.text = LocalizeHelper.GetByKey("UI_SkillTree_Title", "스킬 트리");
-            if (respecText != null)
-                respecText.text = LocalizeHelper.GetByKey("UI_SkillTree_Respec", "초기화");
 
             if (laneTitleTexts != null)
             {
@@ -135,7 +130,7 @@ namespace TrainDefense.Game.UI.SkillTree
                 }
             }
 
-            // 습득 버튼 문구(획득/레벨업/MAX/선행 노드 필요)·비용 라벨도 언어를 따른다
+            // 레벨업 버튼 문구(레벨업/MAX/선행 노드 필요)·효과 문구도 언어를 따른다
             _RefreshDetail();
         }
 
@@ -187,10 +182,10 @@ namespace TrainDefense.Game.UI.SkillTree
                 }
             }
 
-            // 세로 스크롤 높이 = 출발역 + 최상단 행 + 레인 타이틀 + 상하 여백
+            // 가로 스크롤 폭 = 좌우 여백 + 마지막 열까지 (4열 = 1170 → 트리 판과 같아 스크롤 없음, 열이 늘면 가로 스크롤)
             treeContent.sizeDelta = new Vector2(
-                treeContent.sizeDelta.x,
-                ContentPadding * 2f + StationExtraBottom + LaneTitleExtraTop + maxRow * NodePitch);
+                ContentPaddingLeft * 2f + NodeSize + maxRow * NodePitch,
+                treeContent.sizeDelta.y);
         }
 
         private void _CreateRail(string fromId, string toId, Vector2 fromPosition, Vector2 toPosition)
@@ -202,11 +197,12 @@ namespace TrainDefense.Game.UI.SkillTree
             _rails.Add(rail);
         }
 
-        // 흐름 아래→위: 출발역(하단) 위로 row 0부터 쌓인다. 레인이 세로 선로 한 줄, col은 분기 오프셋.
+        // 흐름 왼쪽→오른쪽: row 0(첫 노드)이 왼쪽 열. 레인이 가로 선로 한 줄 — 화력이 맨 위, 유틸이 맨 아래 (세로 중앙 기준).
+        // col(분기 오프셋)은 현재 데이터가 전부 0이라 자리를 정하지 않는다 — 분기가 생기면 레인 간격을 넓혀 세로 오프셋으로 넣을 것.
         private Vector2 _GetNodePosition(SkillNodeData data)
         {
-            float x = ((int)data.Lane - 1) * LaneSpacing + data.Col * NodePitch;
-            float y = ContentPadding + StationExtraBottom + data.Row * NodePitch;
+            float x = ContentPaddingLeft + NodeSize * 0.5f + data.Row * NodePitch;
+            float y = (1 - (int)data.Lane) * LanePitch;
 
             return new Vector2(x, y);
         }
@@ -227,7 +223,7 @@ namespace TrainDefense.Game.UI.SkillTree
             if (!manager.TryAcquire(_selectedData.Id)) return;
 
             // 습득 성공 → 포인트·전 노드·레일·상세 갱신 (포인트가 줄어 다른 노드의 습득 가능 여부도 바뀜)
-            _RefreshSkillPoint();
+            _RefreshCoin();
             foreach (var node in _nodeUIs.Values)
                 node.Refresh();
 
@@ -238,23 +234,6 @@ namespace TrainDefense.Game.UI.SkillTree
             if (_nodeUIs.TryGetValue(_selectedData.Id, out var acquiredNode))
                 acquiredNode.PlayAcquirePunch();
 
-            _RefreshDetail();
-        }
-
-        private void _OnClickRespec()
-        {
-            var manager = SkillTreeManager.Instance;
-            if (manager == null) return;
-            if (!manager.ResetAll()) return;
-
-            // 초기화로 잠긴 노드가 선택된 채 남지 않게 — 잠김 노드는 상세 표시 대상이 아니다
-            if (_selectedData != null && !manager.ArePrerequisitesMet(_selectedData.Id))
-                _selectedData = null;
-
-            _RefreshSkillPoint();
-            foreach (var node in _nodeUIs.Values)
-                node.Refresh();
-            _RefreshRails(sweepToNodeId: null);
             _RefreshDetail();
         }
 
@@ -296,14 +275,41 @@ namespace TrainDefense.Game.UI.SkillTree
             }
         }
 
-        // 선택된 노드의 계열·이름·설명·레벨·비용·습득 가능 여부를 상세 패널에 표시한다.
+        // 선택된 노드의 계열·이름·설명·레벨·비용·습득 가능 여부를 상세 띠에 표시한다.
+        // 선택이 없으면 왼쪽 첫 열의 맨 위 레인 노드를 기본으로 잡는다 — 띠가 빈 채로 열리지 않게.
+        private void _EnsureSelection()
+        {
+            if (_selectedData != null) return;
+
+            var manager = SkillTreeManager.Instance;
+            if (manager == null) return;
+
+            SkillNodeData first = null;
+
+            foreach (var data in manager.GetNodes())
+            {
+                if (data == null) continue;
+
+                if (first == null || data.Row < first.Row || (data.Row == first.Row && (int)data.Lane < (int)first.Lane))
+                    first = data;
+            }
+
+            _selectedData = first;
+        }
+
         private void _RefreshDetail()
         {
+            _EnsureSelection();
+
             var manager = SkillTreeManager.Instance;
             bool hasSelection = _selectedData != null;
 
             if (detailPanel != null)
                 detailPanel.SetActive(hasSelection);
+
+            // 선택 링은 상세 패널이 가리키는 노드 하나만 켠다
+            foreach (var node in _nodeUIs.Values)
+                node.SetSelected(hasSelection && node.Data.Id == _selectedData.Id);
 
             if (detailIcon != null)
             {
@@ -313,19 +319,17 @@ namespace TrainDefense.Game.UI.SkillTree
 
             if (detailNameText != null)
             {
-                // 목업 레인 칩 — 이름 위에 계열명을 accent로 작게 표기 (rich text, 프리팹 추가 요소 없이)
-                detailNameText.text = hasSelection
-                    ? $"<size=55%><color=#E47A3C>{_GetLaneName(_selectedData.Lane)}</color></size>\n{_selectedData.Name}"
-                    : string.Empty;
+                // 이름만 — 계열 칩("화력")은 09-13 사용자 결정으로 뺐다 (레인이 가로 줄이라 위치가 계열을 말한다)
+                detailNameText.text = hasSelection ? _selectedData.Name : string.Empty;
             }
-            if (detailDescriptionText != null)
-                detailDescriptionText.text = hasSelection ? _selectedData.Description : string.Empty;
-
             if (!hasSelection || manager == null)
             {
+                if (detailDescriptionText != null) detailDescriptionText.text = string.Empty;
                 if (detailLevelText != null) detailLevelText.text = string.Empty;
+                if (detailCostRow != null) detailCostRow.SetActive(false);
                 if (detailCostText != null) detailCostText.text = string.Empty;
-                if (acquireText != null) acquireText.text = LocalizeHelper.GetByKey("UI_SkillTree_Acquire", "습득");
+                if (detailCostIcon != null) detailCostIcon.enabled = false;
+                if (acquireText != null) acquireText.text = LocalizeHelper.GetByKey("UI_SkillTree_LevelUp", "레벨업");
                 if (acquireButton != null) acquireButton.interactable = false;
 
                 return;
@@ -335,41 +339,52 @@ namespace TrainDefense.Game.UI.SkillTree
             bool isMax = manager.IsMaxLevel(_selectedData.Id);
             bool arePrerequisitesMet = manager.ArePrerequisitesMet(_selectedData.Id);
             int cost = _selectedData.GetCostAtLevel(level);
-            bool isAffordable = cost <= manager.SkillPoint;
+            bool isAffordable = cost <= manager.AvailableCoin;
 
             if (detailLevelText != null)
             {
+                // "LV" 대문자 — DNF 폰트에서 소문자 v가 u처럼 보인다
                 detailLevelText.text = isMax ? "MAX"
-                    : _selectedData.MaxLevel > 0 ? $"Lv {level}/{_selectedData.MaxLevel}" : $"Lv {level}";
-                detailLevelText.color = isMax ? SkillTreePalette.Mastered : SkillTreePalette.OnSurface;
+                    : _selectedData.MaxLevel > 0 ? $"LV {level}/{_selectedData.MaxLevel}" : $"LV {level}";
+                // 이름 아래 부제라 평소엔 흐린 INK2. 만렙은 금색이 크림 바탕에서 안 읽혀(09-13 반려) 진한 INK로 — 노드 쪽 금색 면과 달리 글자만이라 대비가 부족하다
+                detailLevelText.color = isMax ? SkillTreePalette.OnSurface : SkillTreePalette.OnSurfaceMuted;
             }
 
+            // 효과 한 줄 — 현재 레벨의 값, 미습득(레벨 0)이면 1레벨 값 (사용자 결정 09-13: "모든 포탑의 공격력이 N 증가합니다" 한 줄만).
+            // 라벨·화살표·색 강조·다음 레벨 줄은 쓰지 않는다 — 레벨업하면 같은 줄의 숫자가 올라간다
+            if (detailDescriptionText != null)
+                detailDescriptionText.text = _selectedData.GetDescriptionAtLevel(Mathf.Max(level, 1));
+
+            // 비용은 습득 버튼 안(문구 아래)에 아이콘 + 수량으로만 — 행동과 값이 한 자리. 만렙이면 줄을 꺼서 "MAX"만 가운데 온다
+            if (detailCostRow != null)
+                detailCostRow.SetActive(!isMax);
             if (detailCostText != null)
             {
-                detailCostText.text = isMax ? "MAX"
-                    : $"{LocalizeHelper.GetByKey("UI_SkillTree_NeedPoint", "필요 포인트")} {cost.ToCommaString()}";
+                detailCostText.text = isMax ? string.Empty : cost.ToCommaString();
                 // 비용 부족은 색 + 버튼 비활성으로 이중부호화 (danger 텍스트는 #E06666 — #B34040 금지)
-                detailCostText.color = isMax || isAffordable ? SkillTreePalette.OnSurface : SkillTreePalette.DangerText;
+                detailCostText.color = isAffordable ? SkillTreePalette.OnSurface : SkillTreePalette.DangerText;
             }
 
-            // 버튼 문구가 곧 상태다: 획득 / 레벨업 / MAX / 선행 노드 필요 (목업)
+            if (detailCostIcon != null)
+                detailCostIcon.enabled = !isMax;
+
+            // 버튼 문구가 곧 상태다: 레벨업 / MAX / 선행 노드 필요. 0→1도 "레벨업"으로 통일 (09-13 사용자 결정 — "습득"은 쓰지 않는다)
             if (acquireText != null)
             {
                 acquireText.text = isMax ? "MAX"
                     : !arePrerequisitesMet ? LocalizeHelper.GetByKey("UI_SkillTree_NeedPrerequisite", "선행 노드 필요")
-                    : level > 0 ? LocalizeHelper.GetByKey("UI_SkillTree_LevelUp", "레벨업")
-                    : LocalizeHelper.GetByKey("UI_SkillTree_Acquire", "습득");
+                    : LocalizeHelper.GetByKey("UI_SkillTree_LevelUp", "레벨업");
             }
 
             if (acquireButton != null)
                 acquireButton.interactable = manager.CanAcquire(_selectedData.Id);
         }
 
-        private void _RefreshSkillPoint()
+        private void _RefreshCoin()
         {
             var manager = SkillTreeManager.Instance;
-            if (skillPointText != null && manager != null)
-                skillPointText.text = manager.SkillPoint.ToCommaString();
+            if (coinText != null && manager != null)
+                coinText.text = manager.AvailableCoin.ToCommaString();
         }
         #endregion
     }

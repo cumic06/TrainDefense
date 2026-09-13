@@ -122,5 +122,28 @@ namespace TrainDefense.Game.Datas
 
             return Mathf.RoundToInt(needPoint * Mathf.Pow(GrowthRate, currentLevel));
         }
+
+        /// <summary>
+        /// 해당 레벨의 효과 문구. 설명 템플릿의 {0}에 (레벨당 값 × 레벨)의 크기를 넣는다 — 부호·단위는 템플릿이 가진다 ("공격력 +{0}", "공격 간격 -{0}초").
+        /// 템플릿에 {0}이 없으면(해금 노드 등) 원문 그대로.
+        /// </summary>
+        public string GetDescriptionAtLevel(int level)
+        {
+            string template = Description;
+            if (!template.Contains("{0}")) return template;
+
+            float magnitude = Mathf.Abs(_GetValuePerLevel() * level);
+
+            return template.Replace("{0}", magnitude.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
+        }
+
+        // 레벨당 효과 값 — TurretStat은 첫 스탯, Passive는 passiveValuePerLevel (둘 다 레벨에 비례해 가산된다)
+        private float _GetValuePerLevel()
+        {
+            if (category == SkillNodeCategory.Passive) return passiveValuePerLevel;
+            if (stats != null && stats.Length > 0 && stats[0] != null) return stats[0].Value;
+
+            return 0f;
+        }
     }
 }
