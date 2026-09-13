@@ -11,24 +11,27 @@ using TrainDefense.Localize;
 namespace TrainDefense.Game
 {
     /// <summary>
-    /// 스킬트리(로비) 시스템. 스킬 포인트로 노드를 습득하며 런 사이에 유지된다 — 영구강화와 완전 별도.
+    /// 스킬트리(로비) 시스템. 노드를 습득하며 런 사이에 유지된다.
     /// 판정·계산은 SkillTreeCore(순수 C#)가 담당하고, 이 매니저는 재화·저장·이벤트·캐시 어댑터다.
     /// - TurretStat 노드: GetBonus(StatType)로 조회 → 포탑·레인지 스탯에 가산.
     /// - Passive 노드: GetValue(SkillTreePassiveType)로 조회 → 각 시스템이 적용.
     /// - TurretUnlock 노드: IsTrainUnlocked(trainId)로 조회 → 삼중택일 Add 풀이 게이트.
-    /// ⚠️ 스킬 포인트 획득처는 미정 — AddSkillPoint(int)만 뚫려 있고, 획득 훅은 결정 후 1줄 연결한다.
+    ///
+    /// 재화는 <see cref="PermanentUpgradeManager"/>가 엘리트 몬스터 처치로 적립하는 것을 그대로 쓴다 (지갑 하나).
+    /// 여기서 따로 적립하지 않으므로 보유량·저장은 전적으로 그쪽 소유다.
     /// </summary>
     public class SkillTreeManager : Singleton<SkillTreeManager>
     {
-        private const string SKILL_POINT_KEY = "SkillTreeSkillPoint";
         private const string SAVE_KEY = "SkillTreeSaveData";
 
-        private int _skillPoint;
         private SkillTreeCore _core;
         private SkillTreeSaveData _pendingSave;   // 코어 생성 전(DB 로드 전)에 읽어 둔 세이브
         private bool _hasLoggedEmptyNodeData;     // 빈 DB 에러 로그 1회 제한 (조회마다 스팸 방지)
 
-        public int SkillPoint => _skillPoint;
+        /// <summary>습득에 쓸 수 있는 보유 재화 — 엘리트 처치로 쌓이는 지갑을 그대로 조회한다.</summary>
+        public int AvailableCoin => PermanentUpgradeManager.Instance != null
+            ? PermanentUpgradeManager.Instance.EliteCoin
+            : 0;
 
         // 씬 와이어링 0 — 첫 씬 로드 전에 스스로 생성된다 (씬 배치 불필요).
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -95,18 +98,6 @@ namespace TrainDefense.Game
             return true;
         }
 
-        #region SkillPoint
-        /// <summary>스킬 포인트 지급. 획득처가 정해지면 이 API에 1줄 연결한다.</summary>
-        public void AddSkillPoint(int amount)
-        {
-            if (amount <= 0) return;
-
-            _skillPoint += amount;
-            _SaveSkillPoint();
-            GameEventSystem.Publish(new SkillPointChangedEvent(_skillPoint));
-        }
-        #endregion
-
         #region Query
         public IReadOnlyCollection<SkillNodeData> GetNodes()
             => _EnsureCore() ? _core.Nodes : System.Array.Empty<SkillNodeData>();
@@ -126,13 +117,13 @@ namespace TrainDefense.Game
         public int GetNextCost(string nodeId)
             => _EnsureCore() ? _core.GetNextCost(nodeId) : int.MaxValue;
 
-        /// <summary>현재 포인트로 해당 노드를 습득(레벨업) 가능한지.</summary>
+        /// <summary>현재 보유 재화로 해당 노드를 습득(레벨업) 가능한지.</summary>
         public bool CanAcquire(string nodeId)
-            => _EnsureCore() && _core.CanAcquire(nodeId, _skillPoint);
+            => _EnsureCore() && _core.CanAcquire(nodeId, AvailableCoin);
 
-        /// <summary>현재 포인트로 습득 가능한 노드가 하나라도 있는지. (레드닷 판정용)</summary>
+        /// <summary>현재 보유 재화로 습득 가능한 노드가 하나라도 있는지. (레드닷 판정용)</summary>
         public bool HasAcquirableNode()
-            => _EnsureCore() && _core.HasAcquirableNode(_skillPoint);
+            => _EnsureCore() && _core.HasAcquirableNode(AvailableCoin);
 
         /// <summary>레인(계열) 표시 이름 — DB의 skillTreeLaneDataList에서 조회, 미등록 레인은 기본 키 폴백.</summary>
         public string GetLaneName(SkillTreeLane lane)
@@ -172,34 +163,45 @@ namespace TrainDefense.Game
         public bool TryAcquire(string nodeId)
         {
             if (!_EnsureCore()) return false;
-            if (!_core.TryLevelUp(nodeId, _skillPoint, out int cost)) return false;
 
-            _skillPoint -= cost;
-            _SaveSkillPoint();
+            var upgradeManager = PermanentUpgradeManager.Instance;
+            if (upgradeManager == null) return false;
+
+            if (!_core.CanAcquire(nodeId, upgradeManager.EliteCoin)) return false;
+
+            int cost = _core.GetNextCost(nodeId);
+
+            // 차감을 레벨 반영보다 먼저 한다. 반대 순서면 차감이 실패했을 때 공짜 습득이 남는다.
+            // (비용 0 노드는 SpendEliteCoin이 false를 돌려주므로 호출 자체를 건너뛴다)
+            if (cost > 0 && !upgradeManager.SpendEliteCoin(cost)) return false;
+
+            _core.TryLevelUp(nodeId, cost, out _);
             _SaveLevels();
-            // 습득은 의식적 행동이라 강제 종료에도 잃지 않도록 즉시 디스크 flush (포인트 차감 + 레벨을 함께 확정)
+            // 습득은 의식적 행동이라 강제 종료에도 잃지 않도록 즉시 디스크 flush
             PlayerPrefs.Save();
             _InvalidateCache();
-            GameEventSystem.Publish(new SkillPointChangedEvent(_skillPoint));
             GameEventSystem.Publish(new SkillNodeAcquiredEvent(nodeId, cost, _core.GetLevel(nodeId)));
 
             return true;
         }
 
-        /// <summary>리스펙 — 전 노드 초기화 + 지출 포인트 전액 환급 (v1 무료). 습득한 노드가 없으면 아무것도 안 한다.</summary>
+        /// <summary>리스펙 — 전 노드 초기화 + 지출 재화 전액 환급 (v1 무료). 습득한 노드가 없으면 아무것도 안 한다.</summary>
         public bool ResetAll()
         {
             if (!_EnsureCore()) return false;
             if (_core.Levels.Count == 0) return false;
 
+            var upgradeManager = PermanentUpgradeManager.Instance;
+            if (upgradeManager == null) return false;
+
             int refund = _core.GetTotalSpentPoints();
             _core.ResetAllLevels();
-            _skillPoint += refund;
-            _SaveSkillPoint();
+            // 환급도 지갑으로 돌아간다. 리스펙은 로비에서만 열리고 판 진입 때 RunEliteCoinEarned가 0으로 리셋되므로
+            // 결산의 "이번 판 획득량"에는 섞이지 않는다.
+            upgradeManager.AddEliteCoin(refund);
             _SaveLevels();
             PlayerPrefs.Save();
             _InvalidateCache();
-            GameEventSystem.Publish(new SkillPointChangedEvent(_skillPoint));
             GameEventSystem.Publish(new SkillTreeResetEvent(refund));
 
             return true;
@@ -272,14 +274,7 @@ namespace TrainDefense.Game
         #region Save / Load
         private void _Load()
         {
-            _skillPoint = PlayerPrefs.GetInt(SKILL_POINT_KEY, 0);
             _pendingSave = SkillTreeSaveData.FromJson(PlayerPrefs.GetString(SAVE_KEY, ""));
-        }
-
-        private void _SaveSkillPoint()
-        {
-            // 디스크 flush(PlayerPrefs.Save)는 습득/환급·백그라운드 전환 시 일괄
-            PlayerPrefs.SetInt(SKILL_POINT_KEY, _skillPoint);
         }
 
         private void _SaveLevels()
@@ -291,24 +286,15 @@ namespace TrainDefense.Game
             PlayerPrefs.SetString(SAVE_KEY, saveData.ToJson());
         }
 
-        [Sirenix.OdinInspector.Button("테스트 스킬 포인트 +10")]
-        private void AddTestSkillPoint()
-        {
-            AddSkillPoint(10);
-            Debug.Log($"[SkillTreeManager] 테스트 스킬 포인트 +10 (현재 {_skillPoint})");
-        }
-
-        [Sirenix.OdinInspector.Button("스킬트리 세이브 완전 삭제 (포인트 포함)")]
+        [Sirenix.OdinInspector.Button("습득 노드 전부 삭제")]
         private void DeleteAllSaveData()
         {
-            _skillPoint = 0;
             _core = null;
             _pendingSave = null;
             _InvalidateCache();
-            PlayerPrefs.DeleteKey(SKILL_POINT_KEY);
             PlayerPrefs.DeleteKey(SAVE_KEY);
             PlayerPrefs.Save();
-            Debug.Log("[SkillTreeManager] 스킬트리 세이브가 완전히 삭제되었습니다.");
+            Debug.Log("[SkillTreeManager] 스킬트리 습득 기록이 삭제되었습니다. (재화는 영구강화 지갑 소유라 그대로)");
         }
         #endregion
     }

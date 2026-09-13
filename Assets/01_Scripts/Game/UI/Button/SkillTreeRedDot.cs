@@ -6,8 +6,8 @@ using UnityEngine;
 namespace TrainDefense
 {
     /// <summary>
-    /// 스킬트리 버튼의 레드닷. 현재 스킬 포인트로 습득 가능한 노드가 하나라도 있으면 켜진다.
-    /// 포인트 변동/습득/리스펙 이벤트에 맞춰 갱신된다. 버튼 GameObject에 붙이고 redDot에 뱃지를 연결한다.
+    /// 스킬트리 버튼의 레드닷. 현재 보유 재화로 습득 가능한 노드가 하나라도 있으면 켜진다.
+    /// 재화 변동/습득/리스펙 이벤트에 맞춰 갱신된다. 버튼 GameObject에 붙이고 redDot에 뱃지를 연결한다.
     /// </summary>
     public class SkillTreeRedDot : MonoBehaviour
     {
@@ -17,7 +17,7 @@ namespace TrainDefense
 
         private void OnEnable()
         {
-            GameEventSystem.Subscribe<SkillPointChangedEvent>(_OnSkillPointChanged);
+            GameEventSystem.Subscribe<EliteCoinChangedEvent>(_OnCoinChanged);
             GameEventSystem.Subscribe<SkillNodeAcquiredEvent>(_OnNodeAcquired);
             GameEventSystem.Subscribe<SkillTreeResetEvent>(_OnTreeReset);
             _Refresh();
@@ -25,7 +25,7 @@ namespace TrainDefense
 
         private void OnDisable()
         {
-            GameEventSystem.Unsubscribe<SkillPointChangedEvent>(_OnSkillPointChanged);
+            GameEventSystem.Unsubscribe<EliteCoinChangedEvent>(_OnCoinChanged);
             GameEventSystem.Unsubscribe<SkillNodeAcquiredEvent>(_OnNodeAcquired);
             GameEventSystem.Unsubscribe<SkillTreeResetEvent>(_OnTreeReset);
         }
@@ -36,7 +36,7 @@ namespace TrainDefense
             _Refresh();
         }
 
-        private void _OnSkillPointChanged(SkillPointChangedEvent _) => _Refresh();
+        private void _OnCoinChanged(EliteCoinChangedEvent _) => _Refresh();
         private void _OnNodeAcquired(SkillNodeAcquiredEvent _) => _Refresh();
         private void _OnTreeReset(SkillTreeResetEvent _) => _Refresh();
 
