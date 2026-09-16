@@ -483,7 +483,7 @@ namespace TrainDefense
         }
         #endregion
 
-        private const float BASE_EXP = 203f;
+        private const float BASE_EXP = 244f;
         private const float expPower = 1.6f;
 
         public float GetNextLevelUpExp()

@@ -365,15 +365,15 @@ MonoBehaviour:
   offerSlotPrefab: {fileID: -8685490612574751861, guid: 773092aaa222fadaadb28f8d86a37329, type: 3}
   offerPricing:
     turretPurchaseCost: 160
-    statUpgradeBaseCost: 50
+    statUpgradeBaseCost: 120
     elitePromotionCost: 5000
     stationPriceIncreasePercent: 20
   turretSlotText: {fileID: 7710000000000000074}
   turretSlotFullColor: {r: 0.8784314, g: 0.4, b: 0.4, a: 1}
   rerollButton: {fileID: 7710000000000000005}
   rerollLabelText: {fileID: 7710000000000000014}
-  rerollBaseCostPerStation: 10
-  rerollCostIncreasePerStation: 10
+  rerollBaseCostPerStation: 20
+  rerollCostIncreasePerStation: 30
   rerollInsufficientColor: {r: 1, g: 0, b: 0, a: 1}
   rerollCostFontScale: 0.5
 --- !u!225 &6033409719962787191

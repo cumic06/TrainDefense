@@ -1600,34 +1600,34 @@ MonoBehaviour:
     valueMultiplier: 1
     costMultiplier: 1
     firstShopVisit: 1
-    lastShopVisit: 8
+    lastShopVisit: 6
     weight: 12
   - id: stat_upgrade_tier_2
     grade: 2
     valueMultiplier: 2
     costMultiplier: 1.8
-    firstShopVisit: 6
-    lastShopVisit: 14
+    firstShopVisit: 4
+    lastShopVisit: 10
     weight: 10
   - id: stat_upgrade_tier_3
     grade: 3
     valueMultiplier: 3
     costMultiplier: 2.6
-    firstShopVisit: 12
-    lastShopVisit: 0
+    firstShopVisit: 8
+    lastShopVisit: 16
     weight: 8
   - id: stat_upgrade_tier_4
     grade: 4
     valueMultiplier: 4
     costMultiplier: 3.4
-    firstShopVisit: 20
+    firstShopVisit: 12
     lastShopVisit: 0
     weight: 4
   - id: stat_upgrade_tier_5
     grade: 5
     valueMultiplier: 5
     costMultiplier: 4
-    firstShopVisit: 28
+    firstShopVisit: 18
     lastShopVisit: 0
     weight: 2
   statUpgradeStatDataList:
@@ -1638,19 +1638,19 @@ MonoBehaviour:
   - id: stat_upgrade_stat_attack_interval
     statType: 4
     minGrade: 1
-    costMultiplier: 1.5
+    costMultiplier: 1.2
   - id: stat_upgrade_stat_attack_area
     statType: 8
     minGrade: 1
     costMultiplier: 1
   - id: stat_upgrade_stat_target_count
     statType: 5
-    minGrade: 4
-    costMultiplier: 3
+    minGrade: 3
+    costMultiplier: 2
   - id: stat_upgrade_stat_attack_count
     statType: 3
-    minGrade: 5
-    costMultiplier: 3
+    minGrade: 4
+    costMultiplier: 2
   - id: stat_upgrade_stat_burst_duration
     statType: 10
     minGrade: 1
@@ -1663,51 +1663,51 @@ MonoBehaviour:
   - id: stat_upgrade_30001_attack_damage
     trainDataId: 30001
     statType: 2
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30001_attack_interval
     trainDataId: 30001
     statType: 4
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30002_attack_damage
     trainDataId: 30002
     statType: 2
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30002_attack_area
     trainDataId: 30002
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30003_attack_damage
     trainDataId: 30003
     statType: 2
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30003_attack_interval
     trainDataId: 30003
     statType: 4
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30003_attack_area
     trainDataId: 30003
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30004_attack_damage
     trainDataId: 30004
     statType: 2
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30004_attack_interval
     trainDataId: 30004
     statType: 4
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30004_attack_area
     trainDataId: 30004
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30005_attack_damage
     trainDataId: 30005
     statType: 2
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30005_attack_interval
     trainDataId: 30005
     statType: 4
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30005_target_count
     trainDataId: 30005
     statType: 5
@@ -1715,11 +1715,11 @@ MonoBehaviour:
   - id: stat_upgrade_30006_attack_damage
     trainDataId: 30006
     statType: 2
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30006_attack_area
     trainDataId: 30006
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30006_attack_count
     trainDataId: 30006
     statType: 3
@@ -1727,55 +1727,55 @@ MonoBehaviour:
   - id: stat_upgrade_30007_attack_damage
     trainDataId: 30007
     statType: 2
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30007_attack_interval
     trainDataId: 30007
     statType: 4
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_40001_attack_damage
     trainDataId: 40001
     statType: 2
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_40001_attack_interval
     trainDataId: 40001
     statType: 4
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_40001_attack_area
     trainDataId: 40001
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_40002_attack_damage
     trainDataId: 40002
     statType: 2
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_40002_attack_area
     trainDataId: 40002
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30002_burst_duration
     trainDataId: 30002
     statType: 10
-    increaseRate: 1
+    increaseRate: 2
   - id: stat_upgrade_40002_burst_duration
     trainDataId: 40002
     statType: 10
-    increaseRate: 1
+    increaseRate: 2
   - id: stat_upgrade_40002_slow_rate
     trainDataId: 40002
     statType: 9
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30001_attack_range
     trainDataId: 30001
     statType: 1
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30002_attack_range
     trainDataId: 30002
     statType: 1
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30003_attack_range
     trainDataId: 30003
     statType: 1
-    increaseRate: 0.1
+    increaseRate: 0.2
   - id: stat_upgrade_30005_attack_range
     trainDataId: 30005
     statType: 1
