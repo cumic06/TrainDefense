@@ -50,6 +50,8 @@ namespace TrainDefense.Game.Manager
         private int _totalInspectionPassedCount = 0;
         private bool _shouldShowStageSelectionOnStageEnd;
         private bool _pendingStageSelectionAfterShop;
+        // 이번 판에 방문한 맵 Id. 다음 맵은 여기 없는 맵 중에서 무작위로 고른다(플레이어 선택 없음).
+        private readonly List<string> _visitedStageIds = new();
         private bool _isGameOver;
 
         // 맵별 점수 결산 기록(게임오버 슬라이드쇼용). 맵 진입 시 점수/처치 수를 스냅샷(_mapStart*)하고,
@@ -73,7 +75,7 @@ namespace TrainDefense.Game.Manager
         public IReadOnlyList<StageRunRecord> RunRecords => _runRecords;
 
         /// <summary>
-        /// 스테이지 선택 전 마지막 상점을 들른 상태로, 상점을 닫으면 스테이지 선택 UI가 떠야 하는지 여부.
+        /// 맵의 마지막 상점을 들른 상태로, 상점을 닫으면 전투 복귀 대신 다음 맵으로 이동해야 하는지 여부.
         /// </summary>
         public bool IsStageSelectionPending => _pendingStageSelectionAfterShop;
 
@@ -87,6 +89,7 @@ namespace TrainDefense.Game.Manager
         {
             _LoadStageDatas();
             _currentStageIndex = Random.Range(0, _stageDatas.Length);
+            _MarkCurrentStageVisited();
             _ResetCurrentStageInfo();
             _SubscribeEvents();
         }
@@ -143,6 +146,8 @@ namespace TrainDefense.Game.Manager
         {
             // 새 게임 시작 시에만 누적 난이도 카운터 초기화 (스테이지 변경 시에는 유지)
             _totalInspectionPassedCount = 0;
+            _visitedStageIds.Clear();
+            _MarkCurrentStageVisited();
             _UpdateSpawnRules();
 
             // 맵별 결산 기록 초기화. 첫 맵은 게임 시작과 동시이므로 진입 스냅샷을 0으로 둔다.
@@ -341,11 +346,11 @@ namespace TrainDefense.Game.Manager
 
         private void _OnInspectionEnd(InspectionEndEvent inspectionEndEvent)
         {
-            // 스테이지 선택용 상점을 닫은 경우, 전투로 복귀하지 않고 스테이지 선택 UI로 전환한다.
+            // 맵 이동용 상점을 닫은 경우, 전투로 복귀하지 않고 다음 맵으로 이동한다.
             if (_pendingStageSelectionAfterShop)
             {
                 _pendingStageSelectionAfterShop = false;
-                _TransitionToStageSelection();
+                _TransitionToNextStage();
                 return;
             }
 
@@ -441,6 +446,7 @@ namespace TrainDefense.Game.Manager
             // (선택~전환 사이에는 전투가 없어 점수가 변하지 않으므로 이 시점에 스냅샷해도 안전)
             _CloseMapRecord();
             _currentStageIndex = index;
+            _MarkCurrentStageVisited();
             _BeginMapRecord();
 
             if (TimelineManager.Instance != null)
@@ -463,40 +469,51 @@ namespace TrainDefense.Game.Manager
             }
         }
 
-        private bool _ShowStageSelection()
+        // 아직 방문하지 않은 맵 중 하나를 무작위로 골라 이동한다. 전부 방문했으면 방문 기록을 비우고
+        // 현재 맵을 제외한 나머지에서 다시 뽑는다(종착역 도입 전 무한 진행 대비).
+        private void _MoveToRandomUnvisitedStage()
         {
             if (_stageDatas == null || _stageDatas.Length < 2)
             {
-                Debug.LogWarning("StageManager: StageData is null or less than 2. Cannot show stage selection.");
-                return false;
+                Debug.LogWarning("StageManager: StageData is null or less than 2. Cannot move to next stage.");
+                return;
             }
 
             var candidates = _stageDatas
-                .Where((stage, index) => index != _currentStageIndex)
-                .OrderBy(_ => Random.value)
-                .Take(2)
+                .Where((stage, index) => index != _currentStageIndex && stage != null && !_visitedStageIds.Contains(stage.Id))
                 .ToArray();
 
-            if (candidates.Length < 2)
+            if (candidates.Length == 0)
             {
-                Debug.LogWarning("StageManager: Not enough candidate stages to show selection.");
-                return false;
+                _visitedStageIds.Clear();
+                _MarkCurrentStageVisited();
+                candidates = _stageDatas
+                    .Where((stage, index) => index != _currentStageIndex && stage != null)
+                    .ToArray();
             }
 
-            GameEventSystem.Publish(new RandomStageOptionsEvent(candidates[0], candidates[1]));
-            return true;
+            var nextStage = candidates[Random.Range(0, candidates.Length)];
+            GameEventSystem.Publish(new StageSelectEvent(nextStage));
         }
 
-        public void ForceMapSelection() => _TransitionToStageSelection();
+        private void _MarkCurrentStageVisited()
+        {
+            var stage = CurrentStageData;
+            if (stage == null || _visitedStageIds.Contains(stage.Id)) return;
 
-        private void _TransitionToStageSelection()
+            _visitedStageIds.Add(stage.Id);
+        }
+
+        public void ForceMapSelection() => _TransitionToNextStage();
+
+        private void _TransitionToNextStage()
         {
             MonsterSpawner.Instance?.StopSpawnMonster();
             MonsterSpawner.Instance?.DestroyAllMonsters();
             ResourceManager.Instance.ReturnAll();
             GameEventSystem.Publish(new EngageReadyEvent());
 
-            _ShowStageSelection();
+            _MoveToRandomUnvisitedStage();
         }
 
         #region Run Save
@@ -514,6 +531,7 @@ namespace TrainDefense.Game.Manager
             public int MapStartNormalKill;
             public int MapStartEliteKill;
             public List<RunRecordState> RunRecords = new();
+            public List<string> VisitedStageIds = new();
         }
 
         /// <summary>맵별 결산 기록의 직렬화 가능한 형태(StageImage는 StageId로 다시 찾는다).</summary>
@@ -540,6 +558,8 @@ namespace TrainDefense.Game.Manager
                 MapStartNormalKill = _mapStartNormalKill,
                 MapStartEliteKill = _mapStartEliteKill,
             };
+
+            state.VisitedStageIds.AddRange(_visitedStageIds);
 
             foreach (var record in _runRecords)
             {
@@ -582,6 +602,11 @@ namespace TrainDefense.Game.Manager
             _mapStartEliteKill = state.MapStartEliteKill;
             _isGameOver = false;
             _runFinalized = false;
+
+            _visitedStageIds.Clear();
+            if (state.VisitedStageIds != null)
+                _visitedStageIds.AddRange(state.VisitedStageIds);
+            _MarkCurrentStageVisited();
 
             _runRecords.Clear();
             if (state.RunRecords != null)

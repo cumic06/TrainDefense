@@ -27,6 +27,7 @@ namespace TrainDefense.Game.RunSave.Sections
             public int mapStartNormalKill;
             public int mapStartEliteKill;
             public List<RecordEntry> runRecords = new();
+            public List<string> visitedStageIds = new();
         }
 
         [Serializable]
@@ -59,6 +60,8 @@ namespace TrainDefense.Game.RunSave.Sections
                 mapStartNormalKill = state.MapStartNormalKill,
                 mapStartEliteKill = state.MapStartEliteKill,
             };
+
+            payload.visitedStageIds.AddRange(state.VisitedStageIds);
 
             foreach (var record in state.RunRecords)
             {
@@ -106,6 +109,7 @@ namespace TrainDefense.Game.RunSave.Sections
                 MapStartScore = payload.mapStartScore,
                 MapStartNormalKill = payload.mapStartNormalKill,
                 MapStartEliteKill = payload.mapStartEliteKill,
+                VisitedStageIds = payload.visitedStageIds ?? new List<string>(),
                 RunRecords = new List<StageManager.RunRecordState>(),
             };
 
