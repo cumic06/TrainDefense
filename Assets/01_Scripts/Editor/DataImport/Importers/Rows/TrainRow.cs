@@ -14,6 +14,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string prefabId;
 		public string iconId;
 		public string[] passiveSkillDataIds;
+		// 엘리트 승격 조건 원문("AttackDamage>=100;AttackInterval<=0.8"). ElitePromotionCondition.ParseList가 해석한다.
+		public string eliteCondition;
 
 		public virtual void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -25,6 +27,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			prefabId = map.GetString(row, "prefab_id");
 			iconId = map.GetString(row, "icon_id");
 			passiveSkillDataIds = ParseIds(map.GetString(row, "passive_skill_data_id"));
+			eliteCondition = map.GetString(row, "elite_condition");
 		}
 
 		public virtual void ToExcelRow(IRow row, HeaderMap map)
@@ -37,6 +40,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "prefab_id", prefabId);
 			map.SetCell(row, "icon_id", iconId);
 			map.SetCell(row, "passive_skill_data_id", passiveSkillDataIds != null ? string.Join(";", passiveSkillDataIds) : "");
+			map.SetCell(row, "elite_condition", eliteCondition ?? "");
 		}
 
 		protected static string[] ParseIds(string raw)

@@ -43,6 +43,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(turretTrainType, target, "turretProjectilePrefabId", r.turretProjectilePrefabId);
 			SetPrivateField(t, target, "passiveSkillDataIds", r.passiveSkillDataIds);
 			SetPrivateField(t, target, "passiveSkillDatasResolved", false);
+			SetPrivateField(t, target, "elitePromotionConditions", ElitePromotionCondition.ParseList(r.eliteCondition));
 
 			var soundType = r.turretProjectilePrefabId switch
 			{

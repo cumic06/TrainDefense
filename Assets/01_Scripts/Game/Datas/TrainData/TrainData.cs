@@ -36,6 +36,9 @@ namespace TrainDefense.Game.Datas
         private bool passiveSkillDatasResolved;
         [SerializeField]
         private bool isMainTrain;
+        [SerializeField]
+        [Tooltip("엘리트 승격 조건(엘리트 포탑 데이터에만). 원본 포탑의 현재 스탯이 전부 만족해야 상점에 뜬다. 비어 있으면 레벨 조건으로 판정")]
+        private ElitePromotionCondition[] elitePromotionConditions;
         #endregion
 
         #region IData
@@ -113,5 +116,6 @@ namespace TrainDefense.Game.Datas
         [Obsolete("Use Prefab property instead")]
         public Train TrainPrefab => Prefab?.GetComponent<Train>();
         public bool IsMainTrain => isMainTrain;
+        public ElitePromotionCondition[] ElitePromotionConditions => elitePromotionConditions ?? Array.Empty<ElitePromotionCondition>();
     }
 }

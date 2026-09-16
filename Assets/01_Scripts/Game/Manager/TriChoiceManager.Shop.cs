@@ -43,8 +43,8 @@ namespace TrainDefense.Game
 
             result.AddRange(_GetTrainStatUpgradeChoices());
 
-            if (_CanUpgradeToEliteTrain())
-                result.AddRange(_GetEliteTrainChoices());
+            // 엘리트 승격은 카드마다 원본 포탑의 승격 조건(EliteTrainChoice.IsValid)으로 판정한다.
+            result.AddRange(_GetEliteTrainChoices());
 
             return result;
         }

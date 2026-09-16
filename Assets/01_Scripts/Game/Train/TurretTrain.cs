@@ -69,6 +69,24 @@ namespace TrainDefense.Game
         // 공격 간격(초). MainTrain이 터치 연속 발사의 쿨다운으로 사용한다.
         public float AttackInterval => _currentTurretTrainStatus.AttackInterval;
 
+        public override float GetCurrentStatValue(StatType statType)
+        {
+            var status = _currentTurretTrainStatus;
+            switch (statType)
+            {
+                case StatType.AttackRange: return status.AttackRange;
+                case StatType.AttackDamage: return status.AttackDamage;
+                case StatType.AttackCount: return status.AttackCount;
+                case StatType.AttackInterval: return status.AttackInterval;
+                case StatType.TargetCount: return status.TargetCount;
+                case StatType.CriticalChance: return status.CriticalChance;
+                case StatType.CriticalDamage: return status.CriticalDamage;
+                case StatType.AttackArea: return status.AttackArea;
+                case StatType.BurstDuration: return status.BurstDuration;
+                default: return base.GetCurrentStatValue(statType);
+            }
+        }
+
         // MainTrain 주무기로 장착되면 true. 자동 적 탐지/발사를 끄고, MainTrain의 터치 조준 발사만 받는다.
         public bool ManualAimMode { get; set; }
 

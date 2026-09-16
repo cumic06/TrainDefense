@@ -367,6 +367,24 @@ namespace TrainDefense.Game
         public override float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
         // 레인지 포탑은 사거리가 아닌 공격 범위(자기 위치 중심 원)를 표시한다.
         public override float RangeIndicatorRadius => _currentRangeTrainStatus.AttackArea;
+
+        public override float GetCurrentStatValue(StatType statType)
+        {
+            var status = _currentRangeTrainStatus;
+            switch (statType)
+            {
+                case StatType.AttackRange: return status.AttackRange;
+                case StatType.AttackDamage: return status.AttackDamage;
+                case StatType.AttackCount: return status.AttackCount;
+                case StatType.AttackInterval: return status.AttackInterval;
+                case StatType.CriticalChance: return status.CriticalChance;
+                case StatType.CriticalDamage: return status.CriticalDamage;
+                case StatType.AttackArea: return status.AttackArea;
+                case StatType.SlowRate: return status.SlowRate;
+                case StatType.BurstDuration: return status.BurstDuration;
+                default: return base.GetCurrentStatValue(statType);
+            }
+        }
         public RangeTrainStatus BaseStatus => rangeTrainData.RangeTrainStatus;
         /// <summary>메타까지 적용된 판 시작 스탯. 상점 카드 증가량의 기준값 (TurretTrain.MetaBaseStatus와 동일한 역할).</summary>
         public RangeTrainStatus MetaBaseStatus => _metaBaseStatus;

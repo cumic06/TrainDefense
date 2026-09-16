@@ -46,10 +46,25 @@ namespace TrainDefense.Game.Datas
 
             var baseTrain = mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == baseTrainId);
             if (baseTrain == null) return false;
-            if (!baseTrain.IsEliteEligible) return false;
+            // 승격 조건이 있으면 원본 포탑의 현재 스탯이 전부 만족해야 하고, 없으면 레벨 조건으로 판정한다.
+            if (!_IsPromotionConditionSatisfied(baseTrain, eliteTrainData)) return false;
 
             // 스킬이 하나라도 있어야 엘리트 카드로 유효
             return databaseManager.GetTrainSkillDataDB().HasSkillForTrain(eliteTrainDataId);
+        }
+
+        private static bool _IsPromotionConditionSatisfied(Train baseTrain, TrainData eliteTrainData)
+        {
+            var conditions = eliteTrainData.ElitePromotionConditions;
+
+            if (conditions.Length == 0) return baseTrain.IsEliteEligible;
+
+            foreach (var condition in conditions)
+            {
+                if (!condition.IsSatisfiedBy(baseTrain)) return false;
+            }
+
+            return true;
         }
 
         public void Execute()
