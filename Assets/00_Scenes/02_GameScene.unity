@@ -14029,7 +14029,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 0
   spawnInterval: 2
   spawnCount: 1
-  maxSpawnCount: 4
+  maxSpawnCount: 3
   spawnCountFirstIncreaseStation: 2
   spawnCountIncreaseStationInterval: 3
   stationSpawnAccelPercent: 3

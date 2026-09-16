@@ -27,7 +27,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 4
       Damage: 4
-      MoveSpeed: 5
+      MoveSpeed: 4.2
       AttackDelay: 1
       DropExpMin: 8
       DropExpMax: 8
@@ -51,7 +51,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 13
       Damage: 4
-      MoveSpeed: 6.3
+      MoveSpeed: 5
       AttackDelay: 0.6
       DropExpMin: 20
       DropExpMax: 20
@@ -77,13 +77,13 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 29
       Damage: 12
-      MoveSpeed: 4
+      MoveSpeed: 3.4
       AttackDelay: 2
       DropExpMin: 52
       DropExpMax: 52
       DropMoneyMin: 13
       DropMoneyMax: 13
-      AttackRange: 5
+      AttackRange: 4
       AttackType: 1
     prefabId: Gnoll
     rangedProjectilePrefab: {fileID: 1036439603542617377, guid: 6a9ea03ac9f950d439de3c0caecb2b4e, type: 3}
@@ -101,7 +101,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 10
       Damage: 8
-      MoveSpeed: 4
+      MoveSpeed: 3.4
       AttackDelay: 2
       DropExpMin: 20
       DropExpMax: 20
@@ -125,13 +125,13 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 20
       Damage: 10
-      MoveSpeed: 3.8
+      MoveSpeed: 3.3
       AttackDelay: 1.9
       DropExpMin: 50
       DropExpMax: 50
       DropMoneyMin: 13
       DropMoneyMax: 13
-      AttackRange: 4.8
+      AttackRange: 4
       AttackType: 1
     prefabId: Shark
     rangedProjectilePrefab: {fileID: 7851231680386804850, guid: ddc4306fa2d8ff6478e229d8bd8e7ce4, type: 3}
@@ -176,7 +176,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 8
       Damage: 8
-      MoveSpeed: 4.3
+      MoveSpeed: 3.6
       AttackDelay: 2.1
       DropExpMin: 16
       DropExpMax: 16
@@ -200,7 +200,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 23
       Damage: 10
-      MoveSpeed: 5.4
+      MoveSpeed: 4.5
       AttackDelay: 1.4
       DropExpMin: 40
       DropExpMax: 40
@@ -224,7 +224,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 73
       Damage: 10
-      MoveSpeed: 4.2
+      MoveSpeed: 3.5
       AttackDelay: 1
       DropExpMin: 104
       DropExpMax: 104
@@ -271,7 +271,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 6
       Damage: 3
-      MoveSpeed: 5.6
+      MoveSpeed: 4.5
       AttackDelay: 0.7
       DropExpMin: 12
       DropExpMax: 12
@@ -294,7 +294,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 17
       Damage: 10
-      MoveSpeed: 4.6
+      MoveSpeed: 3.8
       AttackDelay: 1.6
       DropExpMin: 30
       DropExpMax: 30
@@ -320,7 +320,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 65
       Damage: 16
-      MoveSpeed: 3.9
+      MoveSpeed: 3.4
       AttackDelay: 2
       DropExpMin: 78
       DropExpMax: 78
@@ -344,7 +344,7 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 12
       Damage: 8
-      MoveSpeed: 4.6
+      MoveSpeed: 3.8
       AttackDelay: 2
       DropExpMin: 24
       DropExpMax: 24
@@ -366,13 +366,13 @@ MonoBehaviour:
     monsterStatusData:
       MaxHp: 27
       Damage: 12
-      MoveSpeed: 4
+      MoveSpeed: 3.4
       AttackDelay: 2.7
       DropExpMin: 60
       DropExpMax: 60
       DropMoneyMin: 15
       DropMoneyMax: 15
-      AttackRange: 5
+      AttackRange: 4
       AttackType: 1
     prefabId: GoblinSorcerer
     rangedProjectilePrefab: {fileID: 8711250047576817517, guid: b3a9d71d931c9ce42bea0c9077e8b8d3, type: 3}
@@ -979,11 +979,11 @@ MonoBehaviour:
       EliteChanceMultiplier: 1
     - MonsterId: 10002
       Probability: 3
-      SpawnLevel: 5
+      SpawnLevel: 7
       EliteChanceMultiplier: 1
     - MonsterId: 10003
       Probability: 1
-      SpawnLevel: 9
+      SpawnLevel: 11
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1005,11 +1005,11 @@ MonoBehaviour:
       EliteChanceMultiplier: 1
     - MonsterId: 10005
       Probability: 3
-      SpawnLevel: 5
+      SpawnLevel: 7
       EliteChanceMultiplier: 1
     - MonsterId: 10006
       Probability: 1
-      SpawnLevel: 9
+      SpawnLevel: 11
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1035,11 +1035,11 @@ MonoBehaviour:
       EliteChanceMultiplier: 1
     - MonsterId: 10008
       Probability: 3
-      SpawnLevel: 5
+      SpawnLevel: 7
       EliteChanceMultiplier: 1
     - MonsterId: 10009
       Probability: 1
-      SpawnLevel: 9
+      SpawnLevel: 11
       EliteChanceMultiplier: 1
     - MonsterId: 10010
       Probability: 0.5
@@ -1065,11 +1065,11 @@ MonoBehaviour:
       EliteChanceMultiplier: 1
     - MonsterId: 10012
       Probability: 3
-      SpawnLevel: 5
+      SpawnLevel: 7
       EliteChanceMultiplier: 1
     - MonsterId: 10013
       Probability: 1
-      SpawnLevel: 9
+      SpawnLevel: 11
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1091,11 +1091,11 @@ MonoBehaviour:
       EliteChanceMultiplier: 1
     - MonsterId: 10015
       Probability: 3
-      SpawnLevel: 5
+      SpawnLevel: 7
       EliteChanceMultiplier: 1
     - MonsterId: 10016
       Probability: 1
-      SpawnLevel: 9
+      SpawnLevel: 11
       EliteChanceMultiplier: 1
     mapData:
       id: 
