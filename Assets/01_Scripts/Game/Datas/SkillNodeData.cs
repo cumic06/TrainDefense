@@ -8,7 +8,8 @@ namespace TrainDefense.Game.Datas
     /// <summary>
     /// 스킬트리 노드 정의. 스킬 포인트로 습득하며 런 사이에 유지된다 (영구강화와 완전 별도 시스템).
     /// 배치는 데이터 주도 — (lane, row, col)로 런타임 그리드 생성, prerequisites 간선으로 레일이 이어진다.
-    /// TurretStat: 포탑·레인지 스탯 강화 (SimpleStat[], 레벨당 가산 → GetBonus(StatType)).
+    /// TurretStat: 포탑·레인지 스탯 강화 (SimpleStat[], 레벨당 값). 공격력·사거리·범위·간격은 기본값 대비 % → GetMultiplier(StatType),
+    ///             치명타 확률·피해는 퍼센트 포인트 가산 → GetBonus(StatType).
     /// Passive: 게임 전반 상시 효과 (SkillTreePassiveType + 레벨당 값 → GetValue(type)).
     /// TurretUnlock: 신규 포탑 해금 (unlockTrainId → IsTrainUnlocked, 삼중택일 Add 풀 게이트).
     /// </summary>
@@ -53,7 +54,7 @@ namespace TrainDefense.Game.Datas
 
         [SerializeField]
         [ShowIf("category", SkillNodeCategory.TurretStat)]
-        [Tooltip("포탑·레인지 스탯 강화 (레벨당 가산)")]
+        [Tooltip("포탑·레인지 스탯 강화 (레벨당 값). 공격력·사거리·공격 범위·공격 간격은 기본값 대비 %(5 = +5%, 간격은 -3 = -3%), 치명타 확률·피해는 퍼센트 포인트 가산")]
         private SimpleStat[] stats;
 
         [SerializeField]

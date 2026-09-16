@@ -213,7 +213,7 @@ namespace TrainDefense.Game
         private Dictionary<StatType, float> _bonusCache;
         private Dictionary<SkillTreePassiveType, float> _valueCache;
 
-        /// <summary>TurretStat 노드들의 해당 StatType 누적 보너스 (레벨 × 레벨당 증가량). 포탑·레인지 스탯에 가산용.</summary>
+        /// <summary>TurretStat 노드들의 해당 StatType 누적 보너스 (레벨 × 레벨당 증가량). 치명타 확률·피해처럼 '퍼센트 포인트'로 가산하는 스탯용.</summary>
         public float GetBonus(StatType statType)
         {
             if (!_EnsureCore()) return 0f;
@@ -221,6 +221,13 @@ namespace TrainDefense.Game
 
             return _bonusCache.TryGetValue(statType, out float value) ? value : 0f;
         }
+
+        /// <summary>
+        /// 누적 보너스를 곱셈 배율로 (1 + 합계%/100). 공격력·사거리·공격 범위·공격 간격처럼 포탑마다 기본값이 크게 다른 스탯은
+        /// 정수 가산이 아니라 기본값에 곱한다 — 09-13 사용자 결정 ("정수 가산이면 화염·기관총만 사기").
+        /// 노드 데이터의 레벨당 값은 이 스탯들에선 %다 (예: 5 = 레벨당 +5%, 공격 간격은 -3 = 레벨당 -3%).
+        /// </summary>
+        public float GetMultiplier(StatType statType) => 1f + GetBonus(statType) * 0.01f;
 
         /// <summary>Passive 노드들의 해당 효과 누적값 (레벨 × 레벨당 값). 각 시스템이 조회해 적용한다.</summary>
         public float GetValue(SkillTreePassiveType type)

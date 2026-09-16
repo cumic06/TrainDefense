@@ -319,10 +319,11 @@ namespace TrainDefense.Game
 
             if (skillTreeManager != null)
             {
-                _currentRangeTrainStatus.AttackDamage += skillTreeManager.GetBonus(StatType.AttackDamage);
-                _currentRangeTrainStatus.AttackRange += skillTreeManager.GetBonus(StatType.AttackRange);
-                _currentRangeTrainStatus.AttackArea += skillTreeManager.GetBonus(StatType.AttackArea);
-                _currentRangeTrainStatus.AttackInterval += skillTreeManager.GetBonus(StatType.AttackInterval);
+                // 공격력·사거리·범위·간격은 기본값에 % 곱 (포탑마다 기본값이 달라 정수 가산은 저기본 포탑만 유리), 나머지는 포인트 가산
+                _currentRangeTrainStatus.AttackDamage *= skillTreeManager.GetMultiplier(StatType.AttackDamage);
+                _currentRangeTrainStatus.AttackRange *= skillTreeManager.GetMultiplier(StatType.AttackRange);
+                _currentRangeTrainStatus.AttackArea *= skillTreeManager.GetMultiplier(StatType.AttackArea);
+                _currentRangeTrainStatus.AttackInterval *= skillTreeManager.GetMultiplier(StatType.AttackInterval);
                 _currentRangeTrainStatus.CriticalChance += skillTreeManager.GetBonus(StatType.CriticalChance);
                 _currentRangeTrainStatus.CriticalDamage += skillTreeManager.GetBonus(StatType.CriticalDamage);
                 _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(skillTreeManager.GetBonus(StatType.AttackCount));
