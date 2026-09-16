@@ -329,6 +329,8 @@ namespace TrainDefense.Game
                 _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(skillTreeManager.GetBonus(StatType.AttackCount));
                 _currentRangeTrainStatus.SlowRate += skillTreeManager.GetBonus(StatType.SlowRate);
             }
+
+            _metaBaseStatus = _currentRangeTrainStatus;
         }
 
         // 몬스터가 완전히 멈추면 무한 생존이 되므로 이속을 최소 10%는 남긴다.
@@ -366,6 +368,9 @@ namespace TrainDefense.Game
         // 레인지 포탑은 사거리가 아닌 공격 범위(자기 위치 중심 원)를 표시한다.
         public override float RangeIndicatorRadius => _currentRangeTrainStatus.AttackArea;
         public RangeTrainStatus BaseStatus => rangeTrainData.RangeTrainStatus;
+        /// <summary>메타까지 적용된 판 시작 스탯. 상점 카드 증가량의 기준값 (TurretTrain.MetaBaseStatus와 동일한 역할).</summary>
+        public RangeTrainStatus MetaBaseStatus => _metaBaseStatus;
+        private RangeTrainStatus _metaBaseStatus;
 
         public override string GetStatSummary() =>
             $"DMG={_currentRangeTrainStatus.AttackDamage} | RANGE={_currentRangeTrainStatus.AttackRange} | AREA={_currentRangeTrainStatus.AttackArea} | MaxHp={_currentMaxHp}";

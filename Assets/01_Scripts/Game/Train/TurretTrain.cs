@@ -58,6 +58,12 @@ namespace TrainDefense.Game
         private Coroutine _repeatAttackCoroutine;
 
         public TurretTrainStatus BaseStatus => turretTrainData.TurretTrainStatus;
+        /// <summary>
+        /// 메타(스킬 트리·영구 강화)까지 적용된 판 시작 스탯. 상점 카드의 증가량은 이 값을 기준으로 계산해
+        /// 카드 성장 전체에 메타 %가 곱해지게 한다. (원본 BaseStatus 기준이면 메타는 원본에 한 번만 더해져 후반에 희석된다)
+        /// </summary>
+        public TurretTrainStatus MetaBaseStatus => _metaBaseStatus;
+        private TurretTrainStatus _metaBaseStatus;
         public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
         public override float CurrentAttackRange => _currentTurretTrainStatus.AttackRange;
         // 공격 간격(초). MainTrain이 터치 연속 발사의 쿨다운으로 사용한다.
@@ -210,6 +216,8 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(skillTreeManager.GetBonus(StatType.AttackCount));
                 _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(skillTreeManager.GetBonus(StatType.TargetCount));
             }
+
+            _metaBaseStatus = _currentTurretTrainStatus;
         }
 
         public void RegisterProjectileOverride(ProjectileOverrideProvider provider)

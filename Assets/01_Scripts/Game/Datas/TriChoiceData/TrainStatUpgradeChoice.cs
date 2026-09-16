@@ -373,10 +373,10 @@ namespace TrainDefense.Game.Datas
         private float _GetBaseAttackDamage()
         {
             if (_train is TurretTrain turretTrain)
-                return turretTrain.BaseStatus.AttackDamage;
+                return turretTrain.MetaBaseStatus.AttackDamage;
 
             if (_train is RangeTrain rangeTrain)
-                return rangeTrain.BaseStatus.AttackDamage;
+                return rangeTrain.MetaBaseStatus.AttackDamage;
 
             return 0f;
         }
@@ -390,7 +390,8 @@ namespace TrainDefense.Game.Datas
         {
             if (_train is TurretTrain turretTrain)
             {
-                var baseStatus = turretTrain.BaseStatus;
+                // 메타 적용 후 값을 기준으로 잡아야 카드 성장 전체에 메타 %가 곱해진다 (원본 기준이면 메타가 후반에 희석됨).
+                var baseStatus = turretTrain.MetaBaseStatus;
                 var delta = new TurretTrainStatus();
 
                 if (!_ApplyTurretDelta(ref delta, baseStatus, _rule))
@@ -404,7 +405,7 @@ namespace TrainDefense.Game.Datas
 
             if (_train is RangeTrain rangeTrain)
             {
-                var baseStatus = rangeTrain.BaseStatus;
+                var baseStatus = rangeTrain.MetaBaseStatus;
                 var delta = new RangeTrainStatus();
 
                 if (!_ApplyRangeDelta(ref delta, baseStatus, _rule))
