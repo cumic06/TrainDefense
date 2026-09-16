@@ -99,6 +99,8 @@ namespace TrainDefense.Game.UI
         private readonly List<ShopOfferSlotUI> _offerSlotUIs = new();
 
         private int _currentRerollCost;
+        // 스킬 트리·영구 강화의 무료 새로고침 횟수. 상점이 열릴 때마다 채워지고, 남아 있는 동안은 코인 차감·비용 인상 없이 리롤한다.
+        private int _freeRerollsLeft;
         private string _rerollLabelPrefix;
         private Color _rerollLabelOriginalColor;
         private Color _turretSlotOriginalColor;
@@ -168,6 +170,7 @@ namespace TrainDefense.Game.UI
             // 역 도착 시점에 새로 추첨. (상점은 역당 1회 — 닫으면 바로 출발이라 재오픈은 없다)
             // 리롤 비용은 상점이 열릴 때마다(맵 선택 상점 포함) 기본값으로 초기화된다.
             _currentRerollCost = rerollBaseCostPerStation * _GetRerollStationMultiplier();
+            _freeRerollsLeft = _GetFreeRerollCount();
             _RebuildOfferSlots();
             _RefreshRerollUI();
             _RefreshTurretSlotText();
@@ -590,15 +593,37 @@ namespace TrainDefense.Game.UI
         // 리롤: 코인을 차감하고 슬롯 전체를 다시 추첨한다. 비용은 리롤마다 역 수 비례 증가분만큼 오른다.
         private void _OnRerollButtonClick()
         {
-            // 코인 부족 시엔 버튼 interactable이 이미 꺼져 있지만, 방어적으로 다시 확인한다.
-            // 차감·검증 = UserDataManager 단일 경로 (상점 슬롯 구매와 동일).
-            if (UserDataManager.Instance == null || !UserDataManager.Instance.TrySpendCoin(_currentRerollCost))
-                return;
+            if (_freeRerollsLeft > 0)
+            {
+                // 무료 새로고침은 코인을 쓰지 않고 유료 비용도 올리지 않는다.
+                _freeRerollsLeft--;
+            }
+            else
+            {
+                // 코인 부족 시엔 버튼 interactable이 이미 꺼져 있지만, 방어적으로 다시 확인한다.
+                // 차감·검증 = UserDataManager 단일 경로 (상점 슬롯 구매와 동일).
+                if (UserDataManager.Instance == null || !UserDataManager.Instance.TrySpendCoin(_currentRerollCost))
+                    return;
 
-            _currentRerollCost += rerollCostIncreasePerStation * _GetRerollStationMultiplier();
+                _currentRerollCost += rerollCostIncreasePerStation * _GetRerollStationMultiplier();
+            }
 
             _RebuildOfferSlots();
             _RefreshRerollUI();
+        }
+
+        // 스킬 트리 노드와 영구 강화의 무료 새로고침 횟수 합. 둘 다 "레벨당 +1회"라 정수로 쓴다.
+        private int _GetFreeRerollCount()
+        {
+            int count = 0;
+
+            if (SkillTreeManager.Instance != null)
+                count += Mathf.RoundToInt(SkillTreeManager.Instance.GetValue(SkillTreePassiveType.FreeReroll));
+
+            if (PermanentUpgradeManager.Instance != null)
+                count += Mathf.RoundToInt(PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.FreeReroll));
+
+            return count;
         }
 
         // 리롤 비용의 진행도 비례 계수. 상품 가격 인상(ShopOfferPricing)과 같은 축(누적 상점 방문 수)을 쓴다.
@@ -628,7 +653,8 @@ namespace TrainDefense.Game.UI
         // 현재 리롤 비용을 라벨에 표기한다. 코인이 부족하면 금액을 빨간색으로 표기하고 버튼을 비활성화한다.
         private void _ApplyRerollUI(int coin)
         {
-            bool canReroll = coin >= _currentRerollCost;
+            bool hasFreeReroll = _freeRerollsLeft > 0;
+            bool canReroll = hasFreeReroll || coin >= _currentRerollCost;
 
             if (rerollLabelText != null)
             {
@@ -638,7 +664,12 @@ namespace TrainDefense.Game.UI
                 // 키가 없거나 초기화 전이면 프리팹 원문(_rerollLabelPrefix)으로 떨어진다.
                 string rerollLabel = LocalizeHelper.GetByKey("UI_Reroll", _rerollLabelPrefix);
 
-                rerollLabelText.text = $"{rerollLabel}\n<size={costSizePercent}%><sprite name=\"Coin\"> {_currentRerollCost.ToCommaString()}$</size>";
+                // 무료 횟수가 남아 있으면 비용 대신 "무료 ×N"을 보여준다.
+                string costLine = hasFreeReroll
+                    ? $"{LocalizeHelper.GetByKey("UI_Reroll_Free", "Free")} ×{_freeRerollsLeft}"
+                    : $"<sprite name=\"Coin\"> {_currentRerollCost.ToCommaString()}$";
+
+                rerollLabelText.text = $"{rerollLabel}\n<size={costSizePercent}%>{costLine}</size>";
                 rerollLabelText.color = canReroll ? _rerollLabelOriginalColor : rerollInsufficientColor;
             }
 
