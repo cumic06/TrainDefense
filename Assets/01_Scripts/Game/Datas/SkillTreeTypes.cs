@@ -29,5 +29,7 @@ namespace TrainDefense.Game.Datas
         MaxHp,             // 1 — 포탑 최대 체력 증가 (%)
         HealthRegen,       // 2 — 5초마다 체력 회복 (%)
         FreeReroll,        // 3 — 레벨업 시 무료 리롤 횟수
+        DamageReduction,   // 4 — 포탑이 받는 피해 감소 (%)
+        ExpGain,           // 5 — 획득 경험치 증가 (%)
     }
 }

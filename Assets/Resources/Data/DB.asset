@@ -417,6 +417,7 @@ MonoBehaviour:
     prefabId: MainTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
   turretTrainDataList:
   - id: 30001
     name: Train_30001_Name
@@ -430,6 +431,7 @@ MonoBehaviour:
     prefabId: NormalTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 6
       AttackRange: 8
@@ -454,6 +456,7 @@ MonoBehaviour:
     prefabId: FireTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 6
       AttackRange: 6
@@ -478,6 +481,7 @@ MonoBehaviour:
     prefabId: MissileTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 20
       AttackRange: 8
@@ -502,6 +506,7 @@ MonoBehaviour:
     prefabId: LaserTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 36
@@ -526,6 +531,7 @@ MonoBehaviour:
     prefabId: ElectrickTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 11
       AttackRange: 11
@@ -550,6 +556,7 @@ MonoBehaviour:
     prefabId: CannonTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 40
       AttackRange: 36
@@ -574,6 +581,7 @@ MonoBehaviour:
     prefabId: SniperTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 35
       AttackRange: 40
@@ -599,6 +607,7 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60001
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 6
       AttackRange: 8
@@ -625,6 +634,7 @@ MonoBehaviour:
     - 60002
     - 60003
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 6
       AttackRange: 6
@@ -651,6 +661,7 @@ MonoBehaviour:
     - 60009
     - 60010
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 20
       AttackRange: 8
@@ -677,6 +688,7 @@ MonoBehaviour:
     - 60011
     - 60012
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 36
@@ -702,6 +714,7 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60013
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 11
       AttackRange: 11
@@ -727,6 +740,7 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60015
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 40
       AttackRange: 36
@@ -752,6 +766,7 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60017
     isMainTrain: 0
+    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 35
       AttackRange: 40
@@ -777,6 +792,7 @@ MonoBehaviour:
     prefabId: ExplosionRangeTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 30
       AttackRange: 4
@@ -801,6 +817,7 @@ MonoBehaviour:
     prefabId: ColdAirRangeTrain
     passiveSkillDataIds: []
     isMainTrain: 0
+    elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 3
       AttackRange: 3
@@ -827,6 +844,7 @@ MonoBehaviour:
     - 60006
     - 60007
     isMainTrain: 0
+    elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 30
       AttackRange: 4
@@ -853,6 +871,7 @@ MonoBehaviour:
     - 60004
     - 60005
     isMainTrain: 0
+    elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 3
       AttackRange: 3
@@ -1240,13 +1259,13 @@ MonoBehaviour:
     row: 0
     col: 0
     needPoint: 10
-    maxLevel: 5
+    maxLevel: 3
     growthRate: 1.5
     prerequisites: []
     category: 0
     stats:
     - <Type>k__BackingField: 2
-      <Value>k__BackingField: 5
+      <Value>k__BackingField: 10
     passiveType: 1
     passiveValuePerLevel: 0
     unlockTrainId: 
@@ -1257,7 +1276,7 @@ MonoBehaviour:
     lane: 0
     row: 1
     col: 0
-    needPoint: 20
+    needPoint: 25
     maxLevel: 3
     growthRate: 1.5
     prerequisites:
@@ -1265,7 +1284,7 @@ MonoBehaviour:
     category: 0
     stats:
     - <Type>k__BackingField: 4
-      <Value>k__BackingField: -3
+      <Value>k__BackingField: -8
     passiveType: 1
     passiveValuePerLevel: 0
     unlockTrainId: 
@@ -1284,14 +1303,14 @@ MonoBehaviour:
     category: 0
     stats:
     - <Type>k__BackingField: 6
-      <Value>k__BackingField: 2
+      <Value>k__BackingField: 5
     passiveType: 1
     passiveValuePerLevel: 0
     unlockTrainId: 
-  - id: skill_fire_critdmg
-    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uD3EC\uD0C4_10_1/UI_Item_Bomb_05"
-    name: SkillTree_skill_fire_critdmg_Name
-    description: SkillTree_skill_fire_critdmg_Desc
+  - id: skill_fire_reach
+    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC218\uC9D1\uAE30_8_1/UI_Item_Collector_05"
+    name: SkillTree_skill_fire_reach_Name
+    description: SkillTree_skill_fire_reach_Desc
     lane: 0
     row: 3
     col: 0
@@ -1302,9 +1321,11 @@ MonoBehaviour:
     - skill_fire_crit
     category: 0
     stats:
-    - <Type>k__BackingField: 7
+    - <Type>k__BackingField: 1
       <Value>k__BackingField: 10
-    passiveType: 1
+    - <Type>k__BackingField: 8
+      <Value>k__BackingField: 10
+    passiveType: 0
     passiveValuePerLevel: 0
     unlockTrainId: 
   - id: skill_def_hp
@@ -1315,13 +1336,13 @@ MonoBehaviour:
     row: 0
     col: 0
     needPoint: 10
-    maxLevel: 5
+    maxLevel: 3
     growthRate: 1.5
     prerequisites: []
     category: 1
     stats: []
     passiveType: 1
-    passiveValuePerLevel: 5
+    passiveValuePerLevel: 10
     unlockTrainId: 
   - id: skill_def_regen
     iconId: Repair
@@ -1338,29 +1359,46 @@ MonoBehaviour:
     category: 1
     stats: []
     passiveType: 2
-    passiveValuePerLevel: 1
+    passiveValuePerLevel: 2
     unlockTrainId: 
-  - id: skill_def_turret
-    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC5D4\uC9C4_8_1/UI_Item_Engine_05"
-    name: SkillTree_skill_def_turret_Name
-    description: SkillTree_skill_def_turret_Desc
+  - id: skill_def_armor
+    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC7A5\uAC11_8_1/UI_Item_Shield_05"
+    name: SkillTree_skill_def_armor_Name
+    description: SkillTree_skill_def_armor_Desc
     lane: 1
     row: 2
     col: 0
-    needPoint: 60
-    maxLevel: 2
+    needPoint: 30
+    maxLevel: 3
     growthRate: 1.5
     prerequisites:
     - skill_def_regen
     category: 1
     stats: []
+    passiveType: 4
+    passiveValuePerLevel: 8
+    unlockTrainId: 
+  - id: skill_def_turret
+    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC5D4\uC9C4_8_1/UI_Item_Engine_05"
+    name: SkillTree_skill_def_turret_Name
+    description: SkillTree_skill_def_turret_Desc
+    lane: 2
+    row: 2
+    col: 0
+    needPoint: 100
+    maxLevel: 2
+    growthRate: 1.5
+    prerequisites:
+    - skill_util_reroll
+    category: 1
+    stats: []
     passiveType: 0
     passiveValuePerLevel: 1
     unlockTrainId: 
-  - id: skill_util_range
+  - id: skill_util_exp
     iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC5D0\uB108\uC9C0_8_1/UI_Item_Energy_05"
-    name: SkillTree_skill_util_range_Name
-    description: SkillTree_skill_util_range_Desc
+    name: SkillTree_skill_util_exp_Name
+    description: SkillTree_skill_util_exp_Desc
     lane: 2
     row: 0
     col: 0
@@ -1368,12 +1406,10 @@ MonoBehaviour:
     maxLevel: 3
     growthRate: 1.5
     prerequisites: []
-    category: 0
-    stats:
-    - <Type>k__BackingField: 1
-      <Value>k__BackingField: 5
-    passiveType: 1
-    passiveValuePerLevel: 0
+    category: 1
+    stats: []
+    passiveType: 5
+    passiveValuePerLevel: 15
     unlockTrainId: 
   - id: skill_util_reroll
     iconId: Reroll
@@ -1382,34 +1418,15 @@ MonoBehaviour:
     lane: 2
     row: 1
     col: 0
-    needPoint: 25
+    needPoint: 15
     maxLevel: 2
     growthRate: 1.5
     prerequisites:
-    - skill_util_range
+    - skill_util_exp
     category: 1
     stats: []
     passiveType: 3
     passiveValuePerLevel: 1
-    unlockTrainId: 
-  - id: skill_util_area
-    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC218\uC9D1\uAE30_8_1/UI_Item_Collector_05"
-    name: SkillTree_skill_util_area_Name
-    description: SkillTree_skill_util_area_Desc
-    lane: 2
-    row: 2
-    col: 0
-    needPoint: 20
-    maxLevel: 3
-    growthRate: 1.5
-    prerequisites:
-    - skill_util_reroll
-    category: 0
-    stats:
-    - <Type>k__BackingField: 8
-      <Value>k__BackingField: 5
-    passiveType: 1
-    passiveValuePerLevel: 0
     unlockTrainId: 
   skillTreeLaneDataList:
   - lane: 0

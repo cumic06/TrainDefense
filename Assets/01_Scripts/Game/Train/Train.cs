@@ -192,6 +192,10 @@ namespace TrainDefense.Game
         {
             if (_isDead) return;
 
+            // 스킬 트리 방어력: 모든 피해원에 같은 비율로 감소 (메인 기차는 오버라이드에서 무적 처리)
+            if (SkillTreeManager.Instance != null)
+                damage *= 1f - SkillTreeManager.Instance.GetValue(SkillTreePassiveType.DamageReduction) / 100f;
+
             _currentHp -= damage;
             _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
 
