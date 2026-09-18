@@ -25,6 +25,11 @@ namespace TrainDefense.Game.Datas
         // 잘림)이고, 엘리트 패시브 가산(+2)을 합해도 천장 아래에 머물도록 카드는 3에서 멈춘다.
         public const int MAX_ATTACK_COUNT = 3;
 
+        // 상점 사거리 카드 상한(base 대비 배율). 사거리가 화면을 넘으면 돈만 나가고, 분사형(화염)은 입자 수가
+        // 길이의 제곱으로 늘어 성능 천장에 닿는다. 등급이 큰 카드 한 장이 상한을 넘겨 버리지 않도록
+        // "이 카드를 산 뒤"의 배율로 판정한다 — 남은 여유에 맞는 낮은 등급 카드는 계속 뜬다.
+        public const float MAX_ATTACK_RANGE_MULTIPLIER = 2f;
+
         // 복합 카드가 같은 티어 단일 카드 대비 얼마나 자주 뜨는가. 1이면 단일 카드가 밀려나므로 절반으로 둔다.
         public const float COMBO_WEIGHT_RATIO = 0.5f;
 
@@ -256,6 +261,10 @@ namespace TrainDefense.Game.Datas
                 && countTrain.BaseStatus.AttackCount + Mathf.RoundToInt(_train.GetStatUpgradeAmount(StatType.AttackCount)) >= MAX_ATTACK_COUNT)
                 return false;
 
+            // 사거리는 이 카드를 샀을 때 상한을 넘으면 내린다.
+            if (rule.StatType == StatType.AttackRange && _IsOverAttackRangeLimit(rule))
+                return false;
+
             // 분사형(화염)은 분사 각도가 상한에 닿으면 범위를 더 사도 모양과 판정이 안 바뀐다. 사거리를 올리면 다시 열린다.
             if (rule.StatType == StatType.AttackArea && _train is TurretTrain areaTrain && areaTrain.IsAttackAreaAtLimit)
                 return false;
@@ -282,6 +291,15 @@ namespace TrainDefense.Game.Datas
                     _train.AddStatUpgradeAmount(_secondRule.StatType,
                         IsCountStat(_secondRule.StatType) ? 1f : _tier.ValueMultiplier);
             }
+        }
+
+        // 이 카드를 산 뒤의 사거리 배율(1 + rate × (누적 강화량 + 이번 등급 배수))이 상한을 넘는가.
+        // 정확히 상한에 닿는 카드는 살 수 있어야 하므로 부동소수 오차만큼은 같다고 본다.
+        private bool _IsOverAttackRangeLimit(TrainStatUpgradeRuleData rule)
+        {
+            float nextMultiplier = 1f + rule.IncreaseRate * (_train.GetStatUpgradeAmount(StatType.AttackRange) + _tier.ValueMultiplier);
+
+            return nextMultiplier > MAX_ATTACK_RANGE_MULTIPLIER && !Mathf.Approximately(nextMultiplier, MAX_ATTACK_RANGE_MULTIPLIER);
         }
 
         // 발사 속도 배율 = 1 + rate × 누적 강화량. (간격 = base ÷ 이 값)

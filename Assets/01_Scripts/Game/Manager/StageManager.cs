@@ -24,6 +24,10 @@ namespace TrainDefense.Game.Manager
         [SerializeField]
         private float hpScale;
 
+        // 한 판 시작(누적 상점 0)의 HP 배율. 몬스터 데이터(엑셀)를 건드리지 않고 전 몬스터 체력을 한 번에 올리고 내린다.
+        [SerializeField]
+        private float hpScaleStart = 1f;
+
         // 상점을 지날 때마다 hpScale에 더해지는 증가폭. 0이면 매 상점 같은 비율(단순 지수 성장)이 된다.
         [SerializeField]
         private float hpScaleIncrement;
@@ -639,13 +643,13 @@ namespace TrainDefense.Game.Manager
         /// </summary>
         public float GetHPScale()
         {
-            // 한 판 시작(누적 0)은 1.0 (기본값)
-            if (_totalInspectionPassedCount <= 0) return 1.0f;
+            // 한 판 시작(누적 0)은 hpScaleStart
+            if (_totalInspectionPassedCount <= 0) return hpScaleStart;
 
             // 가속 복리 스케일 — 상점을 지날수록 증가율 자체가 hpScaleIncrement만큼 커진다.
             // 유저 성장이 2차식이라 단일 비율 지수로는 초반이 가파르고 후반이 밋밋해서 그 반대 모양을 만든다.
-            // hpScaleIncrement가 0이면 Pow(1 + hpScale, 상점수)와 정확히 같다.
-            float scale = 1f;
+            // hpScaleIncrement가 0이면 hpScaleStart × Pow(1 + hpScale, 상점수)와 정확히 같다.
+            float scale = hpScaleStart;
             for (int i = 0; i < _totalInspectionPassedCount; i++)
             {
                 scale *= 1f + hpScale + hpScaleIncrement * i;

@@ -13159,6 +13159,7 @@ MonoBehaviour:
   monsterRushInterval: 0
   mapSelectInterval: 3
   hpScale: 0.03
+  hpScaleStart: 1.25
   hpScaleIncrement: 0.005
   attackScale: 0.04
   goldScale: 0
