@@ -256,6 +256,10 @@ namespace TrainDefense.Game.Datas
                 && countTrain.BaseStatus.AttackCount + Mathf.RoundToInt(_train.GetStatUpgradeAmount(StatType.AttackCount)) >= MAX_ATTACK_COUNT)
                 return false;
 
+            // 분사형(화염)은 분사 각도가 상한에 닿으면 범위를 더 사도 모양과 판정이 안 바뀐다. 사거리를 올리면 다시 열린다.
+            if (rule.StatType == StatType.AttackArea && _train is TurretTrain areaTrain && areaTrain.IsAttackAreaAtLimit)
+                return false;
+
             return true;
         }
 

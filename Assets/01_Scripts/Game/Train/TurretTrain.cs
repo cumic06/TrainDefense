@@ -68,6 +68,9 @@ namespace TrainDefense.Game
         public override float CurrentAttackRange => _currentTurretTrainStatus.AttackRange;
         // 공격 간격(초). MainTrain이 터치 연속 발사의 쿨다운으로 사용한다.
         public float AttackInterval => _currentTurretTrainStatus.AttackInterval;
+        // 분사형(화염)은 범위가 사거리에 비해 넓어지면 분사 각도가 상한에 닿아, 범위를 더 올려도 모양과 판정이 그대로다.
+        public bool IsAttackAreaAtLimit => useParticleProjectile
+            && _currentTurretTrainStatus.AttackArea >= ParticleProjectile.GetMaxAttackArea(_currentTurretTrainStatus.AttackRange);
 
         public override float GetCurrentStatValue(StatType statType)
         {

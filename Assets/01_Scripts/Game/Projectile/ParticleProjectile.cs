@@ -9,6 +9,10 @@ namespace TrainDefense.Game
     /// </summary>
     public class ParticleProjectile : Projectile
     {
+        // 분사 각도(콘 반각) 상한. 범위가 사거리에 비해 커져 이 각도를 넘으면 입자가 조준 방향이 아니라 옆으로 퍼져
+        // 화염이 직각으로 누운 띠가 되고 피해 판정도 사라진다.
+        public const float MAX_CONE_ANGLE = 60f;
+
         #region Field
         [SerializeField]
         [BoxGroup("ParticleCollider")]
@@ -26,6 +30,7 @@ namespace TrainDefense.Game
         private ParticleSystem _particleSystem;
         private ParticleSystem.Particle[] _particles;
         private readonly Vector2[] _trianglePoints = new Vector2[3];
+        private readonly Vector2[] _fanPoints = new Vector2[4];
         private float _colliderUpdateTimer;
         private float _baseShapeAngle;
         private float _baseRateOverTime;
@@ -39,6 +44,12 @@ namespace TrainDefense.Game
         {
             base.FixedUpdate();
             UpdateParticleCollider();
+        }
+
+        // 이 사거리에서 분사 각도가 상한에 닿는 범위(반폭). 이보다 큰 범위는 모양과 판정에 반영되지 않는다.
+        public static float GetMaxAttackArea(float attackRange)
+        {
+            return attackRange * Mathf.Sin(MAX_CONE_ANGLE * Mathf.Deg2Rad);
         }
 
         /// <summary>
@@ -63,10 +74,10 @@ namespace TrainDefense.Game
 
             // 반폭: 입자는 기울인 방향으로 사거리만큼 직진하므로 횡 반폭 = 사거리 × sin(각도) + 방출 반경.
             // 역산 = asin((반폭 − 방출반경) ÷ 사거리) — 도달 지점의 중심~가장자리가 정확히 AttackArea 유닛이 된다.
-            // 반폭이 사거리보다 크면 90°(반원)로 클램프.
+            // 각도는 MAX_CONE_ANGLE에서 멈춘다 — 그 너머로 열리면 입자가 앞으로 나가지 않는다.
             ParticleSystem.ShapeModule shape = _particleSystem.shape;
             float lateralReach = Mathf.Max(0f, scaleRadius - shape.radius);
-            float targetAngle = Mathf.Asin(Mathf.Clamp01(lateralReach / targetLength)) * Mathf.Rad2Deg;
+            float targetAngle = Mathf.Min(Mathf.Asin(Mathf.Clamp01(lateralReach / targetLength)) * Mathf.Rad2Deg, MAX_CONE_ANGLE);
             shape.angle = targetAngle;
 
             // 폭이 넓어진 만큼 방출량을 원본 각도 대비 비율로 올려 폭 방향 밀도를 유지한다.
@@ -146,11 +157,13 @@ namespace TrainDefense.Game
             }
             else
             {
-                // 삼각형에는 극점 3개(좌·우·상)만 필요하므로 위치 목록을 만들지 않고
-                // 순회하며 바로 찾는다 (colliderUpdateInterval마다 도는 경로라 갱신당 GC 할당 0 유지).
+                // 분사는 로컬 +x로 나가며 위아래(±y)로 퍼지는 부채꼴이다. 극점 4개(뒤·위·앞·아래)를 이으면
+                // 총구~양쪽 모서리~끝을 덮는 사각형이 된다. 극점 3개(뒤·앞·위) 삼각형은 부채꼴의 위쪽 절반만 덮는다.
+                // 위치 목록을 만들지 않고 순회하며 바로 찾는다 (colliderUpdateInterval마다 도는 경로라 갱신당 GC 할당 0 유지).
                 Vector2 leftmost = first;
                 Vector2 rightmost = first;
                 Vector2 topmost = first;
+                Vector2 bottommost = first;
 
                 for (int i = 1; i < particleCount; i++)
                 {
@@ -159,11 +172,19 @@ namespace TrainDefense.Game
                     if (localPos.x < leftmost.x) leftmost = localPos;
                     if (localPos.x > rightmost.x) rightmost = localPos;
                     if (localPos.y > topmost.y) topmost = localPos;
+                    if (localPos.y < bottommost.y) bottommost = localPos;
                 }
 
-                _trianglePoints[0] = leftmost;
-                _trianglePoints[1] = rightmost;
-                _trianglePoints[2] = topmost;
+                // 뒤 → 위 → 앞 → 아래 순서는 볼록 껍질을 한 방향으로 도는 순서라 감김을 따로 맞출 필요가 없다.
+                _fanPoints[0] = leftmost;
+                _fanPoints[1] = topmost;
+                _fanPoints[2] = rightmost;
+                _fanPoints[3] = bottommost;
+
+                if (_polygonCollider.pathCount != 1)
+                    _polygonCollider.pathCount = 1;
+                _polygonCollider.SetPath(0, _fanPoints);
+                return;
             }
 
             // 감김 방향만 외적 부호로 일정하게 맞춘다 (PolygonCollider는 일관된 감김이면 충분).
