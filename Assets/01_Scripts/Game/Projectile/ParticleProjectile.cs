@@ -16,6 +16,10 @@ namespace TrainDefense.Game
         [SerializeField]
         [BoxGroup("ParticleCollider")]
         private float particleRadius = 0.5f;
+        [SerializeField]
+        [BoxGroup("ParticleDensity")]
+        [Tooltip("이 사거리(유닛)에서의 입자 밀도를 기준으로, 사거리가 길어지면 방출량을 길이 비례로 올려 면적당 밀도를 유지한다. 0이면 길이 보정 없음")]
+        private float densityReferenceLength = 6f;
         #endregion
 
         private PolygonCollider2D _polygonCollider;
@@ -66,9 +70,19 @@ namespace TrainDefense.Game
             shape.angle = targetAngle;
 
             // 폭이 넓어진 만큼 방출량을 원본 각도 대비 비율로 올려 폭 방향 밀도를 유지한다.
+            // 길이도 기준 사거리 대비 비율로 곱한다 — 부채꼴 면적이 길이²에 비례하는데 동시 입자 수는 수명(길이)에만 비례해서,
+            // 이 보정이 없으면 사거리가 길어질수록 면적당 밀도가 1/길이로 옅어진다.
             ParticleSystem.EmissionModule emission = _particleSystem.emission;
             if (_baseShapeAngle > 0f)
-                emission.rateOverTimeMultiplier = _baseRateOverTime * (targetAngle / _baseShapeAngle);
+            {
+                float lengthFactor = densityReferenceLength > 0f ? targetLength / densityReferenceLength : 1f;
+                emission.rateOverTimeMultiplier = _baseRateOverTime * (targetAngle / _baseShapeAngle) * lengthFactor;
+
+                // 동시 입자 수(방출량 × 수명)가 상한을 넘으면 방출이 끊겨 구멍이 생기므로 상한을 함께 올린다.
+                int requiredParticles = Mathf.CeilToInt(emission.rateOverTimeMultiplier * main.startLifetimeMultiplier * 1.25f);
+                if (requiredParticles > main.maxParticles)
+                    main.maxParticles = requiredParticles;
+            }
         }
 
         #region ParticleCollider
