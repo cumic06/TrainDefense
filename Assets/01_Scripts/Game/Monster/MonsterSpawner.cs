@@ -333,7 +333,7 @@ namespace TrainDefense.Game
                      _spawnedMonsters.Add(spawnMonster);
 
                      // 몬스터 스폰 이벤트 발행
-                     GameEventSystem.Publish(new MonsterSpawnedEvent(selectedData.MonsterId));
+                     GameEventSystem.Publish(new MonsterSpawnedEvent(selectedData.MonsterId, spawnAsElite));
                   }
                }
             }
@@ -342,8 +342,9 @@ namespace TrainDefense.Game
          }
       }
 
-      // 엘리트는 검문(역 도착)을 이만큼 지난 뒤부터 등장한다. 검문 카운트는 스테이지당 4회(역 3개 + 맵 변경 1회)라
-      // 6은 두 번째 스테이지 중반이다. 그 전까지는 위협도 엘리트 코인도 없어서 8(스테이지3 시작)에서 앞당겼다.
+      // 엘리트는 검문(역 도착)을 이만큼 지난 뒤부터 등장한다. 검문 카운트는 스테이지당 5회(역 4개 + 맵 변경 1회).
+      // 판을 20역으로 늘릴 때도 이 값은 옮기지 않았다 — 플레이어가 강해지는 속도는 흐른 시간이 아니라 상점 방문 수를
+      // 따라가므로, 같은 경과 시간으로 미루면 그만큼 쉬워진다.
       private const int ELITE_START_STATION_COUNT = 6;
 
       // 엘리트 적격 역 도착 수 = (SpawnLevel + 1) × 2.2(올림). 상위 슬롯 몬스터가 등장하자마자

@@ -21,6 +21,11 @@ namespace TrainDefense.Game.Manager
         [SerializeField]
         private int mapSelectInterval = 3;
 
+        // 종착역. 누적 상점 수(역 도착 + 맵 이동)가 이 값에 닿는 도착이 마지막이며, 상점을 여는 대신 판을 클리어로 끝낸다.
+        // 스테이지당 5회(역 4 + 맵 이동 1)라 20은 맵 4개를 끝까지 달린 지점이다. 0이면 끝 없이 계속 달린다.
+        [SerializeField]
+        private int finalStationCount = 20;
+
         [SerializeField]
         private float hpScale;
 
@@ -74,6 +79,9 @@ namespace TrainDefense.Game.Manager
         /// 한 판 동안 열린 누적 상점 수(역 도착 + 맵 선택). 난이도 스케일과 상품 가격이 공유하는 시간 축.
         /// </summary>
         public int TotalInspectionPassedCount => _totalInspectionPassedCount;
+
+        /// <summary>종착역(이 도착에서 판이 끝난다). 0이면 끝 없이 계속 달린다.</summary>
+        public int FinalStationCount => finalStationCount;
 
         /// <summary>게임오버 결산용 — 한 판 동안 거쳐 간 맵별 점수/처치 기록(방문 순서).</summary>
         public IReadOnlyList<StageRunRecord> RunRecords => _runRecords;
@@ -274,6 +282,12 @@ namespace TrainDefense.Game.Manager
         /// </summary>
         private void _StartInspectionWithTimeline()
         {
+            if (finalStationCount > 0 && _totalInspectionPassedCount + 1 >= finalStationCount)
+            {
+                _ArriveAtFinalStation();
+                return;
+            }
+
             if (TimelineManager.Instance != null)
                 TimelineManager.Instance.StartShopEnterTimeline(() => GameEventSystem.Publish(new InspectionStartEvent()));
             else
@@ -281,9 +295,20 @@ namespace TrainDefense.Game.Manager
 
             // 역 도착·맵 선택 두 경로의 공통 진입점. 난이도와 가격이 같은 축을 쓰도록 여기서만 센다.
             _totalInspectionPassedCount++;
+            GameEventSystem.Publish(new StationPassedEvent(_totalInspectionPassedCount));
 
             // 몬스터 해금이 이 카운트를 기준으로 하므로 늘린 직후 목록을 다시 만든다.
             _UpdateSpawnRules();
+        }
+
+        // 종착역 도착. 결산·세이브 삭제·통계는 패배와 같은 GameEndEvent 경로를 타고,
+        // 시간은 InGameSequence가 GameOver 단계로 넘어가며 멈춘다.
+        private void _ArriveAtFinalStation()
+        {
+            _totalInspectionPassedCount++;
+            GameEventSystem.Publish(new StationPassedEvent(_totalInspectionPassedCount, isFinalStation: true));
+            _isGameOver = true;
+            GameEventSystem.Publish(new GameEndEvent(true));
         }
 
         // 현재 진행 중인 역 구간의 도착 시간.

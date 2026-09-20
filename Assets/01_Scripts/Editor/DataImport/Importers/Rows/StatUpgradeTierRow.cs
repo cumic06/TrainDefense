@@ -11,7 +11,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public float costMultiplier;       // 가격에 곱하는 배수
 		public int firstShopVisit;         // 등장 시작 (누적 상점 방문 수)
 		public int lastShopVisit;          // 등장 종료. 0 이하면 끝까지
-		public int weight;                 // 상점 추첨 가중치. 높을수록 자주 (고등급 = 희귀)
+		public int weight;                 // 등장 구간 시작의 추첨 가중치. 높을수록 자주 (고등급 = 희귀)
+		public int lastVisitWeight;        // 등장 구간 끝의 가중치. 시작보다 낮으면 뒤로 갈수록 덜 나온다
 
 		public void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -22,6 +23,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			firstShopVisit = map.GetInt(row, "first_shop_visit");
 			lastShopVisit = map.GetInt(row, "last_shop_visit");
 			weight = map.GetInt(row, "weight");
+			lastVisitWeight = map.GetInt(row, "last_visit_weight");
 		}
 
 		public void ToExcelRow(IRow row, HeaderMap map)
@@ -33,6 +35,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "first_shop_visit", firstShopVisit);
 			map.SetCell(row, "last_shop_visit", lastShopVisit);
 			map.SetCell(row, "weight", weight);
+			map.SetCell(row, "last_visit_weight", lastVisitWeight);
 		}
 	}
 }

@@ -25,7 +25,7 @@ MonoBehaviour:
     - {fileID: 3058856078925539220, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
     - {fileID: 6398057966443142182, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
     monsterStatusData:
-      MaxHp: 4
+      MaxHp: 8
       Damage: 4
       MoveSpeed: 4.2
       AttackDelay: 1
@@ -49,7 +49,7 @@ MonoBehaviour:
     - {fileID: -3137741453567158835, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     - {fileID: 9216760424783274641, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     monsterStatusData:
-      MaxHp: 13
+      MaxHp: 28
       Damage: 4
       MoveSpeed: 5
       AttackDelay: 0.6
@@ -75,7 +75,7 @@ MonoBehaviour:
     - {fileID: -1016734687898979182, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     - {fileID: 7477702687696233401, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     monsterStatusData:
-      MaxHp: 29
+      MaxHp: 44
       Damage: 12
       MoveSpeed: 3.4
       AttackDelay: 2
@@ -99,7 +99,7 @@ MonoBehaviour:
     - {fileID: 1066738513809693257, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
     - {fileID: -6583819675886926066, guid: c9e07c479ddb74dceaa6da11bf447b06, type: 3}
     monsterStatusData:
-      MaxHp: 10
+      MaxHp: 21
       Damage: 8
       MoveSpeed: 3.4
       AttackDelay: 2
@@ -123,7 +123,7 @@ MonoBehaviour:
     - {fileID: -5309227702758776139, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     - {fileID: 8516958411369342763, guid: da96343e9d4264026b2b2b6549b410d9, type: 3}
     monsterStatusData:
-      MaxHp: 20
+      MaxHp: 42
       Damage: 10
       MoveSpeed: 3.3
       AttackDelay: 1.9
@@ -148,7 +148,7 @@ MonoBehaviour:
     - {fileID: 6566697209257710286, guid: eec049525e8bf41429d9c479cff52295, type: 3}
     - {fileID: -1919939128155651028, guid: eec049525e8bf41429d9c479cff52295, type: 3}
     monsterStatusData:
-      MaxHp: 105
+      MaxHp: 158
       Damage: 16
       MoveSpeed: 3.6
       AttackDelay: 2
@@ -174,7 +174,7 @@ MonoBehaviour:
     - {fileID: -7986096866211416920, guid: 312db2f3608864126917ff6df6896c77, type: 3}
     - {fileID: -8890637189039292993, guid: 312db2f3608864126917ff6df6896c77, type: 3}
     monsterStatusData:
-      MaxHp: 8
+      MaxHp: 17
       Damage: 8
       MoveSpeed: 3.6
       AttackDelay: 2.1
@@ -198,7 +198,7 @@ MonoBehaviour:
     - {fileID: -8315347680731458982, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     - {fileID: -9062487706820149092, guid: 41f46eb6fe4a54e51b23478b8c6c26ab, type: 3}
     monsterStatusData:
-      MaxHp: 23
+      MaxHp: 49
       Damage: 10
       MoveSpeed: 4.5
       AttackDelay: 1.4
@@ -222,7 +222,7 @@ MonoBehaviour:
     - {fileID: -5987072993317950802, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     - {fileID: 308462971345494500, guid: 6628d46839fba407cbb25ef0533b957a, type: 3}
     monsterStatusData:
-      MaxHp: 73
+      MaxHp: 110
       Damage: 10
       MoveSpeed: 3.5
       AttackDelay: 1
@@ -245,7 +245,7 @@ MonoBehaviour:
     - {fileID: 6767145381185255370, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
     - {fileID: 888686281029753222, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
     monsterStatusData:
-      MaxHp: 168
+      MaxHp: 252
       Damage: 40
       MoveSpeed: 6.4
       AttackDelay: 2
@@ -269,7 +269,7 @@ MonoBehaviour:
     - {fileID: 6099051866714902594, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
     - {fileID: -4574552896946758463, guid: 2ce5d90b0ebae41e69d2f59200482a86, type: 3}
     monsterStatusData:
-      MaxHp: 6
+      MaxHp: 13
       Damage: 3
       MoveSpeed: 4.5
       AttackDelay: 0.7
@@ -292,7 +292,7 @@ MonoBehaviour:
     - {fileID: -8173720173229929539, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     - {fileID: 4663589299363003436, guid: 740818e1806c44b5691d1c1ac96d7f12, type: 3}
     monsterStatusData:
-      MaxHp: 17
+      MaxHp: 36
       Damage: 10
       MoveSpeed: 3.8
       AttackDelay: 1.6
@@ -318,7 +318,7 @@ MonoBehaviour:
     - {fileID: -6476088961041308456, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
     - {fileID: -723742200156331293, guid: ab2af0324e022405d84780c8f7c0cef7, type: 3}
     monsterStatusData:
-      MaxHp: 65
+      MaxHp: 98
       Damage: 16
       MoveSpeed: 3.4
       AttackDelay: 2
@@ -342,7 +342,7 @@ MonoBehaviour:
     - {fileID: -3942745417268178275, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
     - {fileID: -1776823346852784203, guid: b30cfbebd0b3741e2b71b510bd532e48, type: 3}
     monsterStatusData:
-      MaxHp: 12
+      MaxHp: 25
       Damage: 8
       MoveSpeed: 3.8
       AttackDelay: 2
@@ -364,7 +364,7 @@ MonoBehaviour:
     - {fileID: -2829615651170692943, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
     - {fileID: -6842481794725325692, guid: b1e8db9846d794fee962b80472c08a02, type: 3}
     monsterStatusData:
-      MaxHp: 27
+      MaxHp: 57
       Damage: 12
       MoveSpeed: 3.4
       AttackDelay: 2.7
@@ -392,7 +392,7 @@ MonoBehaviour:
     - {fileID: 6601671565499704310, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
     - {fileID: -1199408517139786225, guid: a96a81d25921749eb944b8ae72dfdc65, type: 3}
     monsterStatusData:
-      MaxHp: 120
+      MaxHp: 180
       Damage: 20
       MoveSpeed: 3.6
       AttackDelay: 2.3
@@ -433,8 +433,8 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 6
-      AttackRange: 8
+      AttackDamage: 12
+      AttackRange: 9
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 0.25
@@ -460,7 +460,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 6
       AttackRange: 6
-      AttackArea: 4.5
+      AttackArea: 3.8
       AttackCount: 1
       AttackInterval: 1.5
       TargetCount: 1
@@ -483,7 +483,7 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 20
+      AttackDamage: 16
       AttackRange: 8
       AttackArea: 2
       AttackCount: 1
@@ -509,10 +509,10 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 36
+      AttackRange: 28
       AttackArea: 1
       AttackCount: 1
-      AttackInterval: 2
+      AttackInterval: 2.5
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -559,7 +559,7 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 40
-      AttackRange: 36
+      AttackRange: 26
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 2.5
@@ -583,8 +583,8 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 35
-      AttackRange: 40
+      AttackDamage: 50
+      AttackRange: 30
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 1.4
@@ -609,8 +609,8 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 6
-      AttackRange: 8
+      AttackDamage: 12
+      AttackRange: 9
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 0.25
@@ -638,7 +638,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 6
       AttackRange: 6
-      AttackArea: 4.5
+      AttackArea: 3.8
       AttackCount: 1
       AttackInterval: 1.5
       TargetCount: 1
@@ -663,7 +663,7 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 20
+      AttackDamage: 16
       AttackRange: 8
       AttackArea: 2
       AttackCount: 1
@@ -691,10 +691,10 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 36
+      AttackRange: 28
       AttackArea: 1
       AttackCount: 1
-      AttackInterval: 2
+      AttackInterval: 2.5
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
@@ -743,7 +743,7 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 40
-      AttackRange: 36
+      AttackRange: 26
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 2.5
@@ -768,8 +768,8 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 35
-      AttackRange: 40
+      AttackDamage: 50
+      AttackRange: 30
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 1.4
@@ -988,9 +988,9 @@ MonoBehaviour:
   stageDataList:
   - id: 50001
     baseInspectionTime: 30
-    stationCount: 3
+    stationCount: 4
     stageEndTime: 180
-    spawnInterval: 0.2041
+    spawnInterval: 0.2551
     spawnDatas:
     - MonsterId: 10001
       Probability: 6
@@ -1014,9 +1014,9 @@ MonoBehaviour:
     eliteRewardMultiplier: 2
   - id: 50002
     baseInspectionTime: 30
-    stationCount: 3
+    stationCount: 4
     stageEndTime: 180
-    spawnInterval: 0.5102
+    spawnInterval: 0.6378
     spawnDatas:
     - MonsterId: 10004
       Probability: 6
@@ -1044,9 +1044,9 @@ MonoBehaviour:
     eliteRewardMultiplier: 5
   - id: 50003
     baseInspectionTime: 30
-    stationCount: 3
+    stationCount: 4
     stageEndTime: 180
-    spawnInterval: 0.4081
+    spawnInterval: 0.5101
     spawnDatas:
     - MonsterId: 10007
       Probability: 6
@@ -1074,9 +1074,9 @@ MonoBehaviour:
     eliteRewardMultiplier: 4
   - id: 50004
     baseInspectionTime: 30
-    stationCount: 3
+    stationCount: 4
     stageEndTime: 180
-    spawnInterval: 0.3061
+    spawnInterval: 0.3826
     spawnDatas:
     - MonsterId: 10011
       Probability: 6
@@ -1100,9 +1100,9 @@ MonoBehaviour:
     eliteRewardMultiplier: 3
   - id: 50005
     baseInspectionTime: 30
-    stationCount: 3
+    stationCount: 4
     stageEndTime: 180
-    spawnInterval: 0.6122
+    spawnInterval: 0.7653
     spawnDatas:
     - MonsterId: 10014
       Probability: 6
@@ -1258,7 +1258,7 @@ MonoBehaviour:
     lane: 0
     row: 0
     col: 0
-    needPoint: 10
+    needPoint: 17
     maxLevel: 3
     growthRate: 1.5
     prerequisites: []
@@ -1276,7 +1276,7 @@ MonoBehaviour:
     lane: 0
     row: 1
     col: 0
-    needPoint: 25
+    needPoint: 42
     maxLevel: 3
     growthRate: 1.5
     prerequisites:
@@ -1295,7 +1295,7 @@ MonoBehaviour:
     lane: 0
     row: 2
     col: 0
-    needPoint: 25
+    needPoint: 42
     maxLevel: 3
     growthRate: 1.5
     prerequisites:
@@ -1314,7 +1314,7 @@ MonoBehaviour:
     lane: 0
     row: 3
     col: 0
-    needPoint: 30
+    needPoint: 50
     maxLevel: 3
     growthRate: 1.5
     prerequisites:
@@ -1335,7 +1335,7 @@ MonoBehaviour:
     lane: 1
     row: 0
     col: 0
-    needPoint: 10
+    needPoint: 17
     maxLevel: 3
     growthRate: 1.5
     prerequisites: []
@@ -1351,7 +1351,7 @@ MonoBehaviour:
     lane: 1
     row: 1
     col: 0
-    needPoint: 20
+    needPoint: 34
     maxLevel: 3
     growthRate: 1.5
     prerequisites:
@@ -1368,7 +1368,7 @@ MonoBehaviour:
     lane: 1
     row: 2
     col: 0
-    needPoint: 30
+    needPoint: 50
     maxLevel: 3
     growthRate: 1.5
     prerequisites:
@@ -1385,7 +1385,7 @@ MonoBehaviour:
     lane: 2
     row: 2
     col: 0
-    needPoint: 100
+    needPoint: 170
     maxLevel: 2
     growthRate: 1.5
     prerequisites:
@@ -1402,7 +1402,7 @@ MonoBehaviour:
     lane: 2
     row: 0
     col: 0
-    needPoint: 15
+    needPoint: 25
     maxLevel: 3
     growthRate: 1.5
     prerequisites: []
@@ -1418,7 +1418,7 @@ MonoBehaviour:
     lane: 2
     row: 1
     col: 0
-    needPoint: 15
+    needPoint: 25
     maxLevel: 2
     growthRate: 1.5
     prerequisites:
@@ -1615,38 +1615,43 @@ MonoBehaviour:
   - id: stat_upgrade_tier_1
     grade: 1
     valueMultiplier: 1
-    costMultiplier: 1
+    costMultiplier: 1.5
     firstShopVisit: 1
-    lastShopVisit: 6
+    lastShopVisit: 10
     weight: 12
+    lastVisitWeight: 1
   - id: stat_upgrade_tier_2
     grade: 2
     valueMultiplier: 2
-    costMultiplier: 1.8
+    costMultiplier: 4.5
     firstShopVisit: 4
-    lastShopVisit: 10
+    lastShopVisit: 15
     weight: 10
+    lastVisitWeight: 2
   - id: stat_upgrade_tier_3
     grade: 3
     valueMultiplier: 3
-    costMultiplier: 2.6
+    costMultiplier: 9
     firstShopVisit: 8
-    lastShopVisit: 16
+    lastShopVisit: 0
     weight: 8
+    lastVisitWeight: 6
   - id: stat_upgrade_tier_4
     grade: 4
     valueMultiplier: 4
-    costMultiplier: 3.4
-    firstShopVisit: 12
+    costMultiplier: 11.5
+    firstShopVisit: 11
     lastShopVisit: 0
     weight: 4
+    lastVisitWeight: 8
   - id: stat_upgrade_tier_5
     grade: 5
     valueMultiplier: 5
-    costMultiplier: 4
-    firstShopVisit: 18
+    costMultiplier: 14
+    firstShopVisit: 15
     lastShopVisit: 0
     weight: 2
+    lastVisitWeight: 8
   statUpgradeStatDataList:
   - id: stat_upgrade_stat_attack_damage
     statType: 2
@@ -1800,7 +1805,7 @@ MonoBehaviour:
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     eliteSpawnCycle: 100
-    hpMultiplier: 120
+    hpMultiplier: 45
     damageMultiplier: 4
     moveSpeedMultiplier: 1.4
     sizeScale: 1.6
@@ -1809,7 +1814,7 @@ MonoBehaviour:
     variants:
     - type: 0
       weight: 1
-      hpMultiplier: 120
+      hpMultiplier: 45
       damageMultiplier: 4
       moveSpeedMultiplier: 1.4
       sizeScale: 1.6
@@ -1824,7 +1829,7 @@ MonoBehaviour:
       auraInterval: 1
     - type: 1
       weight: 1
-      hpMultiplier: 250
+      hpMultiplier: 90
       damageMultiplier: 1.5
       moveSpeedMultiplier: 0.85
       sizeScale: 1.8

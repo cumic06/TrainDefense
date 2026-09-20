@@ -73,11 +73,11 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private TextMeshProUGUI rerollLabelText;
         [SerializeField]
-        [Tooltip("첫 리롤 비용 = 이 값 × (누적 상점 방문 수 + 1). 수입이 커지는 후반에 리롤이 껌값이 되지 않게 진행도 비례")]
-        private int rerollBaseCostPerStation = 10;
+        [Tooltip("상점을 열었을 때의 첫 리롤 비용. 상품과 같이 고정가다(역이 지나도 오르지 않음)")]
+        private int rerollBaseCost = 250;
         [SerializeField]
-        [Tooltip("리롤할 때마다 현재 비용에 더해지는 증가분 = 이 값 × (누적 상점 방문 수 + 1). 상점을 새로 열면 첫 비용으로 초기화")]
-        private int rerollCostIncreasePerStation = 10;
+        [Tooltip("리롤할 때마다 현재 비용에 더해지는 증가분. 상점을 새로 열면 첫 비용으로 초기화")]
+        private int rerollCostIncrease = 350;
         [SerializeField]
         [Tooltip("보유 코인이 부족할 때 리롤 비용 텍스트에 적용할 색상")]
         private Color rerollInsufficientColor = Color.red;
@@ -169,7 +169,7 @@ namespace TrainDefense.Game.UI
         {
             // 역 도착 시점에 새로 추첨. (상점은 역당 1회 — 닫으면 바로 출발이라 재오픈은 없다)
             // 리롤 비용은 상점이 열릴 때마다(맵 선택 상점 포함) 기본값으로 초기화된다.
-            _currentRerollCost = rerollBaseCostPerStation * _GetRerollStationMultiplier();
+            _currentRerollCost = rerollBaseCost;
             _freeRerollsLeft = _GetFreeRerollCount();
             _RebuildOfferSlots();
             _RefreshRerollUI();
@@ -605,7 +605,7 @@ namespace TrainDefense.Game.UI
                 if (UserDataManager.Instance == null || !UserDataManager.Instance.TrySpendCoin(_currentRerollCost))
                     return;
 
-                _currentRerollCost += rerollCostIncreasePerStation * _GetRerollStationMultiplier();
+                _currentRerollCost += rerollCostIncrease;
             }
 
             _RebuildOfferSlots();
@@ -624,15 +624,6 @@ namespace TrainDefense.Game.UI
                 count += Mathf.RoundToInt(PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.FreeReroll));
 
             return count;
-        }
-
-        // 리롤 비용의 진행도 비례 계수. 상품 가격 인상(ShopOfferPricing)과 같은 축(누적 상점 방문 수)을 쓴다.
-        private int _GetRerollStationMultiplier()
-        {
-            var stageManager = StageManager.Instance;
-            int totalInspectionPassedCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
-
-            return totalInspectionPassedCount + 1;
         }
 
         private void _OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)

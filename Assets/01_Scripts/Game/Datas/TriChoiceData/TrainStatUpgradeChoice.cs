@@ -82,9 +82,19 @@ namespace TrainDefense.Game.Datas
         public StatType SecondStatType => _secondRule != null ? _secondRule.StatType : _statType;
 
         // 상점 추첨 가중치 — 등급 데이터가 정한다(고등급 = 희귀). 복합은 같은 티어 단일의 절반.
-        public int TierWeight => IsCombo
-            ? Mathf.Max(1, Mathf.RoundToInt(_displayTier.Weight * COMBO_WEIGHT_RATIO))
-            : _displayTier.Weight;
+        // 등급마다 등장 구간 안에서 가중치가 변한다(저등급은 뒤로 갈수록 덜, 고등급은 더) — 그래서 방문 수가 필요하다.
+        public int TierWeight
+        {
+            get
+            {
+                var stageManager = StageManager.Instance;
+                int shopVisitCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
+                int finalShopVisit = stageManager != null ? stageManager.FinalStationCount : 0;
+                int tierWeight = _displayTier.GetWeightAt(shopVisitCount, finalShopVisit);
+
+                return IsCombo ? Mathf.Max(1, Mathf.RoundToInt(tierWeight * COMBO_WEIGHT_RATIO)) : tierWeight;
+            }
+        }
 
         // 가격 배수 = 등급 배수(고등급일수록 단가 할인 — 희귀 보상) × 스탯 프리미엄(+1 가치가 큰 정수 스탯).
         // 복합은 "카드 두 장 값"이라 두 스탯의 프리미엄을 더한 뒤 COMBO_COST_RATIO로 깎는다 — 두 장 값을

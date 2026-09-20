@@ -17,7 +17,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string ExcelFileName => "StatUpgradeData.xlsx";
 		public string SheetName => "stat_upgrade_tier_data";
 		public string ButtonLabel => "StatUpgradeTier 데이터 가져오기";
-		public string[] Headers => new[] { "id", "grade", "value_multiplier", "cost_multiplier", "first_shop_visit", "last_shop_visit", "weight" };
+		public string[] Headers => new[] { "id", "grade", "value_multiplier", "cost_multiplier", "first_shop_visit", "last_shop_visit", "weight", "last_visit_weight" };
 
 		public int Import(DB db, string excelPath)
 		{
@@ -47,6 +47,8 @@ namespace TrainDefense.Editor.DataImport.Importers
 				StatUpgradeImportUtil.SetPrivateField(existing, "lastShopVisit", r.lastShopVisit);
 				// GetUninitializedObject가 생성자 초기화(1)를 우회하므로 항상 주입한다. 빈 셀(0)은 1로 보정.
 				StatUpgradeImportUtil.SetPrivateField(existing, "weight", r.weight > 0 ? r.weight : 1);
+				// 구간 끝 가중치. 열이 비어 있으면(0) 시작값을 그대로 써서 예전처럼 구간 내내 일정하게 나온다.
+				StatUpgradeImportUtil.SetPrivateField(existing, "lastVisitWeight", r.lastVisitWeight > 0 ? r.lastVisitWeight : (r.weight > 0 ? r.weight : 1));
 				imported++;
 			}
 

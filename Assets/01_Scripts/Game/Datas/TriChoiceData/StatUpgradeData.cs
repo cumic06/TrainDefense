@@ -37,14 +37,17 @@ namespace TrainDefense.Game.Datas
         private int lastShopVisit;
 
         [SerializeField]
-        [Tooltip("상점 추첨 가중치 — 높을수록 자주 나온다. 창이 겹친 등급끼리의 노출 비율을 정한다(고등급 = 희귀)")]
+        [Tooltip("등장 구간이 시작될 때의 상점 추첨 가중치 — 높을수록 자주 나온다. 창이 겹친 등급끼리의 노출 비율을 정한다(고등급 = 희귀)")]
         private int weight = 1;
+
+        [SerializeField]
+        [Tooltip("등장 구간이 끝날 때의 가중치. 시작값보다 낮게 두면 뒤로 갈수록 덜 나온다(저등급), 높게 두면 더 자주 나온다(고등급). 그 사이는 방문 수에 비례해 이어진다")]
+        private int lastVisitWeight = 1;
 
         public string Id => id;
         public int Grade => grade;
         public float ValueMultiplier => valueMultiplier;
         public float CostMultiplier => costMultiplier;
-        public int Weight => weight;
 
         public bool IsAvailableAt(int shopVisitCount)
         {
@@ -52,6 +55,21 @@ namespace TrainDefense.Game.Datas
                 return false;
 
             return lastShopVisit <= 0 || shopVisitCount <= lastShopVisit;
+        }
+
+        /// <summary>
+        /// 이번 상점에서의 추첨 가중치. 등장 구간의 처음(weight)에서 끝(lastVisitWeight)까지 방문 수에 비례해 옮겨간다.
+        /// 끝까지 나오는 등급(lastShopVisit 0)은 종착역을 구간 끝으로 본다.
+        /// </summary>
+        public int GetWeightAt(int shopVisitCount, int finalShopVisit)
+        {
+            int windowEnd = lastShopVisit > 0 ? lastShopVisit : finalShopVisit;
+            if (windowEnd <= firstShopVisit)
+                return weight;
+
+            float progress = Mathf.Clamp01((float)(shopVisitCount - firstShopVisit) / (windowEnd - firstShopVisit));
+
+            return Mathf.Max(0, Mathf.RoundToInt(Mathf.Lerp(weight, lastVisitWeight, progress)));
         }
     }
 

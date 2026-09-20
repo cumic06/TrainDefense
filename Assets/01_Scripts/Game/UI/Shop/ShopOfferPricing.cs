@@ -20,13 +20,13 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private int statUpgradeBaseCost = 50;
 
-        [Tooltip("엘리트 승격 비용 — 고레벨 강화 여러 번 값에 해당하는 최상위 목표템. 실지불은 상점 방문당 인상 포함 2~3구간치 수입")]
+        [Tooltip("엘리트 승격 비용 — 고레벨 강화 여러 번 값에 해당하는 최상위 목표템. 중후반 한 구간 수입으로 한 번 살 수 있는 값")]
         [SerializeField]
-        private int elitePromotionCost = 5000;
+        private int elitePromotionCost = 3000;
 
-        [Tooltip("상점이 한 번 열릴 때마다 전 상품 가격이 이 퍼센트씩 오른다 (선형, 역 도착 상점 + 맵 선택 상점 모두 포함). 안 사고 모으면 자동으로 손해가 되는 시간 축 인상 — 상점 내 남발 억제는 슬롯 소진+리롤 비용이 담당")]
+        [Tooltip("상점이 한 번 열릴 때마다 전 상품 가격이 이 퍼센트씩 오른다 (선형). 0이면 고정가 — 같은 등급 카드는 판 내내 같은 값이라 플레이어가 가격을 읽을 수 있다. 후반의 커지는 수입은 등급별 가격과 등장 구간으로 받아낸다")]
         [SerializeField]
-        private float stationPriceIncreasePercent = 20f;
+        private float stationPriceIncreasePercent;
 
         public int GetPrice(IChoiceOption option)
         {
