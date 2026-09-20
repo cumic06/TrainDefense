@@ -53,6 +53,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 				"LaserProjectile"       => SoundType.LaserTurretTrainAttack,
 				"ElectrickProjectile"   => SoundType.ElectrickTurretTrainAttack,
 				"CannonProjectile"      => SoundType.CannonTurretTrainAttack,
+				"CannonShellProjectile" => SoundType.CannonTurretTrainAttack,
 				"SniperProjectile"      => SoundType.SniperTurretTrainAttack,
 				_                       => SoundType.None
 			};
