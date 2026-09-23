@@ -32,10 +32,6 @@ namespace TrainDefense.Game
         [Tooltip("역 도달 보상이 1 오르는 데 걸리는 역 수. 2면 두 역마다 +1")]
         private int _stationRewardStep = 2;
 
-        [SerializeField]
-        [Tooltip("종착역까지 완주했을 때 남은 골드를 영구 재화 1개로 바꾸는 환율(골드). 0이면 환전하지 않는다. 패배 시에는 환전하지 않는다")]
-        private int _clearGoldPerCoin = 400;
-
         private int _eliteCoin;
         private readonly Dictionary<string, int> _levels = new();
 
@@ -43,9 +39,6 @@ namespace TrainDefense.Game
 
         /// <summary>이번 판 동안 획득한 엘리트 재화 합계(게임오버 결산 표시용). 게임 진입 시 리셋된다.</summary>
         public int RunEliteCoinEarned { get; private set; }
-
-        /// <summary>이번 판 클리어 환전으로 받은 재화. 결과창에서 "남은 골드 → 재화"를 따로 보여줄 때 쓴다. 게임 진입 시 리셋된다.</summary>
-        public int RunGoldExchangedCoin { get; private set; }
 
         protected override void Awake()
         {
@@ -73,7 +66,6 @@ namespace TrainDefense.Game
         private void _OnGameEnter(GameEnterEvent _)
         {
             RunEliteCoinEarned = 0;
-            RunGoldExchangedCoin = 0;
         }
 
         // 엘리트 처치/구매마다 PlayerPrefs.Save()(디스크 flush)를 부르지 않고, 백그라운드 전환·종료 시 한 번에 기록한다.
@@ -102,26 +94,6 @@ namespace TrainDefense.Game
         private void _OnStationPassed(StationPassedEvent stationPassedEvent)
         {
             AddEliteCoin(GetStationReward(stationPassedEvent.PassedStationCount));
-
-            if (stationPassedEvent.IsFinalStation)
-                _ExchangeLeftoverGoldOnClear();
-        }
-
-        // 완주 시에만 남은 골드를 영구 재화로 바꾼다.
-        // 종착역은 상점을 거치지 않고 끝나 마지막 구간 수입이 통째로 사라지는데, 그 몫을 돌려주는 정산이다.
-        // 패배 시에도 주면 끝까지 갈 이유가 줄어들기 때문에 완주 보상으로만 둔다.
-        private void _ExchangeLeftoverGoldOnClear()
-        {
-            if (_clearGoldPerCoin <= 0) return;
-
-            var userDataManager = UserDataManager.Instance;
-            if (userDataManager == null) return;
-
-            int exchanged = userDataManager.Coin / _clearGoldPerCoin;
-            if (exchanged <= 0) return;
-
-            RunGoldExchangedCoin = exchanged;
-            AddEliteCoin(exchanged);
         }
 
         /// <summary>역 도달 보상: 기준 역 이하면 0, 그 위로는 <c>⌈(역 번호 - 기준) / 단계⌉</c>.</summary>

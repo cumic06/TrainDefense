@@ -344,7 +344,7 @@ namespace TrainDefense.Game.Manager
         private void _ArriveAtFinalStation()
         {
             _totalInspectionPassedCount++;
-            GameEventSystem.Publish(new StationPassedEvent(_totalInspectionPassedCount, isFinalStation: true));
+            GameEventSystem.Publish(new StationPassedEvent(_totalInspectionPassedCount));
             _isGameOver = true;
             GameEventSystem.Publish(new GameEndEvent(true));
         }
