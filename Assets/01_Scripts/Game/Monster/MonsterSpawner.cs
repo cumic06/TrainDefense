@@ -163,7 +163,10 @@ namespace TrainDefense.Game
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
       {
          DestroyAllMonsters();
-         _stationPassedCount++;
+         // 이어하기는 복원 후 이 이벤트를 한 번만 다시 발행하므로 자체 카운트를 올리면 1부터 다시 센다.
+         // 런 세이브에 들어 있는 StageManager의 누적 상점 수를 그대로 따른다.
+         var stageManager = TrainDefense.Game.Manager.StageManager.Instance;
+         _stationPassedCount = stageManager != null ? stageManager.TotalInspectionPassedCount : _stationPassedCount + 1;
          _UpdateSpawnCountByStation();
          spawnInterval = _GetAcceleratedInterval();
 
