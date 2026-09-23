@@ -347,16 +347,17 @@ namespace TrainDefense.Game
       // 따라가므로, 같은 경과 시간으로 미루면 그만큼 쉬워진다.
       private const int ELITE_START_STATION_COUNT = 6;
 
-      // 엘리트 적격 역 도착 수 = (SpawnLevel + 1) × 2.2(올림). 상위 슬롯 몬스터가 등장하자마자
-      // 엘리트로 나오면 급격한 벽이 돼서, 등장 후 유예를 둔다. (슬롯2 5→14, 슬롯3 9→22, 곰 14→33)
-      // SpawnLevel이 0부터 시작하는 값이라 +1로 1부터 세는 배수 계산에 맞춘다.
-      private const float ELITE_LEVEL_MULTIPLIER = 2.2f;
+      // 엘리트 적격 역 도착 수 = SpawnLevel + 유예. 상위 슬롯 몬스터가 등장하자마자
+      // 엘리트로 나오면 급격한 벽이 돼서, 등장 후 유예를 둔다.
+      // 예전에는 배수(×2.2)였는데, 해금을 맵 등장 구간에 맞추면서 SpawnLevel이 역 번호와 같은
+      // 스케일이 됐다. 배수를 그대로 두면 적격 역이 종착역(20)을 넘어 엘리트가 한 번도 안 나온다.
+      private const int ELITE_DELAY_STATIONS = 2;
 
       private bool _IsEliteEligible(StageSpawnData data)
       {
          var stageManager = TrainDefense.Game.Manager.StageManager.Instance;
          int progressCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
-         return progressCount >= Mathf.CeilToInt((data.SpawnLevel + 1) * ELITE_LEVEL_MULTIPLIER);
+         return progressCount >= data.SpawnLevel + ELITE_DELAY_STATIONS;
       }
 
       // 검문 후 다음 구간의 엘리트를 정산한다. 예산 = 구간시간 ÷ (eliteSpawnCycle × 현재 스폰간격)을 적립해

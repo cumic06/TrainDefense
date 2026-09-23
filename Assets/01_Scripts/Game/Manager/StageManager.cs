@@ -100,7 +100,7 @@ namespace TrainDefense.Game.Manager
         private void Start()
         {
             _LoadStageDatas();
-            _currentStageIndex = Random.Range(0, _stageDatas.Length);
+            _currentStageIndex = 0;   // 고정 순서: 항상 가장 느슨한 맵에서 시작한다
             _MarkCurrentStageVisited();
             _ResetCurrentStageInfo();
             _SubscribeEvents();
@@ -140,6 +140,44 @@ namespace TrainDefense.Game.Manager
         private void _LoadStageDatas()
         {
             _stageDatas = DatabaseManager.Instance.GetStageDatas();
+            // 맵은 고정 순서로 등장한다. 첫 맵과 이동이 무작위이던 시절에는 같은 조건으로 돌려도
+            // 도달 역이 9~20으로 갈려서 판 결과를 맵 추첨이 좌우했다.
+            // 정렬 기준은 위협지수(_GetStageThreatScore) 오름차순 = 쉬운 맵부터.
+            if (_stageDatas != null)
+            {
+                _stageDatas = _stageDatas
+                    .Where(stage => stage != null)
+                    .OrderBy(_GetStageThreatScore)
+                    .ToArray();
+            }
+        }
+
+        /// <summary>
+        /// 맵 난이도 대리 지표. (가중평균 체력 ÷ 스폰 간격) × 가중평균 공격력.
+        /// 스폰 간격만 쓰면 밀도만 반영돼서, 몬스터가 강한 맵이 앞에 오는 일이 생긴다
+        /// (사막은 가장 빽빽하지만 체력 8~44, 숲은 중간 밀도인데 곰이 체력 252·공격 40).
+        /// 등장 비중(Probability)으로 가중해서 실제로 마주치는 평균을 본다.
+        /// </summary>
+        private static float _GetStageThreatScore(StageData stage)
+        {
+            if (stage == null || stage.SpawnInterval <= 0f || stage.SpawnDatas == null) return 0f;
+
+            float weight = 0f, hpSum = 0f, damageSum = 0f;
+            foreach (var spawn in stage.SpawnDatas)
+            {
+                var monster = DatabaseManager.Instance != null
+                    ? DatabaseManager.Instance.GetMonsterData(spawn.MonsterId)
+                    : null;
+                if (monster == null) continue;
+
+                var status = monster.MonsterStatusData;
+                weight += spawn.Probability;
+                hpSum += status.MaxHp * spawn.Probability;
+                damageSum += status.Damage * spawn.Probability;
+            }
+
+            if (weight <= 0f) return 0f;
+            return hpSum / weight / stage.SpawnInterval * (damageSum / weight);
         }
 
         private void _ResetCurrentStageInfo()
@@ -498,9 +536,9 @@ namespace TrainDefense.Game.Manager
             }
         }
 
-        // 아직 방문하지 않은 맵 중 하나를 무작위로 골라 이동한다. 전부 방문했으면 방문 기록을 비우고
-        // 현재 맵을 제외한 나머지에서 다시 뽑는다(종착역 도입 전 무한 진행 대비).
-        private void _MoveToRandomUnvisitedStage()
+        // 맵 목록의 다음 맵으로 이동한다. _LoadStageDatas가 느슨한 순으로 정렬해 두므로
+        // 진행할수록 밀도가 높아진다. 맵보다 역이 많으면 처음으로 돌아간다(종착역 없는 진행 대비).
+        private void _MoveToNextStageInOrder()
         {
             if (_stageDatas == null || _stageDatas.Length < 2)
             {
@@ -508,21 +546,8 @@ namespace TrainDefense.Game.Manager
                 return;
             }
 
-            var candidates = _stageDatas
-                .Where((stage, index) => index != _currentStageIndex && stage != null && !_visitedStageIds.Contains(stage.Id))
-                .ToArray();
-
-            if (candidates.Length == 0)
-            {
-                _visitedStageIds.Clear();
-                _MarkCurrentStageVisited();
-                candidates = _stageDatas
-                    .Where((stage, index) => index != _currentStageIndex && stage != null)
-                    .ToArray();
-            }
-
-            var nextStage = candidates[Random.Range(0, candidates.Length)];
-            GameEventSystem.Publish(new StageSelectEvent(nextStage));
+            int nextIndex = (_currentStageIndex + 1) % _stageDatas.Length;
+            GameEventSystem.Publish(new StageSelectEvent(_stageDatas[nextIndex]));
         }
 
         private void _MarkCurrentStageVisited()
@@ -542,7 +567,7 @@ namespace TrainDefense.Game.Manager
             ResourceManager.Instance.ReturnAll();
             GameEventSystem.Publish(new EngageReadyEvent());
 
-            _MoveToRandomUnvisitedStage();
+            _MoveToNextStageInOrder();
         }
 
         #region Run Save

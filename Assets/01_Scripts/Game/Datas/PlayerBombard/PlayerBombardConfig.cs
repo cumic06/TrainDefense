@@ -14,7 +14,7 @@ namespace TrainDefense.Game.Datas
         [BoxGroup("Damage")]
         [SerializeField]
         [LabelText("발당 데미지")]
-        private float damage = 60f;
+        private float damage = 50f;
 
         [BoxGroup("Damage")]
         [SerializeField]

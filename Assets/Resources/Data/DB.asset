@@ -988,7 +988,7 @@ MonoBehaviour:
   stageDataList:
   - id: 50001
     baseInspectionTime: 30
-    stationCount: 4
+    stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.2551
     spawnDatas:
@@ -998,11 +998,11 @@ MonoBehaviour:
       EliteChanceMultiplier: 1
     - MonsterId: 10002
       Probability: 3
-      SpawnLevel: 7
+      SpawnLevel: 1
       EliteChanceMultiplier: 1
     - MonsterId: 10003
       Probability: 1
-      SpawnLevel: 11
+      SpawnLevel: 2
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1014,21 +1014,21 @@ MonoBehaviour:
     eliteRewardMultiplier: 2
   - id: 50002
     baseInspectionTime: 30
-    stationCount: 4
+    stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.6378
     spawnDatas:
     - MonsterId: 10004
       Probability: 6
-      SpawnLevel: 0
+      SpawnLevel: 8
       EliteChanceMultiplier: 1
     - MonsterId: 10005
       Probability: 3
-      SpawnLevel: 7
+      SpawnLevel: 8
       EliteChanceMultiplier: 1
     - MonsterId: 10006
       Probability: 1
-      SpawnLevel: 11
+      SpawnLevel: 8
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1044,25 +1044,25 @@ MonoBehaviour:
     eliteRewardMultiplier: 5
   - id: 50003
     baseInspectionTime: 30
-    stationCount: 4
+    stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.5101
     spawnDatas:
     - MonsterId: 10007
       Probability: 6
-      SpawnLevel: 0
+      SpawnLevel: 16
       EliteChanceMultiplier: 1
     - MonsterId: 10008
       Probability: 3
-      SpawnLevel: 7
+      SpawnLevel: 16
       EliteChanceMultiplier: 1
     - MonsterId: 10009
       Probability: 1
-      SpawnLevel: 11
+      SpawnLevel: 16
       EliteChanceMultiplier: 1
     - MonsterId: 10010
       Probability: 0.5
-      SpawnLevel: 14
+      SpawnLevel: 16
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1074,21 +1074,21 @@ MonoBehaviour:
     eliteRewardMultiplier: 4
   - id: 50004
     baseInspectionTime: 30
-    stationCount: 4
+    stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.3826
     spawnDatas:
     - MonsterId: 10011
       Probability: 6
-      SpawnLevel: 0
+      SpawnLevel: 4
       EliteChanceMultiplier: 1
     - MonsterId: 10012
       Probability: 3
-      SpawnLevel: 7
+      SpawnLevel: 4
       EliteChanceMultiplier: 1
     - MonsterId: 10013
       Probability: 1
-      SpawnLevel: 11
+      SpawnLevel: 6
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1100,21 +1100,21 @@ MonoBehaviour:
     eliteRewardMultiplier: 3
   - id: 50005
     baseInspectionTime: 30
-    stationCount: 4
+    stationCount: 3
     stageEndTime: 180
     spawnInterval: 0.7653
     spawnDatas:
     - MonsterId: 10014
       Probability: 6
-      SpawnLevel: 0
+      SpawnLevel: 12
       EliteChanceMultiplier: 1
     - MonsterId: 10015
       Probability: 3
-      SpawnLevel: 7
+      SpawnLevel: 12
       EliteChanceMultiplier: 1
     - MonsterId: 10016
       Probability: 1
-      SpawnLevel: 11
+      SpawnLevel: 12
       EliteChanceMultiplier: 1
     mapData:
       id: 
@@ -1805,7 +1805,7 @@ MonoBehaviour:
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     eliteSpawnCycle: 100
-    hpMultiplier: 45
+    hpMultiplier: 10
     damageMultiplier: 4
     moveSpeedMultiplier: 1.4
     sizeScale: 1.6
@@ -1814,7 +1814,7 @@ MonoBehaviour:
     variants:
     - type: 0
       weight: 1
-      hpMultiplier: 45
+      hpMultiplier: 10
       damageMultiplier: 4
       moveSpeedMultiplier: 1.4
       sizeScale: 1.6
@@ -1829,13 +1829,13 @@ MonoBehaviour:
       auraInterval: 1
     - type: 1
       weight: 1
-      hpMultiplier: 90
+      hpMultiplier: 20
       damageMultiplier: 1.5
       moveSpeedMultiplier: 0.85
       sizeScale: 1.8
       dropExpMultiplier: 10
       dropMoneyMultiplier: 10
-      ccResistance: 1
+      ccResistance: 0.8
       tintColor: {r: 0.22, g: 0.68, b: 0.28, a: 1}
       rangedAttackInterval: 3
       rangedProjectile: {fileID: 0}
@@ -1844,7 +1844,7 @@ MonoBehaviour:
       auraInterval: 1
     - type: 2
       weight: 0
-      hpMultiplier: 70
+      hpMultiplier: 15
       damageMultiplier: 2
       moveSpeedMultiplier: 0.8
       sizeScale: 1.5
@@ -1859,7 +1859,7 @@ MonoBehaviour:
       auraInterval: 1
     - type: 3
       weight: 0
-      hpMultiplier: 80
+      hpMultiplier: 18
       damageMultiplier: 1.5
       moveSpeedMultiplier: 1.1
       sizeScale: 1.5

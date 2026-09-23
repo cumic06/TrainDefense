@@ -13157,7 +13157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   dontDestroyOnLoad: 0
   monsterRushInterval: 0
-  mapSelectInterval: 4
+  mapSelectInterval: 3
   finalStationCount: 20
   hpScale: 0.03
   hpScaleStart: 1
@@ -14032,8 +14032,8 @@ MonoBehaviour:
   spawnInterval: 2
   spawnCount: 2
   maxSpawnCount: 5
-  spawnCountFirstIncreaseStation: 5
-  spawnCountIncreaseStationInterval: 5
+  spawnCountFirstIncreaseStation: 13
+  spawnCountIncreaseStationInterval: 4
   stationSpawnAccelPercent: 3
   maxSpawnAccelPercent: 60
   spawnMode: 0
