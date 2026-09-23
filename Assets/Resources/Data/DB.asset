@@ -1829,8 +1829,8 @@ MonoBehaviour:
       auraInterval: 1
     - type: 1
       weight: 1
-      hpMultiplier: 20
-      damageMultiplier: 1.5
+      hpMultiplier: 14
+      damageMultiplier: 2.5
       moveSpeedMultiplier: 0.85
       sizeScale: 1.8
       dropExpMultiplier: 10
