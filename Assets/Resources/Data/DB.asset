@@ -25,14 +25,14 @@ MonoBehaviour:
     - {fileID: 3058856078925539220, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
     - {fileID: 6398057966443142182, guid: 96b607cc788cc4575b998fe06d61078c, type: 3}
     monsterStatusData:
-      MaxHp: 8
+      MaxHp: 12
       Damage: 4
       MoveSpeed: 4.2
       AttackDelay: 1
-      DropExpMin: 8
-      DropExpMax: 8
-      DropMoneyMin: 2
-      DropMoneyMax: 2
+      DropExpMin: 12
+      DropExpMax: 12
+      DropMoneyMin: 3
+      DropMoneyMax: 3
       AttackRange: 2
       AttackType: 0
     prefabId: Skull
@@ -49,14 +49,14 @@ MonoBehaviour:
     - {fileID: -3137741453567158835, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     - {fileID: 9216760424783274641, guid: 05342e09018d54bfe9d0788c3f86f3ec, type: 3}
     monsterStatusData:
-      MaxHp: 28
+      MaxHp: 42
       Damage: 4
       MoveSpeed: 5
       AttackDelay: 0.6
-      DropExpMin: 20
-      DropExpMax: 20
-      DropMoneyMin: 5
-      DropMoneyMax: 5
+      DropExpMin: 30
+      DropExpMax: 30
+      DropMoneyMin: 8
+      DropMoneyMax: 8
       AttackRange: 1.6
       AttackType: 0
     prefabId: Thief
@@ -75,14 +75,14 @@ MonoBehaviour:
     - {fileID: -1016734687898979182, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     - {fileID: 7477702687696233401, guid: d49648e3577534df5904ac42a87cbd82, type: 3}
     monsterStatusData:
-      MaxHp: 44
+      MaxHp: 66
       Damage: 12
       MoveSpeed: 3.4
       AttackDelay: 2
-      DropExpMin: 52
-      DropExpMax: 52
-      DropMoneyMin: 13
-      DropMoneyMax: 13
+      DropExpMin: 78
+      DropExpMax: 78
+      DropMoneyMin: 20
+      DropMoneyMax: 20
       AttackRange: 4
       AttackType: 1
     prefabId: Gnoll
@@ -510,7 +510,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 28
-      AttackArea: 1
+      AttackArea: 1.2
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -533,12 +533,12 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 11
+      AttackDamage: 12
       AttackRange: 11
       AttackArea: 0
       AttackCount: 1
-      AttackInterval: 1.3
-      TargetCount: 2
+      AttackInterval: 1.1
+      TargetCount: 3
       CriticalChance: 0
       CriticalDamage: 0
       BurstDuration: 0
@@ -560,7 +560,7 @@ MonoBehaviour:
     turretTrainStatus:
       AttackDamage: 40
       AttackRange: 26
-      AttackArea: 3
+      AttackArea: 3.5
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -990,7 +990,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.2551
+    spawnInterval: 0.38
     spawnDatas:
     - MonsterId: 10001
       Probability: 6
@@ -1016,7 +1016,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.6378
+    spawnInterval: 0.64
     spawnDatas:
     - MonsterId: 10004
       Probability: 6
@@ -1046,7 +1046,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.5101
+    spawnInterval: 0.51
     spawnDatas:
     - MonsterId: 10007
       Probability: 6
@@ -1076,7 +1076,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.3826
+    spawnInterval: 0.38
     spawnDatas:
     - MonsterId: 10011
       Probability: 6
@@ -1102,7 +1102,7 @@ MonoBehaviour:
     baseInspectionTime: 30
     stationCount: 3
     stageEndTime: 180
-    spawnInterval: 0.7653
+    spawnInterval: 0.77
     spawnDatas:
     - MonsterId: 10014
       Probability: 6

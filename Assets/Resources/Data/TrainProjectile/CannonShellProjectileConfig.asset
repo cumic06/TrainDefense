@@ -22,7 +22,7 @@ MonoBehaviour:
   scaleRangeType: 0
   isTargeting: 0
   detonateAtTargetDistance: 1
-  fixedFlightDuration: 0.8
+  fixedFlightDuration: 0.65
   lobPeakHeight: 1.5
   isRotateModel: 0
   directDamage: 0
