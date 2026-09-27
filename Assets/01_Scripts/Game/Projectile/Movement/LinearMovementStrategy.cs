@@ -9,7 +9,7 @@ namespace TrainDefense.Game
     {
         private float _speed;
         // DetonateAtTargetDistance가 켜진 포탄만 쓰는 값. 발사 시점의 목표까지 거리를 재 두고,
-        // 그만큼 날아가면 ShouldImpact로 그 자리에서 터뜨린다. (포격 포탑 = 쏘아 보내는 곡사 포탄)
+        // 그만큼 날아가면 ShouldImpact로 그 자리에서 터뜨린다. (박격포 포탑 = 쏘아 보내는 곡사 포탄)
         private bool _detonateAtDistance;
         private float _targetDistance;
         private float _traveled;

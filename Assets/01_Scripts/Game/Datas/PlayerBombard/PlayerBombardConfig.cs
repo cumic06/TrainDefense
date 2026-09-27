@@ -39,7 +39,7 @@ namespace TrainDefense.Game.Datas
         [BoxGroup("Projectile")]
         [SerializeField]
         [LabelText("포탄 프리팹 id (Resources/Prefabs/Projectiles/TrainProjectile/)")]
-        // 개입 포격은 지정한 지점에 조준선이 뜨고 터지는 형태. 포격 포탑은 자기 자리에서 포탄을 쏘아 보내는
+        // 개입 포격은 지정한 지점에 조준선이 뜨고 터지는 형태. 박격포 포탑은 자기 자리에서 포탄을 쏘아 보내는
         // CannonShellProjectile을 쓰므로 둘은 움직임부터 다르다.
         private string projectilePrefabId = "CannonProjectile";
 
