@@ -35,15 +35,44 @@ namespace TrainDefense.Game
         private float _baseShapeAngle;
         private float _baseRateOverTime;
 
+        private bool _isStoppingEmission;
+
         private void Awake()
         {
             SetupParticleCollider();
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            _isStoppingEmission = false;
+            if (_particleSystem != null && !_particleSystem.isEmitting)
+                _particleSystem.Play(true);
         }
 
         protected override void FixedUpdate()
         {
             base.FixedUpdate();
             UpdateParticleCollider();
+
+            // 방출을 멈춘 뒤 이미 나간 입자가 다 사라지면 스스로 꺼진다.
+            if (_isStoppingEmission && _particleSystem != null && !_particleSystem.IsAlive(true))
+                gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// 새 입자 방출만 멈춘다. 이미 나간 입자는 끝까지 날아가며 판정도 유지하고, 전부 사라지면 꺼진다.
+        /// </summary>
+        public void StopEmission()
+        {
+            if (_particleSystem == null)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
+            _isStoppingEmission = true;
+            _particleSystem.Stop(true, ParticleSystemStopBehavior.StopEmitting);
         }
 
         // 이 사거리에서 분사 각도가 상한에 닿는 범위(반폭). 이보다 큰 범위는 모양과 판정에 반영되지 않는다.

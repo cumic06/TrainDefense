@@ -357,7 +357,7 @@ namespace TrainDefense.Game
             // 타겟이 있으면 공격과 무관하게 계속 조준 방향으로 회전한다. (발사 순간에만 돌면 끊겨 보임)
             _RotateTowardNearTarget();
 
-            // 버스트(화염): 발동 후 지속시간 동안 분사를 유지한다(타겟이 빠져도 시간이 다할 때까지 계속 뿜음).
+            // 버스트(화염): 발동 후 분사 시간 동안 뿜고 멈춘다(타겟이 빠져도 시간이 다할 때까지 뿜음).
             // 버스트 중엔 여기서 return하므로 쿨다운(IsAttackDelayZero)이 멈춰 있다가 종료 후부터 흐른다.
             if (_burstRemaining > 0f)
             {
@@ -529,7 +529,7 @@ namespace TrainDefense.Game
             _repeatAttackCoroutine = null;
         }
 
-        // 버스트 지속시간. 포탑 데이터의 BurstDuration이 base(화염 4초)이고 업그레이드 누적이 가산된다.
+        // 버스트 지속시간. 포탑 데이터의 BurstDuration이 base(화염 분사 시간)이고 업그레이드 누적이 가산된다.
         // base 0 = 비버스트 포탑(강화 규칙도 없어 항상 0).
         private float _GetBurstDuration()
         {
@@ -542,7 +542,17 @@ namespace TrainDefense.Game
         private void _EndBurst()
         {
             _burstRemaining = 0f;
-            _DeactivateNonMovementProjectiles();
+            // 화염은 분사만 멈추고 이미 나간 불꽃은 끝까지 날아가게 둔다(한 번 뿜기).
+            foreach (var projectile in _nonMovementProjectiles)
+            {
+                if (projectile == null || !projectile.gameObject.activeSelf)
+                    continue;
+
+                if (projectile is ParticleProjectile particleProjectile)
+                    particleProjectile.StopEmission();
+                else
+                    projectile.gameObject.SetActive(false);
+            }
             if (TrainData.DamageType == DamageType.Tick)
             {
                 SoundManager.Instance.StopSFX(turretTrainData.AttackSoundType);
@@ -1069,7 +1079,8 @@ namespace TrainDefense.Game
 
                 // 연타(AttackCount 반복)가 아직 켜져 있는 빔을 다시 쏘면 SetActive(true)가 no-op이라
                 // OnEnable 리셋(수명 코루틴·피격 기록·페이드 알파)이 안 돈다 → 껐다 켜서 새 발사로 시작한다.
-                if (projectile != null && projectile.gameObject.activeSelf)
+                // 화염(파티클)은 타겟이 있는 동안 계속 뿜는 공격이라 껐다 켜면 분사가 매 공격마다 끊긴다 → 토글 제외.
+                if (projectile != null && projectile.gameObject.activeSelf && !useParticleProjectile)
                     projectile.gameObject.SetActive(false);
             }
             else
