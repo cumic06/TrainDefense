@@ -32,6 +32,10 @@ namespace TrainDefense.Game
         // (TurretTrain은 공격 인터벌 시점에만 Play해서 이런 가드가 필요 없다)
         private bool _isLoopSfxPlaying;
 
+        // 쿨다운이 끝난 뒤 적이 들어올 때까지 매 프레임 범위를 조회하므로 결과 리스트를 재사용한다(GC 할당 방지).
+        private readonly List<Collider2D> _areaColliders = new();
+        private readonly ContactFilter2D _areaContactFilter = new ContactFilter2D().NoFilter();
+
         public event Action OnAttacked;
 
         protected override void Setup()
@@ -132,6 +136,9 @@ namespace TrainDefense.Game
         {
             if (_attackCountdown <= 0)
             {
+                // 범위 안에 적이 없으면 쏘지 않고 기다린다. 적이 없을 때 눈·폭발만 혼자 반짝이고 사라지던 문제.
+                if (!_HasMonsterInArea()) return;
+
                 if (rangeTrainData.RangeProjectilePrefab != null)
                 {
                     if (_rangeProjectilePrefab == null)
@@ -181,6 +188,18 @@ namespace TrainDefense.Game
             {
                 _attackCountdown -= Time.deltaTime;
             }
+        }
+
+        private bool _HasMonsterInArea()
+        {
+            Physics2D.OverlapCircle(transform.position, _currentRangeTrainStatus.AttackArea, _areaContactFilter, _areaColliders);
+            foreach (var areaCollider in _areaColliders)
+            {
+                if (areaCollider.TryGetComponent<Monster>(out _))
+                    return true;
+            }
+
+            return false;
         }
 
         // activeDuration초 동안 장판을 켜둔 뒤 끈다. (Direct = 기존 1초 유지, 버스트 냉기 = BurstDuration)
@@ -514,7 +533,7 @@ namespace TrainDefense.Game
                     case StatType.AttackDamage:
                         _currentRangeTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentRangeTrainStatus.AttackDamage * percent);
                         if (_rangeProjectilePrefab != null)
-                            _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                            _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                         break;
                     case StatType.AttackInterval:
                         // 공속은 상점과 동일하게 현재값 기준 역수 곱셈(DPS 선형, 0 이하 방지). percent 음수=공속 증가.
@@ -558,7 +577,7 @@ namespace TrainDefense.Game
                     _currentRangeTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, stat.Value * rangeTrainData.AttackDamageMultiplier);
                     if (_rangeProjectilePrefab != null)
                     {
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                     }
                     break;
 
@@ -575,7 +594,7 @@ namespace TrainDefense.Game
                     _currentRangeTrainStatus.CriticalChance += stat.Value;
                     if (_rangeProjectilePrefab != null)
                     {
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                     }
                     break;
 
@@ -583,7 +602,7 @@ namespace TrainDefense.Game
                     _currentRangeTrainStatus.CriticalDamage += stat.Value;
                     if (_rangeProjectilePrefab != null)
                     {
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                     }
                     break;
             }
@@ -626,7 +645,7 @@ namespace TrainDefense.Game
                     AccumulateShopMultiplier(StatType.AttackDamage, shopRatio);
                     if (_rangeProjectilePrefab != null)
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
-                            _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
+                            _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance,
                             _currentRangeTrainStatus.CriticalDamage);
                     break;
 
@@ -638,7 +657,7 @@ namespace TrainDefense.Game
                 case StatType.CriticalDamage:
                     if (_rangeProjectilePrefab != null)
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
-                            _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
+                            _currentRangeTrainStatus.AttackArea, _currentRangeTrainStatus.CriticalChance,
                             _currentRangeTrainStatus.CriticalDamage);
                     break;
             }
