@@ -61,6 +61,13 @@ namespace TrainDefense.Game
       private Material _originalMaterial;
       private static Material _sharedHitFlashMaterial;
       private const string HitFlashShaderName = "Custom/Sprite/Red";
+      // 둔화 중 서리 덮인 모습: 원본 밝기에 얼음색을 입히고 흰 기운을 더한다(피격 섬광과 같은 셰이더).
+      private static Material _sharedFrostMaterial;
+      private static readonly Color FROST_TINT = new Color(0.6f, 0.84f, 1f, 1f);
+      private const float FROST_TINT_AMOUNT = 0.85f;
+      private const float FROST_EMISSION_INTENSITY = 0.35f;
+      // 둔화 중이면 피격 섬광이 끝난 뒤 원래 머티리얼 대신 서리 머티리얼로 돌아간다.
+      private bool _isFrosted;
 
       protected Coroutine _slowCoroutine;
       protected Coroutine _resetMoveSpeedCoroutine;
@@ -130,6 +137,7 @@ namespace TrainDefense.Game
          _hitScaleMultiplier = 1f;
          if (model != null) model.transform.localScale = _prefabScale;
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
+         _isFrosted = false;
          _RestoreHitFlashMaterial();
          if (eliteEffect != null) eliteEffect.SetActive(false);
 
@@ -169,6 +177,7 @@ namespace TrainDefense.Game
             _hitEffectCoroutine = null;
          }
          _hitScaleMultiplier = 1f;
+         _isFrosted = false;
          _RestoreHitFlashMaterial();
 
          _isStunned = false;
@@ -435,6 +444,7 @@ namespace TrainDefense.Game
          // duration <= 0(갱신형)은 장판 이탈(ProcessExit)의 ResetMoveSpeed로 해제된다.
 
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = slowColor;
+         _SetFrosted(true);
       }
 
       public void ResetMoveSpeed()
@@ -448,6 +458,7 @@ namespace TrainDefense.Game
          }
          _resetMoveSpeedCoroutine = StartCoroutine(_ResetMoveSpeedCoroutine());
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
+         _SetFrosted(false);
       }
 
       // duration 초 뒤 자동 복원. 갱신(재호출) 시 코루틴이 재시작돼 타이머가 연장된다.
@@ -774,13 +785,43 @@ namespace TrainDefense.Game
          return _sharedHitFlashMaterial;
       }
 
-      // 원래 머티리얼로 복원한다. 풀 재사용/사망 시 흰색이 잔존하지 않도록 보장.
+      // 원래 머티리얼로 복원한다(둔화 중이면 서리 머티리얼). 풀 재사용/사망 시 흰색이 잔존하지 않도록 보장.
       private void _RestoreHitFlashMaterial()
       {
          if (_modelSpriteRenderer != null && _originalMaterial != null)
          {
-            _modelSpriteRenderer.sharedMaterial = _originalMaterial;
+            Material frostMaterial = _isFrosted ? _GetFrostMaterial() : null;
+            _modelSpriteRenderer.sharedMaterial = frostMaterial != null ? frostMaterial : _originalMaterial;
          }
+      }
+
+      // 피격 섬광 중이면 섬광이 끝날 때 _RestoreHitFlashMaterial이 서리 여부를 반영하므로 바로 바꾸지 않는다.
+      private void _SetFrosted(bool isFrosted)
+      {
+         _isFrosted = isFrosted;
+         if (_modelSpriteRenderer == null || _modelSpriteRenderer.sharedMaterial == _sharedHitFlashMaterial)
+            return;
+
+         _RestoreHitFlashMaterial();
+      }
+
+      private Material _GetFrostMaterial()
+      {
+         if (_sharedFrostMaterial == null)
+         {
+            Shader shader = Shader.Find(HitFlashShaderName);
+            if (shader == null)
+               return null;
+
+            _sharedFrostMaterial = new Material(shader);
+            _sharedFrostMaterial.SetColor("_RedTint", FROST_TINT);
+            _sharedFrostMaterial.SetFloat("_RedAmount", FROST_TINT_AMOUNT);
+            _sharedFrostMaterial.SetColor("_EmissionColor", Color.white);
+            _sharedFrostMaterial.SetFloat("_EmissionIntensity", FROST_EMISSION_INTENSITY);
+            _sharedFrostMaterial.SetFloat("_Opacity", 1f);
+         }
+
+         return _sharedFrostMaterial;
       }
       #endregion
 
