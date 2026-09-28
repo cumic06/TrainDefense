@@ -14,6 +14,10 @@ namespace TrainDefense.Game
     {
         #region Fields
         private RangeTrainData rangeTrainData => _trainData as RangeTrainData;
+
+        // 한 번씩 터지는 범위 포탑(냉기)은 TurretTrain처럼 발사 때 모델을 펀치한다. 비우면 펀치 없음.
+        [SerializeField]
+        private GameObject turretModel;
         #endregion
 
         protected RangeTrainStatus _currentRangeTrainStatus;
@@ -27,6 +31,7 @@ namespace TrainDefense.Game
         private float _statAttackDamageAccum;
 
         private bool _suppressMainProjectileShove;
+        private Vector3 _turretmodelScale;
 
         // 매 프레임 게이트(_UpdateTickLoopSfx)에서 호출되므로, 전환 시점에만 Play/Stop이 나가도록 상태를 기억한다.
         // (TurretTrain은 공격 인터벌 시점에만 Play해서 이런 가드가 필요 없다)
@@ -47,6 +52,9 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus = rangeTrainData.RangeTrainStatus;
             _ApplyPermanentUpgrade();
             _attackCountdown = _currentRangeTrainStatus.AttackInterval;
+
+            if (turretModel != null)
+                _turretmodelScale = turretModel.transform.localScale;
 
             if (TrainData.DamageType == DamageType.Direct) return;
 
@@ -159,6 +167,9 @@ namespace TrainDefense.Game
 
                     _attackCountdown = _currentRangeTrainStatus.AttackInterval;
                     OnAttacked?.Invoke();
+
+                    if (turretModel != null)
+                        TurretCombatFx.PlayAttackPunch(turretModel.transform, _turretmodelScale);
 
                     if (TrainData.DamageType == DamageType.Direct)
                     {
