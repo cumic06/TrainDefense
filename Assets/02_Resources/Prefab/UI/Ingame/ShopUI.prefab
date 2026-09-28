@@ -355,6 +355,7 @@ MonoBehaviour:
   shopMoveInterval: 0.4
   panelOvershoot: 4
   backgroundImage: {fileID: 3792439583353743104}
+  offerBoardRect: {fileID: 6502191461237815820}
   shopButtonUI: {fileID: 7710000000000000027}
   groupCoin: {fileID: 158633045294188027}
   itemDropHeight: 250
@@ -1293,7 +1294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RawImage
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:

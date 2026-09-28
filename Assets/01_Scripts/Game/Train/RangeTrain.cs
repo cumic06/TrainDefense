@@ -278,16 +278,7 @@ namespace TrainDefense.Game
             {
                 int upgradeLevelIndex = currentLevel;
                 var rangeStatus = rangeUpgradeData.GetRangeStatusUpgrade(upgradeLevelIndex);
-                // 중복선택 증가분은 base와 동일하게 상점 배율을 받는다(Model B): (base+중복선택)×(1+상점%).
-                _currentRangeTrainStatus.AttackRange += rangeStatus.AttackRange * GetShopMultiplier(StatType.AttackRange);
-                _currentRangeTrainStatus.AttackArea += rangeStatus.AttackArea * GetShopMultiplier(StatType.AttackArea);
-                _currentRangeTrainStatus.AttackDamage += rangeStatus.AttackDamage * GetShopMultiplier(StatType.AttackDamage);
-                _currentRangeTrainStatus.AttackCount += rangeStatus.AttackCount;
-                _currentRangeTrainStatus.AttackInterval += rangeStatus.AttackInterval * GetShopMultiplier(StatType.AttackInterval);
-                _currentRangeTrainStatus.CriticalChance += rangeStatus.CriticalChance;
-                _currentRangeTrainStatus.CriticalDamage += rangeStatus.CriticalDamage;
-                _currentRangeTrainStatus.SlowRate += rangeStatus.SlowRate;
-                _currentRangeTrainStatus.BurstDuration += rangeStatus.BurstDuration;
+                _AddUpgradeStatus(ref _currentRangeTrainStatus, rangeStatus);
 
                 if (_rangeProjectilePrefab != null)
                 {
@@ -301,18 +292,25 @@ namespace TrainDefense.Game
         // 영구(메타) 업그레이드 + 스킬트리의 TurretStat 보너스를 base 스탯에 가산한다. (struct라 값 복사 후 직접 가산)
         private void _ApplyPermanentUpgrade()
         {
+            _currentRangeTrainStatus = _GetMetaAppliedStatus(_currentRangeTrainStatus);
+            _metaBaseStatus = _currentRangeTrainStatus;
+        }
+
+        // 상점 미리보기(아직 없는 포탑)도 생성 직후 값을 보여줘야 해서 인스턴스 없이 계산할 수 있게 static으로 둔다.
+        private static RangeTrainStatus _GetMetaAppliedStatus(RangeTrainStatus status)
+        {
             var manager = PermanentUpgradeManager.Instance;
 
             if (manager != null)
             {
-                _currentRangeTrainStatus.AttackDamage += manager.GetBonus(StatType.AttackDamage);
-                _currentRangeTrainStatus.AttackRange += manager.GetBonus(StatType.AttackRange);
-                _currentRangeTrainStatus.AttackArea += manager.GetBonus(StatType.AttackArea);
-                _currentRangeTrainStatus.AttackInterval += manager.GetBonus(StatType.AttackInterval);
-                _currentRangeTrainStatus.CriticalChance += manager.GetBonus(StatType.CriticalChance);
-                _currentRangeTrainStatus.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
-                _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
-                _currentRangeTrainStatus.SlowRate += manager.GetBonus(StatType.SlowRate);
+                status.AttackDamage += manager.GetBonus(StatType.AttackDamage);
+                status.AttackRange += manager.GetBonus(StatType.AttackRange);
+                status.AttackArea += manager.GetBonus(StatType.AttackArea);
+                status.AttackInterval += manager.GetBonus(StatType.AttackInterval);
+                status.CriticalChance += manager.GetBonus(StatType.CriticalChance);
+                status.CriticalDamage += manager.GetBonus(StatType.CriticalDamage);
+                status.AttackCount += Mathf.RoundToInt(manager.GetBonus(StatType.AttackCount));
+                status.SlowRate += manager.GetBonus(StatType.SlowRate);
             }
 
             var skillTreeManager = SkillTreeManager.Instance;
@@ -320,17 +318,34 @@ namespace TrainDefense.Game
             if (skillTreeManager != null)
             {
                 // 공격력·사거리·범위·간격은 기본값에 % 곱 (포탑마다 기본값이 달라 정수 가산은 저기본 포탑만 유리), 나머지는 포인트 가산
-                _currentRangeTrainStatus.AttackDamage *= skillTreeManager.GetMultiplier(StatType.AttackDamage);
-                _currentRangeTrainStatus.AttackRange *= skillTreeManager.GetMultiplier(StatType.AttackRange);
-                _currentRangeTrainStatus.AttackArea *= skillTreeManager.GetMultiplier(StatType.AttackArea);
-                _currentRangeTrainStatus.AttackInterval *= skillTreeManager.GetMultiplier(StatType.AttackInterval);
-                _currentRangeTrainStatus.CriticalChance += skillTreeManager.GetBonus(StatType.CriticalChance);
-                _currentRangeTrainStatus.CriticalDamage += skillTreeManager.GetBonus(StatType.CriticalDamage);
-                _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(skillTreeManager.GetBonus(StatType.AttackCount));
-                _currentRangeTrainStatus.SlowRate += skillTreeManager.GetBonus(StatType.SlowRate);
+                status.AttackDamage *= skillTreeManager.GetMultiplier(StatType.AttackDamage);
+                status.AttackRange *= skillTreeManager.GetMultiplier(StatType.AttackRange);
+                status.AttackArea *= skillTreeManager.GetMultiplier(StatType.AttackArea);
+                status.AttackInterval *= skillTreeManager.GetMultiplier(StatType.AttackInterval);
+                status.CriticalChance += skillTreeManager.GetBonus(StatType.CriticalChance);
+                status.CriticalDamage += skillTreeManager.GetBonus(StatType.CriticalDamage);
+                status.AttackCount += Mathf.RoundToInt(skillTreeManager.GetBonus(StatType.AttackCount));
+                status.SlowRate += skillTreeManager.GetBonus(StatType.SlowRate);
             }
 
-            _metaBaseStatus = _currentRangeTrainStatus;
+            return status;
+        }
+
+        // 엘리트 승격 승계 규칙: newCurrent = newBase + (sourceCurrent - sourceBase). CopyProgressFrom과 상점 승격 카드 미리보기가 같이 쓴다.
+        private static RangeTrainStatus _GetInheritedStatus(RangeTrainStatus newBase, RangeTrainStatus sourceBase, RangeTrainStatus sourceCurrent)
+        {
+            return new RangeTrainStatus
+            {
+                AttackDamage = newBase.AttackDamage + (sourceCurrent.AttackDamage - sourceBase.AttackDamage),
+                AttackRange = newBase.AttackRange + (sourceCurrent.AttackRange - sourceBase.AttackRange),
+                AttackArea = newBase.AttackArea + (sourceCurrent.AttackArea - sourceBase.AttackArea),
+                AttackCount = newBase.AttackCount + (sourceCurrent.AttackCount - sourceBase.AttackCount),
+                AttackInterval = newBase.AttackInterval + (sourceCurrent.AttackInterval - sourceBase.AttackInterval),
+                CriticalChance = newBase.CriticalChance + (sourceCurrent.CriticalChance - sourceBase.CriticalChance),
+                CriticalDamage = newBase.CriticalDamage + (sourceCurrent.CriticalDamage - sourceBase.CriticalDamage),
+                SlowRate = newBase.SlowRate + (sourceCurrent.SlowRate - sourceBase.SlowRate),
+                BurstDuration = newBase.BurstDuration + (sourceCurrent.BurstDuration - sourceBase.BurstDuration),
+            };
         }
 
         // 몬스터가 완전히 멈추면 무한 생존이 되므로 이속을 최소 10%는 남긴다.
@@ -394,23 +409,74 @@ namespace TrainDefense.Game
             $"DMG={_currentRangeTrainStatus.AttackDamage} | RANGE={_currentRangeTrainStatus.AttackRange} | AREA={_currentRangeTrainStatus.AttackArea} | MaxHp={_currentMaxHp}";
 
         public override (string label, string value)[] GetStatDetails()
+            => _BuildStatDetails(_currentMaxHp, _currentRangeTrainStatus);
+
+        // 상점 강화 카드 롱프레스용 — upgradeData를 지금 받으면 될 스탯(Upgrade와 같은 _AddUpgradeStatus로 계산).
+        public override (string label, string value)[] GetUpgradePreviewStatDetails(ITrainUpgradeData upgradeData)
+        {
+            if (upgradeData is not RangeTrainUpgradeData rangeUpgradeData)
+                return base.GetUpgradePreviewStatDetails(upgradeData);
+
+            var status = _currentRangeTrainStatus;
+            _AddUpgradeStatus(ref status, rangeUpgradeData.GetRangeStatusUpgrade(CurrentLevel));
+            return _BuildStatDetails(GetUpgradedMaxHp(upgradeData), status);
+        }
+
+        // 중복선택 증가분은 base와 동일하게 상점 배율을 받는다(Model B): (base+중복선택)×(1+상점%).
+        private void _AddUpgradeStatus(ref RangeTrainStatus status, RangeTrainStatus upgrade)
+        {
+            status.AttackRange += upgrade.AttackRange * GetShopMultiplier(StatType.AttackRange);
+            status.AttackArea += upgrade.AttackArea * GetShopMultiplier(StatType.AttackArea);
+            status.AttackDamage += upgrade.AttackDamage * GetShopMultiplier(StatType.AttackDamage);
+            status.AttackCount += upgrade.AttackCount;
+            status.AttackInterval += upgrade.AttackInterval * GetShopMultiplier(StatType.AttackInterval);
+            status.CriticalChance += upgrade.CriticalChance;
+            status.CriticalDamage += upgrade.CriticalDamage;
+            status.SlowRate += upgrade.SlowRate;
+            status.BurstDuration += upgrade.BurstDuration;
+        }
+
+        // 상점 카드 롱프레스용 — 새 포탑은 생성 직후 값(영구 강화 + 판 중 전체 강화), 승격은 promotionSource의 누적 강화를 승계한 값.
+        // (Train.GetPreviewStatDetails가 부른다. runUpgrades = MainTrain.GetExistingTrainUpgrades)
+        public static (string label, string value)[] GetPreviewStatDetails(RangeTrainData data, float maxHp, RangeTrain promotionSource,
+            List<(IStat[] stats, int level)> runUpgrades)
+        {
+            if (promotionSource != null && promotionSource.rangeTrainData != null)
+                return _BuildStatDetails(maxHp, _GetInheritedStatus(data.RangeTrainStatus,
+                    promotionSource.rangeTrainData.RangeTrainStatus, promotionSource._currentRangeTrainStatus));
+
+            // 생성 순서와 같게: 영구 강화(Setup) → 판 중 전체 강화(MainTrain.ApplyExistingUpgradesToTrain)
+            var status = _GetMetaAppliedStatus(data.RangeTrainStatus);
+            foreach (var (stats, level) in runUpgrades)
+                foreach (var stat in stats)
+                    if (stat != null)
+                        _TryApplyLevelAware(ref status, data.RangeTrainStatus, stat, level, 0, out _);
+
+            return _BuildStatDetails(maxHp, status);
+        }
+
+        private static (string label, string value)[] _BuildStatDetails(float maxHp, RangeTrainStatus status)
         {
             System.Func<string, string, string> L = TrainDefense.Localize.LocalizeHelper.GetByKey;
             var details = new System.Collections.Generic.List<(string label, string value)>
             {
-                (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}"),
-                (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(_currentRangeTrainStatus.AttackDamage)}"),
-                (L("Detail_Range", "사거리"), $"{_currentRangeTrainStatus.AttackRange:F1}"),
-                (L("Detail_Area", "범위"), $"{_currentRangeTrainStatus.AttackArea:F1}"),
-                (L("Detail_Speed", "공격속도"), $"{_currentRangeTrainStatus.AttackInterval:F2}"),
+                (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(maxHp)}"),
+                (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(status.AttackDamage)}"),
+                (L("Detail_Range", "사거리"), $"{status.AttackRange:F1}"),
+                (L("Detail_Area", "범위"), $"{status.AttackArea:F1}"),
+                (L("Detail_Speed", "공격속도"), $"{status.AttackInterval:F2}"),
             };
 
             // 분사 지속시간은 버스트 포탑(냉기)만 표시 — 비버스트는 base가 0이라 값 판정으로 충분.
-            if (_currentRangeTrainStatus.BurstDuration > 0f)
-                details.Add((L("Detail_BurstDuration", "지속시간"), $"{_currentRangeTrainStatus.BurstDuration:F1}"));
+            if (status.BurstDuration > 0f)
+                details.Add((L("Detail_BurstDuration", "지속시간"), $"{status.BurstDuration:F1}"));
 
-            details.Add((L("Detail_CritChance", "크리티컬 확률"), $"{_currentRangeTrainStatus.CriticalChance:F0}%"));
-            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + _currentRangeTrainStatus.CriticalDamage:F0}%"));
+            // 둔화율은 둔화 포탑(냉기)만 표시 — 상점 둔화율 강화 카드가 변화를 보여 줄 줄. 라벨은 도감과 같은 키.
+            if (status.SlowRate > 0f)
+                details.Add((L("Collection_Slow", "둔화"), $"{status.SlowRate:F0}%"));
+
+            details.Add((L("Detail_CritChance", "크리티컬 확률"), $"{status.CriticalChance:F0}%"));
+            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + status.CriticalDamage:F0}%"));
             return details.ToArray();
         }
 
@@ -534,24 +600,20 @@ namespace TrainDefense.Game
         {
             if (stat == null) return;
 
-            var baseStatus = rangeTrainData.RangeTrainStatus;
-            float percent = stat.Value / 100f;
-            int times = newLevel - prevLevel;
+            // 스탯 계산은 상점 미리보기와 같이 쓰는 _TryApplyLevelAware가 하고, 여기서는 상점 배율 누적·투사체 갱신만 챙긴다.
+            if (!_TryApplyLevelAware(ref _currentRangeTrainStatus, rangeTrainData.RangeTrainStatus, stat, newLevel, prevLevel, out float shopRatio))
+            {
+                base.ApplyStatLevelAware(stat, newLevel, prevLevel);
+                return;
+            }
 
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                {
-                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
-                    _currentRangeTrainStatus.AttackRange *= shopRatio;
                     AccumulateShopMultiplier(StatType.AttackRange, shopRatio);
                     break;
-                }
 
                 case StatType.AttackArea:
-                {
-                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
-                    _currentRangeTrainStatus.AttackArea *= shopRatio;
                     AccumulateShopMultiplier(StatType.AttackArea, shopRatio);
                     if (_rangeProjectilePrefab != null)
                     {
@@ -559,55 +621,78 @@ namespace TrainDefense.Game
                         _rangeProjectilePrefab.transform.localScale = new Vector3(areaScale, areaScale, 1f);
                     }
                     break;
-                }
 
                 case StatType.AttackDamage:
-                {
-                    float shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
-                    _currentRangeTrainStatus.AttackDamage *= shopRatio;
                     AccumulateShopMultiplier(StatType.AttackDamage, shopRatio);
                     if (_rangeProjectilePrefab != null)
                         _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
                             _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
                             _currentRangeTrainStatus.CriticalDamage);
                     break;
-                }
+
+                case StatType.AttackInterval:
+                    AccumulateShopMultiplier(StatType.AttackInterval, shopRatio);
+                    break;
+
+                case StatType.CriticalChance:
+                case StatType.CriticalDamage:
+                    if (_rangeProjectilePrefab != null)
+                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
+                            _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
+                            _currentRangeTrainStatus.CriticalDamage);
+                    break;
+            }
+        }
+
+        // 판 중 전체 강화(레벨 누적)의 스탯 변화. 실제 적용(ApplyStatLevelAware)과 상점 새 포탑 미리보기가 같이 쓴다.
+        // 이 포탑이 다루지 않는 스탯이면 false. shopRatio = 상점 배율에 누적할 비율(곱 스탯만 의미 있음, 나머지는 1).
+        private static bool _TryApplyLevelAware(ref RangeTrainStatus status, RangeTrainStatus baseStatus, IStat stat,
+            int newLevel, int prevLevel, out float shopRatio)
+        {
+            float percent = stat.Value / 100f;
+            int times = newLevel - prevLevel;
+            shopRatio = 1f;
+
+            switch (stat.Type)
+            {
+                case StatType.AttackRange:
+                    shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    status.AttackRange *= shopRatio;
+                    return true;
+
+                case StatType.AttackArea:
+                    shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    status.AttackArea *= shopRatio;
+                    return true;
+
+                case StatType.AttackDamage:
+                    shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
+                    status.AttackDamage *= shopRatio;
+                    return true;
 
                 case StatType.AttackCount:
                 {
                     int newTot = Mathf.RoundToInt(baseStatus.AttackCount * percent * newLevel);
                     int oldTot = Mathf.RoundToInt(baseStatus.AttackCount * percent * prevLevel);
-                    _currentRangeTrainStatus.AttackCount += newTot - oldTot;
-                    break;
+                    status.AttackCount += newTot - oldTot;
+                    return true;
                 }
 
                 case StatType.AttackInterval:
-                {
-                    float shopRatio = (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
-                    _currentRangeTrainStatus.AttackInterval *= shopRatio;
-                    AccumulateShopMultiplier(StatType.AttackInterval, shopRatio);
-                    break;
-                }
+                    shopRatio = (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
+                    status.AttackInterval *= shopRatio;
+                    return true;
 
                 case StatType.CriticalChance:
-                    _currentRangeTrainStatus.CriticalChance += stat.Value * times;
-                    if (_rangeProjectilePrefab != null)
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
-                            _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
-                            _currentRangeTrainStatus.CriticalDamage);
-                    break;
+                    status.CriticalChance += stat.Value * times;
+                    return true;
 
                 case StatType.CriticalDamage:
-                    _currentRangeTrainStatus.CriticalDamage += stat.Value * times;
-                    if (_rangeProjectilePrefab != null)
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
-                            _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
-                            _currentRangeTrainStatus.CriticalDamage);
-                    break;
+                    status.CriticalDamage += stat.Value * times;
+                    return true;
 
                 default:
-                    base.ApplyStatLevelAware(stat, newLevel, prevLevel);
-                    break;
+                    return false;
             }
         }
 
@@ -617,19 +702,8 @@ namespace TrainDefense.Game
             if (source is not RangeTrain sourceRange) return;
             if (sourceRange.rangeTrainData == null || rangeTrainData == null) return;
 
-            var sourceBase = sourceRange.rangeTrainData.RangeTrainStatus;
-            var sourceCurrent = sourceRange._currentRangeTrainStatus;
-            var newBase = rangeTrainData.RangeTrainStatus;
-
-            _currentRangeTrainStatus.AttackRange = newBase.AttackRange + (sourceCurrent.AttackRange - sourceBase.AttackRange);
-            _currentRangeTrainStatus.AttackArea = newBase.AttackArea + (sourceCurrent.AttackArea - sourceBase.AttackArea);
-            _currentRangeTrainStatus.AttackDamage = newBase.AttackDamage + (sourceCurrent.AttackDamage - sourceBase.AttackDamage);
-            _currentRangeTrainStatus.AttackCount = newBase.AttackCount + (sourceCurrent.AttackCount - sourceBase.AttackCount);
-            _currentRangeTrainStatus.AttackInterval = newBase.AttackInterval + (sourceCurrent.AttackInterval - sourceBase.AttackInterval);
-            _currentRangeTrainStatus.CriticalChance = newBase.CriticalChance + (sourceCurrent.CriticalChance - sourceBase.CriticalChance);
-            _currentRangeTrainStatus.CriticalDamage = newBase.CriticalDamage + (sourceCurrent.CriticalDamage - sourceBase.CriticalDamage);
-            _currentRangeTrainStatus.SlowRate = newBase.SlowRate + (sourceCurrent.SlowRate - sourceBase.SlowRate);
-            _currentRangeTrainStatus.BurstDuration = newBase.BurstDuration + (sourceCurrent.BurstDuration - sourceBase.BurstDuration);
+            _currentRangeTrainStatus = _GetInheritedStatus(rangeTrainData.RangeTrainStatus,
+                sourceRange.rangeTrainData.RangeTrainStatus, sourceRange._currentRangeTrainStatus);
 
             _statAttackDamageAccum = sourceRange._statAttackDamageAccum;
 

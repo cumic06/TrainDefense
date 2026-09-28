@@ -350,6 +350,13 @@ namespace TrainDefense.Game.Datas
             return baseArea * (Mathf.Sqrt(nextMultiplier) - Mathf.Sqrt(currentMultiplier));
         }
 
+        // 상점 카드 롱프레스용 — 이 카드를 사면 될 대상 포탑의 스탯(Execute와 같은 강화 데이터로 계산).
+        public (string label, string value)[] GetUpgradedStatDetails()
+        {
+            var upgradeData = _BuildUpgradeData();
+            return upgradeData != null ? _train.GetUpgradePreviewStatDetails(upgradeData) : _train.GetStatDetails();
+        }
+
         // 상점 슬롯 설명용 "레이블 +값" 줄 (Upgrade_* 로컬라이즈 템플릿 재사용, 리치 태그 제거).
         // 복합 카드는 두 줄로 낸다.
         public string BuildStatLineText()

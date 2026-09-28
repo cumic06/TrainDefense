@@ -24,6 +24,13 @@ namespace TrainDefense.Game.Datas
         public string BaseTrainId => baseTrainId;
         public string EliteTrainDataId => eliteTrainDataId;
 
+        // 승격될 원본 포탑(편성에 없으면 null). 상점 카드 롱프레스가 승격 후 스탯을 미리 계산할 때 쓴다.
+        public Train FindBaseTrain()
+        {
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+            return mainTrain != null ? mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == baseTrainId) : null;
+        }
+
         public bool IsValid()
         {
             if (string.IsNullOrEmpty(baseTrainId)) return false;

@@ -36,14 +36,18 @@ namespace TrainDefense.Game.UI
         private System.Action<ShopOfferSlotUI> _onPurchased;
         private Color _priceOriginalColor;
         private bool _initialized;
+        private TrainDetailPopupUI _detailPopup;
+        private LongPressHandler _longPressHandler;
 
         public ShopOffer CurrentOffer => _offer;
         public bool HasValidOffer => _offer != null && _offer.IsValid;
 
         // 생성 직후 1회 호출. onPurchased = 구매 성공 직후 슬롯 교체를 담당하는 상점 콜백.
-        public void Initialize(System.Action<ShopOfferSlotUI> onPurchased)
+        // detailPopup = 포탑 카드를 꾹 눌렀을 때 스탯을 띄울 상점 공용 팝업.
+        public void Initialize(System.Action<ShopOfferSlotUI> onPurchased, TrainDetailPopupUI detailPopup)
         {
             _onPurchased = onPurchased;
+            _detailPopup = detailPopup;
 
             if (_initialized)
                 return;
@@ -51,6 +55,8 @@ namespace TrainDefense.Game.UI
             _initialized = true;
             _priceOriginalColor = needMoneyText.color;
             buyButton.onClick.AddListener(_OnBuyButtonClick);
+            _longPressHandler = buyButton.gameObject.AddComponent<LongPressHandler>();
+            _longPressHandler.Initialize(_OnLongPress, _OnLongPressRelease);
             GameEventSystem.Subscribe<ChangeCoinUIEvent>(_OnChangeCoin);
         }
 
@@ -110,6 +116,10 @@ namespace TrainDefense.Game.UI
 
         private void _OnBuyButtonClick()
         {
+            // 스탯을 보려고 꾹 누른 뒤 뗀 것은 구매가 아니다.
+            if (_longPressHandler != null && _longPressHandler.IsLongPressed)
+                return;
+
             if (_offer == null || !_offer.IsValid)
                 return;
 
@@ -126,6 +136,42 @@ namespace TrainDefense.Game.UI
             _offer.Option.Execute();
             GameEventSystem.Publish(new ShopOfferPurchasedEvent(_offer.Option, cost));
             _onPurchased?.Invoke(this);
+        }
+
+        // 포탑 카드만 스탯을 띄운다: 강화 카드 = 대상 포탑의 지금 → 구매 후 스탯, 새 포탑 = 생성 직후 스탯, 승격 = 승격 후 스탯.
+        private void _OnLongPress(Vector2 screenPosition, Camera eventCamera)
+        {
+            if (_detailPopup == null || _offer == null)
+                return;
+
+            var databaseManager = DatabaseManager.Instance;
+
+            switch (_offer.Option)
+            {
+                case TrainStatUpgradeChoice statUpgradeChoice when statUpgradeChoice.TargetTrain != null:
+                    _detailPopup.ShowUpgradePreview(statUpgradeChoice.TargetTrain, statUpgradeChoice.GetUpgradedStatDetails);
+                    break;
+                case AddTrainChoice addTrainChoice when databaseManager != null:
+                    _detailPopup.ShowPreview(databaseManager.GetTrainData(addTrainChoice.TrainDataId), null);
+                    break;
+                case EliteTrainChoice eliteTrainChoice when databaseManager != null:
+                    _detailPopup.ShowPreview(databaseManager.GetTrainData(eliteTrainChoice.EliteTrainDataId), eliteTrainChoice.FindBaseTrain());
+                    break;
+                default:
+                    return;
+            }
+
+            // 이름은 카드에 적혀 있다.
+            _detailPopup.SetNameVisible(false);
+
+            // 카드 오른쪽 아래(카드 판과 기차 그림의 구분선에 걸치게)에 띄운다 — 카드가 화면 위쪽이라 위에는 자리가 없다.
+            _detailPopup.PlaceBeside((RectTransform)transform);
+        }
+
+        private void _OnLongPressRelease()
+        {
+            if (_detailPopup != null && _detailPopup.gameObject.activeSelf)
+                _detailPopup.Hide();
         }
 
         private void _OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)

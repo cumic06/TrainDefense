@@ -35,6 +35,23 @@ namespace TrainDefense.Game.UI
         private Camera _previewCamera;
         private RenderTexture _previewTexture;
         private float _aspect = 1f;
+        private TrainDetailPopupUI _detailPopup;
+        private LongPressHandler _longPressHandler;
+
+        /// <summary>
+        /// 프리뷰의 포탑을 꾹 누르면 스탯을 띄울 상점 공용 팝업. ShopUI가 넘겨준다.
+        /// 프리뷰 이미지(RawImage)가 입력을 받아야 하므로 롱프레스 수신도 여기서 붙인다.
+        /// </summary>
+        public void SetDetailPopup(TrainDetailPopupUI detailPopup)
+        {
+            _detailPopup = detailPopup;
+
+            if (_longPressHandler != null || previewImage == null)
+                return;
+
+            _longPressHandler = previewImage.gameObject.AddComponent<LongPressHandler>();
+            _longPressHandler.Initialize(_OnLongPress, _OnLongPressRelease);
+        }
 
         private void OnEnable()
         {
@@ -176,6 +193,100 @@ namespace TrainDefense.Game.UI
             float sameScaleSize = _GetSameScaleOrthographicSize() * previewZoomRatio;
 
             _previewCamera.orthographicSize = Mathf.Max(fitSize, sameScaleSize);
+        }
+
+        private void _OnLongPress(Vector2 screenPosition, Camera eventCamera)
+        {
+            if (_detailPopup == null)
+                return;
+
+            var train = _FindTrainAt(screenPosition, eventCamera);
+            if (train == null)
+                return;
+
+            _detailPopup.Show(train);
+            _detailPopup.SetNameVisible(true);
+
+            // 누른 칸 왼쪽 위(카드 판과의 구분선에 걸치게)에 띄운다.
+            if (_TryGetTrainImageCorners(train, out Vector3 anchorMin, out Vector3 anchorMax))
+                _detailPopup.PlaceBeside(anchorMin, anchorMax, true);
+        }
+
+        // 칸의 스프라이트 경계 → 프리뷰 카메라 뷰포트 → 프리뷰 이미지 위의 캔버스 월드 좌표.
+        private bool _TryGetTrainImageCorners(Train train, out Vector3 anchorMin, out Vector3 anchorMax)
+        {
+            anchorMin = anchorMax = default;
+            if (!_TryGetTrainBounds(train, out Bounds bounds))
+                return false;
+
+            RectTransform imageRect = previewImage.rectTransform;
+            Rect rect = imageRect.rect;
+            Vector3 viewportMin = _previewCamera.WorldToViewportPoint(bounds.min);
+            Vector3 viewportMax = _previewCamera.WorldToViewportPoint(bounds.max);
+            anchorMin = imageRect.TransformPoint(new Vector3(rect.xMin + viewportMin.x * rect.width, rect.yMin + viewportMin.y * rect.height, 0f));
+            anchorMax = imageRect.TransformPoint(new Vector3(rect.xMin + viewportMax.x * rect.width, rect.yMin + viewportMax.y * rect.height, 0f));
+            return true;
+        }
+
+        private void _OnLongPressRelease()
+        {
+            if (_detailPopup != null && _detailPopup.gameObject.activeSelf)
+                _detailPopup.Hide();
+        }
+
+        // 프리뷰 이미지의 화면 좌표 → 프리뷰 카메라의 월드 좌표로 옮긴 뒤, 그 점을 스프라이트 경계로 덮는 칸(포탑)을 찾는다.
+        // 칸들은 선로를 따라 가로로 이어 붙어 있어 경계가 겹치지 않는다.
+        private Train _FindTrainAt(Vector2 screenPosition, Camera eventCamera)
+        {
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+            if (mainTrain == null || _previewCamera == null || !_previewCamera.enabled)
+                return null;
+
+            RectTransform imageRect = previewImage.rectTransform;
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(imageRect, screenPosition, eventCamera, out Vector2 localPoint))
+                return null;
+
+            Rect rect = imageRect.rect;
+            Vector3 viewportPoint = new Vector3((localPoint.x - rect.xMin) / rect.width, (localPoint.y - rect.yMin) / rect.height, 0f);
+            Vector3 worldPoint = _previewCamera.ViewportToWorldPoint(viewportPoint);
+
+            foreach (var train in mainTrain.CurrentTrains)
+            {
+                if (train != null && _TryGetTrainBounds(train, out Bounds bounds)
+                    && worldPoint.x >= bounds.min.x && worldPoint.x <= bounds.max.x
+                    && worldPoint.y >= bounds.min.y && worldPoint.y <= bounds.max.y)
+                    return train;
+            }
+
+            return null;
+        }
+
+        // 프리뷰에 찍히는(cullingMask 레이어) 스프라이트만 합친 칸 하나의 경계.
+        private bool _TryGetTrainBounds(Train train, out Bounds bounds)
+        {
+            bool hasBounds = false;
+            bounds = default;
+
+            foreach (var spriteRenderer in train.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (spriteRenderer.sprite == null || !spriteRenderer.enabled)
+                    continue;
+
+                if ((cullingMask.value & (1 << spriteRenderer.gameObject.layer)) == 0)
+                    continue;
+
+                if (!hasBounds)
+                {
+                    bounds = spriteRenderer.bounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(spriteRenderer.bounds);
+                }
+            }
+
+            return hasBounds;
         }
 
         // 인게임과 같은 배율이 되는 직교 크기. 메인 카메라가 없거나 원근이면 0(→ 경계 맞춤만 적용).

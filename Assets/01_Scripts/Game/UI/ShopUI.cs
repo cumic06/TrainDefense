@@ -31,6 +31,9 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private Image backgroundImage;
         [SerializeField]
+        [Tooltip("카드가 놓인 판. 아래쪽 가장자리(기차 그림과의 구분선)에 스탯 팝업을 걸쳐 띄운다")]
+        private RectTransform offerBoardRect;
+        [SerializeField]
         private ShopButtonUI shopButtonUI;
         [SerializeField]
         private GameObject groupCoin;
@@ -91,6 +94,9 @@ namespace TrainDefense.Game.UI
         private CanvasGroup _backgroundGroup;
         private CanvasGroup _panelGroup;
         private ShopTrainPreviewUI _trainPreview;
+        // 카드·기차 프리뷰의 포탑을 꾹 누르면 뜨는 스탯 팝업(상점 공용 1개). 최초 사용 시 생성한다.
+        private TrainDetailPopupUI _trainDetailPopup;
+        private const string TRAIN_DETAIL_POPUP_PATH = "Prefabs/UI/TrainDetailPopup";
         private GridLayoutGroup _itemGrid;
         private RectTransform _itemGridRect;
         private RectTransform[] _itemRects;
@@ -222,6 +228,7 @@ namespace TrainDefense.Game.UI
             // 기차는 배경 자식이라 배경이 꺼져 있는 동안 비활성이고, 그 상태에서는 OnEnable이 안 돌아
             // InspectionStartEvent를 놓친다. 배경을 켠 지금 직접 표시를 요청한다.
             _GetTrainPreview()?.ShowNow();
+            _GetTrainPreview()?.SetDetailPopup(_GetTrainDetailPopup());
 
             // 닫을 때는 제자리에서 옅어지기만 하므로, 내려올 위치는 열 때 직접 세운다.
             _SetPanelVisible(true, 0f);
@@ -529,9 +536,32 @@ namespace TrainDefense.Game.UI
             while (_offerSlotUIs.Count < offerSlotCount)
             {
                 var slotUI = Instantiate(slotPrefab, _itemGridRect);
-                slotUI.Initialize(_OnOfferPurchased);
+                slotUI.Initialize(_OnOfferPurchased, _GetTrainDetailPopup());
                 _offerSlotUIs.Add(slotUI);
             }
+        }
+
+        // 팝업은 루트 캔버스 맨 위에 둔다 — 상점 패널·배경(기차 프리뷰)과 형제 순서가 달라 어느 쪽 자식이어도 한쪽에 가린다.
+        private TrainDetailPopupUI _GetTrainDetailPopup()
+        {
+            if (_trainDetailPopup != null)
+                return _trainDetailPopup;
+
+            var popupPrefab = Resources.Load<TrainDetailPopupUI>(TRAIN_DETAIL_POPUP_PATH);
+            var canvas = GetComponentInParent<Canvas>();
+
+            if (popupPrefab == null || canvas == null)
+            {
+                Debug.LogError($"ShopUI: 스탯 팝업을 만들 수 없습니다 (Resources/{TRAIN_DETAIL_POPUP_PATH} 또는 캔버스 없음).");
+                return null;
+            }
+
+            _trainDetailPopup = Instantiate(popupPrefab, canvas.rootCanvas.transform);
+            _trainDetailPopup.transform.SetAsLastSibling();
+            _trainDetailPopup.SetDividerLine(offerBoardRect);
+            _trainDetailPopup.SetHiddenStats(("Detail_CritChance", "크리티컬 확률"), ("Detail_CritDamage", "크리티컬 데미지"));
+            _trainDetailPopup.gameObject.SetActive(false);
+            return _trainDetailPopup;
         }
 
         private ShopOfferSlotUI _GetOfferSlotPrefab()

@@ -146,17 +146,7 @@ namespace TrainDefense.Game
 
             // 영구 업그레이드 + 스킬트리: 포탑 최대 체력 % 증가 (레벨당 %, 메인 기차는 무적이라 제외)
             if (!(this is MainTrain))
-            {
-                float maxHpPercent = 0f;
-
-                if (PermanentUpgradeManager.Instance != null)
-                    maxHpPercent += PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.MaxHp);
-
-                if (SkillTreeManager.Instance != null)
-                    maxHpPercent += SkillTreeManager.Instance.GetValue(SkillTreePassiveType.MaxHp);
-
-                _currentMaxHp *= 1f + maxHpPercent / 100f;
-            }
+                _currentMaxHp = GetMetaMaxHp(_currentMaxHp);
 
             _currentHp = _currentMaxHp;
             _currentLevel = 0;
@@ -447,9 +437,7 @@ namespace TrainDefense.Game
             {
                 case StatType.MaxHp:
                 {
-                    float baseMaxHp = _trainData.TrainStatusData.MaxHp;
-                    float percent = stat.Value / 100f;
-                    float delta = baseMaxHp * percent * (newLevel - prevLevel);
+                    float delta = _GetLevelAwareMaxHpDelta(_trainData.TrainStatusData.MaxHp, stat, newLevel, prevLevel);
                     _currentMaxHp += delta;
                     _currentHp += delta;
                     _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
@@ -457,6 +445,10 @@ namespace TrainDefense.Game
                 }
             }
         }
+
+        // 판 중 전체 강화(레벨 누적)의 최대 체력 증가량. ApplyStatLevelAware와 상점 새 포탑 미리보기가 같이 쓴다.
+        private static float _GetLevelAwareMaxHpDelta(float baseMaxHp, IStat stat, int newLevel, int prevLevel)
+            => baseMaxHp * (stat.Value / 100f) * (newLevel - prevLevel);
 
         public virtual void ApplyStatsByCurrentValue(IStat[] stats)
         {
@@ -500,6 +492,69 @@ namespace TrainDefense.Game
 
         public virtual (string label, string value)[] GetStatDetails()
             => new[] { (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}") };
+
+        // 상점 강화 카드 롱프레스용 — upgradeData를 지금 받으면 될 스탯. 포탑은 전용 스탯까지 override한다.
+        public virtual (string label, string value)[] GetUpgradePreviewStatDetails(ITrainUpgradeData upgradeData)
+            => new[] { (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(GetUpgradedMaxHp(upgradeData))}") };
+
+        // Upgrade가 다음에 적용할 인덱스(= 지금 레벨)의 최대 체력 증가분을 더한 값.
+        protected float GetUpgradedMaxHp(ITrainUpgradeData upgradeData)
+            => _currentMaxHp + upgradeData.GetStatusUpgrade(CurrentLevel).MaxHp;
+
+        // 영구 업그레이드 + 스킬트리의 포탑 최대 체력 % 증가를 적용한 값. 상점 미리보기(아직 없는 포탑)도 같은 계산을 쓴다.
+        public static float GetMetaMaxHp(float baseMaxHp)
+        {
+            float maxHpPercent = 0f;
+
+            if (PermanentUpgradeManager.Instance != null)
+                maxHpPercent += PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.MaxHp);
+
+            if (SkillTreeManager.Instance != null)
+                maxHpPercent += SkillTreeManager.Instance.GetValue(SkillTreePassiveType.MaxHp);
+
+            return baseMaxHp * (1f + maxHpPercent / 100f);
+        }
+
+        /// <summary>
+        /// 아직 편성에 없는 포탑의 스탯 표기(상점 카드 롱프레스용).
+        /// 새 포탑 카드는 생성 직후 값(base + 영구 강화·스킬 트리 + 판 중 전체 강화), 승격 카드는 promotionSource의
+        /// 누적 강화를 승계한 값이다 — 실제 생성·승격(Setup·ApplyExistingUpgradesToTrain·CopyProgressFrom)과 같은 규칙으로 계산한다.
+        /// 단, 생성 뒤 붙는 패시브 스킬의 스탯 변화는 들어가지 않는다.
+        /// </summary>
+        public static (string label, string value)[] GetPreviewStatDetails(TrainData trainData, Train promotionSource)
+        {
+            if (trainData == null)
+                return System.Array.Empty<(string, string)>();
+
+            // 승격은 원본의 현재 스탯에 판 중 강화가 이미 들어 있어 따로 적용하지 않는다(MainTrain.ReplaceTrain과 동일).
+            var runUpgrades = promotionSource == null
+                ? MainTrain.GetExistingTrainUpgrades()
+                : new List<(IStat[] stats, int level)>();
+
+            float baseMaxHp = trainData.TrainStatusData.MaxHp;
+            float maxHp;
+
+            if (promotionSource != null && promotionSource._trainData != null)
+            {
+                maxHp = baseMaxHp + (promotionSource._currentMaxHp - promotionSource._trainData.TrainStatusData.MaxHp);
+            }
+            else
+            {
+                maxHp = GetMetaMaxHp(baseMaxHp);
+                foreach (var (stats, level) in runUpgrades)
+                    foreach (var stat in stats)
+                        if (stat != null && stat.Type == StatType.MaxHp)
+                            maxHp += _GetLevelAwareMaxHpDelta(baseMaxHp, stat, level, 0);
+            }
+
+            if (trainData is TurretTrainData turretTrainData)
+                return TurretTrain.GetPreviewStatDetails(turretTrainData, maxHp, promotionSource as TurretTrain, runUpgrades);
+
+            if (trainData is RangeTrainData rangeTrainData)
+                return RangeTrain.GetPreviewStatDetails(rangeTrainData, maxHp, promotionSource as RangeTrain, runUpgrades);
+
+            return new[] { (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(maxHp)}") };
+        }
 
         protected virtual void ApplyStat(IStat stat)
         {

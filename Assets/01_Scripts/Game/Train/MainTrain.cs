@@ -7,6 +7,7 @@ using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game
 {
@@ -495,32 +496,44 @@ namespace TrainDefense.Game
             return;
          }
 
+         // 레벨 누적 방식으로 적용: per-call 반올림 오차 방지
+         foreach (var (stats, level) in GetExistingTrainUpgrades())
+            train.ApplyStatsLevelAware(stats, level);
+      }
+
+      /// <summary>
+      /// 지금까지 고른 판 중 전체 강화(TrainUpgrade 타입)의 스탯과 레벨. 새 포탑 생성 시 적용 목록이자,
+      /// 상점 새 포탑 카드 미리보기(Train.GetPreviewStatDetails)가 같은 값을 계산하는 데 쓴다.
+      /// </summary>
+      public static List<(IStat[] stats, int level)> GetExistingTrainUpgrades()
+      {
+         var upgrades = new List<(IStat[] stats, int level)>();
+
          if (UserDataManager.Instance == null)
          {
-            Debug.LogWarning("ApplyExistingUpgradesToTrain: UserDataManager.Instance is null");
-            return;
+            Debug.LogWarning("GetExistingTrainUpgrades: UserDataManager.Instance is null");
+            return upgrades;
          }
 
          if (DatabaseManager.Instance == null)
          {
-            Debug.LogWarning("ApplyExistingUpgradesToTrain: DatabaseManager.Instance is null");
-            return;
+            Debug.LogWarning("GetExistingTrainUpgrades: DatabaseManager.Instance is null");
+            return upgrades;
          }
 
          // UserDataManager._upgradeLevels dictionary의 모든 항목을 순회
          var upgradeIds = UserDataManager.Instance.GetAllUpgradeIds();
          if (upgradeIds == null)
          {
-            Debug.LogWarning("ApplyExistingUpgradesToTrain: GetAllUpgradeIds returned null");
-            return;
+            Debug.LogWarning("GetExistingTrainUpgrades: GetAllUpgradeIds returned null");
+            return upgrades;
          }
 
-         int totalAppliedCount = 0;
          foreach (var upgradeId in upgradeIds)
          {
             if (string.IsNullOrEmpty(upgradeId))
             {
-               Debug.LogWarning("ApplyExistingUpgradesToTrain: upgradeId is null or empty");
+               Debug.LogWarning("GetExistingTrainUpgrades: upgradeId is null or empty");
                continue;
             }
 
@@ -530,7 +543,7 @@ namespace TrainDefense.Game
 
             if (upgradeLevel <= 0)
             {
-               Debug.LogWarning($"ApplyExistingUpgradesToTrain: upgradeLevel is {upgradeLevel} for upgradeId '{upgradeId}'");
+               Debug.LogWarning($"GetExistingTrainUpgrades: upgradeLevel is {upgradeLevel} for upgradeId '{upgradeId}'");
                continue;
             }
 
@@ -538,7 +551,7 @@ namespace TrainDefense.Game
             UpgradeData upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
             if (upgradeData == null)
             {
-               Debug.LogWarning($"ApplyExistingUpgradesToTrain: UpgradeData not found for ID '{upgradeId}'");
+               Debug.LogWarning($"GetExistingTrainUpgrades: UpgradeData not found for ID '{upgradeId}'");
                continue;
             }
 
@@ -550,19 +563,14 @@ namespace TrainDefense.Game
 
             if (upgradeData.Stats == null || upgradeData.Stats.Length == 0)
             {
-               Debug.LogWarning($"ApplyExistingUpgradesToTrain: Stats is null or empty for upgradeId '{upgradeId}'");
+               Debug.LogWarning($"GetExistingTrainUpgrades: Stats is null or empty for upgradeId '{upgradeId}'");
                continue;
             }
 
-            // 레벨 누적 방식으로 적용: per-call 반올림 오차 방지
-            train.ApplyStatsLevelAware(upgradeData.Stats, upgradeLevel);
-
-            totalAppliedCount++;
+            upgrades.Add((upgradeData.Stats, upgradeLevel));
          }
 
-         if (totalAppliedCount > 0)
-         {
-         }
+         return upgrades;
       }
 
       // SlideOut으로 화면 밖에 보낸 대상들의 원래 localPosition.x(정위치). ResetSlidePosition으로 복귀할 때 사용.
