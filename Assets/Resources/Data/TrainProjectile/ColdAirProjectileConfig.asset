@@ -21,12 +21,12 @@ MonoBehaviour:
   scaleByRange: 0
   scaleRangeType: 0
   isTargeting: 0
-  damageType: 1
+  damageType: 0
   tickDamageInterval: 0.2
-  burstDuration: 5
+  burstDuration: 0
   hasSlowEffect: 1
   slowValue: 0.5
-  slowDuration: 0.1
+  slowDuration: 1.5
   hasShoveEffect: 0
   shovePower: 1
   shoveDuration: 0.5

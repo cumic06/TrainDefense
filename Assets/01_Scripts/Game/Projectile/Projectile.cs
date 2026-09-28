@@ -372,6 +372,13 @@ namespace TrainDefense.Game
             {
                 target.Stun(data.StunDuration);
             }
+
+            // 슬로우 효과 (닿는 순간 SlowDuration만큼). 한 번만 닿는 파동(냉기)은 Stay가 없어 여기서 건다.
+            if (data.HasSlowEffect)
+            {
+                float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
+                target.Slow(slowValue, data.SlowDuration);
+            }
         }
 
         internal void ProcessStay(IProjectileTarget target)

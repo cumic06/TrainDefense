@@ -466,7 +466,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-      BurstDuration: 4
+      BurstDuration: 0
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 30003
@@ -644,7 +644,7 @@ MonoBehaviour:
       TargetCount: 1
       CriticalChance: 0
       CriticalDamage: 0
-      BurstDuration: 4
+      BurstDuration: 0
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 31003
@@ -809,7 +809,7 @@ MonoBehaviour:
     name: Train_40002_Name
     iconId: "\uD604\uB300\uBB34\uAE30_\uB300\uD3EC_288\uC2A4\uB9C8"
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
-    damageType: 1
+    damageType: 0
     attackSoundType: 309
     description: Train_40002_Desc
     trainStatusData:
@@ -819,15 +819,15 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     rangeTrainStatus:
-      AttackDamage: 3
-      AttackRange: 3
-      AttackArea: 5
+      AttackDamage: 7
+      AttackRange: 5
+      AttackArea: 6
       AttackCount: 1
-      AttackInterval: 2.5
+      AttackInterval: 1.5
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 30
-      BurstDuration: 5
+      BurstDuration: 0
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   - id: 41001
@@ -861,7 +861,7 @@ MonoBehaviour:
     name: Train_41002_Name
     iconId: 
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
-    damageType: 1
+    damageType: 0
     attackSoundType: 309
     description: 
     trainStatusData:
@@ -873,15 +873,15 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     rangeTrainStatus:
-      AttackDamage: 3
-      AttackRange: 3
-      AttackArea: 5
+      AttackDamage: 7
+      AttackRange: 5
+      AttackArea: 6
       AttackCount: 1
-      AttackInterval: 2.5
+      AttackInterval: 1.5
       CriticalChance: 0
       CriticalDamage: 0
       SlowRate: 30
-      BurstDuration: 5
+      BurstDuration: 0
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   trainSkillDataDB:
@@ -1774,14 +1774,6 @@ MonoBehaviour:
     trainDataId: 40002
     statType: 8
     increaseRate: 0.2
-  - id: stat_upgrade_30002_burst_duration
-    trainDataId: 30002
-    statType: 10
-    increaseRate: 2
-  - id: stat_upgrade_40002_burst_duration
-    trainDataId: 40002
-    statType: 10
-    increaseRate: 2
   - id: stat_upgrade_40002_slow_rate
     trainDataId: 40002
     statType: 9
