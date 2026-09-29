@@ -139,7 +139,7 @@ namespace TrainDefense.Game.Datas
 
                 foreach (var rule in databaseManager.GetTrainStatUpgradeRules(train.TrainData.Id))
                 {
-                    if (rule == null)
+                    if (rule == null || _IsOfferBlocked(train, rule))
                         continue;
 
                     int minGrade = databaseManager.GetStatMinGrade(rule.StatType);
@@ -195,7 +195,7 @@ namespace TrainDefense.Game.Datas
 
                 foreach (var rule in databaseManager.GetTrainStatUpgradeRules(train.TrainData.Id))
                 {
-                    if (rule == null)
+                    if (rule == null || _IsOfferBlocked(train, rule))
                         continue;
 
                     int minGrade = databaseManager.GetStatMinGrade(rule.StatType);
@@ -224,6 +224,14 @@ namespace TrainDefense.Game.Datas
             }
 
             return options;
+        }
+
+        // 둔화율이 이 값 이상이면 상점에 둔화 카드를 더 내지 않는다. 이미 산 카드는 넘겨도 그대로 적용된다(55%에서 +15% → 70%).
+        private const float SLOW_RATE_OFFER_LIMIT = 60f;
+
+        private static bool _IsOfferBlocked(Train train, TrainStatUpgradeRuleData rule)
+        {
+            return rule.StatType == StatType.SlowRate && train.GetCurrentStatValue(StatType.SlowRate) >= SLOW_RATE_OFFER_LIMIT;
         }
 
         // 개수로 오르는 스탯 — 등급 배수를 개수로 쓰면 폭발하므로(포격 연타 1→6) 항상 +1이다.
@@ -328,16 +336,10 @@ namespace TrainDefense.Game.Datas
             return baseInterval / nextMultiplier - baseInterval / currentMultiplier;
         }
 
-        // 이번 구매로 오르는 둔화율(%p). 둔화율 = 1 − 1/지연배율 곡선의 차분이라(공속과 동일 구조)
-        // 구매를 거듭할수록 %p는 작아지지만 적 지연 시간은 등급 배수에 정확히 비례해 늘어난다.
-        // 100%(완전 정지)에는 점근만 하므로 상한 가드가 필요 없다.
-        private float _GetSlowRateDelta(float baseSlowRate, TrainStatUpgradeRuleData rule)
+        // 이번 구매로 오르는 둔화율(%p). 카드 표기("+5%")를 유저가 30%→35%로 읽으므로 곡선 없이 rate×등급배수를 그대로 더한다.
+        private float _GetSlowRateDelta(TrainStatUpgradeRuleData rule)
         {
-            float baseMultiplier = 1f / (1f - baseSlowRate / 100f);
-            float currentMultiplier = baseMultiplier + rule.IncreaseRate * _train.GetStatUpgradeAmount(StatType.SlowRate);
-            float nextMultiplier = currentMultiplier + rule.IncreaseRate * _tier.ValueMultiplier;
-
-            return (1f / currentMultiplier - 1f / nextMultiplier) * 100f;
+            return rule.IncreaseRate * _tier.ValueMultiplier * 100f;
         }
 
         // 이번 구매로 늘어나는 범위(반경). 커버 면적 ∝ 반경²이라 반경을 그대로 가산하면 실효가 제곱으로 폭주한다.
@@ -395,7 +397,7 @@ namespace TrainDefense.Game.Datas
                 StatType.AttackRange => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 // 절대초 가산 — 템플릿("지속시간 {0}초")이 단위를 붙이므로 숫자만 만든다.
                 StatType.BurstDuration => $"+{rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
-                // 적 지연 시간(실효) 기준 고정 표시 — 이 축에선 매 장 정확히 rate×등급배수만큼 는다(공속과 동일 철학).
+                // 실제로 더해지는 둔화율(%p) 그대로 표시.
                 StatType.SlowRate => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 _ => "+1",
             };
@@ -494,8 +496,8 @@ namespace TrainDefense.Game.Datas
                 case StatType.AttackArea: delta.AttackArea += _GetAttackAreaDelta(baseStatus.AttackArea, rule); break;
                 // 분사 지속시간은 base 비율이 아니라 절대초 — rate가 1등급이 더할 초.
                 case StatType.BurstDuration: delta.BurstDuration += rule.IncreaseRate * _tier.ValueMultiplier; break;
-                // 둔화율은 지연 배율 곡선의 차분 — 공속과 동일 구조(점근, 상한 불필요).
-                case StatType.SlowRate: delta.SlowRate += _GetSlowRateDelta(baseStatus.SlowRate, rule); break;
+                // 둔화율은 카드에 적힌 %p 그대로 더한다(표기 = 실제). 상한은 RangeTrain이 적용한다.
+                case StatType.SlowRate: delta.SlowRate += _GetSlowRateDelta(rule); break;
                 default: return false;
             }
 

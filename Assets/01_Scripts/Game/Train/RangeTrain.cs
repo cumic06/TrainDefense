@@ -551,8 +551,8 @@ namespace TrainDefense.Game
                         _currentRangeTrainStatus.AttackInterval *= 1f / (1f + (-percent));
                         break;
                     case StatType.SlowRate:
-                        // 둔화율(%)을 현재값 기준 percent 증가
-                        _currentRangeTrainStatus.SlowRate += _currentRangeTrainStatus.SlowRate * percent;
+                        // 둔화율은 이미 %라 적힌 값을 %p 그대로 더한다(15 → 30%에서 45%). 상점 둔화 카드와 같은 방식.
+                        _currentRangeTrainStatus.SlowRate += stat.Value;
                         break;
                     default:
                         ApplyStat(stat);

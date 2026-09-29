@@ -738,7 +738,8 @@ MonoBehaviour:
       MaxHp: 200
     prefabId: EliteCannonTurretTrain
     passiveSkillDataIds:
-    - 60015
+    - 60018
+    - 60019
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
@@ -869,7 +870,7 @@ MonoBehaviour:
     prefabId: EliteColdAirRangeTrain
     passiveSkillDataIds:
     - 60004
-    - 60005
+    - 60020
     isMainTrain: 0
     elitePromotionConditions: []
     rangeTrainStatus:
@@ -912,7 +913,7 @@ MonoBehaviour:
       passiveType: StatModifier
       param1: AttackDamage
       param2: 50
-      param3: SlowRate:50
+      param3: SlowRate:20
       description: Passive_60004_Desc
     - id: 60005
       name: Passive_60005_Name
@@ -984,6 +985,27 @@ MonoBehaviour:
       param2: 0.25
       param3: 
       description: Passive_60017_Desc
+    - id: 60018
+      name: Passive_60018_Name
+      passiveType: StatModifier:AttackDamage:80:AttackInterval:33.3:AttackArea:70|ScaleProjectile:1.3
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60018_Desc
+    - id: 60019
+      name: Passive_60019_Name
+      passiveType: StatModifier
+      param1: TargetCount
+      param2: 2
+      param3: 
+      description: Passive_60019_Desc
+    - id: 60020
+      name: Passive_60020_Name
+      passiveType: StatModifier
+      param1: AttackArea
+      param2: 50
+      param3: SlowRate:10
+      description: Passive_60020_Desc
   _legacyTrainPassiveSkillDataList: []
   stageDataList:
   - id: 50001
@@ -1777,7 +1799,7 @@ MonoBehaviour:
   - id: stat_upgrade_40002_slow_rate
     trainDataId: 40002
     statType: 9
-    increaseRate: 0.2
+    increaseRate: 0.05
   - id: stat_upgrade_30001_attack_range
     trainDataId: 30001
     statType: 1
