@@ -509,7 +509,7 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 28
+      AttackRange: 22
       AttackArea: 1.2
       AttackCount: 1
       AttackInterval: 2.5
@@ -559,8 +559,8 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 40
-      AttackRange: 26
-      AttackArea: 3.5
+      AttackRange: 20
+      AttackArea: 3
       AttackCount: 1
       AttackInterval: 2.5
       TargetCount: 1
@@ -584,7 +584,7 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 30
+      AttackRange: 24
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 1.4
@@ -691,7 +691,7 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 28
+      AttackRange: 22
       AttackArea: 1
       AttackCount: 1
       AttackInterval: 2.5
@@ -743,7 +743,7 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 40
-      AttackRange: 26
+      AttackRange: 20
       AttackArea: 3
       AttackCount: 1
       AttackInterval: 2.5
@@ -769,7 +769,7 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
-      AttackRange: 30
+      AttackRange: 24
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 1.4
