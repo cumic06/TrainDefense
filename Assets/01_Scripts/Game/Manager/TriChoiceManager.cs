@@ -119,10 +119,11 @@ namespace TrainDefense.Game
                 if (trainData == null)
                     return null;
 
+                // 새 포탑 구매 카드와 구분되도록 제목에 "강화"를 붙인다 (예: 기관총 포탑 강화)
                 return new ChoiceUIInfo
                 {
                     Icon = trainData.Icon,
-                    Name = trainData.Name,
+                    Name = _SafeFormat(TrainDefense.Localize.LocalizeHelper.GetByKey("UI_Shop_TurretUpgrade_Name", "{0} 강화"), trainData.Name),
                     Description = trainStatUpgradeChoice.BuildStatLineText()
                 };
             }

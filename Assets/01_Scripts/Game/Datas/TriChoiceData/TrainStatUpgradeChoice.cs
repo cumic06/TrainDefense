@@ -388,7 +388,8 @@ namespace TrainDefense.Game.Datas
 
             string deltaText = rule.StatType switch
             {
-                StatType.AttackDamage => $"+{_GetBaseAttackDamage() * rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
+                // 실제 증가 = 메타 적용 기본 공격력 × rate×등급배수 → 다른 스탯처럼 %로 표시(포탑별 절대값 차이가 커 보이지 않게).
+                StatType.AttackDamage => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 StatType.AttackInterval => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 // 커버 면적(실효) 기준 고정 표시 — 이 축에선 매 장 정확히 rate×등급배수만큼 는다(공속과 동일 철학).
                 StatType.AttackArea => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
@@ -409,17 +410,6 @@ namespace TrainDefense.Game.Datas
             string line = string.Format(template, deltaText);
 
             return Regex.Replace(line, "<[^>]+>", "").Trim();
-        }
-
-        private float _GetBaseAttackDamage()
-        {
-            if (_train is TurretTrain turretTrain)
-                return turretTrain.MetaBaseStatus.AttackDamage;
-
-            if (_train is RangeTrain rangeTrain)
-                return rangeTrain.MetaBaseStatus.AttackDamage;
-
-            return 0f;
         }
 
         // 런타임 강화 데이터에서 실제로 읽히는 인덱스는 "이번에 적용할 레벨"(= 현재 레벨) 하나뿐이다.
