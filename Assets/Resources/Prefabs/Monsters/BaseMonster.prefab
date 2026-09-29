@@ -178,7 +178,7 @@ MonoBehaviour:
   id: 
   model: {fileID: 24558831701991884}
   eliteEffect: {fileID: 7699133565621818308}
-  slowColor: {r: 0.5, g: 0.85, b: 1, a: 1}
+  slowColor: {r: 0.9, g: 0.97, b: 1, a: 1}
   spawnMoveDelay: 0.1
 --- !u!61 &8967810716900712770
 BoxCollider2D:

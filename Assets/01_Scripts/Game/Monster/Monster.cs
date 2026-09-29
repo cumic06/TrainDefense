@@ -21,7 +21,7 @@ namespace TrainDefense.Game
       [SerializeField]
       private GameObject eliteEffect;
       [SerializeField]
-      private Color slowColor = new Color(0.5f, 0.85f, 1f, 1f);
+      private Color slowColor = new Color(0.9f, 0.97f, 1f, 1f);
       [SerializeField]
       private float spawnMoveDelay = 0.1f;
 
@@ -64,8 +64,8 @@ namespace TrainDefense.Game
       // 둔화 중 서리 덮인 모습: 원본 밝기에 얼음색을 입히고 흰 기운을 더한다(피격 섬광과 같은 셰이더).
       private static Material _sharedFrostMaterial;
       private static readonly Color FROST_TINT = new Color(0.6f, 0.84f, 1f, 1f);
-      private const float FROST_TINT_AMOUNT = 0.85f;
-      private const float FROST_EMISSION_INTENSITY = 0.35f;
+      private const float FROST_TINT_AMOUNT = 0.5f;
+      private const float FROST_EMISSION_INTENSITY = 0.22f;
       // 둔화 중이면 피격 섬광이 끝난 뒤 원래 머티리얼 대신 서리 머티리얼로 돌아간다.
       private bool _isFrosted;
 
