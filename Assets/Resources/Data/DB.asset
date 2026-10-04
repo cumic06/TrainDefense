@@ -796,8 +796,8 @@ MonoBehaviour:
     elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 30
-      AttackRange: 4
-      AttackArea: 5
+      AttackRange: 5
+      AttackArea: 0
       AttackCount: 1
       AttackInterval: 3
       CriticalChance: 0
@@ -821,8 +821,8 @@ MonoBehaviour:
     elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 7
-      AttackRange: 5
-      AttackArea: 6
+      AttackRange: 6
+      AttackArea: 0
       AttackCount: 1
       AttackInterval: 1.5
       CriticalChance: 0
@@ -848,8 +848,8 @@ MonoBehaviour:
     elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 30
-      AttackRange: 4
-      AttackArea: 5
+      AttackRange: 5
+      AttackArea: 0
       AttackCount: 1
       AttackInterval: 3
       CriticalChance: 0
@@ -875,8 +875,8 @@ MonoBehaviour:
     elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 7
-      AttackRange: 5
-      AttackArea: 6
+      AttackRange: 6
+      AttackArea: 0
       AttackCount: 1
       AttackInterval: 1.5
       CriticalChance: 0
@@ -931,7 +931,7 @@ MonoBehaviour:
       description: Passive_60006_Desc
     - id: 60007
       name: Passive_60007_Name
-      passiveType: Strengthen:100|StatModifier:AttackArea:50
+      passiveType: Strengthen:100|StatModifier:AttackRange:50
       param1: 
       param2: 
       param3: 
@@ -1002,7 +1002,7 @@ MonoBehaviour:
     - id: 60020
       name: Passive_60020_Name
       passiveType: StatModifier
-      param1: AttackArea
+      param1: AttackRange
       param2: 50
       param3: SlowRate:10
       description: Passive_60020_Desc
@@ -1340,8 +1340,6 @@ MonoBehaviour:
     category: 0
     stats:
     - <Type>k__BackingField: 1
-      <Value>k__BackingField: 10
-    - <Type>k__BackingField: 8
       <Value>k__BackingField: 10
     passiveType: 0
     passiveValuePerLevel: 0
@@ -1780,17 +1778,17 @@ MonoBehaviour:
     trainDataId: 40001
     statType: 4
     increaseRate: 0.2
-  - id: stat_upgrade_40001_attack_area
+  - id: stat_upgrade_40001_attack_range
     trainDataId: 40001
-    statType: 8
+    statType: 1
     increaseRate: 0.2
   - id: stat_upgrade_40002_attack_damage
     trainDataId: 40002
     statType: 2
     increaseRate: 0.2
-  - id: stat_upgrade_40002_attack_area
+  - id: stat_upgrade_40002_attack_range
     trainDataId: 40002
-    statType: 8
+    statType: 1
     increaseRate: 0.2
   - id: stat_upgrade_40002_slow_rate
     trainDataId: 40002
