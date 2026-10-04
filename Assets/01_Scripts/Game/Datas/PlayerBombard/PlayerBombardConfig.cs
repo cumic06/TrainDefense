@@ -5,7 +5,7 @@ namespace TrainDefense.Game.Datas
 {
     /// <summary>
     /// 플레이어 개입 포격(화면 탭 지점 포격) 설정.
-    /// 편성 포탑 데이터(50xxx)와 분리해 따로 둔다. 레벨업·상점 강화 대상이 아니라 판 내내 고정값이다.
+    /// 편성 포탑 데이터(50xxx)와 분리해 따로 둔다. 여기 값은 기본값이고, 레벨업 강화 배율은 PlayerBombardManager가 발사 시점에 곱한다.
     /// Resources/Data/PlayerBombardConfig 에셋이 있으면 그것을, 없으면 아래 기본값을 쓴다.
     /// </summary>
     [CreateAssetMenu(fileName = "PlayerBombardConfig", menuName = "Data/PlayerBombard/PlayerBombardConfig")]
@@ -24,7 +24,7 @@ namespace TrainDefense.Game.Datas
         [BoxGroup("Cooldown")]
         [SerializeField]
         [LabelText("발사 쿨다운(초)")]
-        private float cooldown = 1.25f;
+        private float cooldown = 1.5f;
 
         [BoxGroup("Knockback")]
         [SerializeField]

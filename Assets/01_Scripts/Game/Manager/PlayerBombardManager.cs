@@ -13,18 +13,23 @@ namespace TrainDefense.Game
     /// <summary>
     /// 플레이어 개입 포격. 화면을 탭하면 그 지점에 포탄 한 발을 떨어뜨린다.
     /// 어떤 유닛에도 속하지 않으므로 발사 시 owner를 넘기지 않는다(플레이어 = 화면 밖 사령관).
-    /// 스탯은 PlayerBombardConfig에서만 오고 강화(레벨업·상점) 대상이 아니다.
+    /// 기본 스탯은 PlayerBombardConfig에서 오고, 레벨업 강화(포격 피해·대기시간·범위)가 발사 시점에 배율로 얹힌다.
     /// </summary>
     public class PlayerBombardManager : Singleton<PlayerBombardManager>
     {
         private const string ConfigResourcePath = "Data/PlayerBombardConfig";
         private const string ProjectilePrefabPath = "Prefabs/Projectiles/TrainProjectile/";
 
+        // 레벨업 강화 UpgradeData id (UpgradeValue = 레벨당 퍼센트, 대기시간은 음수 = 감소)
+        private const string DAMAGE_UPGRADE_ID = "110008";
+        private const string COOLDOWN_UPGRADE_ID = "110009";
+        private const string AREA_UPGRADE_ID = "110010";
+
         private PlayerBombardConfig _config;
         private Projectile _projectilePrefab;
         private float _cooldownRemaining;
 
-        // 강화 대상이 아니라 판 내내 고정이므로 한 번만 만들어 재사용한다.
+        // 발사마다 새로 만들지 않도록 하나를 재사용하고, 강화 배율만 발사 직전에 갱신한다.
         private TurretTrainStatus _status;
 
         public bool IsReady => _cooldownRemaining <= 0f;
@@ -40,11 +45,7 @@ namespace TrainDefense.Game
                 _config = ScriptableObject.CreateInstance<PlayerBombardConfig>();
             }
 
-            _status = new TurretTrainStatus
-            {
-                AttackDamage = _config.Damage,
-                AttackArea = _config.AttackArea,
-            };
+            _status = new TurretTrainStatus();
         }
 
         private void Update()
@@ -82,6 +83,9 @@ namespace TrainDefense.Game
 
             projectile.transform.position = new Vector3(worldPosition.x, worldPosition.y, 0f);
 
+            _status.AttackDamage = _config.Damage * _GetUpgradeMultiplier(DAMAGE_UPGRADE_ID);
+            _status.AttackArea = _config.AttackArea * _GetUpgradeMultiplier(AREA_UPGRADE_ID);
+
             // owner를 넘기지 않는다. Projectile의 아군 판정은 "몬스터가 쏜 게 아니면 기차를 안 때린다"라서
             // owner 없이도 내 기차는 맞지 않는다.
             TurretCombatFx.InitProjectile(projectile, _status, null, null);
@@ -91,11 +95,26 @@ namespace TrainDefense.Game
 
             _PlayFireSound();
 
-            _cooldownRemaining = _config.Cooldown;
+            _cooldownRemaining = _config.Cooldown * _GetUpgradeMultiplier(COOLDOWN_UPGRADE_ID);
 
             // 구 메인 터렛(MainTrain.Weapon)이 발행하던 이벤트를 개입 포격이 이어받는다.
             // 공격 튜토리얼이 이 이벤트로 완료 처리되므로 끊기면 튜토리얼이 영영 안 끝난다.
             GameEventSystem.Publish(new MainTrainFiredEvent());
+        }
+
+        // 레벨업 강화 배율 = 1 + 레벨당 퍼센트 × 레벨. 데이터가 없으면 1 (골드 획득 강화와 같은 방식)
+        private float _GetUpgradeMultiplier(string upgradeId)
+        {
+            if (DatabaseManager.Instance == null || UserDataManager.Instance == null)
+                return 1f;
+
+            UpgradeData upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
+            if (upgradeData == null)
+                return 1f;
+
+            int level = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
+
+            return 1f + upgradeData.UpgradeValue / 100f * level;
         }
 
         private Projectile _GetProjectilePrefab()
