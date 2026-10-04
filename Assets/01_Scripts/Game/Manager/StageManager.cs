@@ -118,6 +118,7 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Subscribe<StageSelectEvent>(_OnStageSelected);
             GameEventSystem.Subscribe<InspectionEndEvent>(_OnInspectionEnd);
             GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOverStart);
+            GameEventSystem.Subscribe<StationLevelUpEndEvent>(_OnStationLevelUpEnd);
         }
 
         private void _UnsubscribeEvents()
@@ -127,6 +128,7 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<StageSelectEvent>(_OnStageSelected);
             GameEventSystem.Unsubscribe<InspectionEndEvent>(_OnInspectionEnd);
             GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOverStart);
+            GameEventSystem.Unsubscribe<StationLevelUpEndEvent>(_OnStationLevelUpEnd);
         }
 
         private void FixedUpdate()
@@ -326,10 +328,13 @@ namespace TrainDefense.Game.Manager
                 return;
             }
 
-            if (TimelineManager.Instance != null)
-                TimelineManager.Instance.StartShopEnterTimeline(() => GameEventSystem.Publish(new InspectionStartEvent()));
+            // 전투 중 밀린 레벨업이 있으면 멈춘 전투 화면 위에서 먼저 고르고, 다 고르면(StationLevelUpEndEvent) 상점 연출로 넘어간다.
+            int pendingLevelUpCount = UserDataManager.Instance != null ? UserDataManager.Instance.PendingLevelUpCount : 0;
+
+            if (pendingLevelUpCount > 0)
+                GameEventSystem.Publish(new StationLevelUpStartEvent(pendingLevelUpCount));
             else
-                GameEventSystem.Publish(new InspectionStartEvent());
+                _StartShopEnterTimeline();
 
             // 역 도착·맵 선택 두 경로의 공통 진입점. 난이도와 가격이 같은 축을 쓰도록 여기서만 센다.
             _totalInspectionPassedCount++;
@@ -337,6 +342,16 @@ namespace TrainDefense.Game.Manager
 
             // 몬스터 해금이 이 카운트를 기준으로 하므로 늘린 직후 목록을 다시 만든다.
             _UpdateSpawnRules();
+        }
+
+        private void _OnStationLevelUpEnd(StationLevelUpEndEvent _) => _StartShopEnterTimeline();
+
+        private void _StartShopEnterTimeline()
+        {
+            if (TimelineManager.Instance != null)
+                TimelineManager.Instance.StartShopEnterTimeline(() => GameEventSystem.Publish(new InspectionStartEvent()));
+            else
+                GameEventSystem.Publish(new InspectionStartEvent());
         }
 
         // 종착역 도착. 결산·세이브 삭제·통계는 패배와 같은 GameEndEvent 경로를 타고,

@@ -19,6 +19,8 @@ namespace TrainDefense.Game.RunSave.Sections
             public int coin;
             public int currentExp;
             public int currentLevel;
+            // 역 도착 때 저장되므로 아직 고르지 않은 레벨업이 남아 있다. 구버전 세이브는 0(고를 것 없음)
+            public int pendingLevelUpCount;
             public List<CountEntry> triChoiceCounts = new();
             public List<CountEntry> upgradeLevels = new();
         }
@@ -42,6 +44,7 @@ namespace TrainDefense.Game.RunSave.Sections
                 coin = userDataManager.Coin,
                 currentExp = userDataManager.CurrentExp,
                 currentLevel = userDataManager.CurrentLevel,
+                pendingLevelUpCount = userDataManager.PendingLevelUpCount,
                 triChoiceCounts = _ToEntries(userDataManager.GetTriChoiceCounts()),
                 upgradeLevels = _ToEntries(userDataManager.GetUpgradeLevels()),
             };
@@ -73,6 +76,7 @@ namespace TrainDefense.Game.RunSave.Sections
                 payload.coin,
                 payload.currentExp,
                 payload.currentLevel,
+                payload.pendingLevelUpCount,
                 _ToDictionary(payload.triChoiceCounts),
                 _ToDictionary(payload.upgradeLevels));
         }

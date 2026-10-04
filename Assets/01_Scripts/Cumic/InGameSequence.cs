@@ -65,7 +65,7 @@ namespace Cumic.Sequence
             GameEventSystem.Subscribe<EngageReadyEvent>(_OnEngageReady);
             GameEventSystem.Subscribe<EngageStartEvent>(_OnEngageStart);
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
-            GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
+            GameEventSystem.Subscribe<StationLevelUpStartEvent>(_OnStationLevelUpStart);
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
             GameEventSystem.Subscribe<StageEndEvent>(_OnStageEnd);
             GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
@@ -77,7 +77,7 @@ namespace Cumic.Sequence
             GameEventSystem.Unsubscribe<EngageReadyEvent>(_OnEngageReady);
             GameEventSystem.Unsubscribe<EngageStartEvent>(_OnEngageStart);
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
-            GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
+            GameEventSystem.Unsubscribe<StationLevelUpStartEvent>(_OnStationLevelUpStart);
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
             GameEventSystem.Unsubscribe<StageEndEvent>(_OnStageEnd);
             GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
@@ -125,7 +125,8 @@ namespace Cumic.Sequence
         private void _OnEngageReady(EngageReadyEvent _)       => _SetBase(BasePhase.EngageReady);
         private void _OnEngageStart(EngageStartEvent _)       => _SetBase(BasePhase.Engage);
         private void _OnInspectionStart(InspectionStartEvent _) => _SetBase(BasePhase.Inspection);
-        private void _OnLevelUp(LevelUpEvent _)               => PushOverlay(OverlayPhase.LevelUp);
+        // 레벨업은 전투 중엔 멈추지 않고 횟수만 쌓는다. 역에 도착하면 전투 화면을 멈추고 그 위에서 몰아서 고른다.
+        private void _OnStationLevelUpStart(StationLevelUpStartEvent _) => PushOverlay(OverlayPhase.LevelUp);
 
         private void _OnTriChoiceSelect(TriChoiceSelectEvent e)
         {

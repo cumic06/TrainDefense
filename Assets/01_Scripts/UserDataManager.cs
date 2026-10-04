@@ -30,11 +30,14 @@ namespace TrainDefense
         private int _coin;
         private int _currentExp;
         private int _currentLevel = 1;
+        // 전투 중 오른 레벨 중 아직 카드를 고르지 않은 횟수. 역 도착 때 몰아서 고른다.
+        private int _pendingLevelUpCount;
         private UserOptionData _userOptionData = new();
         public int Coin => _coin;
         public float ExpPercent => _currentExp / GetNextLevelUpExp();
         public int CurrentExp => _currentExp;
         public int CurrentLevel => _currentLevel;
+        public int PendingLevelUpCount => _pendingLevelUpCount;
         public bool IsLobby { get; private set; }
         public bool IsHapticEnabled => _userOptionData == null || _userOptionData.IsHapticEnabled;
         public bool IsCameraShakeEnabled => _userOptionData == null || _userOptionData.IsCameraShakeEnabled;
@@ -92,6 +95,7 @@ namespace TrainDefense
             _coin = 0;
             _currentExp = 0;
             _currentLevel = 1;
+            _pendingLevelUpCount = 0;
             _triChoiceData.Clear();
             _upgradeLevels.Clear();
             IsLobby = gameEnterEvent.IsLobby;
@@ -368,6 +372,13 @@ namespace TrainDefense
         private void LevelUp()
         {
             _currentLevel++;
+            _pendingLevelUpCount++;
+        }
+
+        /// <summary>역에서 레벨업 카드를 골랐을 때(또는 고를 카드가 없어 넘겼을 때) 밀린 횟수를 줄인다.</summary>
+        public void ConsumePendingLevelUps(int count)
+        {
+            _pendingLevelUpCount = Mathf.Max(0, _pendingLevelUpCount - count);
         }
         #endregion
 
@@ -461,6 +472,7 @@ namespace TrainDefense
             int coin,
             int currentExp,
             int currentLevel,
+            int pendingLevelUpCount,
             Dictionary<string, int> triChoiceCounts,
             Dictionary<string, int> upgradeLevels)
         {
@@ -468,6 +480,7 @@ namespace TrainDefense
             _coin = coin;
             _currentExp = currentExp;
             _currentLevel = Mathf.Max(1, currentLevel);
+            _pendingLevelUpCount = Mathf.Max(0, pendingLevelUpCount);
 
 
             _triChoiceData.Clear();
@@ -489,8 +502,12 @@ namespace TrainDefense
         }
         #endregion
 
-        private const float BASE_EXP = 244f;
-        private const float expPower = 1.6f;
+        // 필요 경험치 = FIXED_EXP + BASE_EXP × EXP_GROWTH_PER_LEVEL^(lv-1)
+        // 초반엔 고정분이 커서 레벨이 빨리 오르고(역당 1~2회), 후반엔 늘어나는 부분이 커져 역당 1회 남짓으로 수렴한다.
+        // 배율은 봇 9판 실측 구간 수입(역 11~13에서 정체) 기준으로, 수입이 20% 적어도 모든 역에서 1회 이상 오르는 값.
+        private const float FIXED_EXP = 550f;
+        private const float BASE_EXP = 500f;
+        private const float EXP_GROWTH_PER_LEVEL = 1.14f;
 
         public float GetNextLevelUpExp()
         {
@@ -500,9 +517,9 @@ namespace TrainDefense
         // 특정 레벨 기준 필요 경험치. 게임 진입 표시처럼 _currentLevel 리셋 타이밍에 의존하면 안 되는 곳에서 사용.
         public float GetNextLevelUpExp(int level)
         {
-            // 레벨업 필요 경험치 = 203 × lv^1.6 — 판 20~30분 기준 lv35(풀빌드 = 카드 35장) ≈ 30분 안팎,
-            // 최상위 판에서만 풀업이 완성되는 페이스. (옛 290은 60분 판 기준이라 풀업 불가였음)
-            return BASE_EXP * Mathf.Pow(level, expPower);
+            // 역 20개 판에서 레벨업 약 27회: 첫 역 1회, 역 2~10은 1~2회, 역 11부터 1회 남짓. 모든 역에서 1회 이상(규칙이 아니라 곡선으로).
+            // 거듭제곱(lv^n)은 역마다 늘어나는 수입을 못 따라가 후반에 몰리거나(n 작을 때) 뜸해져서(n 클 때) 배율 곡선으로 바꿨다.
+            return FIXED_EXP + BASE_EXP * Mathf.Pow(EXP_GROWTH_PER_LEVEL, level - 1);
         }
         #endregion
 

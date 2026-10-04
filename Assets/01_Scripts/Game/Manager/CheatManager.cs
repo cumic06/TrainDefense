@@ -17,8 +17,9 @@ namespace TrainDefense.Game.Manager
             else if (Input.GetKeyUp(KeyCode.Space))
                 TimeManager.Instance?.SetFastForward(false);
 
-            if (Input.GetKeyDown(KeyCode.F))
-                GameEventSystem.Publish(new LevelUpEvent(1));
+            // 다음 레벨까지 남은 경험치를 넣어 한 번 레벨업시킨다(카드는 역 도착 때 뜬다)
+            if (Input.GetKeyDown(KeyCode.F) && UserDataManager.Instance != null)
+                GameEventSystem.Publish(new AddExpEvent(Mathf.CeilToInt(UserDataManager.Instance.GetNextLevelUpExp() - UserDataManager.Instance.CurrentExp)));
 
             if (Input.GetKeyDown(KeyCode.M))
                 StageManager.Instance?.ForceMapSelection();

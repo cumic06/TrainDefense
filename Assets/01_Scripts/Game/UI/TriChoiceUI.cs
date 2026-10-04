@@ -91,7 +91,7 @@ namespace TrainDefense.Game.UI
       private void _SubscribeEvents()
       {
          GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
-         GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
+         GameEventSystem.Subscribe<StationLevelUpStartEvent>(_OnStationLevelUpStart);
          GameEventSystem.Subscribe<StageEndEvent>(_OnStageEnd);
          GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
          GameEventSystem.Subscribe<RunRestoredEvent>(_OnRunRestored);
@@ -100,7 +100,7 @@ namespace TrainDefense.Game.UI
       private void _UnsubscribeEvents()
       {
          GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
-         GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
+         GameEventSystem.Unsubscribe<StationLevelUpStartEvent>(_OnStationLevelUpStart);
          GameEventSystem.Unsubscribe<StageEndEvent>(_OnStageEnd);
          GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
          GameEventSystem.Unsubscribe<RunRestoredEvent>(_OnRunRestored);
@@ -159,10 +159,12 @@ namespace TrainDefense.Game.UI
          }
       }
 
-      private void _OnLevelUp(LevelUpEvent levelUpEvent)
+      // 전투 중 오른 레벨은 쌓아 두었다가 역 도착 때 멈춘 전투 화면 위에서 한꺼번에 고른다.
+      // 다 고르면 StationLevelUpEndEvent로 상점 진입 연출이 시작된다.
+      private void _OnStationLevelUpStart(StationLevelUpStartEvent stationLevelUpStartEvent)
       {
          _popupMode = ChoicePopupMode.StatUpgrade;
-         OnInspectionEnter(levelUpEvent.LevelUpCount);
+         OnInspectionEnter(stationLevelUpStartEvent.LevelUpCount);
       }
 
       private void _OnStageEnd(StageEndEvent stageEndEvent)
@@ -237,11 +239,13 @@ namespace TrainDefense.Game.UI
 
          if (availableChoices.Count == 0)
          {
+            _ConsumeRemainingLevelUps();
             TriChoiceSelectEvent eventData = new(null, 0);
             GameEventSystem.Publish(eventData);
             backgroundImage.SetActive(false);
             _ShowCoinUI(false);
             _SetPauseButtonLocked(false);
+            _EndStationLevelUp();
             Debug.LogWarning("No available choices found");
 
             return;
@@ -302,11 +306,13 @@ namespace TrainDefense.Game.UI
          if (activatedCount == 0)
          {
             Debug.LogWarning("TriChoiceUI: no choices activated, publishing fallback select event to release pause");
+            _ConsumeRemainingLevelUps();
             TriChoiceSelectEvent fallback = new(null, 0);
             GameEventSystem.Publish(fallback);
             backgroundImage.SetActive(false);
             _ShowCoinUI(false);
             _SetPauseButtonLocked(false);
+            _EndStationLevelUp();
          }
       }
 
@@ -348,6 +354,21 @@ namespace TrainDefense.Game.UI
 
       private bool _IsPopupOutdated(int requestId) => requestId != _popupRequestId;
 
+      // 고를 카드가 없어 레벨업 창을 그냥 닫을 때, 남은 횟수를 비워야 다음 역마다 빈 창이 다시 열리지 않는다.
+      private void _ConsumeRemainingLevelUps()
+      {
+         if (_popupMode == ChoicePopupMode.StatUpgrade)
+            UserDataManager.Instance?.ConsumePendingLevelUps(_choiceLeftCount);
+      }
+
+      // 역 도착 레벨업을 다 마쳤음을 알린다 — StageManager가 이어서 상점 진입 연출을 시작한다.
+      // 창이 닫히는 모든 경로(다 고름·후보 없음·카드 활성 실패)에서 불러야 상점이 영영 안 열리는 일이 없다.
+      private void _EndStationLevelUp()
+      {
+         if (_popupMode == ChoicePopupMode.StatUpgrade)
+            GameEventSystem.Publish(new StationLevelUpEndEvent());
+      }
+
       public async UniTaskVoid OnChoiceSelected(IChoiceOption choiceOption)
       {
          if (_isSelecting)
@@ -356,6 +377,9 @@ namespace TrainDefense.Game.UI
          _isSelecting = true;
          _popupRequestId++;
          _choiceLeftCount--;
+
+         if (_popupMode == ChoicePopupMode.StatUpgrade)
+            UserDataManager.Instance?.ConsumePendingLevelUps(1);
 
          await _HideAllCardsAsync();
 
@@ -379,6 +403,7 @@ namespace TrainDefense.Game.UI
          backgroundImage.SetActive(false);
          _ShowCoinUI(false);
          _SetPauseButtonLocked(false);
+         _EndStationLevelUp();
       }
 
       private async UniTask _HideAllCardsAsync()
