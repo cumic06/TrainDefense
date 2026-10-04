@@ -71,7 +71,7 @@ MonoBehaviour:
   - id: 
     clipId: 
     soundType: 309
-    clip: {fileID: 8300000, guid: d5012cb5b56f118499035db0c250bed2, type: 3}
+    clip: {fileID: 8300000, guid: 0a0a10fb8be84e618783991e29e997b8, type: 3}
     volume: 0.5
   - id: 
     clipId: 
