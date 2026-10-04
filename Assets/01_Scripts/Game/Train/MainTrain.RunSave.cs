@@ -48,12 +48,13 @@ namespace TrainDefense.Game
             public string SelectedSkillId;
             public List<UpgradeStepDelta> UpgradeDeltas = new();
             public List<StatUpgradeAmountEntry> StatUpgradeAmounts = new();
+            /// <summary>저장 당시 공격 간격. 0이면 기록 없음(이전 세이브). 상점·레벨업 공속은 받은 순서에 따라 증가량이 달라 증가량 재생만으로는 재현되지 않는다.</summary>
+            public float AttackInterval;
         }
 
         /// <summary>
         /// 업그레이드 한 번이 더한 증가량. 상점 강화 데이터는 구매하는 순간 만들어져(CreateRuntimeSingleStat) DB에 남지 않으므로,
         /// id로는 되찾을 수 없고 증가량 자체를 남겨야 복원할 수 있다.
-        /// 상점 배율은 담지 않는다 — 여기 값은 배율을 곱하기 전 증가량이고, 복원 때 Upgrade가 같은 배율을 다시 곱한다.
         /// </summary>
         public class UpgradeStepDelta
         {
@@ -157,12 +158,13 @@ namespace TrainDefense.Game
                     IsDead = train.IsDead,
                     SkillTypeMask = (int)train.SkillTypeMask,
                     SelectedSkillId = train.SelectedSkillId,
+                    AttackInterval = train.GetCurrentStatValue(StatType.AttackInterval),
                 };
 
                 if (_upgradeHistory.TryGetValue(train, out var history))
                     entry.UpgradeDeltas = new List<UpgradeStepDelta>(history);
 
-                // 누적 강화량은 스탯이 아니라 "다음 강화가 얼마나 오를지"를 정한다 — 빠뜨리면 이어한 판에서 공속·연사가 처음처럼 크게 오른다.
+                // 누적 강화량은 스탯이 아니라 "다음 강화가 얼마나 오를지"를 정한다 — 빠뜨리면 이어한 판에서 범위·연사가 처음처럼 크게 오른다.
                 foreach (var pair in train.StatUpgradeAmounts)
                     entry.StatUpgradeAmounts.Add(new StatUpgradeAmountEntry { Type = pair.Key, Amount = pair.Value });
 
@@ -259,6 +261,9 @@ namespace TrainDefense.Game
                 }
             }
 
+            if (entry.AttackInterval > 0f)
+                train.RestoreAttackInterval(entry.AttackInterval);
+
             _RestoreHpAndDeath(train, entry);
 
             return true;
@@ -270,7 +275,7 @@ namespace TrainDefense.Game
             if (train == null)
                 return;
 
-            // 스탯값과 별개로 되돌려야 하는 값 — 공속 증가분이 이 누적량에서 역산되므로, 빠뜨리면 이어한 판의 다음 강화가 1회차 폭으로 되돌아간다.
+            // 스탯값과 별개로 되돌려야 하는 값 — 범위 증가분이 이 누적량에서 역산되므로, 빠뜨리면 이어한 판의 다음 강화가 1회차 폭으로 되돌아간다.
             if (entry.StatUpgradeAmounts != null)
             {
                 foreach (var statUpgradeAmount in entry.StatUpgradeAmounts)

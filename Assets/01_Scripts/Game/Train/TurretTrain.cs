@@ -90,6 +90,8 @@ namespace TrainDefense.Game
             }
         }
 
+        public override void RestoreAttackInterval(float attackInterval) => _currentTurretTrainStatus.AttackInterval = attackInterval;
+
         // MainTrain 주무기로 장착되면 true. 자동 적 탐지/발사를 끄고, MainTrain의 터치 조준 발사만 받는다.
         public bool ManualAimMode { get; set; }
 
@@ -1212,14 +1214,13 @@ namespace TrainDefense.Game
             return _BuildStatDetails(GetUpgradedMaxHp(upgradeData), status);
         }
 
-        // 중복선택 증가분은 base와 동일하게 상점 배율을 받는다(Model B): (base+중복선택)×(1+상점%).
         private void _AddUpgradeStatus(ref TurretTrainStatus status, TurretTrainStatus upgrade)
         {
-            status.AttackDamage += upgrade.AttackDamage * GetShopMultiplier(StatType.AttackDamage);
-            status.AttackRange += upgrade.AttackRange * GetShopMultiplier(StatType.AttackRange);
-            status.AttackArea += upgrade.AttackArea * GetShopMultiplier(StatType.AttackArea);
+            status.AttackDamage += upgrade.AttackDamage;
+            status.AttackRange += upgrade.AttackRange;
+            status.AttackArea += upgrade.AttackArea;
             status.AttackCount += upgrade.AttackCount;
-            status.AttackInterval += upgrade.AttackInterval * GetShopMultiplier(StatType.AttackInterval);
+            status.AttackInterval += upgrade.AttackInterval;
             status.TargetCount += upgrade.TargetCount;
             status.CriticalChance += upgrade.CriticalChance;
             status.CriticalDamage += upgrade.CriticalDamage;
@@ -1237,10 +1238,11 @@ namespace TrainDefense.Game
 
             // 생성 순서와 같게: 영구 강화(Setup) → 판 중 전체 강화(MainTrain.ApplyExistingUpgradesToTrain)
             var status = _GetMetaAppliedStatus(data.TurretTrainStatus);
+            var metaBaseStatus = status;
             foreach (var (stats, level) in runUpgrades)
                 foreach (var stat in stats)
                     if (stat != null)
-                        _TryApplyLevelAware(ref status, data.TurretTrainStatus, stat, level, 0, out _);
+                        _TryApplyLevelAware(ref status, data.TurretTrainStatus, metaBaseStatus, stat, level, 0);
 
             return _BuildStatDetails(maxHp, status);
         }
@@ -1403,8 +1405,8 @@ namespace TrainDefense.Game
 
             var baseStatus = turretTrainData.TurretTrainStatus;
 
-            // 스탯 계산은 상점 미리보기와 같이 쓰는 _TryApplyLevelAware가 하고, 여기서는 상점 배율 누적·투사체 갱신만 챙긴다.
-            if (!_TryApplyLevelAware(ref _currentTurretTrainStatus, baseStatus, stat, newLevel, prevLevel, out float shopRatio))
+            // 스탯 계산은 상점 미리보기와 같이 쓰는 _TryApplyLevelAware가 하고, 여기서는 투사체 갱신만 챙긴다.
+            if (!_TryApplyLevelAware(ref _currentTurretTrainStatus, baseStatus, _metaBaseStatus, stat, newLevel, prevLevel))
             {
                 base.ApplyStatLevelAware(stat, newLevel, prevLevel);
                 return;
@@ -1413,12 +1415,10 @@ namespace TrainDefense.Game
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    AccumulateShopMultiplier(StatType.AttackRange, shopRatio);
                     _ReinitScaleByAreaProjectiles();
                     break;
 
                 case StatType.AttackArea:
-                    AccumulateShopMultiplier(StatType.AttackArea, shopRatio);
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                     {
                         float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
@@ -1430,14 +1430,9 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    AccumulateShopMultiplier(StatType.AttackDamage, shopRatio);
                     if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                         foreach (var p in _nonMovementProjectiles)
                             if (p != null) InitializeProjectileDamage(p);
-                    break;
-
-                case StatType.AttackInterval:
-                    AccumulateShopMultiplier(StatType.AttackInterval, shopRatio);
                     break;
 
                 case StatType.TargetCount:
@@ -1448,29 +1443,25 @@ namespace TrainDefense.Game
         }
 
         // 판 중 전체 강화(레벨 누적)의 스탯 변화. 실제 적용(ApplyStatLevelAware)과 상점 새 포탑 미리보기가 같이 쓴다.
-        // 이 포탑이 다루지 않는 스탯이면 false. shopRatio = 상점 배율에 누적할 비율(곱 스탯만 의미 있음, 나머지는 1).
-        private static bool _TryApplyLevelAware(ref TurretTrainStatus status, TurretTrainStatus baseStatus, IStat stat,
-            int newLevel, int prevLevel, out float shopRatio)
+        // 상점 카드처럼 메타 적용 기본값(metaBaseStatus) 기준으로 더한다. 이 포탑이 다루지 않는 스탯이면 false.
+        private static bool _TryApplyLevelAware(ref TurretTrainStatus status, TurretTrainStatus baseStatus, TurretTrainStatus metaBaseStatus, IStat stat,
+            int newLevel, int prevLevel)
         {
             float percent = stat.Value / 100f;
             int times = newLevel - prevLevel;
-            shopRatio = 1f;
 
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
-                    status.AttackRange *= shopRatio;
+                    status.AttackRange += metaBaseStatus.AttackRange * percent * times;
                     return true;
 
                 case StatType.AttackArea:
-                    shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
-                    status.AttackArea *= shopRatio;
+                    status.AttackArea += metaBaseStatus.AttackArea * percent * times;
                     return true;
 
                 case StatType.AttackDamage:
-                    shopRatio = (1f + percent * newLevel) / (1f + percent * prevLevel);
-                    status.AttackDamage *= shopRatio;
+                    status.AttackDamage += metaBaseStatus.AttackDamage * percent * times;
                     return true;
 
                 case StatType.AttackCount:
@@ -1482,8 +1473,8 @@ namespace TrainDefense.Game
                 }
 
                 case StatType.AttackInterval:
-                    shopRatio = (1f + (-percent) * prevLevel) / (1f + (-percent) * newLevel);
-                    status.AttackInterval *= shopRatio;
+                    // 값 −5 = 발사 속도 +5%. 상점 공속 카드와 같은 배율에 더한다.
+                    status.AttackInterval = GetAttackIntervalAfterSpeedBonus(metaBaseStatus.AttackInterval, status.AttackInterval, -percent * times);
                     return true;
 
                 case StatType.TargetCount:
@@ -1517,8 +1508,6 @@ namespace TrainDefense.Game
                 sourceTurret.turretTrainData.TurretTrainStatus, sourceTurret._currentTurretTrainStatus);
 
             _statAttackDamageAccum = sourceTurret._statAttackDamageAccum;
-
-            InheritShopMultipliers(sourceTurret);
 
             if (_useNonMovementProjectilePooling)
             {

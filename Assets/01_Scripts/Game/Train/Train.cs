@@ -33,11 +33,8 @@ namespace TrainDefense.Game
         protected int _currentLevel;
         protected float _currentMaxHp;
         protected readonly TrainSkillModule _skillModule = new();
-        // 상점 업그레이드의 스탯별 누적 배율. 중복선택(Upgrade)으로 더하는 flat 증가분에도 이 배율을 곱해
-        // "(base + 중복선택합) × (1 + 상점%)" 가 강화 순서와 무관하게 성립하도록 한다.
-        protected readonly Dictionary<StatType, float> _shopMultiplier = new();
         // 상점에서 이 포탑의 각 스탯을 얼마나 강화했는지(기본 증가량 1단위 = 1.0, 상품 등급 배수만큼 누적).
-        // 공속처럼 "누적량에서 현재값을 역산해야 하는" 스탯이 상점 배율·스킬 보정과 섞여도
+        // 범위처럼 "누적량에서 현재값을 역산해야 하는" 스탯이 스킬 보정과 섞여도
         // 정확한 증가분을 낼 수 있게 누적량을 따로 센다.
         protected readonly Dictionary<StatType, float> _statUpgradeAmount = new();
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
@@ -361,15 +358,13 @@ namespace TrainDefense.Game
             _flashCoroutine = null;
         }
 
-        protected float GetShopMultiplier(StatType type) => _shopMultiplier.TryGetValue(type, out var multiplier) ? multiplier : 1f;
-        protected void AccumulateShopMultiplier(StatType type, float ratio) => _shopMultiplier[type] = GetShopMultiplier(type) * ratio;
+        // 공격 속도 강화는 상점 카드·레벨업 모두 발사 속도 배율(= 기본 간격 ÷ 지금 간격)에 %를 더한다. 간격 = 기본 ÷ 배율.
+        // 지금 간격에서 배율을 역산하므로 상점과 레벨업을 어떤 순서로 받아도 간격 = 기본 ÷ (1 + 상점% + 레벨업%)가 된다.
+        public static float GetAttackIntervalAfterSpeedBonus(float baseInterval, float currentInterval, float speedBonus)
+            => baseInterval / (baseInterval / currentInterval + speedBonus);
 
-        // 상점 누적 배율 승계(엘리트 전환 후에도 중복선택 flat이 올바른 배율을 받도록).
-        protected void InheritShopMultipliers(Train source)
-        {
-            _shopMultiplier.Clear();
-            foreach (var pair in source._shopMultiplier) _shopMultiplier[pair.Key] = pair.Value;
-        }
+        // 이어하기 복원용 — 공격 간격은 강화 순서에 따라 증가량이 달라 저장된 증가량만으로는 재현되지 않아 최종값을 직접 되돌린다.
+        public virtual void RestoreAttackInterval(float attackInterval) { }
 
         public float GetStatUpgradeAmount(StatType type) => _statUpgradeAmount.TryGetValue(type, out var amount) ? amount : 0f;
 
@@ -592,8 +587,8 @@ namespace TrainDefense.Game
 
             _statMaxHpAccum = source._statMaxHpAccum;
 
-            // 스탯별 누적 강화량도 승계 — 안 옮기면 승격 후 공속 구매가 1회차 증가분(가장 큰 폭)부터
-            // 다시 시작해 간격이 이중으로 줄어든다. (스탯값 자체는 서브클래스가 delta로 옮긴다)
+            // 스탯별 누적 강화량도 승계 — 안 옮기면 승격 후 범위 구매가 1회차 증가분(가장 큰 폭)부터
+            // 다시 시작하고 사거리·공격 횟수 상한도 풀린다. (스탯값 자체는 서브클래스가 delta로 옮긴다)
             _statUpgradeAmount.Clear();
             foreach (var pair in source._statUpgradeAmount) _statUpgradeAmount[pair.Key] = pair.Value;
         }

@@ -271,7 +271,7 @@ namespace TrainDefense.Game.Datas
         private bool _IsStatBuyable(TrainStatUpgradeRuleData rule)
         {
             // 공속은 발사 속도 상한에 닿으면 더 사도 효과가 없다.
-            if (rule.StatType == StatType.AttackInterval && _GetAttackSpeedMultiplier(rule) >= MAX_ATTACK_SPEED_MULTIPLIER)
+            if (rule.StatType == StatType.AttackInterval && _GetAttackSpeedMultiplier() >= MAX_ATTACK_SPEED_MULTIPLIER)
                 return false;
 
             // 공격 횟수는 연타가 주기를 넘치는 한계에 닿으면 멈춘다. 누적 = base + 구매 횟수(+1씩).
@@ -302,7 +302,7 @@ namespace TrainDefense.Game.Datas
             if (upgradeData != null)
             {
                 mainTrain.UpgradeTrain(_train.TrainData.Id, upgradeData);
-                // 공속 증가분이 누적량에서 나오므로 적용 후 반드시 등급 배수만큼 더한다.
+                // 사거리 상한·범위 곡선·공격 횟수 상한이 누적량으로 판정되므로 적용 후 반드시 등급 배수만큼 더한다.
                 _train.AddStatUpgradeAmount(_statType, IsCountStat(_statType) ? 1f : _tier.ValueMultiplier);
 
                 if (_secondRule != null)
@@ -320,20 +320,28 @@ namespace TrainDefense.Game.Datas
             return nextMultiplier > MAX_ATTACK_RANGE_MULTIPLIER && !Mathf.Approximately(nextMultiplier, MAX_ATTACK_RANGE_MULTIPLIER);
         }
 
-        // 발사 속도 배율 = 1 + rate × 누적 강화량. (간격 = base ÷ 이 값)
-        private float _GetAttackSpeedMultiplier(TrainStatUpgradeRuleData rule)
+        // 지금 발사 속도 배율 = 메타 적용 기본 간격 ÷ 지금 간격 (상점·레벨업 공속이 모두 담긴 값).
+        private float _GetAttackSpeedMultiplier()
         {
-            return 1f + rule.IncreaseRate * _train.GetStatUpgradeAmount(StatType.AttackInterval);
+            float baseInterval = _train switch
+            {
+                TurretTrain turretTrain => turretTrain.MetaBaseStatus.AttackInterval,
+                RangeTrain rangeTrain => rangeTrain.MetaBaseStatus.AttackInterval,
+                _ => 0f,
+            };
+            float currentInterval = _train.GetCurrentStatValue(StatType.AttackInterval);
+
+            return baseInterval > 0f && currentInterval > 0f ? baseInterval / currentInterval : 1f;
         }
 
-        // 이번 구매로 줄어드는 간격(음수). 간격 = base ÷ (1 + rate×누적량) 곡선의 차분이라
+        // 이번 구매로 줄어드는 간격(음수). 간격 = base ÷ (1 + 상점% + 레벨업%) 곡선의 차분이라
         // 구매를 거듭할수록 감소폭이 작아지지만 발사 횟수(=DPS)는 등급 배수에 정확히 비례해 늘어난다.
+        // 지금 배율은 현재 간격에서 역산한다 — 레벨업 공속도 같은 배율에 더해지기 때문(Train.GetAttackIntervalAfterSpeedBonus).
         private float _GetAttackIntervalDelta(float baseInterval, TrainStatUpgradeRuleData rule)
         {
-            float currentMultiplier = _GetAttackSpeedMultiplier(rule);
-            float nextMultiplier = currentMultiplier + rule.IncreaseRate * _tier.ValueMultiplier;
+            float currentInterval = _train.GetCurrentStatValue(StatType.AttackInterval);
 
-            return baseInterval / nextMultiplier - baseInterval / currentMultiplier;
+            return Train.GetAttackIntervalAfterSpeedBonus(baseInterval, currentInterval, rule.IncreaseRate * _tier.ValueMultiplier) - currentInterval;
         }
 
         // 이번 구매로 오르는 둔화율(%p). 카드 표기("+5%")를 유저가 30%→35%로 읽으므로 곡선 없이 rate×등급배수를 그대로 더한다.
