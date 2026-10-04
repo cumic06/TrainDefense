@@ -13161,7 +13161,7 @@ MonoBehaviour:
   finalStationCount: 20
   hpScale: 0.03
   hpScaleStart: 1
-  hpScaleIncrement: 0.0065
+  hpScaleIncrement: 0.005
   attackScale: 0.038
   goldScale: 0.05
   stationInspectionTimeIncrement: 0.7

@@ -246,8 +246,8 @@ MonoBehaviour:
     - {fileID: 888686281029753222, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
     monsterStatusData:
       MaxHp: 252
-      Damage: 40
-      MoveSpeed: 6.4
+      Damage: 32
+      MoveSpeed: 5.5
       AttackDelay: 2
       DropExpMin: 336
       DropExpMax: 336
@@ -1511,59 +1511,59 @@ MonoBehaviour:
       Tier: 1
     - Option:
         rid: 3319472431904325762
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 3319472431904325763
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104299
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104300
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104301
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104302
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104303
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104304
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104305
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104306
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104307
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104308
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104309
-      Weight: 14
+      Weight: 42
       Tier: 1
     - Option:
         rid: 6103417219460104310
-      Weight: 14
+      Weight: 42
       Tier: 1
     upgradeTrainChoices:
     - Option:

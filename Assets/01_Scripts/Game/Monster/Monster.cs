@@ -209,18 +209,19 @@ namespace TrainDefense.Game
          _currentHp = _currentMonsterStatus.MaxHp;
       }
 
-      public void ApplyElite(EliteData data, EliteVariant variant)
+      // strengthScale: 맵 스폰 간격 비례 강도(느린 맵 = 드문 대신 센 엘리트). 체력·공격력·보상에 곱하고 속도·크기는 그대로.
+      public void ApplyElite(EliteData data, EliteVariant variant, float strengthScale = 1f)
       {
          if (_isDead || data == null) return;
          _isElite = true;
 
          // 배율은 variant(타입별) 우선, 없으면 EliteData 단일 배율(빨강 fallback).
-         float hpMul = variant != null ? variant.hpMultiplier : data.hpMultiplier;
-         float damageMul = variant != null ? variant.damageMultiplier : data.damageMultiplier;
+         float hpMul = (variant != null ? variant.hpMultiplier : data.hpMultiplier) * strengthScale;
+         float damageMul = (variant != null ? variant.damageMultiplier : data.damageMultiplier) * strengthScale;
          float moveSpeedMul = variant != null ? variant.moveSpeedMultiplier : data.moveSpeedMultiplier;
          float sizeMul = variant != null ? variant.sizeScale : data.sizeScale;
-         float dropExpMul = variant != null ? variant.dropExpMultiplier : data.dropExpMultiplier;
-         float dropMoneyMul = variant != null ? variant.dropMoneyMultiplier : data.dropMoneyMultiplier;
+         float dropExpMul = (variant != null ? variant.dropExpMultiplier : data.dropExpMultiplier) * strengthScale;
+         float dropMoneyMul = (variant != null ? variant.dropMoneyMultiplier : data.dropMoneyMultiplier) * strengthScale;
 
          _currentMonsterStatus.MaxHp *= hpMul;
          _currentMonsterStatus.Damage *= damageMul;

@@ -330,7 +330,7 @@ namespace TrainDefense.Game
                      if (spawnAsElite)
                      {
                         EliteVariant eliteVariant = _eliteData.SelectVariant();
-                        spawnMonster.ApplyElite(_eliteData, eliteVariant);
+                        spawnMonster.ApplyElite(_eliteData, eliteVariant, _GetEliteStrengthScale());
                      }
 
                      _spawnedMonsters.Add(spawnMonster);
@@ -349,6 +349,16 @@ namespace TrainDefense.Game
       // 판을 20역으로 늘릴 때도 이 값은 옮기지 않았다 — 플레이어가 강해지는 속도는 흐른 시간이 아니라 상점 방문 수를
       // 따라가므로, 같은 경과 시간으로 미루면 그만큼 쉬워진다.
       private const int ELITE_START_STATION_COUNT = 6;
+
+      // 엘리트 강도 기준 스폰 간격(가장 빠른 맵 = 사막 0.38초). 이보다 느린 맵은 엘리트가 드문 대신
+      // 그 비율의 제곱근만큼 체력·공격력·보상이 커진다 — "느린 맵 = 드문 탱커"를 마리 수만이 아니라 강도로도 만든다.
+      // 비율 그대로(맵 2 ×1.68, 맵 5 ×2.03)면 맵 전환 역에서 엘리트가 못 잡는 벽이 돼서 제곱근으로 완화했다.
+      private const float ELITE_STRENGTH_REFERENCE_INTERVAL = 0.38f;
+
+      private float _GetEliteStrengthScale()
+      {
+         return _originalSpawnInterval > 0f ? Mathf.Sqrt(_originalSpawnInterval / ELITE_STRENGTH_REFERENCE_INTERVAL) : 1f;
+      }
 
       // 엘리트 적격 역 도착 수 = SpawnLevel + 유예. 상위 슬롯 몬스터가 등장하자마자
       // 엘리트로 나오면 급격한 벽이 돼서, 등장 후 유예를 둔다.
