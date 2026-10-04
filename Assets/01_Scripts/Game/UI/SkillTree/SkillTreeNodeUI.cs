@@ -20,7 +20,7 @@ namespace TrainDefense.Game.UI.SkillTree
 
         #region Fields
         [SerializeField] private Image backgroundImage;   // 노드 배경 (TurretSelectSlotBg 9-slice 권장)
-        [SerializeField] private Image borderImage;       // 테두리 링 (TurretSelectHighlight) — 선택이면 흰 글로우, 아니면 획득 가능 accent
+        [SerializeField] private Image borderImage;       // 테두리 링 (SkillTreeNodeRing — 칸 모양을 그대로 따라가는 9-slice 링) — 선택 흰색 / 만렙 골드 / 획득 가능 accent
         [SerializeField] private Image iconImage;
         [SerializeField] private TextMeshProUGUI levelText;
         [SerializeField] private Button selectButton;
@@ -81,18 +81,18 @@ namespace TrainDefense.Game.UI.SkillTree
 
             if (backgroundImage != null)
             {
-                if (isMax) backgroundImage.color = SkillTreePalette.Mastered;
-                else if (level > 0) backgroundImage.color = SkillTreePalette.Accent;
-                else if (arePrerequisitesMet) backgroundImage.color = SkillTreePalette.SurfaceRaised;
+                if (level > 0 || arePrerequisitesMet) backgroundImage.color = SkillTreePalette.SurfaceRaised;
                 else backgroundImage.color = SkillTreePalette.SurfaceLine;
             }
 
-            // 테두리 링은 하나 — 선택이면 흰 글로우(상세 패널이 가리키는 노드), 아니면 "지금 습득 가능"(비용까지 충족) accent.
+            // 테두리 링은 하나 — 선택이면 흰 글로우(상세 패널이 가리키는 노드), 만렙이면 골드, 아니면 "지금 습득 가능"(비용까지 충족) accent.
             // 두 상태가 겹치면 선택이 이긴다 (습득 가능 여부는 상세 패널의 버튼이 말해준다)
             if (borderImage != null)
             {
-                borderImage.enabled = _isSelected || (level == 0 && canAcquire);
-                borderImage.color = _isSelected ? SkillTreePalette.Selected : SkillTreePalette.Accent;
+                borderImage.enabled = _isSelected || isMax || (level == 0 && canAcquire);
+                borderImage.color = _isSelected ? SkillTreePalette.Selected
+                    : isMax ? SkillTreePalette.Mastered
+                    : SkillTreePalette.Accent;
             }
 
             // 잠김 = 어두운 실루엣 (색으로만 구분 금지 — 레벨 텍스트가 병행)
@@ -113,13 +113,13 @@ namespace TrainDefense.Game.UI.SkillTree
             if (isMax)
             {
                 levelText.text = "MAX";
-                levelText.color = SkillTreePalette.SurfaceSunken;
+                levelText.color = SkillTreePalette.AcquiredText;
 
                 return;
             }
 
             levelText.text = _data.MaxLevel > 0 ? $"{level}/{_data.MaxLevel}" : level.ToString();
-            levelText.color = level > 0 ? SkillTreePalette.OnAccent : SkillTreePalette.OnSurface;
+            levelText.color = level > 0 ? SkillTreePalette.AcquiredText : SkillTreePalette.OnSurface;
         }
 
         /// <summary>선택 표시 — 상세 패널이 어느 노드를 말하는지 테두리 링을 흰 글로우로 바꿔 알린다 (Refresh가 색·표시를 결정).</summary>

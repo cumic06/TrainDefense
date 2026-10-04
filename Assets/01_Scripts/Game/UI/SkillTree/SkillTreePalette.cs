@@ -19,7 +19,9 @@ namespace TrainDefense.Game.UI.SkillTree
         public static readonly Color SurfaceLine = new Color32(0xAB, 0x92, 0x71, 0xFF);    // 잠김 노드 / 미점등 선로 (흐려진 크림)
         public static readonly Color OnSurface = new Color32(0x3A, 0x28, 0x1E, 0xFF);      // 본문 텍스트 (INK)
         public static readonly Color OnSurfaceMuted = new Color32(0x64, 0x4E, 0x3C, 0xFF); // 잠김/비활성 (INK2)
-        public static readonly Color OnAccent = new Color32(0xF8, 0xE0, 0xBD, 0xFF);       // accent 면 위 텍스트 (크림)
+        // 09-30: 습득·만렙 노드도 면은 크림 — 칸 전체 오렌지·골드는 판 위 세 번째·네 번째 색이 되어 겉돌았다(사용자: "색감이 좀 이상해").
+        // 습득은 선로 점등 + 이 글자색, 만렙은 골드 테두리로 알린다. 크림 위 4.6:1 (accent 오렌지 글자는 1.8:1이라 불가)
+        public static readonly Color AcquiredText = new Color32(0x8E, 0x3B, 0x12, 0xFF);   // 습득·만렙 노드 레벨 글자 (짙은 오렌지)
         public static readonly Color DangerText = new Color32(0xC8, 0x38, 0x38, 0xFF);     // 비용 부족 텍스트 (팩 빨강, 크림 위 4.6:1)
         public static readonly Color Selected = Color.white;                                // 선택 노드 테두리 글로우 (팩 GM_SlotBoxRing과 같은 흰색)
     }
