@@ -1812,7 +1812,7 @@ MonoBehaviour:
     increaseRate: 0.1
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
-    eliteSpawnCycle: 100
+    eliteSpawnCycle: 50
     hpMultiplier: 10
     damageMultiplier: 4
     moveSpeedMultiplier: 1.4

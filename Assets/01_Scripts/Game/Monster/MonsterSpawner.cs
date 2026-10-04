@@ -366,6 +366,19 @@ namespace TrainDefense.Game
       // 스케일이 됐다. 배수를 그대로 두면 적격 역이 종착역(20)을 넘어 엘리트가 한 번도 안 나온다.
       private const int ELITE_DELAY_STATIONS = 2;
 
+      private StageSpawnData _GetLowestSpawnLevelData()
+      {
+         StageSpawnData lowest = null;
+
+         foreach (var data in _currentSpawnDatas)
+         {
+            if (lowest == null || data.SpawnLevel < lowest.SpawnLevel)
+               lowest = data;
+         }
+
+         return lowest;
+      }
+
       private bool _IsEliteEligible(StageSpawnData data)
       {
          var stageManager = TrainDefense.Game.Manager.StageManager.Instance;
@@ -436,8 +449,10 @@ namespace TrainDefense.Game
 
          if (!useProbability)
          {
+            // 맵이 바뀐 직후엔 유예(ELITE_DELAY_STATIONS) 때문에 적격 몬스터가 없어 예약된 엘리트가 통째로 빠지고
+            // 그 역은 0마리가 됐다. 적격자가 없으면 그 맵의 가장 약한(등장 레벨이 낮은) 몬스터를 엘리트로 쓴다.
             if (eliteEligibleOnly)
-               return null;
+               return _GetLowestSpawnLevelData();
 
             return _currentSpawnDatas[Random.Range(0, _currentSpawnDatas.Length)];
          }

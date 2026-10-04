@@ -77,10 +77,10 @@ namespace TrainDefense.Game.UI
         private TextMeshProUGUI rerollLabelText;
         [SerializeField]
         [Tooltip("상점을 열었을 때의 첫 리롤 비용. 상품과 같이 고정가다(역이 지나도 오르지 않음)")]
-        private int rerollBaseCost = 250;
+        private int rerollBaseCost = 500;
         [SerializeField]
         [Tooltip("리롤할 때마다 현재 비용에 더해지는 증가분. 상점을 새로 열면 첫 비용으로 초기화")]
-        private int rerollCostIncrease = 350;
+        private int rerollCostIncrease = 500;
         [SerializeField]
         [Tooltip("보유 코인이 부족할 때 리롤 비용 텍스트에 적용할 색상")]
         private Color rerollInsufficientColor = Color.red;

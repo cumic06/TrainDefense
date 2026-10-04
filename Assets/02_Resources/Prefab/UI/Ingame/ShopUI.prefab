@@ -373,8 +373,8 @@ MonoBehaviour:
   turretSlotFullColor: {r: 0.8784314, g: 0.4, b: 0.4, a: 1}
   rerollButton: {fileID: 7710000000000000005}
   rerollLabelText: {fileID: 7710000000000000014}
-  rerollBaseCost: 250
-  rerollCostIncrease: 350
+  rerollBaseCost: 500
+  rerollCostIncrease: 500
   rerollInsufficientColor: {r: 1, g: 0, b: 0, a: 1}
   rerollCostFontScale: 0.5
 --- !u!225 &6033409719962787191
