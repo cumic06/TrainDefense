@@ -37,6 +37,8 @@ namespace TrainDefense.Game
         // 범위처럼 "누적량에서 현재값을 역산해야 하는" 스탯이 스킬 보정과 섞여도
         // 정확한 증가분을 낼 수 있게 누적량을 따로 센다.
         protected readonly Dictionary<StatType, float> _statUpgradeAmount = new();
+        // 상점에서 산 강화 카드 등급의 합(1등급 +1 … 5등급 +5). 레벨은 장수라 고등급 카드도 1로 세서 개조 조건은 이걸로 본다.
+        protected int _upgradeGradeSum;
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
         protected string _selectedSkillId = null;
         protected bool _initialized;
@@ -69,9 +71,12 @@ namespace TrainDefense.Game
 
         /// <summary>런 세이브용 — 부여받은 액티브 스킬 id(없으면 null).</summary>
         public string SelectedSkillId => _selectedSkillId;
-        // 업그레이드 7번을 받은 포탑부터 엘리트 승격 가능.
-        public const int ELITE_PROMOTION_LEVEL = 7;
-        public bool IsEliteEligible => _currentLevel >= ELITE_PROMOTION_LEVEL;
+        // 상점 강화 카드 등급의 합이 10 이상인 포탑부터 엘리트 승격(개조) 가능.
+        public const int ELITE_PROMOTION_GRADE_SUM = 10;
+        public bool IsEliteEligible => _upgradeGradeSum >= ELITE_PROMOTION_GRADE_SUM;
+        public int UpgradeGradeSum => _upgradeGradeSum;
+
+        public void AddUpgradeGradeSum(int grade) => _upgradeGradeSum += grade;
         public float CurrentHpRatio => _currentMaxHp > 0f ? _currentHp / _currentMaxHp : 0f;
 
         // 현재(업그레이드 반영) 공격 사거리. 서브클래스에서 실제 스탯으로 오버라이드.
@@ -147,6 +152,7 @@ namespace TrainDefense.Game
 
             _currentHp = _currentMaxHp;
             _currentLevel = 0;
+            _upgradeGradeSum = 0;
             _skillModule.Initialize(this);
         }
 
@@ -443,7 +449,7 @@ namespace TrainDefense.Game
 
         // 판 중 전체 강화(레벨 누적)의 최대 체력 증가량. ApplyStatLevelAware와 상점 새 포탑 미리보기가 같이 쓴다.
         private static float _GetLevelAwareMaxHpDelta(float baseMaxHp, IStat stat, int newLevel, int prevLevel)
-            => baseMaxHp * (stat.Value / 100f) * (newLevel - prevLevel);
+            => baseMaxHp * stat.Value / 100f * (newLevel - prevLevel);
 
         public virtual void ApplyStatsByCurrentValue(IStat[] stats)
         {
@@ -577,6 +583,7 @@ namespace TrainDefense.Game
             if (source == null || source._trainData == null || _trainData == null) return;
 
             _currentLevel = source._currentLevel;
+            _upgradeGradeSum = source._upgradeGradeSum;
 
             float oldBaseMaxHp = source._trainData.TrainStatusData.MaxHp;
             float maxHpDelta = source._currentMaxHp - oldBaseMaxHp;

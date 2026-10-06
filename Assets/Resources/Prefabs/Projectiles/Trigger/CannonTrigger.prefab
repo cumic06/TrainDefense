@@ -80,7 +80,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 731328439
   m_SortingLayer: 7
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 8027965801587242155, guid: 04fdb7480a7bc1449b141f256b40e8c3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -205,6 +205,9 @@ MonoBehaviour:
   hasSlowEffect: 0
   slowValue: 0.5
   slowDuration: 2
+  hasShove: 0
+  shovePower: 1
+  shoveDuration: 0.5
   destroyOnTriggerEnter: 1
   destroyDelay: 0.25
   expandingWave: {fileID: 0}

@@ -32,6 +32,11 @@ namespace TrainDefense.Game
         // 발사마다 새로 만들지 않도록 하나를 재사용하고, 강화 배율만 발사 직전에 갱신한다.
         private TurretTrainStatus _status;
 
+        // 탭 지점 UI 검사용 — 탭마다 새로 만들지 않도록 재사용한다.
+        private PointerEventData _pointerEventData;
+        private EventSystem _pointerEventSystem;
+        private readonly System.Collections.Generic.List<RaycastResult> _uiRaycastResults = new System.Collections.Generic.List<RaycastResult>();
+
         public bool IsReady => _cooldownRemaining <= 0f;
 
         protected override void Awake()
@@ -83,7 +88,8 @@ namespace TrainDefense.Game
 
             projectile.transform.position = new Vector3(worldPosition.x, worldPosition.y, 0f);
 
-            _status.AttackDamage = _config.Damage * _GetUpgradeMultiplier(DAMAGE_UPGRADE_ID);
+            // 몬스터 체력이 역마다 오르므로 포격 피해도 같은 배율을 따라가야 판 내내 "약한 몹 한 방" 역할이 유지된다.
+            _status.AttackDamage = _config.Damage * _GetEnemyHpScale() * _GetUpgradeMultiplier(DAMAGE_UPGRADE_ID);
             _status.AttackArea = _config.AttackArea * _GetUpgradeMultiplier(AREA_UPGRADE_ID);
 
             // owner를 넘기지 않는다. Projectile의 아군 판정은 "몬스터가 쏜 게 아니면 기차를 안 때린다"라서
@@ -100,6 +106,11 @@ namespace TrainDefense.Game
             // 구 메인 터렛(MainTrain.Weapon)이 발행하던 이벤트를 개입 포격이 이어받는다.
             // 공격 튜토리얼이 이 이벤트로 완료 처리되므로 끊기면 튜토리얼이 영영 안 끝난다.
             GameEventSystem.Publish(new MainTrainFiredEvent());
+        }
+
+        private static float _GetEnemyHpScale()
+        {
+            return Manager.StageManager.Instance != null ? Manager.StageManager.Instance.GetHPScale() : 1f;
         }
 
         // 레벨업 강화 배율 = 1 + 레벨당 퍼센트 × 레벨. 데이터가 없으면 1 (골드 획득 강화와 같은 방식)
@@ -166,14 +177,14 @@ namespace TrainDefense.Game
                 if (touch.phase != TouchPhase.Began)
                     return false;
 
-                if (_IsPointerOverUI(touch.fingerId))
+                if (_IsPointerOverUI(touch.position))
                     return false;
 
                 screenPosition = touch.position;
             }
             else if (Input.GetMouseButtonDown(0))
             {
-                if (_IsPointerOverUI(-1))
+                if (_IsPointerOverUI(Input.mousePosition))
                     return false;
 
                 screenPosition = Input.mousePosition;
@@ -189,14 +200,26 @@ namespace TrainDefense.Game
             return true;
         }
 
-        private bool _IsPointerOverUI(int pointerId)
+        // 탭 지점에 그 프레임 UI 레이캐스트를 직접 쏜다.
+        // IsPointerOverGameObject(fingerId)는 새 Input System 모듈이 touchId(1부터)로 찾아 옛 fingerId(0부터)와 안 맞고,
+        // 직전 프레임 상태라 누른 순간의 터치를 못 본다 — 폰에서 일시정지·포탑 정보를 눌러도 포격이 나갔다.
+        private bool _IsPointerOverUI(Vector2 screenPosition)
         {
-            if (EventSystem.current == null)
+            EventSystem eventSystem = EventSystem.current;
+            if (eventSystem == null)
                 return false;
 
-            return pointerId >= 0
-                ? EventSystem.current.IsPointerOverGameObject(pointerId)
-                : EventSystem.current.IsPointerOverGameObject();
+            if (_pointerEventData == null || _pointerEventSystem != eventSystem)
+            {
+                _pointerEventData = new PointerEventData(eventSystem);
+                _pointerEventSystem = eventSystem;
+            }
+
+            _pointerEventData.position = screenPosition;
+            _uiRaycastResults.Clear();
+            eventSystem.RaycastAll(_pointerEventData, _uiRaycastResults);
+
+            return _uiRaycastResults.Count > 0;
         }
     }
 }

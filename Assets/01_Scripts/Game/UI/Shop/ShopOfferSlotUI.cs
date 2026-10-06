@@ -32,6 +32,10 @@ namespace TrainDefense.Game.UI
         private Color insufficientColor = Color.red;
         #endregion
 
+        // 개조 카드의 패시브 효과 줄 — 이름 줄보다 한 단계 작고 옅게.
+        private const int PASSIVE_EFFECT_SIZE_PERCENT = 85;
+        private const string PASSIVE_EFFECT_ALPHA_HEX = "#CC";
+
         private ShopOffer _offer;
         private System.Action<ShopOfferSlotUI> _onPurchased;
         private Color _priceOriginalColor;
@@ -102,6 +106,18 @@ namespace TrainDefense.Game.UI
             {
                 itemNameText.text = info.Name;
                 itemDescriptionText.text = info.Description;
+
+                // 뽑힌 패시브도 적는다 — 엘리트는 고유 설명이 없어 이게 무엇인지 알 유일한 단서다. (꾹 누른 상세 창은 스탯만 띄운다)
+                // 패시브 이름을 큰 줄로, 효과는 한 단계 작고 옅게 — 두 줄이 같은 무게면 무엇이 이름인지 안 읽힌다.
+                if (!string.IsNullOrEmpty(info.PassiveName))
+                {
+                    string passiveText = string.IsNullOrEmpty(info.PassiveDescription)
+                        ? info.PassiveName
+                        : $"{info.PassiveName}\n<size={PASSIVE_EFFECT_SIZE_PERCENT}%><alpha={PASSIVE_EFFECT_ALPHA_HEX}>{info.PassiveDescription}</size>";
+                    itemDescriptionText.text = string.IsNullOrEmpty(info.Description)
+                        ? passiveText
+                        : $"{info.Description}\n{passiveText}";
+                }
 
                 if (itemIconImage != null)
                 {

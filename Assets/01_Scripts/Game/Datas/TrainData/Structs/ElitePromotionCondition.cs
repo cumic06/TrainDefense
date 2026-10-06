@@ -14,7 +14,7 @@ namespace TrainDefense.Game.Datas
     /// <summary>
     /// 엘리트 승격 조건 — 원본 포탑의 현재(업그레이드 반영) 스탯이 기준을 만족해야 상점에 엘리트 카드가 뜬다.
     /// 엘리트 포탑 데이터(31xxx·41xxx)에 실리며, 시트 표기는 "AttackDamage>=100;AttackInterval<=0.8"
-    /// (StatType 이름, >= 또는 <=, 값을 ;로 나열). 비어 있으면 레벨 조건(Train.ELITE_PROMOTION_LEVEL)으로 판정한다.
+    /// (StatType 이름, >= 또는 <=, 값을 ;로 나열). 비어 있으면 조건 없이 승격할 수 있다.
     /// </summary>
     [Serializable]
     public struct ElitePromotionCondition

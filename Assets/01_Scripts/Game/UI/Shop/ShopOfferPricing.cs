@@ -20,11 +20,11 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private int statUpgradeBaseCost = 50;
 
-        [Tooltip("엘리트 승격 비용 — 고레벨 강화 여러 번 값에 해당하는 최상위 목표템. 중후반 한 구간 수입으로 한 번 살 수 있는 값")]
+        [Tooltip("엘리트 승격(개조) 기본 비용. 역 인상이 곱해진 값이 처음 등장하는 역부터 그 역 수입 한 번으로 살 수 있어야 한다(모으지 않고)")]
         [SerializeField]
         private int elitePromotionCost = 3000;
 
-        [Tooltip("상점이 한 번 열릴 때마다 전 상품 가격이 이 퍼센트씩 오른다 (선형). 0이면 고정가 — 같은 등급 카드는 판 내내 같은 값이라 플레이어가 가격을 읽을 수 있다. 후반의 커지는 수입은 등급별 가격과 등장 구간으로 받아낸다")]
+        [Tooltip("상점이 한 번 열릴 때마다 전 상품 가격이 이 퍼센트씩 오른다 (선형). 모든 상품이 같은 배율을 받으므로 등급 간 가격 비율은 유지된다. 기본 비용은 '방문 0 기준' 값이라 늦게 열리는 상품은 처음부터 오른 값으로 보인다")]
         [SerializeField]
         private float stationPriceIncreasePercent;
 

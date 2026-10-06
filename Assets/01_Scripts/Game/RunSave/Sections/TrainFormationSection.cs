@@ -29,6 +29,7 @@ namespace TrainDefense.Game.RunSave.Sections
             public string trainDataId;
             public string replacedFromTrainDataId;
             public int level;
+            public int upgradeGradeSum;
             public float hpRatio = 1f;
             public bool isDead;
             public int skillTypeMask;
@@ -74,6 +75,7 @@ namespace TrainDefense.Game.RunSave.Sections
                     trainDataId = train.TrainDataId,
                     replacedFromTrainDataId = train.ReplacedFromTrainDataId,
                     level = train.Level,
+                    upgradeGradeSum = train.UpgradeGradeSum,
                     hpRatio = train.HpRatio,
                     isDead = train.IsDead,
                     skillTypeMask = train.SkillTypeMask,
@@ -142,6 +144,7 @@ namespace TrainDefense.Game.RunSave.Sections
                         TrainDataId = train.trainDataId,
                         ReplacedFromTrainDataId = train.replacedFromTrainDataId,
                         Level = train.level,
+                        UpgradeGradeSum = train.upgradeGradeSum,
                         HpRatio = train.hpRatio,
                         IsDead = train.isDead,
                         SkillTypeMask = train.skillTypeMask,

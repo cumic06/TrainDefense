@@ -367,14 +367,15 @@ MonoBehaviour:
   offerPricing:
     turretPurchaseCost: 190
     statUpgradeBaseCost: 100
-    elitePromotionCost: 2500
-    stationPriceIncreasePercent: 0
+    elitePromotionCost: 950
+    stationPriceIncreasePercent: 5
   turretSlotText: {fileID: 7710000000000000074}
   turretSlotFullColor: {r: 0.8784314, g: 0.4, b: 0.4, a: 1}
   rerollButton: {fileID: 7710000000000000005}
   rerollLabelText: {fileID: 7710000000000000014}
-  rerollBaseCost: 500
-  rerollCostIncrease: 500
+  rerollBaseCost: 50
+  rerollCostPerShopVisit: 20
+  rerollCostIncreaseRatio: 0.5
   rerollInsufficientColor: {r: 1, g: 0, b: 0, a: 1}
   rerollCostFontScale: 0.5
 --- !u!225 &6033409719962787191
@@ -680,7 +681,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -30, y: 348}
-  m_SizeDelta: {x: 290, y: 74}
+  m_SizeDelta: {x: 290, y: 88}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &7710000000000000003
 CanvasRenderer:

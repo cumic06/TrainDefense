@@ -42,6 +42,8 @@ namespace TrainDefense.Game
             /// <summary>엘리트 교체로 만들어졌다면 그 출발점이 된 base 기차의 데이터 id. 아니면 비어 있다.</summary>
             public string ReplacedFromTrainDataId;
             public int Level;
+            /// <summary>상점 강화 카드 등급의 합(개조 조건). 0이면 기록 없음(이전 세이브) 또는 강화 없음.</summary>
+            public int UpgradeGradeSum;
             public float HpRatio = 1f;
             public bool IsDead;
             public int SkillTypeMask;
@@ -154,6 +156,7 @@ namespace TrainDefense.Game
                     TrainDataId = train.TrainData.Id,
                     ReplacedFromTrainDataId = _eliteOriginMap.TryGetValue(train, out string origin) ? origin : null,
                     Level = train.CurrentLevel,
+                    UpgradeGradeSum = train.UpgradeGradeSum,
                     HpRatio = train.CurrentHpRatio,
                     IsDead = train.IsDead,
                     SkillTypeMask = (int)train.SkillTypeMask,
@@ -274,6 +277,9 @@ namespace TrainDefense.Game
         {
             if (train == null)
                 return;
+
+            // 증가량 재생(Train.Upgrade)은 카드 등급을 모르므로 개조 조건용 합계는 따로 되돌린다.
+            train.AddUpgradeGradeSum(entry.UpgradeGradeSum);
 
             // 스탯값과 별개로 되돌려야 하는 값 — 범위 증가분이 이 누적량에서 역산되므로, 빠뜨리면 이어한 판의 다음 강화가 1회차 폭으로 되돌아간다.
             if (entry.StatUpgradeAmounts != null)

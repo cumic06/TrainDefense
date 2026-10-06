@@ -71,10 +71,11 @@ namespace TrainDefense.Game
                 if (trainData == null)
                     return null;
 
+                // 승격 = 패시브 추가 + 외형 변경이라 플레이어에게는 "개조"로 보인다 (예: 박격포 포탑 개조). 엘리트도 이름은 원본과 같다.
                 var info = new ChoiceUIInfo
                 {
                     Icon = trainData.Icon,
-                    Name = trainData.Name,
+                    Name = _SafeFormat(TrainDefense.Localize.LocalizeHelper.GetByKey("UI_Shop_TurretRemodel_Name", "{0} 개조"), trainData.Name),
                     Description = trainData.Description
                 };
 

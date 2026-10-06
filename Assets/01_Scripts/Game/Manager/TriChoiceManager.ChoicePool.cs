@@ -14,7 +14,7 @@ namespace TrainDefense.Game
             if (mainTrain == null)
                 return false;
 
-            // 엘리트 조건: 업그레이드 7회(만렙) 진행된 기차가 존재하는지 확인
+            // 엘리트 조건: 강화 카드 등급의 합이 승격 기준(Train.ELITE_PROMOTION_GRADE_SUM)에 닿은 기차가 존재하는지 확인
             return mainTrain.CurrentTrains.Any(train =>
             {
                 bool isEliteEligible = train != null && train.IsEliteEligible;
@@ -172,6 +172,13 @@ namespace TrainDefense.Game
                     return false;
 
                 if (_HasChoiceReferenceConflict(x.Option, excludeResult))
+                    return false;
+
+                // 엘리트 승격은 한 상점에서 사실상 하나만 살 수 있어, 두 장째는 칸만 막는다 → 한 번에 한 장만.
+                bool hasEliteAlready = x.Option is EliteTrainChoice
+                    && excludeResult != null && excludeResult.Any(r => r?.Option is EliteTrainChoice);
+
+                if (hasEliteAlready)
                     return false;
 
                 // 반복 선택 가능한 카드(만렙 보상·스탯 업글·포탑 강화)는 "이미 선택됨" 제외를 적용하지 않음

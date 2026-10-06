@@ -246,8 +246,8 @@ MonoBehaviour:
     - {fileID: 888686281029753222, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
     monsterStatusData:
       MaxHp: 252
-      Damage: 32
-      MoveSpeed: 5.5
+      Damage: 26
+      MoveSpeed: 4
       AttackDelay: 2
       DropExpMin: 336
       DropExpMax: 336
@@ -595,7 +595,7 @@ MonoBehaviour:
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
   - id: 31001
-    name: Train_31001_Name
+    name: Train_30001_Name
     iconId: Weapon_KMD_08_UI
     icon: {fileID: 3862333596289421851, guid: 7e74a4e64d9282646ab0fb0505e10989, type: 3}
     damageType: 0
@@ -621,7 +621,7 @@ MonoBehaviour:
     turretProjectilePrefabId: NormalProjectile
     attackDamageMultiplier: 1
   - id: 31002
-    name: Train_31002_Name
+    name: Train_30002_Name
     iconId: Weapon_MEL_05_UI
     icon: {fileID: -6537119693054007170, guid: 3a0fab9528cb07249b44fca3e9f8032f, type: 3}
     damageType: 1
@@ -648,7 +648,7 @@ MonoBehaviour:
     turretProjectilePrefabId: FireEffectProjectile
     attackDamageMultiplier: 1
   - id: 31003
-    name: Train_31003_Name
+    name: Train_30003_Name
     iconId: Weapon_KMD_10_UI
     icon: {fileID: -696300627011100896, guid: 70e7ba33679af514b9bcc170bd254a7e, type: 3}
     damageType: 0
@@ -675,7 +675,7 @@ MonoBehaviour:
     turretProjectilePrefabId: MissileProjectile
     attackDamageMultiplier: 1
   - id: 31004
-    name: Train_31004_Name
+    name: Train_30004_Name
     iconId: Weapon_288_19_UI
     icon: {fileID: 6870383139213921668, guid: be86cd23db7ce0e41ac2f585cca92c89, type: 3}
     damageType: 0
@@ -702,7 +702,7 @@ MonoBehaviour:
     turretProjectilePrefabId: LaserProjectile
     attackDamageMultiplier: 1
   - id: 31005
-    name: Train_31005_Name
+    name: Train_30005_Name
     iconId: Weapon_MEL_16_UI
     icon: {fileID: -1620208095585323738, guid: 289be49c14e90f5499e7e7f18a8d244b, type: 3}
     damageType: 0
@@ -728,7 +728,7 @@ MonoBehaviour:
     turretProjectilePrefabId: ElectrickProjectile
     attackDamageMultiplier: 1
   - id: 31006
-    name: Train_31006_Name
+    name: Train_30006_Name
     iconId: CannonMortarTop
     icon: {fileID: 21300000, guid: 2d8beb59f3bd4034e93c3bd75695e731, type: 3}
     damageType: 0
@@ -755,7 +755,7 @@ MonoBehaviour:
     turretProjectilePrefabId: CannonShellProjectile
     attackDamageMultiplier: 1
   - id: 31007
-    name: Train_31007_Name
+    name: Train_30007_Name
     iconId: Weapon_KMD_12_UI
     icon: {fileID: -1973389624545478329, guid: 6009b67e7b15a0c45971176c7a14adb1, type: 3}
     damageType: 0
@@ -827,12 +827,12 @@ MonoBehaviour:
       AttackInterval: 1.5
       CriticalChance: 0
       CriticalDamage: 0
-      SlowRate: 30
+      SlowRate: 15
       BurstDuration: 0
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
   - id: 41001
-    name: Train_41001_Name
+    name: Train_40001_Name
     iconId: 
     icon: {fileID: 2329456043558826112, guid: d1cda3ac53bf12449ab850d238e71154, type: 3}
     damageType: 0
@@ -859,7 +859,7 @@ MonoBehaviour:
     rangeProjectilePrefabId: ExplosionProjectile
     attackDamageMultiplier: 1
   - id: 41002
-    name: Train_41002_Name
+    name: Train_40002_Name
     iconId: 
     icon: {fileID: 7913752613836558162, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 0
@@ -881,7 +881,7 @@ MonoBehaviour:
       AttackInterval: 1.5
       CriticalChance: 0
       CriticalDamage: 0
-      SlowRate: 30
+      SlowRate: 15
       BurstDuration: 0
     rangeProjectilePrefabId: ColdAirProjectile
     attackDamageMultiplier: 1
@@ -1200,7 +1200,7 @@ MonoBehaviour:
     needMoney: 120
     maxUpgradeCount: 20
     upgradeDataType: 1
-    upgradeValue: 5
+    upgradeValue: 10
     stats: []
     growthRate: 1.13
   - id: 110009
@@ -1705,7 +1705,7 @@ MonoBehaviour:
   - id: stat_upgrade_30001_attack_interval
     trainDataId: 30001
     statType: 4
-    increaseRate: 0.2
+    increaseRate: 0.15
   - id: stat_upgrade_30002_attack_damage
     trainDataId: 30002
     statType: 2
@@ -1713,7 +1713,7 @@ MonoBehaviour:
   - id: stat_upgrade_30002_attack_area
     trainDataId: 30002
     statType: 8
-    increaseRate: 0.2
+    increaseRate: 0.1
   - id: stat_upgrade_30003_attack_damage
     trainDataId: 30003
     statType: 2
@@ -1721,11 +1721,11 @@ MonoBehaviour:
   - id: stat_upgrade_30003_attack_interval
     trainDataId: 30003
     statType: 4
-    increaseRate: 0.2
+    increaseRate: 0.15
   - id: stat_upgrade_30003_attack_area
     trainDataId: 30003
     statType: 8
-    increaseRate: 0.2
+    increaseRate: 0.1
   - id: stat_upgrade_30004_attack_damage
     trainDataId: 30004
     statType: 2
@@ -1733,11 +1733,11 @@ MonoBehaviour:
   - id: stat_upgrade_30004_attack_interval
     trainDataId: 30004
     statType: 4
-    increaseRate: 0.2
+    increaseRate: 0.15
   - id: stat_upgrade_30004_attack_area
     trainDataId: 30004
     statType: 8
-    increaseRate: 0.2
+    increaseRate: 0.1
   - id: stat_upgrade_30005_attack_damage
     trainDataId: 30005
     statType: 2
@@ -1745,7 +1745,7 @@ MonoBehaviour:
   - id: stat_upgrade_30005_attack_interval
     trainDataId: 30005
     statType: 4
-    increaseRate: 0.2
+    increaseRate: 0.15
   - id: stat_upgrade_30005_target_count
     trainDataId: 30005
     statType: 5
@@ -1757,11 +1757,7 @@ MonoBehaviour:
   - id: stat_upgrade_30006_attack_area
     trainDataId: 30006
     statType: 8
-    increaseRate: 0.2
-  - id: stat_upgrade_30006_attack_count
-    trainDataId: 30006
-    statType: 3
-    increaseRate: 1
+    increaseRate: 0.1
   - id: stat_upgrade_30007_attack_damage
     trainDataId: 30007
     statType: 2
@@ -1769,7 +1765,7 @@ MonoBehaviour:
   - id: stat_upgrade_30007_attack_interval
     trainDataId: 30007
     statType: 4
-    increaseRate: 0.2
+    increaseRate: 0.15
   - id: stat_upgrade_40001_attack_damage
     trainDataId: 40001
     statType: 2
@@ -1777,11 +1773,11 @@ MonoBehaviour:
   - id: stat_upgrade_40001_attack_interval
     trainDataId: 40001
     statType: 4
-    increaseRate: 0.2
+    increaseRate: 0.15
   - id: stat_upgrade_40001_attack_range
     trainDataId: 40001
     statType: 1
-    increaseRate: 0.2
+    increaseRate: 0.1
   - id: stat_upgrade_40002_attack_damage
     trainDataId: 40002
     statType: 2
@@ -1789,7 +1785,7 @@ MonoBehaviour:
   - id: stat_upgrade_40002_attack_range
     trainDataId: 40002
     statType: 1
-    increaseRate: 0.2
+    increaseRate: 0.1
   - id: stat_upgrade_40002_slow_rate
     trainDataId: 40002
     statType: 9
@@ -1797,15 +1793,15 @@ MonoBehaviour:
   - id: stat_upgrade_30001_attack_range
     trainDataId: 30001
     statType: 1
-    increaseRate: 0.2
+    increaseRate: 0.1
   - id: stat_upgrade_30002_attack_range
     trainDataId: 30002
     statType: 1
-    increaseRate: 0.2
+    increaseRate: 0.1
   - id: stat_upgrade_30003_attack_range
     trainDataId: 30003
     statType: 1
-    increaseRate: 0.2
+    increaseRate: 0.1
   - id: stat_upgrade_30005_attack_range
     trainDataId: 30005
     statType: 1
@@ -1814,7 +1810,7 @@ MonoBehaviour:
   eliteData:
     eliteSpawnCycle: 50
     hpMultiplier: 10
-    damageMultiplier: 4
+    damageMultiplier: 2
     moveSpeedMultiplier: 1.4
     sizeScale: 1.6
     dropExpMultiplier: 10
@@ -1823,7 +1819,7 @@ MonoBehaviour:
     - type: 0
       weight: 1
       hpMultiplier: 10
-      damageMultiplier: 4
+      damageMultiplier: 2
       moveSpeedMultiplier: 1.4
       sizeScale: 1.6
       dropExpMultiplier: 10
@@ -1838,7 +1834,7 @@ MonoBehaviour:
     - type: 1
       weight: 1
       hpMultiplier: 14
-      damageMultiplier: 2.5
+      damageMultiplier: 1.5
       moveSpeedMultiplier: 0.85
       sizeScale: 1.8
       dropExpMultiplier: 10

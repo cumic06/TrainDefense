@@ -5,7 +5,7 @@ namespace TrainDefense.Game.Datas
 {
     /// <summary>
     /// 플레이어 개입 포격(화면 탭 지점 포격) 설정.
-    /// 편성 포탑 데이터(50xxx)와 분리해 따로 둔다. 여기 값은 기본값이고, 레벨업 강화 배율은 PlayerBombardManager가 발사 시점에 곱한다.
+    /// 편성 포탑 데이터(50xxx)와 분리해 따로 둔다. 여기 값은 기본값이고, 레벨업 강화 배율(피해는 적 체력 배율까지)은 PlayerBombardManager가 발사 시점에 곱한다.
     /// Resources/Data/PlayerBombardConfig 에셋이 있으면 그것을, 없으면 아래 기본값을 쓴다.
     /// </summary>
     [CreateAssetMenu(fileName = "PlayerBombardConfig", menuName = "Data/PlayerBombard/PlayerBombardConfig")]
@@ -34,7 +34,7 @@ namespace TrainDefense.Game.Datas
         [BoxGroup("Knockback")]
         [SerializeField]
         [LabelText("넉백 지속(초)")]
-        private float knockbackDuration = 0.5f;
+        private float knockbackDuration = 0.3f;
 
         [BoxGroup("Projectile")]
         [SerializeField]

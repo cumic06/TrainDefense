@@ -17,15 +17,20 @@ MonoBehaviour:
   destroyDelay: 0.25
   destroyOnTriggerEnter: 0
   isSpawnTriggerHandle: 1
-  triggerHandlePrefab: {fileID: 2703112127298443543, guid: 47ca7141d3cd2a344a5e6421d53813be, type: 3}
+  triggerHandlePrefab: {fileID: 6606987920513092488, guid: b9674aece33526048816a369aa5765a8, type: 3}
   scaleByRange: 1
   scaleRangeType: 0
   isTargeting: 0
+  detonateAtTargetDistance: 0
+  fixedFlightDuration: 0
+  lobPeakHeight: 0
+  isRotateModel: 1
   directDamage: 0
   damageType: 0
   tickDamageInterval: 0.1
   hasSlowEffect: 0
   slowValue: 0.5
+  slowDuration: 0.1
   hasShoveEffect: 0
   shovePower: 1
   shoveDuration: 0.5
