@@ -77,6 +77,13 @@ Shader "Custom/Sprite/WhiteOutlineGold"
 
             float _GlobalUnscaledTime; // set by ShaderUnscaledTimeUpdater.cs via Shader.SetGlobalFloat
 
+            // 텍스처 밖은 투명으로 본다 — 그림이 텍스처 끝까지 꽉 찬 곳(GM_CreamBox 윗변 등)은 바깥을 읽으면 반대편 픽셀이 나와 외곽선이 빠진다.
+            half SampleAlpha(float2 uv)
+            {
+                if (any(uv < 0.0) || any(uv > 1.0)) return 0;
+                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv).a;
+            }
+
             Varyings vert(Attributes IN)
             {
                 Varyings OUT;
@@ -103,10 +110,10 @@ Shader "Custom/Sprite/WhiteOutlineGold"
                 for (int i = 1; i <= maxPx; i++)
                 {
                     float2 d = texel * (float)i;
-                    half a1 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2( d.x,  0)).a;
-                    half a2 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(-d.x,  0)).a;
-                    half a3 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(  0,  d.y)).a;
-                    half a4 = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(  0, -d.y)).a;
+                    half a1 = SampleAlpha(IN.uv + float2( d.x,  0));
+                    half a2 = SampleAlpha(IN.uv + float2(-d.x,  0));
+                    half a3 = SampleAlpha(IN.uv + float2(  0,  d.y));
+                    half a4 = SampleAlpha(IN.uv + float2(  0, -d.y));
                     half minA = min(min(a1, a2), min(a3, a4));
                     if (minA < _AlphaThreshold && edgeDist > _OutlineEndPx)
                     {

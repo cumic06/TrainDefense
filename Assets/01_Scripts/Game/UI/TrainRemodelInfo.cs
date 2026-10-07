@@ -8,11 +8,14 @@ namespace TrainDefense.Game.UI
 {
     /// <summary>
     /// 포탑 칸 배지(HUD 포탑 칸·상점 기차 칸 공용)의 개조 진행 표시 규칙.
-    /// 배지 숫자 = 그 포탑의 강화 카드 등급 합, 개조 조건(Train.ELITE_PROMOTION_GRADE_SUM)에 닿으면 금색 리본, 개조된 포탑은 "E".
+    /// 배지 숫자 = 그 포탑의 강화 카드 등급 합. 리본은 흰 리본 하나에 상태 색을 곱한다 — 평소 파랑, 개조 조건(Train.ELITE_PROMOTION_GRADE_SUM)에 닿으면 노랑, 개조된 포탑은 주황.
     /// </summary>
     public static class TrainRemodelInfo
     {
-        public const string PromotedBadgeText = "E";
+        // 팩 원본 리본(회청·금색)은 탁해서 밝게 다시 그린 흰 리본에 색을 곱한다. 노랑과 주황은 서로 헷갈리지 않게 거리를 둔다.
+        private static readonly Color NormalRibbonColor = new Color(0.40f, 0.62f, 1f);
+        private static readonly Color EligibleRibbonColor = new Color(1f, 0.86f, 0.25f);
+        private static readonly Color PromotedRibbonColor = new Color(1f, 0.62f, 0.15f);
 
         // 이미 개조(엘리트 승격)된 포탑인가 — 개조 후 포탑의 TrainData가 어떤 개조 카드의 결과 ID와 같은지로 판정한다.
         public static bool IsPromoted(Train train)
@@ -29,23 +32,22 @@ namespace TrainDefense.Game.UI
                 .Any(eliteChoice => eliteChoice.EliteTrainDataId == trainId);
         }
 
-        // 배지 문구·리본을 포탑 상태에 맞춘다. 개조 가능이면 금색(노란) 리본으로 바꾸고, 아니면 평소 리본으로 되돌린다.
-        // (파란 리본에 색을 곱하면 금색이 안 나와서 색이 아니라 스프라이트를 교체한다)
-        public static void ApplyBadge(Image ribbonImage, TextMeshProUGUI badgeText, Train train, Sprite normalRibbonSprite, Sprite eligibleRibbonSprite)
+        // 배지 숫자와 리본 색을 포탑 상태에 맞춘다. 리본 이미지는 흰 리본(BigRibbons White)이어야 색이 제대로 나온다.
+        public static void ApplyBadge(Image ribbonImage, TextMeshProUGUI badgeText, Train train)
         {
             if (train == null)
                 return;
 
-            bool isPromoted = IsPromoted(train);
-
             if (badgeText != null)
-                badgeText.text = isPromoted ? PromotedBadgeText : train.UpgradeGradeSum.ToString();
+                badgeText.text = train.UpgradeGradeSum.ToString();
 
-            if (ribbonImage != null)
-            {
-                bool showEligibleRibbon = !isPromoted && train.IsEliteEligible && eligibleRibbonSprite != null;
-                ribbonImage.sprite = showEligibleRibbon ? eligibleRibbonSprite : normalRibbonSprite;
-            }
+            if (ribbonImage == null)
+                return;
+
+            if (IsPromoted(train))
+                ribbonImage.color = PromotedRibbonColor;
+            else
+                ribbonImage.color = train.IsEliteEligible ? EligibleRibbonColor : NormalRibbonColor;
         }
     }
 }

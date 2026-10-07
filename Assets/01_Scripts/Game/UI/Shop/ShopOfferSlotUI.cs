@@ -30,6 +30,9 @@ namespace TrainDefense.Game.UI
         [Tooltip("카드 테두리를 덧칠하는 이미지(테두리 모양만 흰색으로 그려진 스프라이트). 등급 색으로 물들인다. 1등급·등급 없는 카드는 끈다")]
         [SerializeField]
         private Image gradeBorderImage;
+        [Tooltip("개조 카드의 카드 배경에 씌울 외곽선 머티리얼 — 레벨업 개조 카드(TriChoiceSelectUI)와 같은 것")]
+        [SerializeField]
+        private Material remodelOutlineMaterial;
 
         [Header("Price Color")]
         [Tooltip("보유 코인이 부족할 때 가격 텍스트에 적용할 색상")]
@@ -53,6 +56,11 @@ namespace TrainDefense.Game.UI
         private bool _initialized;
         private TrainDetailPopupUI _detailPopup;
         private LongPressHandler _longPressHandler;
+        private Image _cardImage;
+        private bool _isRemodelOutline;
+
+        // 외곽선 머티리얼의 광택 띠는 이 전역 시간으로 움직인다. 레벨업 창(TriChoiceUI)은 열려 있을 때만 갱신하므로 상점에서도 직접 갱신한다.
+        private static readonly int GlobalUnscaledTime = Shader.PropertyToID("_GlobalUnscaledTime");
 
         public ShopOffer CurrentOffer => _offer;
         public bool HasValidOffer => _offer != null && _offer.IsValid;
@@ -80,6 +88,12 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(_OnChangeCoin);
         }
 
+        private void Update()
+        {
+            if (_isRemodelOutline)
+                Shader.SetGlobalFloat(GlobalUnscaledTime, Time.unscaledTime);
+        }
+
         // 상품 교체 + 즉시 표시 갱신. (슬롯은 재사용되므로 품절 상태를 반드시 되돌린다)
         public void SetOffer(ShopOffer offer)
         {
@@ -93,6 +107,7 @@ namespace TrainDefense.Game.UI
         public void SetEmpty()
         {
             _offer = null;
+            _isRemodelOutline = false;
             gameObject.SetActive(false);
         }
 
@@ -113,7 +128,7 @@ namespace TrainDefense.Game.UI
                 ? TriChoiceManager.Instance.GetChoiceUIInfo(_offer.Option)
                 : null;
 
-            _ApplyGradeBorder(info != null ? info.Grade : 0);
+            _ApplyGradeBorder(info != null ? info.Grade : 0, _offer.Option is EliteTrainChoice);
 
             if (info != null)
             {
@@ -143,13 +158,19 @@ namespace TrainDefense.Game.UI
             _ApplyPriceColor(UserDataManager.Instance != null ? UserDataManager.Instance.Coin : 0);
         }
 
-        // 강화 카드 등급을 카드 테두리 색으로 보여 준다. 개조·포탑 구매 카드(등급 0)와 1등급은 기본 테두리.
-        private void _ApplyGradeBorder(int grade)
+        // 강화 카드 등급을 카드 테두리 색으로 보여 준다. 포탑 구매 카드(등급 0)와 1등급은 기본 테두리.
+        // 개조 카드는 레벨업 개조 카드처럼 카드 배경에 외곽선 머티리얼(금색 외곽선 + 지나가는 광택)을 씌운다.
+        private void _ApplyGradeBorder(int grade, bool isRemodel)
         {
+            _isRemodelOutline = isRemodel && remodelOutlineMaterial != null;
+
+            if (_cardImage != null || TryGetComponent(out _cardImage))
+                _cardImage.material = _isRemodelOutline ? remodelOutlineMaterial : null;
+
             if (gradeBorderImage == null)
                 return;
 
-            bool hasGradeColor = grade >= 2;
+            bool hasGradeColor = !isRemodel && grade >= 2;
             gradeBorderImage.gameObject.SetActive(hasGradeColor);
 
             if (!hasGradeColor)

@@ -54,12 +54,10 @@ namespace TrainDefense.Game.UI
             public RectTransform Root;
             public Image Ribbon;
             public TextMeshProUGUI Text;
-            public Sprite NormalRibbonSprite;
         }
 
         private readonly List<TrainBadge> _badges = new List<TrainBadge>();
         private GameObject _badgeSource;
-        private Sprite _eligibleRibbonSprite;
         private bool _badgeSourceSearched;
 
         /// <summary>
@@ -201,7 +199,7 @@ namespace TrainDefense.Game.UI
                 badge.Root.gameObject.SetActive(true);
                 // 앵커가 프리뷰 이미지 좌하단이라 뷰포트 비율 × 크기가 곧 앵커드 포지션이다.
                 badge.Root.anchoredPosition = new Vector2(viewportTopCenter.x * rect.width, viewportTopCenter.y * rect.height) + BadgeAboveOffset;
-                TrainRemodelInfo.ApplyBadge(badge.Ribbon, badge.Text, train, badge.NormalRibbonSprite, _eligibleRibbonSprite);
+                TrainRemodelInfo.ApplyBadge(badge.Ribbon, badge.Text, train);
             }
 
             for (int i = badgeIndex; i < _badges.Count; i++)
@@ -237,8 +235,7 @@ namespace TrainDefense.Game.UI
                 {
                     Root = root,
                     Ribbon = ribbon,
-                    Text = badgeObject.GetComponentInChildren<TextMeshProUGUI>(true),
-                    NormalRibbonSprite = ribbon != null ? ribbon.sprite : null
+                    Text = badgeObject.GetComponentInChildren<TextMeshProUGUI>(true)
                 });
 
                 // 배지가 프리뷰 이미지의 롱프레스(포탑 스탯 보기)를 막지 않게 한다.
@@ -269,9 +266,6 @@ namespace TrainDefense.Game.UI
                 Debug.LogWarning($"ShopTrainPreviewUI: 배지 원본 프리팹을 찾지 못했습니다 ({BADGE_SOURCE_PREFAB_PATH})");
                 return false;
             }
-
-            var slotUI = slotPrefab.GetComponent<TrainInfoSlotUI>();
-            _eligibleRibbonSprite = slotUI != null ? slotUI.EligibleRibbonSprite : null;
 
             foreach (var image in slotPrefab.GetComponentsInChildren<Image>(true))
             {

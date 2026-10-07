@@ -288,6 +288,7 @@ MonoBehaviour:
   itemDescriptionText: {fileID: 3171329993146016651}
   needMoneyText: {fileID: 194019013546866761}
   gradeBorderImage: {fileID: 4705096767679421796}
+  remodelOutlineMaterial: {fileID: 2100000, guid: 46ea54cf572a27c4dafc70f63efaef4b, type: 2}
   insufficientColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!222 &3215127191234716890
 CanvasRenderer:
