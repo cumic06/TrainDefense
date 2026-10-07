@@ -27,7 +27,7 @@ namespace TrainDefense.Game.Datas
         public string Param1 => param1;
         public string Param2 => param2;
         public string Param3 => param3;
-        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey(description, description);
+        public string Description => TrainDefense.Localize.LocalizeHelper.GetByKey(description, description).Replace("\\n", "\n");
 
         public string ToDsl()
         {
