@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Cumic.Events;
+using TMPro;
 using TrainDefense.Game.Events;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,6 +39,28 @@ namespace TrainDefense.Game.UI
         private float _aspect = 1f;
         private TrainDetailPopupUI _detailPopup;
         private LongPressHandler _longPressHandler;
+
+        // 기차 칸 위 개조 진행 배지 — HUD 포탑 칸의 레벨 배지(TrainInfoSlotUI의 Img_Level)를 복제해 쓴다.
+        // 상점에서는 HUD 포탑 칸이 안 보이므로 같은 배지를 칸 위에 올려 등급 합(개조 진행도)을 보여 준다.
+        private const string BADGE_SOURCE_PREFAB_PATH = "Prefabs/UI/TrainInfoSlotUI";
+        private const string BADGE_SOURCE_OBJECT_NAME = "Img_Level";
+        // 상점 기차 칸이 HUD 칸보다 커서 같은 크기면 숫자가 흐리다.
+        private const float BADGE_SCALE = 1.5f;
+        // 칸 위쪽 가운데에서 위로 띄우는 정도(프리뷰 이미지 로컬 단위). 배지는 포탑 바로 위에 뜬다.
+        private static readonly Vector2 BadgeAboveOffset = new Vector2(0f, 4f);
+
+        private class TrainBadge
+        {
+            public RectTransform Root;
+            public Image Ribbon;
+            public TextMeshProUGUI Text;
+            public Sprite NormalRibbonSprite;
+        }
+
+        private readonly List<TrainBadge> _badges = new List<TrainBadge>();
+        private GameObject _badgeSource;
+        private Sprite _eligibleRibbonSprite;
+        private bool _badgeSourceSearched;
 
         /// <summary>
         /// 프리뷰의 포탑을 꾹 누르면 스탯을 띄울 상점 공용 팝업. ShopUI가 넘겨준다.
@@ -89,7 +113,10 @@ namespace TrainDefense.Game.UI
         private void LateUpdate()
         {
             if (_previewCamera != null && _previewCamera.enabled)
+            {
                 _FrameTrain();
+                _RefreshBadges();
+            }
         }
 
         private void _OnInspectionStart(InspectionStartEvent _)
@@ -146,6 +173,117 @@ namespace TrainDefense.Game.UI
 
             if (previewImage != null)
                 previewImage.enabled = false;
+
+            _HideBadges();
+        }
+
+        // 칸(포탑)마다 배지 하나를 칸 오른쪽 위에 놓고 숫자·색을 갱신한다. 편성이 바뀌면 배지 수도 맞춘다.
+        private void _RefreshBadges()
+        {
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+
+            if (mainTrain == null || previewImage == null || !_EnsureBadgeSource())
+                return;
+
+            var trains = mainTrain.CurrentTrains;
+            int badgeIndex = 0;
+            RectTransform imageRect = previewImage.rectTransform;
+            Rect rect = imageRect.rect;
+
+            foreach (var train in trains)
+            {
+                if (train == null || !_TryGetTrainBounds(train, out Bounds bounds))
+                    continue;
+
+                var badge = _GetBadge(badgeIndex++);
+                Vector3 viewportTopCenter = _previewCamera.WorldToViewportPoint(new Vector3(bounds.center.x, bounds.max.y, bounds.center.z));
+
+                badge.Root.gameObject.SetActive(true);
+                // 앵커가 프리뷰 이미지 좌하단이라 뷰포트 비율 × 크기가 곧 앵커드 포지션이다.
+                badge.Root.anchoredPosition = new Vector2(viewportTopCenter.x * rect.width, viewportTopCenter.y * rect.height) + BadgeAboveOffset;
+                TrainRemodelInfo.ApplyBadge(badge.Ribbon, badge.Text, train, badge.NormalRibbonSprite, _eligibleRibbonSprite);
+            }
+
+            for (int i = badgeIndex; i < _badges.Count; i++)
+                _badges[i].Root.gameObject.SetActive(false);
+        }
+
+        private void _HideBadges()
+        {
+            foreach (var badge in _badges)
+            {
+                if (badge.Root != null)
+                    badge.Root.gameObject.SetActive(false);
+            }
+        }
+
+        private TrainBadge _GetBadge(int index)
+        {
+            while (_badges.Count <= index)
+            {
+                var badgeObject = Instantiate(_badgeSource, previewImage.rectTransform, false);
+                badgeObject.name = "Badge_RemodelProgress";
+                badgeObject.SetActive(true);
+
+                var root = (RectTransform)badgeObject.transform;
+                // 칸 위 가운데에 놓을 수 있게 앵커를 프리뷰 이미지 좌하단, 피벗을 배지 아래 가운데로 맞춘다.
+                root.anchorMin = root.anchorMax = Vector2.zero;
+                root.pivot = new Vector2(0.5f, 0f);
+                root.localScale = Vector3.one * BADGE_SCALE;
+
+                var ribbon = badgeObject.GetComponent<Image>();
+
+                _badges.Add(new TrainBadge
+                {
+                    Root = root,
+                    Ribbon = ribbon,
+                    Text = badgeObject.GetComponentInChildren<TextMeshProUGUI>(true),
+                    NormalRibbonSprite = ribbon != null ? ribbon.sprite : null
+                });
+
+                // 배지가 프리뷰 이미지의 롱프레스(포탑 스탯 보기)를 막지 않게 한다.
+                if (ribbon != null)
+                    ribbon.raycastTarget = false;
+
+                foreach (var graphic in badgeObject.GetComponentsInChildren<Graphic>(true))
+                    graphic.raycastTarget = false;
+            }
+
+            return _badges[index];
+        }
+
+        // HUD 포탑 칸 프리팹에서 레벨 배지 오브젝트를 한 번만 찾아 둔다. 프리팹은 Resources에 있다.
+        private bool _EnsureBadgeSource()
+        {
+            if (_badgeSource != null)
+                return true;
+
+            if (_badgeSourceSearched)
+                return false;
+
+            _badgeSourceSearched = true;
+            var slotPrefab = Resources.Load<GameObject>(BADGE_SOURCE_PREFAB_PATH);
+
+            if (slotPrefab == null)
+            {
+                Debug.LogWarning($"ShopTrainPreviewUI: 배지 원본 프리팹을 찾지 못했습니다 ({BADGE_SOURCE_PREFAB_PATH})");
+                return false;
+            }
+
+            var slotUI = slotPrefab.GetComponent<TrainInfoSlotUI>();
+            _eligibleRibbonSprite = slotUI != null ? slotUI.EligibleRibbonSprite : null;
+
+            foreach (var image in slotPrefab.GetComponentsInChildren<Image>(true))
+            {
+                if (image.gameObject.name == BADGE_SOURCE_OBJECT_NAME)
+                {
+                    _badgeSource = image.gameObject;
+                    return true;
+                }
+            }
+
+            Debug.LogWarning($"ShopTrainPreviewUI: {BADGE_SOURCE_PREFAB_PATH}에 {BADGE_SOURCE_OBJECT_NAME}이 없습니다");
+            return false;
         }
 
         // 기차 하위 스프라이트(프리뷰 레이어에 속한 것) 전체 경계에 카메라를 맞춘다. 상점 중 구매·수리로 편성이 바뀌어도 매 프레임 따라간다.

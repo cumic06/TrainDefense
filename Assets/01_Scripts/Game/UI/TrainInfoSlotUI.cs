@@ -23,6 +23,10 @@ namespace TrainDefense.Game.UI
       private TextMeshProUGUI trainLevelText;
 
       [SerializeField]
+      [Tooltip("개조 조건(강화 카드 등급 합)에 닿았을 때 배지 리본을 바꿔 끼울 금색 리본. 상점 기차 칸 배지도 이 값을 쓴다")]
+      private Sprite eligibleRibbonSprite;
+
+      [SerializeField]
       [Tooltip("기차 사망 시 활성화되는 X 표시 오브젝트")]
       private GameObject deadMark;
 
@@ -41,10 +45,15 @@ namespace TrainDefense.Game.UI
       private static readonly Color HealthColorLow = new Color(0.78431374f, 0.21960784f, 0.21960784f);
       private Coroutine _longPressCoroutine;
       private bool _longPressFired;
+      // 배지 리본의 평소 스프라이트 — 개조 가능 상태에서 금색 리본으로 바꿨다가 되돌릴 기준.
+      private Sprite _normalLevelRibbonSprite;
       #endregion
+
+      public Sprite EligibleRibbonSprite => eligibleRibbonSprite;
 
       private void Start()
       {
+         _normalLevelRibbonSprite = trainLevelImage.sprite;
          _SubscribeEvents();
          _RefreshHealthUI();
       }
@@ -176,8 +185,9 @@ namespace TrainDefense.Game.UI
          if (_train != trainLevelUpEvent.Train)
             return;
 
+         // 배지 숫자 = 강화 카드 등급 합(개조 진행도). 조건에 닿으면 리본이 금색으로 바뀐다.
          trainLevelImage.gameObject.SetActive(true);
-         trainLevelText.text = $"{trainLevelUpEvent.Level}";
+         TrainRemodelInfo.ApplyBadge(trainLevelImage, trainLevelText, _train, _normalLevelRibbonSprite, eligibleRibbonSprite);
       }
 
       private void _SetDead(TrainDeadEvent trainDeadEvent)
@@ -217,7 +227,7 @@ namespace TrainDefense.Game.UI
          gameObject.name = EliteSlotObjectName;
 
          trainLevelImage.gameObject.SetActive(true);
-         trainLevelText.text = "E";
+         TrainRemodelInfo.ApplyBadge(trainLevelImage, trainLevelText, _train, _normalLevelRibbonSprite, eligibleRibbonSprite);
          _RefreshHealthUI();
       }
    }

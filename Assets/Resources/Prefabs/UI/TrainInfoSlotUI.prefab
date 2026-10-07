@@ -59,6 +59,7 @@ MonoBehaviour:
   descriptionText: {fileID: 1111111111111111033}
   statsText: {fileID: 1111111111111111043}
   skillsText: {fileID: 1111111111111111053}
+  compactLayout: 0
 --- !u!114 &1111111111111111005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1223,7 +1224,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
+  m_Children: []
   m_Father: {fileID: 131840424269350244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1340,6 +1341,7 @@ MonoBehaviour:
   iconImage: {fileID: 9108647260519823307}
   trainLevelImage: {fileID: 3690900204424116369}
   trainLevelText: {fileID: 7611162202853273319}
+  eligibleRibbonSprite: {fileID: 21300000, guid: c01d9598ffc59449a98bcc654c54cf32, type: 3}
   deadMark: {fileID: 9191556822790102789}
   detailPopup: {fileID: 1111111111111111004}
 --- !u!114 &181494897012952628
