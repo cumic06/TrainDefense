@@ -350,14 +350,11 @@ namespace TrainDefense.Game.Datas
             return rule.IncreaseRate * _tier.ValueMultiplier * 100f;
         }
 
-        // 이번 구매로 늘어나는 범위(반경). 커버 면적 ∝ 반경²이라 반경을 그대로 가산하면 실효가 제곱으로 폭주한다.
-        // 반경 = base × √(1 + rate×누적) 곡선의 차분 — 커버 면적이 등급 배수에 정확히 비례해 늘어난다(공속과 동일 구조).
+        // 이번 구매로 늘어나는 범위(반경). 사거리·공격력처럼 매번 기본값 × rate×등급배수만큼 같은 양을 더한다 —
+        // 면적은 반경²이라 갈수록 빨리 커지므로 범위 rate는 사거리보다 작게 잡는다(StatUpgradeData attack_area).
         private float _GetAttackAreaDelta(float baseArea, TrainStatUpgradeRuleData rule)
         {
-            float currentMultiplier = 1f + rule.IncreaseRate * _train.GetStatUpgradeAmount(StatType.AttackArea);
-            float nextMultiplier = currentMultiplier + rule.IncreaseRate * _tier.ValueMultiplier;
-
-            return baseArea * (Mathf.Sqrt(nextMultiplier) - Mathf.Sqrt(currentMultiplier));
+            return baseArea * rule.IncreaseRate * _tier.ValueMultiplier;
         }
 
         // 상점 카드 롱프레스용 — 이 카드를 사면 될 대상 포탑의 스탯(Execute와 같은 강화 데이터로 계산).
@@ -396,14 +393,13 @@ namespace TrainDefense.Game.Datas
 
             string deltaText = rule.StatType switch
             {
-                // 실제 증가 = 메타 적용 기본 공격력 × rate×등급배수 → 다른 스탯처럼 %로 표시(포탑별 절대값 차이가 커 보이지 않게).
-                StatType.AttackDamage => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
+                // 공격력·사거리는 매번 같은 양이 올라 실제 값으로 적는다. 기준은 스킬 트리를 뺀 데이터 기본값 —
+                // 스킬 트리는 맨 마지막에 곱하는 것으로 보므로 카드 숫자는 스킬 트리 레벨과 상관없이 고정이다.
+                StatType.AttackDamage => $"+{_GetDataBaseValue(StatType.AttackDamage) * rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 StatType.AttackInterval => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
-                // 커버 면적(실효) 기준 고정 표시 — 이 축에선 매 장 정확히 rate×등급배수만큼 는다(공속과 동일 철학).
+                // 범위는 포탑마다 기본값(1.2~3.8)이 달라 실제 값이 0.06처럼 작게 나오므로 %로 둔다. 매번 기본값 × rate×등급배수만큼 는다.
                 StatType.AttackArea => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
-                // 사거리는 범위와 달리 제곱 보정을 하지 않는다 — 실효(적이 사정권에 머무는 시간)가
-                // 반경에 비례하므로 표시값이 곧 실제 증가율이다.
-                StatType.AttackRange => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
+                StatType.AttackRange => $"+{_GetDataBaseValue(StatType.AttackRange) * rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 // 절대초 가산 — 템플릿("지속시간 {0}초")이 단위를 붙이므로 숫자만 만든다.
                 StatType.BurstDuration => $"+{rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 // 실제로 더해지는 둔화율(%p) 그대로 표시.
@@ -418,6 +414,17 @@ namespace TrainDefense.Game.Datas
             string line = string.Format(template, deltaText);
 
             return Regex.Replace(line, "<[^>]+>", "").Trim();
+        }
+
+        // 카드 숫자의 기준 — 스킬 트리를 뺀 데이터 기본값(공격력·사거리).
+        private float _GetDataBaseValue(StatType statType)
+        {
+            return _train switch
+            {
+                TurretTrain turretTrain => statType == StatType.AttackDamage ? turretTrain.BaseStatus.AttackDamage : turretTrain.BaseStatus.AttackRange,
+                RangeTrain rangeTrain => statType == StatType.AttackDamage ? rangeTrain.BaseStatus.AttackDamage : rangeTrain.BaseStatus.AttackRange,
+                _ => 0f,
+            };
         }
 
         // 런타임 강화 데이터에서 실제로 읽히는 인덱스는 "이번에 적용할 레벨"(= 현재 레벨) 하나뿐이다.

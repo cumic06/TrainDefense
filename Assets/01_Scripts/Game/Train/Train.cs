@@ -369,6 +369,16 @@ namespace TrainDefense.Game
         public static float GetAttackIntervalAfterSpeedBonus(float baseInterval, float currentInterval, float speedBonus)
             => baseInterval / (baseInterval / currentInterval + speedBonus);
 
+        // 개조 패시브가 공격 속도를 낮출 때(speedBonus 음수) 배율이 0 이하로 떨어져 간격이 무한·음수가 되지 않게 하는 하한.
+        private const float MIN_PASSIVE_SPEED_MULTIPLIER = 0.1f;
+
+        // 개조 패시브의 공격 속도 — 상점 공격 속도 카드와 같은 배율 덧셈. 기본 간격 기준이라 개조 시점과 상관없이 같은 양이 바뀐다.
+        protected static float _GetIntervalAfterPassiveSpeed(float baseInterval, float currentInterval, float speedBonus)
+        {
+            float speedMultiplier = Mathf.Max(MIN_PASSIVE_SPEED_MULTIPLIER, baseInterval / currentInterval + speedBonus);
+            return baseInterval / speedMultiplier;
+        }
+
         // 이어하기 복원용 — 공격 간격은 강화 순서에 따라 증가량이 달라 저장된 증가량만으로는 재현되지 않아 최종값을 직접 되돌린다.
         public virtual void RestoreAttackInterval(float attackInterval) { }
 
@@ -451,7 +461,8 @@ namespace TrainDefense.Game
         private static float _GetLevelAwareMaxHpDelta(float baseMaxHp, IStat stat, int newLevel, int prevLevel)
             => baseMaxHp * stat.Value / 100f * (newLevel - prevLevel);
 
-        public virtual void ApplyStatsByCurrentValue(IStat[] stats)
+        // 개조 패시브 등 % 스탯을 "데이터 기본값 × %"만큼 한 번 더한다(현재 값에 곱하지 않는다 — 개조 시점과 상관없이 같은 양).
+        public virtual void ApplyStatsByBaseValue(IStat[] stats)
         {
             ApplyStats(stats);
         }

@@ -1253,7 +1253,7 @@ namespace TrainDefense.Game
             var details = new System.Collections.Generic.List<(string label, string value)>
             {
                 (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(maxHp)}"),
-                (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(status.AttackDamage)}"),
+                (L("Detail_Damage", "공격력"), $"{status.AttackDamage:0.#}"),
                 (L("Detail_Range", "사거리"), $"{status.AttackRange:F1}"),
             };
 
@@ -1283,9 +1283,10 @@ namespace TrainDefense.Game
                     _skillModule.RegisterPassiveFromData(p);
         }
 
-        public override void ApplyStatsByCurrentValue(IStat[] stats)
+        public override void ApplyStatsByBaseValue(IStat[] stats)
         {
             if (stats == null || stats.Length == 0) return;
+            var baseStatus = turretTrainData.TurretTrainStatus;
             foreach (var stat in stats)
             {
                 if (stat == null) continue;
@@ -1293,11 +1294,11 @@ namespace TrainDefense.Game
                 switch (stat.Type)
                 {
                     case StatType.AttackRange:
-                        _currentTurretTrainStatus.AttackRange += _currentTurretTrainStatus.AttackRange * percent;
+                        _currentTurretTrainStatus.AttackRange += baseStatus.AttackRange * percent;
                         _ReinitScaleByAreaProjectiles();
                         break;
                     case StatType.AttackArea:
-                        _currentTurretTrainStatus.AttackArea += _currentTurretTrainStatus.AttackArea * percent;
+                        _currentTurretTrainStatus.AttackArea += baseStatus.AttackArea * percent;
                         if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                         {
                             float ratio = _currentTurretTrainStatus.AttackArea / turretTrainData.TurretTrainStatus.AttackArea;
@@ -1307,15 +1308,14 @@ namespace TrainDefense.Game
                         _ReinitScaleByAreaProjectiles();
                         break;
                     case StatType.AttackDamage:
-                        _currentTurretTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentTurretTrainStatus.AttackDamage * percent);
+                        // 상점 공격력 카드와 같이 소수까지 그대로 더한다.
+                        _currentTurretTrainStatus.AttackDamage += baseStatus.AttackDamage * percent;
                         if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
                             foreach (var p in _nonMovementProjectiles) { if (p != null) InitializeProjectileDamage(p); }
                         break;
                     case StatType.AttackInterval:
-                        // 공속은 현재값 기준 역수 곱셈(간격이 0 이하로 안 내려감). percent 음수=공속 증가.
-                        // ★ 상점 스탯 강화는 이 방식이 아니다 — TrainStatUpgradeChoice가 base 대비 가산 감소
-                        //   델타를 만들어 Upgrade 경로로 더하므로, 그쪽은 반복 구매 시 간격이 0에 도달한다.
-                        _currentTurretTrainStatus.AttackInterval *= 1f / (1f + (-percent));
+                        // 상점 공격 속도 카드와 같은 식 — 공격 속도 배율에 -percent를 더한다(percent 음수 = 빨라짐).
+                        _currentTurretTrainStatus.AttackInterval = _GetIntervalAfterPassiveSpeed(_metaBaseStatus.AttackInterval, _currentTurretTrainStatus.AttackInterval, -percent);
                         break;
                     default:
                         ApplyStat(stat);

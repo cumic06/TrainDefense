@@ -42,7 +42,7 @@ namespace TrainDefense.Game
         public override void Subscribe()
         {
             if (Owner == null || _stats == null || _stats.Length == 0) return;
-            Owner.ApplyStatsByCurrentValue(_stats);
+            Owner.ApplyStatsByBaseValue(_stats);
         }
     }
 }

@@ -1713,7 +1713,7 @@ MonoBehaviour:
   - id: stat_upgrade_30002_attack_area
     trainDataId: 30002
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.05
   - id: stat_upgrade_30003_attack_damage
     trainDataId: 30003
     statType: 2
@@ -1725,7 +1725,7 @@ MonoBehaviour:
   - id: stat_upgrade_30003_attack_area
     trainDataId: 30003
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.05
   - id: stat_upgrade_30004_attack_damage
     trainDataId: 30004
     statType: 2
@@ -1737,7 +1737,7 @@ MonoBehaviour:
   - id: stat_upgrade_30004_attack_area
     trainDataId: 30004
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.05
   - id: stat_upgrade_30005_attack_damage
     trainDataId: 30005
     statType: 2
@@ -1757,7 +1757,7 @@ MonoBehaviour:
   - id: stat_upgrade_30006_attack_area
     trainDataId: 30006
     statType: 8
-    increaseRate: 0.1
+    increaseRate: 0.05
   - id: stat_upgrade_30007_attack_damage
     trainDataId: 30007
     statType: 2

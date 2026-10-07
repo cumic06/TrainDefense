@@ -492,7 +492,7 @@ namespace TrainDefense.Game
             var details = new System.Collections.Generic.List<(string label, string value)>
             {
                 (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(maxHp)}"),
-                (L("Detail_Damage", "공격력"), $"{Mathf.RoundToInt(status.AttackDamage)}"),
+                (L("Detail_Damage", "공격력"), $"{status.AttackDamage:0.#}"),
                 (L("Detail_Range", "사거리"), $"{status.AttackRange:F1}"),
                 (L("Detail_Speed", "공격속도"), $"{status.AttackInterval:F2}"),
             };
@@ -521,9 +521,10 @@ namespace TrainDefense.Game
                     _skillModule.RegisterPassiveFromData(p);
         }
 
-        public override void ApplyStatsByCurrentValue(IStat[] stats)
+        public override void ApplyStatsByBaseValue(IStat[] stats)
         {
             if (stats == null || stats.Length == 0) return;
+            var baseStatus = rangeTrainData.RangeTrainStatus;
             foreach (var stat in stats)
             {
                 if (stat == null) continue;
@@ -531,7 +532,7 @@ namespace TrainDefense.Game
                 switch (stat.Type)
                 {
                     case StatType.AttackRange:
-                        _currentRangeTrainStatus.AttackRange += _currentRangeTrainStatus.AttackRange * percent;
+                        _currentRangeTrainStatus.AttackRange += baseStatus.AttackRange * percent;
                         if (_rangeProjectilePrefab != null)
                         {
                             float rangeScale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
@@ -539,16 +540,17 @@ namespace TrainDefense.Game
                         }
                         break;
                     case StatType.AttackArea:
-                        _currentRangeTrainStatus.AttackArea += _currentRangeTrainStatus.AttackArea * percent;
+                        _currentRangeTrainStatus.AttackArea += baseStatus.AttackArea * percent;
                         break;
                     case StatType.AttackDamage:
-                        _currentRangeTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, _currentRangeTrainStatus.AttackDamage * percent);
+                        // 상점 공격력 카드와 같이 소수까지 그대로 더한다.
+                        _currentRangeTrainStatus.AttackDamage += baseStatus.AttackDamage * percent;
                         if (_rangeProjectilePrefab != null)
                             _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                         break;
                     case StatType.AttackInterval:
-                        // 공속은 상점과 동일하게 현재값 기준 역수 곱셈(DPS 선형, 0 이하 방지). percent 음수=공속 증가.
-                        _currentRangeTrainStatus.AttackInterval *= 1f / (1f + (-percent));
+                        // 상점 공격 속도 카드와 같은 식 — 공격 속도 배율에 -percent를 더한다(percent 음수 = 빨라짐).
+                        _currentRangeTrainStatus.AttackInterval = _GetIntervalAfterPassiveSpeed(_metaBaseStatus.AttackInterval, _currentRangeTrainStatus.AttackInterval, -percent);
                         break;
                     case StatType.SlowRate:
                         // 둔화율은 이미 %라 적힌 값을 %p 그대로 더한다(15 → 30%에서 45%). 상점 둔화 카드와 같은 방식.

@@ -28,7 +28,7 @@ namespace TrainDefense.Game
         {
             if (Owner == null) return;
 
-            Owner.ApplyStatsByCurrentValue(new IStat[]
+            Owner.ApplyStatsByBaseValue(new IStat[]
             {
                 new SimpleStat { Type = StatType.AttackDamage, Value = _damagePercent }
             });
