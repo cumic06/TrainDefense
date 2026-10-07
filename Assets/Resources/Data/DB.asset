@@ -898,21 +898,21 @@ MonoBehaviour:
       name: Passive_60002_Name
       passiveType: StatModifier
       param1: AttackRange
-      param2: 50
-      param3: AttackArea:50
+      param2: 65
+      param3: AttackArea:65
       description: Passive_60002_Desc
     - id: 60003
       name: Passive_60003_Name
       passiveType: StatModifier
       param1: AttackDamage
-      param2: 50
-      param3: AttackArea:-30:AttackRange:50
+      param2: 120
+      param3: AttackArea:-30:AttackRange:65
       description: Passive_60003_Desc
     - id: 60004
       name: Passive_60004_Name
       passiveType: StatModifier
       param1: AttackDamage
-      param2: 50
+      param2: 190
       param3: SlowRate:20
       description: Passive_60004_Desc
     - id: 60005
@@ -931,7 +931,7 @@ MonoBehaviour:
       description: Passive_60006_Desc
     - id: 60007
       name: Passive_60007_Name
-      passiveType: Strengthen:100|StatModifier:AttackRange:50
+      passiveType: Strengthen:300|StatModifier:AttackRange:60
       param1: 
       param2: 
       param3: 
@@ -947,12 +947,12 @@ MonoBehaviour:
       name: Passive_60010_Name
       passiveType: StatModifier
       param1: AttackDamage
-      param2: 100
-      param3: AttackArea:50
+      param2: 200
+      param3: AttackArea:65
       description: Passive_60010_Desc
     - id: 60011
       name: Passive_60011_Name
-      passiveType: StatModifier:AttackCount:2:AttackInterval:30
+      passiveType: StatModifier:AttackCount:2:AttackInterval:40
       param1: 
       param2: 
       param3: 
@@ -961,14 +961,14 @@ MonoBehaviour:
       name: Passive_60012_Name
       passiveType: StatModifier
       param1: AttackArea
-      param2: 100
-      param3: AttackDamage:50
+      param2: 125
+      param3: AttackDamage:120
       description: Passive_60012_Desc
     - id: 60013
       name: Passive_60013_Name
       passiveType: StatModifier
       param1: AttackInterval
-      param2: -30
+      param2: -50
       param3: TargetCount:2
       description: Passive_60013_Desc
     - id: 60015
@@ -987,7 +987,7 @@ MonoBehaviour:
       description: Passive_60017_Desc
     - id: 60018
       name: Passive_60018_Name
-      passiveType: StatModifier:AttackDamage:80:AttackInterval:33.3:AttackArea:70|ScaleProjectile:1.3
+      passiveType: StatModifier:AttackDamage:230:AttackInterval:30:AttackArea:110|ScaleProjectile:1.3
       param1: 
       param2: 
       param3: 
@@ -1003,7 +1003,7 @@ MonoBehaviour:
       name: Passive_60020_Name
       passiveType: StatModifier
       param1: AttackRange
-      param2: 50
+      param2: 65
       param3: SlowRate:10
       description: Passive_60020_Desc
   _legacyTrainPassiveSkillDataList: []
