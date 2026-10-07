@@ -26,6 +26,11 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private TextMeshProUGUI needMoneyText;
 
+        [Header("Grade Border")]
+        [Tooltip("카드 테두리를 덧칠하는 이미지(테두리 모양만 흰색으로 그려진 스프라이트). 등급 색으로 물들인다. 1등급·등급 없는 카드는 끈다")]
+        [SerializeField]
+        private Image gradeBorderImage;
+
         [Header("Price Color")]
         [Tooltip("보유 코인이 부족할 때 가격 텍스트에 적용할 색상")]
         [SerializeField]
@@ -35,6 +40,12 @@ namespace TrainDefense.Game.UI
         // 개조 카드의 패시브 효과 줄 — 이름 줄보다 한 단계 작고 옅게.
         private const int PASSIVE_EFFECT_SIZE_PERCENT = 85;
         private const string PASSIVE_EFFECT_ALPHA_HEX = "#CC";
+
+        // 등급별 테두리 색. 1등급은 카드 원래 진갈색 테두리를 그대로 둔다(가장 흔한 카드가 조용해야 높은 등급이 눈에 띈다).
+        private static readonly Color Grade2BorderColor = new Color(0.25f, 0.65f, 0.21f);
+        private static readonly Color Grade3BorderColor = new Color(0.18f, 0.48f, 0.88f);
+        private static readonly Color Grade4BorderColor = new Color(0.61f, 0.31f, 0.84f);
+        private static readonly Color Grade5BorderColor = new Color(0.94f, 0.54f, 0.11f);
 
         private ShopOffer _offer;
         private System.Action<ShopOfferSlotUI> _onPurchased;
@@ -102,6 +113,8 @@ namespace TrainDefense.Game.UI
                 ? TriChoiceManager.Instance.GetChoiceUIInfo(_offer.Option)
                 : null;
 
+            _ApplyGradeBorder(info != null ? info.Grade : 0);
+
             if (info != null)
             {
                 itemNameText.text = info.Name;
@@ -128,6 +141,27 @@ namespace TrainDefense.Game.UI
 
             needMoneyText.text = $"<sprite name=\"Coin\"> {_offer.CurrentPrice.ToCommaString()}$";
             _ApplyPriceColor(UserDataManager.Instance != null ? UserDataManager.Instance.Coin : 0);
+        }
+
+        // 강화 카드 등급을 카드 테두리 색으로 보여 준다. 개조·포탑 구매 카드(등급 0)와 1등급은 기본 테두리.
+        private void _ApplyGradeBorder(int grade)
+        {
+            if (gradeBorderImage == null)
+                return;
+
+            bool hasGradeColor = grade >= 2;
+            gradeBorderImage.gameObject.SetActive(hasGradeColor);
+
+            if (!hasGradeColor)
+                return;
+
+            gradeBorderImage.color = grade switch
+            {
+                2 => Grade2BorderColor,
+                3 => Grade3BorderColor,
+                4 => Grade4BorderColor,
+                _ => Grade5BorderColor,
+            };
         }
 
         private void _OnBuyButtonClick()

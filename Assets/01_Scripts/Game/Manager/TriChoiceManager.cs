@@ -125,7 +125,8 @@ namespace TrainDefense.Game
                 {
                     Icon = trainData.Icon,
                     Name = _SafeFormat(TrainDefense.Localize.LocalizeHelper.GetByKey("UI_Shop_TurretUpgrade_Name", "{0} 강화"), trainData.Name),
-                    Description = trainStatUpgradeChoice.BuildStatLineText()
+                    Description = trainStatUpgradeChoice.BuildStatLineText(),
+                    Grade = trainStatUpgradeChoice.Grade
                 };
             }
 
