@@ -127,7 +127,7 @@ namespace TrainDefense.Game.UI.Collection
                 trainTabText.text = LocalizeHelper.GetByKey("Collection_Tab_Train", "트레인");
 
             if (eliteTrainTabText != null)
-                eliteTrainTabText.text = LocalizeHelper.GetByKey("Collection_Tab_EliteTrain", "엘리트");
+                eliteTrainTabText.text = LocalizeHelper.GetByKey("Collection_Tab_EliteTrain", "개조");
 
             if (monsterTabText != null)
                 monsterTabText.text = LocalizeHelper.GetByKey("Collection_Tab_Monster", "몬스터");

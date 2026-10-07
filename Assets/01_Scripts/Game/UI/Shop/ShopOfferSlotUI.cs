@@ -40,9 +40,9 @@ namespace TrainDefense.Game.UI
         private Color insufficientColor = Color.red;
         #endregion
 
-        // 개조 카드의 패시브 효과 줄 — 이름 줄보다 한 단계 작고 옅게.
-        private const int PASSIVE_EFFECT_SIZE_PERCENT = 85;
-        private const string PASSIVE_EFFECT_ALPHA_HEX = "#CC";
+        // 개조 카드의 패시브 효과 줄 — 이름 줄보다 한 단계 작고 옅게. 포탑 상세 창도 같은 값을 쓴다.
+        public const int PASSIVE_EFFECT_SIZE_PERCENT = 85;
+        public const string PASSIVE_EFFECT_ALPHA_HEX = "#CC";
 
         // 등급별 테두리 색. 1등급은 카드 원래 진갈색 테두리를 그대로 둔다(가장 흔한 카드가 조용해야 높은 등급이 눈에 띈다).
         private static readonly Color Grade2BorderColor = new Color(0.25f, 0.65f, 0.21f);

@@ -89,10 +89,7 @@ namespace TrainDefense.Game.UI
          {
             var parts = new System.Collections.Generic.List<string>();
             if (!string.IsNullOrEmpty(choiceUIInfo.PassiveName))
-            {
-               string passiveLabel = LocalizeHelper.GetByKey("skill_type_passive", "패시브");
-               parts.Add($"{choiceUIInfo.PassiveName}\n<size=70%><alpha=#99>[{passiveLabel}]</size>");
-            }
+               parts.Add(choiceUIInfo.PassiveName);
 
             bool hasContent = parts.Count > 0;
             skillNameText.gameObject.SetActive(hasContent);

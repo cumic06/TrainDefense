@@ -101,13 +101,12 @@ namespace TrainDefense.Game.UI
                 var sb = new StringBuilder();
 
                 // TrainData 전체 스킬이 아니라, 이 인스턴스에 실제 적용된 스킬만 표시(마스크 반영).
-                string passiveLabel = LocalizeHelper.GetByKey("skill_type_passive", "패시브");
-
+                // 상점 개조 카드와 같은 모양 — 이름 줄, 그 아래 효과는 한 단계 작고 옅게.
                 foreach (var (name, description) in train.GetAppliedSkillDisplays())
                 {
-                    sb.AppendLine($"[{passiveLabel}] {name}");
+                    sb.AppendLine(name);
                     if (!string.IsNullOrEmpty(description))
-                        sb.AppendLine(description);
+                        sb.AppendLine($"<size={ShopOfferSlotUI.PASSIVE_EFFECT_SIZE_PERCENT}%><alpha={ShopOfferSlotUI.PASSIVE_EFFECT_ALPHA_HEX}>{description}</size>");
                 }
 
                 skillsText.text = sb.ToString().TrimEnd();
