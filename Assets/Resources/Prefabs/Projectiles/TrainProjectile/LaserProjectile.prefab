@@ -137,6 +137,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
       insertIndex: -1
       addedObject: {fileID: 628469527670258843}
+    - targetCorrespondingSourceObject: {fileID: 5502960260318281916, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 132981573616932483}
   m_SourcePrefab: {fileID: 100100000, guid: aea710e458de4844e8ff5f8f5a415440, type: 3}
 --- !u!1 &4599933861158539560 stripped
 GameObject:
@@ -223,3 +226,17 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &132981573616932483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4599933861158539560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5bbc8402a436fe46becd5513034c799, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.BeamLifetimeAnimation
+  scatterNormalizedTime: 0.4
+  scatterSeconds: 0.1

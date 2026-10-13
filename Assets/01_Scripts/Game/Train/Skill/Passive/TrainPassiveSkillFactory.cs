@@ -37,6 +37,14 @@ namespace TrainDefense.Game
             { "KnockbackOnHit",                      KnockbackOnHitPassive.From },
             { nameof(ScaleProjectilePassive),        ScaleProjectilePassive.From },
             { "ScaleProjectile",                     ScaleProjectilePassive.From },
+            { nameof(StunDurationPassive),           StunDurationPassive.From },
+            { "StunDuration",                        StunDurationPassive.From },
+            { nameof(DischargeEveryNAttacksPassive), DischargeEveryNAttacksPassive.From },
+            { "DischargeEveryN",                     DischargeEveryNAttacksPassive.From },
+            { nameof(SweepAttackPassive),            SweepAttackPassive.From },
+            { "SweepAttack",                         SweepAttackPassive.From },
+            { nameof(SlowOnHitPassive),              SlowOnHitPassive.From },
+            { "SlowOnHit",                           SlowOnHitPassive.From },
         };
 
         public static void Register(string typeKey, Func<string[], TrainPassiveSkill> parser)

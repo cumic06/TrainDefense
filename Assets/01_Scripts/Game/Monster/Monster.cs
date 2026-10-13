@@ -73,6 +73,8 @@ namespace TrainDefense.Game
       protected Coroutine _resetMoveSpeedCoroutine;
       protected Coroutine _shoveCoroutine;
       protected Coroutine _stunCoroutine;
+      // 기절이 끝나는 시각. 남은 기절보다 짧은 기절이 들어오면 덮어쓰지 않는다.
+      private float _stunEndTime;
       private GameObject _stunEffectInstance;
 
       // 엘리트 타입별 능력 상태
@@ -159,6 +161,7 @@ namespace TrainDefense.Game
          if (_slowCoroutine != null)
          {
             StopCoroutine(_slowCoroutine);
+            _slowCoroutine = null;
          }
 
          if (_stunCoroutine != null)
@@ -424,6 +427,10 @@ namespace TrainDefense.Game
          // slowValue = 유지 속도 비율(0.5 = 절반) → 감속량(1-slowValue)만 저항으로 줄인다.
          slowValue = 1f - (1f - slowValue) * (1f - _ccResistance);
 
+         // 더 강한 둔화가 걸려 있으면 약한 둔화는 무시한다(약한 둔화가 강한 둔화의 배율·시간을 덮어쓰지 않게).
+         if (slowValue > _slowMultiplier)
+            return;
+
          if (_slowCoroutine != null)
          {
             StopCoroutine(_slowCoroutine);
@@ -452,6 +459,9 @@ namespace TrainDefense.Game
       {
          if (!gameObject.activeInHierarchy)
             return;
+         // 시간형 둔화가 유지 중이면 장판 이탈로 풀지 않는다(장판 둔화는 더 약해서 무시된 상태).
+         if (_slowCoroutine != null)
+            return;
 
          if (_resetMoveSpeedCoroutine != null)
          {
@@ -466,6 +476,7 @@ namespace TrainDefense.Game
       private IEnumerator _SlowForDurationCoroutine(float duration)
       {
          yield return new WaitForSeconds(duration);
+         _slowCoroutine = null;
          ResetMoveSpeed();
       }
 
@@ -532,6 +543,11 @@ namespace TrainDefense.Game
             return;
 
          stunDuration *= 1f - _ccResistance;
+
+         float stunEndTime = Time.time + stunDuration;
+         if (_isStunned && stunEndTime <= _stunEndTime)
+            return;
+         _stunEndTime = stunEndTime;
 
          if (_stunCoroutine != null)
          {

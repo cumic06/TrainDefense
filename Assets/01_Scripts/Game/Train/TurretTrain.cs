@@ -105,6 +105,17 @@ namespace TrainDefense.Game
         public float OverrideDamageMultiplier { get; set; } = 1f;
         public float ProjectileKnockbackPower { get; set; }
         public float ProjectileKnockbackDuration { get; set; }
+        // 투사체에 닿은 적 둔화(화염 둔화). 유지 속도 비율(0.7 = 30% 느려짐, Monster.Slow와 같은 단위)과 닿은 뒤 유지 초.
+        public float ProjectileSlowValue { get; set; } = 1f;
+        public float ProjectileSlowDuration { get; set; }
+        // 즉시 피해 기절 시간 하한(고압 전류). 투사체 설정 기절보다 길 때만 쓰인다.
+        public float MinimumStunDuration { get; set; }
+        // 빔(레이저) 켜짐 시간 덮어쓰기(섬멸 회전). 0이면 투사체 설정 시간.
+        public float BeamLifetimeOverride { get; set; }
+        // 패시브가 포탑 회전을 대신 맡는 동안 true를 돌려준다(섬멸 쓸기). 그 틱엔 조준 회전·빔 고정을 건너뛴다.
+        public Func<bool> RotationOverride { get; set; }
+        // 이번 틱에 탐지한 사거리 안 적(가까운 순). 패시브가 다시 탐지하지 않고 읽는다.
+        public IReadOnlyList<Monster> TargetMonsters => _targetMonsters;
 
         public event Action<Monster> OnAttacked;
         public event Action OnTargetPosAttacked;
@@ -384,6 +395,10 @@ namespace TrainDefense.Game
         private void _RotateTowardNearTarget()
         {
             if (!isRotateTurret || turret == null)
+                return;
+
+            // 패시브(섬멸)가 회전을 맡고 있으면 그쪽에 맡긴다.
+            if (RotationOverride != null && RotationOverride())
                 return;
 
             // 빔(레이저)은 포탑에 붙어 함께 돌아서, 공격 중에 회전하면 빔이 부채꼴로 쓸고 지나간다 → 빔이 켜진 동안 회전 고정.
@@ -753,12 +768,22 @@ namespace TrainDefense.Game
                 target.TakeDamage(finalDamage, isCritical);
 
                 if (projectileData.HasStunEffect)
-                    target.Stun(projectileData.StunDuration);
+                    target.Stun(Mathf.Max(projectileData.StunDuration, MinimumStunDuration));
                 if (projectileData.HasShoveEffect)
                     target.Shove(projectileData.ShovePower, projectileData.ShoveDuration);
                 if (projectileData.HasSlowEffect)
                     target.Slow(projectileData.SlowValue, 0f);
             }
+        }
+
+        // 투사체 없이 공격력 × 배율만큼 바로 피해를 준다(방전). 치명타 판정은 일반 즉시 피해와 같다.
+        public void DealDirectDamage(Monster target, float damageMultiplier)
+        {
+            if (target == null || !target.IsActive) return;
+
+            var (finalDamage, isCritical) = CalculateDirectDamage();
+            finalDamage *= damageMultiplier;
+            target.TakeDamage(finalDamage, isCritical);
         }
 
         private (float finalDamage, bool isCritical) CalculateDirectDamage()
@@ -1109,6 +1134,9 @@ namespace TrainDefense.Game
             if (_useNonMovementProjectilePooling)
             {
                 projectile.gameObject.SetActive(true);
+
+                if (BeamLifetimeOverride > 0f && !useParticleProjectile)
+                    projectile.OverrideLifetime(BeamLifetimeOverride);
             }
 
             if (ProjectileScale != 1f)
@@ -1116,6 +1144,9 @@ namespace TrainDefense.Game
 
             if (ProjectileKnockbackPower > 0f)
                 projectile.SetRuntimeShove(ProjectileKnockbackPower, ProjectileKnockbackDuration);
+
+            if (ProjectileSlowDuration > 0f)
+                projectile.SetRuntimeSlow(ProjectileSlowValue, ProjectileSlowDuration);
 
             // 날아가는 총알만 사거리에서 소멸 (NonMovement 풀링형(레이저·화염)은 제자리 지속형이라 무관)
             if (!_useNonMovementProjectilePooling)

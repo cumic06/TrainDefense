@@ -606,6 +606,7 @@ MonoBehaviour:
     prefabId: EliteNormalTurretTrain
     passiveSkillDataIds:
     - 60001
+    - 60021
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
@@ -633,6 +634,7 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60002
     - 60003
+    - 60022
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
@@ -687,6 +689,7 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60011
     - 60012
+    - 60023
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
@@ -713,6 +716,8 @@ MonoBehaviour:
     prefabId: EliteElectrickTurretTrain
     passiveSkillDataIds:
     - 60013
+    - 60024
+    - 60025
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
@@ -1006,6 +1011,41 @@ MonoBehaviour:
       param2: 65
       param3: SlowRate:10
       description: Passive_60020_Desc
+    - id: 60021
+      name: Passive_60021_Name
+      passiveType: KnockbackOnHit:2:0.15|StatModifier:AttackInterval:20
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60021_Desc
+    - id: 60022
+      name: Passive_60022_Name
+      passiveType: SlowOnHit:30:0.5
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60022_Desc
+    - id: 60023
+      name: Passive_60023_Name
+      passiveType: SweepAttack:0.4|StatModifier:AttackDamage:-60
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60023_Desc
+    - id: 60024
+      name: Passive_60024_Name
+      passiveType: DischargeEveryN:5:200:1
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60024_Desc
+    - id: 60025
+      name: Passive_60025_Name
+      passiveType: StatModifier:AttackDamage:150:AttackInterval:30|StunDuration:0.5
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60025_Desc
   _legacyTrainPassiveSkillDataList: []
   stageDataList:
   - id: 50001

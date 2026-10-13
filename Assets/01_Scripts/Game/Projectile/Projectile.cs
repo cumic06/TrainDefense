@@ -39,6 +39,9 @@ namespace TrainDefense.Game
         private bool _runtimeHasShove;
         private float _runtimeShovePower;
         private float _runtimeShoveDuration;
+        // 런타임 둔화 (SlowOnHitPassive 주입). 유지 속도 비율, 닿은 뒤 유지 시간.
+        private float _runtimeSlowValue;
+        private float _runtimeSlowDuration;
         private float _scale = 1f;
         private Vector3 _baseScale = Vector3.one;
         private bool _baseScaleCaptured;
@@ -70,6 +73,8 @@ namespace TrainDefense.Game
             _runtimeHasShove = false;
             _runtimeShovePower = 0f;
             _runtimeShoveDuration = 0f;
+            _runtimeSlowValue = 1f;
+            _runtimeSlowDuration = 0f;
             _scale = 1f;
             // trigger 스폰형(미사일)만 루트 스케일 리셋 → 풀 재사용 잔존 방지. 다른 투사체는 안 건드림.
             if (data != null && data.IsSpawnTriggerHandle)
@@ -374,11 +379,7 @@ namespace TrainDefense.Game
             }
 
             // 슬로우 효과 (닿는 순간 SlowDuration만큼). 한 번만 닿는 파동(냉기)은 Stay가 없어 여기서 건다.
-            if (data.HasSlowEffect)
-            {
-                float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
-                target.Slow(slowValue, data.SlowDuration);
-            }
+            ApplySlow(target);
         }
 
         internal void ProcessStay(IProjectileTarget target)
@@ -409,19 +410,27 @@ namespace TrainDefense.Game
                 }
             }
 
-            // 슬로우 효과 (Stay 중 지속 적용). owner가 둔화율을 제공하면 그 값, 아니면 config 기본값.
-            // 자동복원 슬로우(SlowDuration)를 매 Stay마다 갱신 — 장판이 꺼져도(버스트 종료) 그 시간 후 자연 해제.
-            if (data.HasSlowEffect)
-            {
-                float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
-                target.Slow(slowValue, data.SlowDuration);
-            }
+            // 슬로우 효과 (Stay 중 지속 적용). 자동복원 슬로우(SlowDuration)를 매 Stay마다 갱신 — 장판이 꺼져도(버스트 종료) 그 시간 후 자연 해제.
+            ApplySlow(target);
 
             // 넉백 효과 (Stay 중에도 적용)
             if (data.HasShoveEffect && !SuppressShoveEffect)
             {
                 target.Shove(data.ShovePower * ShoveScale, data.ShoveDuration);
             }
+        }
+
+        // 투사체 설정 둔화(owner가 둔화율을 제공하면 그 값, 아니면 config 기본값)와 런타임 둔화(SlowOnHitPassive)를 건다.
+        private void ApplySlow(IProjectileTarget target)
+        {
+            if (data.HasSlowEffect)
+            {
+                float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
+                target.Slow(slowValue, data.SlowDuration);
+            }
+
+            if (_runtimeSlowDuration > 0f)
+                target.Slow(_runtimeSlowValue, _runtimeSlowDuration);
         }
 
         internal void ProcessExit(IProjectileTarget target)
@@ -498,6 +507,12 @@ namespace TrainDefense.Game
             _runtimeShoveDuration = duration;
         }
 
+        public void SetRuntimeSlow(float slowValue, float duration)
+        {
+            _runtimeSlowValue = slowValue;
+            _runtimeSlowDuration = duration;
+        }
+
         public bool IsScaleByArea()
         {
             if (data == null)
@@ -568,7 +583,23 @@ namespace TrainDefense.Game
             _destroyCoroutine = StartCoroutine(DestroyCoroutine(attackRange / data.Speed));
         }
 
-        private IEnumerator DestroyCoroutine(float overrideDelay = 0f)
+        // 켜진 뒤 꺼질 때까지의 시간을 덮어쓴다(섬멸 회전 빔). 모델이 그 시간에 맞춰 스스로 사라지는 그림(BeamLifetimeAnimation)이면
+        // 그 연출로 끝내고, 아니면 시간 소멸처럼 페이드한다.
+        public void OverrideLifetime(float seconds)
+        {
+            if (data == null || seconds <= 0f)
+                return;
+
+            BeamLifetimeAnimation beamAnimation = null;
+            if (model != null && model.TryGetComponent(out beamAnimation))
+                beamAnimation.Play(seconds);
+
+            if (_destroyCoroutine != null)
+                StopCoroutine(_destroyCoroutine);
+            _destroyCoroutine = StartCoroutine(DestroyCoroutine(seconds, fade: beamAnimation == null));
+        }
+
+        private IEnumerator DestroyCoroutine(float overrideDelay = 0f, bool fade = true)
         {
             yield return new WaitForSeconds(overrideDelay > 0f ? overrideDelay : data.DestroyDelay);
 
@@ -576,7 +607,7 @@ namespace TrainDefense.Game
                 yield break;
 
             // 만료 소멸은 점점 투명해지며 사라진다. (피격 소멸은 즉시, 미사일(trigger 스폰형)은 폭발이 마감이라 페이드 없음)
-            if (!data.IsSpawnTriggerHandle)
+            if (fade && !data.IsSpawnTriggerHandle)
                 yield return _DespawnFadeCoroutine();
 
             ReturnToPool();
