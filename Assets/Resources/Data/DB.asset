@@ -1027,7 +1027,7 @@ MonoBehaviour:
       description: Passive_60022_Desc
     - id: 60023
       name: Passive_60023_Name
-      passiveType: SweepAttack:0.4|StatModifier:AttackDamage:-60
+      passiveType: SweepAttack:0.8|StatModifier:AttackInterval:50
       param1: 
       param2: 
       param3: 

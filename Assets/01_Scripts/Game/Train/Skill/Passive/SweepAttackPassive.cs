@@ -5,13 +5,13 @@ namespace TrainDefense.Game
 {
     /// <summary>
     /// 공격할 때 빔을 켜 둔 채 포탑이 조준한 적에서 시작해 적이 많은 쪽으로 부채꼴로 돌아, 빔이 앞쪽 적들을 휩쓴다. 빔에 들어온 적은 한 번씩 맞는다.
-    /// 쓸기가 끝나면 그 자리에서 잠깐 멈췄다가 쓸기 속도로 천천히 돌아가 다음 적을 조준한다. (엘리트 레이저 섬멸: 빔 0.4초)
+    /// 쓸기가 끝나면 그 자리에서 잠깐 멈췄다가 쓸기 속도로 천천히 돌아가 다음 적을 조준한다. (엘리트 레이저 섬멸: 빔 0.8초)
     /// DSL: "SweepAttack:seconds"
     /// </summary>
     public class SweepAttackPassive : TrainPassiveSkill
     {
         // 빔이 한 번에 쓸고 지나가는 부채꼴 각도(도).
-        private const float SWEEP_ANGLE = 90f;
+        private const float SWEEP_ANGLE = 120f;
         // 쓸기를 마친 뒤 그 자리에서 멈춰 있는 시간(초). 바로 돌아서면 공격이 끝난 건지 알아보기 어렵다.
         private const float PAUSE_SECONDS = 0.1f;
         // 다음 적을 다 조준했다고 보는 각도 차(도). 여기서부터 포탑 평소 조준 회전에 넘긴다.
