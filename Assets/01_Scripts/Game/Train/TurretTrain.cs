@@ -388,7 +388,7 @@ namespace TrainDefense.Game
         }
 
         // 포탑 조준 회전 속도(도/초). 즉시 스냅하면 '휙' 돌아 어색해서 이 속도로 보간한다.
-        private const float TURRET_ROTATE_SPEED = 1440f;
+        private const float TURRET_ROTATE_SPEED = 900f;
         // 발사를 허용하는 조준 오차(도).
         private const float FIRE_ALIGNMENT_TOLERANCE = 10f;
 
