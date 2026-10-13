@@ -7,6 +7,9 @@ namespace TrainDefense.Game
     [RequireComponent(typeof(CircleCollider2D))]
     public class ExpandingWave : Projectile
     {
+        // 확장 코루틴이 localScale을 직접 제어한다.
+        public override bool ControlsOwnScale => true;
+
         #region Variables
         // 입자 속도 편차: 가장 느린 입자는 끝 반경의 70%까지만 가서 한 줄 링이 아니라 흩뿌려진 모양이 된다.
         private const float BURST_PARTICLE_MIN_SPEED_RATIO = 0.7f;

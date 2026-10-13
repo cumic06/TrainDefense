@@ -1,3 +1,4 @@
+using System.Globalization;
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using System.IO;
@@ -44,7 +45,7 @@ namespace TrainDefense.Editor.DataImport
 
 		public float GetFloat(IRow row, string columnName)
 		{
-			float.TryParse(GetString(row, columnName), out float v);
+			float.TryParse(GetString(row, columnName), NumberStyles.Float, CultureInfo.InvariantCulture, out float v);
 			return v;
 		}
 

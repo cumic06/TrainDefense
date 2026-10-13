@@ -30,7 +30,6 @@ namespace TrainDefense.Game
         /// <summary>런 세이브용 편성 스냅샷.</summary>
         public class FormationState
         {
-            public float MainTrainHpRatio = 1f;
             public List<string> ReplacedTrainIds = new();
             public List<FormationTrainState> Trains = new();
         }
@@ -142,7 +141,6 @@ namespace TrainDefense.Game
         {
             var state = new FormationState
             {
-                MainTrainHpRatio = CurrentHpRatio,
                 ReplacedTrainIds = _replacedTrainIds.ToList(),
             };
 

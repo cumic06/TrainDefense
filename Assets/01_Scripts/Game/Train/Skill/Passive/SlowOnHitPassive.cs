@@ -1,4 +1,3 @@
-using System.Globalization;
 
 namespace TrainDefense.Game
 {
@@ -14,8 +13,8 @@ namespace TrainDefense.Game
         public static SlowOnHitPassive From(string[] parts)
         {
             if (parts.Length < 3) return null;
-            if (!float.TryParse(parts[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float rate) || rate <= 0f || rate >= 100f) return null;
-            if (!float.TryParse(parts[2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float duration) || duration <= 0f) return null;
+            if (!TryParseFloat(parts[1], out float rate) || rate <= 0f || rate >= 100f) return null;
+            if (!TryParseFloat(parts[2], out float duration) || duration <= 0f) return null;
             return new SlowOnHitPassive { Rate = rate, Duration = duration };
         }
 

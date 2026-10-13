@@ -1,3 +1,4 @@
+using System.Globalization;
 #if UNITY_EDITOR
 using TrainDefense.Editor.DataImport.Importers.Rows;
 using TrainDefense.Game.Datas;
@@ -71,7 +72,7 @@ namespace TrainDefense.Editor.DataImport.Importers
             if (!string.IsNullOrEmpty(id))
             {
                float prob = 0f;
-               if (i < probsParts.Length && float.TryParse(probsParts[i].Trim(), out float p))
+               if (i < probsParts.Length && float.TryParse(probsParts[i].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float p))
                {
                   prob = p;
                }
@@ -84,7 +85,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 
                // 비어 있으면 기본 1(엘리트 가능). 0이면 해당 몬스터는 엘리트로 등장하지 않음.
                float eliteChanceMultiplier = 1f;
-               if (i < eliteChanceParts.Length && float.TryParse(eliteChanceParts[i].Trim(), out float e))
+               if (i < eliteChanceParts.Length && float.TryParse(eliteChanceParts[i].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float e))
                {
                   eliteChanceMultiplier = e;
                }

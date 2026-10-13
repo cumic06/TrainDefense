@@ -47,11 +47,6 @@ namespace TrainDefense.Game
          cameraController?.SetFollowTarget(mainTrain.transform);
       }
 
-      public bool CheckHasTrain(TrainData trainData)
-      {
-         return mainTrain.CheckHasTrain(trainData);
-      }
-
       public bool CheckHasTrainById(string trainId)
       {
          return mainTrain.CheckHasTrainById(trainId);

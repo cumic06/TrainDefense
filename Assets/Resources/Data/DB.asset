@@ -978,10 +978,10 @@ MonoBehaviour:
       description: Passive_60013_Desc
     - id: 60015
       name: Passive_60015_Name
-      passiveType: RapidBombard
-      param1: -50
-      param2: 0
-      param3: 2:10:7
+      passiveType: StatModifier:AttackInterval:-50|RapidBombard:10:7
+      param1: 
+      param2: 
+      param3: 
       description: Passive_60015_Desc
     - id: 60017
       name: Passive_60017_Name

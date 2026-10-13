@@ -19,7 +19,6 @@ namespace TrainDefense.Game.RunSave.Sections
             public string currentStageId;
             public float currentStageTime;
             public int currentStageInspectionTimeIndex;
-            public int inspectionCount;
             public int totalStationPassedCount;
             public bool shouldShowStageSelectionOnStageEnd;
             public bool pendingStageSelectionAfterShop;
@@ -27,7 +26,6 @@ namespace TrainDefense.Game.RunSave.Sections
             public int mapStartNormalKill;
             public int mapStartEliteKill;
             public List<RecordEntry> runRecords = new();
-            public List<string> visitedStageIds = new();
         }
 
         [Serializable]
@@ -52,7 +50,6 @@ namespace TrainDefense.Game.RunSave.Sections
                 currentStageId = state.CurrentStageId,
                 currentStageTime = state.CurrentStageTime,
                 currentStageInspectionTimeIndex = state.CurrentStageInspectionTimeIndex,
-                inspectionCount = state.InspectionCount,
                 totalStationPassedCount = state.TotalStationPassedCount,
                 shouldShowStageSelectionOnStageEnd = state.ShouldShowStageSelectionOnStageEnd,
                 pendingStageSelectionAfterShop = state.PendingStageSelectionAfterShop,
@@ -60,8 +57,6 @@ namespace TrainDefense.Game.RunSave.Sections
                 mapStartNormalKill = state.MapStartNormalKill,
                 mapStartEliteKill = state.MapStartEliteKill,
             };
-
-            payload.visitedStageIds.AddRange(state.VisitedStageIds);
 
             foreach (var record in state.RunRecords)
             {
@@ -102,14 +97,12 @@ namespace TrainDefense.Game.RunSave.Sections
                 CurrentStageId = payload.currentStageId,
                 CurrentStageTime = payload.currentStageTime,
                 CurrentStageInspectionTimeIndex = payload.currentStageInspectionTimeIndex,
-                InspectionCount = payload.inspectionCount,
                 TotalStationPassedCount = payload.totalStationPassedCount,
                 ShouldShowStageSelectionOnStageEnd = payload.shouldShowStageSelectionOnStageEnd,
                 PendingStageSelectionAfterShop = payload.pendingStageSelectionAfterShop,
                 MapStartScore = payload.mapStartScore,
                 MapStartNormalKill = payload.mapStartNormalKill,
                 MapStartEliteKill = payload.mapStartEliteKill,
-                VisitedStageIds = payload.visitedStageIds ?? new List<string>(),
                 RunRecords = new List<StageManager.RunRecordState>(),
             };
 

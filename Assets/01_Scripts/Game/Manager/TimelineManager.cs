@@ -233,12 +233,6 @@ namespace TrainDefense
                 shopArrivalObject.SetActive(false);
         }
 
-        public bool IsTimelinePlaying()
-        {
-            Debug.Log("IsTimelinePlaying: " + playableDirector.state);
-            return playableDirector.state == PlayState.Playing;
-        }
-
         public bool IsTimelineEnd()
         {
             return playableDirector.state == PlayState.Paused;

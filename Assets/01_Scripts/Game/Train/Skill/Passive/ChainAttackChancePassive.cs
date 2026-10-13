@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Globalization;
 using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
@@ -20,11 +19,11 @@ namespace TrainDefense.Game
         public static ChainAttackChancePassive From(string[] parts)
         {
             if (parts.Length < 2) return null;
-            if (!float.TryParse(parts[1], out float pct) || pct <= 0f) return null;
+            if (!TryParseFloat(parts[1], out float pct) || pct <= 0f) return null;
 
             float delay = 0f;
             if (parts.Length >= 3)
-                float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out delay);
+                TryParseFloat(parts[2], out delay);
 
             return new ChainAttackChancePassive { ChancePercent = pct, Delay = Mathf.Max(0f, delay) };
         }

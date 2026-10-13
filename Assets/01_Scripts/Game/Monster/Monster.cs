@@ -205,8 +205,6 @@ namespace TrainDefense.Game
 
             _currentMonsterStatus.MaxHp = _currentMonsterStatus.MaxHp * hpScale;
             _currentMonsterStatus.Damage = _currentMonsterStatus.Damage * attackScale;
-
-            Debug.Log($"[Monster] Init Stats Scaled - HP: {_monsterData.MonsterStatusData.MaxHp} -> {_currentMonsterStatus.MaxHp} (x{hpScale}), DMG: {_monsterData.MonsterStatusData.Damage} -> {_currentMonsterStatus.Damage} (x{attackScale})");
          }
 
          _currentHp = _currentMonsterStatus.MaxHp;
@@ -891,11 +889,6 @@ namespace TrainDefense.Game
          int dropMoneyMax = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMax * goldScale);
 
          int dropMoney = Random.Range(dropMoneyMin, dropMoneyMax);
-
-         if (goldScale > 1.0f)
-         {
-            Debug.Log($"[Monster] Drop Money Scaled - {_currentMonsterStatus.DropMoneyMin}~{_currentMonsterStatus.DropMoneyMax} -> {dropMoneyMin}~{dropMoneyMax} (x{goldScale})");
-         }
 
          // 골드 획득 업그레이드 보너스 (구매 레벨당 % 증가, UpgradeValue = 레벨당 퍼센트)
          if (DatabaseManager.Instance != null && UserDataManager.Instance != null)

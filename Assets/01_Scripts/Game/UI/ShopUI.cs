@@ -76,15 +76,6 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private TextMeshProUGUI rerollLabelText;
         [SerializeField]
-        [Tooltip("첫 상점의 첫 리롤 비용 기준값. 실제 첫 비용 = 이 값 + 방문 수 × rerollCostPerShopVisit")]
-        private int rerollBaseCost = 50;
-        [SerializeField]
-        [Tooltip("상점 방문 1회마다 첫 리롤 비용에 더해지는 값. 수입이 커지는 후반에도 리롤이 공짜처럼 되지 않게 한다")]
-        private int rerollCostPerShopVisit = 20;
-        [SerializeField]
-        [Tooltip("리롤할 때마다 더해지는 증가분 = 이번 상점 첫 비용 × 이 배율. 상점을 새로 열면 첫 비용으로 초기화")]
-        private float rerollCostIncreaseRatio = 0.5f;
-        [SerializeField]
         [Tooltip("보유 코인이 부족할 때 리롤 비용 텍스트에 적용할 색상")]
         private Color rerollInsufficientColor = Color.red;
         [SerializeField]
@@ -179,11 +170,9 @@ namespace TrainDefense.Game.UI
         {
             // 역 도착 시점에 새로 추첨. (상점은 역당 1회 — 닫으면 바로 출발이라 재오픈은 없다)
             // 리롤 비용은 상점이 열릴 때마다(맵 선택 상점 포함) 이번 방문의 첫 비용으로 초기화된다.
-            var stageManager = StageManager.Instance;
-            int shopVisitCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
-            _currentRerollCost = rerollBaseCost + rerollCostPerShopVisit * shopVisitCount;
-            _currentRerollCostIncrease = Mathf.RoundToInt(_currentRerollCost * rerollCostIncreaseRatio);
-            _freeRerollsLeft = _GetFreeRerollCount();
+            _currentRerollCost = offerPricing.GetFirstRerollCost();
+            _currentRerollCostIncrease = offerPricing.GetRerollCostIncrease(_currentRerollCost);
+            _freeRerollsLeft = offerPricing.GetFreeRerollCount();
             _RebuildOfferSlots();
             _RefreshRerollUI();
             _RefreshTurretSlotText();
@@ -647,20 +636,6 @@ namespace TrainDefense.Game.UI
 
             _RebuildOfferSlots();
             _RefreshRerollUI();
-        }
-
-        // 스킬 트리 노드와 영구 강화의 무료 새로고침 횟수 합. 둘 다 "레벨당 +1회"라 정수로 쓴다.
-        private int _GetFreeRerollCount()
-        {
-            int count = 0;
-
-            if (SkillTreeManager.Instance != null)
-                count += Mathf.RoundToInt(SkillTreeManager.Instance.GetValue(SkillTreePassiveType.FreeReroll));
-
-            if (PermanentUpgradeManager.Instance != null)
-                count += Mathf.RoundToInt(PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.FreeReroll));
-
-            return count;
         }
 
         private void _OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)

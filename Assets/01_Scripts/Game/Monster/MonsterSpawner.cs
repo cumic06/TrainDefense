@@ -108,7 +108,15 @@ namespace TrainDefense.Game
 
       private float _originalSpawnInterval;
       private int _originalSpawnCount;
-      private int _stationPassedCount = 0;
+      // 누적 역 통과 수. 이어하기 복원까지 포함해 StageManager 한 곳만 센다(사본을 두면 복원 때 어긋난다).
+      private static int _StationPassedCount
+      {
+         get
+         {
+            var stageManager = TrainDefense.Game.Manager.StageManager.Instance;
+            return stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
+         }
+      }
 
       private EliteData _eliteData;
       // 엘리트 구간(역) 예산. 정산 때 구간시간 ÷ (eliteSpawnCycle × 스폰간격)을 적립해 정수부만
@@ -155,7 +163,6 @@ namespace TrainDefense.Game
          _eliteBudget = 0f;
          _eliteSpawnSchedule.Clear();
          _eliteSettlePending = true;
-         _stationPassedCount = 0;
          spawnCount = _originalSpawnCount;
          StartCoroutine(SpawnMonster());
       }
@@ -163,10 +170,6 @@ namespace TrainDefense.Game
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
       {
          DestroyAllMonsters();
-         // 이어하기는 복원 후 이 이벤트를 한 번만 다시 발행하므로 자체 카운트를 올리면 1부터 다시 센다.
-         // 런 세이브에 들어 있는 StageManager의 누적 상점 수를 그대로 따른다.
-         var stageManager = TrainDefense.Game.Manager.StageManager.Instance;
-         _stationPassedCount = stageManager != null ? stageManager.TotalInspectionPassedCount : _stationPassedCount + 1;
          _UpdateSpawnCountByStation();
          spawnInterval = _GetAcceleratedInterval();
 
@@ -186,9 +189,9 @@ namespace TrainDefense.Game
       private void _UpdateSpawnCountByStation()
       {
          int increase = 0;
-         if (_stationPassedCount >= spawnCountFirstIncreaseStation)
+         if (_StationPassedCount >= spawnCountFirstIncreaseStation)
             increase = spawnCountIncreaseStationInterval > 0
-               ? 1 + (_stationPassedCount - spawnCountFirstIncreaseStation) / spawnCountIncreaseStationInterval
+               ? 1 + (_StationPassedCount - spawnCountFirstIncreaseStation) / spawnCountIncreaseStationInterval
                : 1;
          spawnCount = Mathf.Min(_originalSpawnCount + increase, maxSpawnCount);
       }
@@ -234,38 +237,10 @@ namespace TrainDefense.Game
 
       private float _GetAcceleratedInterval()
       {
-         float totalAccel = Mathf.Min(_stationPassedCount * stationSpawnAccelPercent / 100f,
+         float totalAccel = Mathf.Min(_StationPassedCount * stationSpawnAccelPercent / 100f,
                                        maxSpawnAccelPercent / 100f);
          return _originalSpawnInterval * (1f - totalAccel);
       }
-
-      //private void SpawnBoss(string bossMonsterId)
-      //{
-      //    if (string.IsNullOrEmpty(bossMonsterId)) return;
-
-      //    MonsterData bossData = DatabaseManager.Instance.GetMonsterData(bossMonsterId);
-      //    if (bossData == null)
-      //    {
-      //        Debug.LogWarning($"MonsterSpawner: Boss monster data not found for ID: {bossMonsterId}");
-      //        return;
-      //    }
-
-      //    Vector3 spawnPos = RandomSpawnPos();
-      //    GameObject bossObject = ResourceManager.Instance.Spawn(bossData.Prefab, spawnPos, parent: transform);
-
-      //    // Boss 컴포넌트 우선, 없으면 Monster 컴포넌트 사용
-      //    Monster bossMonster = bossObject.GetComponent<Monster>();
-
-      //    if (bossMonster != null)
-      //    {
-      //        bossMonster.Initialize(bossData);
-      //        _spawnedMonsters.Add(bossMonster);
-      //        Debug.Log($"[MonsterSpawner] Boss spawned: {bossMonsterId}");
-
-      //        // 보스도 몬스터 스폰 이벤트 발행
-      //        GameEventSystem.Publish(new MonsterSpawnedEvent(bossMonsterId, true));
-      //    }
-      //}
 
       private IEnumerator SpawnMonster()
       {
@@ -381,9 +356,7 @@ namespace TrainDefense.Game
 
       private bool _IsEliteEligible(StageSpawnData data)
       {
-         var stageManager = TrainDefense.Game.Manager.StageManager.Instance;
-         int progressCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
-         return progressCount >= data.SpawnLevel + ELITE_DELAY_STATIONS;
+         return _StationPassedCount >= data.SpawnLevel + ELITE_DELAY_STATIONS;
       }
 
       // 검문 후 다음 구간의 엘리트를 정산한다. 예산 = 구간시간 ÷ (eliteSpawnCycle × 현재 스폰간격)을 적립해
@@ -393,7 +366,7 @@ namespace TrainDefense.Game
       // ELITE_START_STATION_COUNT 전에는 예산을 적립하지 않는다(데뷔 전 이월 방지).
       private void _ScheduleEliteSpawns()
       {
-         if (_eliteData == null || _stationPassedCount < ELITE_START_STATION_COUNT)
+         if (_eliteData == null || _StationPassedCount < ELITE_START_STATION_COUNT)
             return;
 
          float segmentDuration = GameEventSystem.Query<GetCurrentInspectionDurationEvent, float>(new GetCurrentInspectionDurationEvent());

@@ -28,8 +28,6 @@ namespace TrainDefense.Game
         private Coroutine _rangeAttackCoroutine;
         private float _attackCountdown;
 
-        // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
-        private float _statAttackDamageAccum;
 
         private bool _suppressMainProjectileShove;
         private Vector3 _turretmodelScale;
@@ -180,20 +178,6 @@ namespace TrainDefense.Game
                         }
                         _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine(1f));
                     }
-                    else
-                    {
-                        // 버스트(냉기): 장판을 지속시간 동안 켰다가 끄고, 그 뒤부터 쿨다운이 흐른다(총 주기 = 지속시간 + 간격).
-                        float burstDuration = _GetBurstDuration();
-                        if (burstDuration > 0f)
-                        {
-                            _attackCountdown = burstDuration + _currentRangeTrainStatus.AttackInterval;
-                            if (_rangeAttackCoroutine != null)
-                            {
-                                StopCoroutine(_rangeAttackCoroutine);
-                            }
-                            _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine(burstDuration));
-                        }
-                    }
                 }
             }
             else
@@ -214,7 +198,7 @@ namespace TrainDefense.Game
             return false;
         }
 
-        // activeDuration초 동안 장판을 켜둔 뒤 끈다. (Direct = 기존 1초 유지, 버스트 냉기 = BurstDuration)
+        // activeDuration초 동안 장판을 켜둔 뒤 끈다. (Direct = 1초 유지)
         private IEnumerator RangeProjectileCoroutine(float activeDuration)
         {
             yield return new WaitForSeconds(activeDuration);
@@ -223,6 +207,17 @@ namespace TrainDefense.Game
             {
                 _rangeProjectilePrefab.gameObject.SetActive(false);
             }
+        }
+
+        // 장판 크기를 사거리에 맞춘다. 크기를 스스로 정하는 투사체(퍼지는 파동)는 건드리지 않는다.
+        // (파동은 처음 켜질 때의 크기를 기준으로 퍼지므로, 여기서 바꾸면 소환 직후 한 프레임 깜빡인다)
+        private void _ApplyRangeScale()
+        {
+            if (_rangeProjectilePrefab == null || _rangeProjectilePrefab.ControlsOwnScale)
+                return;
+
+            float scale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
+            _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1f);
         }
 
         public void SetSuppressMainProjectileShove(bool suppress)
@@ -268,32 +263,13 @@ namespace TrainDefense.Game
                     _rangeProjectilePrefab.transform.SetParent(transform);
                     var circle = _rangeProjectilePrefab.GetComponentInChildren<CircleCollider2D>();
                     _baseColliderRadius = circle != null && circle.radius > 0f ? circle.radius : 1f;
-                    // ExpandingWave는 자체 확장 코루틴이 localScale을 제어하므로 여기서 스케일하면 소환 직후 한 프레임 깜빡인다.
-                    if (_rangeProjectilePrefab is not ExpandingWave)
-                    {
-                        float scale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
-                        _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
-                    }
+                    _ApplyRangeScale();
                     _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
                     _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
                     _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
                     _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
-
-                    // 버스트(냉기)는 발동 시점에 켜므로, 깔아둔 장판은 꺼둔 채 대기한다.
-                    if (_GetBurstDuration() > 0f)
-                        _rangeProjectilePrefab.gameObject.SetActive(false);
                 }
             }
-        }
-
-        // 버스트 지속시간. 포탑 데이터의 BurstDuration이 base(냉기 5초)이고 업그레이드 누적이 가산된다.
-        // base 0 = 비버스트 포탑(강화 규칙도 없어 항상 0). 장판이 없으면 켤 대상이 없으므로 0.
-        private float _GetBurstDuration()
-        {
-            if (_rangeProjectilePrefab == null)
-                return 0f;
-
-            return _currentRangeTrainStatus.BurstDuration;
         }
 
         public override void Upgrade(ITrainUpgradeData upgradeData)
@@ -311,10 +287,9 @@ namespace TrainDefense.Game
                 var rangeStatus = rangeUpgradeData.GetRangeStatusUpgrade(upgradeLevelIndex);
                 _AddUpgradeStatus(ref _currentRangeTrainStatus, rangeStatus);
 
+                _ApplyRangeScale();
                 if (_rangeProjectilePrefab != null)
                 {
-                    float scale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
-                    _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
                     _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
                 }
             }
@@ -375,7 +350,6 @@ namespace TrainDefense.Game
                 CriticalChance = newBase.CriticalChance + (sourceCurrent.CriticalChance - sourceBase.CriticalChance),
                 CriticalDamage = newBase.CriticalDamage + (sourceCurrent.CriticalDamage - sourceBase.CriticalDamage),
                 SlowRate = newBase.SlowRate + (sourceCurrent.SlowRate - sourceBase.SlowRate),
-                BurstDuration = newBase.BurstDuration + (sourceCurrent.BurstDuration - sourceBase.BurstDuration),
             };
         }
 
@@ -388,26 +362,6 @@ namespace TrainDefense.Game
         public float GetSlowValue()
         {
             return 1f - Mathf.Min(_currentRangeTrainStatus.SlowRate, MAX_TOTAL_SLOW_RATE) / 100f;
-        }
-
-        public override void StatusUpgrade(RangeTrainStatus upgradeData)
-        {
-            _currentRangeTrainStatus.AttackRange += upgradeData.AttackRange;
-            _currentRangeTrainStatus.AttackArea += upgradeData.AttackArea;
-            _currentRangeTrainStatus.AttackDamage += upgradeData.AttackDamage;
-            _currentRangeTrainStatus.AttackCount += upgradeData.AttackCount;
-            _currentRangeTrainStatus.AttackInterval += upgradeData.AttackInterval;
-            _currentRangeTrainStatus.CriticalChance += upgradeData.CriticalChance;
-            _currentRangeTrainStatus.CriticalDamage += upgradeData.CriticalDamage;
-            _currentRangeTrainStatus.SlowRate += upgradeData.SlowRate;
-            _currentRangeTrainStatus.BurstDuration += upgradeData.BurstDuration;
-
-            if (_rangeProjectilePrefab != null)
-            {
-                float scale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
-                _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1);
-                _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
-            }
         }
 
         public override float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
@@ -425,7 +379,6 @@ namespace TrainDefense.Game
                 case StatType.CriticalDamage: return status.CriticalDamage;
                 case StatType.AttackArea: return status.AttackArea;
                 case StatType.SlowRate: return status.SlowRate;
-                case StatType.BurstDuration: return status.BurstDuration;
                 default: return base.GetCurrentStatValue(statType);
             }
         }
@@ -463,7 +416,6 @@ namespace TrainDefense.Game
             status.CriticalChance += upgrade.CriticalChance;
             status.CriticalDamage += upgrade.CriticalDamage;
             status.SlowRate += upgrade.SlowRate;
-            status.BurstDuration += upgrade.BurstDuration;
         }
 
         // 상점 카드 롱프레스용 — 새 포탑은 생성 직후 값(영구 강화 + 판 중 전체 강화), 승격은 promotionSource의 누적 강화를 승계한 값.
@@ -497,10 +449,6 @@ namespace TrainDefense.Game
                 (L("Detail_Speed", "공격속도"), $"{status.AttackInterval:F2}"),
             };
 
-            // 분사 지속시간은 버스트 포탑(냉기)만 표시 — 비버스트는 base가 0이라 값 판정으로 충분.
-            if (status.BurstDuration > 0f)
-                details.Add((L("Detail_BurstDuration", "지속시간"), $"{status.BurstDuration:F1}"));
-
             // 둔화율은 둔화 포탑(냉기)만 표시 — 상점 둔화율 강화 카드가 변화를 보여 줄 줄. 라벨은 도감과 같은 키.
             if (status.SlowRate > 0f)
                 details.Add((L("Collection_Slow", "둔화"), $"{status.SlowRate:F0}%"));
@@ -533,11 +481,7 @@ namespace TrainDefense.Game
                 {
                     case StatType.AttackRange:
                         _currentRangeTrainStatus.AttackRange += baseStatus.AttackRange * percent;
-                        if (_rangeProjectilePrefab != null)
-                        {
-                            float rangeScale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
-                            _rangeProjectilePrefab.transform.localScale = new Vector3(rangeScale, rangeScale, 1f);
-                        }
+                        _ApplyRangeScale();
                         break;
                     case StatType.AttackArea:
                         _currentRangeTrainStatus.AttackArea += baseStatus.AttackArea * percent;
@@ -550,7 +494,7 @@ namespace TrainDefense.Game
                         break;
                     case StatType.AttackInterval:
                         // 상점 공격 속도 카드와 같은 식 — 공격 속도 배율에 -percent를 더한다(percent 음수 = 빨라짐).
-                        _currentRangeTrainStatus.AttackInterval = _GetIntervalAfterPassiveSpeed(_metaBaseStatus.AttackInterval, _currentRangeTrainStatus.AttackInterval, -percent);
+                        _currentRangeTrainStatus.AttackInterval = GetAttackIntervalAfterSpeedBonus(_metaBaseStatus.AttackInterval, _currentRangeTrainStatus.AttackInterval, -percent);
                         break;
                     case StatType.SlowRate:
                         // 둔화율은 이미 %라 적힌 값을 %p 그대로 더한다(15 → 30%에서 45%). 상점 둔화 카드와 같은 방식.
@@ -568,39 +512,12 @@ namespace TrainDefense.Game
             base.ApplyStat(stat);
             if (stat == null) return;
 
-            var baseStatus = rangeTrainData.RangeTrainStatus;
-            float percent = stat.Value / 100f;
+            // 사거리·범위·공격력·공속·둔화율은 ApplyStatsByBaseValue가 처리하고, 나머지만 여기로 온다.
             switch (stat.Type)
             {
-                case StatType.AttackRange:
-                    _currentRangeTrainStatus.AttackRange += baseStatus.AttackRange * percent;
-
-                    if (_rangeProjectilePrefab != null)
-                    {
-                        float rangeScale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
-                        _rangeProjectilePrefab.transform.localScale = new Vector3(rangeScale, rangeScale, 1f);
-                    }
-                    break;
-
-                case StatType.AttackArea:
-                    _currentRangeTrainStatus.AttackArea += baseStatus.AttackArea * percent;
-                    break;
-
-                case StatType.AttackDamage:
-                    _currentRangeTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, stat.Value * rangeTrainData.AttackDamageMultiplier);
-                    if (_rangeProjectilePrefab != null)
-                    {
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
-                    }
-                    break;
-
                 // 정수 스탯(공격 횟수)은 % 아니라 flat +N (TurretTrain과 동일)
                 case StatType.AttackCount:
                     _currentRangeTrainStatus.AttackCount += Mathf.RoundToInt(stat.Value);
-                    break;
-
-                case StatType.AttackInterval:
-                    _currentRangeTrainStatus.AttackInterval += baseStatus.AttackInterval * percent;
                     break;
 
                 case StatType.CriticalChance:
@@ -621,13 +538,6 @@ namespace TrainDefense.Game
             }
         }
 
-        public override void ApplyStatsLevelAware(IStat[] stats, int newLevel, int prevLevel = 0)
-        {
-            if (stats == null || stats.Length == 0) return;
-            foreach (var stat in stats)
-                ApplyStatLevelAware(stat, newLevel, prevLevel);
-        }
-
         protected override void ApplyStatLevelAware(IStat stat, int newLevel, int prevLevel)
         {
             if (stat == null) return;
@@ -642,11 +552,7 @@ namespace TrainDefense.Game
             switch (stat.Type)
             {
                 case StatType.AttackRange:
-                    if (_rangeProjectilePrefab != null)
-                    {
-                        float rangeScale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
-                        _rangeProjectilePrefab.transform.localScale = new Vector3(rangeScale, rangeScale, 1f);
-                    }
+                    _ApplyRangeScale();
                     break;
 
                 case StatType.AttackArea:
@@ -726,12 +632,9 @@ namespace TrainDefense.Game
             _currentRangeTrainStatus = _GetInheritedStatus(rangeTrainData.RangeTrainStatus,
                 sourceRange.rangeTrainData.RangeTrainStatus, sourceRange._currentRangeTrainStatus);
 
-            _statAttackDamageAccum = sourceRange._statAttackDamageAccum;
-
+            _ApplyRangeScale();
             if (_rangeProjectilePrefab != null)
             {
-                float scale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
-                _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1f);
                 _rangeProjectilePrefab.Init(
                     _currentRangeTrainStatus.AttackDamage,
                     this,

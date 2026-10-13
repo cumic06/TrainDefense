@@ -1,4 +1,3 @@
-using System.Globalization;
 
 namespace TrainDefense.Game
 {
@@ -13,7 +12,7 @@ namespace TrainDefense.Game
         public static StunDurationPassive From(string[] parts)
         {
             if (parts.Length < 2) return null;
-            if (!float.TryParse(parts[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float duration) || duration <= 0f) return null;
+            if (!TryParseFloat(parts[1], out float duration) || duration <= 0f) return null;
             return new StunDurationPassive { Duration = duration };
         }
 

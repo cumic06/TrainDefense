@@ -87,9 +87,6 @@ namespace TrainDefense.Game.UI
         private bool _hasGradeGlow;
         private Vector2 _gradeGlowStrength;
 
-        // 외곽선 머티리얼의 광택 띠는 이 전역 시간으로 움직인다. 레벨업 창(TriChoiceUI)은 열려 있을 때만 갱신하므로 상점에서도 직접 갱신한다.
-        private static readonly int GlobalUnscaledTime = Shader.PropertyToID("_GlobalUnscaledTime");
-
         public ShopOffer CurrentOffer => _offer;
         public bool HasValidOffer => _offer != null && _offer.IsValid;
 
@@ -118,9 +115,6 @@ namespace TrainDefense.Game.UI
 
         private void Update()
         {
-            if (_isRemodelOutline)
-                Shader.SetGlobalFloat(GlobalUnscaledTime, Time.unscaledTime);
-
             if (_hasGradeGlow)
                 _UpdateGradeGlowPulse();
         }

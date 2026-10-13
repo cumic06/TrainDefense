@@ -1,3 +1,4 @@
+using System.Globalization;
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
@@ -116,7 +117,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 					
 					if (string.IsNullOrEmpty(upgradeDataId)) continue;
 					
-					float.TryParse(weightStr, out float weight);
+					float.TryParse(weightStr, NumberStyles.Float, CultureInfo.InvariantCulture, out float weight);
 					
 					var weightedUpgradeData = (WeightedUpgradeData)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(WeightedUpgradeData));
 					var t = typeof(WeightedUpgradeData);

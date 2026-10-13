@@ -12,7 +12,7 @@ namespace TrainDefense.Game.UI
 {
     /// <summary>
     /// 게임오버 결산 화면(기존 StageResultUI 대체).
-    /// 죽으면 한 판 동안 거쳐 간 맵들(<see cref="StageManager.RunRecords"/>)을 상단 가로 스크롤 영역에
+    /// 죽으면 한 판 동안 거쳐 간 맵들(<see cref="StageManager.FinalizeAndGetRecords"/>)을 상단 가로 스크롤 영역에
     /// 늘어놓고, 맵1 → 그 맵에서 번 점수 → 다음 맵으로 넘어가는 식으로 자동 재생한다.
     /// 자동 재생이 끝나면 하단 별도 패널에 총점을 카운트업하고, 가로 스크롤(ScrollRect)을 풀어
     /// 좌우로 자유롭게 다시 볼 수 있게 한다. 화면을 탭하면 현재 맵 단계의 연출만 즉시 끝낸다(맵마다 스킵).

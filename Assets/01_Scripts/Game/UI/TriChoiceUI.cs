@@ -37,7 +37,7 @@ namespace TrainDefense.Game.UI
       private Button pauseButton;
 
       [Header("Coin Display")]
-      [Tooltip("삼중택일 동안 표시할 보유 코인 UI(인게임 Group_Coin 복제본). 삼중택일이 뜰 때 활성화되고 카드 위에 정렬된다")]
+      [Tooltip("보유 코인 UI(인게임 Group_Coin 복제본). 지금은 삼중택일에서 표시하지 않아 늘 꺼 둔다")]
       [SerializeField]
       private GameObject coinUI;
       #endregion
@@ -59,12 +59,8 @@ namespace TrainDefense.Game.UI
       #endregion
 
       #region LifeCycle
-      private static readonly int GlobalUnscaledTime = Shader.PropertyToID("_GlobalUnscaledTime");
-
       private void OnEnable() => Localize.Localization.OnLanguageChanged += _RefreshLanguage;
       private void OnDisable() => Localize.Localization.OnLanguageChanged -= _RefreshLanguage;
-
-      private void Update() => Shader.SetGlobalFloat(GlobalUnscaledTime, Time.unscaledTime);
 
       private void Awake()
       {
@@ -79,7 +75,7 @@ namespace TrainDefense.Game.UI
          _SetPauseButtonLocked(true);
 
          // 삼중택일이 떠 있지 않은 평상시엔 코인 UI를 꺼 둔다(인게임 HUD 코인과 중복 방지).
-         _ShowCoinUI(false);
+         _HideCoinUI();
       }
 
       private void Start() => _SubscribeEvents();
@@ -177,29 +173,11 @@ namespace TrainDefense.Game.UI
          gameObject.SetActive(false);
       }
 
-      // 삼중택일 표시/숨김에 맞춰 보유 코인 UI를 켜고 끈다. 켤 때 카드 위에 그려지도록 정렬을 보장한다.
-      private void _ShowCoinUI(bool show)
+      // 보유 코인 UI는 삼중택일에서 표시하지 않는다. (켜는 경로는 681cf4d6에서 없어졌다)
+      private void _HideCoinUI()
       {
-         if (coinUI == null)
-            return;
-
-         if (show)
-            _EnsureCoinUIAboveCards();
-
-         coinUI.SetActive(show);
-      }
-
-      // 카드(TriChoiceSelectUI의 Canvas는 overrideSorting + sortingOrder=2)보다 위에 그려지도록
-      // 코인 UI에 overrideSorting Canvas를 보장한다. (정렬용 컴포넌트만 부여 — UI 자체는 생성하지 않음)
-      private void _EnsureCoinUIAboveCards()
-      {
-         var canvas = coinUI.GetComponent<Canvas>();
-
-         if (canvas == null)
-            canvas = coinUI.AddComponent<Canvas>();
-
-         canvas.overrideSorting = true;
-         canvas.sortingOrder = 10;
+         if (coinUI != null)
+            coinUI.SetActive(false);
       }
 
       public void OnInspectionEnter(int count, bool showLevelUpText = true)
@@ -207,7 +185,7 @@ namespace TrainDefense.Game.UI
          backgroundImage.SetActive(true);
 
          // 삼중택일에서는 코인을 쓸 수 없으므로 보유량을 띄우지 않는다(상점에서만 표시).
-         _ShowCoinUI(false);
+         _HideCoinUI();
 
          int requestId = ++_popupRequestId;
          _OnChoiceUIPopup(count, requestId, showLevelUpText).Forget();
@@ -243,7 +221,7 @@ namespace TrainDefense.Game.UI
             TriChoiceSelectEvent eventData = new(null, 0);
             GameEventSystem.Publish(eventData);
             backgroundImage.SetActive(false);
-            _ShowCoinUI(false);
+            _HideCoinUI();
             _SetPauseButtonLocked(false);
             _EndStationLevelUp();
             Debug.LogWarning("No available choices found");
@@ -310,7 +288,7 @@ namespace TrainDefense.Game.UI
             TriChoiceSelectEvent fallback = new(null, 0);
             GameEventSystem.Publish(fallback);
             backgroundImage.SetActive(false);
-            _ShowCoinUI(false);
+            _HideCoinUI();
             _SetPauseButtonLocked(false);
             _EndStationLevelUp();
          }
@@ -401,7 +379,7 @@ namespace TrainDefense.Game.UI
          }
 
          backgroundImage.SetActive(false);
-         _ShowCoinUI(false);
+         _HideCoinUI();
          _SetPauseButtonLocked(false);
          _EndStationLevelUp();
       }

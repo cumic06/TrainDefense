@@ -33,10 +33,6 @@ namespace TrainDefense.Game
       [Tooltip("MainTrain의 비주얼 모델. 편성 길이에 맞춰 오른쪽으로 밀어 형태 중앙이 카메라 타깃(=MainTrain transform)과 일치하게 한다.")]
       private Transform trainModel;
       [SerializeField]
-      [Header("테스트용")]
-      [BoxGroup("TrainSetting")]
-      private Train startTrainablePrefab;
-      [SerializeField]
       [BoxGroup("TrainSetting")]
       private bool isUnDead = false;
 
@@ -45,8 +41,6 @@ namespace TrainDefense.Game
       private float gameOverSlowDuration = 2f;
       #endregion
 
-      private TrainChoiceSkillType _pendingSkillType = TrainChoiceSkillType.None;
-      private string _pendingSelectedSkillId = null;
       private readonly List<Train> _currentAliveTrains = new();//살아있는 Train만 있는 목록
       public List<Train> CurrentAliveTrains => _currentAliveTrains;
       public int MaxTrainCount => maxTrainCount + Mathf.RoundToInt(
@@ -91,13 +85,11 @@ namespace TrainDefense.Game
             _deadTrains.Clear();
             _trainOriginalIndexMap.Clear();
             _replacedTrainIds.Clear();
-
-            if (startTrainablePrefab != null && startTrainablePrefab.TryGetComponent(out Train train))
-            {
-               SpawnTrain(startTrainablePrefab);
-            }
          }
       }
+
+      // 메인 기차는 무적이라 최대 체력 강화를 받지 않는다.
+      protected override bool ReceivesMetaMaxHp => false;
 
       protected override void OnDestroy()
       {
@@ -195,10 +187,8 @@ namespace TrainDefense.Game
             return;
          }
 
-         _pendingSkillType = skillType;
          Train trainObject = Instantiate(trainPrefab, transform);
-         trainObject.Initialize(trainData, _pendingSkillType, selectedSkillId);
-         _pendingSkillType = TrainChoiceSkillType.None;
+         trainObject.Initialize(trainData, skillType, selectedSkillId);
          trainObject.IsUnDead = isUnDead;
          _currentAliveTrains.Add(trainObject);
          _currentTrains.Add(trainObject);
@@ -230,22 +220,7 @@ namespace TrainDefense.Game
          }
       }
 
-      /// <summary>
-      /// 기존 Train을 새로운 Train으로 대체합니다. (Elite Train 전환용)
-      /// </summary>
-      /// <param name="oldTrainId">대체할 기존 Train ID</param>
-      /// <param name="newTrainPrefab">새로운 Train 프리팹</param>
-      public void ReplaceTrain(string oldTrainId, Train newTrainPrefab)
-      {
-         if (newTrainPrefab == null)
-         {
-            Debug.LogError("ReplaceTrain: New Train prefab is null");
-            return;
-         }
-
-         ReplaceTrain(oldTrainId, DatabaseManager.Instance.GetTrainData(newTrainPrefab.Id));
-      }
-
+      // 기존 Train을 새로운 Train으로 대체한다. (Elite Train 전환용)
       public void ReplaceTrain(string oldTrainId, TrainData newTrainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None, string selectedSkillId = null)
       {
          // 대체할 기존 Train 찾기
@@ -274,13 +249,9 @@ namespace TrainDefense.Game
             return;
          }
 
-         _pendingSkillType = skillType;
-         _pendingSelectedSkillId = selectedSkillId;
          // 새로운 Train 생성 (기존 Train 제거 전에 생성하여 이벤트에서 참조 가능)
          Train newTrain = Instantiate(newTrainPrefab, transform);
-         newTrain.Initialize(newTrainData, _pendingSkillType, _pendingSelectedSkillId);
-         _pendingSkillType = TrainChoiceSkillType.None;
-         _pendingSelectedSkillId = null;
+         newTrain.Initialize(newTrainData, skillType, selectedSkillId);
          newTrain.IsUnDead = isUnDead;
 
          // 기존 트레인의 누적 강화(영구 상점 + 카드)를 새 인스턴스에 통째로 승계.
@@ -437,9 +408,8 @@ namespace TrainDefense.Game
          RearrangeAllTrainsToOriginalOrder();
       }
 
-      // 죽은(부서진) 기차를 모두 부활시켜 산 기차 목록으로 되돌린다.
-      // revivedHpRatio가 0보다 크면 부활 직후 HP를 최대 체력의 그 비율로 맞춘다(0이면 Resurrect의 풀피 유지).
-      private void ReviveAllDeadTrains(float revivedHpRatio = 0f)
+      // 죽은(부서진) 기차를 모두 부활시켜 산 기차 목록으로 되돌린다. (Resurrect가 풀피로 되살린다)
+      private void ReviveAllDeadTrains()
       {
          foreach (var deadTrainInfo in _deadTrains.ToList())
          {
@@ -454,15 +424,7 @@ namespace TrainDefense.Game
             // _deadTrains에서 제거하고 _currentAliveTrains에 다시 추가
             _deadTrains.Remove(deadTrainInfo);
             _currentAliveTrains.Add(train);
-
-            if (revivedHpRatio > 0f)
-               train.SetHpToRatio(revivedHpRatio);
          }
-      }
-
-      public bool CheckHasTrain(TrainData trainData)
-      {
-         return _currentAliveTrains.Any(train => train.TrainData.Id == trainData.Id);
       }
 
       public bool CheckHasTrainById(string trainId)

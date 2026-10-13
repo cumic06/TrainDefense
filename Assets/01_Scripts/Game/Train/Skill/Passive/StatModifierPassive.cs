@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using TrainDefense.Game.Stats;
 using UnityEngine;
 
@@ -27,7 +26,7 @@ namespace TrainDefense.Game
                     Debug.LogWarning($"StatModifierPassive: unknown StatType '{parts[i]}'");
                     return null;
                 }
-                if (!float.TryParse(parts[i + 1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float percent))
+                if (!TryParseFloat(parts[i + 1], out float percent))
                 {
                     Debug.LogWarning($"StatModifierPassive: invalid percent '{parts[i + 1]}'");
                     return null;

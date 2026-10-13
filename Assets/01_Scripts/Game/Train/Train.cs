@@ -58,13 +58,10 @@ namespace TrainDefense.Game
         public string Id => id;
         public TrainData TrainData => _trainData;
         public bool IsMainTrain => _trainData.IsMainTrain;
-        public bool IsRotateTurret => isRotateTurret;
 
         public bool IsDead => _isDead;
-        // 레벨 = 받은 업그레이드 횟수(획득 0, 만렙 = upgradeStats 개수 8).
+        // 레벨 = 받은 업그레이드 횟수(획득 0).
         public int CurrentLevel => _currentLevel;
-        // 포탑 만렙 = upgradeStats 슬롯 수 규격. (업그레이드 데이터 배열 길이와 함께 바꿔야 함)
-        public const int MAX_LEVEL = 8;
 
         /// <summary>런 세이브용 — 이 기차에 부여된 삼중택일 스킬 종류 마스크.</summary>
         public TrainChoiceSkillType SkillTypeMask => _skillTypeMask;
@@ -135,6 +132,9 @@ namespace TrainDefense.Game
             _initialized = true;
         }
 
+        // 영구 업그레이드·스킬트리의 최대 체력 강화를 받는가. 메인 기차는 무적이라 받지 않는다.
+        protected virtual bool ReceivesMetaMaxHp => true;
+
         protected virtual void Setup()
         {
             _isDead = false;
@@ -146,8 +146,8 @@ namespace TrainDefense.Game
 
             _currentMaxHp = _trainData.TrainStatusData.MaxHp;
 
-            // 영구 업그레이드 + 스킬트리: 포탑 최대 체력 % 증가 (레벨당 %, 메인 기차는 무적이라 제외)
-            if (!(this is MainTrain))
+            // 영구 업그레이드 + 스킬트리: 포탑 최대 체력 % 증가 (레벨당 %)
+            if (ReceivesMetaMaxHp)
                 _currentMaxHp = GetMetaMaxHp(_currentMaxHp);
 
             _currentHp = _currentMaxHp;
@@ -364,20 +364,16 @@ namespace TrainDefense.Game
             _flashCoroutine = null;
         }
 
-        // 공격 속도 강화는 상점 카드·레벨업 모두 발사 속도 배율(= 기본 간격 ÷ 지금 간격)에 %를 더한다. 간격 = 기본 ÷ 배율.
-        // 지금 간격에서 배율을 역산하므로 상점과 레벨업을 어떤 순서로 받아도 간격 = 기본 ÷ (1 + 상점% + 레벨업%)가 된다.
+        // 공격 속도 강화는 상점 카드·레벨업·개조 패시브 모두 발사 속도 배율(= 기본 간격 ÷ 지금 간격)에 %를 더한다. 간격 = 기본 ÷ 배율.
+        // 지금 간격에서 배율을 역산하므로 어떤 순서로 받아도 간격 = 기본 ÷ (1 + 상점% + 레벨업% + 개조%)가 된다.
         public static float GetAttackIntervalAfterSpeedBonus(float baseInterval, float currentInterval, float speedBonus)
-            => baseInterval / (baseInterval / currentInterval + speedBonus);
-
-        // 개조 패시브가 공격 속도를 낮출 때(speedBonus 음수) 배율이 0 이하로 떨어져 간격이 무한·음수가 되지 않게 하는 하한.
-        private const float MIN_PASSIVE_SPEED_MULTIPLIER = 0.1f;
-
-        // 개조 패시브의 공격 속도 — 상점 공격 속도 카드와 같은 배율 덧셈. 기본 간격 기준이라 개조 시점과 상관없이 같은 양이 바뀐다.
-        protected static float _GetIntervalAfterPassiveSpeed(float baseInterval, float currentInterval, float speedBonus)
         {
-            float speedMultiplier = Mathf.Max(MIN_PASSIVE_SPEED_MULTIPLIER, baseInterval / currentInterval + speedBonus);
+            float speedMultiplier = Mathf.Max(MIN_SPEED_MULTIPLIER, baseInterval / currentInterval + speedBonus);
             return baseInterval / speedMultiplier;
         }
+
+        // 개조 패시브가 공격 속도를 낮출 때(speedBonus 음수) 배율이 0 이하로 떨어져 간격이 무한·음수가 되지 않게 하는 하한.
+        private const float MIN_SPEED_MULTIPLIER = 0.1f;
 
         // 이어하기 복원용 — 공격 간격은 강화 순서에 따라 증가량이 달라 저장된 증가량만으로는 재현되지 않아 최종값을 직접 되돌린다.
         public virtual void RestoreAttackInterval(float attackInterval) { }
@@ -405,33 +401,6 @@ namespace TrainDefense.Game
             _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
 
             GameEventSystem.Publish(new TrainLevelUpEvent(this, _currentLevel));
-        }
-
-        public virtual void StatusUpgrade(TrainStatusData upgradeData)
-        {
-            _currentMaxHp += upgradeData.MaxHp;
-            _currentHp += upgradeData.MaxHp;
-            _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
-        }
-
-        public virtual void StatusUpgrade(TurretTrainStatus upgradeData)
-        {
-
-        }
-
-        public virtual void StatusUpgrade(RangeTrainStatus upgradeData)
-        {
-
-        }
-
-        public virtual void ApplyStats(IStat[] stats)
-        {
-            if (stats == null || stats.Length == 0) return;
-
-            foreach (var stat in stats)
-            {
-                ApplyStat(stat);
-            }
         }
 
         public virtual void ApplyStatsLevelAware(IStat[] stats, int newLevel, int prevLevel = 0)
@@ -464,7 +433,9 @@ namespace TrainDefense.Game
         // 개조 패시브 등 % 스탯을 "데이터 기본값 × %"만큼 한 번 더한다(현재 값에 곱하지 않는다 — 개조 시점과 상관없이 같은 양).
         public virtual void ApplyStatsByBaseValue(IStat[] stats)
         {
-            ApplyStats(stats);
+            if (stats == null) return;
+            foreach (var stat in stats)
+                ApplyStat(stat);
         }
 
         public virtual void ApplyPassiveSkills() { }

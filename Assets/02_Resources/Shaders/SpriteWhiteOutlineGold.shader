@@ -75,7 +75,7 @@ Shader "Custom/Sprite/WhiteOutlineGold"
                 float  _RealtimeAnimation;
             CBUFFER_END
 
-            float _GlobalUnscaledTime; // set by ShaderUnscaledTimeUpdater.cs via Shader.SetGlobalFloat
+            float _GlobalUnscaledTime; // set by ShaderUnscaledTimeUpdater.cs (Canvas.willRenderCanvases) via Shader.SetGlobalFloat
 
             // 텍스처 밖은 투명으로 본다 — 그림이 텍스처 끝까지 꽉 찬 곳(GM_CreamBox 윗변 등)은 바깥을 읽으면 반대편 픽셀이 나와 외곽선이 빠진다.
             half SampleAlpha(float2 uv)

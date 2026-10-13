@@ -44,14 +44,11 @@ namespace TrainDefense.Game
         private Quaternion _turretDefaultLocalRotation;
         private bool _isTurretDefaultRotationCached;
 
-        // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
-        private float _statAttackDamageAccum;
 
-        public delegate Projectile ProjectileOverrideProvider(int attackIndex);
+        // 이번 공격에 쓸 투사체 프리팹과 그 탄에만 곱할 데미지 배율을 돌려준다. 해당 없으면 null.
+        public delegate Projectile ProjectileOverrideProvider(int attackIndex, out float damageMultiplier);
         private readonly List<ProjectileOverrideProvider> _projectileOverrides = new();
         private float _attackCountdown;
-        // 버스트(화염) 남은 분사 시간. > 0이면 분사 유지 중이고 쿨다운은 멈춰 있다(종료 후부터 흐름).
-        private float _burstRemaining;
 
         // 공격 횟수(AttackCount) 반복 간격 = AttackInterval × 이 비율. 공속이 빨라질수록 연타 간격도 조여진다.
         private const float REPEAT_ATTACK_DELAY_RATIO = 0.15f;
@@ -66,8 +63,6 @@ namespace TrainDefense.Game
         private TurretTrainStatus _metaBaseStatus;
         public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
         public override float CurrentAttackRange => _currentTurretTrainStatus.AttackRange;
-        // 공격 간격(초). MainTrain이 터치 연속 발사의 쿨다운으로 사용한다.
-        public float AttackInterval => _currentTurretTrainStatus.AttackInterval;
         // 분사형(화염)은 범위가 사거리에 비해 넓어지면 분사 각도가 상한에 닿아, 범위를 더 올려도 모양과 판정이 그대로다.
         public bool IsAttackAreaAtLimit => useParticleProjectile
             && _currentTurretTrainStatus.AttackArea >= ParticleProjectile.GetMaxAttackArea(_currentTurretTrainStatus.AttackRange);
@@ -85,24 +80,16 @@ namespace TrainDefense.Game
                 case StatType.CriticalChance: return status.CriticalChance;
                 case StatType.CriticalDamage: return status.CriticalDamage;
                 case StatType.AttackArea: return status.AttackArea;
-                case StatType.BurstDuration: return status.BurstDuration;
                 default: return base.GetCurrentStatValue(statType);
             }
         }
 
         public override void RestoreAttackInterval(float attackInterval) => _currentTurretTrainStatus.AttackInterval = attackInterval;
 
-        // MainTrain 주무기로 장착되면 true. 자동 적 탐지/발사를 끄고, MainTrain의 터치 조준 발사만 받는다.
-        public bool ManualAimMode { get; set; }
-
-        // 경량 Turret(MainTrain 주무기)이 비주얼(회전 pivot·모델·스폰포인트)만 복제해 재사용하기 위한 읽기 전용 노출.
+        // 포탑 회전 pivot. 패시브(섬멸)가 회전을 직접 맡을 때 쓴다.
         public GameObject TurretVisualRoot => turret;
-        public GameObject TurretModelNode => turretModel;
-        public Transform[] ProjectileSpawnPointNodes => turretProjectileSpawnPoints;
 
         public float ProjectileScale { get; set; } = 1f;
-        // 오버라이드 투사체(폭발탄 등)에만 곱할 데미지 배율. Provider가 프리팹 반환 시 세팅하고 그 발사에서만 적용된다.
-        public float OverrideDamageMultiplier { get; set; } = 1f;
         public float ProjectileKnockbackPower { get; set; }
         public float ProjectileKnockbackDuration { get; set; }
         // 투사체에 닿은 적 둔화(화염 둔화). 유지 속도 비율(0.7 = 30% 느려짐, Monster.Slow와 같은 단위)과 닿은 뒤 유지 초.
@@ -118,7 +105,6 @@ namespace TrainDefense.Game
         public IReadOnlyList<Monster> TargetMonsters => _targetMonsters;
 
         public event Action<Monster> OnAttacked;
-        public event Action OnTargetPosAttacked;
 
         public Func<Vector3?> TargetPosOverride { get; set; }
 
@@ -151,8 +137,6 @@ namespace TrainDefense.Game
             // 사망 시 FixedUpdate(자동 발사·ResetTarget)가 멈춰 마지막에 깔린 NonMovement 장판(냉기/화염 지속 영역)이 그대로 남는다.
             // 죽은 기차는 회색으로 씬에 남아(Destroy 안 됨) OnDestroy 정리도 타지 않으므로 즉시 끈다.
             _DeactivateNonMovementProjectiles();
-            // 분사 도중 죽으면 잔여 버스트가 남아 부활 직후 그 시간만큼 공격 불능이 되므로 함께 리셋한다.
-            _burstRemaining = 0f;
         }
         #endregion
 
@@ -174,8 +158,6 @@ namespace TrainDefense.Game
             }
 
             _nonMovementProjectiles.Clear();
-            // 분사 도중 상점 진입 시 잔여 버스트가 다음 전투 시작을 막지 않도록 리셋.
-            _burstRemaining = 0f;
         }
 
         private void _OnEngageStart(EngageStartEvent _)
@@ -274,7 +256,6 @@ namespace TrainDefense.Game
                 TargetCount = newBase.TargetCount + (sourceCurrent.TargetCount - sourceBase.TargetCount),
                 CriticalChance = newBase.CriticalChance + (sourceCurrent.CriticalChance - sourceBase.CriticalChance),
                 CriticalDamage = newBase.CriticalDamage + (sourceCurrent.CriticalDamage - sourceBase.CriticalDamage),
-                BurstDuration = newBase.BurstDuration + (sourceCurrent.BurstDuration - sourceBase.BurstDuration),
             };
         }
 
@@ -290,45 +271,44 @@ namespace TrainDefense.Game
 
         public Monster GetNearTargetMonsterPublic() => GetNearTargetMonster();
 
-        public void RepeatNormalAttack(Vector2? aimPosition = null)
+        // 패시브(연쇄 공격)가 쿨다운과 별개로 한 번 더 쏜다. 가장 가까운 적을 바로 조준해 발사한다.
+        public void RepeatNormalAttack()
         {
             if (_isDead) return;
 
-            // aimPosition이 있으면 재조준 없이 그 방향으로 발사 (연속 발사: 타겟이 죽어도 그 방향).
-            Monster nearTarget = null;
-            if (!aimPosition.HasValue)
-            {
-                DetectTarget();
-                if (_targetMonsters.Count == 0) return;
-                nearTarget = GetNearTargetMonster();
-                if (nearTarget == null) return;
-            }
+            DetectTarget();
+            if (_targetMonsters.Count == 0) return;
+            Monster nearTarget = GetNearTargetMonster();
+            if (nearTarget == null) return;
 
             if (turretModel != null)
             {
                 if (isRotateTurret)
-                {
-                    if (aimPosition.HasValue)
-                        turret.transform.LookAt2D(aimPosition.Value);
-                    else
-                        turret.transform.LookAt2D(nearTarget.transform);
-                }
+                    turret.transform.LookAt2D(nearTarget.transform);
                 PlayAttackAnimation();
             }
 
-            if (turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
+            _PlayAttackSound();
+
+            NormalAttack(nearTarget);
+        }
+
+        // 즉시 피해 포탑은 쏠 때마다, 제자리 지속 투사체(레이저·화염)는 꺼져 있다가 켜질 때만 발사음을 낸다.
+        private void _PlayAttackSound()
+        {
+            if (turretTrainData.AttackSoundType == SoundType.None || SoundManager.Instance == null)
+                return;
+
+            if (TrainData.DamageType == DamageType.Direct)
             {
-                if (TrainData.DamageType == DamageType.Direct)
-                {
-                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
-                }
-                else if (_nonMovementProjectiles.Count > 0 && !_nonMovementProjectiles[0].gameObject.activeSelf)
-                {
-                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
-                }
+                SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
+                return;
             }
 
-            NormalAttack(nearTarget, aimPosition);
+            // 사전 생성 실패/풀 반환으로 리스트가 비거나 파괴된 참조가 남아도 발사가 막히지 않게 가드
+            Projectile firstPooled = _nonMovementProjectiles.FirstOrDefault(p => p != null);
+            if (firstPooled == null || !firstPooled.gameObject.activeSelf)
+                SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
         }
 
         private void PlayAttackAnimation()
@@ -362,23 +342,11 @@ namespace TrainDefense.Game
         private void FixedUpdate()
         {
             if (_isDead) return;
-            // 수동 조준 모드(MainTrain 주무기)는 자동 탐지/발사를 하지 않는다. MainTrain이 터치 입력으로 RepeatNormalAttack을 직접 호출한다.
-            if (ManualAimMode) return;
 
             DetectTarget();
 
             // 타겟이 있으면 공격과 무관하게 계속 조준 방향으로 회전한다. (발사 순간에만 돌면 끊겨 보임)
             _RotateTowardNearTarget();
-
-            // 버스트(화염): 발동 후 분사 시간 동안 뿜고 멈춘다(타겟이 빠져도 시간이 다할 때까지 뿜음).
-            // 버스트 중엔 여기서 return하므로 쿨다운(IsAttackDelayZero)이 멈춰 있다가 종료 후부터 흐른다.
-            if (_burstRemaining > 0f)
-            {
-                _burstRemaining -= Time.fixedDeltaTime;
-                if (_burstRemaining <= 0f)
-                    _EndBurst();
-                return;
-            }
 
             // 회전 중에 발사되면 총구와 다른 방향으로 나가 어색해서, 타겟 방향을 (거의) 바라볼 때만 발사한다.
             if (IsAttackDelayZero() && _IsAimedAtNearTarget())
@@ -516,13 +484,8 @@ namespace TrainDefense.Game
             Attack();
             _attackCountdown = _currentTurretTrainStatus.AttackInterval;
 
-            float burstDuration = _GetBurstDuration();
-            if (burstDuration > 0f)
-                _burstRemaining = burstDuration;
-
             // 공격 횟수(AttackCount) > 1이면 방금 수행한 공격 전체를 공속 비례 간격으로 반복한다.
-            // 버스트(화염)는 분사 유지가 공격의 연장이라 반복 대상에서 제외.
-            if (_currentTurretTrainStatus.AttackCount > 1 && burstDuration <= 0f)
+            if (_currentTurretTrainStatus.AttackCount > 1)
             {
                 if (_repeatAttackCoroutine != null)
                     StopCoroutine(_repeatAttackCoroutine);
@@ -544,36 +507,6 @@ namespace TrainDefense.Game
                 Attack();
             }
             _repeatAttackCoroutine = null;
-        }
-
-        // 버스트 지속시간. 포탑 데이터의 BurstDuration이 base(화염 분사 시간)이고 업그레이드 누적이 가산된다.
-        // base 0 = 비버스트 포탑(강화 규칙도 없어 항상 0).
-        private float _GetBurstDuration()
-        {
-            if (!_useNonMovementProjectilePooling)
-                return 0f;
-
-            return _currentTurretTrainStatus.BurstDuration;
-        }
-
-        private void _EndBurst()
-        {
-            _burstRemaining = 0f;
-            // 화염은 분사만 멈추고 이미 나간 불꽃은 끝까지 날아가게 둔다(한 번 뿜기).
-            foreach (var projectile in _nonMovementProjectiles)
-            {
-                if (projectile == null || !projectile.gameObject.activeSelf)
-                    continue;
-
-                if (projectile is ParticleProjectile particleProjectile)
-                    particleProjectile.StopEmission();
-                else
-                    projectile.gameObject.SetActive(false);
-            }
-            if (TrainData.DamageType == DamageType.Tick)
-            {
-                SoundManager.Instance.StopSFX(turretTrainData.AttackSoundType);
-            }
         }
 
         private void ResetTarget()
@@ -611,22 +544,7 @@ namespace TrainDefense.Game
                 PlayAttackAnimation();
             }
 
-            if (turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
-            {
-                if (TrainData.DamageType == DamageType.Direct)
-                {
-                    SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
-                }
-                else
-                {
-                    // 사전 생성 실패/풀 반환으로 리스트가 비거나 파괴된 참조가 남아도 발사가 막히지 않게 가드
-                    Projectile firstPooled = _nonMovementProjectiles.FirstOrDefault(p => p != null);
-                    if (firstPooled == null || !firstPooled.gameObject.activeSelf)
-                    {
-                        SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType, true);
-                    }
-                }
-            }
+            _PlayAttackSound();
 
             ProjectileData projectileData = GetProjectile().GetData();
 
@@ -654,20 +572,16 @@ namespace TrainDefense.Game
         }
 
         /// <summary>
-        /// 기존 엘리트 서브클래스용 후속타 훅. 신규 패시브는 OnAttacked 이벤트 사용.
-        /// </summary>
-        protected virtual void TryTriggerFollowUp(Monster target) { }
-
-        /// <summary>
         /// 등록된 ProjectileOverrideProvider 들을 순회. 첫 non-null 반환. 서브클래스가 추가 override 가능.
         /// </summary>
-        protected virtual Projectile GetOverrideProjectile(int attackIndex)
+        protected virtual Projectile GetOverrideProjectile(int attackIndex, out float damageMultiplier)
         {
             for (int i = 0; i < _projectileOverrides.Count; i++)
             {
-                var prefab = _projectileOverrides[i](attackIndex);
+                var prefab = _projectileOverrides[i](attackIndex, out damageMultiplier);
                 if (prefab != null) return prefab;
             }
+            damageMultiplier = 1f;
             return null;
         }
 
@@ -727,7 +641,6 @@ namespace TrainDefense.Game
                 }
             }
 
-            Debug.Log($"[TargetedAttack] TC={_currentTurretTrainStatus.TargetCount} mon={_targetMonsters.Count} pool={_nonMovementProjectiles.Count}");
 
             for (int i = 0; i < _currentTurretTrainStatus.TargetCount; i++)
             {
@@ -742,7 +655,6 @@ namespace TrainDefense.Game
                 }
 
                 Projectile projectile = SpawnNormalProjectile(i, target);
-                Debug.Log($"[TargetedAttack] i={i} target={target.name} proj={(projectile == null ? "NULL" : projectile.gameObject.name)} active={projectile?.gameObject.activeSelf}");
                 if (projectile != null)
                 {
                     projectile.transform.LookAt2D(target.transform);
@@ -829,7 +741,6 @@ namespace TrainDefense.Game
                 }
             }
 
-            OnTargetPosAttacked?.Invoke();
         }
 
         /// <summary>
@@ -1089,12 +1000,43 @@ namespace TrainDefense.Game
                 if (projectile != null && projectile.IsScaleByArea()) InitializeProjectileDamage(projectile);
         }
 
+        // 스탯이 바뀐 뒤 풀에 깔아 둔 투사체(레이저·화염 등)를 새 값에 맞춘다. 스탯을 바꾸는 경로(상점 카드·레벨업·개조 패시브·개조 교체)가
+        // 여러 곳이라 한 곳에 모은다. (경로마다 따로 두면 한쪽만 갱신이 빠져 다음 재초기화까지 옛 크기·피해로 남는다)
+        private void _RefreshPooledProjectiles(StatType changedStat)
+        {
+            if (!_useNonMovementProjectilePooling) return;
+
+            switch (changedStat)
+            {
+                case StatType.AttackRange:
+                    _ReinitScaleByAreaProjectiles();
+                    break;
+
+                case StatType.AttackArea:
+                    float ratio = _currentTurretTrainStatus.AttackArea / turretTrainData.TurretTrainStatus.AttackArea;
+                    // ScaleByArea(빔 등)는 Projectile.StretchBeamModel이 크기를 전담 → root 스케일 제외(이중 스케일 방지).
+                    foreach (var projectile in _nonMovementProjectiles)
+                        if (projectile != null && !projectile.IsScaleByArea()) projectile.transform.localScale = new Vector3(ratio, ratio, 1f);
+                    _ReinitScaleByAreaProjectiles();
+                    break;
+
+                case StatType.AttackDamage:
+                    foreach (var projectile in _nonMovementProjectiles)
+                        if (projectile != null) InitializeProjectileDamage(projectile);
+                    break;
+
+                case StatType.TargetCount:
+                    EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
+                    break;
+            }
+        }
+
         protected Projectile SpawnNormalProjectile(int index, Monster target = null)
         {
             Projectile projectile = null;
 
             // 엘리트 오버라이드 프로젝타일이 있으면 우선 사용 (풀링 우회)
-            Projectile overridePrefab = GetOverrideProjectile(_attackCounter);
+            Projectile overridePrefab = GetOverrideProjectile(_attackCounter, out float overrideDamageMultiplier);
             if (overridePrefab != null)
             {
                 projectile = ResourceManager.Instance.Spawn(overridePrefab);
@@ -1128,8 +1070,8 @@ namespace TrainDefense.Game
             else
                 InitializeProjectileDamage(projectile);
 
-            if (overridePrefab != null && OverrideDamageMultiplier != 1f)
-                projectile.MultiplyDamage(OverrideDamageMultiplier);
+            if (overridePrefab != null && overrideDamageMultiplier != 1f)
+                projectile.MultiplyDamage(overrideDamageMultiplier);
 
             if (_useNonMovementProjectilePooling)
             {
@@ -1179,52 +1121,10 @@ namespace TrainDefense.Game
                     _skillModule.RegisterPassiveFromData(passiveData);
                 }
 
-                if (_useNonMovementProjectilePooling)
-                {
-                    EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
-
-                    // AttackDamage나 AttackArea 변경 시 기존 프로젝타일 업데이트
-                    if (_nonMovementProjectiles.Count > 0 && (turretStatus.AttackDamage != 0 || turretStatus.AttackArea != 0))
-                    {
-                        foreach (var projectile in _nonMovementProjectiles)
-                        {
-                            if (projectile != null)
-                            {
-                                InitializeProjectileDamage(projectile);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        public override void StatusUpgrade(TurretTrainStatus upgradeData)
-        {
-            _currentTurretTrainStatus.AttackDamage += upgradeData.AttackDamage;
-            _currentTurretTrainStatus.AttackRange += upgradeData.AttackRange;
-            _currentTurretTrainStatus.AttackArea += upgradeData.AttackArea;
-            _currentTurretTrainStatus.AttackCount += upgradeData.AttackCount;
-            _currentTurretTrainStatus.AttackInterval += upgradeData.AttackInterval;
-            _currentTurretTrainStatus.TargetCount += upgradeData.TargetCount;
-            _currentTurretTrainStatus.CriticalChance += upgradeData.CriticalChance;
-            _currentTurretTrainStatus.CriticalDamage += upgradeData.CriticalDamage;
-            _currentTurretTrainStatus.BurstDuration += upgradeData.BurstDuration;
-
-            if (_useNonMovementProjectilePooling)
-            {
-                EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
-
-                // AttackDamage나 AttackArea 변경 시 기존 프로젝타일 업데이트
-                if (_nonMovementProjectiles.Count > 0 && (upgradeData.AttackDamage != 0 || upgradeData.AttackArea != 0))
-                {
-                    foreach (var projectile in _nonMovementProjectiles)
-                    {
-                        if (projectile != null)
-                        {
-                            InitializeProjectileDamage(projectile);
-                        }
-                    }
-                }
+                _RefreshPooledProjectiles(StatType.TargetCount);
+                if (turretStatus.AttackRange != 0) _RefreshPooledProjectiles(StatType.AttackRange);
+                if (turretStatus.AttackArea != 0) _RefreshPooledProjectiles(StatType.AttackArea);
+                if (turretStatus.AttackDamage != 0) _RefreshPooledProjectiles(StatType.AttackDamage);
             }
         }
 
@@ -1255,7 +1155,6 @@ namespace TrainDefense.Game
             status.TargetCount += upgrade.TargetCount;
             status.CriticalChance += upgrade.CriticalChance;
             status.CriticalDamage += upgrade.CriticalDamage;
-            status.BurstDuration += upgrade.BurstDuration;
         }
 
         // 상점 카드 롱프레스용 — 새 포탑은 생성 직후 값(영구 강화 + 판 중 전체 강화), 승격은 promotionSource의 누적 강화를 승계한 값.
@@ -1326,27 +1225,20 @@ namespace TrainDefense.Game
                 {
                     case StatType.AttackRange:
                         _currentTurretTrainStatus.AttackRange += baseStatus.AttackRange * percent;
-                        _ReinitScaleByAreaProjectiles();
+                        _RefreshPooledProjectiles(StatType.AttackRange);
                         break;
                     case StatType.AttackArea:
                         _currentTurretTrainStatus.AttackArea += baseStatus.AttackArea * percent;
-                        if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
-                        {
-                            float ratio = _currentTurretTrainStatus.AttackArea / turretTrainData.TurretTrainStatus.AttackArea;
-                            // ScaleByArea(빔 등)는 Projectile.StretchBeamModel이 크기를 전담 → root 스케일 제외(이중 스케일 방지).
-                            foreach (var p in _nonMovementProjectiles) { if (p != null && !p.IsScaleByArea()) p.transform.localScale = new Vector3(ratio, ratio, 1f); }
-                        }
-                        _ReinitScaleByAreaProjectiles();
+                        _RefreshPooledProjectiles(StatType.AttackArea);
                         break;
                     case StatType.AttackDamage:
                         // 상점 공격력 카드와 같이 소수까지 그대로 더한다.
                         _currentTurretTrainStatus.AttackDamage += baseStatus.AttackDamage * percent;
-                        if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
-                            foreach (var p in _nonMovementProjectiles) { if (p != null) InitializeProjectileDamage(p); }
+                        _RefreshPooledProjectiles(StatType.AttackDamage);
                         break;
                     case StatType.AttackInterval:
                         // 상점 공격 속도 카드와 같은 식 — 공격 속도 배율에 -percent를 더한다(percent 음수 = 빨라짐).
-                        _currentTurretTrainStatus.AttackInterval = _GetIntervalAfterPassiveSpeed(_metaBaseStatus.AttackInterval, _currentTurretTrainStatus.AttackInterval, -percent);
+                        _currentTurretTrainStatus.AttackInterval = GetAttackIntervalAfterSpeedBonus(_metaBaseStatus.AttackInterval, _currentTurretTrainStatus.AttackInterval, -percent);
                         break;
                     default:
                         ApplyStat(stat);
@@ -1360,57 +1252,17 @@ namespace TrainDefense.Game
             base.ApplyStat(stat);
             if (stat == null) return;
 
-            var baseStatus = turretTrainData.TurretTrainStatus;
-            float percent = stat.Value / 100f;
+            // 사거리·범위·공격력·공속은 ApplyStatsByBaseValue가 처리하고, 나머지만 여기로 온다.
             switch (stat.Type)
             {
-                case StatType.AttackRange:
-                    _currentTurretTrainStatus.AttackRange += baseStatus.AttackRange * percent;
-                    _ReinitScaleByAreaProjectiles();
-                    break;
-
-                case StatType.AttackArea:
-                    _currentTurretTrainStatus.AttackArea += baseStatus.AttackArea * percent;
-                    if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
-                    {
-                        float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
-                        // ScaleByArea(빔 등)는 Projectile.StretchBeamModel이 크기를 전담 → root 스케일 제외(이중 스케일 방지).
-                        foreach (var projectile in _nonMovementProjectiles)
-                            if (projectile != null && !projectile.IsScaleByArea()) projectile.transform.localScale = new Vector3(ratio, ratio, 1f);
-                    }
-                    _ReinitScaleByAreaProjectiles();
-                    break;
-
-                case StatType.AttackDamage:
-                    _currentTurretTrainStatus.AttackDamage += UtilMath.AccumulateIntDelta(ref _statAttackDamageAccum, stat.Value * turretTrainData.AttackDamageMultiplier);
-
-                    if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
-                    {
-                        foreach (var projectile in _nonMovementProjectiles)
-                        {
-                            if (projectile != null)
-                            {
-                                InitializeProjectileDamage(projectile);
-                            }
-                        }
-                    }
-                    break;
-
                 // 정수 스탯(공격 횟수·대상 수)은 % 아니라 flat +N (가독성 — 데이터에 +2를 2로 적음)
                 case StatType.AttackCount:
                     _currentTurretTrainStatus.AttackCount += Mathf.RoundToInt(stat.Value);
                     break;
 
-                case StatType.AttackInterval:
-                    _currentTurretTrainStatus.AttackInterval += baseStatus.AttackInterval * percent;
-                    break;
-
                 case StatType.TargetCount:
                     _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(stat.Value);
-                    if (_useNonMovementProjectilePooling)
-                    {
-                        EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
-                    }
+                    _RefreshPooledProjectiles(StatType.TargetCount);
                     break;
 
                 case StatType.CriticalChance:
@@ -1421,13 +1273,6 @@ namespace TrainDefense.Game
                     _currentTurretTrainStatus.CriticalDamage += stat.Value;
                     break;
             }
-        }
-
-        public override void ApplyStatsLevelAware(IStat[] stats, int newLevel, int prevLevel = 0)
-        {
-            if (stats == null || stats.Length == 0) return;
-            foreach (var stat in stats)
-                ApplyStatLevelAware(stat, newLevel, prevLevel);
         }
 
         protected override void ApplyStatLevelAware(IStat stat, int newLevel, int prevLevel)
@@ -1443,34 +1288,7 @@ namespace TrainDefense.Game
                 return;
             }
 
-            switch (stat.Type)
-            {
-                case StatType.AttackRange:
-                    _ReinitScaleByAreaProjectiles();
-                    break;
-
-                case StatType.AttackArea:
-                    if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
-                    {
-                        float ratio = _currentTurretTrainStatus.AttackArea / baseStatus.AttackArea;
-                        // ScaleByArea(빔 등)는 Projectile.StretchBeamModel이 크기를 전담 → root 스케일 제외(이중 스케일 방지).
-                        foreach (var p in _nonMovementProjectiles)
-                            if (p != null && !p.IsScaleByArea()) p.transform.localScale = new Vector3(ratio, ratio, 1f);
-                    }
-                    _ReinitScaleByAreaProjectiles();
-                    break;
-
-                case StatType.AttackDamage:
-                    if (_useNonMovementProjectilePooling && _nonMovementProjectiles.Count > 0)
-                        foreach (var p in _nonMovementProjectiles)
-                            if (p != null) InitializeProjectileDamage(p);
-                    break;
-
-                case StatType.TargetCount:
-                    if (_useNonMovementProjectilePooling)
-                        EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
-                    break;
-            }
+            _RefreshPooledProjectiles(stat.Type);
         }
 
         // 판 중 전체 강화(레벨 누적)의 스탯 변화. 실제 적용(ApplyStatLevelAware)과 상점 새 포탑 미리보기가 같이 쓴다.
@@ -1538,16 +1356,8 @@ namespace TrainDefense.Game
             _currentTurretTrainStatus = _GetInheritedStatus(turretTrainData.TurretTrainStatus,
                 sourceTurret.turretTrainData.TurretTrainStatus, sourceTurret._currentTurretTrainStatus);
 
-            _statAttackDamageAccum = sourceTurret._statAttackDamageAccum;
-
-            if (_useNonMovementProjectilePooling)
-            {
-                EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
-                foreach (var projectile in _nonMovementProjectiles)
-                {
-                    if (projectile != null) InitializeProjectileDamage(projectile);
-                }
-            }
+            _RefreshPooledProjectiles(StatType.TargetCount);
+            _RefreshPooledProjectiles(StatType.AttackDamage);
         }
 
         protected virtual Projectile GetProjectile()
@@ -1555,13 +1365,8 @@ namespace TrainDefense.Game
             return turretTrainData.TurretProjectilePrefab?.GetComponent<Projectile>();
         }
 
-        public void SpawnProjectileAtWorldPositionPublic(Monster target, Vector3 worldPosition, bool playSound = false)
-        {
-            // 무작위 위치 폭격 발사음 (Attack() 미경유로 무음 → 호출자가 빈도를 조절해 재생).
-            if (playSound && turretTrainData.AttackSoundType != SoundType.None && SoundManager.Instance != null)
-                SoundManager.Instance.PlaySFX(turretTrainData.AttackSoundType);
-            SpawnProjectileAtWorldPosition(target, worldPosition);
-        }
+        public void SpawnProjectileAtWorldPositionPublic(Monster target, Vector3 worldPosition)
+            => SpawnProjectileAtWorldPosition(target, worldPosition);
 
         private void OnDrawGizmos()
         {

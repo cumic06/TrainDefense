@@ -24,6 +24,23 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private int elitePromotionCost = 3000;
 
+        [Header("Reroll")]
+        [Tooltip("첫 상점의 첫 리롤 비용 기준값. 실제 첫 비용 = 이 값 + 방문 수 × rerollCostPerShopVisit")]
+        [SerializeField]
+        private int rerollBaseCost = 50;
+
+        [Tooltip("상점 방문 1회마다 첫 리롤 비용에 더해지는 값. 수입이 커지는 후반에도 리롤이 공짜처럼 되지 않게 한다")]
+        [SerializeField]
+        private int rerollCostPerShopVisit = 20;
+
+        [Tooltip("리롤할 때마다 더해지는 증가분 = 이번 상점 첫 비용 × 이 배율. 상점을 새로 열면 첫 비용으로 초기화")]
+        [SerializeField]
+        private float rerollCostIncreaseRatio = 0.5f;
+
+        // 복합 카드 가격 배율. 1이면 한 등급 아래 단일 카드 두 장 값 그대로다(2등급 복합 = 1등급 두 장).
+        // 할인하면 원당 가격이 게임에서 가장 싼 카드가 된다. 한 칸에 효과 두 개가 담기는 것만으로 이득이 남는다.
+        private const float COMBO_COST_RATIO = 1f;
+
         [Tooltip("상점이 한 번 열릴 때마다 전 상품 가격이 이 퍼센트씩 오른다 (선형). 모든 상품이 같은 배율을 받으므로 등급 간 가격 비율은 유지된다. 기본 비용은 '방문 0 기준' 값이라 늦게 열리는 상품은 처음부터 오른 값으로 보인다")]
         [SerializeField]
         private float stationPriceIncreasePercent;
@@ -33,21 +50,51 @@ namespace TrainDefense.Game.UI
             return Mathf.RoundToInt(_GetBasePrice(option) * _GetStationPriceMultiplier());
         }
 
+        // 이번 상점의 첫 리롤 비용. 방문할수록 올라 후반에도 리롤이 공짜처럼 되지 않는다.
+        public int GetFirstRerollCost() => rerollBaseCost + rerollCostPerShopVisit * _GetShopVisitCount();
+
+        // 리롤할 때마다 더해지는 증가분(이번 상점 첫 비용 × 배율).
+        public int GetRerollCostIncrease(int firstRerollCost) => Mathf.RoundToInt(firstRerollCost * rerollCostIncreaseRatio);
+
+        // 스킬 트리 노드와 영구 강화의 무료 새로고침 횟수 합. 둘 다 "레벨당 +1회"라 정수로 쓴다.
+        public int GetFreeRerollCount()
+        {
+            int count = 0;
+
+            if (SkillTreeManager.Instance != null)
+                count += Mathf.RoundToInt(SkillTreeManager.Instance.GetValue(SkillTreePassiveType.FreeReroll));
+
+            if (PermanentUpgradeManager.Instance != null)
+                count += Mathf.RoundToInt(PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.FreeReroll));
+
+            return count;
+        }
+
         // 가격은 상품 등급만으로 정해진다 — 대상 포탑의 레벨과 무관해야 같은 포탑의 다른 스탯 카드를
         // 하나 샀다고 나머지 카드 가격이 따라 오르지 않는다(슬롯 간 간섭 제거).
+        // 가격 배수 = 등급 배수(고등급일수록 단가 할인 — 희귀 보상) × 스탯 프리미엄(+1 가치가 큰 정수 스탯).
+        // 복합은 "카드 두 장 값"이라 두 스탯의 프리미엄을 더한 뒤 COMBO_COST_RATIO를 곱한다.
         private float _GetStatUpgradePrice(TrainStatUpgradeChoice statUpgradeChoice)
         {
-            return statUpgradeBaseCost * statUpgradeChoice.CostMultiplier;
+            var databaseManager = DatabaseManager.Instance;
+            float statPremium = databaseManager != null ? databaseManager.GetStatCostMultiplier(statUpgradeChoice.StatType) : 1f;
+            if (statUpgradeChoice.SecondStatType.HasValue)
+                statPremium += databaseManager != null ? databaseManager.GetStatCostMultiplier(statUpgradeChoice.SecondStatType.Value) : 0f;
+
+            float comboRatio = statUpgradeChoice.IsCombo ? COMBO_COST_RATIO : 1f;
+            return statUpgradeBaseCost * statUpgradeChoice.EffectTier.CostMultiplier * statPremium * comboRatio;
         }
 
         // 누적 상점 방문 수 비례 선형 인상. 스테이지가 바뀌어도 리셋되지 않는다.
         // 적 HP·공격력·골드 스케일과 같은 축을 쓴다 — 상점이 열릴 때마다 적도 세지고 가격도 오른다.
         private float _GetStationPriceMultiplier()
+            => 1f + stationPriceIncreasePercent / 100f * _GetShopVisitCount();
+
+        // 가격·리롤 비용이 함께 쓰는 축. 역 도착 상점과 맵 이동 상점을 모두 센다.
+        private static int _GetShopVisitCount()
         {
             var stageManager = StageManager.Instance;
-            int totalInspectionPassedCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
-
-            return 1f + stationPriceIncreasePercent / 100f * totalInspectionPassedCount;
+            return stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
         }
 
         private float _GetBasePrice(IChoiceOption option)

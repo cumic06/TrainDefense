@@ -507,6 +507,9 @@ namespace TrainDefense.Game
             _runtimeShoveDuration = duration;
         }
 
+        // 크기를 스스로 정하는 투사체(퍼지는 파동)인가. 그러면 소유자가 사거리로 스케일하지 않는다.
+        public virtual bool ControlsOwnScale => false;
+
         public void SetRuntimeSlow(float slowValue, float duration)
         {
             _runtimeSlowValue = slowValue;

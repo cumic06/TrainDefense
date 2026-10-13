@@ -18,9 +18,6 @@ namespace TrainDefense.Game.Manager
         [SerializeField]
         private int monsterRushInterval = 0;
 
-        [SerializeField]
-        private int mapSelectInterval = 3;
-
         // 종착역. 누적 상점 수(역 도착 + 맵 이동)가 이 값에 닿는 도착이 마지막이며, 상점을 여는 대신 판을 클리어로 끝낸다.
         // 스테이지당 5회(역 4 + 맵 이동 1)라 20은 맵 4개를 끝까지 달린 지점이다. 0이면 끝 없이 계속 달린다.
         [SerializeField]
@@ -52,15 +49,12 @@ namespace TrainDefense.Game.Manager
         private float _currentStageTime;
         private int _currentStageInspectionTimeIndex = 0;
         private GameObject _currentMapInstance;
-        private int _inspectionCount = 0;
         // 난이도·가격 스케일링용 누적 상점 방문 수. 역 도착 상점과 맵 선택 상점을 모두 세므로
         // 스테이지당 4씩 늘어난다. 스테이지가 바뀌어도 리셋되지 않고 한 판 동안 계속 누적된다.
         // (스테이지 흐름 제어용 _currentStageInspectionTimeIndex 와 분리)
         private int _totalInspectionPassedCount = 0;
         private bool _shouldShowStageSelectionOnStageEnd;
         private bool _pendingStageSelectionAfterShop;
-        // 이번 판에 방문한 맵 Id. 다음 맵은 여기 없는 맵 중에서 무작위로 고른다(플레이어 선택 없음).
-        private readonly List<string> _visitedStageIds = new();
         private bool _isGameOver;
 
         // 맵별 점수 결산 기록(게임오버 슬라이드쇼용). 맵 진입 시 점수/처치 수를 스냅샷(_mapStart*)하고,
@@ -83,9 +77,6 @@ namespace TrainDefense.Game.Manager
         /// <summary>종착역(이 도착에서 판이 끝난다). 0이면 끝 없이 계속 달린다.</summary>
         public int FinalStationCount => finalStationCount;
 
-        /// <summary>게임오버 결산용 — 한 판 동안 거쳐 간 맵별 점수/처치 기록(방문 순서).</summary>
-        public IReadOnlyList<StageRunRecord> RunRecords => _runRecords;
-
         /// <summary>
         /// 맵의 마지막 상점을 들른 상태로, 상점을 닫으면 전투 복귀 대신 다음 맵으로 이동해야 하는지 여부.
         /// </summary>
@@ -101,7 +92,6 @@ namespace TrainDefense.Game.Manager
         {
             _LoadStageDatas();
             _currentStageIndex = 0;   // 고정 순서: 항상 가장 느슨한 맵에서 시작한다
-            _MarkCurrentStageVisited();
             _ResetCurrentStageInfo();
             _SubscribeEvents();
         }
@@ -186,7 +176,6 @@ namespace TrainDefense.Game.Manager
         {
             _currentStageTime = 0;
             _currentStageInspectionTimeIndex = 0;
-            _inspectionCount = 0;
             _shouldShowStageSelectionOnStageEnd = false;
             _pendingStageSelectionAfterShop = false;
 
@@ -198,8 +187,6 @@ namespace TrainDefense.Game.Manager
         {
             // 새 게임 시작 시에만 누적 난이도 카운터 초기화 (스테이지 변경 시에는 유지)
             _totalInspectionPassedCount = 0;
-            _visitedStageIds.Clear();
-            _MarkCurrentStageVisited();
             _UpdateSpawnRules();
 
             // 맵별 결산 기록 초기화. 첫 맵은 게임 시작과 동시이므로 진입 스냅샷을 0으로 둔다.
@@ -299,7 +286,7 @@ namespace TrainDefense.Game.Manager
                 }
             }
             else if (_shouldShowStageSelectionOnStageEnd
-                     && _currentStageTime >= _GetPostLastInspectionDuration())
+                     && _currentStageTime >= _GetCurrentStationDuration())
             {
                 _shouldShowStageSelectionOnStageEnd = false;
                 _BeginStageSelectionShop();
@@ -376,8 +363,6 @@ namespace TrainDefense.Game.Manager
             _currentStageInspectionTimeIndex++;
             _currentStageTime = 0f;
             _StartInspectionWithTimeline();
-
-            _inspectionCount++;
         }
 
         private void _OnGameOverStart(GameOverStartEvent _) => _isGameOver = true;
@@ -437,17 +422,16 @@ namespace TrainDefense.Game.Manager
             }
 
             bool shouldStartMonsterRush = monsterRushInterval > 0
-                && _inspectionCount > 0
-                && _inspectionCount % monsterRushInterval == monsterRushInterval - 1;
+                && _currentStageInspectionTimeIndex > 0
+                && _currentStageInspectionTimeIndex % monsterRushInterval == monsterRushInterval - 1;
 
             if (shouldStartMonsterRush)
             {
                 _StartMonsterRush();
             }
 
-            if (mapSelectInterval > 0
-                && _inspectionCount > 0
-                && _inspectionCount % mapSelectInterval == 0)
+            // 맵의 마지막 역(데이터 StationCount)을 지나면 다음 맵으로 간다.
+            if (CurrentStageData != null && _currentStageInspectionTimeIndex >= CurrentStageData.StationCount)
             {
                 _shouldShowStageSelectionOnStageEnd = true;
             }
@@ -457,24 +441,6 @@ namespace TrainDefense.Game.Manager
         {
             GameEventSystem.Publish(new MonsterRushEvent(0.5f));
         }
-
-        //private void TriggerBossSpawn()
-        //{
-        //    StartCoroutine(BossSpawnCoroutine());
-        //}
-
-        //private void BossSpawnCoroutine()
-        //{
-        //    var stageData = CurrentStageData;
-        //    if (stageData == null || string.IsNullOrEmpty(stageData.BossMonsterId))
-        //    {
-        //        Debug.LogWarning("StageManager: BossMonsterId is null or empty. Cannot spawn boss.");
-        //        yield break;
-        //    }
-
-        //    GameEventSystem.Publish(new BossSpawnEvent(stageData.BossMonsterId, 0.7f));
-        //    Debug.Log($"[StageManager] Boss spawn triggered: {stageData.BossMonsterId}");
-        //}
 
         private void _CurrentStageTimeUp()
         {
@@ -491,14 +457,8 @@ namespace TrainDefense.Game.Manager
             if (CurrentStageData == null) return 0f;
 
             if (_currentStageInspectionTimeIndex >= CurrentStageData.StationCount)
-                return _GetPostLastInspectionDuration();
+                return _GetCurrentStationDuration();
 
-            return _GetCurrentStationDuration();
-        }
-
-        private float _GetPostLastInspectionDuration()
-        {
-            // 스테이지 선택 직전 마지막 구간도 일반 역과 동일한 도착 시간 사용(이 구간만 길어지던 문제 해결)
             return _GetCurrentStationDuration();
         }
 
@@ -528,7 +488,6 @@ namespace TrainDefense.Game.Manager
             // (선택~전환 사이에는 전투가 없어 점수가 변하지 않으므로 이 시점에 스냅샷해도 안전)
             _CloseMapRecord();
             _currentStageIndex = index;
-            _MarkCurrentStageVisited();
             _BeginMapRecord();
 
             if (TimelineManager.Instance != null)
@@ -565,14 +524,6 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Publish(new StageSelectEvent(_stageDatas[nextIndex]));
         }
 
-        private void _MarkCurrentStageVisited()
-        {
-            var stage = CurrentStageData;
-            if (stage == null || _visitedStageIds.Contains(stage.Id)) return;
-
-            _visitedStageIds.Add(stage.Id);
-        }
-
         public void ForceMapSelection() => _TransitionToNextStage();
 
         private void _TransitionToNextStage()
@@ -592,7 +543,6 @@ namespace TrainDefense.Game.Manager
             public string CurrentStageId;
             public float CurrentStageTime;
             public int CurrentStageInspectionTimeIndex;
-            public int InspectionCount;
             public int TotalStationPassedCount;
             public bool ShouldShowStageSelectionOnStageEnd;
             public bool PendingStageSelectionAfterShop;
@@ -600,7 +550,6 @@ namespace TrainDefense.Game.Manager
             public int MapStartNormalKill;
             public int MapStartEliteKill;
             public List<RunRecordState> RunRecords = new();
-            public List<string> VisitedStageIds = new();
         }
 
         /// <summary>맵별 결산 기록의 직렬화 가능한 형태(StageImage는 StageId로 다시 찾는다).</summary>
@@ -619,7 +568,6 @@ namespace TrainDefense.Game.Manager
                 CurrentStageId = CurrentStageData != null ? CurrentStageData.Id : string.Empty,
                 CurrentStageTime = _currentStageTime,
                 CurrentStageInspectionTimeIndex = _currentStageInspectionTimeIndex,
-                InspectionCount = _inspectionCount,
                 TotalStationPassedCount = _totalInspectionPassedCount,
                 ShouldShowStageSelectionOnStageEnd = _shouldShowStageSelectionOnStageEnd,
                 PendingStageSelectionAfterShop = _pendingStageSelectionAfterShop,
@@ -627,8 +575,6 @@ namespace TrainDefense.Game.Manager
                 MapStartNormalKill = _mapStartNormalKill,
                 MapStartEliteKill = _mapStartEliteKill,
             };
-
-            state.VisitedStageIds.AddRange(_visitedStageIds);
 
             foreach (var record in _runRecords)
             {
@@ -662,7 +608,6 @@ namespace TrainDefense.Game.Manager
 
             _currentStageTime = Mathf.Max(0f, state.CurrentStageTime);
             _currentStageInspectionTimeIndex = Mathf.Max(0, state.CurrentStageInspectionTimeIndex);
-            _inspectionCount = Mathf.Max(0, state.InspectionCount);
             _totalInspectionPassedCount = Mathf.Max(0, state.TotalStationPassedCount);
             _shouldShowStageSelectionOnStageEnd = state.ShouldShowStageSelectionOnStageEnd;
             _pendingStageSelectionAfterShop = state.PendingStageSelectionAfterShop;
@@ -672,10 +617,6 @@ namespace TrainDefense.Game.Manager
             _isGameOver = false;
             _runFinalized = false;
 
-            _visitedStageIds.Clear();
-            if (state.VisitedStageIds != null)
-                _visitedStageIds.AddRange(state.VisitedStageIds);
-            _MarkCurrentStageVisited();
 
             _runRecords.Clear();
             if (state.RunRecords != null)

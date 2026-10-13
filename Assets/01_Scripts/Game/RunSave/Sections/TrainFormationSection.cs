@@ -18,7 +18,6 @@ namespace TrainDefense.Game.RunSave.Sections
         [Serializable]
         private class Payload
         {
-            public float mainTrainHpRatio = 1f;
             public List<string> replacedTrainIds = new();
             public List<TrainEntry> trains = new();
         }
@@ -64,7 +63,6 @@ namespace TrainDefense.Game.RunSave.Sections
             var state = mainTrain.CaptureFormation();
             var payload = new Payload
             {
-                mainTrainHpRatio = state.MainTrainHpRatio,
                 replacedTrainIds = new List<string>(state.ReplacedTrainIds),
             };
 
@@ -127,7 +125,6 @@ namespace TrainDefense.Game.RunSave.Sections
 
             var state = new MainTrain.FormationState
             {
-                MainTrainHpRatio = payload.mainTrainHpRatio,
                 ReplacedTrainIds = payload.replacedTrainIds ?? new List<string>(),
                 Trains = new List<MainTrain.FormationTrainState>(),
             };

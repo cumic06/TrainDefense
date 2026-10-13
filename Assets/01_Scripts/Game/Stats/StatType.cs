@@ -25,7 +25,7 @@ namespace TrainDefense.Game.Stats
         // 둔화율 (RangeTrain 전용, 맨 뒤 고정)
         SlowRate = 9,
 
-        // 분사 지속시간 (버스트 포탑 전용, 맨 뒤 고정)
+        // 분사 지속시간. 09-26 지속 공격 폐지로 강화 규칙이 없고 런타임도 읽지 않는다(엑셀 열 짝, 값 고정)
         BurstDuration = 10,
     }
 }

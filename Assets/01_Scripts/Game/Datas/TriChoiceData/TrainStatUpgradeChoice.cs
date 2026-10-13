@@ -13,9 +13,6 @@ namespace TrainDefense.Game.Datas
     /// </summary>
     public class TrainStatUpgradeChoice : IChoiceOption
     {
-        // ★ 테스트 스위치 — true면 포탑 만렙(Train.MAX_LEVEL)을 무시하고 무한히 강화할 수 있다.
-        public const bool UNLIMITED_UPGRADE_LEVEL = true;
-
         // 발사 속도 상한(base 대비 배율). 밸런스가 아니라 프레임 천장(FixedUpdate 50Hz)에 닿기 전에
         // 공속 카드를 내리는 안전장치라 데이터가 아닌 상수로 둔다.
         public const float MAX_ATTACK_SPEED_MULTIPLIER = 10f;
@@ -29,22 +26,13 @@ namespace TrainDefense.Game.Datas
         // "이 카드를 산 뒤"의 배율로 판정한다 — 남은 여유에 맞는 낮은 등급 카드는 계속 뜬다.
         public const float MAX_ATTACK_RANGE_MULTIPLIER = 2f;
 
-        // 복합 카드가 같은 티어 단일 카드 대비 얼마나 자주 뜨는가. 1이면 단일 카드가 밀려나므로 절반으로 둔다.
-        public const float COMBO_WEIGHT_RATIO = 0.5f;
-
-        // 복합 카드 가격 배율. 1이면 한 등급 아래 단일 카드 두 장 값 그대로다(2등급 복합 = 1등급 두 장).
-        // 할인하면 원당 가격이 게임에서 가장 싼 카드가 된다. 한 칸에 효과 두 개가 담기는 것만으로 이득이 남는다.
-        public const float COMBO_COST_RATIO = 1f;
-
         private readonly Train _train;
         private readonly StatType _statType;
         private readonly StatUpgradeTierData _tier;
         private readonly TrainStatUpgradeRuleData _rule;
-        private readonly float _statCostMultiplier;
 
         // 복합 카드 전용 — 한 장에 같이 담긴 두 번째 스탯. 단일 카드면 null이다.
         private readonly TrainStatUpgradeRuleData _secondRule;
-        private readonly float _secondStatCostMultiplier;
 
         // 복합 카드의 표시 등급·등장 구간·추첨 가중치. 효과와 가격은 한 단계 아래인 _tier가 정한다.
         // (2티어 복합 = 1등급 효과 두 개) 단일 카드에서는 _tier와 같은 것을 가리킨다.
@@ -64,12 +52,6 @@ namespace TrainDefense.Game.Datas
             _tier = effectTier;
             _secondRule = secondRule;
             _displayTier = displayTier;
-
-            var databaseManager = DatabaseManager.Instance;
-            _statCostMultiplier = databaseManager != null ? databaseManager.GetStatCostMultiplier(_statType) : 1f;
-            _secondStatCostMultiplier = secondRule != null && databaseManager != null
-                ? databaseManager.GetStatCostMultiplier(secondRule.StatType)
-                : 0f;
         }
 
         public Train TargetTrain => _train;
@@ -78,28 +60,13 @@ namespace TrainDefense.Game.Datas
 
         // 한 장에 스탯 두 개가 담긴 카드인가.
         public bool IsCombo => _secondRule != null;
-        public StatType SecondStatType => _secondRule != null ? _secondRule.StatType : _statType;
+        // 복합 카드의 두 번째 스탯. 단일 카드면 null.
+        public StatType? SecondStatType => _secondRule?.StatType;
 
-        // 상점 추첨 가중치 — 등급 데이터가 정한다(고등급 = 희귀). 복합은 같은 티어 단일의 절반.
-        // 등급마다 등장 구간 안에서 가중치가 변한다(저등급은 뒤로 갈수록 덜, 고등급은 더) — 그래서 방문 수가 필요하다.
-        public int TierWeight
-        {
-            get
-            {
-                var stageManager = StageManager.Instance;
-                int shopVisitCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
-                int finalShopVisit = stageManager != null ? stageManager.FinalStationCount : 0;
-                int tierWeight = _displayTier.GetWeightAt(shopVisitCount, finalShopVisit);
-
-                return IsCombo ? Mathf.Max(1, Mathf.RoundToInt(tierWeight * COMBO_WEIGHT_RATIO)) : tierWeight;
-            }
-        }
-
-        // 가격 배수 = 등급 배수(고등급일수록 단가 할인 — 희귀 보상) × 스탯 프리미엄(+1 가치가 큰 정수 스탯).
-        // 복합은 "카드 두 장 값"이라 두 스탯의 프리미엄을 더한 뒤 COMBO_COST_RATIO를 곱한다.
-        // 상점(ShopOfferPricing)이 기본가에 곱해 최종 가격을 낸다.
-        public float CostMultiplier => _tier.CostMultiplier * (_statCostMultiplier + _secondStatCostMultiplier)
-            * (IsCombo ? COMBO_COST_RATIO : 1f);
+        // 효과·가격을 정하는 등급(복합은 표시 등급보다 한 단계 아래). 가격은 상점(ShopOfferPricing)이 이 값으로 매긴다.
+        public StatUpgradeTierData EffectTier => _tier;
+        // 표시 등급·등장 구간·추첨 가중치를 정하는 등급. 추첨 가중치는 상점 추첨(TriChoiceManager.Shop)이 이 값으로 매긴다.
+        public StatUpgradeTierData DisplayTier => _displayTier;
 
         public string Id => IsCombo
             ? $"StatUpgrade_{(_train != null && _train.TrainData != null ? _train.TrainData.Id : "?")}_{_statType}+{_secondRule.StatType}_T{_displayTier.Grade}"
@@ -261,8 +228,7 @@ namespace TrainDefense.Game.Datas
             if (_secondRule != null && !_IsStatBuyable(_secondRule))
                 return false;
 
-            // 레벨 = 받은 업그레이드 횟수(획득 0). 만렙이면 더 못 산다.
-            return UNLIMITED_UPGRADE_LEVEL || _train.CurrentLevel < Train.MAX_LEVEL;
+            return true;
         }
 
         // 이 스탯을 지금 더 살 수 있는가 — 효과가 상한에 닿은 스탯은 돈만 나가므로 카드를 내린다.
@@ -386,7 +352,6 @@ namespace TrainDefense.Game.Datas
                 StatType.AttackRange => "Upgrade_AttackRange",
                 StatType.TargetCount => "Upgrade_TargetCount",
                 StatType.AttackCount => "Upgrade_AttackCount",
-                StatType.BurstDuration => "Upgrade_BurstDuration",
                 StatType.SlowRate => "Upgrade_Slow",
                 _ => null,
             };
@@ -401,7 +366,6 @@ namespace TrainDefense.Game.Datas
                 StatType.AttackArea => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 StatType.AttackRange => $"+{_GetDataBaseValue(StatType.AttackRange) * rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 // 절대초 가산 — 템플릿("지속시간 {0}초")이 단위를 붙이므로 숫자만 만든다.
-                StatType.BurstDuration => $"+{rule.IncreaseRate * _tier.ValueMultiplier:0.#}",
                 // 실제로 더해지는 둔화율(%p) 그대로 표시.
                 StatType.SlowRate => $"+{rule.IncreaseRate * _tier.ValueMultiplier * 100f:0}%",
                 _ => "+1",
@@ -428,7 +392,7 @@ namespace TrainDefense.Game.Datas
         }
 
         // 런타임 강화 데이터에서 실제로 읽히는 인덱스는 "이번에 적용할 레벨"(= 현재 레벨) 하나뿐이다.
-        // 고정 길이(MAX_LEVEL)로 만들면 만렙을 넘어선 레벨에서 인덱스가 배열 밖이 되어
+        // 고정 길이로 만들면 그 길이를 넘어선 레벨에서 인덱스가 배열 밖이 되어
         // 증가량이 0으로 조용히 사라지므로(코인만 빠짐), 항상 그 인덱스까지 채운다.
         private int _GetUpgradeLevelCount() => _train.CurrentLevel + 1;
 
@@ -482,8 +446,6 @@ namespace TrainDefense.Game.Datas
                     case StatType.AttackRange: delta.AttackRange += baseStatus.AttackRange * rule.IncreaseRate * _tier.ValueMultiplier; break;
                     case StatType.TargetCount: delta.TargetCount += 1; break;
                     case StatType.AttackCount: delta.AttackCount += 1; break;
-                    // 분사 지속시간은 base 비율이 아니라 절대초 — rate가 1등급이 더할 초.
-                    case StatType.BurstDuration: delta.BurstDuration += rule.IncreaseRate * _tier.ValueMultiplier; break;
                     default: return false;
                 }
             }
@@ -499,8 +461,6 @@ namespace TrainDefense.Game.Datas
                 case StatType.AttackDamage: delta.AttackDamage += baseStatus.AttackDamage * rule.IncreaseRate * _tier.ValueMultiplier; break;
                 case StatType.AttackInterval: delta.AttackInterval += _GetAttackIntervalDelta(baseStatus.AttackInterval, rule); break;
                 case StatType.AttackArea: delta.AttackArea += _GetAttackAreaDelta(baseStatus.AttackArea, rule); break;
-                // 분사 지속시간은 base 비율이 아니라 절대초 — rate가 1등급이 더할 초.
-                case StatType.BurstDuration: delta.BurstDuration += rule.IncreaseRate * _tier.ValueMultiplier; break;
                 // 둔화율은 카드에 적힌 %p 그대로 더한다(표기 = 실제). 상한은 RangeTrain이 적용한다.
                 case StatType.SlowRate: delta.SlowRate += _GetSlowRateDelta(rule); break;
                 default: return false;

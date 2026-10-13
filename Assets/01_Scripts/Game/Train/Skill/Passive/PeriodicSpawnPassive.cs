@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -10,7 +11,6 @@ namespace TrainDefense.Game
     /// </summary>
     public class PeriodicSpawnPassive : TrainPassiveSkill
     {
-        private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 
         public float Interval { get; private set; } = 3f;
         public string ProjectilePrefabId { get; private set; }
@@ -19,18 +19,19 @@ namespace TrainDefense.Game
 
         // 눈덩이 등은 owner 사거리가 아니라 화면 전체에서 가장 가까운 적을 조준해야 하므로 넉넉한 탐색 반경 사용.
         private const float ScreenSearchRadius = 100f;
+        // 타겟이 없으면 매 프레임 다시 찾으므로 결과 목록을 재사용해 할당을 없앤다.
+        private static readonly List<Collider2D> _searchResults = new();
+        private static readonly ContactFilter2D _searchFilter = new ContactFilter2D().NoFilter();
 
-        private Projectile _cachedPrefab;
-        private bool _loadAttempted;
         private float _timer;
 
         public static PeriodicSpawnPassive From(string[] parts)
         {
             if (parts.Length < 4) return null;
-            if (!float.TryParse(parts[1], out float interval) || interval <= 0f) return null;
-            if (!float.TryParse(parts[3], out float radius) || radius <= 0f) return null;
+            if (!TryParseFloat(parts[1], out float interval) || interval <= 0f) return null;
+            if (!TryParseFloat(parts[3], out float radius) || radius <= 0f) return null;
             float damageMultiplier = 1f;
-            if (parts.Length >= 5 && !float.TryParse(parts[4], out damageMultiplier))
+            if (parts.Length >= 5 && !TryParseFloat(parts[4], out damageMultiplier))
             {
                 damageMultiplier = 1f;
             }
@@ -50,7 +51,7 @@ namespace TrainDefense.Game
             _timer += deltaTime;
             if (_timer < Interval) return;
 
-            var prefab = LoadPrefab();
+            var prefab = LoadProjectilePrefab(ProjectilePrefabId);
             if (prefab == null) return;
 
             // 새 총알(눈덩이 등)은 화면 안(맵 전체)에서 가장 가까운 적을 조준해 발사한다. (owner 사거리와 무관)
@@ -71,10 +72,10 @@ namespace TrainDefense.Game
 
         private Monster FindNearestMonster(float radius)
         {
-            var colliders = Physics2D.OverlapCircleAll(Owner.transform.position, radius);
+            Physics2D.OverlapCircle(Owner.transform.position, radius, _searchFilter, _searchResults);
             Monster nearest = null;
             float minSqrDist = float.MaxValue;
-            foreach (var col in colliders)
+            foreach (var col in _searchResults)
             {
                 if (!col.TryGetComponent<Monster>(out var m) || !m.IsActive) continue;
                 float sqrDist = (Owner.transform.position - m.transform.position).sqrMagnitude;
@@ -83,21 +84,5 @@ namespace TrainDefense.Game
             return nearest;
         }
 
-        private Projectile LoadPrefab()
-        {
-            if (_cachedPrefab != null) return _cachedPrefab;
-            if (_loadAttempted) return null;
-            _loadAttempted = true;
-            if (string.IsNullOrEmpty(ProjectilePrefabId)) return null;
-
-            var go = Resources.Load<GameObject>($"{PROJECTILE_PREFAB_PATH}{ProjectilePrefabId}");
-            if (go == null)
-            {
-                Debug.LogWarning($"PeriodicSpawnPassive: prefab not found at '{PROJECTILE_PREFAB_PATH}{ProjectilePrefabId}'");
-                return null;
-            }
-            _cachedPrefab = go.GetComponent<Projectile>();
-            return _cachedPrefab;
-        }
     }
 }

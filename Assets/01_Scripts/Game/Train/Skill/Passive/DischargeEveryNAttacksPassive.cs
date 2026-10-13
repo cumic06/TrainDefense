@@ -1,4 +1,3 @@
-using System.Globalization;
 
 namespace TrainDefense.Game
 {
@@ -18,8 +17,8 @@ namespace TrainDefense.Game
         {
             if (parts.Length < 4) return null;
             if (!int.TryParse(parts[1].Trim(), out int n) || n <= 0) return null;
-            if (!float.TryParse(parts[2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float damagePercent) || damagePercent <= 0f) return null;
-            if (!float.TryParse(parts[3].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float stunDuration) || stunDuration < 0f) return null;
+            if (!TryParseFloat(parts[2], out float damagePercent) || damagePercent <= 0f) return null;
+            if (!TryParseFloat(parts[3], out float stunDuration) || stunDuration < 0f) return null;
             return new DischargeEveryNAttacksPassive { EveryN = n, DamagePercent = damagePercent, StunDuration = stunDuration };
         }
 

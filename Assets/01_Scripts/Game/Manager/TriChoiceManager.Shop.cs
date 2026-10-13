@@ -57,6 +57,21 @@ namespace TrainDefense.Game
         // 조건을 넘긴 포탑이 여럿일 때 어느 포탑의 승격 카드를 낼지 고르는 포탑 하나의 가중치. 포탑끼리는 같은 확률.
         private const int ELITE_OFFER_TURRET_WEIGHT = 2;
 
+        // 복합 카드가 같은 티어 단일 카드 대비 얼마나 자주 뜨는가. 1이면 단일 카드가 밀려나므로 절반으로 둔다.
+        private const float COMBO_WEIGHT_RATIO = 0.5f;
+
+        // 스탯 카드 추첨 가중치 — 등급 데이터가 정한다(고등급 = 희귀). 복합은 같은 티어 단일의 절반.
+        // 등급마다 등장 구간 안에서 가중치가 변한다(저등급은 뒤로 갈수록 덜, 고등급은 더) — 그래서 방문 수가 필요하다.
+        private static int _GetStatUpgradeWeight(TrainStatUpgradeChoice option)
+        {
+            var stageManager = StageManager.Instance;
+            int shopVisitCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
+            int finalShopVisit = stageManager != null ? stageManager.FinalStationCount : 0;
+            int tierWeight = option.DisplayTier.GetWeightAt(shopVisitCount, finalShopVisit);
+
+            return option.IsCombo ? Mathf.Max(1, Mathf.RoundToInt(tierWeight * COMBO_WEIGHT_RATIO)) : tierWeight;
+        }
+
         // 승격 조건은 카드마다 원본 포탑 기준으로 판정한다(EliteTrainChoice.IsValid).
         // DB 엔트리는 ScriptableObject 원본이라 가중치를 직접 고치지 않고 복사본에 담는다.
         // 같은 포탑에 승격 카드가 여러 장(예: 기관총 61001·61001a)이면 가중치를 나눠 포탑마다 같은 빈도로 뜨게 한다.
@@ -99,14 +114,14 @@ namespace TrainDefense.Game
                 foreach (var option in TrainStatUpgradeChoice.CreateOptionsFor(train))
                 {
                     if (option.IsValid())
-                        result.Add(new ChoiceEntry { Option = option, Weight = option.TierWeight, Tier = 0 });
+                        result.Add(new ChoiceEntry { Option = option, Weight = _GetStatUpgradeWeight(option), Tier = 0 });
                 }
 
                 // 스탯 두 개가 한 장에 담긴 복합 카드. 가중치가 같은 티어 단일의 절반이라 가끔 섞여 나온다.
                 foreach (var option in TrainStatUpgradeChoice.CreateComboOptionsFor(train))
                 {
                     if (option.IsValid())
-                        result.Add(new ChoiceEntry { Option = option, Weight = option.TierWeight, Tier = 0 });
+                        result.Add(new ChoiceEntry { Option = option, Weight = _GetStatUpgradeWeight(option), Tier = 0 });
                 }
             }
 

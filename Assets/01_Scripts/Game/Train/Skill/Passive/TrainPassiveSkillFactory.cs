@@ -13,42 +13,20 @@ namespace TrainDefense.Game
     {
         private static readonly Dictionary<string, Func<string[], TrainPassiveSkill>> _parsers = new(StringComparer.OrdinalIgnoreCase)
         {
-            { nameof(OverrideEveryNAttacksPassive), OverrideEveryNAttacksPassive.From },
             { "OverrideEveryN",                     OverrideEveryNAttacksPassive.From },
-            { nameof(RepeatAfterAttackPassive),      RepeatAfterAttackPassive.From },
-            { "RepeatAfterAttack",                   RepeatAfterAttackPassive.From },
-            { nameof(ChainAttackChancePassive),      ChainAttackChancePassive.From },
             { "ChainAttackChance",                   ChainAttackChancePassive.From },
-            { nameof(RandomPosBombardPassive),       RandomPosBombardPassive.From },
-            { "RandomPosBombard",                    RandomPosBombardPassive.From },
-            { nameof(PeriodicSpawnPassive),          PeriodicSpawnPassive.From },
             { "PeriodicSpawn",                       PeriodicSpawnPassive.From },
-            { nameof(FollowUpExplosionPassive),      FollowUpExplosionPassive.From },
             { "FollowUpExplosion",                   FollowUpExplosionPassive.From },
-            { nameof(StatModifierPassive),           StatModifierPassive.From },
             { "StatModifier",                        StatModifierPassive.From },
-            { nameof(StrengthenPassive),             StrengthenPassive.From },
             { "Strengthen",                          StrengthenPassive.From },
-            { nameof(PierceProjectilePassive),       PierceProjectilePassive.From },
-            { "PierceProjectile",                    PierceProjectilePassive.From },
-            { nameof(RapidBombardPassive),           RapidBombardPassive.From },
             { "RapidBombard",                        RapidBombardPassive.From },
-            { nameof(KnockbackOnHitPassive),         KnockbackOnHitPassive.From },
             { "KnockbackOnHit",                      KnockbackOnHitPassive.From },
-            { nameof(ScaleProjectilePassive),        ScaleProjectilePassive.From },
             { "ScaleProjectile",                     ScaleProjectilePassive.From },
-            { nameof(StunDurationPassive),           StunDurationPassive.From },
             { "StunDuration",                        StunDurationPassive.From },
-            { nameof(DischargeEveryNAttacksPassive), DischargeEveryNAttacksPassive.From },
             { "DischargeEveryN",                     DischargeEveryNAttacksPassive.From },
-            { nameof(SweepAttackPassive),            SweepAttackPassive.From },
             { "SweepAttack",                         SweepAttackPassive.From },
-            { nameof(SlowOnHitPassive),              SlowOnHitPassive.From },
             { "SlowOnHit",                           SlowOnHitPassive.From },
         };
-
-        public static void Register(string typeKey, Func<string[], TrainPassiveSkill> parser)
-            => _parsers[typeKey] = parser;
 
         public static List<TrainPassiveSkill> ParseAll(string raw)
         {

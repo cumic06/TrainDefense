@@ -1,4 +1,3 @@
-using System.Globalization;
 using TrainDefense.Game.Stats;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ namespace TrainDefense.Game
         public static StrengthenPassive From(string[] parts)
         {
             if (parts.Length < 2) return null;
-            if (!float.TryParse(parts[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out float percent))
+            if (!TryParseFloat(parts[1], out float percent))
             {
                 Debug.LogWarning($"StrengthenPassive: invalid damage_percent '{parts[1]}'");
                 return null;
@@ -35,6 +34,13 @@ namespace TrainDefense.Game
 
             if (Owner is RangeTrain rangeTrain)
                 rangeTrain.SetSuppressMainProjectileShove(true);
+        }
+
+        // 공격력은 StatModifierPassive와 같이 되돌리지 않는다(재초기화 때 스탯을 새로 계산). 넉백 억제만 푼다.
+        public override void Unsubscribe()
+        {
+            if (Owner is RangeTrain rangeTrain)
+                rangeTrain.SetSuppressMainProjectileShove(false);
         }
     }
 }

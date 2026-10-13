@@ -8,21 +8,17 @@ namespace TrainDefense.Game
     /// </summary>
     public class OverrideEveryNAttacksPassive : TrainPassiveSkill
     {
-        private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 
         public int EveryN { get; private set; }
         public string ProjectilePrefabId { get; private set; }
         public float DamageMultiplier { get; private set; } = 1f;
-
-        private Projectile _cachedPrefab;
-        private bool _loadAttempted;
 
         public static OverrideEveryNAttacksPassive From(string[] parts)
         {
             if (parts.Length < 3) return null;
             if (!int.TryParse(parts[1], out int n) || n <= 0) return null;
             float damageMultiplier = 1f;
-            if (parts.Length >= 4 && float.TryParse(parts[3], out float parsedMultiplier) && parsedMultiplier > 0f)
+            if (parts.Length >= 4 && TryParseFloat(parts[3], out float parsedMultiplier) && parsedMultiplier > 0f)
                 damageMultiplier = parsedMultiplier;
             return new OverrideEveryNAttacksPassive
             {
@@ -42,34 +38,14 @@ namespace TrainDefense.Game
             if (Owner is TurretTrain t) t.UnregisterProjectileOverride(Provide);
         }
 
-        private Projectile Provide(int attackIndex)
+        private Projectile Provide(int attackIndex, out float damageMultiplier)
         {
+            damageMultiplier = DamageMultiplier;
             if (EveryN <= 0) return null;
             if (attackIndex <= 0 || attackIndex % EveryN != 0) return null;
 
-            Projectile prefab = LoadPrefab();
-            if (prefab != null && Owner is TurretTrain turretTrain)
-                turretTrain.OverrideDamageMultiplier = DamageMultiplier;
-
-            return prefab;
+            return LoadProjectilePrefab(ProjectilePrefabId);
         }
 
-        private Projectile LoadPrefab()
-        {
-            if (_cachedPrefab != null) return _cachedPrefab;
-            if (_loadAttempted) return null;
-            _loadAttempted = true;
-
-            if (string.IsNullOrEmpty(ProjectilePrefabId)) return null;
-
-            var go = Resources.Load<GameObject>($"{PROJECTILE_PREFAB_PATH}{ProjectilePrefabId}");
-            if (go == null)
-            {
-                Debug.LogWarning($"OverrideEveryNAttacksPassive: prefab not found at '{PROJECTILE_PREFAB_PATH}{ProjectilePrefabId}'");
-                return null;
-            }
-            _cachedPrefab = go.GetComponent<Projectile>();
-            return _cachedPrefab;
-        }
     }
 }

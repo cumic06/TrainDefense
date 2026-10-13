@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Globalization;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -12,16 +11,12 @@ namespace TrainDefense.Game
     /// </summary>
     public class FollowUpExplosionPassive : TrainPassiveSkill
     {
-        private const string PROJECTILE_PREFAB_PATH = "Prefabs/Projectiles/TrainProjectile/";
 
         public float Delay { get; private set; } = 0.2f;
         public string ProjectilePrefabId { get; private set; }
         public float Radius { get; private set; } = -1f;
         public float DamageMul { get; private set; } = 1f;
         public float ShoveScale { get; private set; } = 1f;
-
-        private Projectile _cachedPrefab;
-        private bool _loadAttempted;
 
         public static FollowUpExplosionPassive From(string[] parts)
         {
@@ -42,9 +37,6 @@ namespace TrainDefense.Game
                 ShoveScale = shoveScale
             };
         }
-
-        private static bool TryParseFloat(string s, out float value)
-            => float.TryParse(s?.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out value);
 
         public override void Subscribe()
         {
@@ -78,28 +70,12 @@ namespace TrainDefense.Game
             yield return new WaitForSeconds(Delay);
             if (Owner == null || Owner.IsDead) yield break;
 
-            var prefab = LoadPrefab();
+            var prefab = LoadProjectilePrefab(ProjectilePrefabId);
             if (prefab == null) yield break;
 
             if (Owner is RangeTrain range) range.SpawnExternalProjectile(prefab, Radius, null, DamageMul, ShoveScale);
             else if (Owner is TurretTrain turret) turret.SpawnExternalProjectileAtSelf(prefab, Radius, DamageMul, ShoveScale);
         }
 
-        private Projectile LoadPrefab()
-        {
-            if (_cachedPrefab != null) return _cachedPrefab;
-            if (_loadAttempted) return null;
-            _loadAttempted = true;
-            if (string.IsNullOrEmpty(ProjectilePrefabId)) return null;
-
-            var go = Resources.Load<GameObject>($"{PROJECTILE_PREFAB_PATH}{ProjectilePrefabId}");
-            if (go == null)
-            {
-                Debug.LogWarning($"FollowUpExplosionPassive: prefab not found at '{PROJECTILE_PREFAB_PATH}{ProjectilePrefabId}'");
-                return null;
-            }
-            _cachedPrefab = go.GetComponent<Projectile>();
-            return _cachedPrefab;
-        }
     }
 }

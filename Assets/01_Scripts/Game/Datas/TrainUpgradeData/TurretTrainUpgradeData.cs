@@ -92,7 +92,6 @@ namespace TrainDefense.Game.Datas
             total.TargetCount += s.TargetCount;
             total.CriticalChance += s.CriticalChance;
             total.CriticalDamage += s.CriticalDamage;
-            total.BurstDuration += s.BurstDuration;
          }
          return total;
       }
