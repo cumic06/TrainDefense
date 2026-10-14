@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
+using System.IO;
 using TrainDefense.Game.Datas;
 using UnityEditor;
 using UnityEngine;
@@ -25,6 +26,8 @@ namespace TrainDefense.Editor
         private const float PREVIEW_SMALL = 52f;
         private const int PREVIEW_MAX = 13;         // 큰 미리보기 1 + 스트립 12 (애니메이션 프레임 등)
         private const int PREVIEW_PER_ROW = 5;
+        private const int PICKER_CONTROL_ID = 0x0DB5;                     // 오브젝트 피커 이벤트를 이 창의 요청과 구분하는 ID
+        private const string ICON_RESOURCES_ROOT = "/Resources/Sprite/";  // iconId = 이 폴더 기준 상대 경로(확장자 제외)
 
         /// <summary>목록형 탭 정의 — (탭 이름, 서브 리스트(라벨, DB 프로퍼티 경로)[]). 경로는 SerializedObject.FindProperty 점 표기.</summary>
         private static readonly (string tabName, (string label, string path)[] lists)[] ListTabs =
@@ -78,6 +81,10 @@ namespace TrainDefense.Editor
 
         // 탭/서브리스트를 오가도 선택이 유지되도록 프로퍼티 경로별로 저장
         private readonly Dictionary<string, int> _selectionByPath = new();
+
+        // 아이콘 클릭으로 연 오브젝트 피커가 결과를 써넣을 대상
+        private string _pickerPropertyPath;
+        private PreviewEditKind _pickerEditKind;
         #endregion
 
         #region LifeCycle
@@ -116,6 +123,7 @@ namespace TrainDefense.Editor
             }
 
             _serializedDb.Update();
+            _HandleObjectPicker();
 
             if (Event.current.type == EventType.MouseMove) Repaint();
             if (AssetPreview.IsLoadingAssetPreviews()) Repaint();   // 프리팹 프리뷰 비동기 로딩 반영
@@ -246,7 +254,10 @@ namespace TrainDefense.Editor
 
                 var thumbRect = new Rect(row.x + 2f, row.y + (ROW_HEIGHT - THUMB_SIZE) * 0.5f, THUMB_SIZE, THUMB_SIZE);
                 EditorGUI.DrawRect(thumbRect, new Color(0f, 0f, 0f, 0.25f));
-                _DrawFirstPreview(element, thumbRect);
+                PreviewEntry? thumbEntry = _DrawFirstPreview(element, thumbRect);
+                bool isThumbEditable = thumbEntry.HasValue && thumbEntry.Value.EditKind != PreviewEditKind.None;
+
+                if (isThumbEditable) EditorGUIUtility.AddCursorRect(thumbRect, MouseCursor.Link);
 
                 var labelRect = new Rect(thumbRect.xMax + 4f, row.y, row.width - thumbRect.width - 8f, ROW_HEIGHT);
                 var rowStyle = isSelected ? EditorStyles.boldLabel : EditorStyles.label;
@@ -256,6 +267,10 @@ namespace TrainDefense.Editor
                 {
                     _selectionByPath[path] = i;
                     GUI.FocusControl(null);
+
+                    if (isThumbEditable && thumbRect.Contains(Event.current.mousePosition))
+                        _OpenPicker(thumbEntry.Value);
+
                     Event.current.Use();
                     Repaint();
                 }
@@ -391,25 +406,39 @@ namespace TrainDefense.Editor
         #endregion
 
         #region Sprite Preview (뷰어)
+        /// <summary>프리뷰를 클릭했을 때 어떤 방식으로 원본 프로퍼티에 다시 써넣는지.</summary>
+        private enum PreviewEditKind
+        {
+            None,       // 편집 불가 (Texture, 프리팹 프리뷰)
+            Sprite,     // Sprite 필드 또는 Sprite[] 원소 — objectReferenceValue
+            IconId,     // iconId 문자열 — Resources/Sprite 기준 상대 경로
+        }
+
         private readonly struct PreviewEntry
         {
             public readonly string Label;
             public readonly Sprite Sprite;
             public readonly Texture Texture;
+            public readonly string PropertyPath;
+            public readonly PreviewEditKind EditKind;
 
-            public PreviewEntry(string label, Sprite sprite, Texture texture)
+            public PreviewEntry(string label, Sprite sprite, Texture texture,
+                string propertyPath = null, PreviewEditKind editKind = PreviewEditKind.None)
             {
                 Label = label;
                 Sprite = sprite;
                 Texture = texture;
+                PropertyPath = propertyPath;
+                EditKind = editKind;
             }
         }
 
         /// <summary>
         /// 요소가 참조하는 스프라이트/텍스처/프리팹 프리뷰를 수집한다.
         /// 대응: ① 직접 Sprite/Texture 필드 ② Sprite[] 배열(애니메이션 프레임) ③ iconId → Resources/Sprite ④ GameObject 프리팹(에셋 프리뷰)
+        /// includeEmpty면 비어 있는 Sprite 필드·iconId도 빈 슬롯으로 넣어 클릭으로 지정할 수 있게 한다.
         /// </summary>
-        private static List<PreviewEntry> _CollectPreviews(SerializedProperty element, int maxCount)
+        private static List<PreviewEntry> _CollectPreviews(SerializedProperty element, int maxCount, bool includeEmpty = false)
         {
             var results = new List<PreviewEntry>();
             SerializedProperty iterator = element.Copy();
@@ -426,11 +455,17 @@ namespace TrainDefense.Editor
                 {
                     Object value = iterator.objectReferenceValue;
 
-                    if (value == null) continue;
+                    if (value == null)
+                    {
+                        if (includeEmpty && iterator.type == "PPtr<$Sprite>")
+                            results.Add(new PreviewEntry(iterator.displayName, null, null, iterator.propertyPath, PreviewEditKind.Sprite));
+
+                        continue;
+                    }
 
                     if (value is Sprite sprite)
                     {
-                        results.Add(new PreviewEntry(iterator.displayName, sprite, null));
+                        results.Add(new PreviewEntry(iterator.displayName, sprite, null, iterator.propertyPath, PreviewEditKind.Sprite));
                     }
                     else if (value is Texture texture)
                     {
@@ -448,39 +483,43 @@ namespace TrainDefense.Editor
                 {
                     for (int i = 0; i < iterator.arraySize && results.Count < maxCount; i++)
                     {
-                        var frame = iterator.GetArrayElementAtIndex(i).objectReferenceValue as Sprite;
+                        SerializedProperty frameProperty = iterator.GetArrayElementAtIndex(i);
+                        var frame = frameProperty.objectReferenceValue as Sprite;
 
-                        if (frame != null)
-                            results.Add(new PreviewEntry($"{iterator.displayName}[{i}]", frame, null));
+                        if (frame != null || includeEmpty)
+                            results.Add(new PreviewEntry($"{iterator.displayName}[{i}]", frame, null,
+                                frameProperty.propertyPath, PreviewEditKind.Sprite));
                     }
                 }
                 else if (iterator.propertyType == SerializedPropertyType.String && iterator.name == "iconId")
                 {
                     string iconId = iterator.stringValue;
+                    Sprite sprite = string.IsNullOrEmpty(iconId) ? null : Resources.Load<Sprite>($"Sprite/{iconId}");
 
-                    if (string.IsNullOrEmpty(iconId)) continue;
-
-                    var sprite = Resources.Load<Sprite>($"Sprite/{iconId}");
-
-                    if (sprite != null) results.Add(new PreviewEntry($"iconId: {iconId}", sprite, null));
+                    if (sprite != null || includeEmpty)
+                        results.Add(new PreviewEntry($"iconId: {iconId}", sprite, null, iterator.propertyPath, PreviewEditKind.IconId));
                 }
             }
 
             return results;
         }
 
-        /// <summary>목록 행 썸네일 — 첫 번째 프리뷰만 그린다.</summary>
-        private static void _DrawFirstPreview(SerializedProperty element, Rect rect)
+        /// <summary>목록 행 썸네일 — 첫 번째 프리뷰만 그리고, 클릭 편집용으로 그 항목을 돌려준다.</summary>
+        private static PreviewEntry? _DrawFirstPreview(SerializedProperty element, Rect rect)
         {
             List<PreviewEntry> previews = _CollectPreviews(element, 1);
 
-            if (previews.Count > 0) _DrawPreview(rect, previews[0]);
+            if (previews.Count == 0) return null;
+
+            _DrawPreview(rect, previews[0]);
+
+            return previews[0];
         }
 
-        /// <summary>상세 패널 상단 뷰어 — 첫 프리뷰는 크게, 나머지(애니메이션 프레임 등)는 스트립으로 나열.</summary>
+        /// <summary>상세 패널 상단 뷰어 — 첫 프리뷰는 크게, 나머지(애니메이션 프레임 등)는 스트립으로 나열. 스프라이트는 클릭하면 교체.</summary>
         private void _DrawPreviewSection(SerializedProperty element)
         {
-            List<PreviewEntry> previews = _CollectPreviews(element, PREVIEW_MAX);
+            List<PreviewEntry> previews = _CollectPreviews(element, PREVIEW_MAX, true);
 
             if (previews.Count == 0) return;
 
@@ -491,12 +530,16 @@ namespace TrainDefense.Editor
                 GUILayout.Width(PREVIEW_LARGE), GUILayout.Height(PREVIEW_LARGE));
             EditorGUI.DrawRect(large, new Color(0f, 0f, 0f, 0.25f));
             _DrawPreview(large, previews[0]);
+            _HandlePreviewClick(large, previews[0]);
 
             GUILayout.BeginVertical();
             GUILayout.Label(previews[0].Label, EditorStyles.miniLabel);
 
             if (previews[0].Sprite != null)
                 GUILayout.Label(previews[0].Sprite.name, EditorStyles.miniLabel);
+
+            if (previews[0].EditKind != PreviewEditKind.None)
+                GUILayout.Label("아이콘을 클릭하면 스프라이트를 바꿀 수 있습니다.", EditorStyles.miniLabel);
 
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
@@ -512,6 +555,7 @@ namespace TrainDefense.Editor
                     EditorGUI.DrawRect(small, new Color(0f, 0f, 0f, 0.25f));
                     _DrawPreview(small, previews[i]);
                     GUI.Label(small, new GUIContent("", previews[i].Label));   // 툴팁
+                    _HandlePreviewClick(small, previews[i]);
                 }
 
                 GUILayout.EndHorizontal();
@@ -526,6 +570,8 @@ namespace TrainDefense.Editor
                 _DrawSprite(rect, entry.Sprite);
             else if (entry.Texture != null)
                 GUI.DrawTexture(rect, entry.Texture, ScaleMode.ScaleToFit);
+            else
+                GUI.Label(rect, "없음", EditorStyles.centeredGreyMiniLabel);   // 클릭해서 지정할 빈 슬롯
         }
 
         /// <summary>스프라이트를 아틀라스 부분 UV로 잘라 비율 유지하며 그린다 (Tight 패킹은 전체 텍스처로 폴백).</summary>
@@ -561,6 +607,99 @@ namespace TrainDefense.Editor
             }
 
             GUI.DrawTextureWithTexCoords(fitted, texture, uv);
+        }
+        #endregion
+
+        #region Sprite Picker (아이콘 클릭 교체)
+        private void _HandlePreviewClick(Rect rect, PreviewEntry entry)
+        {
+            if (entry.EditKind == PreviewEditKind.None) return;
+
+            EditorGUIUtility.AddCursorRect(rect, MouseCursor.Link);
+
+            if (Event.current.type != EventType.MouseDown || !rect.Contains(Event.current.mousePosition)) return;
+
+            _OpenPicker(entry);
+            Event.current.Use();
+        }
+
+        private void _OpenPicker(PreviewEntry entry)
+        {
+            _pickerPropertyPath = entry.PropertyPath;
+            _pickerEditKind = entry.EditKind;
+            EditorGUIUtility.ShowObjectPicker<Sprite>(entry.Sprite, false, "", PICKER_CONTROL_ID);
+        }
+
+        /// <summary>
+        /// 오브젝트 피커 결과를 원본 프로퍼티에 반영한다.
+        /// Sprite 필드는 선택이 바뀔 때마다 즉시 반영(ObjectField와 동일), iconId는 Resources 경로 검증이 필요해 피커를 닫을 때 한 번만 반영한다.
+        /// </summary>
+        private void _HandleObjectPicker()
+        {
+            Event current = Event.current;
+
+            if (current.type != EventType.ExecuteCommand) return;
+
+            if (string.IsNullOrEmpty(_pickerPropertyPath)) return;
+
+            if (EditorGUIUtility.GetObjectPickerControlID() != PICKER_CONTROL_ID) return;
+
+            bool isClosed = current.commandName == "ObjectSelectorClosed";
+
+            if (!isClosed && current.commandName != "ObjectSelectorUpdated") return;
+
+            SerializedProperty property = _serializedDb.FindProperty(_pickerPropertyPath);
+            var picked = EditorGUIUtility.GetObjectPickerObject() as Sprite;
+
+            if (property != null)
+            {
+                if (_pickerEditKind == PreviewEditKind.Sprite)
+                    property.objectReferenceValue = picked;
+                else if (_pickerEditKind == PreviewEditKind.IconId && isClosed)
+                    _ApplyIconId(property, picked);
+            }
+
+            if (isClosed) _pickerPropertyPath = null;
+
+            current.Use();
+            Repaint();
+        }
+
+        private void _ApplyIconId(SerializedProperty property, Sprite picked)
+        {
+            if (!_TryGetIconId(picked, out string iconId))
+            {
+                ShowNotification(new GUIContent("iconId는 Resources/Sprite 폴더 안의 스프라이트만 지정할 수 있습니다."));
+                Debug.LogWarning($"[DB Browser] '{AssetDatabase.GetAssetPath(picked)}'는 Resources/Sprite 밖이라 iconId로 쓸 수 없습니다.");
+
+                return;
+            }
+
+            if (property.stringValue == iconId) return;
+
+            property.stringValue = iconId;
+
+            // iconId는 파일 경로라 Multiple 스프라이트 시트에서는 첫 스프라이트만 로드된다
+            if (picked != null && Resources.Load<Sprite>($"Sprite/{iconId}") != picked)
+                Debug.LogWarning($"[DB Browser] '{picked.name}'는 스프라이트 시트의 첫 스프라이트가 아니라 런타임엔 다른 스프라이트가 로드됩니다 (iconId: {iconId}).");
+        }
+
+        /// <summary>스프라이트 에셋 경로 → iconId (Resources/Sprite 기준 상대 경로, 확장자 제외). None 선택은 빈 문자열.</summary>
+        private static bool _TryGetIconId(Sprite sprite, out string iconId)
+        {
+            iconId = "";
+
+            if (sprite == null) return true;
+
+            string assetPath = AssetDatabase.GetAssetPath(sprite);
+            int rootIndex = assetPath.IndexOf(ICON_RESOURCES_ROOT);
+
+            if (rootIndex < 0) return false;
+
+            string relativePath = assetPath.Substring(rootIndex + ICON_RESOURCES_ROOT.Length);
+            iconId = Path.ChangeExtension(relativePath, null);
+
+            return true;
         }
         #endregion
 
