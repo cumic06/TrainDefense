@@ -536,6 +536,7 @@ namespace TrainDefense.Game
             if (nearTarget == null) return;
 
             _attackCounter++;
+            _combatRecord.Attacks++;
             OnAttacked?.Invoke(nearTarget);
 
             if (turretModel != null)
@@ -677,14 +678,14 @@ namespace TrainDefense.Game
                 if (target == null || !target.IsActive) continue;
 
                 var (finalDamage, isCritical) = CalculateDirectDamage();
-                target.TakeDamage(finalDamage, isCritical);
+                TrainCombatRecorder.DealDamage(target, finalDamage, isCritical, this);
 
                 if (projectileData.HasStunEffect)
-                    target.Stun(Mathf.Max(projectileData.StunDuration, MinimumStunDuration));
+                    TrainCombatRecorder.ApplyStun(target, Mathf.Max(projectileData.StunDuration, MinimumStunDuration), this);
                 if (projectileData.HasShoveEffect)
                     target.Shove(projectileData.ShovePower, projectileData.ShoveDuration);
                 if (projectileData.HasSlowEffect)
-                    target.Slow(projectileData.SlowValue, 0f);
+                    TrainCombatRecorder.ApplySlow(target, projectileData.SlowValue, 0f, this);
             }
         }
 
@@ -695,7 +696,7 @@ namespace TrainDefense.Game
 
             var (finalDamage, isCritical) = CalculateDirectDamage();
             finalDamage *= damageMultiplier;
-            target.TakeDamage(finalDamage, isCritical);
+            TrainCombatRecorder.DealDamage(target, finalDamage, isCritical, this);
         }
 
         private (float finalDamage, bool isCritical) CalculateDirectDamage()
@@ -1134,6 +1135,14 @@ namespace TrainDefense.Game
         public override (string label, string value)[] GetStatDetails()
             => _BuildStatDetails(_currentMaxHp, _currentTurretTrainStatus);
 
+        public override (string label, string value)[] GetStatGrowthDetails()
+        {
+            if (turretTrainData == null)
+                return GetStatDetails();
+
+            return _BuildStatDetails(_currentMaxHp, _currentTurretTrainStatus, TrainData.TrainStatusData.MaxHp, turretTrainData.TurretTrainStatus);
+        }
+
         // 상점 강화 카드 롱프레스용 — upgradeData를 지금 받으면 될 스탯(Upgrade와 같은 _AddUpgradeStatus로 계산).
         public override (string label, string value)[] GetUpgradePreviewStatDetails(ITrainUpgradeData upgradeData)
         {
@@ -1177,28 +1186,34 @@ namespace TrainDefense.Game
             return _BuildStatDetails(maxHp, status);
         }
 
-        private static (string label, string value)[] _BuildStatDetails(float maxHp, TurretTrainStatus status)
+        // baseStatus가 있으면(인게임 롱프레스) 각 값 옆에 데이터 기본값 대비 강화량을 붙인다.
+        private static (string label, string value)[] _BuildStatDetails(float maxHp, TurretTrainStatus status,
+            float baseMaxHp = 0f, TurretTrainStatus? baseStatus = null)
         {
             System.Func<string, string, string> L = TrainDefense.Localize.LocalizeHelper.GetByKey;
+            var b = baseStatus.GetValueOrDefault();
+            string G(string text, float delta, int decimals, bool isLowerBetter = false, string suffix = "")
+                => baseStatus.HasValue ? AppendGrowthText(text, delta, decimals, isLowerBetter, suffix) : text;
+
             var details = new System.Collections.Generic.List<(string label, string value)>
             {
-                (L("Detail_HP", "HP"), $"{Mathf.RoundToInt(maxHp)}"),
-                (L("Detail_Damage", "공격력"), $"{status.AttackDamage:0.#}"),
-                (L("Detail_Range", "사거리"), $"{status.AttackRange:F1}"),
+                (L("Detail_HP", "HP"), G($"{Mathf.RoundToInt(maxHp)}", maxHp - baseMaxHp, 0)),
+                (L("Detail_Damage", "공격력"), G($"{status.AttackDamage:0.#}", status.AttackDamage - b.AttackDamage, 1)),
+                (L("Detail_Range", "사거리"), G($"{status.AttackRange:F1}", status.AttackRange - b.AttackRange, 1)),
             };
 
             // 범위(AttackArea)는 실제로 쓰는 포탑만 표시 — 미사용 포탑(기관총·전기·저격)은 base가 0으로 정리돼 있어 값 판정으로 충분.
             if (status.AttackArea > 0f)
-                details.Add((L("Detail_Area", "범위"), $"{status.AttackArea:F1}"));
+                details.Add((L("Detail_Area", "범위"), G($"{status.AttackArea:F1}", status.AttackArea - b.AttackArea, 1)));
 
-            details.Add((L("Detail_Speed", "공격속도"), $"{status.AttackInterval:F2}"));
+            details.Add((L("Detail_Speed", "공격속도"), G($"{status.AttackInterval:F2}", status.AttackInterval - b.AttackInterval, 2, true)));
 
             // 대상 수는 다중 타겟 포탑만 표시. (선택 카드와 동일 조건)
             if (status.TargetCount > 1)
-                details.Add((L("Detail_Targets", "대상 수"), $"{status.TargetCount}"));
+                details.Add((L("Detail_Targets", "대상 수"), G($"{status.TargetCount}", status.TargetCount - b.TargetCount, 0)));
 
-            details.Add((L("Detail_CritChance", "크리티컬 확률"), $"{status.CriticalChance:F0}%"));
-            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), $"+{Projectile.BaseCriticalDamagePercent + status.CriticalDamage:F0}%"));
+            details.Add((L("Detail_CritChance", "크리티컬 확률"), G($"{status.CriticalChance:F0}%", status.CriticalChance - b.CriticalChance, 0, false, "%")));
+            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), G($"+{Projectile.BaseCriticalDamagePercent + status.CriticalDamage:F0}%", status.CriticalDamage - b.CriticalDamage, 0, false, "%")));
             return details.ToArray();
         }
 

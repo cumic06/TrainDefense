@@ -39,6 +39,8 @@ namespace TrainDefense.Game
         protected readonly Dictionary<StatType, float> _statUpgradeAmount = new();
         // 상점에서 산 강화 카드 등급의 합(1등급 +1 … 5등급 +5). 레벨은 장수라 고등급 카드도 1로 세서 개조 조건은 이걸로 본다.
         protected int _upgradeGradeSum;
+        // 이번 판 전투 기록(처치·둔화·기절·공격 횟수 등). 엘리트 승격 조건이 읽는다.
+        protected readonly TrainCombatRecord _combatRecord = new();
         protected TrainChoiceSkillType _skillTypeMask = TrainChoiceSkillType.None;
         protected string _selectedSkillId = null;
         protected bool _initialized;
@@ -57,6 +59,7 @@ namespace TrainDefense.Game
 
         public string Id => id;
         public TrainData TrainData => _trainData;
+        public TrainCombatRecord CombatRecord => _combatRecord;
         public bool IsMainTrain => _trainData.IsMainTrain;
 
         public bool IsDead => _isDead;
@@ -476,6 +479,43 @@ namespace TrainDefense.Game
         public virtual (string label, string value)[] GetStatDetails()
             => new[] { (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(_currentMaxHp)}") };
 
+        // 인게임 슬롯 롱프레스용 — GetStatDetails 값 옆에 데이터 기본값 대비 강화량을 "(+50)"으로 붙인다. 포탑은 전용 스탯까지 override한다.
+        public virtual (string label, string value)[] GetStatGrowthDetails()
+        {
+            float baseMaxHp = _trainData != null ? _trainData.TrainStatusData.MaxHp : _currentMaxHp;
+
+            return new[]
+            {
+                (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"),
+                    AppendGrowthText($"{Mathf.RoundToInt(_currentMaxHp)}", _currentMaxHp - baseMaxHp, 0)),
+            };
+        }
+
+        // 강화로 좋아진 쪽은 녹색, 나빠진 쪽(개조 약점 등)은 적색. 상세 팝업 배경(#E2DCD1) 위 대비 4.5:1 이상.
+        private const string GROWTH_UP_COLOR = "#1B5E20";
+        private const string GROWTH_DOWN_COLOR = "#B71C1C";
+        // 강화량 표기는 값보다 한 단계 작게 둬 현재값이 먼저 읽히게 한다.
+        private const int GROWTH_TEXT_SIZE_PERCENT = 85;
+
+        /// <summary>
+        /// 현재값 텍스트 뒤에 강화량을 "(+50)" 형태로 붙인다. decimals 자리에서 반올림해 0이면(강화 없음) 그대로 돌려준다.
+        /// isLowerBetter = 공격 간격처럼 값이 줄어야 좋아지는 스탯.
+        /// </summary>
+        protected static string AppendGrowthText(string currentText, float delta, int decimals, bool isLowerBetter = false, string suffix = "")
+        {
+            float rounded = (float)System.Math.Round(delta, decimals);
+
+            if (rounded == 0f)
+                return currentText;
+
+            string format = decimals > 0 ? "0." + new string('#', decimals) : "0";
+            string sign = rounded > 0f ? "+" : "-";
+            bool isImproved = isLowerBetter ? rounded < 0f : rounded > 0f;
+            string color = isImproved ? GROWTH_UP_COLOR : GROWTH_DOWN_COLOR;
+
+            return $"{currentText} <size={GROWTH_TEXT_SIZE_PERCENT}%><color={color}>({sign}{Mathf.Abs(rounded).ToString(format)}{suffix})</color></size>";
+        }
+
         // 상점 강화 카드 롱프레스용 — upgradeData를 지금 받으면 될 스탯. 포탑은 전용 스탯까지 override한다.
         public virtual (string label, string value)[] GetUpgradePreviewStatDetails(ITrainUpgradeData upgradeData)
             => new[] { (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(GetUpgradedMaxHp(upgradeData))}") };
@@ -580,6 +620,9 @@ namespace TrainDefense.Game
             // 다시 시작하고 사거리·공격 횟수 상한도 풀린다. (스탯값 자체는 서브클래스가 delta로 옮긴다)
             _statUpgradeAmount.Clear();
             foreach (var pair in source._statUpgradeAmount) _statUpgradeAmount[pair.Key] = pair.Value;
+
+            // 전투 기록도 승계 — 승격 뒤에도 그 포탑이 쌓아 온 처치 수 등이 이어진다.
+            _combatRecord.CopyFrom(source._combatRecord);
         }
     }
 }

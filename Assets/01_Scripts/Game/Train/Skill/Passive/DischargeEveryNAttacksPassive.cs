@@ -46,7 +46,7 @@ namespace TrainDefense.Game
                 turret.SpawnProjectileAtWorldPositionPublic(monster, monster.transform.position);
                 turret.DealDirectDamage(monster, DamagePercent / 100f);
                 if (StunDuration > 0f)
-                    monster.Stun(StunDuration);
+                    TrainCombatRecorder.ApplyStun(monster, StunDuration, turret);
             }
         }
     }

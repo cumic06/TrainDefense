@@ -93,8 +93,9 @@ namespace TrainDefense.Game.UI
                     descriptionText.text = data.Description;
             }
 
+            // 보유 포탑 롱프레스 — 값 옆에 데이터 기본값 대비 얼마나 강화됐는지 "(+50)"을 붙인다.
             if (statsText != null)
-                statsText.text = _BuildStatsText(train.GetStatDetails(), null);
+                statsText.text = _BuildStatsText(train.GetStatGrowthDetails(), null);
 
             if (skillsText != null)
             {

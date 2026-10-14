@@ -103,6 +103,10 @@ namespace TrainDefense.Game
       public bool IsActive => gameObject.activeInHierarchy;
       public Transform TargetTransform => transform;
       public bool IsElite => _isElite;
+      // 포탑 전투 기록(TrainCombatRecorder)이 처치·새 기절·새 둔화를 가려내는 데 쓴다.
+      public bool IsDead => _isDead;
+      public bool IsStunned => _isStunned;
+      public bool IsSlowed => _isFrosted;
       #endregion
 
       private Vector2 _prefabScale;

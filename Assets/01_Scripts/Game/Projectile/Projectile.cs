@@ -324,7 +324,7 @@ namespace TrainDefense.Game
                 {
                     _damageTimers[target] = _age;
                     var (finalDamage, isCritical) = CalculateCriticalDamage();
-                    target.TakeDamage(finalDamage, isCritical);
+                    TrainCombatRecorder.DealDamage(target, finalDamage, isCritical, _owner);
                 }
             }
             else
@@ -343,7 +343,7 @@ namespace TrainDefense.Game
 
                 if (shouldDealDamage)
                 {
-                    target.TakeDamage(finalDamage, isCritical);
+                    TrainCombatRecorder.DealDamage(target, finalDamage, isCritical, _owner);
                 }
 
                 if (data.Pierce)
@@ -375,7 +375,7 @@ namespace TrainDefense.Game
 
             if (data.HasStunEffect)
             {
-                target.Stun(data.StunDuration);
+                TrainCombatRecorder.ApplyStun(target, data.StunDuration, _owner);
             }
 
             // 슬로우 효과 (닿는 순간 SlowDuration만큼). 한 번만 닿는 파동(냉기)은 Stay가 없어 여기서 건다.
@@ -404,7 +404,7 @@ namespace TrainDefense.Game
                     if (_age - lastTime >= data.TickDamageInterval)
                     {
                         var (finalDamage, isCritical) = CalculateCriticalDamage();
-                        target.TakeDamage(finalDamage, isCritical);
+                        TrainCombatRecorder.DealDamage(target, finalDamage, isCritical, _owner);
                         _damageTimers[target] = _age;
                     }
                 }
@@ -426,11 +426,11 @@ namespace TrainDefense.Game
             if (data.HasSlowEffect)
             {
                 float slowValue = _owner is ISlowProvider slowProvider ? slowProvider.GetSlowValue() : data.SlowValue;
-                target.Slow(slowValue, data.SlowDuration);
+                TrainCombatRecorder.ApplySlow(target, slowValue, data.SlowDuration, _owner);
             }
 
             if (_runtimeSlowDuration > 0f)
-                target.Slow(_runtimeSlowValue, _runtimeSlowDuration);
+                TrainCombatRecorder.ApplySlow(target, _runtimeSlowValue, _runtimeSlowDuration, _owner);
         }
 
         internal void ProcessExit(IProjectileTarget target)

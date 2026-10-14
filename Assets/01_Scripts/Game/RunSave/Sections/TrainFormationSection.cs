@@ -35,6 +35,7 @@ namespace TrainDefense.Game.RunSave.Sections
             public string selectedSkillId;
             public List<UpgradeStepEntry> upgradeDeltas = new();
             public List<StatUpgradeAmountEntry> statUpgradeAmounts = new();
+            public TrainCombatRecord combatRecord = new();
         }
 
         // 업그레이드 한 번의 증가량. 상점 강화 데이터는 구매하는 순간 만들어져 DB에 없으므로 id로는 되찾을 수 없다.
@@ -79,6 +80,8 @@ namespace TrainDefense.Game.RunSave.Sections
                     skillTypeMask = train.SkillTypeMask,
                     selectedSkillId = train.SelectedSkillId,
                 };
+
+                entry.combatRecord.CopyFrom(train.CombatRecord);
 
                 foreach (var step in train.UpgradeDeltas)
                 {
@@ -147,6 +150,8 @@ namespace TrainDefense.Game.RunSave.Sections
                         SkillTypeMask = train.skillTypeMask,
                         SelectedSkillId = train.selectedSkillId,
                     };
+
+                    entry.CombatRecord.CopyFrom(train.combatRecord);
 
                     if (train.upgradeDeltas != null)
                     {

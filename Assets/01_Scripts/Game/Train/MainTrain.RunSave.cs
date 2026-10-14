@@ -51,6 +51,8 @@ namespace TrainDefense.Game
             public List<StatUpgradeAmountEntry> StatUpgradeAmounts = new();
             /// <summary>저장 당시 공격 간격. 0이면 기록 없음(이전 세이브). 상점·레벨업 공속은 받은 순서에 따라 증가량이 달라 증가량 재생만으로는 재현되지 않는다.</summary>
             public float AttackInterval;
+            /// <summary>이번 판 전투 기록(엘리트 승격 조건). 이전 세이브면 비어 있다(0부터 다시 센다).</summary>
+            public TrainCombatRecord CombatRecord = new();
         }
 
         /// <summary>
@@ -162,6 +164,8 @@ namespace TrainDefense.Game
                     AttackInterval = train.GetCurrentStatValue(StatType.AttackInterval),
                 };
 
+                entry.CombatRecord.CopyFrom(train.CombatRecord);
+
                 if (_upgradeHistory.TryGetValue(train, out var history))
                     entry.UpgradeDeltas = new List<UpgradeStepDelta>(history);
 
@@ -264,6 +268,9 @@ namespace TrainDefense.Game
 
             if (entry.AttackInterval > 0f)
                 train.RestoreAttackInterval(entry.AttackInterval);
+
+            // 엘리트 교체(CopyProgressFrom) 뒤에 덮어써야 최종 기차에 저장값이 남는다.
+            train.CombatRecord.CopyFrom(entry.CombatRecord);
 
             _RestoreHpAndDeath(train, entry);
 

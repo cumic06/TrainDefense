@@ -161,13 +161,13 @@ namespace TrainDefense.Game
                 if (!_damageTimers.ContainsKey(target))
                 {
                     _damageTimers[target] = Time.time;
-                    target.TakeDamage(damage, _isCritical);
+                    TrainCombatRecorder.DealDamage(target, damage, _isCritical, _owner);
                 }
             }
             else
             {
                 // 직접 데미지는 즉시 피해
-                target.TakeDamage(damage, _isCritical);
+                TrainCombatRecorder.DealDamage(target, damage, _isCritical, _owner);
 
                 if (destroyOnTriggerEnter && expandingWave == null)
                 {
@@ -184,12 +184,12 @@ namespace TrainDefense.Game
 
             if (hasStunEffect)
             {
-                target.Stun(stunDuration);
+                TrainCombatRecorder.ApplyStun(target, stunDuration, _owner);
             }
 
             if (hasSlowEffect)
             {
-                target.Slow(slowValue, slowDuration);
+                TrainCombatRecorder.ApplySlow(target, slowValue, slowDuration, _owner);
             }
 
             if (hasShove)
@@ -208,7 +208,7 @@ namespace TrainDefense.Game
                 {
                     if (Time.time - lastTime >= tickInterval)
                     {
-                        target.TakeDamage(damage, _isCritical);
+                        TrainCombatRecorder.DealDamage(target, damage, _isCritical, _owner);
                         _damageTimers[target] = Time.time;
                     }
                 }
