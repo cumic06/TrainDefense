@@ -72,8 +72,6 @@ namespace TrainDefense.Game.Manager
          EliteKillCount = 0;
          CurrentScore = 0;
          _isLobby = gameEnterEvent.IsLobby;
-
-         GameEventSystem.Publish<ChangeKillCountUIEvent>(new(TotalKillCount));
       }
 
       /// <summary>
@@ -85,8 +83,6 @@ namespace TrainDefense.Game.Manager
          CurrentScore = Mathf.Max(0, currentScore);
          NormalKillCount = Mathf.Max(0, normalKillCount);
          EliteKillCount = Mathf.Max(0, eliteKillCount);
-
-         GameEventSystem.Publish<ChangeKillCountUIEvent>(new(TotalKillCount));
       }
 
       private void _OnMonsterDead(MonsterDeadEvent monsterDeadEvent)
@@ -104,8 +100,6 @@ namespace TrainDefense.Game.Manager
             NormalKillCount++;
             CurrentScore += _scoreData.normalKillScore;
          }
-
-         GameEventSystem.Publish<ChangeKillCountUIEvent>(new(TotalKillCount));
       }
    }
 }

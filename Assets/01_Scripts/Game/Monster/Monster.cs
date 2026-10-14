@@ -282,6 +282,10 @@ namespace TrainDefense.Game
          _OrderSprite();
          _DetectTrain();
 
+         // 이동은 Translate라 넉백 중이 아니면 속도가 0이어야 한다. 넉백당한 몬스터에 밀린 이웃이 받은 속도를 감속 없이 계속 유지해 미끄러지던 것을 막는다.
+         if (!_isShoved)
+            _rigidbody2D.linearVelocity = Vector2.zero;
+
          if (Time.time - _spawnTime < spawnMoveDelay)
             return;
 
@@ -862,17 +866,6 @@ namespace TrainDefense.Game
       private void _DropExp()
       {
          int dropExp = Random.Range(_currentMonsterStatus.DropExpMin, _currentMonsterStatus.DropExpMax);
-
-         // 경험치 획득 업그레이드 보너스 (구매 레벨당 % 증가, UpgradeValue = 레벨당 퍼센트)
-         if (DatabaseManager.Instance != null && UserDataManager.Instance != null)
-         {
-            var expBonusData = DatabaseManager.Instance.GetUpgradeData("110005");
-            if (expBonusData != null)
-            {
-               int bonusLevel = UserDataManager.Instance.GetUpgradeLevel("110005");
-               dropExp = Mathf.RoundToInt(dropExp * (1f + bonusLevel * expBonusData.UpgradeValue / 100f));
-            }
-         }
 
          GameEventSystem.Publish(new AddExpEvent(dropExp));
       }

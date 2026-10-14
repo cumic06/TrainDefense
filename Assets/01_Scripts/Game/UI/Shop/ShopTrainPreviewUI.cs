@@ -144,7 +144,7 @@ namespace TrainDefense.Game.UI
             }
 
             if (_previewTexture == null)
-                _previewTexture = new RenderTexture(textureWidth, textureHeight, 0);
+                _previewTexture = new RenderTexture(textureWidth, textureHeight, 16);
 
             if (_previewCamera == null)
             {
