@@ -185,13 +185,19 @@ namespace TrainDefense.Game.UI.Collection
         // EliteTrainChoice에 등록된 엘리트 전용 트레인 ID 집합
         private HashSet<string> _GetEliteTrainIds()
         {
-            var eliteTrainIds = new HashSet<string>();
+            return new HashSet<string>(_GetEliteToBaseTrainIds().Keys);
+        }
+
+        // 엘리트 트레인 ID → 승격 전 원본 트레인 ID. 원본이 비어 있으면 값도 빈 문자열이다.
+        private Dictionary<string, string> _GetEliteToBaseTrainIds()
+        {
+            var eliteToBase = new Dictionary<string, string>();
             foreach (var choice in DatabaseManager.Instance.GetEliteTrainChoices())
             {
                 if (choice is EliteTrainChoice eliteChoice && !string.IsNullOrEmpty(eliteChoice.EliteTrainDataId))
-                    eliteTrainIds.Add(eliteChoice.EliteTrainDataId);
+                    eliteToBase.TryAdd(eliteChoice.EliteTrainDataId, eliteChoice.BaseTrainId ?? string.Empty);
             }
-            return eliteTrainIds;
+            return eliteToBase;
         }
 
         private List<CollectionEntry> _BuildTrainEntries()
@@ -226,7 +232,7 @@ namespace TrainDefense.Game.UI.Collection
             var result = new List<CollectionEntry>();
             UserDataManager userDataManager = UserDataManager.Instance;
 
-            HashSet<string> eliteTrainIds = _GetEliteTrainIds();
+            Dictionary<string, string> eliteToBase = _GetEliteToBaseTrainIds();
             var skillDataDB = DatabaseManager.Instance.GetTrainSkillDataDB();
 
             foreach (TrainData data in DatabaseManager.Instance.GetAllTrainData())
@@ -234,10 +240,11 @@ namespace TrainDefense.Game.UI.Collection
                 if (data == null)
                     continue;
 
-                if (!eliteTrainIds.Contains(data.Id))
+                if (!eliteToBase.TryGetValue(data.Id, out string baseTrainId))
                     continue;
 
                 bool discovered = userDataManager != null && userDataManager.IsTrainDiscovered(data.Id);
+                TrainData baseTrain = string.IsNullOrEmpty(baseTrainId) ? null : DatabaseManager.Instance.GetTrainData(baseTrainId);
 
                 // 엘리트 포탑은 보유 스킬마다 별도 항목으로 표시 (이름은 스킬명)
                 foreach (var (skillData, _) in skillDataDB.GetSkillsForTrain(data.Id))
@@ -245,7 +252,7 @@ namespace TrainDefense.Game.UI.Collection
                     if (skillData == null)
                         continue;
 
-                    result.Add(CollectionEntry.FromEliteTrainSkill(data, skillData, discovered));
+                    result.Add(CollectionEntry.FromEliteTrainSkill(data, skillData, discovered, baseTrain));
                 }
             }
 

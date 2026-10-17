@@ -82,8 +82,9 @@ namespace TrainDefense.Game.UI.Collection
                 descriptionText.text = description;
             }
 
+            // 개조 조건은 해금 목표라 발견 전에도 보여준다.
             if (statsText != null)
-                statsText.text = discovered ? _BuildStatsText(entry) : string.Empty;
+                statsText.text = _BuildStatsText(entry, discovered);
         }
 
         private void Update()
@@ -150,13 +151,29 @@ namespace TrainDefense.Game.UI.Collection
             }
         }
 
-        private string _BuildStatsText(CollectionEntry entry)
+        private string _BuildStatsText(CollectionEntry entry, bool discovered)
         {
             _statBuilder.Clear();
 
-            foreach (CollectionStatLine line in entry.StatLines)
+            if (discovered)
             {
-                _statBuilder.AppendLine($"{line.Label} : {line.Value}");
+                foreach (CollectionStatLine line in entry.StatLines)
+                {
+                    _statBuilder.AppendLine($"{line.Label} : {line.Value}");
+                }
+            }
+
+            if (entry.HasConditions)
+            {
+                if (_statBuilder.Length > 0)
+                    _statBuilder.AppendLine();
+
+                _statBuilder.AppendLine($"<b>{LocalizeHelper.GetByKey("Collection_PromotionCondition", "개조 조건")}</b>");
+
+                foreach (CollectionStatLine line in entry.ConditionLines)
+                {
+                    _statBuilder.AppendLine($"{line.Label} : {line.Value}");
+                }
             }
 
             return _statBuilder.ToString();
