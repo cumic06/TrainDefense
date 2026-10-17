@@ -62,6 +62,21 @@ namespace TrainDefense.Game.UI
             _onRelease?.Invoke();
       }
 
+      /// <summary>
+      /// 진행 중인 누름을 취소한다. 같은 오브젝트에서 드래그가 시작되면 불러 롱프레스가 뒤늦게 뜨지 않게 하고,
+      /// 이미 떠 있으면 손 뗌과 같이 닫는다.
+      /// </summary>
+      public void Cancel()
+      {
+         _StopLongPress();
+
+         if (!IsLongPressed)
+            return;
+
+         IsLongPressed = false;
+         _onRelease?.Invoke();
+      }
+
       private IEnumerator _LongPressRoutine()
       {
          yield return new WaitForSecondsRealtime(LONG_PRESS_DURATION);

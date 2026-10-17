@@ -296,6 +296,49 @@ namespace TrainDefense.Game
          RearrangeTrains();
       }
 
+      /// <summary>
+      /// 두 포탑의 편성 자리를 맞바꾼다(상점 위치 이동용). 순서 인덱스와 목록 순서를 함께 바꿔
+      /// 이후 재정렬·런 세이브(CaptureFormation)가 바뀐 순서를 따르게 한다.
+      /// 좌표는 두 칸끼리 교환만 하므로 상점 슬라이드 아웃 오프셋이 걸린 상태에서도 화면 밖 위치가 유지된다.
+      /// </summary>
+      public bool SwapTrainOrder(Train first, Train second)
+      {
+         if (first == null || second == null || first == second)
+            return false;
+
+         // 죽은 칸은 _deadTrains에 인덱스 사본이 따로 있어 맞바꾸지 않는다. (상점 진입 시 전부 부활하므로 상점에선 해당 없음)
+         if (first.IsDead || second.IsDead)
+            return false;
+
+         if (!_trainOriginalIndexMap.TryGetValue(first, out int firstIndex) || !_trainOriginalIndexMap.TryGetValue(second, out int secondIndex))
+            return false;
+
+         _trainOriginalIndexMap[first] = secondIndex;
+         _trainOriginalIndexMap[second] = firstIndex;
+         _SwapInList(_currentTrains, first, second);
+         _SwapInList(_currentAliveTrains, first, second);
+
+         Vector3 firstPosition = first.transform.localPosition;
+         first.transform.localPosition = second.transform.localPosition;
+         second.transform.localPosition = firstPosition;
+
+         GameEventSystem.Publish(new TrainFormationReorderedEvent());
+
+         return true;
+      }
+
+      private static void _SwapInList(List<Train> trains, Train first, Train second)
+      {
+         int firstIndex = trains.IndexOf(first);
+         int secondIndex = trains.IndexOf(second);
+
+         if (firstIndex < 0 || secondIndex < 0)
+            return;
+
+         trains[firstIndex] = second;
+         trains[secondIndex] = first;
+      }
+
       private void CheckDeadTrain(TrainDeadEvent trainDeadEvent)
       {
          if (isUnDead)

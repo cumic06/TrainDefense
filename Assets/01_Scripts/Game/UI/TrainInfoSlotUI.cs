@@ -31,6 +31,7 @@ namespace TrainDefense.Game.UI
       #endregion
 
       private Train _train;
+      public Train Train => _train;
       // 엘리트 교체 시 슬롯에 부여하는 고정 이름. 튜토리얼이 GameObject.Find로 엘리트 슬롯을 찾기 위함.
       public const string EliteSlotObjectName = "EliteTrainInfoSlotUI";
       private const float LongPressDuration = 0.25f;

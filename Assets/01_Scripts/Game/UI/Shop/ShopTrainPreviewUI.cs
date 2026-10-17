@@ -3,6 +3,8 @@ using Cumic.Events;
 using TMPro;
 using TrainDefense.Game.Events;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 namespace TrainDefense.Game.UI
@@ -60,6 +62,19 @@ namespace TrainDefense.Game.UI
         private GameObject _badgeSource;
         private bool _badgeSourceSearched;
 
+        // 포탑 위치 이동 — 프리뷰의 포탑을 끌어 다른 포탑 위에 놓으면 두 칸 자리를 맞바꾼다.
+        // 드래그 중인 칸은 손가락을 따라 가로로만 움직이고(선로 높이 y 고정), 놓으면 원위치로 돌아간 뒤 교환한다.
+        // 끌린 칸은 이웃 칸 위에 그려지도록 SortingGroup으로 정렬을 올리고, 놓일 자리에는 그림자(반투명 실루엣)를 띄운다.
+        private const int DRAG_SORTING_ORDER = 1000;
+        private const int GHOST_SORTING_ORDER = DRAG_SORTING_ORDER - 1;
+        private static readonly Color GhostColor = new Color(0f, 0f, 0f, 0.45f);
+        private PointerDragHandler _dragHandler;
+        private Train _draggingTrain;
+        private Vector3 _dragOriginLocalPosition;
+        private float _dragStartWorldX;
+        private SortingGroup _dragSortingGroup;
+        private GameObject _dragGhost;
+
         /// <summary>
         /// 프리뷰의 포탑을 꾹 누르면 스탯을 띄울 상점 공용 팝업. ShopUI가 넘겨준다.
         /// 프리뷰 이미지(RawImage)가 입력을 받아야 하므로 롱프레스 수신도 여기서 붙인다.
@@ -112,7 +127,10 @@ namespace TrainDefense.Game.UI
         {
             if (_previewCamera != null && _previewCamera.enabled)
             {
-                _FrameTrain();
+                // 드래그 중엔 끌린 칸 때문에 경계가 바뀌어 화면이 흔들리므로 프레이밍을 멈춘다.
+                if (_draggingTrain == null)
+                    _FrameTrain();
+
                 _RefreshBadges();
             }
         }
@@ -161,11 +179,14 @@ namespace TrainDefense.Game.UI
             previewImage.texture = _previewTexture;
             previewImage.enabled = true;
             _previewCamera.enabled = true;
+            _EnsureDragHandler();
             _FrameTrain();
         }
 
         private void _Hide()
         {
+            _CancelDrag();
+
             if (_previewCamera != null)
                 _previewCamera.enabled = false;
 
@@ -366,21 +387,255 @@ namespace TrainDefense.Game.UI
                 _detailPopup.Hide();
         }
 
+        // 롱프레스와 같은 프리뷰 이미지에 드래그 수신을 붙인다. 상점 팝업 연결(SetDetailPopup)과 무관하게 동작해야 해서 표시 시점에 붙인다.
+        private void _EnsureDragHandler()
+        {
+            if (_dragHandler != null || previewImage == null)
+                return;
+
+            _dragHandler = previewImage.gameObject.AddComponent<PointerDragHandler>();
+            _dragHandler.Initialize(_OnBeginDrag, _OnDrag, _OnEndDrag, _CancelDrag);
+        }
+
+        private void _OnBeginDrag(PointerEventData eventData)
+        {
+            // 누른 채 움직이기 시작했으면 롱프레스(스탯 보기)가 아니라 위치 이동이다.
+            _longPressHandler?.Cancel();
+
+            var train = _FindTrainAt(eventData.pressPosition, eventData.pressEventCamera);
+
+            if (train == null || train.IsDead || !_TryScreenToWorld(eventData.pressPosition, eventData.pressEventCamera, out Vector3 worldPoint))
+                return;
+
+            _draggingTrain = train;
+            _dragOriginLocalPosition = train.transform.localPosition;
+            _dragStartWorldX = worldPoint.x;
+            // 그림자는 원위치에서 찍어야 칸 하위 스프라이트의 상대 배치가 그대로 복제된다.
+            _CreateDragGhost(train);
+            _BringDraggingTrainToFront(train);
+            _OnDrag(eventData);
+        }
+
+        private void _OnDrag(PointerEventData eventData)
+        {
+            if (_draggingTrain == null)
+                return;
+
+            if (!_TryScreenToWorld(eventData.position, eventData.pressEventCamera, out Vector3 worldPoint))
+                return;
+
+            // 칸은 MainTrain의 자식이고 MainTrain은 회전·스케일 없이 가로로만 움직이므로 월드 x 이동량을 그대로 로컬에 더한다.
+            // y·z는 원위치 그대로 둬 선로 높이에서 벗어나지 않게 한다.
+            _draggingTrain.transform.localPosition = _dragOriginLocalPosition + new Vector3(worldPoint.x - _dragStartWorldX, 0f, 0f);
+            _UpdateDragGhost(_FindTrainAtWorldX(worldPoint.x, _draggingTrain));
+        }
+
+        private void _OnEndDrag(PointerEventData eventData)
+        {
+            if (_draggingTrain == null)
+                return;
+
+            Train draggedTrain = _draggingTrain;
+            Train targetTrain = _TryScreenToWorld(eventData.position, eventData.pressEventCamera, out Vector3 worldPoint)
+                ? _FindTrainAtWorldX(worldPoint.x, draggedTrain)
+                : null;
+
+            // 교환은 두 칸의 현재 좌표를 맞바꾸므로, 끌던 칸을 먼저 원위치로 돌려놓아야 한다.
+            _CancelDrag();
+
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+
+            if (mainTrain == null || targetTrain == null)
+                return;
+
+            mainTrain.SwapTrainOrder(draggedTrain, targetTrain);
+        }
+
+        // 끌던 칸을 원위치로 되돌린다(상점 닫힘·드래그 중단 시에도 호출).
+        private void _CancelDrag()
+        {
+            if (_draggingTrain != null)
+                _draggingTrain.transform.localPosition = _dragOriginLocalPosition;
+
+            _draggingTrain = null;
+            _RestoreDraggingTrainSorting();
+            _DestroyDragGhost();
+        }
+
+        // 끌린 칸 전체를 하나로 묶어 이웃 칸(차체·포탑) 위에 그린다. 칸 안의 차체/포탑 순서는 그룹 안에서 그대로 유지된다.
+        private void _BringDraggingTrainToFront(Train train)
+        {
+            if (!_TryGetTopSortingLayerID(train, out int sortingLayerID))
+                return;
+
+            _dragSortingGroup = train.gameObject.AddComponent<SortingGroup>();
+            _dragSortingGroup.sortingLayerID = sortingLayerID;
+            _dragSortingGroup.sortingOrder = DRAG_SORTING_ORDER;
+        }
+
+        private void _RestoreDraggingTrainSorting()
+        {
+            if (_dragSortingGroup != null)
+                Destroy(_dragSortingGroup);
+
+            _dragSortingGroup = null;
+        }
+
+        // 끌린 칸의 스프라이트(프리뷰 레이어에 찍히는 것)만 복제해 검은 반투명 실루엣을 만든다.
+        // 칸 오브젝트를 통째로 복제하면 포탑 로직까지 따라오므로 SpriteRenderer만 옮긴다.
+        private void _CreateDragGhost(Train train)
+        {
+            _DestroyDragGhost();
+
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+
+            if (mainTrain == null || !_TryGetTopSortingLayerID(train, out int sortingLayerID))
+                return;
+
+            Transform trainTransform = train.transform;
+            _dragGhost = new GameObject("DragGhost");
+            _dragGhost.layer = train.gameObject.layer;
+
+            Transform ghostTransform = _dragGhost.transform;
+            ghostTransform.SetParent(mainTrain.transform, false);
+            ghostTransform.localPosition = trainTransform.localPosition;
+            ghostTransform.localRotation = trainTransform.localRotation;
+            ghostTransform.localScale = trainTransform.localScale;
+
+            // 끌린 칸 바로 아래, 다른 칸들보다는 위에 그려 놓일 자리의 칸 위에 그림자가 보이게 한다.
+            var ghostSortingGroup = _dragGhost.AddComponent<SortingGroup>();
+            ghostSortingGroup.sortingLayerID = sortingLayerID;
+            ghostSortingGroup.sortingOrder = GHOST_SORTING_ORDER;
+
+            Vector3 trainScale = trainTransform.lossyScale;
+
+            foreach (var source in train.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (!_IsPreviewSprite(source))
+                    continue;
+
+                var part = new GameObject(source.gameObject.name);
+                // 프리뷰 카메라 cullingMask에 걸리도록 원본 스프라이트와 같은 레이어(Train)로 맞춘다.
+                part.layer = source.gameObject.layer;
+
+                Transform partTransform = part.transform;
+                Transform sourceTransform = source.transform;
+                Vector3 sourceScale = sourceTransform.lossyScale;
+                partTransform.SetParent(ghostTransform, false);
+                partTransform.localPosition = trainTransform.InverseTransformPoint(sourceTransform.position);
+                partTransform.localRotation = Quaternion.Inverse(trainTransform.rotation) * sourceTransform.rotation;
+                partTransform.localScale = new Vector3(
+                    trainScale.x != 0f ? sourceScale.x / trainScale.x : 0f,
+                    trainScale.y != 0f ? sourceScale.y / trainScale.y : 0f,
+                    trainScale.z != 0f ? sourceScale.z / trainScale.z : 0f);
+
+                var ghostRenderer = part.AddComponent<SpriteRenderer>();
+                ghostRenderer.sprite = source.sprite;
+                ghostRenderer.flipX = source.flipX;
+                ghostRenderer.flipY = source.flipY;
+                ghostRenderer.drawMode = source.drawMode;
+                ghostRenderer.size = source.size;
+                ghostRenderer.sortingLayerID = source.sortingLayerID;
+                ghostRenderer.sortingOrder = source.sortingOrder;
+                ghostRenderer.color = GhostColor;
+            }
+        }
+
+        // 놓으면 갈 자리에 그림자를 둔다. 교환 대상이 있으면 그 칸 자리, 없으면 되돌아갈 원위치.
+        private void _UpdateDragGhost(Train targetTrain)
+        {
+            if (_dragGhost == null)
+                return;
+
+            _dragGhost.transform.localPosition = targetTrain != null ? targetTrain.transform.localPosition : _dragOriginLocalPosition;
+        }
+
+        private void _DestroyDragGhost()
+        {
+            if (_dragGhost != null)
+                Destroy(_dragGhost);
+
+            _dragGhost = null;
+        }
+
+        // 칸 스프라이트 중 가장 위에 그려지는 정렬 레이어(차체 < 포탑). 끌린 칸·그림자를 이 레이어 맨 위로 올린다.
+        private bool _TryGetTopSortingLayerID(Train train, out int sortingLayerID)
+        {
+            sortingLayerID = 0;
+            bool hasLayer = false;
+            int topLayerValue = int.MinValue;
+
+            foreach (var spriteRenderer in train.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (!_IsPreviewSprite(spriteRenderer))
+                    continue;
+
+                int layerValue = SortingLayer.GetLayerValueFromID(spriteRenderer.sortingLayerID);
+
+                if (hasLayer && layerValue <= topLayerValue)
+                    continue;
+
+                topLayerValue = layerValue;
+                sortingLayerID = spriteRenderer.sortingLayerID;
+                hasLayer = true;
+            }
+
+            return hasLayer;
+        }
+
+        private bool _IsPreviewSprite(SpriteRenderer spriteRenderer)
+        {
+            return spriteRenderer.sprite != null && spriteRenderer.enabled
+                && (cullingMask.value & (1 << spriteRenderer.gameObject.layer)) != 0;
+        }
+
+        // 놓은 지점의 가로 위치를 덮는 칸. 세로는 따지지 않아 포탑 높이가 달라도 칸 위아래 어디에 놓든 인정한다.
+        private Train _FindTrainAtWorldX(float worldX, Train exclude)
+        {
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+
+            if (mainTrain == null)
+                return null;
+
+            foreach (var train in mainTrain.CurrentTrains)
+            {
+                if (train == null || train == exclude || train.IsDead || !_TryGetTrainBounds(train, out Bounds bounds))
+                    continue;
+
+                if (worldX >= bounds.min.x && worldX <= bounds.max.x)
+                    return train;
+            }
+
+            return null;
+        }
+
+        // 프리뷰 이미지의 화면 좌표 → 프리뷰 카메라의 월드 좌표.
+        private bool _TryScreenToWorld(Vector2 screenPosition, Camera eventCamera, out Vector3 worldPoint)
+        {
+            worldPoint = default;
+
+            if (_previewCamera == null || !_previewCamera.enabled || previewImage == null)
+                return false;
+
+            RectTransform imageRect = previewImage.rectTransform;
+
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(imageRect, screenPosition, eventCamera, out Vector2 localPoint))
+                return false;
+
+            Rect rect = imageRect.rect;
+            Vector3 viewportPoint = new Vector3((localPoint.x - rect.xMin) / rect.width, (localPoint.y - rect.yMin) / rect.height, 0f);
+            worldPoint = _previewCamera.ViewportToWorldPoint(viewportPoint);
+
+            return true;
+        }
+
         // 프리뷰 이미지의 화면 좌표 → 프리뷰 카메라의 월드 좌표로 옮긴 뒤, 그 점을 스프라이트 경계로 덮는 칸(포탑)을 찾는다.
         // 칸들은 선로를 따라 가로로 이어 붙어 있어 경계가 겹치지 않는다.
         private Train _FindTrainAt(Vector2 screenPosition, Camera eventCamera)
         {
             var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
-            if (mainTrain == null || _previewCamera == null || !_previewCamera.enabled)
+            if (mainTrain == null || !_TryScreenToWorld(screenPosition, eventCamera, out Vector3 worldPoint))
                 return null;
-
-            RectTransform imageRect = previewImage.rectTransform;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(imageRect, screenPosition, eventCamera, out Vector2 localPoint))
-                return null;
-
-            Rect rect = imageRect.rect;
-            Vector3 viewportPoint = new Vector3((localPoint.x - rect.xMin) / rect.width, (localPoint.y - rect.yMin) / rect.height, 0f);
-            Vector3 worldPoint = _previewCamera.ViewportToWorldPoint(viewportPoint);
 
             foreach (var train in mainTrain.CurrentTrains)
             {

@@ -20,6 +20,7 @@ namespace TrainDefense.Game.UI
             ResourceManager.Instance.RegisterPersistent(gameObject);
             GameEventSystem.Subscribe<AddTrainEvent>(OnAddTrain);
             GameEventSystem.Subscribe<TrainFormationClearedEvent>(_OnFormationCleared);
+            GameEventSystem.Subscribe<TrainFormationReorderedEvent>(_OnFormationReordered);
         }
 
         private void Start()
@@ -44,6 +45,7 @@ namespace TrainDefense.Game.UI
         {
             GameEventSystem.Unsubscribe<AddTrainEvent>(OnAddTrain);
             GameEventSystem.Unsubscribe<TrainFormationClearedEvent>(_OnFormationCleared);
+            GameEventSystem.Unsubscribe<TrainFormationReorderedEvent>(_OnFormationReordered);
         }
 
         // 편성이 비워지면 슬롯도 함께 비운다. 슬롯은 AddTrainEvent로 늘어나기만 하므로 여기서 정리하지 않으면
@@ -54,7 +56,32 @@ namespace TrainDefense.Game.UI
                 Destroy(transform.GetChild(i).gameObject);
         }
 
-        private void OnAddTrain(AddTrainEvent addTrainEvent)
+        // 상점에서 포탑 자리를 바꾸면 슬롯도 편성 순서대로 다시 세운다. 슬롯은 AddTrainEvent 순서(=편성 순서)로 붙어 있었다.
+        private void _OnFormationReordered(TrainFormationReorderedEvent trainFormationReorderedEvent)
+        {
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+
+            if (mainTrain == null)
+                return;
+
+            var slots = GetComponentsInChildren<TrainInfoSlotUI>(true);
+            var trains = mainTrain.CurrentTrains;
+
+            for (int i = 0; i < trains.Count; i++)
+            {
+                foreach (var slot in slots)
+                {
+                    if (slot.Train != trains[i])
+                        continue;
+
+                    slot.transform.SetSiblingIndex(i);
+
+                    break;
+                }
+            }
+        }
+
+      private void OnAddTrain(AddTrainEvent addTrainEvent)
         {
             TrainInfoSlotUI spawnTrainInfoSlotUI = ResourceManager.Instance.Spawn(trainInfoSlotUI, parent: transform);
 
