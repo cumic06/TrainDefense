@@ -461,6 +461,8 @@ namespace TrainDefense.Game.Datas
                 case StatType.AttackDamage: delta.AttackDamage += baseStatus.AttackDamage * rule.IncreaseRate * _tier.ValueMultiplier; break;
                 case StatType.AttackInterval: delta.AttackInterval += _GetAttackIntervalDelta(baseStatus.AttackInterval, rule); break;
                 case StatType.AttackArea: delta.AttackArea += _GetAttackAreaDelta(baseStatus.AttackArea, rule); break;
+                // 폭발·냉기는 사거리가 곧 공격 반경이다 — 포탑과 같은 선형 가산.
+                case StatType.AttackRange: delta.AttackRange += baseStatus.AttackRange * rule.IncreaseRate * _tier.ValueMultiplier; break;
                 // 둔화율은 카드에 적힌 %p 그대로 더한다(표기 = 실제). 상한은 RangeTrain이 적용한다.
                 case StatType.SlowRate: delta.SlowRate += _GetSlowRateDelta(rule); break;
                 default: return false;
