@@ -44,9 +44,14 @@ namespace TrainDefense.Game.UI
       private bool _longPressFired;
       #endregion
 
-      private void Start()
+      // 이어하기 복원은 포탑을 만든 같은 프레임에 강화·개조 이벤트를 발행한다. Start에서 구독하면 그 프레임의 이벤트를 놓쳐 배지가 비어 보인다.
+      private void Awake()
       {
          _SubscribeEvents();
+      }
+
+      private void Start()
+      {
          _RefreshHealthUI();
       }
 

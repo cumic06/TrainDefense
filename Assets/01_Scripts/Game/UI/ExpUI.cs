@@ -71,6 +71,10 @@ namespace TrainDefense.Game.UI
 
             _slider.value = UserDataManager.Instance.ExpPercent;
             UpdateExpText();
+
+            // 복원은 LevelUpEvent 없이 레벨을 바로 바꾸므로 레벨 글자도 여기서 맞춘다.
+            if (levelText != null)
+                levelText.text = $"Lv {UserDataManager.Instance.CurrentLevel}";
         }
 
         // 게임 진입 시 0부터 시작. UserDataManager의 _currentExp=0 리셋(OnGameEnter)이 이 콜백보다

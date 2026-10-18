@@ -141,7 +141,7 @@ namespace TrainDefense.Game
          GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
          GameEventSystem.Subscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
-         GameEventSystem.Subscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+         GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
          GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
       }
 
@@ -150,7 +150,7 @@ namespace TrainDefense.Game
          GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
          GameEventSystem.Unsubscribe<MonsterRushEvent>(OnMonsterRush);
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
-         GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(OnTriChoiceSelect);
+         GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
          GameEventSystem.Unsubscribe<ChangeStageTimeEvent>(OnChangeStageTime);
       }
       #endregion
@@ -196,7 +196,9 @@ namespace TrainDefense.Game
          spawnCount = Mathf.Min(_originalSpawnCount + increase, maxSpawnCount);
       }
 
-      private void OnTriChoiceSelect(TriChoiceSelectEvent triChoiceSelectEvent)
+      // 전투가 시작되면 스폰을 켠다. 첫 포탑 선택 뒤·상점을 닫은 뒤·이어하기로 복원한 상점을 닫은 뒤 모두 이 신호로 전투에 들어온다.
+      // (첫 포탑 선택 이벤트에 걸어 두면 선택을 건너뛰는 이어하기 판은 스폰이 영영 켜지지 않는다)
+      private void OnEngageStart(EngageStartEvent engageStartEvent)
       {
          if (_stopSpawnMonster)
          {
