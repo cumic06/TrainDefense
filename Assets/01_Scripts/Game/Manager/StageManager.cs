@@ -91,7 +91,7 @@ namespace TrainDefense.Game.Manager
         private void Start()
         {
             _LoadStageDatas();
-            _currentStageIndex = 0;   // 고정 순서: 항상 가장 느슨한 맵에서 시작한다
+            _currentStageIndex = _GetStartStageIndex();
             _ResetCurrentStageInfo();
             _SubscribeEvents();
         }
@@ -127,6 +127,19 @@ namespace TrainDefense.Game.Manager
             if (Cumic.Sequence.InGameSequence.Instance is { IsRunning: false }) return;
             _CurrentStageTimeUp();
             _StageHandler();
+        }
+
+        // 고정 순서: 항상 가장 느슨한 맵에서 시작한다. 이어하기면 저장된 맵에서 시작한다(첫 맵이 잠깐 보였다 바뀌지 않게).
+        private int _GetStartStageIndex()
+        {
+            string pendingStageId = RunSave.RunSaveManager.Instance != null ? RunSave.RunSaveManager.Instance.PendingStageId : null;
+
+            if (string.IsNullOrEmpty(pendingStageId) || _stageDatas == null)
+                return 0;
+
+            int index = System.Array.FindIndex(_stageDatas, stage => stage.Id == pendingStageId);
+
+            return index >= 0 ? index : 0;
         }
 
         private void _LoadStageDatas()
@@ -600,6 +613,7 @@ namespace TrainDefense.Game.Manager
                 return;
 
             int index = System.Array.FindIndex(_stageDatas, stage => stage != null && stage.Id == state.CurrentStageId);
+            bool isMapChanged = index >= 0 && index != _currentStageIndex;
 
             if (index >= 0)
                 _currentStageIndex = index;
@@ -639,7 +653,10 @@ namespace TrainDefense.Game.Manager
             }
 
             _UpdateSpawnRules();
-            _SetCurrentStage();
+
+            // 게임 씬이 이미 저장된 맵으로 시작했으면 다시 만들지 않는다 — 같은 맵을 지웠다 깔면 그 순간 깜빡인다.
+            if (isMapChanged)
+                _SetCurrentStage();
         }
         #endregion
 

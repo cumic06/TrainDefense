@@ -32,6 +32,9 @@ namespace TrainDefense.Game.RunSave
         /// <summary>이번 게임 씬 진입이 "이어하기"인지. 포탑 선택창 스킵·첫 삼중택일 스킵 판단에 쓴다.</summary>
         public bool IsContinuePending => _pendingRestore != null;
 
+        /// <summary>이어할 판이 저장된 맵. 게임 씬이 첫 맵을 깔았다가 복원 때 바꿔 끼우며 깜빡이지 않게, 처음부터 이 맵을 깐다. 이어하기가 아니면 null.</summary>
+        public string PendingStageId => _pendingRestore?.summary?.stageId;
+
         /// <summary>복원 절차가 진행 중인지. 복원 중 발행되는 이벤트로 자기 자신이 다시 저장되는 것을 막는다.</summary>
         public bool IsRestoring => _isRestoring;
 
