@@ -216,8 +216,20 @@ namespace Cumic
             int level = UserDataManager.Instance != null ? UserDataManager.Instance.CurrentLevel : e.LevelUpCount;
             SetProgressByKey("level_reached", level);
         }
-        private void OnTrainAdded(AddTrainEvent e) => AddProgressByKey("train_added");
-        private void OnTrainDead(TrainDeadEvent e) => AddProgressByKey("train_lost");
+        // 이어하기 복원은 평소 생성 경로를 그대로 타서 포탑마다 AddTrainEvent가 다시 나온다. 저장·복귀를 반복해 부풀리지 못하게 막는다.
+        private void OnTrainAdded(AddTrainEvent e)
+        {
+            if (RunSaveManager.Instance != null && RunSaveManager.Instance.IsRestoring) return;
+
+            AddProgressByKey("train_added");
+        }
+
+        private void OnTrainDead(TrainDeadEvent e)
+        {
+            if (RunSaveManager.Instance != null && RunSaveManager.Instance.IsRestoring) return;
+
+            AddProgressByKey("train_lost");
+        }
         // 리워크 후 "상점 아이템 구매" = 역 상점의 골드 구매(포탑/스탯 강화/엘리트 승격). 진행도 키는 저장 호환 유지.
         private void OnShopOfferPurchased(ShopOfferPurchasedEvent e) => AddProgressByKey("shop_item_bought");
         private void OnUpgradeApplied(UpgradeAppliedEvent e) => AddProgressByKey("upgrade_purchased");

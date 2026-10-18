@@ -359,9 +359,8 @@ namespace TrainDefense.Game
 
             train.SetHpToRatio(Mathf.Clamp01(entry.HpRatio));
 
-            // 죽은 채로 저장된 칸은 평소 사망 경로를 그대로 태워 죽인다(상점의 긴급 수리로 되살릴 수 있는 상태 유지).
-            if (entry.IsDead && !train.IsDead)
-                train.TakeDamage(float.MaxValue);
+            // 역 도착은 모든 칸을 부활시키므로 저장 시점(상점)에 죽은 칸은 없다. 이전 빌드 세이브의 IsDead는
+            // 부활 전에 캡처된 잔재라 따르지 않는다 — 첫 칸부터 죽이면 산 칸이 0이 되어 복원 도중 게임오버가 났다.
         }
 
         // 게임 진입 시 자동 스폰된 기본 편성을 걷어낸다. 복원한 편성과 겹치는 것을 막는다.

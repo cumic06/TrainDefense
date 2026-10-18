@@ -221,6 +221,9 @@ namespace TrainDefense.Game.Manager
 
         private void _OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
+            // 이어하기 복원이 여는 상점은 새로 도달한 역이 아니다.
+            if (RunSave.RunSaveManager.Instance != null && RunSave.RunSaveManager.Instance.IsRestoring) return;
+
             _Log("stage_reached",
                 ("stage", _CurrentStage()),
                 // 값은 누적 상점 수(역 도착 + 맵 선택). 난이도 축과 같은 값이라야 지표와 체감이 맞는다.
@@ -275,6 +278,9 @@ namespace TrainDefense.Game.Manager
 
         private void _OnTrainSpawned(TrainSpawnedEvent trainSpawnedEvent)
         {
+            // 이어하기 복원은 저장된 편성을 평소 생성 경로로 다시 세운다. 그 스폰은 새 획득이 아니다.
+            if (RunSave.RunSaveManager.Instance != null && RunSave.RunSaveManager.Instance.IsRestoring) return;
+
             _Log("train_spawned",
                 ("train_id", trainSpawnedEvent.TrainId),
                 ("stage", _CurrentStage()));

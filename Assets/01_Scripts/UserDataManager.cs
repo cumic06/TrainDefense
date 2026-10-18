@@ -342,6 +342,12 @@ namespace TrainDefense
             _tutorialSaveData?.ResetAll();
             ClearDiscoveredCollections();
             _userOptionData = UserOptionDataParser.Load();
+
+            // 씬을 넘어 살아 있는 매니저는 디스크를 지워도 메모리 값이 남아, 다음 저장 때 옛 재화·습득 기록을 되살린다.
+            if (PermanentUpgradeManager.Instance != null)
+                PermanentUpgradeManager.Instance.ResetAll();
+            if (SkillTreeManager.Instance != null)
+                SkillTreeManager.Instance.DeleteAllSaveData();
         }
         #endregion
 

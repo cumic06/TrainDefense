@@ -102,6 +102,11 @@ namespace TrainDefense.Game
                 return;
             }
 
+            // 이어하기 복원이 세우는 편성은 첫 획득이 아니다. 여기서 튜토리얼 연쇄가 걸리면
+            // 그 끝(inspectionTimeTutorial 완료)이 상점이 열린 채로 전투 시작 신호를 내보낸다.
+            if (RunSave.RunSaveManager.Instance != null && RunSave.RunSaveManager.Instance.IsRestoring)
+                return;
+
             // 첫 기차 추가 시 TrainInfoSlot → InspectionTime 튜토리얼 연쇄 시작
             CheckAndStartTrainInfoSlotTutorial();
         }

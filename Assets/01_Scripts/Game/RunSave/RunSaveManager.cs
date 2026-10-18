@@ -84,6 +84,7 @@ namespace TrainDefense.Game.RunSave
         {
             GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOverStart);
             GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
         }
 
@@ -91,6 +92,7 @@ namespace TrainDefense.Game.RunSave
         {
             GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOverStart);
             GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
         }
 
@@ -153,6 +155,20 @@ namespace TrainDefense.Game.RunSave
             if (_isRestoring || _isLobbyRun)
                 return;
 
+            StartCoroutine(_SaveAfterStationArrival());
+        }
+
+        // 이 매니저는 앱 부팅 때 구독해 역 도착 이벤트를 가장 먼저 받는다. 그 자리에서 바로 저장하면
+        // 역 도착이 하는 부활·체력 회복(MainTrain.OnInspectionStart)보다 앞서 "죽은 칸"이 그대로 저장되고,
+        // 이어하기가 그 칸을 다시 죽이면서 첫 칸이 죽은 세이브는 복원 직후 게임오버가 됐다.
+        // 역 도착 처리가 모두 끝난 다음 프레임에 저장해 상점에서 보이는 상태 그대로를 남긴다.
+        private IEnumerator _SaveAfterStationArrival()
+        {
+            yield return null;
+
+            if (_isRestoring || _isLobbyRun)
+                yield break;
+
             SaveNow();
         }
 
@@ -211,6 +227,13 @@ namespace TrainDefense.Game.RunSave
             DeleteSave();
         }
 
+        private void _OnGameOverStart(GameOverStartEvent gameOverStartEvent)
+        {
+            // 패배는 슬로모션 연출이 끝나야 GameEndEvent가 나온다. 그 몇 초 사이에 앱을 끄면 세이브가 살아남아
+            // 직전 역으로 되돌아가는(패배 회피) 구멍이 되므로, 패배가 확정되는 순간 지운다.
+            DeleteSave();
+        }
+
         #endregion
 
         #region Restore
@@ -246,6 +269,8 @@ namespace TrainDefense.Game.RunSave
         private void _OnGameEnter(GameEnterEvent gameEnterEvent)
         {
             _isLobbyRun = gameEnterEvent.IsLobby;
+            // 이전 판의 복원이 연출 도중 끊겨 끝맺지 못했더라도 새 판의 저장까지 막히면 안 된다(DDOL이라 플래그가 앱 종료까지 남는다).
+            _isRestoring = false;
 
             // 로비 배경 시뮬레이션도 GameEnterEvent를 발행하므로 그 판은 저장·복원 대상이 아니다.
             if (_isLobbyRun)
@@ -291,23 +316,36 @@ namespace TrainDefense.Game.RunSave
                 yield break;
             }
 
+            // 준비가 안 됐으면 복원만 건너뛰고 아래 상점 열기는 그대로 탄다. 첫 포탑 선택은 이미 이어하기로 건너뛰었기 때문에
+            // 여기서 멈추면 선택창도 없고 시간도 멈춘 채(일시정지 버튼까지 잠김) 판이 얼어붙는다. 기본 편성으로 상점에서 시작하게 둔다.
             if (!_IsSceneReadyForRestore())
             {
-                Debug.LogWarning("[RunSave] 복원에 필요한 매니저가 준비되지 않아 이어하기를 중단합니다. 새 판으로 진행합니다.");
-                _isRestoring = false;
-
-                yield break;
+                Debug.LogWarning("[RunSave] 복원에 필요한 매니저가 준비되지 않아 이어하기를 중단합니다. 새 판으로 진행합니다."
+                                 + $" (UserDataManager={UserDataManager.Instance != null}, StageManager={Manager.StageManager.Instance != null},"
+                                 + $" TrainManager={TrainManager.Instance != null}, MainTrain={TrainManager.Instance != null && TrainManager.Instance.MainTrain != null})");
             }
-
-            foreach (var section in _sections)
+            else
             {
-                string json = data.GetSection(section.SectionId);
+                foreach (var section in _sections)
+                {
+                    string json = data.GetSection(section.SectionId);
 
-                // 이 세이브에 없는 섹션(구버전 세이브 + 신규 시스템)은 건너뛴다 — 나머지 복원은 그대로 진행한다.
-                if (string.IsNullOrEmpty(json))
-                    continue;
+                    // 이 세이브에 없는 섹션(구버전 세이브 + 신규 시스템)은 건너뛴다 — 나머지 복원은 그대로 진행한다.
+                    if (string.IsNullOrEmpty(json))
+                        continue;
 
-                section.Restore(json);
+                    // 한 섹션이 예외를 던져도(삭제된 데이터 id·손상된 값) 나머지 섹션과 상점 열기는 진행한다.
+                    // 코루틴이 예외로 끊기면 _isRestoring이 영영 true로 남아 이후 저장이 전부 막히고 화면도 멈춘 채가 된다.
+                    try
+                    {
+                        section.Restore(json);
+                    }
+                    catch (System.Exception exception)
+                    {
+                        Debug.LogError($"[RunSave] 섹션 '{section.SectionId}' 복원 중 예외가 나 그 섹션을 건너뜁니다.");
+                        Debug.LogException(exception);
+                    }
+                }
             }
 
             GameEventSystem.Publish(new RunRestoredEvent());
@@ -334,10 +372,12 @@ namespace TrainDefense.Game.RunSave
 
         private bool _IsSceneReadyForRestore()
         {
+            // TrainManager.MainTrain은 스폰 전엔 프리팹 에셋을 가리켜 null이 아니다. 씬에 실제로 놓인 인스턴스인지까지 본다.
             return UserDataManager.Instance != null
                    && Manager.StageManager.Instance != null
                    && TrainManager.Instance != null
-                   && TrainManager.Instance.MainTrain != null;
+                   && TrainManager.Instance.MainTrain != null
+                   && TrainManager.Instance.MainTrain.gameObject.scene.IsValid();
         }
 
         #endregion

@@ -35,6 +35,8 @@ namespace TrainDefense.Game.RunSave.Sections
             public string selectedSkillId;
             public List<UpgradeStepEntry> upgradeDeltas = new();
             public List<StatUpgradeAmountEntry> statUpgradeAmounts = new();
+            // 저장 당시 공격 간격. 0이면 기록 없음(이전 세이브). 공속 증가량은 받은 순서에 따라 달라 재생만으로는 재현되지 않는다.
+            public float attackInterval;
             public TrainCombatRecord combatRecord = new();
         }
 
@@ -79,6 +81,7 @@ namespace TrainDefense.Game.RunSave.Sections
                     isDead = train.IsDead,
                     skillTypeMask = train.SkillTypeMask,
                     selectedSkillId = train.SelectedSkillId,
+                    attackInterval = train.AttackInterval,
                 };
 
                 entry.combatRecord.CopyFrom(train.CombatRecord);
@@ -149,6 +152,7 @@ namespace TrainDefense.Game.RunSave.Sections
                         IsDead = train.isDead,
                         SkillTypeMask = train.skillTypeMask,
                         SelectedSkillId = train.selectedSkillId,
+                        AttackInterval = train.attackInterval,
                     };
 
                     entry.CombatRecord.CopyFrom(train.combatRecord);

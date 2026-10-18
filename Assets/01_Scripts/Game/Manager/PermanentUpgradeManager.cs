@@ -43,9 +43,17 @@ namespace TrainDefense.Game
         protected override void Awake()
         {
             base.Awake();
-            if (Instance == this)
-                DontDestroyOnLoad(gameObject);
 
+            // 로비 씬에 놓인 매니저라 로비에 다시 올 때마다 하나 더 생긴다. 중복분이 살아 이벤트를 받으면
+            // 오래된 메모리 값으로 재화를 덮어쓸 수 있으므로 여기서 지운다(씬 쪽 DDOL 플래그는 꺼져 있어 베이스가 안 지운다).
+            if (Instance != this)
+            {
+                Destroy(gameObject);
+
+                return;
+            }
+
+            DontDestroyOnLoad(gameObject);
             _Load();
         }
 
@@ -283,8 +291,9 @@ namespace TrainDefense.Game
             Debug.Log($"[PermanentUpgradeManager] 테스트 엘리트 코인 +100 (현재 {_eliteCoin})");
         }
 
+        // 옵션 "전체 초기화"에서도 부른다. 디스크만 지우면 DDOL인 이 매니저의 메모리 값이 다음 저장 때 되살아난다.
         [Sirenix.OdinInspector.Button("영구 업그레이드/엘리트 코인 초기화")]
-        private void ResetAll()
+        public void ResetAll()
         {
             _eliteCoin = 0;
             _levels.Clear();

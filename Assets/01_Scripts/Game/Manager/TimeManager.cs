@@ -53,11 +53,16 @@ namespace TrainDefense.Game
 
         private void OnDestroy()
         {
+            _UnsubscribeEvents();
+
+            // 로비·게임 씬에 각각 놓인 TimeManager는 DDOL이라 두 번째 씬의 것이 중복으로 파괴된다.
+            // 그 중복분이 timeScale을 1로 되돌리면 방금 Pause한 진짜 인스턴스와 어긋나 게임 시작 직후 잠깐 풀린다.
+            if (Instance != this)
+                return;
+
             Time.timeScale = 1f;
             Time.fixedDeltaTime = 0.02f;
             _isGameOverSlowing = false;
-
-            _UnsubscribeEvents();
         }
 
         private void OnApplicationPause(bool pauseStatus)

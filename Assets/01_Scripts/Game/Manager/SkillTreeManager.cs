@@ -293,8 +293,9 @@ namespace TrainDefense.Game
             PlayerPrefs.SetString(SAVE_KEY, saveData.ToJson());
         }
 
+        // 옵션 "전체 초기화"에서도 부른다. 디스크만 지우면 DDOL인 이 매니저의 메모리 코어가 다음 저장 때 되살아난다.
         [Sirenix.OdinInspector.Button("습득 노드 전부 삭제")]
-        private void DeleteAllSaveData()
+        public void DeleteAllSaveData()
         {
             _core = null;
             _pendingSave = null;
