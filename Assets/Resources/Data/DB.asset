@@ -246,7 +246,7 @@ MonoBehaviour:
     - {fileID: 888686281029753222, guid: 0803191ab1f1c4bf1b3d5ad10074666b, type: 3}
     monsterStatusData:
       MaxHp: 252
-      Damage: 26
+      Damage: 22
       MoveSpeed: 4
       AttackDelay: 2
       DropExpMin: 336
@@ -458,7 +458,7 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 6
+      AttackDamage: 8
       AttackRange: 6
       AttackArea: 3.8
       AttackCount: 1
@@ -483,7 +483,7 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 16
+      AttackDamage: 20
       AttackRange: 8
       AttackArea: 2
       AttackCount: 1
@@ -638,7 +638,7 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 6
+      AttackDamage: 8
       AttackRange: 6
       AttackArea: 3.8
       AttackCount: 1
@@ -665,7 +665,7 @@ MonoBehaviour:
     isMainTrain: 0
     elitePromotionConditions: []
     turretTrainStatus:
-      AttackDamage: 16
+      AttackDamage: 20
       AttackRange: 8
       AttackArea: 2
       AttackCount: 1
@@ -1013,7 +1013,7 @@ MonoBehaviour:
       description: Passive_60020_Desc
     - id: 60021
       name: Passive_60021_Name
-      passiveType: KnockbackOnHit:2:0.15|StatModifier:AttackInterval:20
+      passiveType: KnockbackOnHit:2:0.15|StatModifier:AttackDamage:-10
       param1: 
       param2: 
       param3: 
@@ -1027,7 +1027,7 @@ MonoBehaviour:
       description: Passive_60022_Desc
     - id: 60023
       name: Passive_60023_Name
-      passiveType: SweepAttack:0.8|StatModifier:AttackInterval:50
+      passiveType: SweepAttack:0.8|StatModifier:AttackInterval:75
       param1: 
       param2: 
       param3: 
