@@ -75,8 +75,16 @@ namespace TrainDefense
         /// 가려진 사이 onComplete로 상점을 띄운 뒤 페이드 인하며 상점을 드러낸다.
         /// 상점 오브젝트는 상점이 닫힐 때(InspectionEndEvent) 비활성화된다.
         /// </summary>
+        /// <summary>
+        /// 상점 진입·퇴장 연출이 진행 중인지. 이 동안은 시간만 멈춰 있고 진행 단계(InGameSequence)는 바뀌지 않아,
+        /// 일시정지 메뉴를 열었다 닫으면 검은 화면 뒤에서 전투가 재개되고, '포기'하면 결과창 위에 상점이 열린다. 입력 쪽에서 이 값으로 막는다.
+        /// </summary>
+        public bool IsShopTransitioning { get; private set; }
+
         public void StartShopEnterTimeline(Action onComplete = null)
         {
+            IsShopTransitioning = true;
+
             // 1. 시간을 먼저 멈춘다. (정리 도중·직후 포탑이 한 발 더 발사하면 그 탄환이 정리에서 누락되므로, 정지 상태에서 정리한다.)
             TimeManager.Instance?.Pause();
 
@@ -95,6 +103,7 @@ namespace TrainDefense
             yield return _Fade(1f, shopEnterSlideInDuration);
 
             // 2. 검게 가려진 화면 위에 상점을 띄운다.
+            IsShopTransitioning = false;
             onComplete?.Invoke();
         }
 
@@ -104,6 +113,7 @@ namespace TrainDefense
         /// </summary>
         public void StartShopExitTimeline(Action onComplete = null)
         {
+            IsShopTransitioning = true;
             TimeManager.Instance?.Pause();
 
             // 상점 들어가기 전 전투에서 남은 골드·투사체가 퇴장 후 화면에 그대로 남는 문제를 막는다.
@@ -128,6 +138,7 @@ namespace TrainDefense
             yield return _Fade(0f, shopExitSlideOutDuration);
 
             // 3. 기차가 정위치에 도착하면 전투를 재개한다.
+            IsShopTransitioning = false;
             onComplete?.Invoke();
         }
 

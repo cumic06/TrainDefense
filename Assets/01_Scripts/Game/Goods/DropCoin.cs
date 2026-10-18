@@ -21,19 +21,21 @@ namespace TrainDefense.Game
         {
             _elapsedTime = 0f;
             _isInitialized = false;
+        }
 
+        private void FixedUpdate()
+        {
+            if (TrainManager.Instance == null || TrainManager.Instance.MainTrain == null)
+                return;
+
+            // 풀은 오브젝트를 켠 다음에 위치를 잡으므로, OnEnable에서 계산하면 풀 자리(원점) 기준 방향이 나와
+            // 재사용된 코인이 엉뚱한 쪽으로 튀었다. 첫 물리 틱에 실제 떨어진 자리 기준으로 계산한다.
             if (!_isInitialized)
             {
                 Vector3 directionToPlayer = (TrainManager.Instance.MainTrain.transform.position - transform.position).normalized;
                 _initialDirection = -directionToPlayer;
                 _isInitialized = true;
             }
-        }
-
-        private void FixedUpdate()
-        {
-            if (TrainManager.Instance.MainTrain == null)
-                return;
 
             _elapsedTime += Time.deltaTime;
 

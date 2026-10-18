@@ -79,6 +79,10 @@ namespace TrainDefense.Game.UI
             if (InGameSequence.Instance != null && InGameSequence.Instance.CurrentBase == BasePhase.GameOver)
                 return;
 
+            // 상점 진입·퇴장 연출 중에는 열지 않는다. 열었다 닫으면 검은 화면 뒤에서 전투가 재개되고, 포기하면 결과창 위에 상점이 열린다.
+            if (TimelineManager.Instance != null && TimelineManager.Instance.IsShopTransitioning)
+                return;
+
             ShowPauseUI();
         }
 

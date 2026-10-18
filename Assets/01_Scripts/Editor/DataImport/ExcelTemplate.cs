@@ -39,16 +39,31 @@ namespace TrainDefense.Editor.DataImport
 
 			sheet = GetSheetCaseInsensitive(wb, sheetName) ?? wb.CreateSheet(sheetName);
 
-			// Header row
+			// Header row — 이미 있는 헤더는 자리와 이름을 그대로 둔다.
+			// 임포트는 열 이름으로 읽으므로 시트의 열 순서가 코드와 달라도 되는데, 위치 기준으로 덮어쓰면
+			// 이름만 바뀌고 데이터는 그대로라 이후 읽기가 엉뚱한 열을 읽는다(stage_data에 name_key가 없을 때 전부 한 칸씩 밀림).
+			// 시트에 없는 헤더만 맨 뒤에 덧붙인다.
 			var headerRow = sheet.GetRow(0) ?? sheet.CreateRow(0);
 			var headerList = new List<string>();
-			int col = 0;
+			int nextColumn = 0;
+			for (int i = 0; i < headerRow.LastCellNum; i++)
+			{
+				string existing = headerRow.GetCell(i)?.ToString()?.Trim();
+				if (string.IsNullOrEmpty(existing)) continue;
+
+				headerList.Add(existing);
+				nextColumn = i + 1;
+			}
+
 			foreach (var h in headers)
 			{
-				var cell = headerRow.GetCell(col) ?? headerRow.CreateCell(col);
+				if (headerList.Exists(existing => string.Equals(existing, h, System.StringComparison.OrdinalIgnoreCase)))
+					continue;
+
+				var cell = headerRow.GetCell(nextColumn) ?? headerRow.CreateCell(nextColumn);
 				cell.SetCellValue(h);
 				headerList.Add(h);
-				col++;
+				nextColumn++;
 			}
 
 			// Optional example rows

@@ -51,7 +51,13 @@ namespace TrainDefense.Editor.DataImport
 
 		public bool GetBool(IRow row, string columnName)
 		{
-			bool.TryParse(GetString(row, columnName), out bool v);
+			string text = GetString(row, columnName);
+
+			// 시트는 불리언을 1/0으로 적는다(is_main_train 등). bool.TryParse는 "1"을 false로 읽어 메인 기차 플래그가 꺼진 채 들어갔다.
+			if (text == "1") return true;
+			if (text == "0") return false;
+
+			bool.TryParse(text, out bool v);
 			return v;
 		}
 

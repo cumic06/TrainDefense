@@ -88,12 +88,37 @@ namespace TrainDefense.Game
                 lifetime = Mathf.Max(lifetime, expandingWave.RequiredLifetime);
             }
 
-            Destroy(gameObject, lifetime);
+            _DestroyAfter(lifetime);
         }
 
         private void OnDisable()
         {
             _damageTimers.Clear();
+
+            // 풀로 스폰되지만 수명이 끝나면 파괴하는 오브젝트다. 상점 진입 정리(ReturnAll)가 수명 도중 풀에 넣어 버리면
+            // 예약된 파괴가 다음 판에 재사용된 뒤 실행돼 폭발이 도중에 사라졌다. 풀에 들어가는 순간(비활성화) 바로 파괴한다.
+            if (_isDestroyScheduled)
+            {
+                _isDestroyScheduled = false;
+                Destroy(gameObject);
+            }
+        }
+
+        private bool _isDestroyScheduled;
+
+        private void _DestroyAfter(float delay)
+        {
+            _isDestroyScheduled = true;
+            StartCoroutine(_DestroyAfterRoutine(delay));
+        }
+
+        private System.Collections.IEnumerator _DestroyAfterRoutine(float delay)
+        {
+            if (delay > 0f)
+                yield return new WaitForSeconds(delay);
+
+            _isDestroyScheduled = false;
+            Destroy(gameObject);
         }
 
         public void Init(float damage, IProjectileTarget owner = null, bool isCritical = false)
@@ -171,14 +196,7 @@ namespace TrainDefense.Game
 
                 if (destroyOnTriggerEnter && expandingWave == null)
                 {
-                    if (destroyDelay > 0)
-                    {
-                        Destroy(gameObject, destroyDelay);
-                    }
-                    else
-                    {
-                        Destroy(gameObject);
-                    }
+                    _DestroyAfter(destroyDelay);
                 }
             }
 

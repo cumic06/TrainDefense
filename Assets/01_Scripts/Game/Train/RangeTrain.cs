@@ -21,11 +21,13 @@ namespace TrainDefense.Game
         #endregion
 
         protected RangeTrainStatus _currentRangeTrainStatus;
-        protected Projectile _rangeProjectilePrefab;
+        // 포탑 소유 장판 인스턴스들. 한 번씩 터지는 파동은 공격마다 꺼져 있는 것을 하나 골라 켜므로, 앞 파동이 퍼지는 중에도
+        // 새 파동이 겹쳐 나간다(하나만 두고 켜기만 하면 이미 켜진 동안의 공격은 파동도 피해도 없이 사라졌다).
+        // 지속형(틱)은 첫 인스턴스 하나를 계속 켜 둔다.
+        private readonly List<Projectile> _rangeProjectiles = new();
         // AttackRange(데이터값)를 prefab의 base 콜라이더 radius로 나눠 localScale에 적용해야 월드 반경과 일치.
         // 범위 포탑은 자기 중심 원 전체를 때리므로 사거리가 곧 공격 반경이다(AttackArea는 쓰지 않음).
         private float _baseColliderRadius = 1f;
-        private Coroutine _rangeAttackCoroutine;
         private float _attackCountdown;
 
 
@@ -57,7 +59,7 @@ namespace TrainDefense.Game
 
             if (TrainData.DamageType == DamageType.Direct) return;
 
-            SpawnRangeProjectile();
+            _SpawnRangeProjectile();
 
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Subscribe<EngageReadyEvent>(_OnEngageReady);
@@ -81,18 +83,26 @@ namespace TrainDefense.Game
         // 기차 하위에 부착된 범위 공격 투사체를 풀로 반환한다. (상점 진입/전투 준비 시 잔류 투사체 정리)
         public override void ClearAttachedProjectiles()
         {
-            if (_rangeProjectilePrefab == null) return;
+            if (ResourceManager.Instance != null)
+            {
+                foreach (var projectile in _rangeProjectiles)
+                {
+                    if (projectile == null) continue;
+                    // 터렛 소유 등록을 풀어야 공용 풀로 실제 반환된다.
+                    ResourceManager.Instance.UnregisterPersistent(projectile.gameObject);
+                    ResourceManager.Instance.Destroy(projectile.gameObject);
+                }
+            }
 
-            ResourceManager.Instance.Destroy(_rangeProjectilePrefab.gameObject);
-            _rangeProjectilePrefab = null;
+            _rangeProjectiles.Clear();
         }
 
         private void _OnEngageStart(EngageStartEvent _)
         {
             if (_isDead) return;
 
-            if (_rangeProjectilePrefab == null)
-                SpawnRangeProjectile();
+            if (_rangeProjectiles.Count == 0)
+                _SpawnRangeProjectile();
         }
 
         private void PlayLoopSFX()
@@ -110,6 +120,10 @@ namespace TrainDefense.Game
             if (rangeTrainData == null || rangeTrainData.AttackSoundType == SoundType.None) return;
 
             _isLoopSfxPlaying = false;
+
+            // OnDestroy에서도 불린다 — 앱 종료 때는 SoundManager가 먼저 파괴돼 있을 수 있다.
+            if (SoundManager.Instance == null) return;
+
             SoundManager.Instance.StopSFX(rangeTrainData.AttackSoundType);
         }
 
@@ -130,9 +144,16 @@ namespace TrainDefense.Game
         {
             if (TrainData == null || TrainData.DamageType == DamageType.Direct) return;
 
-            bool attacking = _rangeProjectilePrefab != null
-                             && _rangeProjectilePrefab.gameObject.activeInHierarchy
-                             && _rangeProjectilePrefab.HasTickTargets;
+            bool attacking = false;
+            foreach (var projectile in _rangeProjectiles)
+            {
+                if (projectile != null && projectile.gameObject.activeInHierarchy && projectile.HasTickTargets)
+                {
+                    attacking = true;
+                    break;
+                }
+            }
+
             if (attacking)
                 PlayLoopSFX();
             else
@@ -148,18 +169,17 @@ namespace TrainDefense.Game
 
                 if (rangeTrainData.RangeProjectilePrefab != null)
                 {
-                    if (_rangeProjectilePrefab == null)
+                    bool isOneShotWave = TrainData.DamageType == DamageType.Direct;
+                    // 한 번씩 터지는 파동은 꺼져 있는 인스턴스를 골라 켠다(켜질 때 파동이 처음부터 다시 시작). 지속형은 첫 인스턴스를 계속 켠다.
+                    Projectile projectile = isOneShotWave ? _GetInactiveRangeProjectile() : _GetFirstRangeProjectile();
+
+                    if (projectile != null)
                     {
-                        SpawnRangeProjectile();
+                        projectile.gameObject.SetActive(true);
+                        projectile.SuppressShoveEffect = _suppressMainProjectileShove;
                     }
 
-                    if (_rangeProjectilePrefab != null)
-                    {
-                        _rangeProjectilePrefab.gameObject.SetActive(true);
-                        _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
-                    }
-
-                    if (rangeTrainData.AttackSoundType != SoundType.None && TrainData.DamageType == DamageType.Direct)
+                    if (rangeTrainData.AttackSoundType != SoundType.None && isOneShotWave)
                     {
                         SoundManager.Instance.PlaySFX(rangeTrainData.AttackSoundType);
                     }
@@ -171,14 +191,8 @@ namespace TrainDefense.Game
                     if (turretModel != null)
                         TurretCombatFx.PlayAttackPunch(turretModel.transform, _turretmodelScale);
 
-                    if (TrainData.DamageType == DamageType.Direct)
-                    {
-                        if (_rangeAttackCoroutine != null)
-                        {
-                            StopCoroutine(_rangeAttackCoroutine);
-                        }
-                        _rangeAttackCoroutine = StartCoroutine(RangeProjectileCoroutine(1f));
-                    }
+                    if (isOneShotWave && projectile != null)
+                        StartCoroutine(_DeactivateRangeProjectile(projectile, 1f));
                 }
             }
             else
@@ -200,32 +214,66 @@ namespace TrainDefense.Game
         }
 
         // activeDuration초 동안 장판을 켜둔 뒤 끈다. (Direct = 1초 유지)
-        private IEnumerator RangeProjectileCoroutine(float activeDuration)
+        private IEnumerator _DeactivateRangeProjectile(Projectile projectile, float activeDuration)
         {
             yield return new WaitForSeconds(activeDuration);
 
-            if (_rangeProjectilePrefab != null)
+            if (projectile != null)
+                projectile.gameObject.SetActive(false);
+        }
+
+        // 공격력·치명타·사거리가 바뀌면 모든 장판 인스턴스에 다시 넣는다.
+        private void _ReinitRangeProjectiles()
+        {
+            foreach (var projectile in _rangeProjectiles)
             {
-                _rangeProjectilePrefab.gameObject.SetActive(false);
+                if (projectile != null)
+                    projectile.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
             }
+        }
+
+        private Projectile _GetFirstRangeProjectile()
+        {
+            if (_rangeProjectiles.Count == 0)
+                _SpawnRangeProjectile();
+
+            return _rangeProjectiles.Count > 0 ? _rangeProjectiles[0] : null;
+        }
+
+        private Projectile _GetInactiveRangeProjectile()
+        {
+            foreach (var projectile in _rangeProjectiles)
+            {
+                if (projectile != null && !projectile.gameObject.activeSelf)
+                    return projectile;
+            }
+
+            return _SpawnRangeProjectile();
         }
 
         // 장판 크기를 사거리에 맞춘다. 크기를 스스로 정하는 투사체(퍼지는 파동)는 건드리지 않는다.
         // (파동은 처음 켜질 때의 크기를 기준으로 퍼지므로, 여기서 바꾸면 소환 직후 한 프레임 깜빡인다)
         private void _ApplyRangeScale()
         {
-            if (_rangeProjectilePrefab == null || _rangeProjectilePrefab.ControlsOwnScale)
-                return;
-
             float scale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
-            _rangeProjectilePrefab.transform.localScale = new Vector3(scale, scale, 1f);
+
+            foreach (var projectile in _rangeProjectiles)
+            {
+                if (projectile == null || projectile.ControlsOwnScale) continue;
+
+                projectile.transform.localScale = new Vector3(scale, scale, 1f);
+            }
         }
 
         public void SetSuppressMainProjectileShove(bool suppress)
         {
             _suppressMainProjectileShove = suppress;
-            if (_rangeProjectilePrefab != null)
-                _rangeProjectilePrefab.SuppressShoveEffect = suppress;
+
+            foreach (var projectile in _rangeProjectiles)
+            {
+                if (projectile != null)
+                    projectile.SuppressShoveEffect = suppress;
+            }
         }
 
         public void SpawnExternalProjectile(Projectile prefab, float radius, IProjectileTarget target = null, float damageMul = 1f, float shoveScale = 1f)
@@ -246,31 +294,31 @@ namespace TrainDefense.Game
                 _currentRangeTrainStatus.CriticalDamage);
         }
 
-        private void SpawnRangeProjectile()
+        // 장판 인스턴스를 하나 더 만들어 목록에 넣는다. 켜진 상태로 만들어지므로 호출한 쪽이 바로 쓰거나 끈다.
+        private Projectile _SpawnRangeProjectile()
         {
-            if (rangeTrainData.RangeProjectilePrefab != null)
-            {
-                // 기존 Projectile 제거
-                if (_rangeProjectilePrefab != null)
-                {
-                    ResourceManager.Instance.Destroy(_rangeProjectilePrefab.gameObject);
-                    _rangeProjectilePrefab = null;
-                }
-                Projectile projectile = rangeTrainData.RangeProjectilePrefab?.GetComponent<Projectile>();
+            if (rangeTrainData.RangeProjectilePrefab == null) return null;
 
-                if (projectile != null)
-                {
-                    _rangeProjectilePrefab = ResourceManager.Instance.Spawn(projectile);
-                    _rangeProjectilePrefab.transform.SetParent(transform);
-                    var circle = _rangeProjectilePrefab.GetComponentInChildren<CircleCollider2D>();
-                    _baseColliderRadius = circle != null && circle.radius > 0f ? circle.radius : 1f;
-                    _ApplyRangeScale();
-                    _rangeProjectilePrefab.transform.localPosition = Vector3.zero;
-                    _rangeProjectilePrefab.transform.localRotation = Quaternion.identity;
-                    _rangeProjectilePrefab.SuppressShoveEffect = _suppressMainProjectileShove;
-                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
-                }
-            }
+            Projectile prefab = rangeTrainData.RangeProjectilePrefab.GetComponent<Projectile>();
+            if (prefab == null) return null;
+
+            Projectile spawned = ResourceManager.Instance.Spawn(prefab);
+            if (spawned == null) return null;
+
+            // 포탑이 켜고 끄며 계속 쓰는 장판이라 투사체 자체 수명(DestroyDelay)이 먼저 끝나도 공용 풀로 돌아가지 않고 꺼지기만 하게
+            // 터렛 소유로 등록한다(TurretTrain NonMovement 풀과 같은 방식). 풀로 새면 원점에서 터지거나 다른 포탑과 공유된다.
+            ResourceManager.Instance.RegisterPersistent(spawned.gameObject);
+            spawned.transform.SetParent(transform);
+            var circle = spawned.GetComponentInChildren<CircleCollider2D>();
+            _baseColliderRadius = circle != null && circle.radius > 0f ? circle.radius : 1f;
+            spawned.transform.localPosition = Vector3.zero;
+            spawned.transform.localRotation = Quaternion.identity;
+            spawned.SuppressShoveEffect = _suppressMainProjectileShove;
+            spawned.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+            _rangeProjectiles.Add(spawned);
+            _ApplyRangeScale();
+
+            return spawned;
         }
 
         public override void Upgrade(ITrainUpgradeData upgradeData)
@@ -289,10 +337,7 @@ namespace TrainDefense.Game
                 _AddUpgradeStatus(ref _currentRangeTrainStatus, rangeStatus);
 
                 _ApplyRangeScale();
-                if (_rangeProjectilePrefab != null)
-                {
-                    _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
-                }
+                _ReinitRangeProjectiles();
             }
         }
 
@@ -528,8 +573,7 @@ namespace TrainDefense.Game
                     case StatType.AttackDamage:
                         _currentRangeTrainStatus.AttackDamage *= multiplier;
                         _metaBaseStatus.AttackDamage *= multiplier;
-                        if (_rangeProjectilePrefab != null)
-                            _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
+                        _ReinitRangeProjectiles();
                         break;
                     case StatType.AttackInterval:
                         // 기준 간격도 같이 늘려야 상점 공속 카드의 발사 속도 배율(기준 ÷ 지금)이 개조 전과 같게 이어진다.
@@ -562,18 +606,12 @@ namespace TrainDefense.Game
 
                 case StatType.CriticalChance:
                     _currentRangeTrainStatus.CriticalChance += stat.Value;
-                    if (_rangeProjectilePrefab != null)
-                    {
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
-                    }
+                    _ReinitRangeProjectiles();
                     break;
 
                 case StatType.CriticalDamage:
                     _currentRangeTrainStatus.CriticalDamage += stat.Value;
-                    if (_rangeProjectilePrefab != null)
-                    {
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null, _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance, _currentRangeTrainStatus.CriticalDamage);
-                    }
+                    _ReinitRangeProjectiles();
                     break;
             }
         }
@@ -599,18 +637,12 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.AttackDamage:
-                    if (_rangeProjectilePrefab != null)
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
-                            _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
-                            _currentRangeTrainStatus.CriticalDamage);
+                    _ReinitRangeProjectiles();
                     break;
 
                 case StatType.CriticalChance:
                 case StatType.CriticalDamage:
-                    if (_rangeProjectilePrefab != null)
-                        _rangeProjectilePrefab.Init(_currentRangeTrainStatus.AttackDamage, this, null,
-                            _currentRangeTrainStatus.AttackRange, _currentRangeTrainStatus.CriticalChance,
-                            _currentRangeTrainStatus.CriticalDamage);
+                    _ReinitRangeProjectiles();
                     break;
             }
         }
@@ -673,16 +705,7 @@ namespace TrainDefense.Game
                 sourceRange.rangeTrainData.RangeTrainStatus, sourceRange._currentRangeTrainStatus);
 
             _ApplyRangeScale();
-            if (_rangeProjectilePrefab != null)
-            {
-                _rangeProjectilePrefab.Init(
-                    _currentRangeTrainStatus.AttackDamage,
-                    this,
-                    null,
-                    _currentRangeTrainStatus.AttackRange,
-                    _currentRangeTrainStatus.CriticalChance,
-                    _currentRangeTrainStatus.CriticalDamage);
-            }
+            _ReinitRangeProjectiles();
         }
 
         private void OnDrawGizmos()

@@ -20,6 +20,9 @@ namespace TrainDefense.Game.Manager
 
         private void Start()
         {
+            // 전투는 손을 대지 않고 지켜보는 시간이 길어 기기 화면 꺼짐 타이머가 그대로면 판 도중 화면이 꺼진다.
+            Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
             GameEventSystem.Subscribe<LobbyEnterEvent>(OnLobbyEnter);
         }
 

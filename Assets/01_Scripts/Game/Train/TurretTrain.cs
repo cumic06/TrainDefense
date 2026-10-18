@@ -186,7 +186,8 @@ namespace TrainDefense.Game
         {
             if (!_useNonMovementProjectilePooling) return;
 
-            PreCreateNonMovementProjectiles();
+            // 전투 시작 신호는 한 역에서 두 번 올 수 있다(첫 판 튜토리얼 완료가 한 번 더 발행). 모자란 만큼만 채운다.
+            EnsureNonMovementProjectileCount(_currentTurretTrainStatus.TargetCount);
         }
         #endregion
 
@@ -670,7 +671,8 @@ namespace TrainDefense.Game
                 if (i >= _targetMonsters.Count) break;
 
                 Monster target = _targetMonsters[i];
-                if (target == null)
+                // 연타 반복은 FixedUpdate 사이에 돌아 목록에 방금 죽어 풀로 돌아간(원점에 놓인) 몬스터가 남아 있을 수 있다.
+                if (target == null || !target.IsActive)
                 {
                     if (_useNonMovementProjectilePooling && i < _nonMovementProjectiles.Count)
                         _nonMovementProjectiles[i]?.gameObject.SetActive(false);
