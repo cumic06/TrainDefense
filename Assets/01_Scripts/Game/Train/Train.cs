@@ -378,6 +378,18 @@ namespace TrainDefense.Game
         // 개조 패시브가 공격 속도를 낮출 때(speedBonus 음수) 배율이 0 이하로 떨어져 간격이 무한·음수가 되지 않게 하는 하한.
         private const float MIN_SPEED_MULTIPLIER = 0.1f;
 
+        // 개조 패시브 % 하나를 스탯 값에 곱할 배율로 바꾼다. 공격 간격은 발사 속도에 %를 곱한 결과라 역수다(75 = 발사 속도 75% 감소 = 간격 ×4).
+        protected static float PercentToFinalValueMultiplier(StatType statType, float percent)
+        {
+            if (statType == StatType.AttackInterval)
+                return 1f / Mathf.Max(MIN_SPEED_MULTIPLIER, 1f - percent);
+
+            return 1f + percent;
+        }
+
+        // 개조 패시브가 이 기차 기준값(MetaBaseStatus)에 곱한 배율. 개조 전 기차는 1. 런 세이브가 강화 증가량을 개조 전 크기로 되돌릴 때 쓴다.
+        public virtual float GetFinalValueMultiplier(StatType statType) => 1f;
+
         // 이어하기 복원용 — 공격 간격은 강화 순서에 따라 증가량이 달라 저장된 증가량만으로는 재현되지 않아 최종값을 직접 되돌린다.
         public virtual void RestoreAttackInterval(float attackInterval) { }
 
@@ -433,8 +445,8 @@ namespace TrainDefense.Game
         private static float _GetLevelAwareMaxHpDelta(float baseMaxHp, IStat stat, int newLevel, int prevLevel)
             => baseMaxHp * stat.Value / 100f * (newLevel - prevLevel);
 
-        // 개조 패시브 등 % 스탯을 "데이터 기본값 × %"만큼 한 번 더한다(현재 값에 곱하지 않는다 — 개조 시점과 상관없이 같은 양).
-        public virtual void ApplyStatsByBaseValue(IStat[] stats)
+        // 개조 패시브 등 % 스탯을 최종 값에 곱한다 — 강화가 얼마나 쌓였든, 개조 뒤 강화를 더 받든 늘 같은 비율로 남는다.
+        public virtual void ApplyStatsToFinalValue(IStat[] stats)
         {
             if (stats == null) return;
             foreach (var stat in stats)

@@ -97,6 +97,17 @@ namespace TrainDefense.Game
                     break;
             }
 
+            // 개조 포탑은 기준값에 개조 배율이 곱해져 증가량도 그만큼 크다. 복원은 개조 전 기차에 증가량을 얹은 뒤 개조하므로 개조 전 크기로 남긴다.
+            float damageMultiplier = train.GetFinalValueMultiplier(StatType.AttackDamage);
+            float rangeMultiplier = train.GetFinalValueMultiplier(StatType.AttackRange);
+            float areaMultiplier = train.GetFinalValueMultiplier(StatType.AttackArea);
+            step.Turret.AttackDamage /= damageMultiplier;
+            step.Turret.AttackRange /= rangeMultiplier;
+            step.Turret.AttackArea /= areaMultiplier;
+            step.Range.AttackDamage /= damageMultiplier;
+            step.Range.AttackRange /= rangeMultiplier;
+            step.Range.AttackArea /= areaMultiplier;
+
             // 지금 업그레이드 경로(상점 스탯 강화)는 체력을 올리지 않는다. 올리는 업그레이드가 생기면 여기서 조용히 빠지므로 알린다.
             if (upgradeData.GetStatusUpgrade(appliedLevelIndex).MaxHp != 0f)
                 Debug.LogWarning($"MainTrain: [{upgradeData.Id}]의 체력 증가량은 런 세이브에 담기지 않아 이어하기에서 빠집니다.");

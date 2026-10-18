@@ -41,7 +41,7 @@ namespace TrainDefense.Game
         public override void Subscribe()
         {
             if (Owner == null || _stats == null || _stats.Length == 0) return;
-            Owner.ApplyStatsByBaseValue(_stats);
+            Owner.ApplyStatsToFinalValue(_stats);
         }
     }
 }

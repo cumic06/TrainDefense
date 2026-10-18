@@ -86,6 +86,28 @@ namespace TrainDefense.Game
 
         public override void RestoreAttackInterval(float attackInterval) => _currentTurretTrainStatus.AttackInterval = attackInterval;
 
+        // 개조 패시브가 곱한 배율 = 지금 기준값 ÷ 개조 없이 계산한 기준값.
+        public override float GetFinalValueMultiplier(StatType statType)
+        {
+            var unmodifiedStatus = _GetMetaAppliedStatus(turretTrainData.TurretTrainStatus);
+            float unmodifiedValue = statType switch
+            {
+                StatType.AttackDamage => unmodifiedStatus.AttackDamage,
+                StatType.AttackRange => unmodifiedStatus.AttackRange,
+                StatType.AttackArea => unmodifiedStatus.AttackArea,
+                _ => 0f,
+            };
+            float currentValue = statType switch
+            {
+                StatType.AttackDamage => _metaBaseStatus.AttackDamage,
+                StatType.AttackRange => _metaBaseStatus.AttackRange,
+                StatType.AttackArea => _metaBaseStatus.AttackArea,
+                _ => 0f,
+            };
+
+            return unmodifiedValue > 0f ? currentValue / unmodifiedValue : 1f;
+        }
+
         // 포탑 회전 pivot. 패시브(섬멸)가 회전을 직접 맡을 때 쓴다.
         public GameObject TurretVisualRoot => turret;
 
@@ -1228,32 +1250,35 @@ namespace TrainDefense.Game
                     _skillModule.RegisterPassiveFromData(p);
         }
 
-        public override void ApplyStatsByBaseValue(IStat[] stats)
+        // 지금 값과 기준값(MetaBaseStatus)에 같은 배율을 곱한다. 상점·레벨업 증가량이 기준값 × %라서, 개조 뒤 받는 강화에도 배율이 그대로 따라붙는다.
+        public override void ApplyStatsToFinalValue(IStat[] stats)
         {
             if (stats == null || stats.Length == 0) return;
-            var baseStatus = turretTrainData.TurretTrainStatus;
             foreach (var stat in stats)
             {
                 if (stat == null) continue;
-                float percent = stat.Value / 100f;
+                float multiplier = PercentToFinalValueMultiplier(stat.Type, stat.Value / 100f);
                 switch (stat.Type)
                 {
                     case StatType.AttackRange:
-                        _currentTurretTrainStatus.AttackRange += baseStatus.AttackRange * percent;
+                        _currentTurretTrainStatus.AttackRange *= multiplier;
+                        _metaBaseStatus.AttackRange *= multiplier;
                         _RefreshPooledProjectiles(StatType.AttackRange);
                         break;
                     case StatType.AttackArea:
-                        _currentTurretTrainStatus.AttackArea += baseStatus.AttackArea * percent;
+                        _currentTurretTrainStatus.AttackArea *= multiplier;
+                        _metaBaseStatus.AttackArea *= multiplier;
                         _RefreshPooledProjectiles(StatType.AttackArea);
                         break;
                     case StatType.AttackDamage:
-                        // 상점 공격력 카드와 같이 소수까지 그대로 더한다.
-                        _currentTurretTrainStatus.AttackDamage += baseStatus.AttackDamage * percent;
+                        _currentTurretTrainStatus.AttackDamage *= multiplier;
+                        _metaBaseStatus.AttackDamage *= multiplier;
                         _RefreshPooledProjectiles(StatType.AttackDamage);
                         break;
                     case StatType.AttackInterval:
-                        // 상점 공격 속도 카드와 같은 식 — 공격 속도 배율에 -percent를 더한다(percent 음수 = 빨라짐).
-                        _currentTurretTrainStatus.AttackInterval = GetAttackIntervalAfterSpeedBonus(_metaBaseStatus.AttackInterval, _currentTurretTrainStatus.AttackInterval, -percent);
+                        // 기준 간격도 같이 늘려야 상점 공속 카드의 발사 속도 배율(기준 ÷ 지금)이 개조 전과 같게 이어진다.
+                        _currentTurretTrainStatus.AttackInterval *= multiplier;
+                        _metaBaseStatus.AttackInterval *= multiplier;
                         break;
                     default:
                         ApplyStat(stat);
@@ -1267,7 +1292,7 @@ namespace TrainDefense.Game
             base.ApplyStat(stat);
             if (stat == null) return;
 
-            // 사거리·범위·공격력·공속은 ApplyStatsByBaseValue가 처리하고, 나머지만 여기로 온다.
+            // 사거리·범위·공격력·공속은 ApplyStatsToFinalValue가 처리하고, 나머지만 여기로 온다.
             switch (stat.Type)
             {
                 // 정수 스탯(공격 횟수·대상 수)은 % 아니라 flat +N (가독성 — 데이터에 +2를 2로 적음)
