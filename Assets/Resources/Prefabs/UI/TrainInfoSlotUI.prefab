@@ -60,6 +60,7 @@ MonoBehaviour:
   statsText: {fileID: 1111111111111111043}
   skillsText: {fileID: 1111111111111111053}
   compactLayout: 0
+  darkSurface: 1
 --- !u!114 &1111111111111111005
 MonoBehaviour:
   m_ObjectHideFlags: 0

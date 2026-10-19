@@ -503,11 +503,11 @@ namespace TrainDefense.Game
             };
         }
 
-        // 강화로 좋아진 쪽은 녹색, 나빠진 쪽(개조 약점 등)은 적색. 상세 팝업 배경(#E2DCD1) 위 대비 4.5:1 이상.
-        private const string GROWTH_UP_COLOR = "#1B5E20";
-        private const string GROWTH_DOWN_COLOR = "#B71C1C";
-        // 강화량 표기는 값보다 한 단계 작게 둬 현재값이 먼저 읽히게 한다.
-        private const int GROWTH_TEXT_SIZE_PERCENT = 85;
+        // 강화로 좋아진 쪽은 녹색, 나빠진 쪽(개조 약점 등)은 적색. 상점 상세 팝업 배경(#E2DCD1) 위 대비 4.5:1 이상.
+        // 어두운 판(인게임 슬롯 롱프레스 팝업)에서는 TrainDetailPopupUI가 밝은 색으로 바꿔 쓴다.
+        public const string GROWTH_UP_COLOR = "#1B5E20";
+        public const string GROWTH_DOWN_COLOR = "#B71C1C";
+        // 강화량은 값과 같은 크기의 굵은 글씨 — 작은 녹색 글씨는 폰에서 안 읽힌다는 테스터 피드백(10-19).
 
         /// <summary>
         /// 현재값 텍스트 뒤에 강화량을 "(+50)" 형태로 붙인다. decimals 자리에서 반올림해 0이면(강화 없음) 그대로 돌려준다.
@@ -525,7 +525,7 @@ namespace TrainDefense.Game
             bool isImproved = isLowerBetter ? rounded < 0f : rounded > 0f;
             string color = isImproved ? GROWTH_UP_COLOR : GROWTH_DOWN_COLOR;
 
-            return $"{currentText} <size={GROWTH_TEXT_SIZE_PERCENT}%><color={color}>({sign}{Mathf.Abs(rounded).ToString(format)}{suffix})</color></size>";
+            return $"{currentText} <b><color={color}>({sign}{Mathf.Abs(rounded).ToString(format)}{suffix})</color></b>";
         }
 
         // 상점 강화 카드 롱프레스용 — upgradeData를 지금 받으면 될 스탯. 포탑은 전용 스탯까지 override한다.

@@ -16,9 +16,15 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         [Tooltip("상점용 작은 표시 — 설명·스킬을 숨기고(카드에 이미 적혀 있음) 스탯을 두 열로 놓는다")]
         private bool compactLayout;
+        [Tooltip("어두운 판(인게임 슬롯 롱프레스 팝업)이면 강화량 녹색·적색을 밝은 색으로 바꾼다. 상점의 크림 판은 끈다.")]
+        [SerializeField]
+        private bool darkSurface;
 
         // 강화 카드에서 바뀌는 스탯의 새 값 색(#E2DCD1 배경 위 대비 5.8:1).
         private const string UPGRADED_VALUE_COLOR = "#1B5E20";
+        // 어두운 판 위 강화량 색 — on-surface(#DDDDE2) 계열 대비를 지키는 밝은 녹색·적색(danger-text #E06666 관례)
+        private const string DARK_SURFACE_GROWTH_UP_COLOR = "#8BD48B";
+        private const string DARK_SURFACE_GROWTH_DOWN_COLOR = "#E06666";
 
         private Train _train;
         // 상점 강화 카드 미리보기 — 언어 변경 시 다시 그리기 위해 보관.
@@ -95,7 +101,7 @@ namespace TrainDefense.Game.UI
 
             // 보유 포탑 롱프레스 — 값 옆에 데이터 기본값 대비 얼마나 강화됐는지 "(+50)"을 붙인다.
             if (statsText != null)
-                statsText.text = _BuildStatsText(train.GetStatGrowthDetails(), null);
+                statsText.text = _ApplySurfaceColors(_BuildStatsText(train.GetStatGrowthDetails(), null));
 
             if (skillsText != null)
             {
@@ -136,7 +142,7 @@ namespace TrainDefense.Game.UI
                 descriptionText.text = trainData.Description;
 
             if (statsText != null)
-                statsText.text = _BuildStatsText(Train.GetPreviewStatDetails(trainData, promotionSource), null);
+                statsText.text = _ApplySurfaceColors(_BuildStatsText(Train.GetPreviewStatDetails(trainData, promotionSource), null));
 
             if (skillsText != null)
                 skillsText.text = string.Empty;
@@ -155,7 +161,7 @@ namespace TrainDefense.Game.UI
             _getUpgradedDetails = getUpgradedDetails;
 
             if (statsText != null)
-                statsText.text = _BuildStatsText(train.GetStatDetails(), getUpgradedDetails());
+                statsText.text = _ApplySurfaceColors(_BuildStatsText(train.GetStatDetails(), getUpgradedDetails()));
         }
 
         // 상점 카드는 이름이 카드에 적혀 있어 숨기고, 기차 그림의 칸은 보여 준다.
@@ -284,6 +290,17 @@ namespace TrainDefense.Game.UI
 
         // upgradedStats가 있으면(강화 카드) 값이 바뀌는 줄을 맨 위에 "현재 → 구매 후"로 한 줄씩 놓고, 나머지를 그 아래에 둔다.
         // compactLayout이면 나머지 줄을 두 열로 놓는다.
+        // Train이 붙인 강화량 색(크림 판 기준)을 어두운 판에서는 밝은 색으로 바꾼다.
+        private string _ApplySurfaceColors(string text)
+        {
+            if (!darkSurface)
+                return text;
+
+            return text.Replace(Train.GROWTH_UP_COLOR, DARK_SURFACE_GROWTH_UP_COLOR)
+                       .Replace(Train.GROWTH_DOWN_COLOR, DARK_SURFACE_GROWTH_DOWN_COLOR)
+                       .Replace(UPGRADED_VALUE_COLOR, DARK_SURFACE_GROWTH_UP_COLOR);
+        }
+
         private string _BuildStatsText((string label, string value)[] stats, (string label, string value)[] upgradedStats)
         {
             // 스탯 쪽(GetStatDetails)과 같은 키·폴백으로 라벨을 만들어 비교한다 — 번역 전이면 폴백 문자열이 라벨이다.
