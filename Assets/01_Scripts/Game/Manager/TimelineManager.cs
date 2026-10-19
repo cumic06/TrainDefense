@@ -167,6 +167,7 @@ namespace TrainDefense
         /// </summary>
         public void StartMapMoveTimeline(Action onMapSwitch, Action onComplete = null)
         {
+            IsShopTransitioning = true;
             TimeManager.Instance?.Pause();
 
             // 이전 맵에서 남은 골드·투사체가 새 맵으로 넘어오지 않도록 맵 교체 전 정지 상태에서 정리한다(몬스터는 별도 정리).
@@ -193,6 +194,7 @@ namespace TrainDefense
             yield return _Fade(0f, shopExitSlideOutDuration);
 
             // 4. 기차가 정위치에 도착하면 새 맵 전투를 시작한다.
+            IsShopTransitioning = false;
             onComplete?.Invoke();
         }
 
