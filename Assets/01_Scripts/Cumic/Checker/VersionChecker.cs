@@ -22,12 +22,12 @@ namespace Cumic.Checker
             using UnityWebRequest www = UnityWebRequest.Get(checkUrl);
             await www.SendWebRequest();
 
-            // 서버 응답 실패(네트워크 등) → 게임 진입 차단(false)
+            // 서버 응답 실패(오프라인 등) → 혼자 하는 게임이라 막지 않고 그냥 진입(true). 버전 불일치만 차단한다.
             if (www.result != UnityWebRequest.Result.Success)
             {
                 if (Debug.isDebugBuild)
-                    Debug.LogWarning("[Version] 버전 확인 실패: " + www.error);
-                return false;
+                    Debug.LogWarning("[Version] 버전 확인 실패(통과 처리): " + www.error);
+                return true;
             }
 
             string latestVersion = www.downloadHandler.text.Trim();

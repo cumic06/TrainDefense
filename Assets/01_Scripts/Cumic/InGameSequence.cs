@@ -1,3 +1,4 @@
+using System.Collections;
 using Cumic.Events;
 using Sirenix.OdinInspector;
 using TrainDefense.Game;
@@ -90,6 +91,32 @@ namespace Cumic.Sequence
             // 포탑 선택창은 기차 등장 연출 전(TimelineManager.Start)에서 띄운다.
             // 이 핸들러는 연출 끝의 GameEnter Signal로 호출되어 실제 게임 시작 이벤트만 발행한다.
             GameEventSystem.Publish(new GameEnterEvent());
+        }
+
+        // 앱이 백그라운드에서 돌아왔을 때 전투 중이면 일시정지 창을 띄워 둔다 — 플레이어가 상황을 보고 '계속'을 눌러야 재개된다.
+        // TimeManager가 같은 콜백에서 복귀 처리(Resume)를 하므로 한 프레임 뒤에 연다.
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            if (pauseStatus)
+                return;
+
+            if (CurrentBase != BasePhase.Engage || CurrentOverlays != OverlayPhase.None)
+                return;
+
+            StartCoroutine(_OpenPauseAfterResume());
+        }
+
+        private IEnumerator _OpenPauseAfterResume()
+        {
+            yield return null;
+
+            if (CurrentBase != BasePhase.Engage || CurrentOverlays != OverlayPhase.None)
+                yield break;
+
+            var pauseUI = FindFirstObjectByType<PauseUI>(FindObjectsInactive.Include);
+
+            if (pauseUI != null)
+                pauseUI.OnClickPauseButton();
         }
 
         public void PushOverlay(OverlayPhase overlay)

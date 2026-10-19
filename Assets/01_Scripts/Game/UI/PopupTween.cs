@@ -31,6 +31,29 @@ namespace TrainDefense.Game.UI
         // 매번 할당하지 않도록 재사용하는 패널 수집 버퍼(동기 호출이라 재진입 없음).
         private static readonly List<Transform> _panelBuffer = new List<Transform>();
 
+        // 열린 순서대로 쌓인 팝업 루트. 뒤로가기(BackButtonHandler)가 맨 위 팝업을 닫는 데 쓴다.
+        private static readonly List<GameObject> _openRoots = new List<GameObject>();
+
+        /// <summary>가장 나중에 열린(아직 켜져 있는) 팝업 루트. 없으면 null.</summary>
+        public static GameObject TopOpenRoot
+        {
+            get
+            {
+                for (int i = _openRoots.Count - 1; i >= 0; i--)
+                {
+                    if (_openRoots[i] == null || !_openRoots[i].activeInHierarchy)
+                    {
+                        _openRoots.RemoveAt(i);
+                        continue;
+                    }
+
+                    return _openRoots[i];
+                }
+
+                return null;
+            }
+        }
+
         /// <summary>
         /// 팝업을 등장시킨다. 루트(딤)는 페이드만, 실제 패널 박스(자식)는 작게서 OutBack으로 톡 튀어나온다.
         /// OnEnable에서 호출한다.
@@ -39,6 +62,9 @@ namespace TrainDefense.Game.UI
         {
             if (root == null)
                 return;
+
+            _openRoots.Remove(root);
+            _openRoots.Add(root);
 
             CanvasGroup canvasGroup = _GetOrAddCanvasGroup(root);
 
@@ -68,6 +94,8 @@ namespace TrainDefense.Game.UI
 
                 return;
             }
+
+            _openRoots.Remove(root);
 
             CanvasGroup canvasGroup = _GetOrAddCanvasGroup(root);
 
