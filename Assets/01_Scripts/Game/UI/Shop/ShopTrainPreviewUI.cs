@@ -46,10 +46,18 @@ namespace TrainDefense.Game.UI
         // 상점에서는 HUD 포탑 칸이 안 보이므로 같은 배지를 칸 위에 올려 등급 합(개조 진행도)을 보여 준다.
         private const string BADGE_SOURCE_PREFAB_PATH = "Prefabs/UI/TrainInfoSlotUI";
         private const string BADGE_SOURCE_OBJECT_NAME = "Img_Level";
+        // 배지를 올려놓는 기준 = 기차 칸 몸체(BaseTrain의 TrainModel). 포탑 모델까지 합친 경계를 쓰면 전기 포탑처럼 모델이 위로 긴 칸만 배지가 떠오른다.
+        private const string CAR_BODY_OBJECT_NAME = "TrainModel";
+
+        [Tooltip("배지 판 그림. HUD 리본에서 꼬리를 잘라낸 판(BigRibbons White Plate). 비우면 HUD 리본 그대로.")]
+        [SerializeField]
+        private Sprite badgePlateSprite;
         // 상점 기차 칸이 HUD 칸보다 커서 같은 크기면 숫자가 흐리다.
-        private const float BADGE_SCALE = 1.5f;
+        private const float BADGE_SCALE = 1.3f;
         // 칸 위쪽 가운데에서 위로 띄우는 정도(프리뷰 이미지 로컬 단위). 배지는 포탑 바로 위에 뜬다.
-        private static readonly Vector2 BadgeAboveOffset = new Vector2(0f, 4f);
+        // 배지는 칸 오른쪽 아래 모서리에 걸친다 — 칸 위에 두면 전기 포탑처럼 위로 긴 모델을 가리고, 칸 아래는 선로에 묻힌다(10-20 사용자 결정).
+        // 리본 중심을 모서리에 두되 폭의 15%·높이의 10%만 바깥으로 내민다.
+        private static readonly Vector2 BadgeCornerOverhang = new Vector2(0.15f, 0.10f);
 
         private class TrainBadge
         {
@@ -211,20 +219,29 @@ namespace TrainDefense.Game.UI
 
             foreach (var train in trains)
             {
-                if (train == null || !_TryGetTrainBounds(train, out Bounds bounds))
+                if (train == null || !_TryGetCarBodyBounds(train, out Bounds bounds))
                     continue;
 
                 var badge = _GetBadge(badgeIndex++);
-                Vector3 viewportTopCenter = _previewCamera.WorldToViewportPoint(new Vector3(bounds.center.x, bounds.max.y, bounds.center.z));
-
                 badge.Root.gameObject.SetActive(true);
                 // 앵커가 프리뷰 이미지 좌하단이라 뷰포트 비율 × 크기가 곧 앵커드 포지션이다.
-                badge.Root.anchoredPosition = new Vector2(viewportTopCenter.x * rect.width, viewportTopCenter.y * rect.height) + BadgeAboveOffset;
+                badge.Root.anchoredPosition = _BadgePosition(badge.Root, bounds, rect);
                 TrainRemodelInfo.ApplyBadge(badge.Ribbon, badge.Text, train);
             }
 
             for (int i = badgeIndex; i < _badges.Count; i++)
                 _badges[i].Root.gameObject.SetActive(false);
+        }
+
+        // 칸 몸체 오른쪽 아래 모서리에 걸친 배지 위치(프리뷰 이미지 좌하단 기준).
+        private Vector2 _BadgePosition(RectTransform root, Bounds bounds, Rect rect)
+        {
+            Vector3 viewport = _previewCamera.WorldToViewportPoint(new Vector3(bounds.max.x, bounds.min.y, bounds.center.z));
+            Vector2 corner = new Vector2(viewport.x * rect.width, viewport.y * rect.height);
+            float badgeWidth = root.rect.width * root.localScale.x;
+            float badgeHeight = root.rect.height * root.localScale.y;
+
+            return corner + new Vector2(badgeWidth * (BadgeCornerOverhang.x - 0.5f), badgeHeight * (0.5f - BadgeCornerOverhang.y));
         }
 
         private void _HideBadges()
@@ -245,12 +262,19 @@ namespace TrainDefense.Game.UI
                 badgeObject.SetActive(true);
 
                 var root = (RectTransform)badgeObject.transform;
-                // 칸 위 가운데에 놓을 수 있게 앵커를 프리뷰 이미지 좌하단, 피벗을 배지 아래 가운데로 맞춘다.
+                // 앵커는 프리뷰 이미지 좌하단. 피벗은 자리(_BadgePosition)가 정한다.
                 root.anchorMin = root.anchorMax = Vector2.zero;
-                root.pivot = new Vector2(0.5f, 0f);
+                root.pivot = new Vector2(0.5f, 0.5f);
                 root.localScale = Vector3.one * BADGE_SCALE;
 
                 var ribbon = badgeObject.GetComponent<Image>();
+
+                if (ribbon != null && badgePlateSprite != null)
+                {
+                    ribbon.sprite = badgePlateSprite;
+                    ribbon.type = Image.Type.Simple;
+                    ribbon.preserveAspect = true;
+                }
 
                 _badges.Add(new TrainBadge
                 {
@@ -649,6 +673,21 @@ namespace TrainDefense.Game.UI
         }
 
         // 프리뷰에 찍히는(cullingMask 레이어) 스프라이트만 합친 칸 하나의 경계.
+        // 기차 칸 몸체(TrainModel) 스프라이트의 경계. 없으면 전체 경계로 대신한다.
+        private bool _TryGetCarBodyBounds(Train train, out Bounds bounds)
+        {
+            foreach (var spriteRenderer in train.GetComponentsInChildren<SpriteRenderer>())
+            {
+                if (spriteRenderer.sprite == null || !spriteRenderer.enabled || spriteRenderer.gameObject.name != CAR_BODY_OBJECT_NAME)
+                    continue;
+
+                bounds = spriteRenderer.bounds;
+                return true;
+            }
+
+            return _TryGetTrainBounds(train, out bounds);
+        }
+
         private bool _TryGetTrainBounds(Train train, out Bounds bounds)
         {
             bool hasBounds = false;
