@@ -126,6 +126,7 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Subscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Subscribe<ChangeCoinUIEvent>(_OnChangeCoin);
+            GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
 
             if (rerollButton != null)
             {
@@ -154,6 +155,7 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<UpgradeAppliedEvent>(OnUpgradeApplied);
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(_OnChangeCoin);
+            GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
             Localization.OnLanguageChanged -= _RefreshTurretSlotText;
         }
 
@@ -492,6 +494,21 @@ namespace TrainDefense.Game.UI
                 else
                     GameEventSystem.Publish(new EngageStartEvent());
             }
+        }
+
+        // 상점이 열린 채 판이 끝나면(일시정지 → 포기) 결과창 뒤에 상점이 그대로 비친다.
+        // 퇴장 연출·전투 재개 없이 패널·배경·코인만 거둔다.
+        private void _OnGameEnd(GameEndEvent gameEndEvent)
+        {
+            if (!isShopOpen)
+            {
+                return;
+            }
+
+            isShopOpen = false;
+            _SetPanelVisible(false, uiFadeDuration);
+            _SetBackgroundVisible(false, uiFadeDuration);
+            _SetCoinGroupVisible(false);
         }
 
         // 판매 슬롯(offerSlotCount개) 전체를 현재 상태 기준으로 새로 추첨한다. (역 도착 + 리롤)
