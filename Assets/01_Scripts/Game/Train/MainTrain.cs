@@ -216,7 +216,6 @@ namespace TrainDefense.Game
             upgradeTrain.Upgrade(upgradeData);
             // 런 세이브 복원용 이력. 레벨 숫자만으로는 어떤 업그레이드였는지 되돌릴 수 없다.
             _RecordUpgradeHistory(upgradeTrain, upgradeData);
-            GameEventSystem.Publish(new UpgradeTrainEvent(upgradeTrain, upgradeData));
          }
       }
 
