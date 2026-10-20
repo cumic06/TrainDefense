@@ -1442,7 +1442,7 @@ MonoBehaviour:
     row: 2
     col: 0
     needPoint: 170
-    maxLevel: 2
+    maxLevel: 1
     growthRate: 1.5
     prerequisites:
     - skill_util_reroll
