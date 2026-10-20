@@ -1323,7 +1323,7 @@ MonoBehaviour:
     category: 0
     stats:
     - <Type>k__BackingField: 2
-      <Value>k__BackingField: 10
+      <Value>k__BackingField: 5
     passiveType: 1
     passiveValuePerLevel: 0
     unlockTrainId: 
@@ -1342,7 +1342,7 @@ MonoBehaviour:
     category: 0
     stats:
     - <Type>k__BackingField: 4
-      <Value>k__BackingField: -6
+      <Value>k__BackingField: -4
     passiveType: 1
     passiveValuePerLevel: 0
     unlockTrainId: 
@@ -1365,25 +1365,6 @@ MonoBehaviour:
     passiveType: 1
     passiveValuePerLevel: 0
     unlockTrainId: 
-  - id: skill_fire_reach
-    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC218\uC9D1\uAE30_8_1/UI_Item_Collector_05"
-    name: SkillTree_skill_fire_reach_Name
-    description: SkillTree_skill_fire_reach_Desc
-    lane: 0
-    row: 3
-    col: 0
-    needPoint: 50
-    maxLevel: 3
-    growthRate: 1.5
-    prerequisites:
-    - skill_fire_crit
-    category: 0
-    stats:
-    - <Type>k__BackingField: 1
-      <Value>k__BackingField: 10
-    passiveType: 0
-    passiveValuePerLevel: 0
-    unlockTrainId: 
   - id: skill_def_hp
     iconId: Upgrade/Upgrade_110003
     name: SkillTree_skill_def_hp_Name
@@ -1392,13 +1373,13 @@ MonoBehaviour:
     row: 0
     col: 0
     needPoint: 17
-    maxLevel: 3
+    maxLevel: 5
     growthRate: 1.5
     prerequisites: []
     category: 1
     stats: []
     passiveType: 1
-    passiveValuePerLevel: 10
+    passiveValuePerLevel: 5
     unlockTrainId: 
   - id: skill_def_regen
     iconId: Repair
@@ -1415,10 +1396,10 @@ MonoBehaviour:
     category: 1
     stats: []
     passiveType: 2
-    passiveValuePerLevel: 2
+    passiveValuePerLevel: 1
     unlockTrainId: 
   - id: skill_def_armor
-    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC7A5\uAC11_8_1/UI_Item_Shield_05"
+    iconId: "GameMadang/강화부품_135_14/장갑_8_1/UI_Item_Shield_01"
     name: SkillTree_skill_def_armor_Name
     description: SkillTree_skill_def_armor_Desc
     lane: 1
@@ -1432,14 +1413,14 @@ MonoBehaviour:
     category: 1
     stats: []
     passiveType: 4
-    passiveValuePerLevel: 8
+    passiveValuePerLevel: 5
     unlockTrainId: 
   - id: skill_def_turret
-    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC5D4\uC9C4_8_1/UI_Item_Engine_05"
+    iconId: Body_KMD_05
     name: SkillTree_skill_def_turret_Name
     description: SkillTree_skill_def_turret_Desc
     lane: 2
-    row: 2
+    row: 1
     col: 0
     needPoint: 170
     maxLevel: 1
@@ -1451,34 +1432,17 @@ MonoBehaviour:
     passiveType: 0
     passiveValuePerLevel: 1
     unlockTrainId: 
-  - id: skill_util_exp
-    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC5D0\uB108\uC9C0_8_1/UI_Item_Energy_05"
-    name: SkillTree_skill_util_exp_Name
-    description: SkillTree_skill_util_exp_Desc
-    lane: 2
-    row: 0
-    col: 0
-    needPoint: 25
-    maxLevel: 3
-    growthRate: 1.5
-    prerequisites: []
-    category: 1
-    stats: []
-    passiveType: 5
-    passiveValuePerLevel: 15
-    unlockTrainId: 
   - id: skill_util_reroll
     iconId: Reroll
     name: SkillTree_skill_util_reroll_Name
     description: SkillTree_skill_util_reroll_Desc
     lane: 2
-    row: 1
+    row: 0
     col: 0
     needPoint: 25
     maxLevel: 2
     growthRate: 1.5
-    prerequisites:
-    - skill_util_exp
+    prerequisites: []
     category: 1
     stats: []
     passiveType: 3

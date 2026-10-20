@@ -118,19 +118,32 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_Item_Shield_01_0
+      name: UI_Item_Shield_01
       rect:
         serializedVersion: 2
-        x: 33
-        y: 28
-        width: 21
-        height: 66
+        x: 34
+        y: 22
+        width: 61
+        height: 74
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -143,77 +156,11 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
-    - serializedVersion: 2
-      name: UI_Item_Shield_01_1
-      rect:
-        serializedVersion: 2
-        x: 36
-        y: 21
-        width: 60
-        height: 76
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 695f3ebeabf0023f0800000000000000
-      internalID: -927724227742403178
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Item_Shield_01_2
-      rect:
-        serializedVersion: 2
-        x: 53
-        y: 22
-        width: 10
-        height: 8
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: e6008de696d054630800000000000000
-      internalID: 3910546597923520622
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_Item_Shield_01_3
-      rect:
-        serializedVersion: 2
-        x: 68
-        y: 23
-        width: 27
-        height: 21
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b83d11a6355da0b70800000000000000
-      internalID: 8866133370670797707
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 26244a87905894c4798bb691841df18e
     internalID: 0
     vertices: []
     indices: 
@@ -223,6 +170,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      UI_Item_Shield_01: -1238932033904673158
       UI_Item_Shield_01_0: -1238932033904673158
       UI_Item_Shield_01_1: -927724227742403178
       UI_Item_Shield_01_2: 3910546597923520622
