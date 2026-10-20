@@ -534,7 +534,7 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 12
-      AttackRange: 11
+      AttackRange: 10
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 1.1
@@ -722,7 +722,7 @@ MonoBehaviour:
     elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 12
-      AttackRange: 11
+      AttackRange: 10
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 1.1
@@ -1786,10 +1786,6 @@ MonoBehaviour:
     trainDataId: 30005
     statType: 4
     increaseRate: 0.15
-  - id: stat_upgrade_30005_target_count
-    trainDataId: 30005
-    statType: 5
-    increaseRate: 1
   - id: stat_upgrade_30006_attack_damage
     trainDataId: 30006
     statType: 2
@@ -1817,7 +1813,7 @@ MonoBehaviour:
   - id: stat_upgrade_40001_attack_range
     trainDataId: 40001
     statType: 1
-    increaseRate: 0.1
+    increaseRate: 0.08
   - id: stat_upgrade_40002_attack_damage
     trainDataId: 40002
     statType: 2
@@ -1825,7 +1821,7 @@ MonoBehaviour:
   - id: stat_upgrade_40002_attack_range
     trainDataId: 40002
     statType: 1
-    increaseRate: 0.1
+    increaseRate: 0.08
   - id: stat_upgrade_40002_slow_rate
     trainDataId: 40002
     statType: 9
@@ -1833,19 +1829,19 @@ MonoBehaviour:
   - id: stat_upgrade_30001_attack_range
     trainDataId: 30001
     statType: 1
-    increaseRate: 0.1
+    increaseRate: 0.08
   - id: stat_upgrade_30002_attack_range
     trainDataId: 30002
     statType: 1
-    increaseRate: 0.1
+    increaseRate: 0.08
   - id: stat_upgrade_30003_attack_range
     trainDataId: 30003
     statType: 1
-    increaseRate: 0.1
+    increaseRate: 0.08
   - id: stat_upgrade_30005_attack_range
     trainDataId: 30005
     statType: 1
-    increaseRate: 0.1
+    increaseRate: 0.08
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     eliteSpawnCycle: 50

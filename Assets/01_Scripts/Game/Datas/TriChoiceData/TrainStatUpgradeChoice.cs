@@ -18,14 +18,9 @@ namespace TrainDefense.Game.Datas
         // 공속 카드를 내리는 안전장치라 데이터가 아닌 상수로 둔다.
         public const float MAX_ATTACK_SPEED_MULTIPLIER = 10f;
 
-        // 상점 공격 횟수 카드 상한(밸런스 컷). 물리 천장은 7(연타 간격이 주기의 15%라 8회부터 다음 주기에
-        // 잘림)이고, 엘리트 패시브 가산(+2)을 합해도 천장 아래에 머물도록 카드는 3에서 멈춘다.
-        public const int MAX_ATTACK_COUNT = 3;
+        // 사거리·공격 횟수 카드엔 상한이 없다(10-20 사용자 결정). 사거리는 증가율 0.08/등급과 카드 등장 수가 자연스러운 천장이고,
+        // 공격 횟수는 상점 카드 규칙 자체가 없다(연타는 개조 패시브로만 오른다).
 
-        // 상점 사거리 카드 상한(base 대비 배율). 사거리가 화면을 넘으면 돈만 나가고, 분사형(화염)은 입자 수가
-        // 길이의 제곱으로 늘어 성능 천장에 닿는다. 등급이 큰 카드 한 장이 상한을 넘겨 버리지 않도록
-        // "이 카드를 산 뒤"의 배율로 판정한다 — 남은 여유에 맞는 낮은 등급 카드는 계속 뜬다.
-        public const float MAX_ATTACK_RANGE_MULTIPLIER = 2f;
 
         private readonly Train _train;
         private readonly StatType _statType;
@@ -302,15 +297,6 @@ namespace TrainDefense.Game.Datas
             if (rule.StatType == StatType.AttackInterval && _GetAttackSpeedMultiplier() >= MAX_ATTACK_SPEED_MULTIPLIER)
                 return false;
 
-            // 공격 횟수는 연타가 주기를 넘치는 한계에 닿으면 멈춘다. 누적 = base + 구매 횟수(+1씩).
-            if (rule.StatType == StatType.AttackCount && _train is TurretTrain countTrain
-                && countTrain.BaseStatus.AttackCount + Mathf.RoundToInt(_train.GetStatUpgradeAmount(StatType.AttackCount)) >= MAX_ATTACK_COUNT)
-                return false;
-
-            // 사거리는 이 카드를 샀을 때 상한을 넘으면 내린다.
-            if (rule.StatType == StatType.AttackRange && _IsOverAttackRangeLimit(rule))
-                return false;
-
             // 분사형(화염)은 분사 각도가 상한에 닿으면 범위를 더 사도 모양과 판정이 안 바뀐다. 사거리를 올리면 다시 열린다.
             if (rule.StatType == StatType.AttackArea && _train is TurretTrain areaTrain && areaTrain.IsAttackAreaAtLimit)
                 return false;
@@ -339,15 +325,6 @@ namespace TrainDefense.Game.Datas
                     _train.AddStatUpgradeAmount(_secondRule.StatType,
                         IsCountStat(_secondRule.StatType) ? 1f : _tier.ValueMultiplier);
             }
-        }
-
-        // 이 카드를 산 뒤의 사거리 배율(1 + rate × (누적 강화량 + 이번 등급 배수))이 상한을 넘는가.
-        // 정확히 상한에 닿는 카드는 살 수 있어야 하므로 부동소수 오차만큼은 같다고 본다.
-        private bool _IsOverAttackRangeLimit(TrainStatUpgradeRuleData rule)
-        {
-            float nextMultiplier = 1f + rule.IncreaseRate * (_train.GetStatUpgradeAmount(StatType.AttackRange) + _tier.ValueMultiplier);
-
-            return nextMultiplier > MAX_ATTACK_RANGE_MULTIPLIER && !Mathf.Approximately(nextMultiplier, MAX_ATTACK_RANGE_MULTIPLIER);
         }
 
         // 지금 발사 속도 배율 = 메타 적용 기본 간격 ÷ 지금 간격 (상점·레벨업 공속이 모두 담긴 값).
