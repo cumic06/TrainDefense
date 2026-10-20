@@ -249,9 +249,12 @@ namespace TrainDefense.Game
             if (_eliteTrainTutorialStarted) return false;
             if (TutorialManager.Instance == null) return false;
 
-            _eliteTrainTutorialStarted = true;
+            // 개조는 상점에서 산다. 상점 튜토리얼이 진행 중일 때 개조 카드를 사면 시작이 거절되므로,
+            // 실제로 시작됐을 때만 플래그를 세워 다음 개조 때 다시 시도하게 한다.
             Debug.Log("TrainUpgradeManager: Starting elite train tutorial");
-            return TutorialManager.Instance.StartTutorial("eliteTrainTutorial");
+            _eliteTrainTutorialStarted = TutorialManager.Instance.StartTutorial("eliteTrainTutorial");
+
+            return _eliteTrainTutorialStarted;
         }
     }
 }

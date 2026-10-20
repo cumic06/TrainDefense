@@ -24,14 +24,15 @@ MonoBehaviour:
     _customSkipEvent:
       m_PersistentCalls:
         m_Calls: []
-    _message: "\uC774 \uAC8C\uC774\uC9C0\uB294 \uC0C1\uC810 \uAC8C\uC774\uC9C0\uC785\uB2C8\uB2E4.\n\uD574\uB2F9
-      \uC2DC\uAC04\uC774 \uB2E4 \uCC28\uBA74 \uC0C1\uC810\uC5D0 \uB3C4\uCC29\uD569\uB2C8\uB2E4!"
+    _message: "이 게이지가 다 차면 역에 도착해요! 역에서는 모아 둔 레벨업 카드를 고르고 상점을 이용할 수 있어요."
     _messageKey: 22
-    _arrowDirection: 1
+    _arrowDirection: 2
+    _arrowLookDirection: 2
     _useDimming: 1
     _useHighlight: 1
     _delayBefore: 0.3
     _sfxKey:
+    _messageOffset: {x: 0, y: -120}
     _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
     _npcPosition: {x: 0, y: 0}
     _npcFlipX: 0

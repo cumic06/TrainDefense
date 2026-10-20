@@ -25,6 +25,8 @@ namespace TrainDefense.Game.Tutorial
         [TextArea]
         [SerializeField] private string _message;
         [SerializeField] private LocalizeKey _messageKey;
+        [Tooltip("로컬라이즈 키 이름(문자열). 비어 있지 않으면 _messageKey보다 우선한다. LocalizeKey enum은 Import & Bake 때 번호가 다시 매겨져 에셋에 저장된 정수가 다른 키를 가리킬 수 있어, 새로 추가하는 문구는 이름으로 찾는다.")]
+        [SerializeField] private string _messageKeyName;
 
         [Header("연출")]
         [SerializeField] private TutorialArrowDirection _arrowDirection;
@@ -63,9 +65,14 @@ namespace TrainDefense.Game.Tutorial
         {
             get
             {
-                string raw = _messageKey != default && Localization.IsInitialized
-                    ? Localization.Get(_messageKey)
-                    : _message;
+                string raw;
+
+                if (!string.IsNullOrEmpty(_messageKeyName))
+                    raw = LocalizeHelper.GetByKey(_messageKeyName, _message);
+                else
+                    raw = _messageKey != default && Localization.IsInitialized
+                        ? Localization.Get(_messageKey)
+                        : _message;
 
                 // Intro(IntroSlideData.GetText)와 동일하게 TSV의 리터럴 "\n"을 실제 줄바꿈으로 변환한다.
                 // (TextAnimator 타이프라이터 경로에서 \n 이스케이프가 누락될 수 있어 데이터단에서 통일)

@@ -18,13 +18,13 @@ MonoBehaviour:
   _steps:
   - _id: 21000
     _targetObject: {fileID: 0}
-    _targetObjectName: EliteTrainInfoSlotUI
+    _targetObjectName: TrainPreview
     _skipCondition: 0
     _timeoutDuration: 3
     _customSkipEvent:
       m_PersistentCalls:
         m_Calls: []
-    _message: "엘리트 기차를 획득했어요!\\n슬롯을 꾹 눌러 상세 정보를 확인해보세요."
+    _message: "포탑을 개조했어요!\n기차의 포탑을 꾹 눌러 상세 정보를 확인해보세요."
     _messageKey: 109
     _arrowDirection: 1
     _arrowLookDirection: 1
@@ -39,13 +39,13 @@ MonoBehaviour:
     _prerequisiteStepId:
   - _id: 21001
     _targetObject: {fileID: 0}
-    _targetObjectName: EliteTrainInfoSlotUI
+    _targetObjectName: TrainPreview
     _skipCondition: 0
     _timeoutDuration: 3
     _customSkipEvent:
       m_PersistentCalls:
         m_Calls: []
-    _message: "엘리트 기차는 패시브와 액티브 스킬을\\n모두 획득할 수 있어요!"
+    _message: "개조한 포탑은 새로운 패시브 능력을 얻어요!"
     _messageKey: 110
     _arrowDirection: 1
     _arrowLookDirection: 1

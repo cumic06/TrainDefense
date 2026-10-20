@@ -215,7 +215,9 @@ namespace TrainDefense.Game.Tutorial
             if (rectTransform != null && _canvasRect != null)
             {
                 // UI 요소: 월드 좌표 -> 스크린 -> 캔버스 로컬
-                var worldPos = rectTransform.position;
+                // 피벗이 아니라 사각형 중심을 기준으로 한다. 상점 게이지(피벗 좌상단)·상점 기차 그림(피벗 좌하단)처럼
+                // 피벗이 모서리에 있으면 화살표·말풍선이 대상의 모서리를 가리키게 된다.
+                var worldPos = rectTransform.TransformPoint(rectTransform.rect.center);
                 var screenPoint = RectTransformUtility.WorldToScreenPoint(cam, worldPos);
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     _canvasRect, screenPoint, cam, out var localPoint);

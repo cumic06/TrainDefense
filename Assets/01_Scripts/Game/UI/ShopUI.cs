@@ -10,6 +10,7 @@ using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Manager;
 using TrainDefense.Game.RunSave;
+using TrainDefense.Game.Tutorial;
 using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI
@@ -92,6 +93,7 @@ namespace TrainDefense.Game.UI
         // 카드·기차 프리뷰의 포탑을 꾹 누르면 뜨는 스탯 팝업(상점 공용 1개). 최초 사용 시 생성한다.
         private TrainDetailPopupUI _trainDetailPopup;
         private const string TRAIN_DETAIL_POPUP_PATH = "Prefabs/UI/TrainDetailPopup";
+        private const string SHOP_TUTORIAL_ID = "shopTutorial";
         private GridLayoutGroup _itemGrid;
         private RectTransform _itemGridRect;
         private RectTransform[] _itemRects;
@@ -109,6 +111,9 @@ namespace TrainDefense.Game.UI
         private string _rerollLabelPrefix;
         private Color _rerollLabelOriginalColor;
         private Color _turretSlotOriginalColor;
+
+        // 상점 튜토리얼이 끝난 프레임. 그 프레임의 시작 버튼 클릭은 출발이 아니라 튜토리얼 종료로 본다.
+        private int _shopTutorialCompletedFrame = -1;
 
         private bool isShopOpen = false;
         public bool IsShopOpen => isShopOpen;
@@ -131,6 +136,7 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Subscribe<ChangeCoinUIEvent>(_OnChangeCoin);
             GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
+            GameEventSystem.Subscribe<TutorialCompleteEvent>(_OnTutorialComplete);
             RunSaveManager.Instance?.RegisterSection(this);
 
             if (rerollButton != null)
@@ -161,6 +167,7 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(_OnChangeCoin);
             GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
+            GameEventSystem.Unsubscribe<TutorialCompleteEvent>(_OnTutorialComplete);
             RunSaveManager.Instance?.UnregisterSection(SectionId);
             Localization.OnLanguageChanged -= _RefreshTurretSlotText;
         }
@@ -228,6 +235,13 @@ namespace TrainDefense.Game.UI
         {
             if (isShopOpen)
             {
+                // 상점 튜토리얼 마지막 스텝은 시작 버튼을 눌러 끝낸다. 그 클릭으로 바로 출발하면 첫 상점에서
+                // 아무것도 못 사고 떠나므로, 튜토리얼만 닫고 상점에 남긴다.
+                if (_IsShopTutorialClick())
+                {
+                    return;
+                }
+
                 // 시작 버튼을 여기서 끄면 _CloseShop이 async void라 첫 await에 바로 돌아와,
                 // 패널이 미끄러지기 시작하는 프레임에 버튼만 사라진다. 끄는 것은 _CloseShop이 한다.
                 _CloseShop();
@@ -236,6 +250,26 @@ namespace TrainDefense.Game.UI
             {
                 _OpenShop();
             }
+        }
+
+        // 시작 버튼 클릭이 상점 튜토리얼을 끝내는 클릭인지. 버튼의 onClick 리스너 순서에 따라 튜토리얼이
+        // 이 핸들러보다 먼저 완료될 수도 있어, 진행 중이거나 같은 프레임에 막 끝난 경우를 모두 잡는다.
+        private bool _IsShopTutorialClick()
+        {
+            if (_shopTutorialCompletedFrame == Time.frameCount)
+            {
+                return true;
+            }
+
+            var tutorial = TutorialManager.Instance;
+
+            return tutorial != null && tutorial.IsActive && tutorial.CurrentSequenceId == SHOP_TUTORIAL_ID;
+        }
+
+        private void _OnTutorialComplete(TutorialCompleteEvent tutorialCompleteEvent)
+        {
+            if (tutorialCompleteEvent.SequenceId == SHOP_TUTORIAL_ID)
+                _shopTutorialCompletedFrame = Time.frameCount;
         }
 
         private async void _OpenShop()
@@ -281,6 +315,11 @@ namespace TrainDefense.Game.UI
             _PlayButtonsPopIn();
 
             isShopOpen = true;
+
+            // 첫 상점 방문 안내. 카드·버튼이 떨어지는 연출이 끝난 뒤 보이도록 첫 스텝에 DelayBefore를 둔다.
+            // 이미 본 튜토리얼이면 TutorialService가 알아서 거절한다.
+            if (TutorialManager.Instance != null)
+                TutorialManager.Instance.StartTutorial(SHOP_TUTORIAL_ID);
         }
 
         /// <summary>

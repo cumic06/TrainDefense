@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887768309d325914b820c47a021cd2b0, type: 3}
+  m_Name: ShopTutorialSequence
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialSequenceData
+  _sequenceId: shopTutorial
+  _displayName: "상점 튜토리얼"
+  _displayNameKey: 0
+  _steps:
+  - _id: 50000
+    _targetObject: {fileID: 0}
+    _targetObjectName: Group_ShopItemButton
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "역에 도착하면 상점이 열려요! 코인으로 포탑 구매·강화·개조 카드를 살 수 있어요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_Shop_Msg1
+    _arrowDirection: 0
+    _arrowLookDirection: 0
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _delayBefore: 0.8
+    _sfxKey:
+    _messageOffset: {x: 0, y: -155}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId:
+  - _id: 50001
+    _targetObject: {fileID: 0}
+    _targetObjectName: Group_ShopItemButton
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "카드를 꾹 누르면 포탑 능력치와 강화량을 미리 볼 수 있어요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_Shop_Msg2
+    _arrowDirection: 0
+    _arrowLookDirection: 0
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _delayBefore: 0
+    _sfxKey:
+    _messageOffset: {x: 0, y: -155}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId:
+  - _id: 50002
+    _targetObject: {fileID: 0}
+    _targetObjectName: TrainPreview
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "포탑을 충분히 강화하면 개조 카드가 나와요! 포탑을 끌어서 자리를 바꿀 수도 있어요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_Shop_Msg3
+    _arrowDirection: 1
+    _arrowLookDirection: 1
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _delayBefore: 0
+    _sfxKey:
+    _messageOffset: {x: 0, y: 150}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId:
+  - _id: 50003
+    _targetObject: {fileID: 0}
+    _targetObjectName: Btn_Reroll
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "원하는 카드가 없으면 다시 뽑기로 카드를 새로 받아요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_Shop_Msg4
+    _arrowDirection: 1
+    _arrowLookDirection: 1
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _delayBefore: 0
+    _sfxKey:
+    _messageOffset: {x: 0, y: 150}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId:
+  - _id: 50004
+    _targetObject: {fileID: 0}
+    _targetObjectName: Btn_Start
+    _skipCondition: 1
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "준비가 끝나면 시작을 눌러 다음 역으로 출발해요!"
+    _messageKey: 0
+    _messageKeyName: Tutorial_Shop_Msg5
+    _arrowDirection: 1
+    _arrowLookDirection: 1
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _delayBefore: 0
+    _sfxKey:
+    _messageOffset: {x: 0, y: 150}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId:
+  _canSkip: 1
+  _priority: 10
+  _shouldPauseTime: 1
