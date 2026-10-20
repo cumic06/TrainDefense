@@ -2,6 +2,7 @@ using System.Collections;
 using TMPro;
 using TrainDefense.Localize;
 using UnityEngine;
+using TrainDefense.Game.Manager;
 using UnityEngine.UI;
 
 namespace TrainDefense.Game.UI
@@ -38,6 +39,7 @@ namespace TrainDefense.Game.UI
             _SubscribeEvents();
 
             PopupTween.PlayShow(gameObject);
+            AnalyticsManager.LogScreenView("rating");
         }
 
         private void OnDisable()
@@ -89,6 +91,7 @@ namespace TrainDefense.Game.UI
             _isSubmitted = true;
             _selectedRating = rating;
             _RefreshStars();
+            AnalyticsManager.LogCustomEvent("rating_submit", ("rating", rating));
 
             StartCoroutine(_SubmitRoutine());
         }

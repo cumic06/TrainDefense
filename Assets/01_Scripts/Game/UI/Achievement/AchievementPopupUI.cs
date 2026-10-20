@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TrainDefense.Game.Manager;
 using UnityEngine.UI;
 using TMPro;
 using Cumic.Achievement;
@@ -40,6 +41,7 @@ namespace TrainDefense.Game.UI.Achievement
             _ApplyStaticTexts();
 
             PopupTween.PlayShow(gameObject);
+            AnalyticsManager.LogScreenView("achievement");
         }
 
         private void OnDisable()

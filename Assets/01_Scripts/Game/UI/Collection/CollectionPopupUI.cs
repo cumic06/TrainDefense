@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TrainDefense.Game.Manager;
 using UnityEngine.UI;
 using TMPro;
 using TrainDefense.Game.Datas;
@@ -47,6 +48,7 @@ namespace TrainDefense.Game.UI.Collection
             _ApplyStaticTexts();
 
             PopupTween.PlayShow(gameObject);
+            AnalyticsManager.LogScreenView("collection");
         }
 
         private void OnDisable()

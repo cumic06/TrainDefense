@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TrainDefense.Game.Manager;
 using UnityEngine.UI;
 using TMPro;
 using TrainDefense.Game.Datas;
@@ -51,6 +52,7 @@ namespace TrainDefense.Game.UI.PermanentUpgrade
             _ApplyStaticTexts();
 
             PopupTween.PlayShow(gameObject);
+            AnalyticsManager.LogScreenView("permanent_upgrade");
         }
 
         private void OnDisable()

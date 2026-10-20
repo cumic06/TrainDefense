@@ -38,6 +38,7 @@ namespace TrainDefense
          _RefreshTutorialReplayText();
 
          PopupTween.PlayShow(gameObject);
+         AnalyticsManager.LogScreenView("option");
       }
 
       private void OnDestroy()

@@ -233,6 +233,13 @@ namespace TrainDefense.Game.UI
 
         private void _ShopOpenHandler()
         {
+            // 같은 버튼이 상점 열기와 출발(닫기)을 겸하므로 action으로 구분해 남긴다.
+            AnalyticsManager.LogCustomEvent("shop_button_click",
+                ("action", isShopOpen ? "depart" : "open"),
+                ("station_count", StageManager.Instance != null ? StageManager.Instance.TotalInspectionPassedCount : 0),
+                ("map_number", StageManager.Instance != null ? StageManager.Instance.CurrentMapNumber : 0),
+                ("station_in_map", StageManager.Instance != null ? StageManager.Instance.CurrentStationInMap : 0));
+
             if (isShopOpen)
             {
                 // 상점 튜토리얼 마지막 스텝은 시작 버튼을 눌러 끝낸다. 그 클릭으로 바로 출발하면 첫 상점에서
@@ -714,6 +721,8 @@ namespace TrainDefense.Game.UI
         // 리롤: 코인을 차감하고 슬롯 전체를 다시 추첨한다. 비용은 리롤마다 역 수 비례 증가분만큼 오른다.
         private void _OnRerollButtonClick()
         {
+            int spentCoin = 0;
+
             if (_freeRerollsLeft > 0)
             {
                 // 무료 새로고침은 코인을 쓰지 않고 유료 비용도 올리지 않는다.
@@ -726,12 +735,14 @@ namespace TrainDefense.Game.UI
                 if (UserDataManager.Instance == null || !UserDataManager.Instance.TrySpendCoin(_currentRerollCost))
                     return;
 
+                spentCoin = _currentRerollCost;
                 _currentRerollCost += _currentRerollCostIncrease;
             }
 
             _RebuildOfferSlots();
             _RefreshRerollUI();
             GameEventSystem.Publish(new ShopStateChangedEvent());
+            AnalyticsManager.LogCustomEvent("shop_reroll", ("is_free", spentCoin == 0), ("cost", spentCoin));
         }
 
         private void _OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)

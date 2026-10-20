@@ -74,6 +74,12 @@ namespace TrainDefense.Game.Manager
         /// </summary>
         public int TotalInspectionPassedCount => _totalInspectionPassedCount;
 
+        /// <summary>이번 판에서 몇 번째 맵인지(1부터). 마감된 맵 기록 수 + 진행 중인 맵. 분석 로그용.</summary>
+        public int CurrentMapNumber => _runRecords.Count + (_runFinalized ? 0 : 1);
+
+        /// <summary>현재 맵 안에서 도착한 역 번호(0 = 첫 역 도착 전). 분석 로그용.</summary>
+        public int CurrentStationInMap => _currentStageInspectionTimeIndex;
+
         /// <summary>종착역(이 도착에서 판이 끝난다). 0이면 끝 없이 계속 달린다.</summary>
         public int FinalStationCount => finalStationCount;
 

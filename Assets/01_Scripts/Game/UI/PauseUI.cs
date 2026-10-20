@@ -55,6 +55,7 @@ namespace TrainDefense.Game.UI
         {
             _RefreshTexts();
             PopupTween.PlayShow(gameObject);
+            AnalyticsManager.LogScreenView("pause");
         }
 
         private void OnDestroy()

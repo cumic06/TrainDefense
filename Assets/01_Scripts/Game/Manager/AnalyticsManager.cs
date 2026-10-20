@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cumic;
+using Cumic.Achievement;
 using Cumic.Events;
 using TrainDefense.Game.Analytics;
 using TrainDefense.Game.Datas;
@@ -80,6 +81,10 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Subscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Subscribe<TutorialStartEvent>(_OnTutorialStart);
             GameEventSystem.Subscribe<TutorialCompleteEvent>(_OnTutorialComplete);
+            GameEventSystem.Subscribe<StationPassedEvent>(_OnStationPassed);
+            GameEventSystem.Subscribe<AchievementUnlockedEvent>(_OnAchievementUnlocked);
+            GameEventSystem.Subscribe<SkillNodeAcquiredEvent>(_OnSkillNodeAcquired);
+            GameEventSystem.Subscribe<SkillTreeResetEvent>(_OnSkillTreeReset);
         }
 
         private void _UnsubscribeEvents()
@@ -97,6 +102,10 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Unsubscribe<TutorialStartEvent>(_OnTutorialStart);
             GameEventSystem.Unsubscribe<TutorialCompleteEvent>(_OnTutorialComplete);
+            GameEventSystem.Unsubscribe<StationPassedEvent>(_OnStationPassed);
+            GameEventSystem.Unsubscribe<AchievementUnlockedEvent>(_OnAchievementUnlocked);
+            GameEventSystem.Unsubscribe<SkillNodeAcquiredEvent>(_OnSkillNodeAcquired);
+            GameEventSystem.Unsubscribe<SkillTreeResetEvent>(_OnSkillTreeReset);
         }
         #endregion
 
@@ -203,6 +212,9 @@ namespace TrainDefense.Game.Manager
         {
             _Log("game_over",
                 ("stage", _CurrentStage()),
+                ("max_station", _TotalStation()),
+                ("map_number", _MapNumber()),
+                ("station_in_map", _StationInMap()),
                 ("play_time_sec", _PlayTimeSec()),
                 ("kill_count", _KillCount()));
         }
@@ -216,6 +228,10 @@ namespace TrainDefense.Game.Manager
                 ("kill_elite", ScoreManager.Instance != null ? ScoreManager.Instance.EliteKillCount : 0),
                 ("score", ScoreManager.Instance != null ? ScoreManager.Instance.CurrentScore : 0),
                 ("stage", _CurrentStage()),
+                // 이번 판에서 어디까지 도착했는지(누적 역 수 / 몇 번째 맵의 몇 번째 역).
+                ("max_station", _TotalStation()),
+                ("map_number", _MapNumber()),
+                ("station_in_map", _StationInMap()),
                 ("coin", _Coin()));
         }
 
@@ -295,6 +311,67 @@ namespace TrainDefense.Game.Manager
         {
             _Log("tutorial_complete", ("sequence_id", tutorialCompleteEvent.SequenceId));
         }
+
+        // 역(스테이지 구간) 클리어. 종착역 도착도 이 이벤트를 거치므로 마지막 역까지 빠짐없이 남는다.
+        private void _OnStationPassed(StationPassedEvent stationPassedEvent)
+        {
+            var stageManager = StageManager.Instance;
+
+            _Log("station_clear",
+                ("station_count", stationPassedEvent.PassedStationCount),
+                ("stage", _CurrentStage()),
+                ("map_number", _MapNumber()),
+                ("station_in_map", _StationInMap()),
+                // 맵 마지막 역 뒤에 들르는 맵 선택 전 상점인지. 일반 역 도착과 구분해서 본다.
+                ("is_map_end_shop", stageManager != null && stageManager.IsStageSelectionPending),
+                ("is_final_station", stageManager != null && stageManager.FinalStationCount > 0
+                                     && stationPassedEvent.PassedStationCount >= stageManager.FinalStationCount),
+                ("play_time_sec", _PlayTimeSec()),
+                ("coin", _Coin()));
+        }
+
+        private void _OnAchievementUnlocked(AchievementUnlockedEvent achievementUnlockedEvent)
+        {
+            _Log("achievement_unlock",
+                ("achievement_id", achievementUnlockedEvent.Data != null ? achievementUnlockedEvent.Data.Id : "none"),
+                ("stage", _CurrentStage()));
+        }
+
+        private void _OnSkillNodeAcquired(SkillNodeAcquiredEvent skillNodeAcquiredEvent)
+        {
+            _Log("skill_node_acquire",
+                ("node_id", skillNodeAcquiredEvent.NodeId),
+                ("cost", skillNodeAcquiredEvent.Cost),
+                ("new_level", skillNodeAcquiredEvent.NewLevel));
+        }
+
+        private void _OnSkillTreeReset(SkillTreeResetEvent skillTreeResetEvent)
+        {
+            _Log("skill_tree_reset", ("refunded_points", skillTreeResetEvent.RefundedPoints));
+        }
+        #endregion
+
+        #region Public Logging
+        /// <summary>팝업/화면이 열릴 때 호출. Firebase 표준 screen_view 이벤트로 남겨 화면별 진입 수를 본다.</summary>
+        public static void LogScreenView(string screenName)
+        {
+            if (Instance == null)
+                return;
+
+            Instance._Log("screen_view", ("screen_name", screenName), ("screen_class", screenName));
+        }
+
+        /// <summary>
+        /// EventBus 이벤트가 없는 UI 단발 행동(리롤·평점 등)을 남긴다.
+        /// 여러 시스템이 반응해야 하는 행동이면 이 메서드 대신 이벤트를 만들어 구독할 것.
+        /// </summary>
+        public static void LogCustomEvent(string eventName, params (string key, object value)[] parameters)
+        {
+            if (Instance == null)
+                return;
+
+            Instance._Log(eventName, parameters);
+        }
         #endregion
 
         #region Context Helpers
@@ -305,6 +382,15 @@ namespace TrainDefense.Game.Manager
 
         private int _PlayTimeSec()
             => _gameStartTime > 0f ? Mathf.RoundToInt(Time.unscaledTime - _gameStartTime) : 0;
+
+        private int _TotalStation()
+            => StageManager.Instance != null ? StageManager.Instance.TotalInspectionPassedCount : 0;
+
+        private int _MapNumber()
+            => StageManager.Instance != null ? StageManager.Instance.CurrentMapNumber : 0;
+
+        private int _StationInMap()
+            => StageManager.Instance != null ? StageManager.Instance.CurrentStationInMap : 0;
 
         private int _KillCount()
             => ScoreManager.Instance != null ? ScoreManager.Instance.TotalKillCount : 0;

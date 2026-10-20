@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using TrainDefense.Game.Manager;
 using UnityEngine.UI;
 using TrainDefense.Localize;
 
@@ -102,6 +103,7 @@ namespace TrainDefense.Game.UI
             _ApplyStaticTexts();
 
             PopupTween.PlayShow(gameObject);
+            AnalyticsManager.LogScreenView("data_reset");
         }
 
 

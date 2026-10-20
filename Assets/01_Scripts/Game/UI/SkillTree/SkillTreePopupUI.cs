@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TrainDefense.Game.Manager;
 using UnityEngine.UI;
 using TMPro;
 using Cumic;
@@ -67,6 +68,7 @@ namespace TrainDefense.Game.UI.SkillTree
             _ApplyStaticTexts();
 
             PopupTween.PlayShow(gameObject);
+            AnalyticsManager.LogScreenView("skill_tree");
         }
 
         private void OnDisable()
