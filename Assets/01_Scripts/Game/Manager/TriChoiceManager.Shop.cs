@@ -31,6 +31,15 @@ namespace TrainDefense.Game
 
         public IReadOnlyList<string> CurrentShopChoiceIds => _currentShopChoiceIds;
 
+        /// <summary>상점에서 팔린 품목을 진열 기록에서 빈칸("")으로 바꾼다 — 이어하기 뒤 같은 카드가 다시 진열되지 않게.</summary>
+        public void MarkShopChoiceSold(string choiceId)
+        {
+            int index = _currentShopChoiceIds.IndexOf(choiceId);
+
+            if (index >= 0)
+                _currentShopChoiceIds[index] = string.Empty;
+        }
+
         /// <summary>이어하기 복원 — 다음 상점 추첨에서 저장 당시 품목을 그대로 돌려준다.</summary>
         public void RestoreShopChoices(List<ShopChoiceSnapshot> snapshots)
         {
@@ -63,7 +72,10 @@ namespace TrainDefense.Game
             if (!isRestored && count > 0 && eliteChoices.Count > 0)
                 _AddChoiceToResult(result, eliteChoices);
 
-            for (int i = result.Count; i < count; i++)
+            // 복원한 진열의 팔린 칸(null)도 한 칸으로 센다 — 새로 채우면 산 만큼 품목이 늘어난다.
+            int filledCount = result.Count;
+
+            for (int i = filledCount; i < count; i++)
             {
                 if (!_AddChoiceToResult(result, candidates))
                     break;
@@ -72,7 +84,7 @@ namespace TrainDefense.Game
             _currentShopChoiceIds.Clear();
 
             foreach (var entry in result)
-                _currentShopChoiceIds.Add(entry.Option.Id);
+                _currentShopChoiceIds.Add(entry?.Option != null ? entry.Option.Id : string.Empty);
 
             return result;
         }
@@ -84,6 +96,13 @@ namespace TrainDefense.Game
             {
                 if (result.Count >= count)
                     break;
+
+                // 팔린 칸: 자리만 지키는 빈 항목(상점 UI가 SetEmpty로 비운다)
+                if (string.IsNullOrEmpty(snapshot.ChoiceId))
+                {
+                    result.Add(null);
+                    continue;
+                }
 
                 var entry = eliteChoices.FirstOrDefault(e => e.Option.Id == snapshot.ChoiceId)
                             ?? candidates.FirstOrDefault(e => e.Option.Id == snapshot.ChoiceId);

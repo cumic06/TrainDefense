@@ -681,6 +681,9 @@ namespace TrainDefense.Game.UI
         // 새 상품은 리롤(전체 재추첨)로만 채워진다.
         private void _OnOfferPurchased(ShopOfferSlotUI purchasedSlot)
         {
+            if (purchasedSlot.CurrentOffer?.Option != null)
+                TriChoiceManager.Instance?.MarkShopChoiceSold(purchasedSlot.CurrentOffer.Option.Id);
+
             purchasedSlot.SetEmpty();
 
             foreach (var slotUI in _offerSlotUIs)
