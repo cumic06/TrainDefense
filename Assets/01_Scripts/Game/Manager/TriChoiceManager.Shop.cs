@@ -11,6 +11,32 @@ namespace TrainDefense.Game
     // 가격 책정은 상점(ShopOfferPricing)의 책임 — 여기서는 후보 추첨만 담당한다.
     public partial class TriChoiceManager
     {
+        /// <summary>런 세이브가 남기는 상점 품목 한 칸 — 선택지 id와, 포탑 구매·승격 카드에 부여된 랜덤 스킬 id(없으면 null).</summary>
+        public readonly struct ShopChoiceSnapshot
+        {
+            public readonly string ChoiceId;
+            public readonly string SkillId;
+
+            public ShopChoiceSnapshot(string choiceId, string skillId)
+            {
+                ChoiceId = choiceId;
+                SkillId = skillId;
+            }
+        }
+
+        // 지금 상점에 진열된 품목(마지막 GetShopChoices 결과). 런 세이브가 진열을 그대로 남기는 데 읽는다.
+        private readonly List<string> _currentShopChoiceIds = new();
+        // 이어하기로 되살릴 진열. 다음 GetShopChoices가 한 번 소비한다.
+        private List<ShopChoiceSnapshot> _pendingShopChoiceSnapshots;
+
+        public IReadOnlyList<string> CurrentShopChoiceIds => _currentShopChoiceIds;
+
+        /// <summary>이어하기 복원 — 다음 상점 추첨에서 저장 당시 품목을 그대로 돌려준다.</summary>
+        public void RestoreShopChoices(List<ShopChoiceSnapshot> snapshots)
+        {
+            _pendingShopChoiceSnapshots = snapshots;
+        }
+
         // 스탯 강화 후보의 가중치는 등급 데이터(stat_upgrade_tier_data.weight, 고등급 = 희귀)가 정한다.
         // 포탑 구매는 DB addTrainChoices에 직렬화된 Weight(7 = 열린 티어 가중치 합과 등가)를 쓰고,
         // 엘리트 승격은 추첨하지 않는다 — 승격 조건(강화 카드 등급의 합)을 넘긴 포탑이 있으면 한 장을 반드시 낸다.
@@ -23,11 +49,19 @@ namespace TrainDefense.Game
             List<ChoiceEntry> result = new();
 
             var eliteChoices = _GetShopEliteTrainChoices();
-
-            if (count > 0 && eliteChoices.Count > 0)
-                _AddChoiceToResult(result, eliteChoices);
-
             var candidates = _GetShopCandidates();
+
+            // 이어하기 직후의 첫 추첨은 저장 당시 진열을 되찾는다. 빈 칸(후보에서 사라진 품목)만 아래서 평소처럼 채운다.
+            bool isRestored = _pendingShopChoiceSnapshots != null;
+
+            if (isRestored)
+            {
+                _FillFromSnapshots(result, eliteChoices, candidates, count);
+                _pendingShopChoiceSnapshots = null;
+            }
+
+            if (!isRestored && count > 0 && eliteChoices.Count > 0)
+                _AddChoiceToResult(result, eliteChoices);
 
             for (int i = result.Count; i < count; i++)
             {
@@ -35,7 +69,39 @@ namespace TrainDefense.Game
                     break;
             }
 
+            _currentShopChoiceIds.Clear();
+
+            foreach (var entry in result)
+                _currentShopChoiceIds.Add(entry.Option.Id);
+
             return result;
+        }
+
+        // 세이브에 남긴 품목을 같은 후보 풀에서 id로 다시 찾는다. 복원된 편성·강화 레벨이 저장 당시와 같으므로 풀도 같다.
+        private void _FillFromSnapshots(List<ChoiceEntry> result, List<ChoiceEntry> eliteChoices, List<ChoiceEntry> candidates, int count)
+        {
+            foreach (var snapshot in _pendingShopChoiceSnapshots)
+            {
+                if (result.Count >= count)
+                    break;
+
+                var entry = eliteChoices.FirstOrDefault(e => e.Option.Id == snapshot.ChoiceId)
+                            ?? candidates.FirstOrDefault(e => e.Option.Id == snapshot.ChoiceId);
+
+                if (entry == null)
+                {
+                    // 복합 스탯 카드는 열 때마다 조합이 바뀌어 풀에 없다 — id로 같은 조합을 다시 만든다.
+                    var statChoice = TrainStatUpgradeChoice.TryCreateFromId(snapshot.ChoiceId);
+
+                    if (statChoice == null || !statChoice.IsValid())
+                        continue;
+
+                    entry = new ChoiceEntry { Option = statChoice, Weight = _GetStatUpgradeWeight(statChoice), Tier = 0 };
+                }
+
+                result.Add(entry);
+                _RestoreSelectedSkill(entry.Option, snapshot.SkillId);
+            }
         }
 
         // 포탑 구매 후보는 레벨업 카드와 동일한 필터(_GetAddTrainChoices: 미보유·스킬트리 언락·Tier 게이트)를 재사용한다.

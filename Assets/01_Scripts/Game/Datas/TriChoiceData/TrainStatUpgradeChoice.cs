@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using TrainDefense.Game.Manager;
@@ -189,6 +190,69 @@ namespace TrainDefense.Game.Datas
             }
 
             return options;
+        }
+
+        // 런 세이브가 남긴 id("StatUpgrade_{포탑}_{스탯}[+{스탯}]_T{표시 등급}")로 카드를 다시 만든다.
+        // 복합 카드는 상점을 열 때마다 조합을 무작위로 뽑아(CreateComboOptionsFor) 후보 풀에서 id로 되찾을 수 없으므로,
+        // 이어하기 때 저장 당시와 같은 조합을 여기서 직접 만든다. 유효성(상한·보유 여부)은 호출자가 IsValid로 판정한다.
+        public static TrainStatUpgradeChoice TryCreateFromId(string id)
+        {
+            var match = Regex.Match(id ?? string.Empty, @"^StatUpgrade_(\d+)_(\w+?)(?:\+(\w+))?_T(\d+)$");
+
+            if (!match.Success)
+                return null;
+
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+            var databaseManager = DatabaseManager.Instance;
+
+            if (mainTrain == null || databaseManager == null)
+                return null;
+
+            string trainId = match.Groups[1].Value;
+            var train = mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData != null && t.TrainData.Id == trainId);
+
+            if (train == null || !System.Enum.TryParse(match.Groups[2].Value, out StatType firstStat))
+                return null;
+
+            bool isCombo = match.Groups[3].Success;
+            StatType secondStat = default;
+
+            if (isCombo && !System.Enum.TryParse(match.Groups[3].Value, out secondStat))
+                return null;
+
+            var tiers = databaseManager.GetStatUpgradeTiers();
+
+            if (tiers == null)
+                return null;
+
+            int displayGrade = int.Parse(match.Groups[4].Value);
+            int displayIndex = -1;
+
+            for (int i = 0; i < tiers.Count; i++)
+            {
+                if (tiers[i] != null && tiers[i].Grade == displayGrade)
+                    displayIndex = i;
+            }
+
+            // 복합은 효과 등급이 표시 등급 한 단계 아래라 표시 등급이 첫 티어면 만들 수 없다.
+            if (displayIndex < 0 || (isCombo && displayIndex < 1))
+                return null;
+
+            var rules = databaseManager.GetTrainStatUpgradeRules(train.TrainData.Id);
+            var firstRule = rules.FirstOrDefault(rule => rule != null && rule.StatType == firstStat);
+
+            if (firstRule == null)
+                return null;
+
+            if (!isCombo)
+                return new TrainStatUpgradeChoice(train, firstRule, tiers[displayIndex]);
+
+            var secondRule = rules.FirstOrDefault(rule => rule != null && rule.StatType == secondStat);
+
+            if (secondRule == null)
+                return null;
+
+            return new TrainStatUpgradeChoice(train, firstRule, tiers[displayIndex - 1], secondRule, tiers[displayIndex]);
         }
 
         // 둔화율이 이 값 이상이면 상점에 둔화 카드를 더 내지 않는다. 이미 산 카드는 넘겨도 그대로 적용된다(55%에서 +15% → 70%).

@@ -9,11 +9,12 @@ using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Manager;
+using TrainDefense.Game.RunSave;
 using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI
 {
-    public class ShopUI : MonoBehaviour
+    public class ShopUI : MonoBehaviour, IRunStateSection
     {
         #region Fields
         [SerializeField]
@@ -102,6 +103,9 @@ namespace TrainDefense.Game.UI
         private int _currentRerollCostIncrease;
         // 스킬 트리·영구 강화의 무료 새로고침 횟수. 상점이 열릴 때마다 채워지고, 남아 있는 동안은 코인 차감·비용 인상 없이 리롤한다.
         private int _freeRerollsLeft;
+        // 이어하기로 되살릴 리롤 상태(저장 당시 비용·남은 무료 횟수). 다음 상점 열기가 한 번 소비한다.
+        private int? _pendingRerollCost;
+        private int? _pendingFreeRerollsLeft;
         private string _rerollLabelPrefix;
         private Color _rerollLabelOriginalColor;
         private Color _turretSlotOriginalColor;
@@ -127,6 +131,7 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Subscribe<ChangeCoinUIEvent>(_OnChangeCoin);
             GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
+            RunSaveManager.Instance?.RegisterSection(this);
 
             if (rerollButton != null)
             {
@@ -156,8 +161,37 @@ namespace TrainDefense.Game.UI
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Unsubscribe<ChangeCoinUIEvent>(_OnChangeCoin);
             GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
+            RunSaveManager.Instance?.UnregisterSection(SectionId);
             Localization.OnLanguageChanged -= _RefreshTurretSlotText;
         }
+
+        #region Run Save — 리롤 상태 섹션
+        // 진열(품목)은 TriChoiceManager가 들고 있어 그쪽 섹션이 저장하고, 리롤 비용·무료 횟수는 이 UI만 알아 여기서 저장한다.
+        public string SectionId => "shop_session";
+
+        [System.Serializable]
+        private class SessionPayload
+        {
+            public int rerollCost;
+            public int freeRerollsLeft;
+        }
+
+        public string Capture()
+        {
+            return JsonUtility.ToJson(new SessionPayload { rerollCost = _currentRerollCost, freeRerollsLeft = _freeRerollsLeft });
+        }
+
+        public void Restore(string json)
+        {
+            var payload = JsonUtility.FromJson<SessionPayload>(json);
+
+            if (payload == null)
+                return;
+
+            _pendingRerollCost = payload.rerollCost;
+            _pendingFreeRerollsLeft = payload.freeRerollsLeft;
+        }
+        #endregion
 
         private void OnUpgradeApplied(UpgradeAppliedEvent upgradeAppliedEvent)
         {
@@ -172,9 +206,13 @@ namespace TrainDefense.Game.UI
         {
             // 역 도착 시점에 새로 추첨. (상점은 역당 1회 — 닫으면 바로 출발이라 재오픈은 없다)
             // 리롤 비용은 상점이 열릴 때마다(맵 선택 상점 포함) 이번 방문의 첫 비용으로 초기화된다.
-            _currentRerollCost = offerPricing.GetFirstRerollCost();
-            _currentRerollCostIncrease = offerPricing.GetRerollCostIncrease(_currentRerollCost);
-            _freeRerollsLeft = offerPricing.GetFreeRerollCount();
+            int firstRerollCost = offerPricing.GetFirstRerollCost();
+            _currentRerollCostIncrease = offerPricing.GetRerollCostIncrease(firstRerollCost);
+            // 이어하기 직후 첫 열기는 저장 당시 리롤 상태를 이어받는다 — 떠나던 상점 그대로.
+            _currentRerollCost = _pendingRerollCost ?? firstRerollCost;
+            _freeRerollsLeft = _pendingFreeRerollsLeft ?? offerPricing.GetFreeRerollCount();
+            _pendingRerollCost = null;
+            _pendingFreeRerollsLeft = null;
             _RebuildOfferSlots();
             _RefreshRerollUI();
             _RefreshTurretSlotText();
@@ -613,6 +651,7 @@ namespace TrainDefense.Game.UI
             }
 
             _RefreshTurretSlotText();
+            GameEventSystem.Publish(new ShopStateChangedEvent());
         }
 
         // 헤더의 포탑 칸 수 표시. 꽉 차면 색이 바뀌어, 포탑 카드가 회색인 이유를 설명한다.
@@ -653,6 +692,7 @@ namespace TrainDefense.Game.UI
 
             _RebuildOfferSlots();
             _RefreshRerollUI();
+            GameEventSystem.Publish(new ShopStateChangedEvent());
         }
 
         private void _OnChangeCoin(ChangeCoinUIEvent changeCoinEvent)

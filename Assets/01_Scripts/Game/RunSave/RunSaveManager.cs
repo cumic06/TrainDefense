@@ -28,6 +28,8 @@ namespace TrainDefense.Game.RunSave
         private RunSaveData _pendingRestore;
         private bool _isRestoring;
         private bool _isLobbyRun;
+        // 다음 프레임 저장이 이미 예약됐는지(한 프레임에 역 도착·구매 등 여러 신호가 와도 한 번만 쓴다).
+        private bool _isSaveScheduled;
 
         /// <summary>이번 게임 씬 진입이 "이어하기"인지. 포탑 선택창 스킵·첫 삼중택일 스킵 판단에 쓴다.</summary>
         public bool IsContinuePending => _pendingRestore != null;
@@ -84,6 +86,7 @@ namespace TrainDefense.Game.RunSave
         {
             GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Subscribe<ShopStateChangedEvent>(_OnShopStateChanged);
             GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOverStart);
             GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
         }
@@ -92,6 +95,7 @@ namespace TrainDefense.Game.RunSave
         {
             GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Unsubscribe<InspectionStartEvent>(_OnInspectionStart);
+            GameEventSystem.Unsubscribe<ShopStateChangedEvent>(_OnShopStateChanged);
             GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOverStart);
             GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
         }
@@ -137,6 +141,8 @@ namespace TrainDefense.Game.RunSave
             RegisterSection(new ScoreSection());
             // 기차 편성은 상점 업그레이드(UserProgress)가 복원된 뒤에 재구성해야 스탯이 맞으므로 마지막에 둔다.
             RegisterSection(new TrainFormationSection());
+            // 상점 진열은 복원된 편성·강화 레벨로 만든 후보 풀에서 되찾으므로 그 둘 뒤에 둔다.
+            RegisterSection(new ShopOfferSection());
         }
 
         #endregion
@@ -155,16 +161,37 @@ namespace TrainDefense.Game.RunSave
             if (_isRestoring || _isLobbyRun)
                 return;
 
-            StartCoroutine(_SaveAfterStationArrival());
+            _RequestSaveNextFrame();
+        }
+
+        // 상점 안의 구매·리롤도 저장 지점이다 — 이어하기가 플레이어가 마지막으로 본 상점 그대로(산 것·남은 코인·진열·리롤 상태)로 돌아오게.
+        private void _OnShopStateChanged(ShopStateChangedEvent shopStateChangedEvent)
+        {
+            if (_isRestoring || _isLobbyRun)
+                return;
+
+            _RequestSaveNextFrame();
         }
 
         // 이 매니저는 앱 부팅 때 구독해 역 도착 이벤트를 가장 먼저 받는다. 그 자리에서 바로 저장하면
         // 역 도착이 하는 부활·체력 회복(MainTrain.OnInspectionStart)보다 앞서 "죽은 칸"이 그대로 저장되고,
         // 이어하기가 그 칸을 다시 죽이면서 첫 칸이 죽은 세이브는 복원 직후 게임오버가 됐다.
         // 역 도착 처리가 모두 끝난 다음 프레임에 저장해 상점에서 보이는 상태 그대로를 남긴다.
-        private IEnumerator _SaveAfterStationArrival()
+        // 상점 구매도 같다 — 포탑 구매가 스폰한 칸은 다음 프레임 Start()가 돌아야 편성 캡처가 온전하다.
+        private void _RequestSaveNextFrame()
+        {
+            if (_isSaveScheduled)
+                return;
+
+            _isSaveScheduled = true;
+            StartCoroutine(_SaveNextFrame());
+        }
+
+        private IEnumerator _SaveNextFrame()
         {
             yield return null;
+
+            _isSaveScheduled = false;
 
             if (_isRestoring || _isLobbyRun)
                 yield break;
