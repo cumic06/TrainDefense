@@ -56,7 +56,7 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "TrainDefense.sln",
+    "dotnet.defaultSolution": "TrainDefense.slnx",
     "dotrush.roslyn.projectOrSolutionFiles": [
         "c:\\Users\\chang\\GitHub\\TrainDefense\\TrainDefense.sln",
         "c:\\Users\\chang\\GitHub\\TrainDefense\\TrainDefense.slnx",
