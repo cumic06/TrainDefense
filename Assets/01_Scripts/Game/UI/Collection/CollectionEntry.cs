@@ -86,10 +86,8 @@ namespace TrainDefense.Game.UI.Collection
         // EliteTrainChoice.IsValid와 같은 판정 기준을 글로 옮긴다 — 조건이 없으면 강화 등급 합으로 승격한다.
         private static List<CollectionStatLine> _BuildPromotionConditionLines(TrainData eliteTrain, TrainData baseTrain)
         {
+            // 원본 포탑 줄은 표시하지 않는다(사용자 결정 10-21) — 개조 탭은 조건만 보여 준다.
             var lines = new List<CollectionStatLine>();
-
-            if (baseTrain != null)
-                lines.Add(new CollectionStatLine(_Loc("Collection_BaseTrain", "원본 포탑"), baseTrain.Name));
 
             ElitePromotionCondition[] conditions = eliteTrain.ElitePromotionConditions;
 

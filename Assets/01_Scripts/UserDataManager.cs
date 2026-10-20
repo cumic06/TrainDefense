@@ -357,10 +357,6 @@ namespace TrainDefense
         {
             int exp = addExpEvent.Exp;
 
-            // 스킬 트리 경험치 획득 증가 (%)
-            if (SkillTreeManager.Instance != null)
-                exp = Mathf.RoundToInt(exp * (1f + SkillTreeManager.Instance.GetValue(TrainDefense.Game.Datas.SkillTreePassiveType.ExpGain) / 100f));
-
             _currentExp += exp;
 
             var requiredExpInt = Mathf.CeilToInt(GetNextLevelUpExp());

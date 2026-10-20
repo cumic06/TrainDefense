@@ -932,11 +932,11 @@ MonoBehaviour:
       passiveType: FollowUpExplosion
       param1: 0.2
       param2: ExplosionProjectile
-      param3: -1:0.5:0.3
+      param3: -1:1.0:0.3|StatModifier:AttackDamage:150
       description: Passive_60006_Desc
     - id: 60007
       name: Passive_60007_Name
-      passiveType: Strengthen:300|StatModifier:AttackRange:60
+      passiveType: Strengthen:120|StatModifier:AttackRange:40
       param1: 
       param2: 
       param3: 
