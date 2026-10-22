@@ -63,7 +63,7 @@ namespace TrainDefense.Game.UI.Collection
                 iconImage.material = entry.IsMonster && entry.IsDiscovered ? outlineMaterial : null;
 
             if (nameText != null)
-                nameText.text = entry.IsDiscovered ? entry.Name : "???";
+                nameText.text = entry.IsDiscovered || entry.HasConditions ? entry.Name : "???";   // 잠긴 개조도 이름은 보인다(실루엣이 잠금 표시)
 
             SetSelected(false);
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -53,25 +54,52 @@ namespace TrainDefense.Game.Datas
 
             var baseTrain = mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == baseTrainId);
             if (baseTrain == null) return false;
-            // 승격 조건이 있으면 원본 포탑의 현재 스탯이 전부 만족해야 하고, 없으면 강화 카드 등급의 합(Train.ELITE_PROMOTION_GRADE_SUM)으로 판정한다.
-            if (!_IsPromotionConditionSatisfied(baseTrain, eliteTrainData)) return false;
+            // 개조 조건: 원본 포탑에 산 강화 카드 등급의 합(Train.ELITE_PROMOTION_GRADE_SUM)
+            if (!baseTrain.IsEliteEligible) return false;
 
-            // 스킬이 하나라도 있어야 엘리트 카드로 유효
-            return databaseManager.GetTrainSkillDataDB().HasSkillForTrain(eliteTrainDataId);
+            // 해금된 개조가 하나라도 있어야 카드로 유효
+            return HasUnlockedSkill();
         }
 
-        private static bool _IsPromotionConditionSatisfied(Train baseTrain, TrainData eliteTrainData)
+        /// <summary>해금된 개조가 하나라도 있는지. 상점 갱신마다 모든 개조 카드에 대해 불리므로 목록을 만들지 않는다.</summary>
+        public bool HasUnlockedSkill()
         {
-            var conditions = eliteTrainData.ElitePromotionConditions;
-
-            if (conditions.Length == 0) return baseTrain.IsEliteEligible;
-
-            foreach (var condition in conditions)
+            foreach (var skill in _GetSkills())
             {
-                if (!condition.IsSatisfiedBy(baseTrain)) return false;
+                if (_IsUnlocked(skill.skillData)) return true;
             }
 
-            return true;
+            return false;
+        }
+
+        /// <summary>이 카드가 낼 수 있는 개조 — 해금된 것만. 카드가 뽑힐 때 이 중 하나가 무작위로 붙는다(TriChoiceManager.GetSelectedEliteSkill).</summary>
+        public List<(IData skillData, TrainChoiceSkillType skillType)> GetUnlockedSkills()
+        {
+            var result = new List<(IData skillData, TrainChoiceSkillType skillType)>();
+
+            foreach (var skill in _GetSkills())
+            {
+                if (_IsUnlocked(skill.skillData))
+                    result.Add(skill);
+            }
+
+            return result;
+        }
+
+        private IReadOnlyList<(IData skillData, TrainChoiceSkillType skillType)> _GetSkills()
+        {
+            var databaseManager = DatabaseManager.Instance;
+
+            return databaseManager != null
+                ? databaseManager.GetTrainSkillDataDB().GetSkillsForTrain(eliteTrainDataId)
+                : Array.Empty<(IData skillData, TrainChoiceSkillType skillType)>();
+        }
+
+        private static bool _IsUnlocked(IData skillData)
+        {
+            var userDataManager = UserDataManager.Instance;
+
+            return userDataManager != null && skillData is TrainPassiveSkillData remodel && userDataManager.IsRemodelUnlocked(remodel);
         }
 
         public void Execute()

@@ -69,19 +69,6 @@ namespace TrainDefense.Game.Datas
         }
 
         /// <summary>
-        /// trainDataId에 연결된 스킬이 있는지 여부를 반환합니다.
-        /// </summary>
-        public bool HasSkillForTrain(string trainDataId)
-        {
-            if (_index == null)
-            {
-                UnityEngine.Debug.LogWarning("TrainSkillDataDB: BuildIndex가 호출되지 않은 상태에서 HasSkillForTrain 호출됨");
-                return false;
-            }
-            return _index.TryGetValue(trainDataId, out var skills) && skills.Count > 0;
-        }
-
-        /// <summary>
         /// trainDataId에 연결된 모든 스킬을 반환합니다. 없으면 빈 목록.
         /// </summary>
         public IReadOnlyList<(IData skillData, TrainChoiceSkillType skillType)> GetSkillsForTrain(string trainDataId)

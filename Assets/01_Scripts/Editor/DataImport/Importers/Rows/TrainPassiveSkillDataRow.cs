@@ -12,6 +12,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string param2;
 		public string param3;
 		public string description;
+		// 개조 해금 조건 원문("AttackDamage>=100;Kills>=300"). RemodelUnlockCondition.ParseList가 해석한다.
+		public string unlockCondition;
 
 		public void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -22,6 +24,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			param2 = map.GetString(row, "param2");
 			param3 = map.GetString(row, "param3");
 			description = map.GetString(row, "description");
+			unlockCondition = map.GetString(row, "unlock_condition");
 		}
 
 		public void ToExcelRow(IRow row, HeaderMap map)
@@ -33,6 +36,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "param2", param2);
 			map.SetCell(row, "param3", param3);
 			map.SetCell(row, "description", description);
+			map.SetCell(row, "unlock_condition", unlockCondition ?? "");
 		}
 	}
 }

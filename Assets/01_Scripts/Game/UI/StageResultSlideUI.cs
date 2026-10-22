@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Cumic;
 using Cumic.Events;
 using DG.Tweening;
@@ -53,6 +54,13 @@ namespace TrainDefense.Game.UI
         [Tooltip("이번 판 획득 엘리트 재화. 무엇을 얻었는지는 옆의 아이콘이 알려준다.")]
         [SerializeField]
         private TMP_Text earnedValueText;
+        [Header("해금 줄 — 이번 판에 새로 해금된 개조가 있을 때만 켠다")]
+        [SerializeField]
+        private GameObject unlockedRow;
+        [SerializeField]
+        private TMP_Text unlockedLabelText;
+        [SerializeField]
+        private TMP_Text unlockedValueText;
 
         [Header("로비 버튼")]
         [Tooltip("총점 카운트업이 끝난 뒤 활성화되는 로비 버튼. (GameObject stripped 회피를 위해 Transform으로 연결)")]
@@ -160,6 +168,36 @@ namespace TrainDefense.Game.UI
             _SetText(eliteKillValueText, eliteKill.ToCommaString());
             _SetText(earnedLabelText, LocalizeHelper.GetByKey("result_stat_earned", "획득"));
             _SetText(earnedValueText, $"+{earned.ToCommaString()}");
+
+            _FillUnlocked();
+        }
+
+        // 이번 판에 새로 해금된 개조 이름을 한 줄로. 없으면 줄 자체를 숨긴다(UserDataManager가 GameEndEvent에서 먼저 판정해 둔다).
+        private void _FillUnlocked()
+        {
+            var unlockedNames = new List<string>();
+            var userDataManager = UserDataManager.Instance;
+            var skillDataDB = DatabaseManager.Instance != null ? DatabaseManager.Instance.GetTrainSkillDataDB() : null;
+
+            if (userDataManager != null && skillDataDB != null)
+            {
+                foreach (string remodelId in userDataManager.LastRunUnlockedRemodelIds)
+                {
+                    foreach (var remodel in skillDataDB.TrainPassiveSkillDataList)
+                    {
+                        if (remodel == null || remodel.Id != remodelId) continue;
+
+                        unlockedNames.Add(remodel.Name);
+                        break;
+                    }
+                }
+            }
+
+            if (unlockedRow != null)
+                unlockedRow.SetActive(unlockedNames.Count > 0);
+
+            _SetText(unlockedLabelText, LocalizeHelper.GetByKey("result_unlocked", "해금"));
+            _SetText(unlockedValueText, string.Join(", ", unlockedNames));
         }
 
         // 총점을 0부터 한 번 카운트업하고, 끝나면 로비 버튼을 켠다.

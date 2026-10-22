@@ -456,8 +456,7 @@ namespace TrainDefense.Editor
 					attackRange = s.AttackRange, attackArea = s.AttackArea,
 					attackDamage = s.AttackDamage, attackCount = s.AttackCount,
 					attackInterval = s.AttackInterval,
-					criticalChance = s.CriticalChance, criticalDamage = s.CriticalDamage,
-					eliteCondition = ElitePromotionCondition.ToSheetString(t.ElitePromotionConditions)
+					criticalChance = s.CriticalChance, criticalDamage = s.CriticalDamage
 				});
 			}
 			string excelPath = GetExcelAbsPath("TrainData.xlsx");
@@ -485,8 +484,7 @@ namespace TrainDefense.Editor
 					attackRange = s.AttackRange, attackArea = s.AttackArea,
 					attackDamage = s.AttackDamage, attackCount = s.AttackCount,
 					attackInterval = s.AttackInterval, targetCount = s.TargetCount,
-					criticalChance = s.CriticalChance, criticalDamage = s.CriticalDamage,
-					eliteCondition = ElitePromotionCondition.ToSheetString(t.ElitePromotionConditions)
+					criticalChance = s.CriticalChance, criticalDamage = s.CriticalDamage
 				});
 			}
 			string excelPath = GetExcelAbsPath("TrainData.xlsx");

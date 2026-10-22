@@ -23,6 +23,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 			SetPrivateField(t, target, "param2", r.param2);
 			SetPrivateField(t, target, "param3", r.param3);
 			SetPrivateField(t, target, "description", r.description);
+			SetPrivateField(t, target, "unlockConditions", RemodelUnlockCondition.ParseList(r.unlockCondition));
 		}
 
 		private static void SetPrivateField(System.Type type, object instance, string field, object value)

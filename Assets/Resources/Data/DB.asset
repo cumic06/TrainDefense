@@ -417,7 +417,6 @@ MonoBehaviour:
     prefabId: MainTrain
     passiveSkillDataIds: []
     isMainTrain: 1
-    elitePromotionConditions: []
   turretTrainDataList:
   - id: 30001
     name: Train_30001_Name
@@ -431,7 +430,6 @@ MonoBehaviour:
     prefabId: NormalTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 12
       AttackRange: 9
@@ -456,7 +454,6 @@ MonoBehaviour:
     prefabId: FireTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 8
       AttackRange: 6
@@ -481,7 +478,6 @@ MonoBehaviour:
     prefabId: MissileTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 20
       AttackRange: 8
@@ -506,7 +502,6 @@ MonoBehaviour:
     prefabId: LaserTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 22
@@ -531,7 +526,6 @@ MonoBehaviour:
     prefabId: ElectrickTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 12
       AttackRange: 10
@@ -556,7 +550,6 @@ MonoBehaviour:
     prefabId: CannonTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 40
       AttackRange: 20
@@ -581,7 +574,6 @@ MonoBehaviour:
     prefabId: SniperTurretTrain
     passiveSkillDataIds: []
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 24
@@ -608,7 +600,6 @@ MonoBehaviour:
     - 60001
     - 60021
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 12
       AttackRange: 9
@@ -636,7 +627,6 @@ MonoBehaviour:
     - 60003
     - 60022
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 8
       AttackRange: 6
@@ -663,7 +653,6 @@ MonoBehaviour:
     - 60009
     - 60010
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 20
       AttackRange: 8
@@ -691,7 +680,6 @@ MonoBehaviour:
     - 60012
     - 60023
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 22
@@ -719,7 +707,6 @@ MonoBehaviour:
     - 60024
     - 60025
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 12
       AttackRange: 10
@@ -746,7 +733,6 @@ MonoBehaviour:
     - 60018
     - 60019
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 40
       AttackRange: 20
@@ -772,7 +758,6 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60017
     isMainTrain: 0
-    elitePromotionConditions: []
     turretTrainStatus:
       AttackDamage: 50
       AttackRange: 24
@@ -798,10 +783,9 @@ MonoBehaviour:
     prefabId: ExplosionRangeTrain
     passiveSkillDataIds: []
     isMainTrain: 0
-    elitePromotionConditions: []
     rangeTrainStatus:
-      AttackDamage: 30
-      AttackRange: 5
+      AttackDamage: 40
+      AttackRange: 6
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 3
@@ -823,7 +807,6 @@ MonoBehaviour:
     prefabId: ColdAirRangeTrain
     passiveSkillDataIds: []
     isMainTrain: 0
-    elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 7
       AttackRange: 6
@@ -850,10 +833,9 @@ MonoBehaviour:
     - 60006
     - 60007
     isMainTrain: 0
-    elitePromotionConditions: []
     rangeTrainStatus:
-      AttackDamage: 30
-      AttackRange: 5
+      AttackDamage: 40
+      AttackRange: 6
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 3
@@ -877,7 +859,6 @@ MonoBehaviour:
     - 60004
     - 60020
     isMainTrain: 0
-    elitePromotionConditions: []
     rangeTrainStatus:
       AttackDamage: 7
       AttackRange: 6
@@ -899,6 +880,12 @@ MonoBehaviour:
       param2: MissileProjectile
       param3: 2.5
       description: Passive_60001_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 3
+        Comparison: 0
+        Value: 1000
     - id: 60002
       name: Passive_60002_Name
       passiveType: StatModifier
@@ -906,6 +893,12 @@ MonoBehaviour:
       param2: 35
       param3: AttackArea:35
       description: Passive_60002_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 350
     - id: 60003
       name: Passive_60003_Name
       passiveType: StatModifier
@@ -913,6 +906,12 @@ MonoBehaviour:
       param2: 100
       param3: AttackArea:-30:AttackRange:35
       description: Passive_60003_Desc
+      unlockConditions:
+      - Source: 0
+        StatType: 2
+        RecordType: 0
+        Comparison: 0
+        Value: 24
     - id: 60004
       name: Passive_60004_Name
       passiveType: StatModifier
@@ -920,6 +919,12 @@ MonoBehaviour:
       param2: 320
       param3: SlowRate:20
       description: Passive_60004_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 1
+        Comparison: 0
+        Value: 300
     - id: 60005
       name: Passive_60005_Name
       passiveType: PeriodicSpawn
@@ -927,20 +932,33 @@ MonoBehaviour:
       param2: SnowballProjectile
       param3: 3:10
       description: Passive_60005_Desc
+      unlockConditions: []
     - id: 60006
       name: Passive_60006_Name
       passiveType: FollowUpExplosion
       param1: 0.2
       param2: ExplosionProjectile
-      param3: -1:1.0:0.3|StatModifier:AttackDamage:150
+      param3: -1:1.0:0.3|StatModifier:AttackDamage:60
       description: Passive_60006_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 3
+        Comparison: 0
+        Value: 120
     - id: 60007
       name: Passive_60007_Name
-      passiveType: Strengthen:120|StatModifier:AttackRange:40
+      passiveType: Strengthen:60|StatModifier:AttackRange:25
       param1: 
       param2: 
       param3: 
       description: Passive_60007_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 300
     - id: 60009
       name: Passive_60009_Name
       passiveType: KnockbackOnHit:2:0.3|StatModifier:AttackDamage:60
@@ -948,6 +966,12 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60009_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 3
+        Comparison: 0
+        Value: 800
     - id: 60010
       name: Passive_60010_Name
       passiveType: StatModifier
@@ -955,6 +979,12 @@ MonoBehaviour:
       param2: 200
       param3: AttackArea:65
       description: Passive_60010_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 25000
     - id: 60011
       name: Passive_60011_Name
       passiveType: StatModifier:AttackCount:1:AttackInterval:40
@@ -962,6 +992,12 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60011_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 3
+        Comparison: 0
+        Value: 300
     - id: 60012
       name: Passive_60012_Name
       passiveType: StatModifier
@@ -969,6 +1005,12 @@ MonoBehaviour:
       param2: 35
       param3: AttackDamage:30
       description: Passive_60012_Desc
+      unlockConditions:
+      - Source: 0
+        StatType: 2
+        RecordType: 0
+        Comparison: 0
+        Value: 100
     - id: 60013
       name: Passive_60013_Name
       passiveType: StatModifier
@@ -976,6 +1018,12 @@ MonoBehaviour:
       param2: -30
       param3: TargetCount:1
       description: Passive_60013_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 2
+        Comparison: 0
+        Value: 400
     - id: 60015
       name: Passive_60015_Name
       passiveType: StatModifier:AttackInterval:-50|RapidBombard:10:7
@@ -983,6 +1031,7 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60015_Desc
+      unlockConditions: []
     - id: 60017
       name: Passive_60017_Name
       passiveType: ChainAttackChance
@@ -990,6 +1039,12 @@ MonoBehaviour:
       param2: 0.25
       param3: 
       description: Passive_60017_Desc
+      unlockConditions:
+      - Source: 0
+        StatType: 2
+        RecordType: 0
+        Comparison: 0
+        Value: 100
     - id: 60018
       name: Passive_60018_Name
       passiveType: StatModifier:AttackDamage:230:AttackInterval:30:AttackArea:55|ScaleProjectile:1.3
@@ -997,6 +1052,12 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60018_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 25000
     - id: 60019
       name: Passive_60019_Name
       passiveType: StatModifier
@@ -1004,6 +1065,12 @@ MonoBehaviour:
       param2: 2
       param3: 
       description: Passive_60019_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 400
     - id: 60020
       name: Passive_60020_Name
       passiveType: StatModifier
@@ -1011,6 +1078,12 @@ MonoBehaviour:
       param2: 60
       param3: SlowRate:10:AttackDamage:70
       description: Passive_60020_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 1
+        Comparison: 0
+        Value: 650
     - id: 60021
       name: Passive_60021_Name
       passiveType: KnockbackOnHit:2:0.15|StatModifier:AttackDamage:100
@@ -1018,6 +1091,12 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60021_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 600
     - id: 60022
       name: Passive_60022_Name
       passiveType: SlowOnHit:30:0.5|StatModifier:AttackDamage:80
@@ -1025,6 +1104,12 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60022_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 40000
     - id: 60023
       name: Passive_60023_Name
       passiveType: SweepAttack:0.8|StatModifier:AttackInterval:80
@@ -1032,6 +1117,12 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60023_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 80000
     - id: 60024
       name: Passive_60024_Name
       passiveType: DischargeEveryN:5:120:1
@@ -1039,6 +1130,12 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60024_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 2
+        Comparison: 0
+        Value: 900
     - id: 60025
       name: Passive_60025_Name
       passiveType: StatModifier:AttackDamage:250:AttackInterval:30|StunDuration:0.5
@@ -1046,6 +1143,12 @@ MonoBehaviour:
       param2: 
       param3: 
       description: Passive_60025_Desc
+      unlockConditions:
+      - Source: 0
+        StatType: 2
+        RecordType: 0
+        Comparison: 0
+        Value: 30
   _legacyTrainPassiveSkillDataList: []
   stageDataList:
   - id: 50001
@@ -1770,10 +1873,6 @@ MonoBehaviour:
     trainDataId: 40001
     statType: 2
     increaseRate: 0.2
-  - id: stat_upgrade_40001_attack_interval
-    trainDataId: 40001
-    statType: 4
-    increaseRate: 0.15
   - id: stat_upgrade_40001_attack_range
     trainDataId: 40001
     statType: 1

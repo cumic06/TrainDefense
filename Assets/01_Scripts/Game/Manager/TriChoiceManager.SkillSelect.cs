@@ -49,15 +49,14 @@ namespace TrainDefense.Game
             if (_selectedEliteSkills.TryGetValue(choice.Id, out var cached))
                 return cached;
 
-            var db = DatabaseManager.Instance?.GetTrainSkillDataDB();
+            // 해금된 개조 중에서만 뽑는다 — 잠긴 개조는 카드에 붙지 않는다.
+            var unlockedSkills = choice.GetUnlockedSkills();
 
-            if (db == null)
+            if (unlockedSkills.Count == 0)
                 return (null, TrainChoiceSkillType.None);
 
-            var picked = db.GetRandomSkillForTrain(choice.EliteTrainDataId);
-
-            if (picked.skillData != null)
-                _selectedEliteSkills[choice.Id] = picked;
+            var picked = unlockedSkills[UnityEngine.Random.Range(0, unlockedSkills.Count)];
+            _selectedEliteSkills[choice.Id] = picked;
 
             return picked;
         }

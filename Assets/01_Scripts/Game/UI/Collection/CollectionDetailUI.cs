@@ -56,6 +56,8 @@ namespace TrainDefense.Game.UI.Collection
                 emptyHint.SetActive(false);
 
             bool discovered = entry.IsDiscovered;
+            // 해금 조건이 있는 개조는 잠겨 있어도 이름·설명을 보여 준다(실루엣·해금 조건이 잠금 표시). 아이콘이 포탑 단위라 실루엣만으로는 구분이 안 됨.
+            bool revealInfo = discovered || entry.HasConditions;
 
             if (iconImage != null)
             {
@@ -73,16 +75,16 @@ namespace TrainDefense.Game.UI.Collection
                 _StopAnimation();
 
             if (nameText != null)
-                nameText.text = discovered ? entry.Name : "???";
+                nameText.text = revealInfo ? entry.Name : "???";
 
             if (descriptionText != null)
             {
-                string description = discovered ? entry.Description : LocalizeHelper.GetByKey("Collection_Undiscovered", undiscoveredDescription);
+                string description = revealInfo ? entry.Description : LocalizeHelper.GetByKey("Collection_Undiscovered", undiscoveredDescription);
                 descriptionText.gameObject.SetActive(!string.IsNullOrEmpty(description));
                 descriptionText.text = description;
             }
 
-            // 개조 조건은 해금 목표라 발견 전에도 보여준다.
+            // 해금 조건은 해금 목표라 잠겨 있을 때도 보여준다.
             if (statsText != null)
                 statsText.text = _BuildStatsText(entry, discovered);
         }
@@ -168,7 +170,7 @@ namespace TrainDefense.Game.UI.Collection
                 if (_statBuilder.Length > 0)
                     _statBuilder.AppendLine();
 
-                _statBuilder.AppendLine($"<b>{LocalizeHelper.GetByKey("Collection_PromotionCondition", "개조 조건")}</b>");
+                _statBuilder.AppendLine($"<b>{LocalizeHelper.GetByKey("Collection_UnlockCondition", "해금 조건")}</b>");
 
                 foreach (CollectionStatLine line in entry.ConditionLines)
                 {

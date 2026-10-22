@@ -36,7 +36,7 @@ namespace TrainDefense.Game.UI.Collection
         public bool HasAnimation => _frames != null && _frames.Count > 0;
         /// <summary>몬스터 항목 여부. 인게임에서 외곽선(Outline.mat)이 붙는 건 몬스터뿐이라 도감 아이콘 외곽선도 여기에만 준다.</summary>
         public bool IsMonster => _isMonster;
-        /// <summary>개조(엘리트) 조건. 발견 전에도 목표로 보여야 하므로 IsDiscovered와 무관하게 표시한다.</summary>
+        /// <summary>개조 해금 조건. 발견 전에도 목표로 보여야 하므로 IsDiscovered와 무관하게 표시한다.</summary>
         public IReadOnlyList<CollectionStatLine> ConditionLines => _conditionLines;
         public bool HasConditions => _conditionLines != null && _conditionLines.Count > 0;
 
@@ -72,82 +72,29 @@ namespace TrainDefense.Game.UI.Collection
             return new CollectionEntry(data.Id, data.Icon, data.Name, data.Description, isDiscovered, statLines);
         }
 
-        // 엘리트 트레인은 보유 스킬마다 항목을 만든다. 이름·설명은 스킬, 아이콘·스탯은 엘리트 포탑 기준.
-        // baseTrain: 이 엘리트로 승격되는 원본 포탑(EliteTrainChoice.BaseTrainId). 없으면 원본 줄을 생략한다.
-        public static CollectionEntry FromEliteTrainSkill(TrainData eliteTrain, IData skill, bool isDiscovered, TrainData baseTrain)
+        // 엘리트 트레인은 보유 개조(스킬)마다 항목을 만든다. 이름·설명은 개조, 아이콘은 엘리트 포탑 기준.
+        // 스탯은 표시하지 않고 개조 이름·설명 + 해금 조건만 보여 준다. 해금 여부는 isDiscovered 자리에 넣어 미발견 유닛과 같은 검은 실루엣으로 표시한다(이름·설명은 잠겨 있어도 보임).
+        public static CollectionEntry FromEliteTrainSkill(TrainData eliteTrain, IData skill, bool isUnlocked)
         {
-            // 엘리트는 스탯을 표시하지 않고 스킬 이름·설명 + 개조 조건만 보여준다
             var statLines = new List<CollectionStatLine>();
-            List<CollectionStatLine> conditionLines = _BuildPromotionConditionLines(eliteTrain, baseTrain);
+            List<CollectionStatLine> conditionLines = _BuildUnlockConditionLines(skill as TrainPassiveSkillData);
 
-            return new CollectionEntry($"{eliteTrain.Id}_{skill.Id}", eliteTrain.Icon, _SkillName(skill), _SkillDescription(skill), isDiscovered, statLines, conditionLines: conditionLines);
+            return new CollectionEntry($"{eliteTrain.Id}_{skill.Id}", eliteTrain.Icon, _SkillName(skill), _SkillDescription(skill), isUnlocked, statLines, conditionLines: conditionLines);
         }
 
-        // EliteTrainChoice.IsValid와 같은 판정 기준을 글로 옮긴다 — 조건이 없으면 강화 등급 합으로 승격한다.
-        private static List<CollectionStatLine> _BuildPromotionConditionLines(TrainData eliteTrain, TrainData baseTrain)
+        // RemodelUnlockEvaluator와 같은 조건을 글로 옮긴다. 조건이 없으면(처음부터 해금) 줄도 없다.
+        private static List<CollectionStatLine> _BuildUnlockConditionLines(TrainPassiveSkillData remodel)
         {
-            // 원본 포탑 줄은 표시하지 않는다(사용자 결정 10-21) — 개조 탭은 조건만 보여 준다.
             var lines = new List<CollectionStatLine>();
 
-            ElitePromotionCondition[] conditions = eliteTrain.ElitePromotionConditions;
+            if (remodel == null) return lines;
 
-            if (conditions.Length == 0)
+            foreach (RemodelUnlockCondition condition in remodel.UnlockConditions)
             {
-                lines.Add(new CollectionStatLine(_Loc("Collection_UpgradeGradeSum", "강화 등급 합"), _FormatComparison(ElitePromotionComparison.AtLeast, Train.ELITE_PROMOTION_GRADE_SUM.ToString())));
-
-                return lines;
-            }
-
-            foreach (ElitePromotionCondition condition in conditions)
-            {
-                string value = condition.Source == ElitePromotionSource.Stat && condition.StatType == StatType.AttackInterval
-                    ? _FormatSeconds(condition.Value)
-                    : _Format(condition.Value);
-                lines.Add(new CollectionStatLine(_ConditionLabel(condition), _FormatComparison(condition.Comparison, value)));
+                lines.Add(new CollectionStatLine(RemodelUnlockText.Label(condition), RemodelUnlockText.Requirement(condition)));
             }
 
             return lines;
-        }
-
-        private static string _ConditionLabel(ElitePromotionCondition condition)
-        {
-            if (condition.Source == ElitePromotionSource.CombatRecord)
-            {
-                return condition.RecordType switch
-                {
-                    TrainCombatRecordType.Kills => _Loc("Collection_Record_Kills", "처치 수"),
-                    TrainCombatRecordType.Slows => _Loc("Collection_Record_Slows", "둔화 횟수"),
-                    TrainCombatRecordType.Stuns => _Loc("Collection_Record_Stuns", "기절 횟수"),
-                    TrainCombatRecordType.Attacks => _Loc("Collection_Record_Attacks", "공격 횟수"),
-                    TrainCombatRecordType.CriticalHits => _Loc("Collection_Record_CriticalHits", "치명타 횟수"),
-                    TrainCombatRecordType.DamageDealt => _Loc("Collection_Record_DamageDealt", "누적 피해"),
-                    _ => condition.ConditionName,
-                };
-            }
-
-            return condition.StatType switch
-            {
-                StatType.MaxHp => _Loc("Detail_HP", "체력"),
-                StatType.AttackRange => _Loc("Detail_Range", "사거리"),
-                StatType.AttackDamage => _Loc("Detail_Damage", "공격력"),
-                StatType.AttackCount => _Loc("Collection_AttackCount", "공격 횟수"),
-                StatType.AttackInterval => _Loc("Detail_Speed", "공격 속도"),
-                StatType.TargetCount => _Loc("Detail_Targets", "타겟 수"),
-                StatType.CriticalChance => _Loc("Detail_CritChance", "크리티컬 확률"),
-                StatType.CriticalDamage => _Loc("Detail_CritDamage", "크리티컬 데미지"),
-                StatType.AttackArea => _Loc("Detail_Area", "공격 범위"),
-                StatType.SlowRate => _Loc("Collection_Slow", "둔화"),
-                _ => condition.ConditionName,
-            };
-        }
-
-        private static string _FormatComparison(ElitePromotionComparison comparison, string value)
-        {
-            string format = comparison == ElitePromotionComparison.AtLeast
-                ? _Loc("Collection_AtLeast", "{0} 이상")
-                : _Loc("Collection_AtMost", "{0} 이하");
-
-            return string.Format(format, value);
         }
 
         public static CollectionEntry FromMonster(MonsterData data, bool isDiscovered)

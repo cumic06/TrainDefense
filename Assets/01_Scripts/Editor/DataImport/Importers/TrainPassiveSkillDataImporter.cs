@@ -19,6 +19,7 @@ namespace TrainDefense.Editor.DataImport.Importers
 			"param2",
 			"param3",
 			"description",
+			"unlock_condition",
 		};
 
 		public int Import(DB db, string excelPath)

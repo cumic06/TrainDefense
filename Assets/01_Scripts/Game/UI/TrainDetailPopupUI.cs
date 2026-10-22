@@ -100,8 +100,16 @@ namespace TrainDefense.Game.UI
             }
 
             // 보유 포탑 롱프레스 — 값 옆에 데이터 기본값 대비 얼마나 강화됐는지 "(+50)"을 붙인다.
+            string unlockProgress = _BuildUnlockProgressText(train);
+
             if (statsText != null)
+            {
                 statsText.text = _ApplySurfaceColors(_BuildStatsText(train.GetStatGrowthDetails(), null));
+
+                // 압축형(상점)은 스킬 칸이 꺼져 있어 해금 진행도를 스탯 아래에 붙인다.
+                if (compactLayout && unlockProgress.Length > 0)
+                    statsText.text += "\n\n" + unlockProgress;
+            }
 
             if (skillsText != null)
             {
@@ -114,6 +122,13 @@ namespace TrainDefense.Game.UI
                     sb.AppendLine(name);
                     if (!string.IsNullOrEmpty(description))
                         sb.AppendLine($"<size={ShopOfferSlotUI.PASSIVE_EFFECT_SIZE_PERCENT}%><alpha={ShopOfferSlotUI.PASSIVE_EFFECT_ALPHA_HEX}>{description}</size>");
+                }
+
+                if (!compactLayout && unlockProgress.Length > 0)
+                {
+                    if (sb.Length > 0)
+                        sb.AppendLine();
+                    sb.AppendLine(unlockProgress);
                 }
 
                 skillsText.text = sb.ToString().TrimEnd();
@@ -280,6 +295,35 @@ namespace TrainDefense.Game.UI
 
         // 퇴장 트윈 중에 다시 띄우면 이미 활성이라 OnEnable(등장 연출)이 안 돌고, 남은 퇴장 트윈이 끝나며 꺼져 버린다.
         // 그 경우엔 등장 연출을 직접 다시 건다(PlayShow가 퇴장 트윈을 끊는다).
+        // 아직 안 연 개조마다 "이름: 누적 피해 1,230/25,000" 한 줄. 해금된 개조는 상점 카드로 보이므로 뺀다.
+        private string _BuildUnlockProgressText(Train train)
+        {
+            var userDataManager = UserDataManager.Instance;
+            var lines = new System.Collections.Generic.List<string>();
+
+            foreach (var remodel in RemodelUnlockEvaluator.GetRemodelsFor(train))
+            {
+                if (remodel.IsUnlockedByDefault || (userDataManager != null && userDataManager.IsRemodelUnlocked(remodel)))
+                    continue;
+
+                var progress = new System.Collections.Generic.List<string>();
+                foreach (var condition in remodel.UnlockConditions)
+                    progress.Add(RemodelUnlockText.Progress(condition, train));
+
+                lines.Add($"{remodel.Name}: {string.Join(", ", progress)}");
+            }
+
+            if (lines.Count == 0)
+                return string.Empty;
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"<b>{LocalizeHelper.GetByKey("Collection_UnlockCondition", "해금 조건")}</b>");
+            foreach (string line in lines)
+                sb.AppendLine($"<size={ShopOfferSlotUI.PASSIVE_EFFECT_SIZE_PERCENT}%><alpha={ShopOfferSlotUI.PASSIVE_EFFECT_ALPHA_HEX}>{line}</size>");
+
+            return sb.ToString().TrimEnd();
+        }
+
         private void _Open()
         {
             if (gameObject.activeSelf)

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TrainDefense.Game;
+using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Tutorial;
 using Cumic.Events;
@@ -13,6 +14,7 @@ namespace TrainDefense
     {
         private const string DISCOVERED_MONSTERS_KEY = "DiscoveredMonsters";
         private const string DISCOVERED_TRAINS_KEY = "DiscoveredTrains";
+        private const string UNLOCKED_REMODELS_KEY = "UnlockedRemodels";
         private const string TUTORIAL_SAVE_KEY = "TutorialSaveData";
 
         private Dictionary<string, int> _triChoiceData = new();
@@ -26,6 +28,13 @@ namespace TrainDefense
 
         [ShowInInspector]
         private HashSet<string> _discoveredTrainIds = new();
+
+        // 해금된 개조 스킬 ID. 판이 끝날 때 조건을 만족한 개조가 쌓이고 다음 판부터 상점에 뜬다.
+        [ShowInInspector]
+        private HashSet<string> _unlockedRemodelIds = new();
+        // 이번 판이 끝날 때 새로 해금된 개조 — 결산 화면이 '해금: 이름' 줄로 보여 준다. 판 진입 때 비운다.
+        private readonly List<string> _lastRunUnlockedRemodelIds = new();
+        public IReadOnlyList<string> LastRunUnlockedRemodelIds => _lastRunUnlockedRemodelIds;
 
         private int _coin;
         private int _currentExp;
@@ -56,6 +65,7 @@ namespace TrainDefense
         {
             LoadDiscoveredMonsters();
             LoadDiscoveredTrains();
+            LoadUnlockedRemodels();
             LoadUserOptionData();
             LoadTutorialData();
             SubscribeEvents();
@@ -78,6 +88,7 @@ namespace TrainDefense
             GameEventSystem.Subscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
             GameEventSystem.Subscribe<TrainSpawnedEvent>(OnTrainSpawned);
             GameEventSystem.Subscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Subscribe<GameEndEvent>(OnGameEnd);
         }
 
         private void UnsubscribeEvents()
@@ -88,6 +99,7 @@ namespace TrainDefense
             GameEventSystem.Unsubscribe<MonsterSpawnedEvent>(OnMonsterSpawned);
             GameEventSystem.Unsubscribe<TrainSpawnedEvent>(OnTrainSpawned);
             GameEventSystem.Unsubscribe<GameEnterEvent>(OnGameEnter);
+            GameEventSystem.Unsubscribe<GameEndEvent>(OnGameEnd);
         }
 
         private void OnGameEnter(GameEnterEvent gameEnterEvent)
@@ -98,6 +110,7 @@ namespace TrainDefense
             _pendingLevelUpCount = 0;
             _triChoiceData.Clear();
             _upgradeLevels.Clear();
+            _lastRunUnlockedRemodelIds.Clear();
             IsLobby = gameEnterEvent.IsLobby;
         }
         #endregion
@@ -184,6 +197,50 @@ namespace TrainDefense
         {
             string dataToSave = string.Join(",", _discoveredTrainIds);
             PlayerPrefs.SetString(DISCOVERED_TRAINS_KEY, dataToSave);
+            PlayerPrefs.Save();
+        }
+
+        // 판이 끝나면(승리·패배·포기) 편성 포탑의 기록으로 개조 해금을 판정한다. 판 끝에만 판정하므로 해금은 다음 판부터 적용된다.
+        private void OnGameEnd(GameEndEvent gameEndEvent)
+        {
+            if (IsLobby) return;
+
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+
+            if (mainTrain == null) return;
+
+            bool changed = false;
+
+            foreach (string remodelId in RemodelUnlockEvaluator.FindSatisfiedRemodels(mainTrain.CurrentTrains))
+            {
+                if (!_unlockedRemodelIds.Add(remodelId))
+                    continue;
+
+                _lastRunUnlockedRemodelIds.Add(remodelId);
+                changed = true;
+            }
+
+            if (changed)
+                SaveUnlockedRemodels();
+        }
+
+        private void LoadUnlockedRemodels()
+        {
+            string savedData = PlayerPrefs.GetString(UNLOCKED_REMODELS_KEY, "");
+            _unlockedRemodelIds.Clear();
+
+            if (string.IsNullOrEmpty(savedData)) return;
+
+            foreach (string id in savedData.Split(','))
+            {
+                if (!string.IsNullOrEmpty(id))
+                    _unlockedRemodelIds.Add(id);
+            }
+        }
+
+        private void SaveUnlockedRemodels()
+        {
+            PlayerPrefs.SetString(UNLOCKED_REMODELS_KEY, string.Join(",", _unlockedRemodelIds));
             PlayerPrefs.Save();
         }
 
@@ -303,6 +360,13 @@ namespace TrainDefense
         {
             _discoveredMonsterIds.Clear();
             _discoveredTrainIds.Clear();
+            _unlockedRemodelIds.Clear();
+        }
+
+        /// <summary>개조가 상점에 뜰 수 있는지 — 해금 조건이 없으면 처음부터, 있으면 이전 판에서 만족해 저장된 경우.</summary>
+        public bool IsRemodelUnlocked(TrainPassiveSkillData remodel)
+        {
+            return remodel != null && (remodel.IsUnlockedByDefault || _unlockedRemodelIds.Contains(remodel.Id));
         }
 
         #region Reset
