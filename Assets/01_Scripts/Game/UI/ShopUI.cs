@@ -656,7 +656,6 @@ namespace TrainDefense.Game.UI
             _trainDetailPopup = Instantiate(popupPrefab, canvas.rootCanvas.transform);
             _trainDetailPopup.transform.SetAsLastSibling();
             _trainDetailPopup.SetDividerLine(offerBoardRect);
-            _trainDetailPopup.SetHiddenStats(("Detail_CritChance", "크리티컬 확률"), ("Detail_CritDamage", "크리티컬 데미지"));
             _trainDetailPopup.gameObject.SetActive(false);
             return _trainDetailPopup;
         }

@@ -1236,8 +1236,6 @@ namespace TrainDefense.Game
             if (status.TargetCount > 1)
                 details.Add((L("Detail_Targets", "대상 수"), G($"{status.TargetCount}", status.TargetCount - b.TargetCount, 0)));
 
-            details.Add((L("Detail_CritChance", "크리티컬 확률"), G($"{status.CriticalChance:F0}%", status.CriticalChance - b.CriticalChance, 0, false, "%")));
-            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), G($"+{Projectile.BaseCriticalDamagePercent + status.CriticalDamage:F0}%", status.CriticalDamage - b.CriticalDamage, 0, false, "%")));
             return details.ToArray();
         }
 

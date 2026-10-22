@@ -1003,7 +1003,7 @@ MonoBehaviour:
       passiveType: StatModifier
       param1: AttackArea
       param2: 35
-      param3: AttackDamage:30
+      param3: AttackDamage:20
       description: Passive_60012_Desc
       unlockConditions:
       - Source: 0

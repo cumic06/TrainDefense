@@ -42,8 +42,6 @@ namespace TrainDefense.Game.UI
 
         // 이 요소의 아래쪽 가장자리를 팝업 세로 가운데로 삼는다(상점: 카드 판과 기차 그림을 나누는 선). 없으면 기준 요소와 윗선을 맞춘다.
         private RectTransform _dividerLine;
-        // 스탯에서 뺄 줄의 번역 키·폴백(상점 팝업은 크리티컬을 뺀다).
-        private (string key, string fallback)[] _hiddenStats = System.Array.Empty<(string key, string fallback)>();
 
         private void Awake()
         {
@@ -100,16 +98,8 @@ namespace TrainDefense.Game.UI
             }
 
             // 보유 포탑 롱프레스 — 값 옆에 데이터 기본값 대비 얼마나 강화됐는지 "(+50)"을 붙인다.
-            string unlockProgress = _BuildUnlockProgressText(train);
-
             if (statsText != null)
-            {
                 statsText.text = _ApplySurfaceColors(_BuildStatsText(train.GetStatGrowthDetails(), null));
-
-                // 압축형(상점)은 스킬 칸이 꺼져 있어 해금 진행도를 스탯 아래에 붙인다.
-                if (compactLayout && unlockProgress.Length > 0)
-                    statsText.text += "\n\n" + unlockProgress;
-            }
 
             if (skillsText != null)
             {
@@ -122,13 +112,6 @@ namespace TrainDefense.Game.UI
                     sb.AppendLine(name);
                     if (!string.IsNullOrEmpty(description))
                         sb.AppendLine($"<size={ShopOfferSlotUI.PASSIVE_EFFECT_SIZE_PERCENT}%><alpha={ShopOfferSlotUI.PASSIVE_EFFECT_ALPHA_HEX}>{description}</size>");
-                }
-
-                if (!compactLayout && unlockProgress.Length > 0)
-                {
-                    if (sb.Length > 0)
-                        sb.AppendLine();
-                    sb.AppendLine(unlockProgress);
                 }
 
                 skillsText.text = sb.ToString().TrimEnd();
@@ -189,11 +172,6 @@ namespace TrainDefense.Game.UI
         public void SetDividerLine(RectTransform dividerLine)
         {
             _dividerLine = dividerLine;
-        }
-
-        public void SetHiddenStats(params (string key, string fallback)[] hiddenStats)
-        {
-            _hiddenStats = hiddenStats ?? System.Array.Empty<(string key, string fallback)>();
         }
 
         /// <summary>
@@ -295,35 +273,6 @@ namespace TrainDefense.Game.UI
 
         // 퇴장 트윈 중에 다시 띄우면 이미 활성이라 OnEnable(등장 연출)이 안 돌고, 남은 퇴장 트윈이 끝나며 꺼져 버린다.
         // 그 경우엔 등장 연출을 직접 다시 건다(PlayShow가 퇴장 트윈을 끊는다).
-        // 아직 안 연 개조마다 "이름: 누적 피해 1,230/25,000" 한 줄. 해금된 개조는 상점 카드로 보이므로 뺀다.
-        private string _BuildUnlockProgressText(Train train)
-        {
-            var userDataManager = UserDataManager.Instance;
-            var lines = new System.Collections.Generic.List<string>();
-
-            foreach (var remodel in RemodelUnlockEvaluator.GetRemodelsFor(train))
-            {
-                if (remodel.IsUnlockedByDefault || (userDataManager != null && userDataManager.IsRemodelUnlocked(remodel)))
-                    continue;
-
-                var progress = new System.Collections.Generic.List<string>();
-                foreach (var condition in remodel.UnlockConditions)
-                    progress.Add(RemodelUnlockText.Progress(condition, train));
-
-                lines.Add($"{remodel.Name}: {string.Join(", ", progress)}");
-            }
-
-            if (lines.Count == 0)
-                return string.Empty;
-
-            var sb = new StringBuilder();
-            sb.AppendLine($"<b>{LocalizeHelper.GetByKey("Collection_UnlockCondition", "해금 조건")}</b>");
-            foreach (string line in lines)
-                sb.AppendLine($"<size={ShopOfferSlotUI.PASSIVE_EFFECT_SIZE_PERCENT}%><alpha={ShopOfferSlotUI.PASSIVE_EFFECT_ALPHA_HEX}>{line}</size>");
-
-            return sb.ToString().TrimEnd();
-        }
-
         private void _Open()
         {
             if (gameObject.activeSelf)
@@ -347,18 +296,10 @@ namespace TrainDefense.Game.UI
 
         private string _BuildStatsText((string label, string value)[] stats, (string label, string value)[] upgradedStats)
         {
-            // 스탯 쪽(GetStatDetails)과 같은 키·폴백으로 라벨을 만들어 비교한다 — 번역 전이면 폴백 문자열이 라벨이다.
-            var hiddenLabels = new string[_hiddenStats.Length];
-            for (int i = 0; i < _hiddenStats.Length; i++)
-                hiddenLabels[i] = LocalizeHelper.GetByKey(_hiddenStats[i].key, _hiddenStats[i].fallback);
-
             var changedLines = new System.Collections.Generic.List<string>();
             var otherLines = new System.Collections.Generic.List<string>();
             foreach (var (label, value) in stats)
             {
-                if (System.Array.IndexOf(hiddenLabels, label) >= 0)
-                    continue;
-
                 string upgradedValue = null;
                 if (upgradedStats != null)
                     foreach (var upgraded in upgradedStats)

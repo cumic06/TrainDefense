@@ -535,8 +535,6 @@ namespace TrainDefense.Game
             if (status.SlowRate > 0f)
                 details.Add((L("Collection_Slow", "둔화"), G($"{status.SlowRate:F0}%", status.SlowRate - b.SlowRate, 0, false, "%")));
 
-            details.Add((L("Detail_CritChance", "크리티컬 확률"), G($"{status.CriticalChance:F0}%", status.CriticalChance - b.CriticalChance, 0, false, "%")));
-            details.Add((L("Detail_CritDamage", "크리티컬 데미지"), G($"+{Projectile.BaseCriticalDamagePercent + status.CriticalDamage:F0}%", status.CriticalDamage - b.CriticalDamage, 0, false, "%")));
             return details.ToArray();
         }
 
