@@ -143,6 +143,7 @@ namespace TrainDefense.Game.RunSave
             RegisterSection(new TrainFormationSection());
             // 상점 진열은 복원된 편성·강화 레벨로 만든 후보 풀에서 되찾으므로 그 둘 뒤에 둔다.
             RegisterSection(new ShopOfferSection());
+            RegisterSection(new EliteCoinSection());
         }
 
         #endregion

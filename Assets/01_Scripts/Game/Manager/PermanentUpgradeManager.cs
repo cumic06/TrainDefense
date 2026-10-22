@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cumic;
 using Cumic.Events;
+using Cumic.Sequence;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Manager;
+using TrainDefense.Game.RunSave;
 using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game
@@ -19,6 +21,9 @@ namespace TrainDefense.Game
     {
         private const string ELITE_COIN_KEY = "PermanentUpgradeEliteCoin";
         private const string LEVELS_KEY = "PermanentUpgradeLevels";
+        // 이번 판에 번 합계의 디스크 사본. 런 세이브(EliteCoinSection)는 역 도착 때만 쓰이므로, 그 뒤 앱이 꺼졌을 때
+        // "세이브 이후에 번 만큼"을 이어하기에서 되돌리려면 지갑과 같은 시점에 기록된 값이 필요하다.
+        private const string RUN_ELITE_COIN_EARNED_KEY = "PermanentUpgradeRunEliteCoinEarned";
 
         [SerializeField]
         [Tooltip("엘리트 몬스터 1마리 처치 시 획득하는 기본 엘리트 코인량")]
@@ -71,9 +76,45 @@ namespace TrainDefense.Game
             GameEventSystem.Unsubscribe<StationPassedEvent>(_OnStationPassed);
         }
 
-        private void _OnGameEnter(GameEnterEvent _)
+        private void _OnGameEnter(GameEnterEvent gameEnterEvent)
         {
             RunEliteCoinEarned = 0;
+
+            // 새 판이면 디스크 사본도 0으로. 이어하기(복원 대기 중)는 사본을 남겨 둬야 세이브 이후 분을 계산할 수 있다.
+            bool isContinue = RunSaveManager.Instance != null && RunSaveManager.Instance.IsContinuePending;
+
+            if (!gameEnterEvent.IsLobby && !isContinue)
+                PlayerPrefs.SetInt(RUN_ELITE_COIN_EARNED_KEY, 0);
+        }
+
+        /// <summary>
+        /// 이어하기 복원(EliteCoinSection) — 판을 세이브 시점으로 되돌린다.
+        /// 세이브 이후에 번 재화(디스크 사본 − 세이브 값)는 지갑에서 빼고, 이번 판 합계는 세이브 값으로 맞춘다.
+        /// 로비에서 쓴 재화는 건드리지 않는다. 세이브 뒤 로비에서 재화를 초기화했을 수 있으므로 지갑 잔액을 넘지 않게 맞춘다.
+        /// </summary>
+        public void RestoreRunState(int runEliteCoinEarned)
+        {
+            int savedRunEarned = Mathf.Max(0, runEliteCoinEarned);
+            int earnedAfterSave = PlayerPrefs.GetInt(RUN_ELITE_COIN_EARNED_KEY, savedRunEarned) - savedRunEarned;
+
+            if (earnedAfterSave > 0)
+            {
+                _eliteCoin = Mathf.Max(0, _eliteCoin - earnedAfterSave);
+                _SaveEliteCoin();
+                GameEventSystem.Publish(new EliteCoinChangedEvent(_eliteCoin));
+            }
+
+            RunEliteCoinEarned = Mathf.Min(savedRunEarned, _eliteCoin);
+            _SaveRunEliteCoinEarned();
+        }
+
+        // 판 안에서 번 재화만 디스크 사본에 적는다(스킬 트리 환급 같은 로비 지급은 이번 판 합계와 무관).
+        private void _SaveRunEliteCoinEarned()
+        {
+            if (InGameSequence.Instance == null)
+                return;
+
+            PlayerPrefs.SetInt(RUN_ELITE_COIN_EARNED_KEY, RunEliteCoinEarned);
         }
 
         // 엘리트 처치/구매마다 PlayerPrefs.Save()(디스크 flush)를 부르지 않고, 백그라운드 전환·종료 시 한 번에 기록한다.
@@ -122,6 +163,7 @@ namespace TrainDefense.Game
             _eliteCoin += amount;
             RunEliteCoinEarned += amount;
             _SaveEliteCoin();
+            _SaveRunEliteCoinEarned();
             GameEventSystem.Publish(new EliteCoinChangedEvent(_eliteCoin));
         }
 
@@ -300,6 +342,7 @@ namespace TrainDefense.Game
             _InvalidateCache();
             PlayerPrefs.DeleteKey(ELITE_COIN_KEY);
             PlayerPrefs.DeleteKey(LEVELS_KEY);
+            PlayerPrefs.DeleteKey(RUN_ELITE_COIN_EARNED_KEY);
             PlayerPrefs.Save();
             Debug.Log("[PermanentUpgradeManager] 영구 업그레이드 데이터가 초기화되었습니다.");
         }
