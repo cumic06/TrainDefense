@@ -1301,7 +1301,8 @@ namespace TrainDefense.Game
                     break;
 
                 case StatType.TargetCount:
-                    _currentTurretTrainStatus.TargetCount += Mathf.RoundToInt(stat.Value);
+                    // 음수 개조(고압 전류 −2)가 와도 최소 한 명은 때린다.
+                    _currentTurretTrainStatus.TargetCount = Mathf.Max(1, _currentTurretTrainStatus.TargetCount + Mathf.RoundToInt(stat.Value));
                     _RefreshPooledProjectiles(StatType.TargetCount);
                     break;
 

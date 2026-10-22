@@ -250,12 +250,12 @@ namespace TrainDefense.Game.Datas
             return new TrainStatUpgradeChoice(train, firstRule, tiers[displayIndex - 1], secondRule, tiers[displayIndex]);
         }
 
-        // 둔화율이 이 값 이상이면 상점에 둔화 카드를 더 내지 않는다. 이미 산 카드는 넘겨도 그대로 적용된다(55%에서 +15% → 70%).
-        private const float SLOW_RATE_OFFER_LIMIT = 60f;
-
+        // 둔화율이 포탑의 최대값(RangeTrain.MaxSlowRate, 개조로 오를 수 있음) 이상이면 상점에 둔화 카드를 더 내지 않는다.
+        // 최대값 직전에 산 카드는 최대값까지만 오른다(RangeTrain이 잘라 낸다).
         private static bool _IsOfferBlocked(Train train, TrainStatUpgradeRuleData rule)
         {
-            return rule.StatType == StatType.SlowRate && train.GetCurrentStatValue(StatType.SlowRate) >= SLOW_RATE_OFFER_LIMIT;
+            return rule.StatType == StatType.SlowRate && train is RangeTrain rangeTrain
+                && train.GetCurrentStatValue(StatType.SlowRate) >= rangeTrain.MaxSlowRate;
         }
 
         // 개수로 오르는 스탯 — 등급 배수를 개수로 쓰면 폭발하므로(포격 연타 1→6) 항상 +1이다.

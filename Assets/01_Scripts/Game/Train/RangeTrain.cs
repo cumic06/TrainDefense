@@ -399,10 +399,29 @@ namespace TrainDefense.Game
             };
         }
 
-        // 몬스터가 완전히 멈추면 무한 생존이 되므로 이속을 최소 10%는 남긴다.
-        // 상점 카드는 점근 곡선이라 100%를 못 넘지만, 패시브(현재값 곱셈)·영구업글·스킬트리 가산이
-        // 곡선 밖에서 더해지면 넘을 수 있어 소비 지점에서 한 번에 막는다.
+        // 몬스터가 완전히 멈추면 무한 생존이 되므로 이속을 최소 10%는 남긴다. 어떤 최대값도 이 위로는 못 간다.
         private const float MAX_TOTAL_SLOW_RATE = 90f;
+        // 둔화율이 강화로 오를 수 있는 기본 최대값(%). 이 값 이상이면 상점이 둔화 카드를 더 내지 않고, 넘기는 강화는 최대값으로 잘린다.
+        private const float DEFAULT_MAX_SLOW_RATE = 60f;
+
+        private float _maxSlowRate = DEFAULT_MAX_SLOW_RATE;
+
+        /// <summary>이 포탑의 둔화율 최대값(%). 개조(SlowCapPassive)가 올린다. 완전 정지 방지 상한(90)은 넘지 못한다.</summary>
+        public float MaxSlowRate
+        {
+            get => _maxSlowRate;
+            set
+            {
+                _maxSlowRate = Mathf.Min(value, MAX_TOTAL_SLOW_RATE);
+                _ClampSlowRate(ref _currentRangeTrainStatus);
+            }
+        }
+
+        // 둔화율은 최대값 위로 자라지 않는다 — 넘기는 강화·패시브는 최대값으로 잘린다(상세창도 그 값을 보여 준다).
+        private void _ClampSlowRate(ref RangeTrainStatus status)
+        {
+            status.SlowRate = Mathf.Min(status.SlowRate, _maxSlowRate);
+        }
 
         // 누적 둔화율(%, 기차 base + 강화)을 둔화 배율로 변환.
         public float GetSlowValue()
@@ -492,6 +511,7 @@ namespace TrainDefense.Game
             status.CriticalChance += upgrade.CriticalChance;
             status.CriticalDamage += upgrade.CriticalDamage;
             status.SlowRate += upgrade.SlowRate;
+            _ClampSlowRate(ref status);
         }
 
         // 상점 카드 롱프레스용 — 새 포탑은 생성 직후 값(영구 강화 + 판 중 전체 강화), 승격은 promotionSource의 누적 강화를 승계한 값.
@@ -581,6 +601,7 @@ namespace TrainDefense.Game
                     case StatType.SlowRate:
                         // 둔화율은 이미 %라 적힌 값을 %p 그대로 더한다(15 → 30%에서 45%). 상점 둔화 카드와 같은 방식.
                         _currentRangeTrainStatus.SlowRate += stat.Value;
+                        _ClampSlowRate(ref _currentRangeTrainStatus);
                         break;
                     default:
                         ApplyStat(stat);

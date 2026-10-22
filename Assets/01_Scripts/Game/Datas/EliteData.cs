@@ -84,7 +84,7 @@ namespace TrainDefense.Game.Datas
                ccResistance = 0.5f,
                tintColor = new Color(1f, 0.3f, 0.3f, 1f),
             },
-            // 🟢 초록 — 엄청 튼튼. 느려서 노출이 길고 CC 완전 면역이라 HP 로 탱크 정체성을 담당한다.
+            // 🟢 초록 — 엄청 튼튼. 느려서 노출이 길고 CC 80% 저항(DB variants와 동일)이라 HP 로 탱크 정체성을 담당한다.
             new EliteVariant
             {
                type = EliteType.Green,
@@ -95,7 +95,7 @@ namespace TrainDefense.Game.Datas
                sizeScale = 1.8f,
                dropExpMultiplier = 10f,
                dropMoneyMultiplier = 10f,
-               ccResistance = 1f,
+               ccResistance = 0.8f,
                tintColor = new Color(0.3f, 1f, 0.4f, 1f),
             },
             // 🔵 파랑 — 주기적 원거리 공격. 접근 전부터 기차를 깎는 대신 몸이 가장 물렁하다. (weight 0 = 미등장)

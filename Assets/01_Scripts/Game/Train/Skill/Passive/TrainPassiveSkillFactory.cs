@@ -26,6 +26,7 @@ namespace TrainDefense.Game
             { "DischargeEveryN",                     DischargeEveryNAttacksPassive.From },
             { "SweepAttack",                         SweepAttackPassive.From },
             { "SlowOnHit",                           SlowOnHitPassive.From },
+            { "SlowCap",                             SlowCapPassive.From },
         };
 
         public static List<TrainPassiveSkill> ParseAll(string raw)

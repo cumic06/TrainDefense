@@ -890,8 +890,8 @@ MonoBehaviour:
       name: Passive_60002_Name
       passiveType: StatModifier
       param1: AttackRange
-      param2: 35
-      param3: AttackArea:35
+      param2: 25
+      param3: AttackArea:25
       description: Passive_60002_Desc
       unlockConditions:
       - Source: 1
@@ -903,8 +903,8 @@ MonoBehaviour:
       name: Passive_60003_Name
       passiveType: StatModifier
       param1: AttackDamage
-      param2: 100
-      param3: AttackArea:-30:AttackRange:35
+      param2: 70
+      param3: AttackArea:-30:AttackRange:25
       description: Passive_60003_Desc
       unlockConditions:
       - Source: 0
@@ -914,10 +914,10 @@ MonoBehaviour:
         Value: 24
     - id: 60004
       name: Passive_60004_Name
-      passiveType: StatModifier
-      param1: AttackDamage
-      param2: 320
-      param3: SlowRate:20
+      passiveType: StatModifier:SlowRate:15|SlowCap:15
+      param1: 
+      param2: 
+      param3: 
       description: Passive_60004_Desc
       unlockConditions:
       - Source: 1
@@ -961,7 +961,7 @@ MonoBehaviour:
         Value: 300
     - id: 60009
       name: Passive_60009_Name
-      passiveType: KnockbackOnHit:2:0.3|StatModifier:AttackDamage:60
+      passiveType: KnockbackOnHit:2:0.3|StatModifier:AttackDamage:30
       param1: 
       param2: 
       param3: 
@@ -976,8 +976,8 @@ MonoBehaviour:
       name: Passive_60010_Name
       passiveType: StatModifier
       param1: AttackDamage
-      param2: 200
-      param3: AttackArea:65
+      param2: 50
+      param3: AttackArea:25
       description: Passive_60010_Desc
       unlockConditions:
       - Source: 1
@@ -1002,8 +1002,8 @@ MonoBehaviour:
       name: Passive_60012_Name
       passiveType: StatModifier
       param1: AttackArea
-      param2: 35
-      param3: AttackDamage:20
+      param2: 25
+      param3: AttackDamage:30
       description: Passive_60012_Desc
       unlockConditions:
       - Source: 0
@@ -1047,7 +1047,7 @@ MonoBehaviour:
         Value: 100
     - id: 60018
       name: Passive_60018_Name
-      passiveType: StatModifier:AttackDamage:230:AttackInterval:30:AttackArea:55|ScaleProjectile:1.3
+      passiveType: StatModifier:AttackDamage:50:AttackInterval:30:AttackArea:25|ScaleProjectile:1.3
       param1: 
       param2: 
       param3: 
@@ -1075,8 +1075,8 @@ MonoBehaviour:
       name: Passive_60020_Name
       passiveType: StatModifier
       param1: AttackRange
-      param2: 60
-      param3: SlowRate:10:AttackDamage:70
+      param2: 25
+      param3: SlowRate:10:AttackDamage:25
       description: Passive_60020_Desc
       unlockConditions:
       - Source: 1
@@ -1086,7 +1086,7 @@ MonoBehaviour:
         Value: 650
     - id: 60021
       name: Passive_60021_Name
-      passiveType: KnockbackOnHit:2:0.15|StatModifier:AttackDamage:100
+      passiveType: KnockbackOnHit:2:0.15|StatModifier:AttackDamage:30
       param1: 
       param2: 
       param3: 
@@ -1099,7 +1099,7 @@ MonoBehaviour:
         Value: 600
     - id: 60022
       name: Passive_60022_Name
-      passiveType: SlowOnHit:30:0.5|StatModifier:AttackDamage:80
+      passiveType: SlowOnHit:30:0.5|StatModifier:AttackDamage:30
       param1: 
       param2: 
       param3: 
@@ -1138,7 +1138,7 @@ MonoBehaviour:
         Value: 900
     - id: 60025
       name: Passive_60025_Name
-      passiveType: StatModifier:AttackDamage:250:AttackInterval:30|StunDuration:0.5
+      passiveType: StatModifier:TargetCount:-2:AttackDamage:100|StunDuration:0.7
       param1: 
       param2: 
       param3: 
