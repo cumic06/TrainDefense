@@ -503,7 +503,7 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 30
       AttackRange: 22
       AttackArea: 1.2
       AttackCount: 1
@@ -575,7 +575,7 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 40
       AttackRange: 24
       AttackArea: 0
       AttackCount: 1
@@ -681,7 +681,7 @@ MonoBehaviour:
     - 60023
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 30
       AttackRange: 22
       AttackArea: 1.2
       AttackCount: 1
@@ -759,7 +759,7 @@ MonoBehaviour:
     - 60017
     isMainTrain: 0
     turretTrainStatus:
-      AttackDamage: 50
+      AttackDamage: 40
       AttackRange: 24
       AttackArea: 0
       AttackCount: 1
@@ -784,8 +784,8 @@ MonoBehaviour:
     passiveSkillDataIds: []
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 40
-      AttackRange: 6
+      AttackDamage: 36
+      AttackRange: 5.5
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 3
@@ -834,8 +834,8 @@ MonoBehaviour:
     - 60007
     isMainTrain: 0
     rangeTrainStatus:
-      AttackDamage: 40
-      AttackRange: 6
+      AttackDamage: 36
+      AttackRange: 5.5
       AttackArea: 0
       AttackCount: 1
       AttackInterval: 3
