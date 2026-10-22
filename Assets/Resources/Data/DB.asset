@@ -1177,6 +1177,7 @@ MonoBehaviour:
     stageImage: {fileID: 1169708250249569854, guid: b1afade6230499848a8b7c09f05c25f5, type: 3}
     nameKey: 
     eliteRewardMultiplier: 2
+    order: 1
   - id: 50002
     baseInspectionTime: 30
     stationCount: 3
@@ -1207,6 +1208,7 @@ MonoBehaviour:
     stageImage: {fileID: -8210071984612457726, guid: e44f3d3e5e510c747b272409f41010fd, type: 3}
     nameKey: 
     eliteRewardMultiplier: 5
+    order: 3
   - id: 50003
     baseInspectionTime: 30
     stationCount: 3
@@ -1237,6 +1239,7 @@ MonoBehaviour:
     stageImage: {fileID: 921028978873285461, guid: 91ac1a6ea09e2394ea9e27fe7d4a7848, type: 3}
     nameKey: 
     eliteRewardMultiplier: 4
+    order: 5
   - id: 50004
     baseInspectionTime: 30
     stationCount: 3
@@ -1263,6 +1266,7 @@ MonoBehaviour:
     stageImage: {fileID: -2424202261327721187, guid: 7e8a0409500c44f41ad4f08f3355ed80, type: 3}
     nameKey: 
     eliteRewardMultiplier: 3
+    order: 2
   - id: 50005
     baseInspectionTime: 30
     stationCount: 3
@@ -1289,6 +1293,7 @@ MonoBehaviour:
     stageImage: {fileID: -2663140553942567082, guid: d7d6afe20884f4140beef75663e91020, type: 3}
     nameKey: 
     eliteRewardMultiplier: 6
+    order: 4
   upgradeDataList:
   - id: 110001
     iconId: Upgrade/Upgrade_110001
@@ -1502,7 +1507,7 @@ MonoBehaviour:
     passiveValuePerLevel: 1
     unlockTrainId: 
   - id: skill_def_armor
-    iconId: "GameMadang/강화부품_135_14/장갑_8_1/UI_Item_Shield_01"
+    iconId: "GameMadang/\uAC15\uD654\uBD80\uD488_135_14/\uC7A5\uAC11_8_1/UI_Item_Shield_01"
     name: SkillTree_skill_def_armor_Name
     description: SkillTree_skill_def_armor_Desc
     lane: 1

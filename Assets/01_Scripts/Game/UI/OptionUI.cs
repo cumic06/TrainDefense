@@ -102,7 +102,7 @@ namespace TrainDefense
             TimeManager.Instance.Resume();
       }
 
-      // 튜토리얼·인트로 진행 기록을 초기화한다. 인트로가 현재 씬(로비 등)에 있으면 즉시 다시 재생하고,
+      // 튜토리얼·인트로 진행 기록을 초기화한다. 인트로가 현재 씬(로비 등)에 있으면 옵션창을 닫고 즉시 다시 재생하고,
       // 없으면 다음 게임 진입 시 튜토리얼·인트로가 처음부터 다시 표시된다.
       private void _OnTutorialReplayClick()
       {
@@ -111,8 +111,12 @@ namespace TrainDefense
          if (UserDataManager.Instance != null)
             UserDataManager.Instance.ResetTutorialData();
 
-         if (IntroManager.Instance != null)
-            IntroManager.Instance.Replay();
+         if (IntroManager.Instance == null)
+            return;
+
+         // 옵션창이 인트로를 가리지 않게 먼저 닫는다. 닫으면서 재개된 시간은 인트로가 시작하며 다시 멈춘다.
+         HideOptionUI();
+         IntroManager.Instance.Replay();
       }
 
       // 튜토리얼 다시보기 라벨을 현재 언어로 갱신한다.

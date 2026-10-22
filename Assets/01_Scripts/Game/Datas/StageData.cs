@@ -29,6 +29,9 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         [Tooltip("이 맵에서 엘리트 처치 시 주는 재화 배율. 빠른(약한 몹) 맵은 낮게, 느린(강한 몹) 맵은 높게 — 맵별 재화 획득률 균등화용. 0이면 1로 처리.")]
         private float eliteRewardMultiplier = 1f;
+        [SerializeField]
+        [Tooltip("맵 등장 순서. 작은 값이 먼저. 엑셀 order 열에서 들어온다.")]
+        private int order;
         #endregion
 
         #region IData
@@ -45,6 +48,8 @@ namespace TrainDefense.Game.Datas
         /// <summary>맵 이름 로컬라이즈 키. 미지정 시 "Stage_{id}_Name" 규칙 키를 반환한다.</summary>
         public string NameKey => string.IsNullOrEmpty(nameKey) ? $"Stage_{id}_Name" : nameKey;
         public float EliteRewardMultiplier => eliteRewardMultiplier > 0f ? eliteRewardMultiplier : 1f;
+        /// <summary>맵 등장 순서(작은 값이 먼저). 몬스터 수치를 바꿔도 순서가 흔들리지 않도록 데이터에 고정한다.</summary>
+        public int Order => order;
     }
 
     [Serializable]

@@ -174,6 +174,15 @@ namespace TrainDefense.Localize
             {
                 _langCodeOverride = SystemLanguageToCode((SystemLanguage)PlayerPrefs.GetInt(LanguagePrefKey));
             }
+
+            // 표 헤더에 없는 코드(예: 옛 형식 "ko")가 저장돼 있으면 폴백 언어로 떨어지므로 무시하고 기기 언어를 쓴다.
+            if (_langCodeOverride != null && !_availableCodes.Contains(_langCodeOverride))
+            {
+                Debug.LogWarning($"[Localization] 저장된 언어코드 '{_langCodeOverride}'가 표에 없어 기기 언어로 돌아갑니다.");
+                _langCodeOverride = null;
+                PlayerPrefs.DeleteKey(LangCodePrefKey);
+                PlayerPrefs.DeleteKey(LanguagePrefKey);
+            }
         }
 
         private static void ParseTSV(string tsv)
@@ -221,8 +230,9 @@ namespace TrainDefense.Localize
             {
                 string code = CurrentLanguageCode;
                 if (languages.TryGetValue(code, out string text) && !string.IsNullOrEmpty(text)) return text;
+                // 표에 없는 기기 언어는 영어로, 영어도 없으면 한국어로.
+                if (languages.TryGetValue("English", out string english) && !string.IsNullOrEmpty(english)) return english;
                 if (languages.TryGetValue("Korean", out string korean)) return korean;
-                if (languages.TryGetValue("English", out string english)) return english;
                 foreach (var val in languages.Values) return val;
             }
 

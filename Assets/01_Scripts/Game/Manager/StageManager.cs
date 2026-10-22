@@ -153,42 +153,15 @@ namespace TrainDefense.Game.Manager
             _stageDatas = DatabaseManager.Instance.GetStageDatas();
             // 맵은 고정 순서로 등장한다. 첫 맵과 이동이 무작위이던 시절에는 같은 조건으로 돌려도
             // 도달 역이 9~20으로 갈려서 판 결과를 맵 추첨이 좌우했다.
-            // 정렬 기준은 위협지수(_GetStageThreatScore) 오름차순 = 쉬운 맵부터.
+            // 순서는 StageData.Order(엑셀 order 열). 몬스터 수치로 계산한 위협지수 정렬은
+            // 수치를 조정하면 순서가 뒤집혀서(해안 602 vs 고블린 숲 677) 데이터에 고정했다(10-22).
             if (_stageDatas != null)
             {
                 _stageDatas = _stageDatas
                     .Where(stage => stage != null)
-                    .OrderBy(_GetStageThreatScore)
+                    .OrderBy(stage => stage.Order)
                     .ToArray();
             }
-        }
-
-        /// <summary>
-        /// 맵 난이도 대리 지표. (가중평균 체력 ÷ 스폰 간격) × 가중평균 공격력.
-        /// 스폰 간격만 쓰면 밀도만 반영돼서, 몬스터가 강한 맵이 앞에 오는 일이 생긴다
-        /// (사막은 가장 빽빽하지만 체력 8~44, 숲은 중간 밀도인데 곰이 체력 252·공격 40).
-        /// 등장 비중(Probability)으로 가중해서 실제로 마주치는 평균을 본다.
-        /// </summary>
-        private static float _GetStageThreatScore(StageData stage)
-        {
-            if (stage == null || stage.SpawnInterval <= 0f || stage.SpawnDatas == null) return 0f;
-
-            float weight = 0f, hpSum = 0f, damageSum = 0f;
-            foreach (var spawn in stage.SpawnDatas)
-            {
-                var monster = DatabaseManager.Instance != null
-                    ? DatabaseManager.Instance.GetMonsterData(spawn.MonsterId)
-                    : null;
-                if (monster == null) continue;
-
-                var status = monster.MonsterStatusData;
-                weight += spawn.Probability;
-                hpSum += status.MaxHp * spawn.Probability;
-                damageSum += status.Damage * spawn.Probability;
-            }
-
-            if (weight <= 0f) return 0f;
-            return hpSum / weight / stage.SpawnInterval * (damageSum / weight);
         }
 
         private void _ResetCurrentStageInfo()

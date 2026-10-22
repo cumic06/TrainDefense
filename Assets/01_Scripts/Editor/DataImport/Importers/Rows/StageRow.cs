@@ -15,10 +15,12 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string spawnMonstersProbability;
 		public string spawnMonstersLevel;
 		public string spawnMonstersEliteChance;
+		public int order;
 
 		public void FromExcelRow(IRow row, HeaderMap map)
 		{
 			id = map.GetString(row, "id");
+			order = map.GetInt(row, "order");
 			nameKey = map.GetString(row, "name_key");
 			baseInspectionTime = map.GetFloat(row, "base_inspection_time");
 			stationCount = map.GetInt(row, "station_count");
@@ -33,6 +35,7 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public void ToExcelRow(IRow row, HeaderMap map)
 		{
 			map.SetCell(row, "id", id);
+			map.SetCell(row, "order", order);
 			map.SetCell(row, "name_key", nameKey);
 			map.SetCell(row, "base_inspection_time", baseInspectionTime);
 			map.SetCell(row, "station_count", stationCount);
