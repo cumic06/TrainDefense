@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Cumic;
 using Cumic.Events;
+using Cumic.Sequence;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.RunSave;
@@ -55,6 +56,8 @@ namespace TrainDefense.Game.UI
       private bool _isSelecting = false;
       private int _popupRequestId = 0;
       private bool _pauseButtonLocked = false;
+      // 지금 열린 레벨업 창이 역 도착 경로(StationLevelUpStartEvent)로 열렸는지. 그 경우에만 닫힐 때 상점 연출을 이어 부른다.
+      private bool _isStationLevelUp = false;
       private readonly List<(IChoiceOption option, int slotIndex)> _activeChoices = new();
       #endregion
 
@@ -87,6 +90,7 @@ namespace TrainDefense.Game.UI
       private void _SubscribeEvents()
       {
          GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
+         GameEventSystem.Subscribe<LevelUpEvent>(_OnLevelUp);
          GameEventSystem.Subscribe<StationLevelUpStartEvent>(_OnStationLevelUpStart);
          GameEventSystem.Subscribe<StageEndEvent>(_OnStageEnd);
          GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
@@ -96,6 +100,7 @@ namespace TrainDefense.Game.UI
       private void _UnsubscribeEvents()
       {
          GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
+         GameEventSystem.Unsubscribe<LevelUpEvent>(_OnLevelUp);
          GameEventSystem.Unsubscribe<StationLevelUpStartEvent>(_OnStationLevelUpStart);
          GameEventSystem.Unsubscribe<StageEndEvent>(_OnStageEnd);
          GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
@@ -155,10 +160,36 @@ namespace TrainDefense.Game.UI
          }
       }
 
-      // 전투 중 오른 레벨은 쌓아 두었다가 역 도착 때 멈춘 전투 화면 위에서 한꺼번에 고른다.
+      // 전투 중 레벨이 오르면 바로 전투를 멈추고 카드 창을 연다(사용자 결정 10-21, 역 도착 몰아 고르기에서 복귀).
+      // 오버레이는 PauseUI·OptionUI처럼 창을 여는 쪽이 직접 밀고, 다 고르면 TriChoiceSelectEvent로 InGameSequence가 내린다.
+      // 전투가 아닐 때(상점 전환 연출·일시정지·다른 창)는 그대로 두면 역 도착 경로(_OnStationLevelUpStart)가 남은 횟수를 처리한다.
+      private void _OnLevelUp(LevelUpEvent levelUpEvent)
+      {
+         var sequence = InGameSequence.Instance;
+         var timelineManager = TimelineManager.Instance;
+         bool inBattle = sequence != null && sequence.CurrentBase == BasePhase.Engage
+            && (sequence.CurrentOverlays & ~OverlayPhase.LevelUp) == OverlayPhase.None   // 한 번에 여러 레벨이 오르면 창이 이미 열린 채 다시 들어온다
+            && (timelineManager == null || !timelineManager.IsShopTransitioning);
+
+         if (!inBattle)
+            return;
+
+         int pendingLevelUpCount = UserDataManager.Instance != null ? UserDataManager.Instance.PendingLevelUpCount : 0;
+
+         if (pendingLevelUpCount <= 0)
+            return;
+
+         sequence.PushOverlay(OverlayPhase.LevelUp);
+         _isStationLevelUp = false;
+         _popupMode = ChoicePopupMode.StatUpgrade;
+         OnInspectionEnter(pendingLevelUpCount);
+      }
+
+      // 전투 중에 못 고른 레벨업(상점 전환 중·일시정지 중에 오른 경우)은 역 도착 때 멈춘 전투 화면 위에서 한꺼번에 고른다.
       // 다 고르면 StationLevelUpEndEvent로 상점 진입 연출이 시작된다.
       private void _OnStationLevelUpStart(StationLevelUpStartEvent stationLevelUpStartEvent)
       {
+         _isStationLevelUp = true;
          _popupMode = ChoicePopupMode.StatUpgrade;
          OnInspectionEnter(stationLevelUpStartEvent.LevelUpCount);
       }
@@ -343,8 +374,11 @@ namespace TrainDefense.Game.UI
       // 창이 닫히는 모든 경로(다 고름·후보 없음·카드 활성 실패)에서 불러야 상점이 영영 안 열리는 일이 없다.
       private void _EndStationLevelUp()
       {
-         if (_popupMode == ChoicePopupMode.StatUpgrade)
-            GameEventSystem.Publish(new StationLevelUpEndEvent());
+         if (_popupMode != ChoicePopupMode.StatUpgrade || !_isStationLevelUp)
+            return;
+
+         _isStationLevelUp = false;
+         GameEventSystem.Publish(new StationLevelUpEndEvent());
       }
 
       public async UniTaskVoid OnChoiceSelected(IChoiceOption choiceOption)
