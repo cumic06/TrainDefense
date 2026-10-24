@@ -27,10 +27,17 @@ namespace TrainDefense.Game
             if (_lobPeakHeight > 0f) projectile.SetLobHeight(0f);
             _lobPeakHeight = 0f;
 
-            if (!data.DetonateAtTargetDistance || target == null || target.TargetTransform == null)
+            if (!data.DetonateAtTargetDistance)
                 return;
 
-            _targetDistance = Vector2.Distance(projectile.transform.position, target.TargetTransform.position);
+            // 대상이 있으면 대상 위치, 없으면(무작위 낙탄) 포탑이 넘긴 낙하점까지의 거리로 터질 지점을 정한다.
+            Vector3? landing = target != null && target.TargetTransform != null
+                ? target.TargetTransform.position
+                : projectile.LandingPosition;
+            if (!landing.HasValue)
+                return;
+
+            _targetDistance = Vector2.Distance(projectile.transform.position, landing.Value);
             // 발사 지점과 목표가 사실상 겹치면 즉시 터져 버리므로 거리 조건을 걸지 않는다.
             _detonateAtDistance = _targetDistance > 0.01f;
 

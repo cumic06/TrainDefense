@@ -573,7 +573,8 @@ namespace TrainDefense.Game
             ProjectileData projectileData = GetProjectile().GetData();
 
             // 비주얼 먼저 소환 (DirectDamage로 적이 죽기 전에 방향 설정)
-            if (projectileData != null && projectileData.MovementType == MovementType.TargetPos)
+            // 쏘아 보내는 포탄(DetonateAtTargetDistance, 박격포)도 포탄마다 대상·낙하점을 따로 정한다.
+            if (projectileData != null && (projectileData.MovementType == MovementType.TargetPos || projectileData.DetonateAtTargetDistance))
             {
                 TargetPosAttack();
                 if (projectileData == null || !projectileData.DirectDamage)
@@ -802,6 +803,8 @@ namespace TrainDefense.Game
             if (projectile == null) return;
 
             SetupProjectileTransform(projectile, 0, worldPosition);
+            // 대상 없이(무작위 낙탄) 쏠 때 이동 전략이 비행 거리를 잴 수 있게 낙하점을 넘긴다.
+            projectile.LandingPosition = worldPosition;
             if (target != null)
                 InitializeProjectile(projectile, target);
             else
@@ -939,6 +942,15 @@ namespace TrainDefense.Game
                     {
                         projectile.transform.localScale = Vector3.one;
                     }
+                }
+                else if (movementType == MovementType.Linear)
+                {
+                    // 쏘아 보내는 포탄은 낙하점에 놓지 않고 발사구에서 낙하점을 향해 출발한다.
+                    Transform spawnPoint = turretProjectileSpawnPoints != null && turretProjectileSpawnPoints.Length > 0
+                        ? turretProjectileSpawnPoints[Mathf.Min(spawnIndex, turretProjectileSpawnPoints.Length - 1)]
+                        : null;
+                    projectile.transform.position = spawnPoint != null ? spawnPoint.position : transform.position;
+                    projectile.transform.LookAt2D((Vector2)worldPosition.Value);
                 }
                 else
                 {

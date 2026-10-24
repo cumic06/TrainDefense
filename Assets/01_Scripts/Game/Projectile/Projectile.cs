@@ -24,6 +24,8 @@ namespace TrainDefense.Game
         protected IMovementStrategy _movementStrategy;
 
         public bool SuppressShoveEffect { get; set; }
+        // 대상 없이 쏘는 낙하점(무작위 낙탄). 쏘아 보내는 포탄(DetonateAtTargetDistance)이 비행 거리를 재는 데 쓴다. 발사 때마다 포탑이 넣고 재사용 시 비운다.
+        public Vector3? LandingPosition { get; set; }
         public float ShoveScale { get; set; } = 1f;
         protected Coroutine _destroyCoroutine;
         protected Dictionary<IProjectileTarget, float> _damageTimers = new();
@@ -69,6 +71,7 @@ namespace TrainDefense.Game
             if (_fadeSprites != null)
                 _SetFadeAlpha(1f);
             SuppressShoveEffect = false;
+            LandingPosition = null;
             ShoveScale = 1f;
             _runtimeHasShove = false;
             _runtimeShovePower = 0f;

@@ -732,6 +732,7 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60018
     - 60019
+    - 60015
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 40
@@ -1026,16 +1027,21 @@ MonoBehaviour:
         Value: 400
     - id: 60015
       name: Passive_60015_Name
-      passiveType: StatModifier:AttackInterval:-50|RapidBombard:10:7
+      passiveType: StatModifier:AttackInterval:-150|RapidBombard
       param1: 
       param2: 
       param3: 
       description: Passive_60015_Desc
-      unlockConditions: []
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 3
+        Comparison: 0
+        Value: 150
     - id: 60017
       name: Passive_60017_Name
       passiveType: ChainAttackChance
-      param1: 30
+      param1: 20
       param2: 0.25
       param3: 
       description: Passive_60017_Desc
@@ -1862,6 +1868,10 @@ MonoBehaviour:
     trainDataId: 30006
     statType: 2
     increaseRate: 0.2
+  - id: stat_upgrade_30006_attack_interval
+    trainDataId: 30006
+    statType: 4
+    increaseRate: 0.15
   - id: stat_upgrade_30006_attack_area
     trainDataId: 30006
     statType: 8
