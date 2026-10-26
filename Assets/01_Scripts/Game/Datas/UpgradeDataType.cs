@@ -6,6 +6,7 @@ namespace TrainDefense.Game.Datas
     public enum UpgradeDataType
     {
         TrainUpgrade,      // Train 관련 업그레이드
-        NonTrainUpgrade    // Train 외의 업그레이드
+        NonTrainUpgrade,   // Train 외의 업그레이드
+        GoldGain           // 처치 골드 보너스(레벨당 upgradeValue %) — 같은 타입 전부를 합산한다 (Monster 드롭)
     }
 }

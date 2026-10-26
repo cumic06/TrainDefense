@@ -66,6 +66,8 @@ namespace TrainDefense.Game
         public IChoiceOption[] GetUpgradeTrainChoices() => GetDB().TriChoiceDB.UpgradeTrainChoices.Select(x => x.Option).ToArray();
 
         public IReadOnlyList<StatUpgradeTierData> GetStatUpgradeTiers() => GetDB().StatUpgradeTierDataList;
+        // 등급 번호로 등급표 행 하나. 없으면 null — 상점 아이템이 가격·등장 시점·테두리를 이 행에서 읽는다.
+        public StatUpgradeTierData GetStatUpgradeTier(int grade) => GetDB().StatUpgradeTierDataList.FirstOrDefault(tier => tier != null && tier.Grade == grade);
 
         // 이 스탯이 나오기 시작하는 등급. 설정이 없으면 1등급부터.
         public int GetStatMinGrade(StatType statType)
@@ -152,7 +154,16 @@ namespace TrainDefense.Game
                 return null;
             }
 
-            var result = GetUpgradeDatas().FirstOrDefault(u => u.Id == id);
+            // 배열 복사(GetUpgradeDatas) 없이 원본 목록을 훑는다 — 처치마다 골드 보너스 합산이 부른다.
+            UpgradeData result = null;
+            foreach (var upgradeData in GetDB().UpgradeDataList)
+            {
+                if (upgradeData != null && upgradeData.Id == id)
+                {
+                    result = upgradeData;
+                    break;
+                }
+            }
             if (result == null)
             {
                 Debug.LogWarning($"Upgrade data with ID '{id}' not found");

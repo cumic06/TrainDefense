@@ -110,6 +110,19 @@ namespace TrainDefense.Game.UI
                 case AddTrainChoice:
                     return turretPurchaseCost;
 
+                // 전체 포탑 아이템: 강화 카드 등급표의 가격 배수(1등급 카드 값 × 등급 배수) × 성장률^보유 수 (같은 아이템을 쌓을수록 비싸진다).
+                // 등급이 없는 데이터는 데이터 기본가로.
+                case StatUpgradeChoice itemChoice when itemChoice.UpgradeData != null:
+                {
+                    int ownedCount = UserDataManager.Instance != null ? UserDataManager.Instance.GetUpgradeLevel(itemChoice.Id) : 0;
+                    var tier = DatabaseManager.Instance != null ? DatabaseManager.Instance.GetStatUpgradeTier(itemChoice.UpgradeData.Grade) : null;
+
+                    if (tier == null)
+                        return itemChoice.UpgradeData.GetCostAtLevel(ownedCount);
+
+                    return statUpgradeBaseCost * tier.CostMultiplier * Mathf.Pow(itemChoice.UpgradeData.GrowthRate, ownedCount);
+                }
+
                 default:
                     // 새 상품 타입이 가격 분기 없이 상점에 들어오면 조용히 오가격되는 걸 막기 위해 경고.
                     Debug.LogWarning($"ShopOfferPricing: 가격 분기가 없는 상품 타입 {option?.GetType().Name} — 포탑 구매가로 폴백");

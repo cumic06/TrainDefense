@@ -256,8 +256,12 @@ namespace TrainDefense.Game
          // 기존 트레인의 누적 강화(영구 상점 + 카드)를 새 인스턴스에 통째로 승계.
          // ApplyExistingUpgradesToTrain은 호출하지 않는다 — oldTrain의 currentStat에 이미 영구 업그레이드가 반영되어 있어
          // CopyProgressFrom의 delta가 영구 + 카드를 모두 옮긴다. 둘 다 호출하면 영구분이 중복 적용된다.
-         newTrain.CopyProgressFrom(oldTrain);
+         // 상점 아이템(최종값 곱)은 delta로 옮길 수 없다 — 승계 계산에서 원본의 아이템 배율을 나눈 뒤, 새 기차에 다시 곱한다.
+         // 개조 패시브(ApplyPassiveSkills)와 아이템은 같은 스탯이면 %가 합산된다(Train.AccumulateFinalValuePercent).
+         var shopItemStats = GetShopItemStats();
+         newTrain.CopyProgressFrom(oldTrain, shopItemStats);
          newTrain.ApplyPassiveSkills();
+         newTrain.ApplyStatsToFinalValue(shopItemStats);
 
          // 런 세이브 복원용: 업그레이드 이력과 base 출처를 새 인스턴스로 승계한다.
          _TransferUpgradeHistory(oldTrain, newTrain, oldTrainId);
@@ -482,10 +486,84 @@ namespace TrainDefense.Game
          if (upgradeData.Stats == null || upgradeData.Stats.Length == 0)
             return;
 
+         // 상점 아이템은 최종값에 곱한다(개조와 같은 경로). 같은 스탯의 % 합산은 Train(AccumulateFinalValuePercent)이 맡으므로
+         // 이번 구매분의 %를 그대로 넘긴다.
+         if (upgradeData.UpgradePool == UpgradePool.ShopItem)
+         {
+            var purchasedStats = _ScaleStats(upgradeData.Stats, newLevel - prevLevel);
+
+            foreach (var train in _currentAliveTrains)
+               train.ApplyStatsToFinalValue(purchasedStats);
+
+            return;
+         }
+
          foreach (var train in _currentAliveTrains)
          {
             train.ApplyStatsLevelAware(upgradeData.Stats, newLevel, prevLevel);
          }
+      }
+
+      // 상점 아이템 총량 — 스탯마다 (값 × 구매 수)를 전부 더한 %. 새 포탑·승격·이어하기가 최종값 곱 경로(ApplyStatsToFinalValue)에 한 번에 넣는다.
+      // 공격 간격은 음수가 빠름이라 그 경로의 역수 배율(1 ÷ (1 − p))과 맞는다.
+      public static IStat[] GetShopItemStats()
+      {
+         var result = new List<IStat>();
+
+         foreach (var pair in _GetShopItemTotals())
+         {
+            if (pair.Value != 0f)
+               result.Add(new SimpleStat { Type = pair.Key, Value = pair.Value });
+         }
+
+         return result.ToArray();
+      }
+
+      // 구매 수만큼 곱한 % (같은 아이템을 한 번에 여러 개 받는 경우 대비).
+      private static IStat[] _ScaleStats(IStat[] stats, int count)
+      {
+         var result = new List<IStat>();
+
+         foreach (var stat in stats)
+         {
+            if (stat != null && stat.Value != 0f)
+               result.Add(new SimpleStat { Type = stat.Type, Value = stat.Value * count });
+         }
+
+         return result.ToArray();
+      }
+
+      // 스탯별 합산 총량(%). 구매한 id만 돈다(DB 전체 배열 복사 없음).
+      private static Dictionary<StatType, float> _GetShopItemTotals()
+      {
+         var totals = new Dictionary<StatType, float>();
+
+         if (UserDataManager.Instance == null || DatabaseManager.Instance == null)
+            return totals;
+
+         foreach (var upgradeId in UserDataManager.Instance.GetAllUpgradeIds())
+         {
+            var upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
+
+            if (upgradeData == null || upgradeData.UpgradePool != UpgradePool.ShopItem || upgradeData.Stats == null)
+               continue;
+
+            int level = UserDataManager.Instance.GetUpgradeLevel(upgradeId);
+
+            if (level <= 0)
+               continue;
+
+            foreach (var stat in upgradeData.Stats)
+            {
+               if (stat == null)
+                  continue;
+
+               totals.TryGetValue(stat.Type, out float current);
+               totals[stat.Type] = current + stat.Value * level;
+            }
+         }
+
+         return totals;
       }
 
       /// <summary>
@@ -503,6 +581,11 @@ namespace TrainDefense.Game
          // 레벨 누적 방식으로 적용: per-call 반올림 오차 방지
          foreach (var (stats, level) in GetExistingTrainUpgrades())
             train.ApplyStatsLevelAware(stats, level);
+
+         // 상점 아이템은 최종값에 곱한다. 이어하기 복원 중엔 저장된 강화 증가량(아이템 배율을 뺀 크기)을 얹은 뒤
+         // _RestoreFormationEntry가 곱한다 — 여기서 먼저 곱하면 증가량이 배율을 못 받는다.
+         if (RunSave.RunSaveManager.Instance == null || !RunSave.RunSaveManager.Instance.IsRestoring)
+            train.ApplyStatsToFinalValue(GetShopItemStats());
       }
 
       /// <summary>
@@ -559,8 +642,8 @@ namespace TrainDefense.Game
                continue;
             }
 
-            // TrainUpgrade 타입의 업그레이드만 적용
-            if (upgradeData.UpgradeDataType != UpgradeDataType.TrainUpgrade)
+            // TrainUpgrade 타입의 업그레이드만 적용. 상점 아이템은 최종값 곱이라 따로(GetShopItemStats) 다룬다.
+            if (upgradeData.UpgradeDataType != UpgradeDataType.TrainUpgrade || upgradeData.UpgradePool == UpgradePool.ShopItem)
             {
                continue;
             }

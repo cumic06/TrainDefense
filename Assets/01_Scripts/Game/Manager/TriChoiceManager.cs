@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Cumic;
 using TrainDefense.Game.Datas;
@@ -100,6 +101,18 @@ namespace TrainDefense.Game
                 if (upgradeData == null)
                     return null;
 
+                // 상점 아이템은 문장 템플릿에 효과 값을 채운다(_BuildShopItemDescription). 레벨 표기가 없어 레벨을 안 읽는다.
+                if (upgradeData.UpgradePool == UpgradePool.ShopItem)
+                {
+                    return new ChoiceUIInfo
+                    {
+                        Icon = upgradeData.Icon,
+                        Name = upgradeData.Name,
+                        Description = _BuildShopItemDescription(upgradeData),
+                        Grade = upgradeData.Grade
+                    };
+                }
+
                 int currentLevel = UserDataManager.Instance != null
                     ? UserDataManager.Instance.GetUpgradeLevel(upgradeData.Id)
                     : 0;
@@ -149,6 +162,71 @@ namespace TrainDefense.Game
                 return _SafeFormat(upgradeData.Description, string.Empty, increaseAmountText, maxValue, maxValue);
 
             return _SafeFormat(upgradeData.Description, string.Empty, increaseAmountText, currentValue, maxValue);
+        }
+
+        // 상점 아이템 설명 — 아이템마다 문장 템플릿(Upgrade_1100xx_Desc, "모든 포탑의 공격력이 {0}% 증가하고 사거리가 {1}% 감소합니다").
+        // {n}은 stats 배열 n번째의 크기(부호 없음). 공격 간격은 값이 줄어야 빨라지므로 문장은 "공격 속도"로 쓰고 부호만 뒤집어 본다.
+        // 손해(나빠지는 쪽) 자리는 DESIGN.md danger-text 색 — 그 줄에 손해 자리만 있으면 줄 전체를, 섞여 있으면 숫자만 물들인다.
+        private const string SHOP_ITEM_PENALTY_COLOR_HEX = "#E06666";
+        private static readonly System.Text.RegularExpressions.Regex ShopItemPlaceholderRegex = new(@"\{(\d+)\}");
+
+        private static string _BuildShopItemDescription(UpgradeData upgradeData)
+        {
+            var arguments = new List<object>();
+            var penaltyIndexes = new HashSet<int>();
+
+            if (upgradeData.UpgradeDataType == UpgradeDataType.GoldGain)
+            {
+                arguments.Add($"{Mathf.Abs(upgradeData.UpgradeValue):0.#}");
+            }
+            else if (upgradeData.Stats != null)
+            {
+                foreach (var stat in upgradeData.Stats)
+                {
+                    float shownValue = stat == null ? 0f : (stat.Type == Stats.StatType.AttackInterval ? -stat.Value : stat.Value);
+
+                    if (shownValue < 0f)
+                        penaltyIndexes.Add(arguments.Count);
+
+                    arguments.Add($"{Mathf.Abs(shownValue):0.#}");
+                }
+            }
+
+            var lines = new List<string>();
+
+            foreach (string templateLine in upgradeData.Description.Split('\n'))
+            {
+                var placeholders = ShopItemPlaceholderRegex.Matches(templateLine);
+                bool hasPenalty = false;
+                bool hasBenefit = false;
+
+                foreach (System.Text.RegularExpressions.Match match in placeholders)
+                {
+                    if (penaltyIndexes.Contains(int.Parse(match.Groups[1].Value)))
+                        hasPenalty = true;
+                    else
+                        hasBenefit = true;
+                }
+
+                string line = templateLine;
+
+                if (hasPenalty && hasBenefit)
+                {
+                    // 숫자만(앞뒤 % 포함) 물들인다 — 터키어처럼 %가 앞에 오는 언어도 같이 잡는다.
+                    foreach (int index in penaltyIndexes)
+                        line = System.Text.RegularExpressions.Regex.Replace(line, @"%?\{" + index + @"\}%?",
+                            match => $"<color={SHOP_ITEM_PENALTY_COLOR_HEX}>{match.Value}</color>");
+                }
+
+                line = _SafeFormat(line, arguments.ToArray()).Trim();
+
+                if (hasPenalty && !hasBenefit)
+                    line = $"<color={SHOP_ITEM_PENALTY_COLOR_HEX}>{line}</color>";
+
+                lines.Add(line);
+            }
+
+            return string.Join("\n", lines);
         }
 
         // 로컬라이즈 템플릿의 placeholder 개수/형식이 어긋나도 카드 생성이 죽지 않도록 하는 안전 포맷.

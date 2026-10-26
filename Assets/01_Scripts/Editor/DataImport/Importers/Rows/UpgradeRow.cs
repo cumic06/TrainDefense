@@ -15,6 +15,12 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 		public string upgradeType;
 		public string statType;
 		public float growthRate;
+		// 선택지 풀(LevelUp/ShopItem). 비어 있으면 LevelUp.
+		public string pool;
+		// 스탯 여러 개를 담는 아이템용 — "AttackDamage:15;AttackInterval:5". 비어 있으면 stat_type + upgrade_value 한 개.
+		public string stats;
+		// 상점 아이템 등급(1~5, 등급표 행). 비어 있으면 0.
+		public int grade;
 
 		public void FromExcelRow(IRow row, HeaderMap map)
 		{
@@ -34,6 +40,15 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 
 			if (map.HasColumn("growth_rate"))
 				growthRate = map.GetFloat(row, "growth_rate");
+
+			if (map.HasColumn("pool"))
+				pool = map.GetString(row, "pool");
+
+			if (map.HasColumn("stats"))
+				stats = map.GetString(row, "stats");
+
+			if (map.HasColumn("grade"))
+				grade = map.GetInt(row, "grade");
 		}
 
 		public void ToExcelRow(IRow row, HeaderMap map)
@@ -48,6 +63,9 @@ namespace TrainDefense.Editor.DataImport.Importers.Rows
 			map.SetCell(row, "upgrade_type", upgradeType);
 			map.SetCell(row, "stat_type", statType);
 			map.SetCell(row, "growth_rate", growthRate);
+			map.SetCell(row, "pool", pool);
+			map.SetCell(row, "stats", stats);
+			map.SetCell(row, "grade", grade);
 		}
 	}
 }

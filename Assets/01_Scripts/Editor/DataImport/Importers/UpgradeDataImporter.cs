@@ -11,12 +11,12 @@ namespace TrainDefense.Editor.DataImport.Importers
 		public string ExcelFileName => "UpgradeData.xlsx";
 		public string SheetName => "upgrade_data";
 		public string ButtonLabel => "Upgrade 데이터 가져오기";
-		// Excel 헤더 안내 (H: upgrade_type, I: stat_type)
+		// Excel 헤더 안내 (H: upgrade_type, I: stat_type, K: pool[LevelUp/ShopItem], L: stats["AttackDamage:15;AttackInterval:5"], M: grade[상점 아이템 등급 1~5])
 		public string[] Headers => new[]
 		{
 			"id", "upgrade_name", "description", "need_money",
 			"upgrade_value", "max_upgrade_count", "icon_id",
-			"upgrade_type", "stat_type", "growth_rate"
+			"upgrade_type", "stat_type", "growth_rate", "pool", "stats", "grade"
 		};
 
 		public int Import(DB db, string excelPath)
@@ -87,8 +87,22 @@ namespace TrainDefense.Editor.DataImport.Importers
 			var upgradeType = ParseUpgradeType(r.upgradeType, r.statType);
 			SetPrivateField(t, target, "upgradeDataType", upgradeType);
 
+			// 선택지 풀 — 비어 있거나 모르는 값이면 레벨업
+			var pool = UpgradePool.LevelUp;
+			if (!string.IsNullOrEmpty(r.pool))
+				Enum.TryParse(r.pool, ignoreCase: true, out pool);
+			SetPrivateField(t, target, "upgradePool", pool);
+			SetPrivateField(t, target, "grade", r.grade);
+
+			// 스탯 여러 개(아이템): "AttackDamage:15;AttackInterval:5" — 하나라도 읽히면 TrainUpgrade로 본다
+			var multiStats = ParseStats(r.stats);
+			if (multiStats.Length > 0)
+			{
+				SetPrivateField(t, target, "upgradeDataType", UpgradeDataType.TrainUpgrade);
+				SetPrivateField(t, target, "stats", multiStats);
+			}
 			// TrainUpgrade인 경우: stats 배열 채우기 (값은 upgradeValue 사용)
-			if (upgradeType == UpgradeDataType.TrainUpgrade && !string.IsNullOrEmpty(r.statType))
+			else if (upgradeType == UpgradeDataType.TrainUpgrade && !string.IsNullOrEmpty(r.statType))
 			{
 				if (Enum.TryParse<StatType>(r.statType, ignoreCase: true, out var statType))
 				{
@@ -114,6 +128,32 @@ namespace TrainDefense.Editor.DataImport.Importers
 				// NonTrainUpgrade 등: 스탯 배열은 비움
 				SetPrivateField(t, target, "stats", Array.Empty<SimpleStat>());
 			}
+		}
+
+		private static SimpleStat[] ParseStats(string raw)
+		{
+			if (string.IsNullOrWhiteSpace(raw))
+				return Array.Empty<SimpleStat>();
+
+			var result = new System.Collections.Generic.List<SimpleStat>();
+
+			foreach (var token in raw.Split(';'))
+			{
+				var parts = token.Split(':');
+
+				if (parts.Length != 2)
+					continue;
+
+				if (!Enum.TryParse<StatType>(parts[0].Trim(), ignoreCase: true, out var statType))
+					continue;
+
+				if (!float.TryParse(parts[1].Trim(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var value))
+					continue;
+
+				result.Add(new SimpleStat { Type = statType, Value = value });
+			}
+
+			return result.ToArray();
 		}
 
 		private static UpgradeDataType ParseUpgradeType(string rawType, string statType)

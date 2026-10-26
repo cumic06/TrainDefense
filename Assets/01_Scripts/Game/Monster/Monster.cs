@@ -887,15 +887,23 @@ namespace TrainDefense.Game
 
          int dropMoney = Random.Range(dropMoneyMin, dropMoneyMax);
 
-         // 골드 획득 업그레이드 보너스 (구매 레벨당 % 증가, UpgradeValue = 레벨당 퍼센트)
+         // 골드 획득 업그레이드 보너스 — GoldGain 타입(레벨업 골드 카드·상점 연료통) 전부 합산 (레벨당 UpgradeValue %, 덧셈).
+         // 처치마다 도는 코드라 DB 전체 배열(GetUpgradeDatas = ToArray) 대신 구매한 id만 돈다.
          if (DatabaseManager.Instance != null && UserDataManager.Instance != null)
          {
-            var goldBonusData = DatabaseManager.Instance.GetUpgradeData("110004");
-            if (goldBonusData != null)
+            float goldBonusPercent = 0f;
+
+            foreach (var upgradeId in UserDataManager.Instance.GetAllUpgradeIds())
             {
-               int bonusLevel = UserDataManager.Instance.GetUpgradeLevel("110004");
-               dropMoney = Mathf.RoundToInt(dropMoney * (1f + bonusLevel * goldBonusData.UpgradeValue / 100f));
+               var upgradeData = DatabaseManager.Instance.GetUpgradeData(upgradeId);
+
+               if (upgradeData == null || upgradeData.UpgradeDataType != UpgradeDataType.GoldGain)
+                  continue;
+
+               goldBonusPercent += UserDataManager.Instance.GetUpgradeLevel(upgradeId) * upgradeData.UpgradeValue;
             }
+
+            dropMoney = Mathf.RoundToInt(dropMoney * (1f + goldBonusPercent / 100f));
          }
 
          ResourceManager.Instance.Spawn(Resources.Load<GameObject>(MoneyPrefabPath), transform.position);

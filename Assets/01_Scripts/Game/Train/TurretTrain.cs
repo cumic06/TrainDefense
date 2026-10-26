@@ -1205,21 +1205,55 @@ namespace TrainDefense.Game
         // 상점 카드 롱프레스용 — 새 포탑은 생성 직후 값(영구 강화 + 판 중 전체 강화), 승격은 promotionSource의 누적 강화를 승계한 값.
         // (Train.GetPreviewStatDetails가 부른다. runUpgrades = MainTrain.GetExistingTrainUpgrades)
         public static (string label, string value)[] GetPreviewStatDetails(TurretTrainData data, float maxHp, TurretTrain promotionSource,
-            List<(IStat[] stats, int level)> runUpgrades)
+            List<(IStat[] stats, int level)> runUpgrades, IStat[] shopItemStats)
         {
             if (promotionSource != null && promotionSource.turretTrainData != null)
-                return _BuildStatDetails(maxHp, _GetInheritedStatus(data.TurretTrainStatus,
-                    promotionSource.turretTrainData.TurretTrainStatus, promotionSource._currentTurretTrainStatus));
+            {
+                // 승격 = 아이템 배율을 뺀 원본 증가량을 승계한 뒤 다시 곱한다(ReplaceTrain → CopyProgressFrom과 같은 식).
+                var inherited = _GetInheritedStatusWithoutShopItems(data.TurretTrainStatus, promotionSource, shopItemStats);
+                _ApplyFinalValue(ref inherited, shopItemStats, false);
+                return _BuildStatDetails(maxHp, inherited);
+            }
 
-            // 생성 순서와 같게: 영구 강화(Setup) → 판 중 전체 강화(MainTrain.ApplyExistingUpgradesToTrain)
+            // 생성 순서와 같게: 영구 강화(Setup) → 판 중 전체 강화(MainTrain.ApplyExistingUpgradesToTrain) → 상점 아이템(최종값 곱)
             var status = _GetMetaAppliedStatus(data.TurretTrainStatus);
             var metaBaseStatus = status;
             foreach (var (stats, level) in runUpgrades)
                 foreach (var stat in stats)
                     if (stat != null)
                         _TryApplyLevelAware(ref status, data.TurretTrainStatus, metaBaseStatus, stat, level, 0);
+            _ApplyFinalValue(ref status, shopItemStats, false);
 
             return _BuildStatDetails(maxHp, status);
+        }
+
+        // 승격 승계값(아이템 배율 제외): 원본 현재값을 아이템 배율로 나눈 뒤 newBase + (sourceCurrent − sourceBase). CopyProgressFrom과 미리보기가 같이 쓴다.
+        // 원본(base 포탑)에는 개조가 없어 최종값 %는 아이템뿐이다.
+        private static TurretTrainStatus _GetInheritedStatusWithoutShopItems(TurretTrainStatus newBase, TurretTrain source, IStat[] shopItemStats)
+        {
+            var sourceCurrent = source._currentTurretTrainStatus;
+            _ApplyFinalValue(ref sourceCurrent, shopItemStats, true);
+            return _GetInheritedStatus(newBase, source.turretTrainData.TurretTrainStatus, sourceCurrent);
+        }
+
+        // 아이템 총량 %를 최종값에 곱한다(투사체 갱신 없음 — 미리보기·승계 계산용). inverse면 나눈다.
+        // 개조가 없는 값에 쓰므로 스탯마다 총량 하나 = 배율 하나다.
+        private static void _ApplyFinalValue(ref TurretTrainStatus status, IStat[] stats, bool inverse)
+        {
+            if (stats == null) return;
+            foreach (var stat in stats)
+            {
+                if (stat == null) continue;
+                float multiplier = PercentToFinalValueMultiplier(stat.Type, stat.Value / 100f);
+                if (inverse) multiplier = 1f / multiplier;
+                switch (stat.Type)
+                {
+                    case StatType.AttackRange: status.AttackRange *= multiplier; break;
+                    case StatType.AttackArea: status.AttackArea *= multiplier; break;
+                    case StatType.AttackDamage: status.AttackDamage *= multiplier; break;
+                    case StatType.AttackInterval: status.AttackInterval *= multiplier; break;
+                }
+            }
         }
 
         // baseStatus가 있으면(인게임 롱프레스) 각 값 옆에 데이터 기본값 대비 강화량을 붙인다.
@@ -1263,34 +1297,49 @@ namespace TrainDefense.Game
         }
 
         // 지금 값과 기준값(MetaBaseStatus)에 같은 배율을 곱한다. 상점·레벨업 증가량이 기준값 × %라서, 개조 뒤 받는 강화에도 배율이 그대로 따라붙는다.
+        // 배율은 같은 스탯의 % 합산 총량에서 나온다(AccumulateFinalValuePercent) — 개조와 아이템이 겹쳐도 %끼리 더한 뒤 한 번 곱한 값.
         public override void ApplyStatsToFinalValue(IStat[] stats)
         {
             if (stats == null || stats.Length == 0) return;
             foreach (var stat in stats)
             {
                 if (stat == null) continue;
-                float multiplier = PercentToFinalValueMultiplier(stat.Type, stat.Value / 100f);
                 switch (stat.Type)
                 {
                     case StatType.AttackRange:
+                    {
+                        float multiplier = AccumulateFinalValuePercent(stat.Type, stat.Value);
                         _currentTurretTrainStatus.AttackRange *= multiplier;
                         _metaBaseStatus.AttackRange *= multiplier;
                         _RefreshPooledProjectiles(StatType.AttackRange);
                         break;
+                    }
                     case StatType.AttackArea:
+                    {
+                        float multiplier = AccumulateFinalValuePercent(stat.Type, stat.Value);
                         _currentTurretTrainStatus.AttackArea *= multiplier;
                         _metaBaseStatus.AttackArea *= multiplier;
                         _RefreshPooledProjectiles(StatType.AttackArea);
                         break;
+                    }
                     case StatType.AttackDamage:
+                    {
+                        float multiplier = AccumulateFinalValuePercent(stat.Type, stat.Value);
                         _currentTurretTrainStatus.AttackDamage *= multiplier;
                         _metaBaseStatus.AttackDamage *= multiplier;
                         _RefreshPooledProjectiles(StatType.AttackDamage);
                         break;
+                    }
                     case StatType.AttackInterval:
+                    {
                         // 기준 간격도 같이 늘려야 상점 공속 카드의 발사 속도 배율(기준 ÷ 지금)이 개조 전과 같게 이어진다.
+                        float multiplier = AccumulateFinalValuePercent(stat.Type, stat.Value);
                         _currentTurretTrainStatus.AttackInterval *= multiplier;
                         _metaBaseStatus.AttackInterval *= multiplier;
+                        break;
+                    }
+                    case StatType.MaxHp:
+                        ApplyMaxHpPercent(stat.Value);
                         break;
                     default:
                         ApplyStat(stat);
@@ -1400,14 +1449,13 @@ namespace TrainDefense.Game
             }
         }
 
-        public override void CopyProgressFrom(Train source)
+        public override void CopyProgressFrom(Train source, IStat[] shopItemStats)
         {
-            base.CopyProgressFrom(source);
+            base.CopyProgressFrom(source, shopItemStats);
             if (source is not TurretTrain sourceTurret) return;
             if (sourceTurret.turretTrainData == null || turretTrainData == null) return;
 
-            _currentTurretTrainStatus = _GetInheritedStatus(turretTrainData.TurretTrainStatus,
-                sourceTurret.turretTrainData.TurretTrainStatus, sourceTurret._currentTurretTrainStatus);
+            _currentTurretTrainStatus = _GetInheritedStatusWithoutShopItems(turretTrainData.TurretTrainStatus, sourceTurret, shopItemStats);
 
             _RefreshPooledProjectiles(StatType.TargetCount);
             _RefreshPooledProjectiles(StatType.AttackDamage);

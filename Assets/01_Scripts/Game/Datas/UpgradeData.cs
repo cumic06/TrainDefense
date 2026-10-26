@@ -24,9 +24,14 @@ namespace TrainDefense.Game.Datas
         private int maxUpgradeCount;
         [SerializeField]
         private UpgradeDataType upgradeDataType;
+        [SerializeField]
+        private UpgradePool upgradePool;
+        // 상점 아이템의 등급(1~5). 상점 강화 카드 등급표(stat_upgrade_tier_data)의 가격 배수·등장 시점·테두리 색을 그대로 따른다. 0 = 등급 없음.
+        [SerializeField]
+        private int grade;
 
         [SerializeField]
-        [ShowIf("upgradeDataType", UpgradeDataType.NonTrainUpgrade)]
+        [HideIf("upgradeDataType", UpgradeDataType.TrainUpgrade)]
         private float upgradeValue;
         [SerializeField]
         [ShowIf("upgradeDataType", UpgradeDataType.TrainUpgrade)]
@@ -69,6 +74,8 @@ namespace TrainDefense.Game.Datas
         public float UpgradeValue => upgradeValue;
         public int MaxUpgradeCount => maxUpgradeCount;
         public UpgradeDataType UpgradeDataType => upgradeDataType;
+        public UpgradePool UpgradePool => upgradePool;
+        public int Grade => grade;
         public float GrowthRate => growthRate > 0f ? growthRate : 1.065f;
 
         /// <summary>
@@ -85,7 +92,7 @@ namespace TrainDefense.Game.Datas
         /// </summary>
         public float GetPerLevelValue()
         {
-            if (upgradeDataType == UpgradeDataType.NonTrainUpgrade)
+            if (upgradeDataType != UpgradeDataType.TrainUpgrade)
                 return upgradeValue;
 
             float perLevelValue = 0f;

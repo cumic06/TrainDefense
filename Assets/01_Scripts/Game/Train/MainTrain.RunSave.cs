@@ -260,6 +260,8 @@ namespace TrainDefense.Game
 
             var train = _currentTrains[_currentTrains.Count - 1];
             _RestoreUpgrades(train, entry);
+            // 상점 아이템(최종값 곱)은 저장된 증가량을 얹은 뒤에 곱한다 — 스폰 때는 복원 중이라 건너뛴다(ApplyExistingUpgradesToTrain).
+            train.ApplyStatsToFinalValue(GetShopItemStats());
 
             if (isElitePromoted)
             {

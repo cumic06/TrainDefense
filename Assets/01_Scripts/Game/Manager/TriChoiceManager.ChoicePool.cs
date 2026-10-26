@@ -91,7 +91,8 @@ namespace TrainDefense.Game
                 .ToList();
         }
 
-        // 레벨업 삼중택일용: 스탯 업그레이드(110xxx) 중 만렙이 아닌 것에서 count개를 균등 랜덤으로 뽑는다.
+        // 레벨업 삼중택일용: 스탯 업그레이드(110xxx, 레벨업 풀) 중 만렙이 아닌 것에서 count개를 균등 랜덤으로 뽑는다.
+        // 상점 아이템 풀(UpgradePool.ShopItem)은 역 상점(GetShopChoices)에서만 판다.
         // 후보가 부족하면(전부 만렙) 남는 슬롯은 보상 선택지(현재 = 긴급 수리)로 채워보고, 없으면 그만큼 슬롯이 준다.
         public List<ChoiceEntry> GetStatUpgradeChoices(int count)
         {
@@ -101,6 +102,9 @@ namespace TrainDefense.Game
 
             foreach (var upgradeData in DatabaseManager.Instance.GetUpgradeDatas())
             {
+                if (upgradeData.UpgradePool != UpgradePool.LevelUp)
+                    continue;
+
                 var choice = new StatUpgradeChoice(upgradeData);
 
                 if (choice.IsValid())

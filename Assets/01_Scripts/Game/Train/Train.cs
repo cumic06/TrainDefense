@@ -53,6 +53,9 @@ namespace TrainDefense.Game
 
         // ApplyStat 퍼센트 누적 손실 방지용 fractional accumulator (UtilMath.AccumulateIntDelta 참조)
         private float _statMaxHpAccum;
+        // 상점 아이템이 최대 체력에 곱한 누적 배율(공격 스탯의 _metaBaseStatus 역할). 뒤에 오는 레벨업 체력 카드 증가량에도 곱해
+        // 아이템을 먼저 사든 나중에 사든, 새로 산 포탑이든 같은 체력이 되게 한다.
+        private float _maxHpFinalMultiplier = 1f;
 
         [HideInInspector]
         public bool IsUnDead;
@@ -384,7 +387,8 @@ namespace TrainDefense.Game
             if (statType == StatType.AttackInterval)
                 return 1f / Mathf.Max(MIN_SPEED_MULTIPLIER, 1f - percent);
 
-            return 1f + percent;
+            // 음수 %가 쌓여 −100%를 넘으면 배율이 0·음수가 되어 이후 나눗셈이 깨진다 — 공속과 같은 하한.
+            return Mathf.Max(MIN_SPEED_MULTIPLIER, 1f + percent);
         }
 
         // 개조 패시브가 이 기차 기준값(MetaBaseStatus)에 곱한 배율. 개조 전 기차는 1. 런 세이브가 강화 증가량을 개조 전 크기로 되돌릴 때 쓴다.
@@ -432,7 +436,7 @@ namespace TrainDefense.Game
             {
                 case StatType.MaxHp:
                 {
-                    float delta = _GetLevelAwareMaxHpDelta(_trainData.TrainStatusData.MaxHp, stat, newLevel, prevLevel);
+                    float delta = _GetLevelAwareMaxHpDelta(_trainData.TrainStatusData.MaxHp, stat, newLevel, prevLevel) * _maxHpFinalMultiplier;
                     _currentMaxHp += delta;
                     _currentHp += delta;
                     _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
@@ -445,12 +449,43 @@ namespace TrainDefense.Game
         private static float _GetLevelAwareMaxHpDelta(float baseMaxHp, IStat stat, int newLevel, int prevLevel)
             => baseMaxHp * stat.Value / 100f * (newLevel - prevLevel);
 
-        // 개조 패시브 등 % 스탯을 최종 값에 곱한다 — 강화가 얼마나 쌓였든, 개조 뒤 강화를 더 받든 늘 같은 비율로 남는다.
+        // 스탯별 최종값 % 합산 총량(개조 + 상점 아이템). 같은 스탯에 걸린 %는 서로 곱하지 않고 더한다 —
+        // 아이템 공격력 +10%에 개조 +20%면 ×1.32가 아니라 ×1.3 (10-26 사용자 결정).
+        private readonly Dictionary<StatType, float> _finalValuePercentTotals = new();
+
+        // 최종값 % 하나를 합산 총량에 더하고, 지금 값에 곱할 배율 = (총량 후 배율) ÷ (총량 전 배율)을 돌려준다.
+        protected float AccumulateFinalValuePercent(StatType statType, float percent)
+        {
+            _finalValuePercentTotals.TryGetValue(statType, out float totalBefore);
+            float totalAfter = totalBefore + percent;
+            _finalValuePercentTotals[statType] = totalAfter;
+
+            return PercentToFinalValueMultiplier(statType, totalAfter / 100f) / PercentToFinalValueMultiplier(statType, totalBefore / 100f);
+        }
+
+        // 개조 패시브·상점 아이템의 % 스탯을 최종 값에 곱한다 — 강화가 얼마나 쌓였든, 개조 뒤 강화를 더 받든 늘 같은 비율로 남는다.
+        // 같은 스탯의 %는 합산 후 곱(AccumulateFinalValuePercent).
         public virtual void ApplyStatsToFinalValue(IStat[] stats)
         {
             if (stats == null) return;
             foreach (var stat in stats)
-                ApplyStat(stat);
+            {
+                if (stat != null && stat.Type == StatType.MaxHp)
+                    ApplyMaxHpPercent(stat.Value);
+                else
+                    ApplyStat(stat);
+            }
+        }
+
+        // 최대 체력 %를 최종값에 반영한다(상점 아이템). 현재 체력도 같은 비율로 움직여 체력 비율이 보존된다.
+        // 가드를 합산보다 먼저 본다 — 합산만 되고 배율이 안 곱해지면 _maxHpFinalMultiplier와 총량이 어긋난다.
+        protected void ApplyMaxHpPercent(float percent)
+        {
+            if (_currentMaxHp <= 0f) return;
+            float multiplier = AccumulateFinalValuePercent(StatType.MaxHp, percent);
+            _maxHpFinalMultiplier *= multiplier;
+            _currentMaxHp *= multiplier;
+            _currentHp = Mathf.Clamp(_currentHp * multiplier, 0, _currentMaxHp);
         }
 
         public virtual void ApplyPassiveSkills() { }
@@ -565,13 +600,21 @@ namespace TrainDefense.Game
             var runUpgrades = promotionSource == null
                 ? MainTrain.GetExistingTrainUpgrades()
                 : new List<(IStat[] stats, int level)>();
+            // 상점 아이템은 최종값에 곱한다 — 새 포탑은 강화 뒤에, 승격은 원본 값에서 빼고 승계한 뒤 다시 곱한다(ReplaceTrain과 동일).
+            var shopItemStats = MainTrain.GetShopItemStats();
 
             float baseMaxHp = trainData.TrainStatusData.MaxHp;
             float maxHp;
+            float hpItemMultiplier = 1f;
+
+            foreach (var stat in shopItemStats)
+                if (stat.Type == StatType.MaxHp)
+                    hpItemMultiplier *= PercentToFinalValueMultiplier(stat.Type, stat.Value / 100f);
 
             if (promotionSource != null && promotionSource._trainData != null)
             {
-                maxHp = baseMaxHp + (promotionSource._currentMaxHp - promotionSource._trainData.TrainStatusData.MaxHp);
+                // CopyProgressFrom과 같은 식: 원본에서 아이템 배율을 뺀 증가량을 승계한 뒤 다시 곱한다.
+                maxHp = (baseMaxHp + (promotionSource._currentMaxHp / promotionSource._maxHpFinalMultiplier - promotionSource._trainData.TrainStatusData.MaxHp)) * hpItemMultiplier;
             }
             else
             {
@@ -580,13 +623,14 @@ namespace TrainDefense.Game
                     foreach (var stat in stats)
                         if (stat != null && stat.Type == StatType.MaxHp)
                             maxHp += _GetLevelAwareMaxHpDelta(baseMaxHp, stat, level, 0);
+                maxHp *= hpItemMultiplier;
             }
 
             if (trainData is TurretTrainData turretTrainData)
-                return TurretTrain.GetPreviewStatDetails(turretTrainData, maxHp, promotionSource as TurretTrain, runUpgrades);
+                return TurretTrain.GetPreviewStatDetails(turretTrainData, maxHp, promotionSource as TurretTrain, runUpgrades, shopItemStats);
 
             if (trainData is RangeTrainData rangeTrainData)
-                return RangeTrain.GetPreviewStatDetails(rangeTrainData, maxHp, promotionSource as RangeTrain, runUpgrades);
+                return RangeTrain.GetPreviewStatDetails(rangeTrainData, maxHp, promotionSource as RangeTrain, runUpgrades, shopItemStats);
 
             return new[] { (TrainDefense.Localize.LocalizeHelper.GetByKey("Detail_HP", "HP"), $"{Mathf.RoundToInt(maxHp)}") };
         }
@@ -611,8 +655,9 @@ namespace TrainDefense.Game
 
         // Elite 교체(MainTrain.ReplaceTrain) 시 기존 트레인의 누적 강화(영구 + 카드)를 새 인스턴스에 승계.
         // delta 방식: newCurrent = newBase + (oldCurrent - oldBase). HP는 비율 보존.
-        // 서브클래스는 base 호출 후 자기 status struct delta를 직접 옮긴다.
-        public virtual void CopyProgressFrom(Train source)
+        // 상점 아이템(최종값 곱)은 delta로 옮길 수 없어 원본 값에서 배율을 뺀 뒤 승계한다 — 호출자가 새 기차에 다시 곱한다.
+        // shopItemStats = MainTrain.GetShopItemStats()(아이템 총량 %). 서브클래스는 base 호출 후 자기 status struct delta를 직접 옮긴다.
+        public virtual void CopyProgressFrom(Train source, IStat[] shopItemStats)
         {
             if (source == null || source._trainData == null || _trainData == null) return;
 
@@ -620,7 +665,7 @@ namespace TrainDefense.Game
             _upgradeGradeSum = source._upgradeGradeSum;
 
             float oldBaseMaxHp = source._trainData.TrainStatusData.MaxHp;
-            float maxHpDelta = source._currentMaxHp - oldBaseMaxHp;
+            float maxHpDelta = source._currentMaxHp / source._maxHpFinalMultiplier - oldBaseMaxHp;
             float hpRatio = source._currentMaxHp > 0 ? source._currentHp / source._currentMaxHp : 1f;
 
             _currentMaxHp += maxHpDelta;

@@ -133,6 +133,7 @@ namespace TrainDefense.Game
                     ApplyTrainUpgrade(upgradeData, newLevel);
                     break;
                 case UpgradeDataType.NonTrainUpgrade:
+                case UpgradeDataType.GoldGain:
                     ApplyNonTrainUpgrade(upgradeData);
                     break;
                 default:

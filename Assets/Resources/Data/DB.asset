@@ -1343,7 +1343,7 @@ MonoBehaviour:
     description: Upgrade_110004_Desc
     needMoney: 120
     maxUpgradeCount: 20
-    upgradeDataType: 1
+    upgradeDataType: 2
     upgradeValue: 5
     stats: []
     growthRate: 1.13
@@ -1377,6 +1377,120 @@ MonoBehaviour:
     upgradeValue: 5
     stats: []
     growthRate: 1.13
+  - id: 110011
+    iconId: ShopItem/Item_110011
+    name: Upgrade_110011_Name
+    description: Upgrade_110011_Desc
+    needMoney: 0
+    maxUpgradeCount: 5
+    upgradeDataType: 0
+    upgradePool: 1
+    grade: 1
+    upgradeValue: 0
+    stats:
+    - <Type>k__BackingField: 2
+      <Value>k__BackingField: 4
+    growthRate: 1.2
+  - id: 110012
+    iconId: ShopItem/Item_110012
+    name: Upgrade_110012_Name
+    description: Upgrade_110012_Desc
+    needMoney: 0
+    maxUpgradeCount: 5
+    upgradeDataType: 0
+    upgradePool: 1
+    grade: 3
+    upgradeValue: 0
+    stats:
+    - <Type>k__BackingField: 2
+      <Value>k__BackingField: 15
+    - <Type>k__BackingField: 1
+      <Value>k__BackingField: -8
+    growthRate: 1.2
+  - id: 110013
+    iconId: ShopItem/Item_110013
+    name: Upgrade_110013_Name
+    description: Upgrade_110013_Desc
+    needMoney: 0
+    maxUpgradeCount: 5
+    upgradeDataType: 0
+    upgradePool: 1
+    grade: 2
+    upgradeValue: 0
+    stats:
+    - <Type>k__BackingField: 1
+      <Value>k__BackingField: 8
+    growthRate: 1.2
+  - id: 110014
+    iconId: ShopItem/Item_110014
+    name: Upgrade_110014_Name
+    description: Upgrade_110014_Desc
+    needMoney: 0
+    maxUpgradeCount: 5
+    upgradeDataType: 0
+    upgradePool: 1
+    grade: 3
+    upgradeValue: 0
+    stats:
+    - <Type>k__BackingField: 4
+      <Value>k__BackingField: -10
+    - <Type>k__BackingField: 0
+      <Value>k__BackingField: -5
+    growthRate: 1.2
+  - id: 110015
+    iconId: ShopItem/Item_110015
+    name: Upgrade_110015_Name
+    description: Upgrade_110015_Desc
+    needMoney: 0
+    maxUpgradeCount: 5
+    upgradeDataType: 0
+    upgradePool: 1
+    grade: 2
+    upgradeValue: 0
+    stats:
+    - <Type>k__BackingField: 4
+      <Value>k__BackingField: -6
+    growthRate: 1.2
+  - id: 110016
+    iconId: ShopItem/Item_110016
+    name: Upgrade_110016_Name
+    description: Upgrade_110016_Desc
+    needMoney: 0
+    maxUpgradeCount: 5
+    upgradeDataType: 0
+    upgradePool: 1
+    grade: 1
+    upgradeValue: 0
+    stats:
+    - <Type>k__BackingField: 8
+      <Value>k__BackingField: 5
+    growthRate: 1.2
+  - id: 110017
+    iconId: ShopItem/Item_110017
+    name: Upgrade_110017_Name
+    description: Upgrade_110017_Desc
+    needMoney: 0
+    maxUpgradeCount: 5
+    upgradeDataType: 2
+    upgradePool: 1
+    grade: 2
+    upgradeValue: 8
+    stats: []
+    growthRate: 1.2
+  - id: 110018
+    iconId: ShopItem/Item_110018
+    name: Upgrade_110018_Name
+    description: Upgrade_110018_Desc
+    needMoney: 0
+    maxUpgradeCount: 5
+    upgradeDataType: 0
+    upgradePool: 1
+    grade: 1
+    upgradeValue: 0
+    stats:
+    - <Type>k__BackingField: 0
+      <Value>k__BackingField: 5
+    growthRate: 1.2
   permanentUpgradeDataList:
   - id: 120001
     iconId: Health

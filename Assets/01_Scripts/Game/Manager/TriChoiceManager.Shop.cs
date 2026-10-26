@@ -7,7 +7,7 @@ using TrainDefense.Game.Manager;
 namespace TrainDefense.Game
 {
     // 역 상점(ShopUI.offerSlotCount칸 랜덤 판매) 후보 관리.
-    // 판매 품목 = 포탑 구매(Add) / 보유 포탑 스탯 강화(TrainStatUpgrade) / 엘리트 승격(Elite).
+    // 판매 품목 = 포탑 구매(Add) / 보유 포탑 스탯 강화(TrainStatUpgrade) / 엘리트 승격(Elite) / 전체 포탑 아이템(StatUpgradeChoice, 상점 풀).
     // 가격 책정은 상점(ShopOfferPricing)의 책임 — 여기서는 후보 추첨만 담당한다.
     public partial class TriChoiceManager
     {
@@ -135,6 +135,53 @@ namespace TrainDefense.Game
                 result.AddRange(_GetAddTrainChoices());
 
             result.AddRange(_GetTrainStatUpgradeChoices());
+            result.AddRange(_GetShopItemChoices(result.Sum(entry => entry.Weight)));
+
+            return result;
+        }
+
+        // 아이템 전체의 추첨 가중치 = 포탑·강화 후보 가중치 합 × 이 비율. 1/3이면 칸당 25% → 랜덤 4칸에 평균 1장.
+        // 상수 한 장 값으로 두면 포탑이 늘어 강화 후보가 불어날수록 아이템이 묻히므로 비율로 둔다.
+        private const float SHOP_ITEM_TOTAL_WEIGHT_RATIO = 1f / 3f;
+
+        // 전체 포탑 아이템(UpgradeData 중 상점 풀) — 중첩 상한(maxUpgradeCount) 전까지 반복 판매.
+        // 등장 시점은 아이템 등급의 등급표 행(firstShopVisit)을 따른다 — 강화 카드와 같은 역부터 같은 등급이 열린다.
+        // 적용은 레벨업 카드와 같은 StatUpgradeSelectEvent 파이프라인(전 포탑 적용·새 포탑 승계·세이브)을 그대로 탄다.
+        private static List<ChoiceEntry> _GetShopItemChoices(int otherCandidatesTotalWeight)
+        {
+            List<ChoiceEntry> result = new();
+
+            var databaseManager = DatabaseManager.Instance;
+
+            if (databaseManager == null)
+                return result;
+
+            var stageManager = StageManager.Instance;
+            int shopVisitCount = stageManager != null ? stageManager.TotalInspectionPassedCount : 0;
+
+            foreach (var upgradeData in databaseManager.GetUpgradeDatas())
+            {
+                if (upgradeData.UpgradePool != UpgradePool.ShopItem)
+                    continue;
+
+                var tier = databaseManager.GetStatUpgradeTier(upgradeData.Grade);
+
+                if (tier != null && !tier.IsAvailableAt(shopVisitCount))
+                    continue;
+
+                var choice = new StatUpgradeChoice(upgradeData);
+
+                if (choice.IsValid())
+                    result.Add(new ChoiceEntry { Option = choice, Tier = 0 });
+            }
+
+            if (result.Count == 0)
+                return result;
+
+            int weightPerItem = Mathf.Max(1, Mathf.RoundToInt(otherCandidatesTotalWeight * SHOP_ITEM_TOTAL_WEIGHT_RATIO / result.Count));
+
+            foreach (var entry in result)
+                entry.Weight = weightPerItem;
 
             return result;
         }
