@@ -108,3 +108,6 @@ InitTestScene*.unity*
 
 # IDE 솔루션 파일
 *.slnx
+
+# Unity MCP 로컬 연결 설정(relay 절대경로 — PC마다 다름)
+.mcp.json
