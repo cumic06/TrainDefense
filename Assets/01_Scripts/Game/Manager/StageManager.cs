@@ -13,6 +13,9 @@ namespace TrainDefense.Game.Manager
     {
         #region Variables
 
+        // ShortenRemainingSegmentTime 한 번에 줄일 수 있는 남은 시간 비율 상한.
+        private const float MAX_SHORTEN_RATIO = 0.95f;
+
         #region Fields
 
         [SerializeField]
@@ -443,6 +446,24 @@ namespace TrainDefense.Game.Manager
             _currentStageTime += Time.deltaTime;
         }
 
+
+        /// <summary>
+        /// 현재 구간의 남은 시간을 ratio(0~1)만큼 줄인다. (선로 이벤트 순풍 운행용)
+        /// 구간 길이는 그대로 두고 경과 시간만 앞당기므로 UI 슬라이더·MonsterSpawner 경과 시각이 다음 틱에 자연스럽게 따라온다.
+        /// 도착 처리는 기존 _StageHandler가 하므로 한 번에 도착하지 않도록 최대 95%까지만 줄인다.
+        /// </summary>
+        public void ShortenRemainingSegmentTime(float ratio)
+        {
+            if (_isGameOver || CurrentStageData == null || ratio <= 0f)
+                return;
+
+            float remainingTime = _GetCurrentSegmentDuration() - _currentStageTime;
+
+            if (remainingTime <= 0f)
+                return;
+
+            _currentStageTime += remainingTime * Mathf.Min(ratio, MAX_SHORTEN_RATIO);
+        }
 
         private float _GetCurrentSegmentDuration()
         {

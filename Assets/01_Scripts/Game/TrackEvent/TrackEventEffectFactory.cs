@@ -14,6 +14,18 @@ namespace TrainDefense.Game.TrackEvent
             return eventType switch
             {
                 TrackEventType.MonsterRush => new MonsterRushTrackEventEffect(),
+                TrackEventType.Overdrive => new OverdriveTrackEventEffect(),
+                TrackEventType.Sandstorm => new SandstormTrackEventEffect(),
+                TrackEventType.GoldRush => new GoldRushTrackEventEffect(),
+                TrackEventType.ExpBoost => new ExpBoostTrackEventEffect(),
+                TrackEventType.ColdSnap => new ColdSnapTrackEventEffect(),
+                TrackEventType.GoldenMonster => new GoldenMonsterTrackEventEffect(),
+                TrackEventType.EliteAmbush => new EliteAmbushTrackEventEffect(),
+                TrackEventType.SupportBombard => new SupportBombardTrackEventEffect(),
+                TrackEventType.SupplyDrop => new SupplyDropTrackEventEffect(),
+                TrackEventType.RepairStop => new RepairStopTrackEventEffect(),
+                TrackEventType.FreeUpgrade => new FreeUpgradeTrackEventEffect(),
+                TrackEventType.Tailwind => new TailwindTrackEventEffect(),
                 // TODO: 구현 순서는 plans/선로이벤트_구현계획.md "4. 이벤트 아이디어" 우선순위를 따른다.
                 _ => null,
             };

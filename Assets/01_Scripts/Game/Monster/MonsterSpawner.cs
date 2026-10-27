@@ -322,6 +322,43 @@ namespace TrainDefense.Game
          }
       }
 
+      /// <summary>
+      /// 엘리트 1마리를 즉시 스폰한다(선로 이벤트 엘리트 매복용). 정규 엘리트 스케줄·예산은 건드리지 않는다.
+      /// 스폰풀이 없거나 엘리트 데이터가 아직 없으면 null.
+      /// </summary>
+      public Monster SpawnEliteNow()
+      {
+         if (_eliteData == null || _currentSpawnDatas == null || _currentSpawnDatas.Length == 0 || DatabaseManager.Instance == null)
+            return null;
+
+         StageSpawnData selectedData = SelectMonsterData(true);
+         if (selectedData == null)
+            return null;
+
+         MonsterData monsterData = DatabaseManager.Instance.GetMonsterData(selectedData.MonsterId);
+         if (monsterData == null)
+            return null;
+
+         Vector3 spawnPos = RandomSpawnPos();
+
+         if (_currentSpawnEffect != null)
+         {
+            ResourceManager.Instance.Spawn(_currentSpawnEffect, spawnPos, parent: transform);
+         }
+
+         Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
+         spawnMonster.Initialize(monsterData);
+
+         EliteVariant eliteVariant = _eliteData.SelectVariant();
+         spawnMonster.ApplyElite(_eliteData, eliteVariant, _GetEliteStrengthScale());
+
+         _spawnedMonsters.Add(spawnMonster);
+
+         GameEventSystem.Publish(new MonsterSpawnedEvent(selectedData.MonsterId, true));
+
+         return spawnMonster;
+      }
+
       // 엘리트는 검문(역 도착)을 이만큼 지난 뒤부터 등장한다. 검문 카운트는 스테이지당 5회(역 4개 + 맵 변경 1회).
       // 판을 20역으로 늘릴 때도 이 값은 옮기지 않았다 — 플레이어가 강해지는 속도는 흐른 시간이 아니라 상점 방문 수를
       // 따라가므로, 같은 경과 시간으로 미루면 그만큼 쉬워진다.

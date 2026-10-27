@@ -9,6 +9,7 @@ using TrainDefense;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Stats;
+using TrainDefense.Game.TrackEvent;
 using UnityEngine;
 
 namespace TrainDefense.Game
@@ -62,7 +63,8 @@ namespace TrainDefense.Game
         public TurretTrainStatus MetaBaseStatus => _metaBaseStatus;
         private TurretTrainStatus _metaBaseStatus;
         public float CurrentAttackDamage => _currentTurretTrainStatus.AttackDamage;
-        public override float CurrentAttackRange => _currentTurretTrainStatus.AttackRange;
+        // 선로 이벤트(모래폭풍) 사거리 배율은 전투 판정·표시용 사거리에만 곱한다. 스탯 원본·상세창 프리뷰는 건드리지 않는다.
+        public override float CurrentAttackRange => _currentTurretTrainStatus.AttackRange * TrackEventModifiers.TurretRangeMultiplier;
         // 분사형(화염)은 범위가 사거리에 비해 넓어지면 분사 각도가 상한에 닿아, 범위를 더 올려도 모양과 판정이 그대로다.
         public bool IsAttackAreaAtLimit => useParticleProjectile
             && _currentTurretTrainStatus.AttackArea >= ParticleProjectile.GetMaxAttackArea(_currentTurretTrainStatus.AttackRange);
@@ -436,7 +438,7 @@ namespace TrainDefense.Game
 
         protected void DetectTarget()
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _currentTurretTrainStatus.AttackRange);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, CurrentAttackRange);
             _targetMonsters = colliders.Where(a => a.GetComponent<Monster>() != null)
             .Select(a => a.GetComponent<Monster>())
             .OrderBy(x => transform.position.SqrDistance(x.transform.position))
@@ -487,7 +489,8 @@ namespace TrainDefense.Game
             else
             {
                 // FixedUpdate에서 호출되므로 fixedDeltaTime 사용
-                _attackCountdown -= Time.fixedDeltaTime;
+                // 선로 이벤트(과부하 운행) 공속 배율: 쿨다운을 더 빨리 깎는다. 캐싱된 간격이 아니라 매 틱 반영돼 즉시 적용된다.
+                _attackCountdown -= Time.fixedDeltaTime * TrackEventModifiers.TurretAttackSpeedMultiplier;
                 return false;
             }
         }
@@ -514,7 +517,7 @@ namespace TrainDefense.Game
                     StopCoroutine(_repeatAttackCoroutine);
                 _repeatAttackCoroutine = StartCoroutine(_RepeatAttackCoroutine(
                     _currentTurretTrainStatus.AttackCount - 1,
-                    _currentTurretTrainStatus.AttackInterval * REPEAT_ATTACK_DELAY_RATIO));
+                    _currentTurretTrainStatus.AttackInterval * REPEAT_ATTACK_DELAY_RATIO / Mathf.Max(0.01f, TrackEventModifiers.TurretAttackSpeedMultiplier)));
             }
         }
 
@@ -1129,7 +1132,7 @@ namespace TrainDefense.Game
 
             // 날아가는 총알만 사거리에서 소멸 (NonMovement 풀링형(레이저·화염)은 제자리 지속형이라 무관)
             if (!_useNonMovementProjectilePooling)
-                projectile.LimitLifetimeByRange(_currentTurretTrainStatus.AttackRange);
+                projectile.LimitLifetimeByRange(CurrentAttackRange);
 
             return projectile;
         }

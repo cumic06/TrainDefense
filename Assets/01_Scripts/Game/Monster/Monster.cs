@@ -5,6 +5,7 @@ using Cumic.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Manager;
+using TrainDefense.Game.TrackEvent;
 using Sirenix.OdinInspector;
 
 namespace TrainDefense.Game
@@ -88,6 +89,13 @@ namespace TrainDefense.Game
       // 엘리트 CC 저항(0~1). 슬로우 감속량·스턴 시간·넉백을 (1-저항)배로 줄이고, 1이면 완전 면역.
       private float _ccResistance;
 
+      // 황금 몬스터(선로 이벤트) 도망 모드: 기차를 공격하지 않고 지정 방향으로 달아난다. 화면 밖으로 나가면 보상 없이 사라지고, 처치하면 골드 배율이 붙는다.
+      private bool _isEscaping;
+      private Vector3 _escapeDirection;
+      private float _escapeGoldMultiplier = 1f;
+      private static readonly Color ESCAPE_TINT_COLOR = new Color(1f, 0.84f, 0.1f, 1f);
+      private const float ESCAPE_OFFSCREEN_MARGIN = 0.1f;
+
       private const string MoneyPrefabPath = "Prefabs/Money";
       private const string StunPrefabPath = "Prefabs/StunPaticle";
       private static GameObject _stunPrefab;
@@ -144,6 +152,8 @@ namespace TrainDefense.Game
          if (model != null) model.transform.localScale = _prefabScale;
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
          _isFrosted = false;
+         _isEscaping = false;
+         _escapeGoldMultiplier = 1f;
          _RestoreHitFlashMaterial();
          if (eliteEffect != null) eliteEffect.SetActive(false);
 
@@ -293,6 +303,13 @@ namespace TrainDefense.Game
          if (Time.time - _spawnTime < spawnMoveDelay)
             return;
 
+         if (_isEscaping)
+         {
+            _EscapeHandler();
+
+            return;
+         }
+
          if (_isShoved)
             return;
          if (_isStunned)
@@ -322,9 +339,69 @@ namespace TrainDefense.Game
       private void _Move()
       {
          // 오라·슬로우 배율을 곱한다(각각 기본 1). 속도 스탯은 안 건드려 엘리트 이속 배율과도 독립 적용된다.
-         float moveSpeed = _currentMonsterStatus.MoveSpeed * _auraSpeedMultiplier * _slowMultiplier;
+         // 선로 이벤트(한파) 전역 배율도 함께 곱한다(기본 1).
+         float moveSpeed = _currentMonsterStatus.MoveSpeed * _auraSpeedMultiplier * _slowMultiplier * TrackEventModifiers.MonsterMoveSpeedMultiplier;
          transform.Translate(moveSpeed * Time.deltaTime * _MoveDirection().normalized);
       }
+
+      #region Escape (황금 몬스터)
+      // 도망 모드 진입. direction은 월드 이동 방향(자동 정규화), goldMultiplier는 처치 골드 배율.
+      public void BeginEscape(Vector3 direction, float goldMultiplier)
+      {
+         _isEscaping = true;
+         _escapeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.right;
+         _escapeGoldMultiplier = Mathf.Max(1f, goldMultiplier);
+         _facingSign = _escapeDirection.x > 0 ? 1 : -1;
+         _ApplyModelScale();
+
+         if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = ESCAPE_TINT_COLOR;
+      }
+
+      public bool IsEscaping => _isEscaping;
+
+      // 도망 중인 채로 효과가 끝났을 때(역 도착 등) 보상 없이 즉시 정리한다.
+      public void CancelEscape()
+      {
+         if (!_isEscaping || _isDead)
+            return;
+
+         _DespawnWithoutReward();
+      }
+
+      private void _EscapeHandler()
+      {
+         transform.Translate(_currentMonsterStatus.MoveSpeed * _auraSpeedMultiplier * _slowMultiplier * Time.deltaTime * _escapeDirection, Space.World);
+
+         if (_IsOffScreen())
+            _DespawnWithoutReward();
+      }
+
+      private bool _IsOffScreen()
+      {
+         Camera mainCamera = Camera.main;
+         if (mainCamera == null)
+            return false;
+
+         Vector3 viewport = mainCamera.WorldToViewportPoint(transform.position);
+
+         return viewport.x < -ESCAPE_OFFSCREEN_MARGIN || viewport.x > 1f + ESCAPE_OFFSCREEN_MARGIN
+            || viewport.y < -ESCAPE_OFFSCREEN_MARGIN || viewport.y > 1f + ESCAPE_OFFSCREEN_MARGIN;
+      }
+
+      // 처치가 아니므로 MonsterDeadEvent·경험치·골드 없이 풀로 반환한다.
+      private void _DespawnWithoutReward()
+      {
+         _isDead = true;
+         _isEscaping = false;
+
+         if (transform.parent != null && transform.parent.TryGetComponent<MonsterSpawner>(out var spawner))
+         {
+            spawner.RemoveMonster(this);
+         }
+
+         ResourceManager.Instance.Destroy(gameObject);
+      }
+      #endregion
 
       private Vector3 _MoveDirection()
       {
@@ -871,6 +948,9 @@ namespace TrainDefense.Game
       {
          int dropExp = Random.Range(_currentMonsterStatus.DropExpMin, _currentMonsterStatus.DropExpMax);
 
+         // 선로 이벤트(경험치 순풍) 배율
+         dropExp = Mathf.RoundToInt(dropExp * TrackEventModifiers.KillExpMultiplier);
+
          GameEventSystem.Publish(new AddExpEvent(dropExp));
       }
 
@@ -905,6 +985,9 @@ namespace TrainDefense.Game
 
             dropMoney = Mathf.RoundToInt(dropMoney * (1f + goldBonusPercent / 100f));
          }
+
+         // 선로 이벤트(골드 러시) 배율 + 황금 몬스터 처치 배율
+         dropMoney = Mathf.RoundToInt(dropMoney * TrackEventModifiers.KillGoldMultiplier * _escapeGoldMultiplier);
 
          ResourceManager.Instance.Spawn(Resources.Load<GameObject>(MoneyPrefabPath), transform.position);
 

@@ -22,6 +22,8 @@ namespace TrainDefense.Game.Manager
 
         public TrackEventData ActiveData => _activeData;
         public bool IsEventActive => _activeEffect != null;
+        public float ActiveElapsedTime => _elapsedTime;
+        public IReadOnlyList<TrackEventData> EventDatas => eventDatas;
 
         #endregion
 
@@ -73,6 +75,8 @@ namespace TrainDefense.Game.Manager
 
         private void Start()
         {
+            // 정적 배율은 씬을 넘어 남으므로(도메인 리로드 꺼짐 포함) 판 시작마다 원복한다.
+            TrackEventModifiers.ResetAll();
             _BuildAvailableDatas();
             _SubscribeEvents();
         }
@@ -242,6 +246,12 @@ namespace TrainDefense.Game.Manager
                 return;
 
             _StartEvent(data);
+        }
+
+        /// <summary>치트·테스트용 강제 종료. 진행 중인 효과를 지속 시간 만료처럼 끝낸다.</summary>
+        public void ForceEndEvent()
+        {
+            _EndActiveEvent(false);
         }
     }
 }

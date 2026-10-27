@@ -113,6 +113,8 @@ namespace TrainDefense.Game.UI
             return;
          }
 
+         // 선로 이벤트(모래폭풍)로 사거리 배율이 바뀔 수 있어 매 프레임 반지름을 다시 읽는다.
+         _radius = Mathf.Max(0f, _target.RangeIndicatorRadius);
          _Redraw();
       }
 

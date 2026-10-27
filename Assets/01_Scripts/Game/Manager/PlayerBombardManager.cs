@@ -4,6 +4,7 @@ using Cumic.Sequence;
 using TrainDefense;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.TrackEvent;
 using TrainDefense.Game.Tutorial;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -58,7 +59,8 @@ namespace TrainDefense.Game
             if (_cooldownRemaining > 0f)
                 _cooldownRemaining -= Time.deltaTime;
 
-            if (_TryGetTapPosition(out Vector2 worldPosition))
+            // 보급 상자를 탭한 경우엔 상자 획득만 하고 포격은 쏘지 않는다.
+            if (_TryGetTapPosition(out Vector2 worldPosition) && !SupplyCrate.IsCrateAt(worldPosition))
                 _TryFire(worldPosition);
         }
 
@@ -78,18 +80,39 @@ namespace TrainDefense.Game
             if (InGameSequence.Instance != null && !InGameSequence.Instance.IsRunning && !tutorialFiringAllowed)
                 return;
 
+            if (!_LaunchProjectile(worldPosition, 1f))
+                return;
+
+            _cooldownRemaining = _config.Cooldown * _GetUpgradeMultiplier(COOLDOWN_UPGRADE_ID);
+
+            // 구 메인 터렛(MainTrain.Weapon)이 발행하던 이벤트를 개입 포격이 이어받는다.
+            // 공격 튜토리얼이 이 이벤트로 완료 처리되므로 끊기면 튜토리얼이 영영 안 끝난다.
+            GameEventSystem.Publish(new MainTrainFiredEvent());
+        }
+
+        /// <summary>
+        /// 쿨다운·전투 상태·탭 입력과 무관하게 지정 위치에 포탄 한 발을 떨어뜨린다. 쿨다운을 소모하지도, MainTrainFiredEvent를 발행하지도 않는다.
+        /// 선로 이벤트(지원 폭격)처럼 시스템이 대신 쏘는 용도. 피해량은 플레이어 포격과 같은 기준(역 체력 배율·강화 포함)에 damageMultiplier를 곱한다.
+        /// </summary>
+        public bool FireAt(Vector2 worldPosition, float damageMultiplier = 1f)
+        {
+            return _LaunchProjectile(worldPosition, damageMultiplier);
+        }
+
+        private bool _LaunchProjectile(Vector2 worldPosition, float damageMultiplier)
+        {
             Projectile prefab = _GetProjectilePrefab();
             if (prefab == null)
-                return;
+                return false;
 
             Projectile projectile = ResourceManager.Instance.Spawn(prefab);
             if (projectile == null)
-                return;
+                return false;
 
             projectile.transform.position = new Vector3(worldPosition.x, worldPosition.y, 0f);
 
             // 몬스터 체력이 역마다 오르므로 포격 피해도 같은 배율을 따라가야 판 내내 "약한 몹 한 방" 역할이 유지된다.
-            _status.AttackDamage = _config.Damage * _GetEnemyHpScale() * _GetUpgradeMultiplier(DAMAGE_UPGRADE_ID);
+            _status.AttackDamage = _config.Damage * _GetEnemyHpScale() * _GetUpgradeMultiplier(DAMAGE_UPGRADE_ID) * damageMultiplier;
             _status.AttackArea = _config.AttackArea * _GetUpgradeMultiplier(AREA_UPGRADE_ID);
 
             // owner를 넘기지 않는다. Projectile의 아군 판정은 "몬스터가 쏜 게 아니면 기차를 안 때린다"라서
@@ -101,11 +124,7 @@ namespace TrainDefense.Game
 
             _PlayFireSound();
 
-            _cooldownRemaining = _config.Cooldown * _GetUpgradeMultiplier(COOLDOWN_UPGRADE_ID);
-
-            // 구 메인 터렛(MainTrain.Weapon)이 발행하던 이벤트를 개입 포격이 이어받는다.
-            // 공격 튜토리얼이 이 이벤트로 완료 처리되므로 끊기면 튜토리얼이 영영 안 끝난다.
-            GameEventSystem.Publish(new MainTrainFiredEvent());
+            return true;
         }
 
         private static float _GetEnemyHpScale()
@@ -205,6 +224,12 @@ namespace TrainDefense.Game
         // 직전 프레임 상태라 누른 순간의 터치를 못 본다 — 폰에서 일시정지·포탑 정보를 눌러도 포격이 나갔다.
         private bool _IsPointerOverUI(Vector2 screenPosition)
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            // 치트 패널(OnGUI)은 EventSystem에 안 잡히므로 따로 막는다.
+            if (TrainDefense.Game.Manager.CheatManager.IsPointerOverPanel(screenPosition))
+                return true;
+
+#endif
             EventSystem eventSystem = EventSystem.current;
             if (eventSystem == null)
                 return false;

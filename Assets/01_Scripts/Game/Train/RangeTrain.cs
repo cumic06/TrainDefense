@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.TrackEvent;
 
 namespace TrainDefense.Game
 {
@@ -29,6 +30,8 @@ namespace TrainDefense.Game
         // 범위 포탑은 자기 중심 원 전체를 때리므로 사거리가 곧 공격 반경이다(AttackArea는 쓰지 않음).
         private float _baseColliderRadius = 1f;
         private float _attackCountdown;
+        // 장판 크기에 마지막으로 반영한 선로 이벤트 사거리 배율. 달라지면 장판 크기를 다시 맞춘다.
+        private float _appliedRangeMultiplier = 1f;
 
 
         private bool _suppressMainProjectileShove;
@@ -162,6 +165,9 @@ namespace TrainDefense.Game
 
         private void RangeAttackHandler()
         {
+            if (!Mathf.Approximately(_appliedRangeMultiplier, TrackEventModifiers.TurretRangeMultiplier))
+                _ApplyRangeScale();
+
             if (_attackCountdown <= 0)
             {
                 // 범위 안에 적이 없으면 쏘지 않고 기다린다. 적이 없을 때 눈·폭발만 혼자 반짝이고 사라지던 문제.
@@ -197,13 +203,13 @@ namespace TrainDefense.Game
             }
             else
             {
-                _attackCountdown -= Time.deltaTime;
+                _attackCountdown -= Time.deltaTime * TrackEventModifiers.TurretAttackSpeedMultiplier;
             }
         }
 
         private bool _HasMonsterInArea()
         {
-            Physics2D.OverlapCircle(transform.position, _currentRangeTrainStatus.AttackRange, _areaContactFilter, _areaColliders);
+            Physics2D.OverlapCircle(transform.position, CurrentAttackRange, _areaContactFilter, _areaColliders);
             foreach (var areaCollider in _areaColliders)
             {
                 if (areaCollider.TryGetComponent<Monster>(out _))
@@ -255,7 +261,8 @@ namespace TrainDefense.Game
         // (파동은 처음 켜질 때의 크기를 기준으로 퍼지므로, 여기서 바꾸면 소환 직후 한 프레임 깜빡인다)
         private void _ApplyRangeScale()
         {
-            float scale = _currentRangeTrainStatus.AttackRange / _baseColliderRadius;
+            _appliedRangeMultiplier = TrackEventModifiers.TurretRangeMultiplier;
+            float scale = CurrentAttackRange / _baseColliderRadius;
 
             foreach (var projectile in _rangeProjectiles)
             {
@@ -429,7 +436,8 @@ namespace TrainDefense.Game
             return 1f - Mathf.Min(_currentRangeTrainStatus.SlowRate, MAX_TOTAL_SLOW_RATE) / 100f;
         }
 
-        public override float CurrentAttackRange => _currentRangeTrainStatus.AttackRange;
+        // 선로 이벤트(모래폭풍) 사거리 배율은 전투 판정·표시용 사거리에만 곱한다.
+        public override float CurrentAttackRange => _currentRangeTrainStatus.AttackRange * TrackEventModifiers.TurretRangeMultiplier;
 
         public override float GetCurrentStatValue(StatType statType)
         {

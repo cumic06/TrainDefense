@@ -441,6 +441,15 @@ namespace TrainDefense
             _pendingLevelUpCount++;
         }
 
+        /// <summary>경험치·레벨 변화 없이 레벨업 카드 선택 횟수만 쌓는다. (선로 이벤트 보너스 강화용 — 실제 표시는 LevelUpEvent를 받은 TriChoiceUI가 한다)</summary>
+        public void AddPendingLevelUps(int count)
+        {
+            if (count <= 0)
+                return;
+
+            _pendingLevelUpCount += count;
+        }
+
         /// <summary>역에서 레벨업 카드를 골랐을 때(또는 고를 카드가 없어 넘겼을 때) 밀린 횟수를 줄인다.</summary>
         public void ConsumePendingLevelUps(int count)
         {
