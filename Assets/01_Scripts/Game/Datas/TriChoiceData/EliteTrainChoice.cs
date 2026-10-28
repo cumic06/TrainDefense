@@ -54,6 +54,8 @@ namespace TrainDefense.Game.Datas
 
             var baseTrain = mainTrain.CurrentTrains.FirstOrDefault(t => t.TrainData.Id == baseTrainId);
             if (baseTrain == null) return false;
+            // 부서진 포탑은 수리한 뒤에 개조한다 — 교체(ReplaceTrain)가 새 칸을 산 채로 만들어 수리 없이 되살아난다.
+            if (baseTrain.IsDead) return false;
             // 개조 조건: 원본 포탑에 산 강화 카드 등급의 합(Train.ELITE_PROMOTION_GRADE_SUM)
             if (!baseTrain.IsEliteEligible) return false;
 

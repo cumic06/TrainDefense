@@ -7,6 +7,7 @@ using UnityEngine;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Manager;
 using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game
@@ -168,7 +169,8 @@ namespace TrainDefense.Game
 
       public void SpawnTrain(TrainData trainData, TrainChoiceSkillType skillType = TrainChoiceSkillType.None, string selectedSkillId = null)
       {
-         if (_currentAliveTrains.Count >= MaxTrainCount)
+         // 부서진 칸도 자리를 차지한다 — 회복 없는 난이도에선 상점에 부서진 칸이 남는다.
+         if (_currentTrains.Count >= MaxTrainCount)
          {
             Debug.LogWarning("Train count is max");
             return;
@@ -209,7 +211,8 @@ namespace TrainDefense.Game
 
       public void UpgradeTrain(string targetTrainId, ITrainUpgradeData upgradeData)
       {
-         Train upgradeTrain = _currentAliveTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
+         // 부서진 칸도 강화를 받는다. 수리하면 강화된 채로 돌아온다.
+         Train upgradeTrain = _currentTrains.FirstOrDefault(train => train.TrainData.Id == targetTrainId);
 
          if (upgradeTrain != null)
          {
@@ -309,7 +312,7 @@ namespace TrainDefense.Game
          if (first == null || second == null || first == second)
             return false;
 
-         // 죽은 칸은 _deadTrains에 인덱스 사본이 따로 있어 맞바꾸지 않는다. (상점 진입 시 전부 부활하므로 상점에선 해당 없음)
+         // 죽은 칸은 _deadTrains에 인덱스 사본이 따로 있어 맞바꾸지 않는다. (회복 없는 난이도에선 수리 후에 옮길 수 있다)
          if (first.IsDead || second.IsDead)
             return false;
 
@@ -435,15 +438,9 @@ namespace TrainDefense.Game
 
       private void OnInspectionStart(InspectionStartEvent inspectionStartEvent)
       {
-         foreach (var train in _currentAliveTrains)
-         {
-            train.RestoreHpToMax();
-         }
-
-         ReviveAllDeadTrains();
-
-         // 이 시점은 timeScale=0 + SuppressSFX(true) 상태이므로 ignoreSuppress로 우회 재생한다.
-         SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
+         // 회복 없는 난이도는 피해·부서진 칸을 그대로 상점에 들고 간다(상점 수리로만 회복).
+         if (StageManager.HasStationArrivalRecovery)
+            RepairAllTrains();
 
          foreach (var train in _currentAliveTrains)
          {
@@ -454,28 +451,66 @@ namespace TrainDefense.Game
          RearrangeAllTrainsToOriginalOrder();
       }
 
+      /// <summary>산 포탑은 체력을 채우고 부서진 포탑은 되살린다. (역 도착 회복·상점 수리 공용)</summary>
+      public void RepairAllTrains()
+      {
+         foreach (var train in _currentAliveTrains)
+         {
+            train.RestoreHpToMax();
+         }
+
+         ReviveAllDeadTrains();
+
+         // 역 도착·상점 모두 timeScale=0 + SuppressSFX(true) 상태이므로 ignoreSuppress로 우회 재생한다.
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
+      }
+
+      /// <summary>모든 포탑을 최대 체력의 ratio만큼 회복한다 — 부서진 포탑은 그 비율로 되살린다. (상점 수리 한 번)</summary>
+      public void RepairTrainsByRatio(float ratio)
+      {
+         foreach (var train in _currentAliveTrains)
+         {
+            train.RestoreHpByRatio(ratio);
+         }
+
+         foreach (var deadTrainInfo in _deadTrains.ToList())
+         {
+            ReviveDeadTrain(deadTrainInfo);
+            deadTrainInfo.Train.SetHpToRatio(ratio);
+         }
+
+         SoundManager.Instance?.PlaySFX(SoundType.SFX_Game_Heal, ignoreSuppress: true);
+      }
+
       // 죽은(부서진) 기차를 모두 부활시켜 산 기차 목록으로 되돌린다. (Resurrect가 풀피로 되살린다)
       private void ReviveAllDeadTrains()
       {
          foreach (var deadTrainInfo in _deadTrains.ToList())
-         {
-            Train train = deadTrainInfo.Train;
-
-            // HP 최대치로 복원 및 _isDead = false 설정 (레벨과 업그레이드는 유지)
-            train.Resurrect();
-
-            // 오브젝트 활성화
-            train.gameObject.SetActive(true);
-
-            // _deadTrains에서 제거하고 _currentAliveTrains에 다시 추가
-            _deadTrains.Remove(deadTrainInfo);
-            _currentAliveTrains.Add(train);
-         }
+            ReviveDeadTrain(deadTrainInfo);
       }
 
+      private void ReviveDeadTrain(DeadTrainInfo deadTrainInfo)
+      {
+         Train train = deadTrainInfo.Train;
+
+         // HP 최대치로 복원 및 _isDead = false 설정 (레벨과 업그레이드는 유지)
+         train.Resurrect();
+
+         // 오브젝트 활성화
+         train.gameObject.SetActive(true);
+
+         // 부서질 때의 조준 각도 등을 지운다. 상점 수리로 살아난 칸은 역 도착 때의 일괄 초기화를 지나쳤다.
+         train.ResetVisualForInspection();
+
+         // _deadTrains에서 제거하고 _currentAliveTrains에 다시 추가
+         _deadTrains.Remove(deadTrainInfo);
+         _currentAliveTrains.Add(train);
+      }
+
+      // 부서진 칸도 보유로 본다 — 아니면 상점이 그 포탑의 강화 카드를 내리고 같은 포탑 구매 카드를 다시 낸다.
       public bool CheckHasTrainById(string trainId)
       {
-         return _currentAliveTrains.Any(train => train.TrainData.Id == trainId);
+         return _currentTrains.Any(train => train.TrainData.Id == trainId);
       }
 
       public void ApplyUpgrade(UpgradeData upgradeData, int newLevel, int prevLevel)
@@ -492,13 +527,14 @@ namespace TrainDefense.Game
          {
             var purchasedStats = _ScaleStats(upgradeData.Stats, newLevel - prevLevel);
 
-            foreach (var train in _currentAliveTrains)
+            // 부서진 칸도 받는다(수리하면 아이템이 적용된 채로 돌아온다).
+            foreach (var train in _currentTrains)
                train.ApplyStatsToFinalValue(purchasedStats);
 
             return;
          }
 
-         foreach (var train in _currentAliveTrains)
+         foreach (var train in _currentTrains)
          {
             train.ApplyStatsLevelAware(upgradeData.Stats, newLevel, prevLevel);
          }

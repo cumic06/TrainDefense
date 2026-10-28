@@ -4,6 +4,7 @@ using Cumic.Events;
 using UnityEngine;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.Manager;
 using TrainDefense.Game.Stats;
 
 namespace TrainDefense.Game
@@ -218,20 +219,46 @@ namespace TrainDefense.Game
                     _replacedTrainIds.Add(replacedId);
             }
 
+            var deadOnSaveTrains = new List<Train>();
+
             foreach (var entry in state.Trains)
             {
                 if (entry == null || string.IsNullOrEmpty(entry.TrainDataId))
                     continue;
 
-                if (!_RestoreTrainEntry(entry, databaseManager))
+                if (!_RestoreTrainEntry(entry, databaseManager, deadOnSaveTrains))
                     break;
             }
 
+            _RestoreDeadTrains(deadOnSaveTrains);
             RearrangeAllTrainsToOriginalOrder();
         }
 
+        // 부서진 칸은 편성을 다 세운 뒤에 부순다 — 세우는 도중에 부수면 산 칸이 잠깐 0이 되어 게임오버가 난다.
+        // 역 도착 회복이 있는 난이도에선 상점에 부서진 칸이 있을 수 없다. 그때의 IsDead는 이전 빌드가
+        // 부활 전에 캡처한 잔재라 따르지 않는다(첫 칸부터 죽이면 복원 도중 게임오버가 났다).
+        private void _RestoreDeadTrains(List<Train> deadOnSaveTrains)
+        {
+            if (deadOnSaveTrains.Count == 0)
+                return;
+
+            // 전부 부서진 세이브는 정상 진행으로는 생기지 않는다(마지막 칸이 부서지면 게임오버).
+            bool isAllDead = deadOnSaveTrains.Count >= _currentAliveTrains.Count;
+            // 무적(isUnDead)이면 CheckDeadTrain이 사망을 무시해 부서진 칸이 산 목록에 남는다 — 그때도 살려 둔다.
+            bool keepsAlive = StageManager.HasStationArrivalRecovery || isAllDead || isUnDead;
+
+            foreach (var train in deadOnSaveTrains)
+            {
+                // 따르지 않는 IsDead 칸은 체력 0으로 산 채 남지 않게 채워 둔다.
+                if (keepsAlive)
+                    train.RestoreHpToMax();
+                else
+                    train.RestoreAsDead();
+            }
+        }
+
         // 한 량을 저장 당시 모습으로 되돌린다. 편성이 더 이상 늘지 않으면(정원 초과 등) false를 반환해 복원을 끊는다.
-        private bool _RestoreTrainEntry(FormationTrainState entry, DatabaseManager databaseManager)
+        private bool _RestoreTrainEntry(FormationTrainState entry, DatabaseManager databaseManager, List<Train> deadOnSaveTrains)
         {
             // 엘리트는 base를 세워 업그레이드까지 올린 뒤 교체한다 — 평소 획득 경로와 같아야 승계 스탯이 어긋나지 않는다.
             bool isElitePromoted = !string.IsNullOrEmpty(entry.ReplacedFromTrainDataId)
@@ -285,7 +312,10 @@ namespace TrainDefense.Game
             // 엘리트 교체(CopyProgressFrom) 뒤에 덮어써야 최종 기차에 저장값이 남는다.
             train.CombatRecord.CopyFrom(entry.CombatRecord);
 
-            _RestoreHpAndDeath(train, entry);
+            train.SetHpToRatio(Mathf.Clamp01(entry.HpRatio));
+
+            if (entry.IsDead)
+                deadOnSaveTrains.Add(train);
 
             return true;
         }
@@ -352,17 +382,6 @@ namespace TrainDefense.Game
                 RangeTrain => RangeTrainUpgradeData.CreateRuntimeSingleStat(id, name, step.Range, levelCount),
                 _ => null,
             };
-        }
-
-        private void _RestoreHpAndDeath(Train train, FormationTrainState entry)
-        {
-            if (train == null)
-                return;
-
-            train.SetHpToRatio(Mathf.Clamp01(entry.HpRatio));
-
-            // 역 도착은 모든 칸을 부활시키므로 저장 시점(상점)에 죽은 칸은 없다. 이전 빌드 세이브의 IsDead는
-            // 부활 전에 캡처된 잔재라 따르지 않는다 — 첫 칸부터 죽이면 산 칸이 0이 되어 복원 도중 게임오버가 났다.
         }
 
         // 게임 진입 시 자동 스폰된 기본 편성을 걷어낸다. 복원한 편성과 겹치는 것을 막는다.

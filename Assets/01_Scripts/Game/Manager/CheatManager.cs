@@ -57,6 +57,10 @@ namespace TrainDefense.Game.Manager
             // 선로 이벤트 치트 패널 열기/닫기
             if (Input.GetKeyDown(KeyCode.T))
                 _isTrackEventPanelOpen = !_isTrackEventPanelOpen;
+
+            // 회복 없는 난이도(역 도착 회복 끔·상점 수리) 켜고 끄기
+            if (Input.GetKeyDown(KeyCode.H))
+                _ToggleStationArrivalRecovery();
         }
 
         private void OnDisable()
@@ -93,6 +97,16 @@ namespace TrainDefense.Game.Manager
         public static bool IsPointerOverPanel(Vector2 screenPosition)
         {
             return _isPanelVisible && _panelScreenRect.Contains(screenPosition);
+        }
+
+        private void _ToggleStationArrivalRecovery()
+        {
+            if (StageManager.Instance == null)
+                return;
+
+            bool recovery = !StageManager.HasStationArrivalRecovery;
+            StageManager.Instance.SetStationArrivalRecovery(recovery);
+            Debug.Log($"[Cheat] 역 도착 회복 {(recovery ? "켬" : "끔 (회복 없는 난이도)")}");
         }
 
         private void _AddMaxCoin()

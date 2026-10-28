@@ -143,10 +143,11 @@ namespace TrainDefense.Game.UI
 
          float ratio = _train != null ? _train.CurrentHpRatio : 1f;
          healthImage.fillAmount = ratio;
-         healthImage.color = _GetHealthColor(ratio);
+         healthImage.color = GetHealthColor(ratio);
       }
 
-      private static Color _GetHealthColor(float ratio)
+      // 체력 비율별 막대 색. 상점 기차 프리뷰의 칸 체력바도 같은 색을 쓴다.
+      public static Color GetHealthColor(float ratio)
       {
          if (ratio <= 0.25f)
             return HealthColorLow;
@@ -167,7 +168,7 @@ namespace TrainDefense.Game.UI
          if (healthImage != null)
          {
             healthImage.fillAmount = ratio;
-            healthImage.color = _GetHealthColor(ratio);
+            healthImage.color = GetHealthColor(ratio);
          }
 
          // 부활(체력 복원) 시 사망 X 표시 해제

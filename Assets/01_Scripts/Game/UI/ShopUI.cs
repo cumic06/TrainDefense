@@ -118,6 +118,9 @@ namespace TrainDefense.Game.UI
         private bool isShopOpen = false;
         public bool IsShopOpen => isShopOpen;
 
+        // 상점 수리 버튼이 다른 상품과 같은 가격표(역 인상 포함)를 쓴다.
+        public int GetRepairPrice(float missingHp) => offerPricing.GetRepairPrice(missingHp);
+
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();

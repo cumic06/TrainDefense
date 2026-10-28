@@ -81,6 +81,9 @@ namespace TrainDefense.Game
 
         public void AddUpgradeGradeSum(int grade) => _upgradeGradeSum += grade;
         public float CurrentHpRatio => _currentMaxHp > 0f ? _currentHp / _currentMaxHp : 0f;
+        public float MaxHp => _currentMaxHp;
+        // 잃은 체력. 부서진 칸은 체력이 0이라 최대 체력 전부가 된다. (상점 수리 가격의 기준)
+        public float MissingHp => _currentMaxHp - _currentHp;
 
         // 현재(업그레이드 반영) 공격 사거리. 서브클래스에서 실제 스탯으로 오버라이드.
         public virtual float CurrentAttackRange => 0f;
@@ -211,6 +214,15 @@ namespace TrainDefense.Game
         {
             if (IsUnDead) return;
 
+            _EnterDeadState();
+
+            // 주변 적을 밀치는 효과
+            PushNearbyEnemies();
+        }
+
+        // 부서짐 상태 전환 — 전투 중 사망(OnDead)과 이어하기 복원(RestoreAsDead) 공용.
+        private void _EnterDeadState()
+        {
             if (!IsMainTrain)
             {
                 GameEventSystem.Publish(new TrainDeadEvent(this));
@@ -222,9 +234,6 @@ namespace TrainDefense.Game
             {
                 SoundManager.Instance.StopSFX(TrainData.AttackSoundType);
             }
-
-            // 주변 적을 밀치는 효과
-            PushNearbyEnemies();
         }
 
         protected virtual void PushNearbyEnemies()
@@ -299,6 +308,16 @@ namespace TrainDefense.Game
             _isDead = false;
             RestoreHpToMax();
             RestoreVisual();
+        }
+
+        /// <summary>이어하기 복원 전용 — 저장 당시 부서져 있던 칸을 부서진 상태로 되돌린다. 밀치기 없이 사망 이벤트만 보내 목록·슬롯 UI가 따라오게 한다.</summary>
+        public void RestoreAsDead()
+        {
+            if (_isDead) return;
+
+            _currentHp = 0f;
+            GameEventSystem.Publish(new HitEvent(_currentHp, _currentMaxHp, this, transform.position, 0));//체력 UI 갱신 이벤트 재사용
+            _EnterDeadState();
         }
 
         public virtual void RestoreHpToMax()
@@ -415,9 +434,7 @@ namespace TrainDefense.Game
             // 다음에 적용할 upgradeStats 인덱스 = 업그레이드 전 레벨.
             int upgradeLevelIndex = currentLevel;
             var statusUpgrade = upgradeData.GetStatusUpgrade(upgradeLevelIndex);
-            _currentMaxHp += statusUpgrade.MaxHp;
-            _currentHp += statusUpgrade.MaxHp;
-            _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+            _AddMaxHp(statusUpgrade.MaxHp);
 
             GameEventSystem.Publish(new TrainLevelUpEvent(this, _currentLevel));
         }
@@ -437,9 +454,7 @@ namespace TrainDefense.Game
                 case StatType.MaxHp:
                 {
                     float delta = _GetLevelAwareMaxHpDelta(_trainData.TrainStatusData.MaxHp, stat, newLevel, prevLevel) * _maxHpFinalMultiplier;
-                    _currentMaxHp += delta;
-                    _currentHp += delta;
-                    _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+                    _AddMaxHp(delta);
                     break;
                 }
             }
@@ -478,6 +493,17 @@ namespace TrainDefense.Game
         }
 
         // 최대 체력 %를 최종값에 반영한다(상점 아이템). 현재 체력도 같은 비율로 움직여 체력 비율이 보존된다.
+        // 최대 체력이 늘면 현재 체력도 같은 만큼 는다. 부서진 칸은 체력 0을 유지한다(수리하면 늘어난 최대치로 돌아온다).
+        private void _AddMaxHp(float delta)
+        {
+            _currentMaxHp += delta;
+
+            if (!_isDead)
+                _currentHp += delta;
+
+            _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+        }
+
         // 가드를 합산보다 먼저 본다 — 합산만 되고 배율이 안 곱해지면 _maxHpFinalMultiplier와 총량이 어긋난다.
         protected void ApplyMaxHpPercent(float percent)
         {
@@ -645,9 +671,7 @@ namespace TrainDefense.Game
                     {
                         float baseMaxHp = _trainData.TrainStatusData.MaxHp;
                         float deltaHp = UtilMath.AccumulateIntDelta(ref _statMaxHpAccum, baseMaxHp * stat.Value / 100f);
-                        _currentMaxHp += deltaHp;
-                        _currentHp += deltaHp;
-                        _currentHp = Mathf.Clamp(_currentHp, 0, _currentMaxHp);
+                        _AddMaxHp(deltaHp);
                         break;
                     }
             }

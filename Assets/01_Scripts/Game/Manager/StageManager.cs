@@ -45,6 +45,10 @@ namespace TrainDefense.Game.Manager
 
         [SerializeField]
         private float stationInspectionTimeIncrement;
+
+        // 역 도착 때 포탑 체력 회복·부활. 끄면 피해가 다음 역까지 남고, 회복은 상점 수리로만 한다.
+        [SerializeField]
+        private bool stationArrivalRecovery = true;
         #endregion
 
         private StageData[] _stageDatas;
@@ -85,6 +89,12 @@ namespace TrainDefense.Game.Manager
 
         /// <summary>종착역(이 도착에서 판이 끝난다). 0이면 끝 없이 계속 달린다.</summary>
         public int FinalStationCount => finalStationCount;
+
+        /// <summary>역 도착 때 포탑을 회복·부활시키는가. 아니면 상점 수리(ShopRepairButtonUI)로만 회복한다. 매니저가 없으면 회복한다.</summary>
+        public static bool HasStationArrivalRecovery => Instance == null || Instance.stationArrivalRecovery;
+
+        /// <summary>역 도착 회복을 켜고 끈다(치트 단축키용). 다음 역 도착부터 적용되고, 상점 수리 버튼은 다음 상점부터 보인다.</summary>
+        public void SetStationArrivalRecovery(bool recovery) => stationArrivalRecovery = recovery;
 
         /// <summary>
         /// 맵의 마지막 상점을 들른 상태로, 상점을 닫으면 전투 복귀 대신 다음 맵으로 이동해야 하는지 여부.

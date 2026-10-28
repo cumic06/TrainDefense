@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Cumic.Events;
 using TMPro;
 using TrainDefense.Game.Events;
+using TrainDefense.Game.Manager;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
@@ -69,6 +70,25 @@ namespace TrainDefense.Game.UI
         private readonly List<TrainBadge> _badges = new List<TrainBadge>();
         private GameObject _badgeSource;
         private bool _badgeSourceSearched;
+
+        // 칸 밑 체력바 — 회복 없는 난이도에서만. HUD 포탑 칸의 체력바(테두리·홈·채움 세 장)를 복제해 같은 그림·색으로 보여 준다.
+        // 상점에서는 HUD가 가려져 어느 포탑이 다쳤는지 보이지 않기 때문이다.
+        private static readonly string[] HealthBarSourceObjectNames = { "Img_HealthFrame", "Img_HealthTrack", "Img_Health" };
+        // 체력바 폭 = 칸 몸체 폭의 이 비율. 높이와 칸 밑으로 내리는 거리는 프리뷰 이미지 로컬 단위.
+        private const float HEALTH_BAR_WIDTH_RATIO = 0.8f;
+        private const float HEALTH_BAR_HEIGHT = 22f;
+        private const float HEALTH_BAR_OFFSET_Y = 34f;
+        // 테두리 안쪽으로 홈·채움을 들이는 정도(HUD 칸의 68×18 / 64×14 / 58×10 비율).
+        private const float HEALTH_TRACK_INSET = 2f;
+        private const float HEALTH_FILL_INSET = 4f;
+
+        private class TrainHealthBar
+        {
+            public RectTransform Root;
+            public Image Fill;
+        }
+
+        private readonly List<TrainHealthBar> _healthBars = new List<TrainHealthBar>();
 
         // 포탑 위치 이동 — 프리뷰의 포탑을 끌어 다른 포탑 위에 놓으면 두 칸 자리를 맞바꾼다.
         // 드래그 중인 칸은 손가락을 따라 가로로만 움직이고(선로 높이 y 고정), 놓으면 원위치로 돌아간 뒤 교환한다.
@@ -140,6 +160,7 @@ namespace TrainDefense.Game.UI
                     _FrameTrain();
 
                 _RefreshBadges();
+                _RefreshHealthBars();
             }
         }
 
@@ -202,6 +223,108 @@ namespace TrainDefense.Game.UI
                 previewImage.enabled = false;
 
             _HideBadges();
+            _HideHealthBars(0);
+        }
+
+        // 칸마다 몸체 밑 가운데에 체력바를 놓는다. 역 도착 때 회복되는 난이도에선 늘 가득 차 있어 띄우지 않는다.
+        private void _RefreshHealthBars()
+        {
+            var mainTrain = TrainManager.Instance != null ? TrainManager.Instance.MainTrain : null;
+
+            if (mainTrain == null || previewImage == null || StageManager.HasStationArrivalRecovery)
+            {
+                _HideHealthBars(0);
+                return;
+            }
+
+            int barIndex = 0;
+            Rect rect = previewImage.rectTransform.rect;
+
+            foreach (var train in mainTrain.CurrentTrains)
+            {
+                if (train == null || !_TryGetCarBodyBounds(train, out Bounds bounds))
+                    continue;
+
+                var bar = _GetHealthBar(barIndex++);
+
+                if (bar == null)
+                    break;
+
+                Vector3 left = _previewCamera.WorldToViewportPoint(new Vector3(bounds.min.x, bounds.min.y, bounds.center.z));
+                Vector3 right = _previewCamera.WorldToViewportPoint(new Vector3(bounds.max.x, bounds.min.y, bounds.center.z));
+                float carWidth = (right.x - left.x) * rect.width;
+
+                bar.Root.gameObject.SetActive(true);
+                bar.Root.sizeDelta = new Vector2(carWidth * HEALTH_BAR_WIDTH_RATIO, HEALTH_BAR_HEIGHT);
+                bar.Root.anchoredPosition = new Vector2((left.x + right.x) * 0.5f * rect.width, left.y * rect.height - HEALTH_BAR_OFFSET_Y);
+
+                // 부서진 칸은 HUD와 같이 회색 빈 막대.
+                float ratio = train.IsDead ? 0f : train.CurrentHpRatio;
+                bar.Fill.fillAmount = ratio;
+                bar.Fill.color = train.IsDead ? Color.gray : TrainInfoSlotUI.GetHealthColor(ratio);
+            }
+
+            _HideHealthBars(barIndex);
+        }
+
+        private void _HideHealthBars(int fromIndex)
+        {
+            for (int i = fromIndex; i < _healthBars.Count; i++)
+            {
+                if (_healthBars[i].Root != null)
+                    _healthBars[i].Root.gameObject.SetActive(false);
+            }
+        }
+
+        // HUD 포탑 칸 프리팹의 체력바 세 장을 한 묶음으로 복제한다. 원본이 없으면 null.
+        private TrainHealthBar _GetHealthBar(int index)
+        {
+            while (_healthBars.Count <= index)
+            {
+                var slotPrefab = Resources.Load<GameObject>(BADGE_SOURCE_PREFAB_PATH);
+
+                if (slotPrefab == null)
+                    return null;
+
+                var barObject = new GameObject("HealthBar_Shop", typeof(RectTransform));
+                var root = (RectTransform)barObject.transform;
+                root.SetParent(previewImage.rectTransform, false);
+                // 앵커는 프리뷰 이미지 좌하단, 피벗은 막대 가운데.
+                root.anchorMin = root.anchorMax = Vector2.zero;
+                root.pivot = new Vector2(0.5f, 0.5f);
+
+                Image fill = null;
+
+                for (int i = 0; i < HealthBarSourceObjectNames.Length; i++)
+                {
+                    var source = slotPrefab.transform.Find(HealthBarSourceObjectNames[i]);
+
+                    if (source == null)
+                    {
+                        Debug.LogWarning($"ShopTrainPreviewUI: {BADGE_SOURCE_PREFAB_PATH}에 {HealthBarSourceObjectNames[i]}이 없습니다");
+                        Destroy(barObject);
+                        return null;
+                    }
+
+                    var layer = (RectTransform)Instantiate(source.gameObject, root, false).transform;
+                    float inset = i == 0 ? 0f : i == 1 ? HEALTH_TRACK_INSET : HEALTH_FILL_INSET;
+                    layer.anchorMin = Vector2.zero;
+                    layer.anchorMax = Vector2.one;
+                    layer.offsetMin = new Vector2(inset, inset);
+                    layer.offsetMax = new Vector2(-inset, -inset);
+
+                    var image = layer.GetComponent<Image>();
+                    // 프리뷰 이미지의 롱프레스(포탑 스탯 보기)·드래그를 막지 않게 한다.
+                    image.raycastTarget = false;
+
+                    if (i == HealthBarSourceObjectNames.Length - 1)
+                        fill = image;
+                }
+
+                _healthBars.Add(new TrainHealthBar { Root = root, Fill = fill });
+            }
+
+            return _healthBars[index];
         }
 
         // 칸(포탑)마다 배지 하나를 칸 오른쪽 위에 놓고 숫자·색을 갱신한다. 편성이 바뀌면 배지 수도 맞춘다.
