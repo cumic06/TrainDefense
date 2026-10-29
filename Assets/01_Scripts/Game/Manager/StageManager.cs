@@ -46,9 +46,9 @@ namespace TrainDefense.Game.Manager
         [SerializeField]
         private float stationInspectionTimeIncrement;
 
-        // 역 도착 때 포탑 체력 회복·부활. 끄면 피해가 다음 역까지 남고, 회복은 상점 수리로만 한다.
+        // 역 도착 때 포탑 체력 회복·부활. 기본은 끔(10-29 결정) — 피해가 다음 역까지 남고, 회복은 상점 수리로만 한다.
         [SerializeField]
-        private bool stationArrivalRecovery = true;
+        private bool stationArrivalRecovery = false;
         #endregion
 
         private StageData[] _stageDatas;
