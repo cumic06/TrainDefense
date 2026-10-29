@@ -103,6 +103,8 @@ namespace TrainDefense.Localize
             tmp.fontStyle = isJapanese ? (originalFontStyle | FontStyles.Bold) : originalFontStyle;
             // RTL(아랍어/히브리어 등) 언어면 텍스트 방향을 오른쪽→왼쪽으로 맞춘다.
             tmp.isRightToLeftText = Localization.IsRightToLeft(code);
+            // RTL이면 숫자·라틴 구간이 거꾸로 보이지 않게 미리 뒤집어 두는 전처리기를 붙인다.
+            tmp.textPreprocessor = tmp.isRightToLeftText ? RightToLeftTextPreprocessor.Shared : null;
         }
     }
 }

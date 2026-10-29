@@ -59,6 +59,8 @@ namespace TrainDefense.Localize
             // RTL(아랍어/히브리어 등) 언어에서는 텍스트 방향을 오른쪽→왼쪽으로 맞춘다.
             // 비-RTL 언어로 되돌아오면 false로 리셋된다.
             _text.isRightToLeftText = Localization.IsCurrentRightToLeft;
+            // RTL이면 숫자·라틴 구간이 거꾸로 보이지 않게 미리 뒤집어 두는 전처리기를 붙인다.
+            _text.textPreprocessor = _text.isRightToLeftText ? RightToLeftTextPreprocessor.Shared : null;
 
             // 리터럴 "\n"을 실제 줄바꿈으로 변환(TSV 셀에 직접 개행을 못 넣어 \n 문자열로 저장됨).
             // 한글 단어 중간 줄바꿈은 TMP_Settings의 Modern Hangul Line Breaking Rules로 처리한다.
