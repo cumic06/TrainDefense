@@ -74,14 +74,23 @@ namespace TrainDefense.Game.UI
         private float scoreCountDuration = 0.6f;
         #endregion
 
+        // 해금 이름이 "해금" 라벨 글자에 붙지 않도록 띄우는 최소 간격.
+        private const float UNLOCKED_LABEL_GAP = 24f;
+
         private Tween _countUpTween;
 
         // 카운트업 setter가 매 프레임 호출되므로 접미사는 ShowResult에서 1회만 해석해 캐시한다.
         private string _scoreSuffix = "점";
 
+        // 해금 이름을 줄일 때 되돌아갈 프리팹 글자 크기.
+        private float _unlockedValueFontSize;
+
         #region LifeCycle
         private void Start()
         {
+            if (unlockedValueText != null)
+                _unlockedValueFontSize = unlockedValueText.fontSize;
+
             _SubscribeEvents();
             _Hide();
         }
@@ -197,7 +206,67 @@ namespace TrainDefense.Game.UI
                 unlockedRow.SetActive(unlockedNames.Count > 0);
 
             _SetText(unlockedLabelText, LocalizeHelper.GetByKey("result_unlocked", "해금"));
-            _SetText(unlockedValueText, string.Join(", ", unlockedNames));
+            _SetText(unlockedValueText, _BuildUnlockedText(unlockedNames));
+            _FitUnlockedValueFontSize();
+        }
+
+        // 이름 하나만 남겨도 안 들어가는 언어(라벨 글자가 긴 경우)는 들어갈 만큼 글자를 줄인다.
+        private void _FitUnlockedValueFontSize()
+        {
+            if (unlockedValueText == null || unlockedLabelText == null)
+                return;
+
+            unlockedValueText.fontSize = _unlockedValueFontSize;
+
+            float preferredWidth = unlockedValueText.GetPreferredValues(unlockedValueText.text).x;
+            float availableWidth = _GetUnlockedValueWidth();
+
+            if (preferredWidth > availableWidth && availableWidth > 0f)
+                unlockedValueText.fontSize = _unlockedValueFontSize * availableWidth / preferredWidth;
+        }
+
+        // 이름이 줄에 다 안 들어가면 앞에서부터 들어가는 만큼만 적고 나머지는 "외 N개"로 붙인다. 이름은 최소 한 개 적는다.
+        private string _BuildUnlockedText(List<string> unlockedNames)
+        {
+            string allNamesText = string.Join(", ", unlockedNames);
+
+            if (unlockedValueText == null || unlockedLabelText == null || unlockedNames.Count <= 1)
+                return allNamesText;
+
+            float availableWidth = _GetUnlockedValueWidth();
+
+            if (unlockedValueText.GetPreferredValues(allNamesText).x <= availableWidth)
+                return allNamesText;
+
+            string moreFormat = LocalizeHelper.GetByKey("result_unlocked_more", "외 {0}개");
+
+            for (int shownCount = unlockedNames.Count - 1; shownCount > 1; shownCount--)
+            {
+                string shownText = _FormatUnlockedText(unlockedNames, shownCount, moreFormat);
+
+                if (unlockedValueText.GetPreferredValues(shownText).x <= availableWidth)
+                    return shownText;
+            }
+
+            return _FormatUnlockedText(unlockedNames, 1, moreFormat);
+        }
+
+        private static string _FormatUnlockedText(List<string> unlockedNames, int shownCount, string moreFormat)
+        {
+            string shownNames = string.Join(", ", unlockedNames.GetRange(0, shownCount));
+
+            return $"{shownNames} {string.Format(moreFormat, unlockedNames.Count - shownCount)}";
+        }
+
+        // 라벨과 값은 같은 줄(부모)에 있다. 값 오른쪽 끝부터 라벨 글자 끝까지가 이름을 적을 수 있는 폭이다.
+        private float _GetUnlockedValueWidth()
+        {
+            var labelRect = unlockedLabelText.rectTransform;
+            var valueRect = unlockedValueText.rectTransform;
+            float labelTextRight = labelRect.localPosition.x + labelRect.rect.xMin + unlockedLabelText.GetPreferredValues(unlockedLabelText.text).x;
+            float valueRight = valueRect.localPosition.x + valueRect.rect.xMax;
+
+            return valueRight - labelTextRight - UNLOCKED_LABEL_GAP;
         }
 
         // 총점을 0부터 한 번 카운트업하고, 끝나면 로비 버튼을 켠다.

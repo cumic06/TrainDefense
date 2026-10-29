@@ -83,6 +83,9 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         [Tooltip("리롤 비용 표기 크기(라벨 대비 배율)")]
         private float rerollCostFontScale = 0.5f;
+        [SerializeField]
+        [Tooltip("리롤 비용 앞 코인 아이콘 크기(라벨 대비 배율)")]
+        private float rerollCoinIconFontScale = 0.58f;
         #endregion
 
         private RectTransform _rectTransform;
@@ -774,18 +777,25 @@ namespace TrainDefense.Game.UI
             if (rerollLabelText != null)
             {
                 int costSizePercent = Mathf.RoundToInt(rerollCostFontScale * 100f);
+                int coinIconSizePercent = Mathf.RoundToInt(rerollCoinIconFontScale * 100f);
 
                 // 라벨은 매번 조회한다. 언어를 바꾼 뒤 상점을 다시 열어도 갱신되도록.
                 // 키가 없거나 초기화 전이면 프리팹 원문(_rerollLabelPrefix)으로 떨어진다.
                 string rerollLabel = LocalizeHelper.GetByKey("UI_Reroll", _rerollLabelPrefix);
 
+                // 코인 부족은 상점 카드처럼 금액만 빨갛게 — 버튼 이름까지 물들이지 않는다.
+                string costText = $"{_currentRerollCost.ToCommaString()}$";
+
+                if (!canReroll)
+                    costText = $"<color=#{ColorUtility.ToHtmlStringRGBA(rerollInsufficientColor)}>{costText}</color>";
+
                 // 무료 횟수가 남아 있으면 비용 대신 "무료 ×N"을 보여준다.
                 string costLine = hasFreeReroll
                     ? $"{LocalizeHelper.GetByKey("UI_Reroll_Free", "Free")} ×{_freeRerollsLeft}"
-                    : $"<sprite name=\"Coin\"> {_currentRerollCost.ToCommaString()}$";
+                    : $"<size={coinIconSizePercent}%><sprite name=\"Coin\"></size> {costText}";
 
                 rerollLabelText.text = $"{rerollLabel}\n<size={costSizePercent}%>{costLine}</size>";
-                rerollLabelText.color = canReroll ? _rerollLabelOriginalColor : rerollInsufficientColor;
+                rerollLabelText.color = _rerollLabelOriginalColor;
             }
 
             if (rerollButton != null)

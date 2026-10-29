@@ -28,11 +28,13 @@ namespace TrainDefense.Game.UI
         [Tooltip("보유 코인이 부족할 때 수리 비용 텍스트에 적용할 색상")]
         private Color repairInsufficientColor = Color.red;
         [SerializeField]
+        [Tooltip("고칠 체력이 없어 버튼이 꺼졌을 때 라벨 전체에 적용할 색상 (DESIGN.md on-surface-muted)")]
+        private Color repairNoDamageColor = new Color32(0x99, 0x9A, 0xA6, 0xFF);
+        [SerializeField]
         [Tooltip("수리 비용 표기 크기(라벨 대비 배율)")]
         private float repairCostFontScale = 0.5f;
         #endregion
 
-        private string _repairLabelPrefix;
         private Color _repairLabelOriginalColor;
         private ShopUI _shopUI;
 
@@ -47,10 +49,7 @@ namespace TrainDefense.Game.UI
             }
 
             if (repairLabelText != null)
-            {
-                _repairLabelPrefix = repairLabelText.text;
                 _repairLabelOriginalColor = repairLabelText.color;
-            }
 
             GameEventSystem.Subscribe<InspectionStartEvent>(_OnInspectionStart);
             GameEventSystem.Subscribe<InspectionEndEvent>(_OnInspectionEnd);
@@ -136,11 +135,17 @@ namespace TrainDefense.Game.UI
             {
                 int costSizePercent = Mathf.RoundToInt(repairCostFontScale * 100f);
                 int stepPercent = Mathf.RoundToInt(repairStepRatio * 100f);
-                // 라벨은 매번 조회한다. 키가 없거나 초기화 전이면 프리팹 원문(_repairLabelPrefix)으로 떨어진다.
-                string repairLabel = LocalizeHelper.GetByKey("UI_Repair", _repairLabelPrefix);
 
-                repairLabelText.text = $"{repairLabel} +{stepPercent}%\n<size={costSizePercent}%><sprite name=\"Coin\"> {repairCost.ToCommaString()}$</size>";
-                repairLabelText.color = canAfford ? _repairLabelOriginalColor : repairInsufficientColor;
+                // 코인 부족은 상점 카드처럼 금액만 빨갛게 — 효과(+25%)까지 물들이지 않는다.
+                string costText = $"{repairCost.ToCommaString()}$";
+
+                if (hasDamage && !canAfford)
+                    costText = $"<color=#{ColorUtility.ToHtmlStringRGBA(repairInsufficientColor)}>{costText}</color>";
+
+                // 글자 없이 숫자만 쓴다 — 수리 뜻은 렌치 아이콘이 전한다. 언어마다 폰트가 섞이지 않는다.
+                repairLabelText.text = $"+{stepPercent}%\n<size={costSizePercent}%><sprite name=\"Coin\"> {costText}</size>";
+                // 버튼 배경만 비활성 틴트가 걸리므로 고칠 게 없어 꺼진 것은 글자 전체를 회색으로 보인다.
+                repairLabelText.color = hasDamage ? _repairLabelOriginalColor : repairNoDamageColor;
             }
 
             if (repairButton != null)
