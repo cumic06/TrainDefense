@@ -34,8 +34,8 @@ namespace TrainDefense.Game.Difficulty
         private StageValues[] stages =
         {
             new StageValues { hpScaleMultiplier = 1f, stationSpawnAccelPercentBonus = 0f, maxSpawnAccelPercentBonus = 0f, repairCostMultiplier = 1f },
-            new StageValues { hpScaleMultiplier = 1.2f, stationSpawnAccelPercentBonus = 1f, maxSpawnAccelPercentBonus = 10f, repairCostMultiplier = 1.15f },
-            new StageValues { hpScaleMultiplier = 1.4f, stationSpawnAccelPercentBonus = 2f, maxSpawnAccelPercentBonus = 20f, repairCostMultiplier = 1.3f },
+            new StageValues { hpScaleMultiplier = 1.2f, stationSpawnAccelPercentBonus = 1f, maxSpawnAccelPercentBonus = 10f, repairCostMultiplier = 1.3f },
+            new StageValues { hpScaleMultiplier = 1.4f, stationSpawnAccelPercentBonus = 2f, maxSpawnAccelPercentBonus = 20f, repairCostMultiplier = 1.5f },
         };
 
         private static readonly StageValues DefaultValues = new();

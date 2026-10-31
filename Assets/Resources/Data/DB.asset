@@ -1676,6 +1676,56 @@ MonoBehaviour:
     passiveType: 3
     passiveValuePerLevel: 1
     unlockTrainId: 
+  - id: skill_bombard_damage
+    iconId: Upgrade/Upgrade_110008
+    name: SkillTree_skill_bombard_damage_Name
+    description: SkillTree_skill_bombard_damage_Desc
+    lane: 3
+    row: 0
+    col: 0
+    needPoint: 17
+    maxLevel: 5
+    growthRate: 1.5
+    prerequisites: []
+    category: 1
+    stats: []
+    passiveType: 5
+    passiveValuePerLevel: 5
+    unlockTrainId: 
+  - id: skill_bombard_cooldown
+    iconId: Upgrade/Upgrade_110009
+    name: SkillTree_skill_bombard_cooldown_Name
+    description: SkillTree_skill_bombard_cooldown_Desc
+    lane: 3
+    row: 1
+    col: 0
+    needPoint: 42
+    maxLevel: 3
+    growthRate: 1.5
+    prerequisites:
+    - skill_bombard_damage
+    category: 1
+    stats: []
+    passiveType: 6
+    passiveValuePerLevel: 8
+    unlockTrainId: 
+  - id: skill_bombard_area
+    iconId: Upgrade/Upgrade_110010
+    name: SkillTree_skill_bombard_area_Name
+    description: SkillTree_skill_bombard_area_Desc
+    lane: 3
+    row: 2
+    col: 0
+    needPoint: 42
+    maxLevel: 3
+    growthRate: 1.5
+    prerequisites:
+    - skill_bombard_cooldown
+    category: 1
+    stats: []
+    passiveType: 7
+    passiveValuePerLevel: 10
+    unlockTrainId: 
   skillTreeLaneDataList:
   - lane: 0
     name: UI_SkillTree_Lane_Fire
@@ -1683,6 +1733,8 @@ MonoBehaviour:
     name: UI_SkillTree_Lane_Defense
   - lane: 2
     name: UI_SkillTree_Lane_Utility
+  - lane: 3
+    name: UI_SkillTree_Lane_Bombard
   triChoiceDB:
     addTrainChoices:
     - Option:

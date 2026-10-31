@@ -84,6 +84,9 @@ namespace TrainDefense.Game
                 return;
 
             _cooldownRemaining = _config.Cooldown * _GetUpgradeMultiplier(COOLDOWN_UPGRADE_ID);
+            // 스킬 트리 포격 대기시간 감소(%)는 레벨업 강화 뒤 마지막에 곱한다
+            if (SkillTreeManager.Instance != null)
+                _cooldownRemaining *= 1f - SkillTreeManager.Instance.GetValue(SkillTreePassiveType.BombardCooldown) / 100f;
 
             // 구 메인 터렛(MainTrain.Weapon)이 발행하던 이벤트를 개입 포격이 이어받는다.
             // 공격 튜토리얼이 이 이벤트로 완료 처리되므로 끊기면 튜토리얼이 영영 안 끝난다.
@@ -112,8 +115,16 @@ namespace TrainDefense.Game
             projectile.transform.position = new Vector3(worldPosition.x, worldPosition.y, 0f);
 
             // 몬스터 체력이 역마다 오르므로 포격 피해도 같은 배율을 따라가야 판 내내 "약한 몹 한 방" 역할이 유지된다.
-            _status.AttackDamage = _config.Damage * _GetEnemyHpScale() * _GetUpgradeMultiplier(DAMAGE_UPGRADE_ID) * damageMultiplier;
+            // 스킬 트리 포격 피해는 고정값(+N). 기본 피해에 더한 뒤 적 체력 배율·레벨업 강화를 곱한다 (기본값과 같은 취급).
+            float baseDamage = _config.Damage;
+            if (SkillTreeManager.Instance != null)
+                baseDamage += SkillTreeManager.Instance.GetValue(SkillTreePassiveType.BombardDamage);
+
+            _status.AttackDamage = baseDamage * _GetEnemyHpScale() * _GetUpgradeMultiplier(DAMAGE_UPGRADE_ID) * damageMultiplier;
+
             _status.AttackArea = _config.AttackArea * _GetUpgradeMultiplier(AREA_UPGRADE_ID);
+            if (SkillTreeManager.Instance != null)
+                _status.AttackArea *= 1f + SkillTreeManager.Instance.GetValue(SkillTreePassiveType.BombardArea) / 100f;
 
             // owner를 넘기지 않는다. Projectile의 아군 판정은 "몬스터가 쏜 게 아니면 기차를 안 때린다"라서
             // owner 없이도 내 기차는 맞지 않는다.

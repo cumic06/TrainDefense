@@ -21,9 +21,10 @@ namespace TrainDefense.Game.UI.SkillTree
     {
         // DESIGN.md 그리드: 노드 136px. 09-13 가로 선로 전환 — 레인 3개(화력/방어/유틸)가 가로 선로 세 줄이 되고 행(row)이 왼쪽→오른쪽 역이다.
         // 남는 가로는 선로 길이에 돌린다 (세로 배치 때 "남는 세로는 선로 노출에"와 같은 원칙): 트리 판 폭 1170 = 여백 61·2 + 4·136 + 선로 168·3
-        private const float NodeSize = 136f;
-        private const float NodePitch = 304f;       // 노드 136 + 선로 168
-        private const float LanePitch = 176f;       // 노드 136 + 레인 간격 40 (트리 판 높이 588 = 여백 50·2 + 3·136 + 2·40 — 아래 상세 띠 176 자리를 남긴다)
+        private const float NodeSize = 96f;         // 10-31 포격 레인 추가로 4줄 — 136→96 (사용자 "노드들이 너무 커"). 팝업·트리 판은 890·588 그대로
+        private static readonly int LaneCount = System.Enum.GetValues(typeof(SkillTreeLane)).Length;
+        private const float NodePitch = 304f;       // 노드 96 + 선로 208
+        private const float LanePitch = 136f;       // 노드 96 + 레인 간격 40 (트리 판 높이 588 = 여백 42·2 + 4·96 + 3·40 — 아래 상세 띠 176 자리를 남긴다)
         private const float RailThickness = 56f;    // 기찻길 스프라이트가 침목까지 보이는 목업 폭
         // 왼쪽 여백 61 = 트리 판 9-slice 외곽선(rect 안쪽 10) + 선택 링(+14) 바깥 여유. 세로 여백은 LanePitch가 결정한다
         private const float ContentPaddingLeft = 61f;
@@ -204,7 +205,7 @@ namespace TrainDefense.Game.UI.SkillTree
         private Vector2 _GetNodePosition(SkillNodeData data)
         {
             float x = ContentPaddingLeft + NodeSize * 0.5f + data.Row * NodePitch;
-            float y = (1 - (int)data.Lane) * LanePitch;
+            float y = ((LaneCount - 1) * 0.5f - (int)data.Lane) * LanePitch;
 
             return new Vector2(x, y);
         }

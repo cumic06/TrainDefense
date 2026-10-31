@@ -8,6 +8,7 @@ namespace TrainDefense.Game.Datas
         Firepower,   // 0 — 화력
         Defense,     // 1 — 방어
         Utility,     // 2 — 유틸
+        Bombard,     // 3 — 포격 (개입 포격 전용)
     }
 
     /// <summary>
@@ -30,5 +31,8 @@ namespace TrainDefense.Game.Datas
         HealthRegen,       // 2 — 5초마다 체력 회복 (%)
         FreeReroll,        // 3 — 레벨업 시 무료 리롤 횟수
         DamageReduction,   // 4 — 포탑이 받는 피해 감소 (%)
+        BombardDamage,     // 5 — 개입 포격 피해 증가 (+고정값)
+        BombardCooldown,   // 6 — 개입 포격 대기시간 감소 (%)
+        BombardArea,       // 7 — 개입 포격 범위 증가 (%)
     }
 }

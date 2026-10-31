@@ -146,6 +146,7 @@ namespace TrainDefense.Game
                 SkillTreeLane.Firepower => LocalizeHelper.GetByKey("UI_SkillTree_Lane_Fire", "화력"),
                 SkillTreeLane.Defense => LocalizeHelper.GetByKey("UI_SkillTree_Lane_Defense", "방어"),
                 SkillTreeLane.Utility => LocalizeHelper.GetByKey("UI_SkillTree_Lane_Utility", "유틸"),
+                SkillTreeLane.Bombard => LocalizeHelper.GetByKey("UI_SkillTree_Lane_Bombard", "포격"),
                 _ => lane.ToString(),
             };
         }
