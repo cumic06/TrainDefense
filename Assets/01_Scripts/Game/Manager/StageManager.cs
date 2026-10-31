@@ -5,6 +5,7 @@ using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Difficulty;
 using TrainDefense;
 
 namespace TrainDefense.Game.Manager
@@ -60,6 +61,9 @@ namespace TrainDefense.Game.Manager
         // 스테이지당 4씩 늘어난다. 스테이지가 바뀌어도 리셋되지 않고 한 판 동안 계속 누적된다.
         // (스테이지 흐름 제어용 _currentStageInspectionTimeIndex 와 분리)
         private int _totalInspectionPassedCount = 0;
+        // 이 판의 난이도 단계(1부터). 새 판은 로비 선택(DifficultyStageSelection)에서, 이어하기는 세이브에서 받는다.
+        private int _difficultyStage = DifficultyStageSelection.MIN_STAGE;
+        private DifficultyStageConfig _difficultyConfig;
         private bool _shouldShowStageSelectionOnStageEnd;
         private bool _pendingStageSelectionAfterShop;
         private bool _isGameOver;
@@ -80,6 +84,22 @@ namespace TrainDefense.Game.Manager
         /// 한 판 동안 열린 누적 상점 수(역 도착 + 맵 선택). 난이도 스케일과 상품 가격이 공유하는 시간 축.
         /// </summary>
         public int TotalInspectionPassedCount => _totalInspectionPassedCount;
+
+        /// <summary>이 판의 난이도 단계(1부터).</summary>
+        public int DifficultyStage => _difficultyStage;
+
+        /// <summary>이 판의 단계별 수치(체력 성장 배율·스폰 가속 가산·수리 단가 배율). 스포너·상점 가격이 읽는다.</summary>
+        public DifficultyStageConfig.StageValues DifficultyValues
+        {
+            get
+            {
+                // Start 전(다른 매니저의 Awake 등)에 불려도 안전하게 그 자리에서 읽는다.
+                if (_difficultyConfig == null)
+                    _LoadDifficultyConfig();
+
+                return _difficultyConfig.GetValues(_difficultyStage);
+            }
+        }
 
         /// <summary>이번 판에서 몇 번째 맵인지(1부터). 마감된 맵 기록 수 + 진행 중인 맵. 분석 로그용.</summary>
         public int CurrentMapNumber => _runRecords.Count + (_runFinalized ? 0 : 1);
@@ -118,6 +138,21 @@ namespace TrainDefense.Game.Manager
         private void OnDestroy()
         {
             _UnsubscribeEvents();
+        }
+
+        private const string DIFFICULTY_CONFIG_RESOURCE_PATH = "Data/DifficultyStageConfig";
+
+        private void _LoadDifficultyConfig()
+        {
+            _difficultyConfig = Resources.Load<DifficultyStageConfig>(DIFFICULTY_CONFIG_RESOURCE_PATH);
+
+            // 에셋이 없으면 DifficultyStageConfig의 기본값(10-30 확정 3단계)으로 동작한다.
+            if (_difficultyConfig == null)
+                _difficultyConfig = ScriptableObject.CreateInstance<DifficultyStageConfig>();
+
+            // 해금·선택은 MAX_STAGE를, 수치는 이 표를 보므로 둘이 어긋나면 윗 단계가 아래 단계 값으로 조용히 돌게 된다.
+            if (_difficultyConfig.StageCount != DifficultyStageSelection.MAX_STAGE)
+                Debug.LogError($"[Difficulty] DifficultyStageConfig 단계 수({_difficultyConfig.StageCount})가 MAX_STAGE({DifficultyStageSelection.MAX_STAGE})와 다릅니다.");
         }
 
         private void _SubscribeEvents()
@@ -192,6 +227,7 @@ namespace TrainDefense.Game.Manager
         {
             // 새 게임 시작 시에만 누적 난이도 카운터 초기화 (스테이지 변경 시에는 유지)
             _totalInspectionPassedCount = 0;
+            _difficultyStage = DifficultyStageSelection.SelectedStage;
             _UpdateSpawnRules();
 
             // 맵별 결산 기록 초기화. 첫 맵은 게임 시작과 동시이므로 진입 스냅샷을 0으로 둔다.
@@ -353,6 +389,8 @@ namespace TrainDefense.Game.Manager
             _totalInspectionPassedCount++;
             GameEventSystem.Publish(new StationPassedEvent(_totalInspectionPassedCount));
             _isGameOver = true;
+            // 종착역 클리어가 다음 난이도 단계를 연다(디버그 클리어 발행과 분리된 실제 도착 경로에서만).
+            DifficultyStageSelection.MarkCleared(_difficultyStage);
             GameEventSystem.Publish(new GameEndEvent(true));
         }
 
@@ -567,6 +605,7 @@ namespace TrainDefense.Game.Manager
             public float CurrentStageTime;
             public int CurrentStageInspectionTimeIndex;
             public int TotalStationPassedCount;
+            public int DifficultyStage;
             public bool ShouldShowStageSelectionOnStageEnd;
             public bool PendingStageSelectionAfterShop;
             public int MapStartScore;
@@ -592,6 +631,7 @@ namespace TrainDefense.Game.Manager
                 CurrentStageTime = _currentStageTime,
                 CurrentStageInspectionTimeIndex = _currentStageInspectionTimeIndex,
                 TotalStationPassedCount = _totalInspectionPassedCount,
+                DifficultyStage = _difficultyStage,
                 ShouldShowStageSelectionOnStageEnd = _shouldShowStageSelectionOnStageEnd,
                 PendingStageSelectionAfterShop = _pendingStageSelectionAfterShop,
                 MapStartScore = _mapStartScore,
@@ -633,6 +673,8 @@ namespace TrainDefense.Game.Manager
             _currentStageTime = Mathf.Max(0f, state.CurrentStageTime);
             _currentStageInspectionTimeIndex = Mathf.Max(0, state.CurrentStageInspectionTimeIndex);
             _totalInspectionPassedCount = Mathf.Max(0, state.TotalStationPassedCount);
+            // 단계 기능 전 세이브는 0으로 들어온다 → 1단계.
+            _difficultyStage = Mathf.Clamp(state.DifficultyStage, DifficultyStageSelection.MIN_STAGE, DifficultyStageSelection.MAX_STAGE);
             _shouldShowStageSelectionOnStageEnd = state.ShouldShowStageSelectionOnStageEnd;
             _pendingStageSelectionAfterShop = state.PendingStageSelectionAfterShop;
             _mapStartScore = state.MapStartScore;
@@ -682,10 +724,12 @@ namespace TrainDefense.Game.Manager
             // 가속 복리 스케일 — 상점을 지날수록 증가율 자체가 hpScaleIncrement만큼 커진다.
             // 유저 성장이 2차식이라 단일 비율 지수로는 초반이 가파르고 후반이 밋밋해서 그 반대 모양을 만든다.
             // hpScaleIncrement가 0이면 hpScaleStart × Pow(1 + hpScale, 상점수)와 정확히 같다.
+            // 난이도 단계는 증가율(hpScale)에만 곱해 판 시작 체력은 같고 역이 지날수록 벌어진다.
+            float stageHpScale = hpScale * DifficultyValues.hpScaleMultiplier;
             float scale = hpScaleStart;
             for (int i = 0; i < _totalInspectionPassedCount; i++)
             {
-                scale *= 1f + hpScale + hpScaleIncrement * i;
+                scale *= 1f + stageHpScale + hpScaleIncrement * i;
             }
 
             return scale;

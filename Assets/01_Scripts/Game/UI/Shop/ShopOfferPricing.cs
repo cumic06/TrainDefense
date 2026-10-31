@@ -58,10 +58,19 @@ namespace TrainDefense.Game.UI
         // 체력 계산의 소수점 오차로 꽉 찬 칸에 1코인 수리비가 붙지 않게 이 아래는 고칠 게 없는 것으로 본다.
         private const float REPAIR_MISSING_HP_EPSILON = 0.01f;
 
-        // 회복 없는 난이도의 상점 수리 비용. 부서진 칸의 잃은 체력은 최대 체력 전부다.
+        // 상점 수리 비용. 부서진 칸의 잃은 체력은 최대 체력 전부다. 난이도 단계가 높으면 단가 배율이 붙어 수리가 더 고민되게 한다.
         public int GetRepairPrice(float missingHp)
         {
-            return missingHp > REPAIR_MISSING_HP_EPSILON ? Mathf.CeilToInt(missingHp * repairCostPerHp * _GetStationPriceMultiplier()) : 0;
+            if (missingHp <= REPAIR_MISSING_HP_EPSILON)
+                return 0;
+
+            return Mathf.CeilToInt(missingHp * repairCostPerHp * _GetDifficultyRepairMultiplier() * _GetStationPriceMultiplier());
+        }
+
+        private static float _GetDifficultyRepairMultiplier()
+        {
+            var stageManager = StageManager.Instance;
+            return stageManager != null ? stageManager.DifficultyValues.repairCostMultiplier : 1f;
         }
 
         // 이번 상점의 첫 리롤 비용. 방문할수록 올라 후반에도 리롤이 공짜처럼 되지 않는다.

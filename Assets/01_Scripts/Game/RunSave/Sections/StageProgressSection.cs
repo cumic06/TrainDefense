@@ -20,6 +20,8 @@ namespace TrainDefense.Game.RunSave.Sections
             public float currentStageTime;
             public int currentStageInspectionTimeIndex;
             public int totalStationPassedCount;
+            // 단계 기능 전 세이브에는 없는 필드 → JsonUtility가 0으로 채우고 StageManager가 1단계로 본다.
+            public int difficultyStage;
             public bool shouldShowStageSelectionOnStageEnd;
             public bool pendingStageSelectionAfterShop;
             public int mapStartScore;
@@ -51,6 +53,7 @@ namespace TrainDefense.Game.RunSave.Sections
                 currentStageTime = state.CurrentStageTime,
                 currentStageInspectionTimeIndex = state.CurrentStageInspectionTimeIndex,
                 totalStationPassedCount = state.TotalStationPassedCount,
+                difficultyStage = state.DifficultyStage,
                 shouldShowStageSelectionOnStageEnd = state.ShouldShowStageSelectionOnStageEnd,
                 pendingStageSelectionAfterShop = state.PendingStageSelectionAfterShop,
                 mapStartScore = state.MapStartScore,
@@ -98,6 +101,7 @@ namespace TrainDefense.Game.RunSave.Sections
                 CurrentStageTime = payload.currentStageTime,
                 CurrentStageInspectionTimeIndex = payload.currentStageInspectionTimeIndex,
                 TotalStationPassedCount = payload.totalStationPassedCount,
+                DifficultyStage = payload.difficultyStage,
                 ShouldShowStageSelectionOnStageEnd = payload.shouldShowStageSelectionOnStageEnd,
                 PendingStageSelectionAfterShop = payload.pendingStageSelectionAfterShop,
                 MapStartScore = payload.mapStartScore,

@@ -239,8 +239,18 @@ namespace TrainDefense.Game
 
       private float _GetAcceleratedInterval()
       {
-         float totalAccel = Mathf.Min(_StationPassedCount * stationSpawnAccelPercent / 100f,
-                                       maxSpawnAccelPercent / 100f);
+         // 난이도 단계는 역마다 단축 폭과 상한을 더 준다. 0역은 세 단계 모두 같은 간격이다.
+         var stageManager = TrainDefense.Game.Manager.StageManager.Instance;
+         float accelPercent = stationSpawnAccelPercent;
+         float maxPercent = maxSpawnAccelPercent;
+         if (stageManager != null)
+         {
+            var difficultyValues = stageManager.DifficultyValues;
+            accelPercent += difficultyValues.stationSpawnAccelPercentBonus;
+            maxPercent += difficultyValues.maxSpawnAccelPercentBonus;
+         }
+
+         float totalAccel = Mathf.Min(_StationPassedCount * accelPercent / 100f, maxPercent / 100f);
          return _originalSpawnInterval * (1f - totalAccel);
       }
 
