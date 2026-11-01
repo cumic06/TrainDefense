@@ -9,9 +9,12 @@ namespace TrainDefense.Game.TrackEvent.Effects
     {
         private const float DEFAULT_MULTIPLIER = 1.5f;
 
+        private float _appliedMultiplier = 1f;
+
         public void Begin(TrackEventData data)
         {
-            TrackEventModifiers.KillExpMultiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
+            _appliedMultiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
+            TrackEventModifiers.Multiply(TrackEventModifierType.KillExp, _appliedMultiplier);
         }
 
         public void Tick(float deltaTime)
@@ -20,7 +23,7 @@ namespace TrainDefense.Game.TrackEvent.Effects
 
         public void End(bool isInterrupted)
         {
-            TrackEventModifiers.KillExpMultiplier = 1f;
+            TrackEventModifiers.Divide(TrackEventModifierType.KillExp, _appliedMultiplier);
         }
     }
 }

@@ -2,9 +2,10 @@ namespace TrainDefense.Game.TrackEvent
 {
     /// <summary>
     /// 선로 이벤트가 전투 수치에 거는 전역 배율. 기본값은 모두 1(효과 없음).
-    /// 효과(ITrackEventEffect)는 Begin에서 값을 바꾸고 End에서 반드시 Reset 계열로 되돌린다.
+    /// 무작위·날씨·선택 이벤트가 한 구간에 동시에 걸릴 수 있으므로, 효과는 값을 대입하지 않고
+    /// Begin에서 Multiply, End에서 같은 값으로 Divide 해 서로의 배율을 지우지 않는다.
     /// 읽는 쪽(Monster·Train 등)은 기존 계산식에 곱하기만 한다 — 이벤트 종류를 알 필요가 없다.
-    /// 한 구간에 이벤트는 최대 1개라 중첩 관리는 하지 않는다. 판이 끝나거나 역에 도착하면 TrackEventManager가 효과를 End시켜 원복된다.
+    /// 판이 끝나거나 역에 도착하면 TrackEventManager가 효과를 End시켜 원복되고, 판 시작 때 ResetAll이 안전망이다.
     /// </summary>
     public static class TrackEventModifiers
     {
@@ -27,6 +28,24 @@ namespace TrainDefense.Game.TrackEvent
 
         #endregion
 
+        /// <summary>배율에 factor를 곱한다. 0 이하는 무시한다(Divide로 되돌릴 수 없으므로).</summary>
+        public static void Multiply(TrackEventModifierType type, float factor)
+        {
+            if (factor <= 0f)
+                return;
+
+            _Set(type, _Get(type) * factor);
+        }
+
+        /// <summary>Multiply로 건 factor를 되돌린다. Begin에서 쓴 값과 같은 값을 넘겨야 한다.</summary>
+        public static void Divide(TrackEventModifierType type, float factor)
+        {
+            if (factor <= 0f)
+                return;
+
+            _Set(type, _Get(type) / factor);
+        }
+
         /// <summary>모든 배율을 기본값으로 되돌린다. 씬 재시작·판 종료 안전망.</summary>
         public static void ResetAll()
         {
@@ -35,6 +54,41 @@ namespace TrainDefense.Game.TrackEvent
             MonsterMoveSpeedMultiplier = 1f;
             TurretAttackSpeedMultiplier = 1f;
             TurretRangeMultiplier = 1f;
+        }
+
+        private static float _Get(TrackEventModifierType type)
+        {
+            return type switch
+            {
+                TrackEventModifierType.KillGold => KillGoldMultiplier,
+                TrackEventModifierType.KillExp => KillExpMultiplier,
+                TrackEventModifierType.MonsterMoveSpeed => MonsterMoveSpeedMultiplier,
+                TrackEventModifierType.TurretAttackSpeed => TurretAttackSpeedMultiplier,
+                TrackEventModifierType.TurretRange => TurretRangeMultiplier,
+                _ => 1f,
+            };
+        }
+
+        private static void _Set(TrackEventModifierType type, float value)
+        {
+            switch (type)
+            {
+                case TrackEventModifierType.KillGold:
+                    KillGoldMultiplier = value;
+                    break;
+                case TrackEventModifierType.KillExp:
+                    KillExpMultiplier = value;
+                    break;
+                case TrackEventModifierType.MonsterMoveSpeed:
+                    MonsterMoveSpeedMultiplier = value;
+                    break;
+                case TrackEventModifierType.TurretAttackSpeed:
+                    TurretAttackSpeedMultiplier = value;
+                    break;
+                case TrackEventModifierType.TurretRange:
+                    TurretRangeMultiplier = value;
+                    break;
+            }
         }
     }
 }

@@ -28,5 +28,18 @@ namespace TrainDefense.Game.Datas
 
         // 선택 — 리스크/리턴을 고르게 한다
         DetourChoice = 20,      // 우회로 선택: "위험한 지름길(구간 단축 + 몬스터↑) / 안전한 길" 중 선택
+
+        // 날씨 전용 — TrackEventCategory.Weather 로 N역마다 확정 발생 (Sandstorm·ColdSnap도 약한 세기로 날씨 풀에 들어간다)
+        Rain = 30,              // 비: 몬스터 이동속도↓ + 포탑 사거리 소폭↓
+        Fog = 31,               // 안개: 포탑 사거리↓ + 처치 경험치↑
+        Heatwave = 32,          // 폭염: 포탑 공격 속도↑ + 몬스터 이동속도↑
+
+        // 선택지 — TrackEventCategory.Choice 로 2지선다 카드에 나온다. 효과는 작고 역 도착까지 유지
+        ChoiceGoldBonus = 40,   // 처치 골드 소폭↑
+        ChoiceExpBonus = 41,    // 처치 경험치 소폭↑
+        ChoiceAttackSpeed = 42, // 포탑 공격 속도 소폭↑
+        ChoiceRange = 43,       // 포탑 사거리 소폭↑
+        ChoiceMonsterSlow = 44, // 몬스터 이동속도 소폭↓
+        ChoiceRepair = 45,      // 기차 체력 소량 즉시 회복 (RepairStop 효과 재사용)
     }
 }

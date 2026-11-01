@@ -25,11 +25,12 @@ namespace TrainDefense.Game.TrackEvent.Effects
         };
 
         private TrackEventWeatherEffect _weatherEffect;
+        private float _appliedMultiplier = 1f;
 
         public void Begin(TrackEventData data)
         {
-            float multiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
-            TrackEventModifiers.TurretRangeMultiplier = multiplier;
+            _appliedMultiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
+            TrackEventModifiers.Multiply(TrackEventModifierType.TurretRange, _appliedMultiplier);
             _weatherEffect = TrackEventWeatherEffect.Create(WEATHER_STYLE);
         }
 
@@ -39,7 +40,7 @@ namespace TrainDefense.Game.TrackEvent.Effects
 
         public void End(bool isInterrupted)
         {
-            TrackEventModifiers.TurretRangeMultiplier = 1f;
+            TrackEventModifiers.Divide(TrackEventModifierType.TurretRange, _appliedMultiplier);
 
             if (_weatherEffect != null)
                 _weatherEffect.FadeOutAndDestroy();

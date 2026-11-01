@@ -10,10 +10,12 @@ namespace TrainDefense.Game.TrackEvent.Effects
     {
         private const float DEFAULT_MULTIPLIER = 1.5f;
 
+        private float _appliedMultiplier = 1f;
+
         public void Begin(TrackEventData data)
         {
-            float multiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
-            TrackEventModifiers.TurretAttackSpeedMultiplier = multiplier;
+            _appliedMultiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
+            TrackEventModifiers.Multiply(TrackEventModifierType.TurretAttackSpeed, _appliedMultiplier);
         }
 
         public void Tick(float deltaTime)
@@ -22,7 +24,7 @@ namespace TrainDefense.Game.TrackEvent.Effects
 
         public void End(bool isInterrupted)
         {
-            TrackEventModifiers.TurretAttackSpeedMultiplier = 1f;
+            TrackEventModifiers.Divide(TrackEventModifierType.TurretAttackSpeed, _appliedMultiplier);
         }
     }
 }

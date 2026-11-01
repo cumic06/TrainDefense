@@ -24,10 +24,12 @@ namespace TrainDefense.Game.TrackEvent.Effects
         };
 
         private TrackEventWeatherEffect _weatherEffect;
+        private float _appliedMultiplier = 1f;
 
         public void Begin(TrackEventData data)
         {
-            TrackEventModifiers.MonsterMoveSpeedMultiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
+            _appliedMultiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
+            TrackEventModifiers.Multiply(TrackEventModifierType.MonsterMoveSpeed, _appliedMultiplier);
             _weatherEffect = TrackEventWeatherEffect.Create(WEATHER_STYLE);
         }
 
@@ -37,7 +39,7 @@ namespace TrainDefense.Game.TrackEvent.Effects
 
         public void End(bool isInterrupted)
         {
-            TrackEventModifiers.MonsterMoveSpeedMultiplier = 1f;
+            TrackEventModifiers.Divide(TrackEventModifierType.MonsterMoveSpeed, _appliedMultiplier);
 
             if (_weatherEffect != null)
                 _weatherEffect.FadeOutAndDestroy();

@@ -1,10 +1,14 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Cumic.Events;
 using Cumic.Sequence;
+using TrainDefense.Game.Datas;
+using TrainDefense.Game.Events;
 using TrainDefense.Game.Manager;
+using TrainDefense.Game.TrackEvent;
 using TrainDefense.Game.Tutorial;
 using TrainDefense.Localize;
 
@@ -16,6 +20,7 @@ namespace TrainDefense.Game.UI
     /// "첫 삼중택일이 끝나야" InGameSequence가 EngageStartEvent를 발행하므로 선택지를 가리지 않는다.
     /// 튜토리얼 등 오버레이가 떠 있으면 걷힐 때까지 대기 후 표시한다.
     /// EngageStartEvent는 상점 퇴장마다 발행되므로 "직전에 보여준 스테이지와 다른 경우"에만 표시한다.
+    /// 선로 이벤트 날씨가 바뀌면(TrackEventStartEvent, Weather 분류) 날씨 이름 + 효과도 같은 배너로 차례로 알린다.
     /// 시각 요소는 코드에서 직접 생성해 Inspector wiring 없이 동작한다(GameBootstrapper가 전역 캔버스에 부착).
     /// </summary>
     public class MapNameBannerUI : MonoBehaviour
@@ -28,6 +33,9 @@ namespace TrainDefense.Game.UI
         #endregion
 
         #region Variables
+        private const string WEATHER_EFFECT_SEPARATOR = "  /  ";
+
+        private readonly Queue<(string message, TrackEventData weatherData)> _pendingMessages = new Queue<(string, TrackEventData)>();
         private CanvasGroup _canvasGroup;
         private TextMeshProUGUI _nameText;
         private Coroutine _playRoutine;
@@ -44,6 +52,13 @@ namespace TrainDefense.Game.UI
         private void OnDisable()
         {
             _UnsubscribeEvents();
+
+            // 비활성화되면 코루틴이 멈추므로, 다시 켜졌을 때 대기열이 막히지 않게 진행 상태를 비운다.
+            _playRoutine = null;
+            _pendingMessages.Clear();
+
+            if (_canvasGroup != null)
+                _canvasGroup.alpha = 0f;
         }
 
         private void Awake()
@@ -63,12 +78,14 @@ namespace TrainDefense.Game.UI
         {
             GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Subscribe<EngageStartEvent>(_OnEngageStart);
+            GameEventSystem.Subscribe<TrackEventStartEvent>(_OnTrackEventStart);
         }
 
         private void _UnsubscribeEvents()
         {
             GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Unsubscribe<EngageStartEvent>(_OnEngageStart);
+            GameEventSystem.Unsubscribe<TrackEventStartEvent>(_OnTrackEventStart);
         }
         #endregion
 
@@ -78,9 +95,10 @@ namespace TrainDefense.Game.UI
             if (e == null || e.IsLobby)
                 return;
 
-            // 새 판 시작 — 직전 판에서 보여준 맵 기록만 지운다. 실제 표시는 첫 삼중택일이
+            // 새 판 시작 — 직전 판에서 보여준 맵 기록과 못 보여 준 대기 문구를 지운다. 실제 표시는 첫 삼중택일이
             // 끝나고 발행되는 EngageStartEvent(InGameSequence._OnTriChoiceSelect)에서 한다.
             _lastShownStageId = null;
+            _pendingMessages.Clear();
         }
 
         private void _OnEngageStart(EngageStartEvent e)
@@ -104,13 +122,44 @@ namespace TrainDefense.Game.UI
 
             string mapName = LocalizeHelper.GetByKey(stage.NameKey, stage.Id);
 
-            if (_playRoutine != null)
-                StopCoroutine(_playRoutine);
-
-            _playRoutine = StartCoroutine(_PlayRoutine(mapName));
+            _Enqueue(mapName, null);
         }
 
-        private IEnumerator _PlayRoutine(string mapName)
+        // 날씨가 바뀌면(선로 이벤트 날씨 분류) 이름 + 효과 줄을 맵 이름 다음 차례로 보여 준다.
+        private void _OnTrackEventStart(TrackEventStartEvent e)
+        {
+            if (e == null || e.Data == null || e.Data.Category != TrackEventCategory.Weather)
+                return;
+
+            string effectText = TrackEventText.GetEffectText(e.Data, WEATHER_EFFECT_SEPARATOR);
+            string message = string.IsNullOrEmpty(effectText)
+                ? TrackEventText.GetName(e.Data)
+                : $"{TrackEventText.GetName(e.Data)}\n<size=65%>{effectText}</size>";
+
+            _Enqueue(message, e.Data);
+        }
+
+        // 맵 이름과 날씨는 같은 EngageStartEvent에서 함께 오므로 겹쳐 지우지 않고 차례로 보여 준다.
+        private void _Enqueue(string message, TrackEventData weatherData)
+        {
+            _pendingMessages.Enqueue((message, weatherData));
+
+            if (_playRoutine == null)
+                _playRoutine = StartCoroutine(_PlayQueueRoutine());
+        }
+
+        private IEnumerator _PlayQueueRoutine()
+        {
+            while (_pendingMessages.Count > 0)
+            {
+                (string message, TrackEventData weatherData) = _pendingMessages.Dequeue();
+                yield return _PlayRoutine(message, weatherData);
+            }
+
+            _playRoutine = null;
+        }
+
+        private IEnumerator _PlayRoutine(string message, TrackEventData weatherData)
         {
             // 튜토리얼/삼중택일(레벨업) 오버레이가 떠 있는 동안은 대기해 연출을 가리지 않는다.
             // 걷힌 뒤에도 overlayClearSettle만큼 연속으로 비어 있어야 표시한다.
@@ -121,14 +170,23 @@ namespace TrainDefense.Game.UI
                 yield return null;
             }
 
+            // 기다리는 사이 역에 도착해 날씨가 이미 끝났으면 알리지 않는다.
+            if (weatherData != null && !_IsWeatherActive(weatherData))
+                yield break;
+
             if (_nameText != null)
-                _nameText.text = mapName;
+                _nameText.text = message;
 
             yield return _Fade(0f, 1f, fadeDuration);
             yield return new WaitForSecondsRealtime(holdDuration);
             yield return _Fade(1f, 0f, fadeDuration);
+        }
 
-            _playRoutine = null;
+        private static bool _IsWeatherActive(TrackEventData weatherData)
+        {
+            var trackEventManager = TrackEventManager.Instance;
+
+            return trackEventManager != null && trackEventManager.ActiveWeatherData == weatherData;
         }
 
         // 배너 표시를 막아야 하는 화면이 떠 있는지. 오버레이 스택(튜토리얼/삼중택일/일시정지/옵션) +
@@ -197,6 +255,10 @@ namespace TrainDefense.Game.UI
 
             _nameText = textGo.AddComponent<TextMeshProUGUI>();
             _nameText.fontSize = 46f;
+            // 날씨 알림은 이름 + 효과 두 줄이라 길어질 수 있다 — 넘치면 줄여서 바 안에 맞춘다.
+            _nameText.enableAutoSizing = true;
+            _nameText.fontSizeMin = 24f;
+            _nameText.fontSizeMax = 46f;
             _nameText.fontWeight = FontWeight.Bold;
             _nameText.color = Color.white;
             _nameText.alignment = TextAlignmentOptions.Center;

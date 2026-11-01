@@ -26,6 +26,19 @@ namespace TrainDefense.Game.TrackEvent
                 TrackEventType.RepairStop => new RepairStopTrackEventEffect(),
                 TrackEventType.FreeUpgrade => new FreeUpgradeTrackEventEffect(),
                 TrackEventType.Tailwind => new TailwindTrackEventEffect(),
+
+                // 날씨 전용
+                TrackEventType.Rain => new ModifierTrackEventEffect(TrackEventModifierType.MonsterMoveSpeed, TrackEventModifierType.TurretRange, TrackEventWeatherStyles.RAIN),
+                TrackEventType.Fog => new ModifierTrackEventEffect(TrackEventModifierType.TurretRange, TrackEventModifierType.KillExp, TrackEventWeatherStyles.FOG),
+                TrackEventType.Heatwave => new ModifierTrackEventEffect(TrackEventModifierType.TurretAttackSpeed, TrackEventModifierType.MonsterMoveSpeed, TrackEventWeatherStyles.HEATWAVE),
+
+                // 선택지
+                TrackEventType.ChoiceGoldBonus => new ModifierTrackEventEffect(TrackEventModifierType.KillGold),
+                TrackEventType.ChoiceExpBonus => new ModifierTrackEventEffect(TrackEventModifierType.KillExp),
+                TrackEventType.ChoiceAttackSpeed => new ModifierTrackEventEffect(TrackEventModifierType.TurretAttackSpeed),
+                TrackEventType.ChoiceRange => new ModifierTrackEventEffect(TrackEventModifierType.TurretRange),
+                TrackEventType.ChoiceMonsterSlow => new ModifierTrackEventEffect(TrackEventModifierType.MonsterMoveSpeed),
+                TrackEventType.ChoiceRepair => new RepairStopTrackEventEffect(),
                 // TODO: 구현 순서는 plans/선로이벤트_구현계획.md "4. 이벤트 아이디어" 우선순위를 따른다.
                 _ => null,
             };

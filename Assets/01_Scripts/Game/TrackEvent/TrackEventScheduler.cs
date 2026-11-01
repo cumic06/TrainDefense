@@ -14,6 +14,7 @@ namespace TrainDefense.Game.TrackEvent
         #region Variables
         private readonly Random _random;
         private readonly List<TrackEventData> _candidates = new();
+        private readonly List<TrackEventData> _distinctPool = new();
 
         private TrackEventData _scheduledData;
         private float _elapsedTime;
@@ -71,6 +72,51 @@ namespace TrainDefense.Game.TrackEvent
             return triggered;
         }
 
+        /// <summary>
+        /// 확률·시각 없이 지금 바로 하나를 뽑는다(날씨처럼 확정 발생용). 직전에 뽑힌 것은 연속으로 나오지 않는다.
+        /// 예약 상태(RollSegment)와는 무관하다.
+        /// </summary>
+        public TrackEventData PickOne(IReadOnlyList<TrackEventData> pool, int stationCount)
+        {
+            if (pool == null)
+                return null;
+
+            TrackEventData picked = _PickWeighted(pool, stationCount);
+
+            if (picked != null)
+                _lastTriggeredId = picked.Id;
+
+            return picked;
+        }
+
+        /// <summary>서로 다른 후보를 최대 count개 가중치로 뽑아 result에 담는다(선택 이벤트 카드용). 뽑힌 개수를 돌려준다.</summary>
+        public int PickDistinct(IReadOnlyList<TrackEventData> pool, int stationCount, int count, List<TrackEventData> result)
+        {
+            result.Clear();
+
+            if (pool == null || count <= 0)
+                return 0;
+
+            _distinctPool.Clear();
+
+            foreach (TrackEventData data in pool)
+                _distinctPool.Add(data);
+
+            // 직전 회차 카드 제외는 하지 않는다 — 후보가 적어 같은 조합이 반복될 수 있지만, 고르는 쪽이 플레이어라 문제되지 않는다.
+            while (result.Count < count)
+            {
+                TrackEventData picked = _PickWeightedIgnoringLast(_distinctPool, stationCount);
+
+                if (picked == null)
+                    break;
+
+                result.Add(picked);
+                _distinctPool.Remove(picked);
+            }
+
+            return result.Count;
+        }
+
         public void Clear()
         {
             _scheduledData = null;
@@ -81,6 +127,23 @@ namespace TrainDefense.Game.TrackEvent
         // 등장 조건(누적 상점 수)을 넘긴 후보 중 가중치로 하나 뽑는다. 직전 이벤트는 연속으로 나오지 않게 뺀다(후보가 그것뿐이면 허용).
         private TrackEventData _PickWeighted(IReadOnlyList<TrackEventData> pool, int stationCount)
         {
+            _CollectCandidates(pool, stationCount);
+
+            if (_candidates.Count > 1)
+                _candidates.RemoveAll(data => data.Id == _lastTriggeredId);
+
+            return _PickFromCandidates();
+        }
+
+        private TrackEventData _PickWeightedIgnoringLast(IReadOnlyList<TrackEventData> pool, int stationCount)
+        {
+            _CollectCandidates(pool, stationCount);
+
+            return _PickFromCandidates();
+        }
+
+        private void _CollectCandidates(IReadOnlyList<TrackEventData> pool, int stationCount)
+        {
             _candidates.Clear();
 
             foreach (TrackEventData data in pool)
@@ -90,10 +153,10 @@ namespace TrainDefense.Game.TrackEvent
 
                 _candidates.Add(data);
             }
+        }
 
-            if (_candidates.Count > 1)
-                _candidates.RemoveAll(data => data.Id == _lastTriggeredId);
-
+        private TrackEventData _PickFromCandidates()
+        {
             float totalWeight = 0f;
 
             foreach (TrackEventData data in _candidates)

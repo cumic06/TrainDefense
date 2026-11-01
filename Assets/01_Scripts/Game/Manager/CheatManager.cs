@@ -120,7 +120,7 @@ namespace TrainDefense.Game.Manager
         {
             IReadOnlyList<TrackEventData> datas = trackEventManager.EventDatas;
             int dataCount = datas != null ? datas.Count : 0;
-            int rowCount = 5 + dataCount;
+            int rowCount = 8 + dataCount;
             float y = PANEL_Y;
 
             Rect panelRect = new Rect(PANEL_X - 10f, PANEL_Y - 10f, PANEL_WIDTH + 20f, rowCount * (ROW_HEIGHT + ROW_SPACING) + 20f);
@@ -140,6 +140,22 @@ namespace TrainDefense.Game.Manager
 
             if (GUI.Button(_NextRow(ref y), "진행 중 이벤트 종료", _buttonStyle))
                 trackEventManager.ForceEndEvent();
+
+            GUI.enabled = true;
+
+            TrackEventData weatherData = trackEventManager.ActiveWeatherData;
+            TrackEventData choiceData = trackEventManager.ActiveChoiceData;
+            GUI.Label(_NextRow(ref y),
+                      $"날씨: {(weatherData != null ? weatherData.Id : "없음")}  선택: {(choiceData != null ? choiceData.Id : "없음")}",
+                      _labelStyle);
+
+            if (GUI.Button(_NextRow(ref y), "날씨 바꾸기 (무작위 1종)", _buttonStyle))
+                trackEventManager.ForceStartWeather();
+
+            GUI.enabled = !trackEventManager.IsChoicePopupOpen;
+
+            if (GUI.Button(_NextRow(ref y), "선택 이벤트 띄우기 (2지선다)", _buttonStyle))
+                trackEventManager.ForceOpenChoice();
 
             GUI.enabled = true;
 
