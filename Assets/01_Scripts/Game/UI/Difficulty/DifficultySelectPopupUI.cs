@@ -81,6 +81,23 @@ namespace TrainDefense.Game.UI.Difficulty
             closeButton.onClick.RemoveListener(_Close);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // 치트: 팝업이 열린 상태에서 U = 전체 해금, L = 해금 초기화. 카드 잠금 표시를 바로 다시 그린다.
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.U))
+            {
+                DifficultyStageSelection.UnlockAllForCheat();
+                _Refresh();
+            }
+            else if (Input.GetKeyDown(KeyCode.L))
+            {
+                DifficultyStageSelection.ResetProgressForCheat();
+                _Refresh();
+            }
+        }
+#endif
+
         private void _Refresh()
         {
             titleText.text = LocalizeHelper.GetByKey(TITLE_KEY, TITLE_FALLBACK);

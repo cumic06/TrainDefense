@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cumic.Events;
 using TrainDefense.Game.Datas;
+using TrainDefense.Game.Difficulty;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.TrackEvent;
 using UnityEngine;
@@ -61,6 +62,10 @@ namespace TrainDefense.Game.Manager
             // 회복 없는 난이도(역 도착 회복 끔·상점 수리) 켜고 끄기
             if (Input.GetKeyDown(KeyCode.H))
                 _ToggleStationArrivalRecovery();
+
+            // 난이도 전체 해금 (다음에 로비 난이도 팝업을 열 때 반영된다)
+            if (Input.GetKeyDown(KeyCode.U))
+                DifficultyStageSelection.UnlockAllForCheat();
         }
 
         private void OnDisable()

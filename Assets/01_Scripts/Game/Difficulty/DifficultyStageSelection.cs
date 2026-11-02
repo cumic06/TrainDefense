@@ -53,6 +53,25 @@ namespace TrainDefense.Game.Difficulty
             PlayerPrefs.Save();
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary>치트: 마지막 단계 바로 아래까지 클리어한 것으로 기록해 모든 단계를 연다.</summary>
+        public static void UnlockAllForCheat()
+        {
+            PlayerPrefs.SetInt(HIGHEST_CLEARED_STAGE_KEY, Mathf.Max(HighestClearedStage, MAX_STAGE - 1));
+            PlayerPrefs.Save();
+            Debug.Log($"[Cheat] 난이도 전체 해금 (최고 클리어 {HighestClearedStage})");
+        }
+
+        /// <summary>치트: 클리어 기록을 지워 1단계만 열린 처음 상태로 되돌린다.</summary>
+        public static void ResetProgressForCheat()
+        {
+            PlayerPrefs.DeleteKey(HIGHEST_CLEARED_STAGE_KEY);
+            PlayerPrefs.Save();
+            _selectedStage = MIN_STAGE;
+            Debug.Log("[Cheat] 난이도 해금 초기화 (1단계만 열림)");
+        }
+#endif
+
         // 도메인 리로드 없이 플레이를 반복해도 이전 플레이의 선택이 남지 않게 한다.
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void _ResetStatics() => _selectedStage = MIN_STAGE;
