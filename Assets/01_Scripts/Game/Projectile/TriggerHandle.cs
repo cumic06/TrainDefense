@@ -112,6 +112,15 @@ namespace TrainDefense.Game
             StartCoroutine(_DestroyAfterRoutine(delay));
         }
 
+        // 스폰 직후 수명을 다시 정한다(떠도는 블랙홀처럼 개조로 유지 시간이 바뀌는 장판). 이 컴포넌트의 코루틴은 파괴 예약뿐이라 전부 멈추고 새로 건다.
+        public void OverrideLifetime(float seconds)
+        {
+            if (seconds <= 0f) return;
+
+            StopAllCoroutines();
+            _DestroyAfter(seconds);
+        }
+
         private System.Collections.IEnumerator _DestroyAfterRoutine(float delay)
         {
             if (delay > 0f)

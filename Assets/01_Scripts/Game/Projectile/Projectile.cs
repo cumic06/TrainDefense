@@ -574,6 +574,10 @@ namespace TrainDefense.Game
             // 미사일 스케일(거대한 미사일)을 trigger 폭발 반경에도 반영 → 데미지 범위도 비례 확대
             if (_scale != 1f)
                 triggerHandle.transform.localScale *= _scale;
+
+            // 블랙홀 장판: 반경 보정이 끝난 뒤 소유 포탑의 개조 값과 날아온 방향(떠도는 블랙홀)을 넘긴다.
+            if (triggerHandle.TryGetComponent(out BlackHoleField blackHoleField))
+                blackHoleField.Init(_owner, transform.right);
         }
 
         // 사거리 제한: 수명을 "사거리를 날아가는 시간"으로 덮어써 총알이 탐지 사거리 너머 화면 끝까지 타격하지 않게 한다.

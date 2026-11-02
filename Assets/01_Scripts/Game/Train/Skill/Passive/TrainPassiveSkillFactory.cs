@@ -27,6 +27,7 @@ namespace TrainDefense.Game
             { "SweepAttack",                         SweepAttackPassive.From },
             { "SlowOnHit",                           SlowOnHitPassive.From },
             { "SlowCap",                             SlowCapPassive.From },
+            { "BlackHole",                           BlackHolePassive.From },
         };
 
         public static List<TrainPassiveSkill> ParseAll(string raw)

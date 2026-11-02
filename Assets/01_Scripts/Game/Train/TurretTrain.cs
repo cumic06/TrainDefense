@@ -123,6 +123,8 @@ namespace TrainDefense.Game
         public float MinimumStunDuration { get; set; }
         // 빔(레이저) 켜짐 시간 덮어쓰기(섬멸 회전). 0이면 투사체 설정 시간.
         public float BeamLifetimeOverride { get; set; }
+        // 블랙홀 포탑 개조 값(BlackHolePassive 주입). 착탄한 블랙홀 장판(BlackHoleField)이 읽는다.
+        public BlackHoleModifier BlackHole { get; } = new BlackHoleModifier();
         // 패시브가 포탑 회전을 대신 맡는 동안 true를 돌려준다(섬멸 쓸기). 그 틱엔 조준 회전·빔 고정을 건너뛴다.
         public Func<bool> RotationOverride { get; set; }
         // 이번 틱에 탐지한 사거리 안 적(가까운 순). 패시브가 다시 탐지하지 않고 읽는다.

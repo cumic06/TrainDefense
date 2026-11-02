@@ -615,6 +615,22 @@ namespace TrainDefense.Game
       }
       #endregion
 
+      #region Pull
+      // 블랙홀 장판이 FixedUpdate마다 호출한다. offset만큼 위치를 옮기되(넉백 코루틴과 달리 힘을 남기지 않음),
+      // CC 저항만큼 줄이고 도망 중(황금 몬스터)·사망 상태는 무시한다. 걷기 이동과 합쳐져 "빨려 들어가는" 느낌을 낸다.
+      public void Pull(Vector2 offset)
+      {
+         if (!gameObject.activeInHierarchy)
+            return;
+         if (_isDead || _isEscaping)
+            return;
+         if (_ccResistance >= 1f)
+            return;
+
+         transform.position += (Vector3)(offset * (1f - _ccResistance));
+      }
+      #endregion
+
       #region Stun
       public void Stun(float stunDuration)
       {

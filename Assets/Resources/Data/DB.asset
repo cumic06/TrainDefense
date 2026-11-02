@@ -771,6 +771,58 @@ MonoBehaviour:
       BurstDuration: 0
     turretProjectilePrefabId: SniperProjectile
     attackDamageMultiplier: 1
+  - id: 30008
+    name: Train_30008_Name
+    iconId: Weapon_IMT_03_UI
+    icon: {fileID: 4205723860130912642, guid: 04298871a0da3b447900493c08f2ef5d, type: 3}
+    damageType: 0
+    attackSoundType: 306
+    description: Train_30008_Desc
+    trainStatusData:
+      MaxHp: 200
+    prefabId: BlackHoleTurretTrain
+    passiveSkillDataIds: []
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 8
+      AttackRange: 14
+      AttackArea: 2.5
+      AttackCount: 1
+      AttackInterval: 3
+      TargetCount: 1
+      CriticalChance: 0
+      CriticalDamage: 0
+      BurstDuration: 0
+    turretProjectilePrefabId: BlackHoleProjectile
+    attackDamageMultiplier: 1
+  - id: 31008
+    name: Train_30008_Name
+    iconId: Weapon_IMT_03_UI
+    icon: {fileID: 4205723860130912642, guid: 04298871a0da3b447900493c08f2ef5d, type: 3}
+    damageType: 0
+    attackSoundType: 306
+    description: 
+    trainStatusData:
+      MaxHp: 200
+    prefabId: EliteBlackHoleTurretTrain
+    passiveSkillDataIds:
+    - 60026
+    - 60027
+    - 60028
+    - 60029
+    isMainTrain: 0
+    turretTrainStatus:
+      AttackDamage: 8
+      AttackRange: 14
+      AttackArea: 2.5
+      AttackCount: 1
+      AttackInterval: 3
+      TargetCount: 1
+      CriticalChance: 0
+      CriticalDamage: 0
+      BurstDuration: 0
+    turretProjectilePrefabId: BlackHoleProjectile
+    attackDamageMultiplier: 1
   rangeTrainDataList:
   - id: 40001
     name: Train_40001_Name
@@ -1155,6 +1207,58 @@ MonoBehaviour:
         RecordType: 0
         Comparison: 0
         Value: 30
+    - id: 60026
+      name: Passive_60026_Name
+      passiveType: BlackHole:Drift:1.2:Lifetime:3.5
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60026_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 3
+        Comparison: 0
+        Value: 100
+    - id: 60027
+      name: Passive_60027_Name
+      passiveType: BlackHole:Collapse:5
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60027_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 15000
+    - id: 60028
+      name: Passive_60028_Name
+      passiveType: StatModifier:AttackArea:40:AttackInterval:30|BlackHole:Pull:2
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60028_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 300
+    - id: 60029
+      name: Passive_60029_Name
+      passiveType: BlackHole:Repulse:1:Pull:1.2
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60029_Desc
+      unlockConditions:
+      - Source: 0
+        StatType: 2
+        RecordType: 0
+        Comparison: 0
+        Value: 20
   _legacyTrainPassiveSkillDataList: []
   stageDataList:
   - id: 50001
@@ -1308,6 +1412,8 @@ MonoBehaviour:
     needMoney: 120
     maxUpgradeCount: 100
     upgradeDataType: 0
+    upgradePool: 0
+    grade: 0
     upgradeValue: 5
     stats:
     - <Type>k__BackingField: 2
@@ -1320,6 +1426,8 @@ MonoBehaviour:
     needMoney: 300
     maxUpgradeCount: 10
     upgradeDataType: 0
+    upgradePool: 0
+    grade: 0
     upgradeValue: -5
     stats:
     - <Type>k__BackingField: 4
@@ -1332,6 +1440,8 @@ MonoBehaviour:
     needMoney: 90
     maxUpgradeCount: 100
     upgradeDataType: 0
+    upgradePool: 0
+    grade: 0
     upgradeValue: 5
     stats:
     - <Type>k__BackingField: 0
@@ -1344,6 +1454,8 @@ MonoBehaviour:
     needMoney: 120
     maxUpgradeCount: 20
     upgradeDataType: 2
+    upgradePool: 0
+    grade: 0
     upgradeValue: 5
     stats: []
     growthRate: 1.13
@@ -1354,6 +1466,8 @@ MonoBehaviour:
     needMoney: 120
     maxUpgradeCount: 20
     upgradeDataType: 1
+    upgradePool: 0
+    grade: 0
     upgradeValue: 10
     stats: []
     growthRate: 1.13
@@ -1364,6 +1478,8 @@ MonoBehaviour:
     needMoney: 120
     maxUpgradeCount: 10
     upgradeDataType: 1
+    upgradePool: 0
+    grade: 0
     upgradeValue: -5
     stats: []
     growthRate: 1.13
@@ -1374,6 +1490,8 @@ MonoBehaviour:
     needMoney: 120
     maxUpgradeCount: 20
     upgradeDataType: 1
+    upgradePool: 0
+    grade: 0
     upgradeValue: 5
     stats: []
     growthRate: 1.13
@@ -1865,6 +1983,14 @@ MonoBehaviour:
         rid: 6103417219460104310
       Weight: 42
       Tier: 1
+    - Option:
+        rid: 8871131449677840471
+      Weight: 7
+      Tier: 0
+    - Option:
+        rid: 8871131449677840472
+      Weight: 42
+      Tier: 1
     upgradeTrainChoices:
     - Option:
         rid: 2066870334413602904
@@ -2086,6 +2212,18 @@ MonoBehaviour:
     trainDataId: 30005
     statType: 1
     increaseRate: 0.08
+  - id: stat_upgrade_30008_attack_damage
+    trainDataId: 30008
+    statType: 2
+    increaseRate: 0.2
+  - id: stat_upgrade_30008_attack_interval
+    trainDataId: 30008
+    statType: 4
+    increaseRate: 0.15
+  - id: stat_upgrade_30008_attack_area
+    trainDataId: 30008
+    statType: 8
+    increaseRate: 0.05
   soundDB: {fileID: 11400000, guid: d9a1bb251e84f0f48af6af550ceea596, type: 2}
   eliteData:
     eliteSpawnCycle: 50
@@ -2438,3 +2576,15 @@ MonoBehaviour:
         id: 62002a
         baseTrainId: 40002
         eliteTrainDataId: 41002
+    - rid: 8871131449677840471
+      type: {class: AddTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 60010
+        trainDataId: 30008
+        replaceTrainId: 
+    - rid: 8871131449677840472
+      type: {class: EliteTrainChoice, ns: TrainDefense.Game.Datas, asm: Assembly-CSharp}
+      data:
+        id: 61008
+        baseTrainId: 30008
+        eliteTrainDataId: 31008
