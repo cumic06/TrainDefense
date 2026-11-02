@@ -65,6 +65,75 @@ namespace TrainDefense.Game
         public TrainCombatRecord CombatRecord => _combatRecord;
         public bool IsMainTrain => _trainData.IsMainTrain;
 
+        // 개조 패시브가 이 포탑이 주는 피해를 대상 상태(기절·저체력·엘리트·거리)에 따라 바꾼다. 반환값 = 바뀐 피해.
+        public delegate float OutgoingDamageModifier(Monster target, float damage);
+        private readonly List<OutgoingDamageModifier> _outgoingDamageModifiers = new();
+        // 이 포탑의 피해로 적이 죽었을 때(죽은 적, 죽은 위치). 개조 패시브(연쇄 발화·집속탄)가 구독한다.
+        public event System.Action<Monster, Vector3> OnKilledMonster;
+        // 이 포탑이 살아 있던 적에게 피해를 준 직후(맞은 적, 들어간 피해). 적중 효과 개조(화상·충격 신관·전자기장·표적 지정)가 구독한다.
+        public event System.Action<Monster, float> OnDamagedMonster;
+
+        public void RegisterOutgoingDamageModifier(OutgoingDamageModifier modifier)
+        {
+            if (modifier != null) _outgoingDamageModifiers.Add(modifier);
+        }
+
+        public void UnregisterOutgoingDamageModifier(OutgoingDamageModifier modifier)
+        {
+            if (modifier != null) _outgoingDamageModifiers.Remove(modifier);
+        }
+
+        // TrainCombatRecorder가 피해를 넣기 직전에 부른다. 등록된 개조가 없으면 그대로 돌려준다.
+        public float ModifyOutgoingDamage(Monster target, float damage)
+        {
+            for (int i = 0; i < _outgoingDamageModifiers.Count; i++)
+                damage = _outgoingDamageModifiers[i](target, damage);
+
+            return damage;
+        }
+
+        // TrainCombatRecorder가 이 포탑의 피해로 적이 죽은 직후 부른다.
+        public void NotifyKilledMonster(Monster monster, Vector3 position) => OnKilledMonster?.Invoke(monster, position);
+
+        // 이웃 포탑 개조(전력 공급)가 주는 공격 속도 증가(%). 주는 포탑마다 따로 받아 합산하고, 쿨다운 감소에 곱한다.
+        // 주는 포탑이 죽거나 교체(파괴)되면 해제 호출 없이도 계산에서 빠지도록 읽을 때마다 살아 있는 쪽만 센다.
+        private readonly Dictionary<Train, float> _attackSpeedBonusSources = new();
+
+        public float ExternalAttackSpeedMultiplier
+        {
+            get
+            {
+                if (_attackSpeedBonusSources.Count == 0) return 1f;
+
+                float totalPercent = 0f;
+                foreach (var pair in _attackSpeedBonusSources)
+                {
+                    if (pair.Key == null || pair.Key.IsDead) continue;
+
+                    totalPercent += pair.Value;
+                }
+
+                return Mathf.Max(0f, 1f + totalPercent / 100f);
+            }
+        }
+
+        public void SetAttackSpeedBonus(Train source, float percent)
+        {
+            if (source == null) return;
+
+            _attackSpeedBonusSources[source] = percent;
+        }
+
+        public void RemoveAttackSpeedBonus(Train source)
+        {
+            if (source is null) return;
+
+            _attackSpeedBonusSources.Remove(source);
+        }
+
+        // TrainCombatRecorder가 이 포탑의 피해가 살아 있던 적에게 들어간 직후 부른다.
+        public void NotifyDamagedMonster(Monster monster, float damage) => OnDamagedMonster?.Invoke(monster, damage);
+
         public bool IsDead => _isDead;
         // 레벨 = 받은 업그레이드 횟수(획득 0).
         public int CurrentLevel => _currentLevel;

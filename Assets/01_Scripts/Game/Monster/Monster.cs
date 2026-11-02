@@ -115,7 +115,18 @@ namespace TrainDefense.Game
       public bool IsDead => _isDead;
       public bool IsStunned => _isStunned;
       public bool IsSlowed => _isFrosted;
+      // 표적 지정(저격 개조)이 걸린 동안 모든 포탑에게 받는 피해 배율. 시간이 지나면 1로 돌아간다.
+      public float DamageTakenMultiplier => Time.time < _markEndTime ? _markDamageMultiplier : 1f;
+      // 남은 체력. 피뢰침(전기 개조)이 가장 튼튼한 적을 고를 때 쓴다.
+      public float CurrentHp => _currentHp;
+      // 매연(화염 개조)이 걸린 동안 이 몬스터가 기차에 주는 피해 배율. 시간이 지나면 1로 돌아간다.
+      public float AttackDamageMultiplier => Time.time < _weakenEndTime ? _weakenDamageMultiplier : 1f;
       #endregion
+
+      private float _markDamageMultiplier = 1f;
+      private float _markEndTime;
+      private float _weakenDamageMultiplier = 1f;
+      private float _weakenEndTime;
 
       private Vector2 _prefabScale;
 
@@ -154,6 +165,10 @@ namespace TrainDefense.Game
          _isFrosted = false;
          _isEscaping = false;
          _escapeGoldMultiplier = 1f;
+         _markDamageMultiplier = 1f;
+         _markEndTime = 0f;
+         _weakenDamageMultiplier = 1f;
+         _weakenEndTime = 0f;
          _RestoreHitFlashMaterial();
          if (eliteEffect != null) eliteEffect.SetActive(false);
 
@@ -478,11 +493,11 @@ namespace TrainDefense.Game
             projectile.transform.position = transform.position;
             projectile.transform.LookAt2D(_targetTrain.transform);
             // 엘리트 배율이 반영된 현재 데미지를 쓴다(base SO 직접참조 시 엘리트 강화가 무시됨).
-            projectile.Init(_currentMonsterStatus.Damage, this);
+            projectile.Init(_currentMonsterStatus.Damage * AttackDamageMultiplier, this);
          }
          else if (_currentMonsterStatus.AttackType == MonsterAttackType.Melee)
          {
-            _targetTrain.TakeDamage(_currentMonsterStatus.Damage);
+            _targetTrain.TakeDamage(_currentMonsterStatus.Damage * AttackDamageMultiplier);
          }
       }
 
@@ -632,6 +647,28 @@ namespace TrainDefense.Game
       #endregion
 
       #region Stun
+      // 표적 지정: duration초 동안 받는 피해 × multiplier. 이미 걸려 있으면 더 센 배율과 더 늦은 종료 시각을 유지한다.
+      public void Mark(float multiplier, float duration)
+      {
+         if (_isDead || multiplier <= 1f || duration <= 0f)
+            return;
+
+         bool isMarked = Time.time < _markEndTime;
+         _markDamageMultiplier = isMarked ? Mathf.Max(_markDamageMultiplier, multiplier) : multiplier;
+         _markEndTime = Mathf.Max(_markEndTime, Time.time + duration);
+      }
+
+      // 매연: duration초 동안 기차에 주는 피해 × multiplier(0~1). 이미 걸려 있으면 더 센 감소와 더 늦은 종료 시각을 유지한다.
+      public void Weaken(float multiplier, float duration)
+      {
+         if (_isDead || multiplier >= 1f || duration <= 0f)
+            return;
+
+         bool isWeakened = Time.time < _weakenEndTime;
+         _weakenDamageMultiplier = isWeakened ? Mathf.Min(_weakenDamageMultiplier, multiplier) : Mathf.Max(0f, multiplier);
+         _weakenEndTime = Mathf.Max(_weakenEndTime, Time.time + duration);
+      }
+
       public void Stun(float stunDuration)
       {
          if (!gameObject.activeInHierarchy)

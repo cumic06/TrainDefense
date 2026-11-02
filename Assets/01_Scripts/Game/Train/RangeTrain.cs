@@ -203,7 +203,7 @@ namespace TrainDefense.Game
             }
             else
             {
-                _attackCountdown -= Time.deltaTime * TrackEventModifiers.TurretAttackSpeedMultiplier;
+                _attackCountdown -= Time.deltaTime * TrackEventModifiers.TurretAttackSpeedMultiplier * ExternalAttackSpeedMultiplier;
             }
         }
 

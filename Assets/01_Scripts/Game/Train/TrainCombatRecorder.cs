@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace TrainDefense.Game
 {
     /// <summary>
@@ -20,6 +22,12 @@ namespace TrainDefense.Game
 
             // 이미 죽은 몬스터에 들어간 피해(같은 프레임 중복 판정)는 세지 않는다.
             bool wasAlive = !monster.IsDead;
+            // 죽으면 풀로 돌아가 위치가 바뀔 수 있어 피해 전에 기억해 둔다. (처치 시 폭발 개조)
+            Vector3 hitPosition = monster.transform.position;
+
+            if (wasAlive)
+                damage = train.ModifyOutgoingDamage(monster, damage) * monster.DamageTakenMultiplier;
+
             monster.TakeDamage(damage, isCritical);
 
             if (!wasAlive)
@@ -32,7 +40,14 @@ namespace TrainDefense.Game
                 record.CriticalHits++;
 
             if (monster.IsDead)
+            {
                 record.Kills++;
+                train.NotifyKilledMonster(monster, hitPosition);
+
+                return;
+            }
+
+            train.NotifyDamagedMonster(monster, damage);
         }
 
         public static void ApplyStun(IProjectileTarget target, float stunDuration, IProjectileTarget attacker)

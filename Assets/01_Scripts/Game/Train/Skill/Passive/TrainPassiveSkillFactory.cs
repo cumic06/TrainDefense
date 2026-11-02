@@ -28,6 +28,11 @@ namespace TrainDefense.Game
             { "SlowOnHit",                           SlowOnHitPassive.From },
             { "SlowCap",                             SlowCapPassive.From },
             { "BlackHole",                           BlackHolePassive.From },
+            { "BonusDamage",                         BonusDamagePassive.From },
+            { "OnKillExplode",                       OnKillExplodePassive.From },
+            { "HitEffect",                           HitEffectPassive.From },
+            { "PowerSupply",                         PowerSupplyPassive.From },
+            { "LightningRod",                        LightningRodPassive.From },
         };
 
         public static List<TrainPassiveSkill> ParseAll(string raw)

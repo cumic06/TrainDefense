@@ -599,6 +599,9 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60001
     - 60021
+    - 60030
+    - 60031
+    - 60032
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 12
@@ -626,6 +629,8 @@ MonoBehaviour:
     - 60002
     - 60003
     - 60022
+    - 60033
+    - 60034
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 8
@@ -652,6 +657,9 @@ MonoBehaviour:
     passiveSkillDataIds:
     - 60009
     - 60010
+    - 60035
+    - 60036
+    - 60037
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 20
@@ -679,6 +687,8 @@ MonoBehaviour:
     - 60011
     - 60012
     - 60023
+    - 60038
+    - 60039
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 30
@@ -706,6 +716,9 @@ MonoBehaviour:
     - 60013
     - 60024
     - 60025
+    - 60040
+    - 60041
+    - 60049
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 12
@@ -733,6 +746,8 @@ MonoBehaviour:
     - 60018
     - 60019
     - 60015
+    - 60042
+    - 60043
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 40
@@ -758,6 +773,10 @@ MonoBehaviour:
     prefabId: EliteSniperTurretTrain
     passiveSkillDataIds:
     - 60017
+    - 60044
+    - 60045
+    - 60046
+    - 60047
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 40
@@ -810,6 +829,7 @@ MonoBehaviour:
     - 60027
     - 60028
     - 60029
+    - 60048
     isMainTrain: 0
     turretTrainStatus:
       AttackDamage: 8
@@ -1259,6 +1279,266 @@ MonoBehaviour:
         RecordType: 0
         Comparison: 0
         Value: 20
+    - id: 60030
+      name: Passive_60030_Name
+      passiveType: StatModifier:AttackCount:1:AttackDamage:-20
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60030_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 3
+        Comparison: 0
+        Value: 1500
+    - id: 60031
+      name: Passive_60031_Name
+      passiveType: SlowOnHit:20:0.4|BonusDamage:Slowed:40
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60031_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 500
+    - id: 60032
+      name: Passive_60032_Name
+      passiveType: PeriodicSpawn:2.5:MissileProjectile:2:3
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60032_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 25000
+    - id: 60033
+      name: Passive_60033_Name
+      passiveType: HitEffect:Weaken:30:1
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60033_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 400
+    - id: 60034
+      name: Passive_60034_Name
+      passiveType: OnKillExplode:ExplosionProjectile:1.8:0.6:0.3
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60034_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 30000
+    - id: 60035
+      name: Passive_60035_Name
+      passiveType: HitEffect:Stun:25:0.8
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60035_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 3
+        Comparison: 0
+        Value: 400
+    - id: 60036
+      name: Passive_60036_Name
+      passiveType: ChainAttackChance:30:0.15
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60036_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 350
+    - id: 60037
+      name: Passive_60037_Name
+      passiveType: StatModifier:AttackRange:30|BonusDamage:Elite:100
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60037_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 30000
+    - id: 60038
+      name: Passive_60038_Name
+      passiveType: StatModifier:AttackRange:20|BonusDamage:Far:80
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60038_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 40000
+    - id: 60039
+      name: Passive_60039_Name
+      passiveType: SlowOnHit:35:1|StatModifier:AttackDamage:15
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60039_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 3
+        Comparison: 0
+        Value: 300
+    - id: 60040
+      name: Passive_60040_Name
+      passiveType: HitEffect:Slow:30:1
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60040_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 500
+    - id: 60041
+      name: Passive_60041_Name
+      passiveType: PowerSupply:15
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60041_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 2
+        Comparison: 0
+        Value: 600
+    - id: 60042
+      name: Passive_60042_Name
+      passiveType: StatModifier:AttackDamage:20|BonusDamage:Elite:120
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60042_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 35000
+    - id: 60043
+      name: Passive_60043_Name
+      passiveType: OnKillExplode:ExplosionProjectile:2.5:0.5:0.5
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60043_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 300
+    - id: 60044
+      name: Passive_60044_Name
+      passiveType: StatModifier:CriticalChance:25:CriticalDamage:100
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60044_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 250
+    - id: 60045
+      name: Passive_60045_Name
+      passiveType: HitEffect:Mark:25:3
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60045_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 400
+    - id: 60046
+      name: Passive_60046_Name
+      passiveType: StatModifier:AttackRange:25|BonusDamage:Far:100
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60046_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 30000
+    - id: 60047
+      name: Passive_60047_Name
+      passiveType: StatModifier:AttackInterval:40:AttackDamage:80|KnockbackOnHit:2.5:0.25
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60047_Desc
+      unlockConditions:
+      - Source: 0
+        StatType: 2
+        RecordType: 0
+        Comparison: 0
+        Value: 80
+    - id: 60048
+      name: Passive_60048_Name
+      passiveType: StatModifier:TargetCount:1:AttackDamage:-20
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60048_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 0
+        Comparison: 0
+        Value: 250
+    - id: 60049
+      name: Passive_60049_Name
+      passiveType: LightningRod:6:400:1
+      param1: 
+      param2: 
+      param3: 
+      description: Passive_60049_Desc
+      unlockConditions:
+      - Source: 1
+        StatType: 0
+        RecordType: 5
+        Comparison: 0
+        Value: 25000
   _legacyTrainPassiveSkillDataList: []
   stageDataList:
   - id: 50001

@@ -366,6 +366,26 @@ namespace TrainDefense.Game
                 _currentTurretTrainStatus.CriticalDamage);
         }
 
+        // 지정 위치에 제자리 투사체(폭발 등)를 터뜨린다. (처치 시 폭발 개조: 죽은 적 자리에서 폭발)
+        public void SpawnExternalProjectileAtPosition(Projectile prefab, Vector3 position, float radius, float damageMul = 1f, float shoveScale = 1f)
+        {
+            if (prefab == null || ResourceManager.Instance == null) return;
+
+            var spawned = ResourceManager.Instance.Spawn(prefab, position, Quaternion.identity);
+            if (spawned == null) return;
+
+            float r = radius >= 0f ? radius : _currentTurretTrainStatus.AttackArea;
+            int damage = Mathf.RoundToInt(_currentTurretTrainStatus.AttackDamage * damageMul);
+            spawned.ShoveScale = shoveScale;
+            spawned.Init(
+                damage,
+                this,
+                null,
+                r,
+                _currentTurretTrainStatus.CriticalChance,
+                _currentTurretTrainStatus.CriticalDamage);
+        }
+
         private void FixedUpdate()
         {
             if (_isDead) return;
@@ -492,7 +512,7 @@ namespace TrainDefense.Game
             {
                 // FixedUpdate에서 호출되므로 fixedDeltaTime 사용
                 // 선로 이벤트(과부하 운행) 공속 배율: 쿨다운을 더 빨리 깎는다. 캐싱된 간격이 아니라 매 틱 반영돼 즉시 적용된다.
-                _attackCountdown -= Time.fixedDeltaTime * TrackEventModifiers.TurretAttackSpeedMultiplier;
+                _attackCountdown -= Time.fixedDeltaTime * TrackEventModifiers.TurretAttackSpeedMultiplier * ExternalAttackSpeedMultiplier;
                 return false;
             }
         }
