@@ -88,7 +88,7 @@ namespace TrainDefense.Game.Manager
         /// <summary>이 판의 난이도 단계(1부터).</summary>
         public int DifficultyStage => _difficultyStage;
 
-        /// <summary>이 판의 단계별 수치(체력 성장 배율·스폰 가속 가산·수리 단가 배율). 스포너·상점 가격이 읽는다.</summary>
+        /// <summary>이 판의 단계별 수치(체력 성장 배율·스폰 가속 가산·수리 단가 배율·역 보상 배율). 스포너·상점 가격·역 코인 보상이 읽는다.</summary>
         public DifficultyStageConfig.StageValues DifficultyValues
         {
             get

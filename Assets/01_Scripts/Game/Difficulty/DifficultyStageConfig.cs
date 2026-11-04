@@ -5,9 +5,9 @@ namespace TrainDefense.Game.Difficulty
 {
     /// <summary>
     /// 난이도 단계별 수치 표. 1단계는 씬·프리팹의 기본값 그대로이고(배율 1·가산 0),
-    /// 위 단계는 판 시작은 같게 두고 역이 지날수록 벌어지도록 성장률 쪽만 올린다(10-29 봇 18판 결정, 10-30 확정).
+    /// 위 단계는 판 시작은 같게 두고 역이 지날수록 벌어지도록 성장률 쪽만 올리고(10-29 봇 18판 결정, 10-30 확정), 역 도달 코인 보상도 늘린다.
     ///
-    /// 기본값은 씬 값 기준으로 체력 성장 0.04/0.048/0.056, 스폰 가속 3/4/5%(최대 60/70/80%), 수리 단가 1.0/1.15/1.3이 된다.
+    /// 기본값은 씬 값 기준으로 체력 성장 0.04/0.048/0.056, 스폰 가속 3/4/5%(최대 60/70/80%), 수리 단가 1.0/1.3/1.5, 역 보상 배율 1/1.5/2가 된다.
     /// Resources/Data/DifficultyStageConfig 에셋이 없으면 이 기본값으로 동작한다.
     /// </summary>
     [CreateAssetMenu(fileName = "DifficultyStageConfig", menuName = "Data/Difficulty/DifficultyStageConfig")]
@@ -27,15 +27,18 @@ namespace TrainDefense.Game.Difficulty
 
             [Tooltip("ShopOfferPricing.repairCostPerHp(잃은 체력 1당 수리 코인)에 곱하는 배율")]
             public float repairCostMultiplier = 1f;
+
+            [Tooltip("PermanentUpgradeManager의 역 도달 엘리트 코인 보상에 곱하는 배율. 곱한 값은 올림한다")]
+            public float stationRewardMultiplier = 1f;
         }
 
         [Tooltip("인덱스 0 = 1단계. 단계 수가 이 배열 길이다")]
         [SerializeField]
         private StageValues[] stages =
         {
-            new StageValues { hpScaleMultiplier = 1f, stationSpawnAccelPercentBonus = 0f, maxSpawnAccelPercentBonus = 0f, repairCostMultiplier = 1f },
-            new StageValues { hpScaleMultiplier = 1.2f, stationSpawnAccelPercentBonus = 1f, maxSpawnAccelPercentBonus = 10f, repairCostMultiplier = 1.3f },
-            new StageValues { hpScaleMultiplier = 1.4f, stationSpawnAccelPercentBonus = 2f, maxSpawnAccelPercentBonus = 20f, repairCostMultiplier = 1.5f },
+            new StageValues { hpScaleMultiplier = 1f, stationSpawnAccelPercentBonus = 0f, maxSpawnAccelPercentBonus = 0f, repairCostMultiplier = 1f, stationRewardMultiplier = 1f },
+            new StageValues { hpScaleMultiplier = 1.2f, stationSpawnAccelPercentBonus = 1f, maxSpawnAccelPercentBonus = 10f, repairCostMultiplier = 1.3f, stationRewardMultiplier = 1.5f },
+            new StageValues { hpScaleMultiplier = 1.4f, stationSpawnAccelPercentBonus = 2f, maxSpawnAccelPercentBonus = 20f, repairCostMultiplier = 1.5f, stationRewardMultiplier = 2f },
         };
 
         private static readonly StageValues DefaultValues = new();

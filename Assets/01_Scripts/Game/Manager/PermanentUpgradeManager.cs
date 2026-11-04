@@ -173,7 +173,7 @@ namespace TrainDefense.Game
             AddEliteCoin(GetStationReward(stationPassedEvent.PassedStationCount));
         }
 
-        /// <summary>역 도달 보상: 기준 역 이하면 0, 그 위로는 <c>⌈(역 번호 - 기준) / 단계⌉</c>.</summary>
+        /// <summary>역 도달 보상: 기준 역 이하면 0, 그 위로는 <c>⌈⌈(역 번호 - 기준) / 단계⌉ × 난이도 배율⌉</c>.</summary>
         public int GetStationReward(int stationNumber)
         {
             if (_stationRewardStep <= 0) return 0;
@@ -181,7 +181,10 @@ namespace TrainDefense.Game
             int stationsOverOffset = stationNumber - _stationRewardOffset;
             if (stationsOverOffset <= 0) return 0;
 
-            return Mathf.CeilToInt(stationsOverOffset / (float)_stationRewardStep);
+            int baseReward = Mathf.CeilToInt(stationsOverOffset / (float)_stationRewardStep);
+            float difficultyMultiplier = StageManager.Instance != null ? StageManager.Instance.DifficultyValues.stationRewardMultiplier : 1f;
+
+            return Mathf.CeilToInt(baseReward * difficultyMultiplier);
         }
 
         #region EliteCoin
