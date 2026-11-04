@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 5775910661312825934}
   - component: {fileID: 3391194081282251314}
   - component: {fileID: 2469148497137934405}
+  - component: {fileID: 907109088597559560}
   m_Layer: 5
   m_Name: Name
   m_TagString: Untagged
@@ -257,6 +258,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &907109088597559560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426691863410762062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeFontTarget
 --- !u!1 &995204719296351018
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,6 +619,7 @@ GameObject:
   - component: {fileID: 8308110436551441121}
   - component: {fileID: 1363088732830605738}
   - component: {fileID: 1502628075551375886}
+  - component: {fileID: 7910741755204321172}
   m_Layer: 5
   m_Name: Name
   m_TagString: Untagged
@@ -732,6 +746,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7910741755204321172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3763721164146813919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeFontTarget
 --- !u!1 &5162838883838150195
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,6 +1037,7 @@ GameObject:
   - component: {fileID: 3863053522264858602}
   - component: {fileID: 3622643334701225277}
   - component: {fileID: 1122369857549053735}
+  - component: {fileID: 3775021508073505798}
   m_Layer: 5
   m_Name: Name
   m_TagString: Untagged
@@ -1137,6 +1164,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3775021508073505798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7501467993764238554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeFontTarget
 --- !u!1 &7863082689158656893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1469,6 +1508,7 @@ GameObject:
   - component: {fileID: 6771148422854613834}
   - component: {fileID: 16793805172671732}
   - component: {fileID: 1528966050142407458}
+  - component: {fileID: 107136390763059180}
   m_Layer: 5
   m_Name: Title
   m_TagString: Untagged
@@ -1595,3 +1635,15 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &107136390763059180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8745173147063988060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeFontTarget
