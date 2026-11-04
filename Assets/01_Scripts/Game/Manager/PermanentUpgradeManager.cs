@@ -12,10 +12,9 @@ using TrainDefense.Game.Stats;
 namespace TrainDefense.Game
 {
     /// <summary>
-    /// 영구(메타) 업그레이드 시스템. 엘리트 몬스터 처치 시 재화를 획득하고, 그 재화로 구매한다.
+    /// 엘리트 코인 지갑. 처치·역 도달로 적립하고 스킬 트리가 쓴다. 옛 영구 강화 구매는 없어졌고, 남은 레벨은 로드 때 환급하고 지운다.
     /// 재화/레벨은 PlayerPrefs에 영구 저장되어 한 판이 끝나도 유지된다.
-    /// - TurretStat 업그레이드: GetBonus(StatType)로 조회 → 포탑·레인지 스탯에 가산.
-    /// - Passive 업그레이드: GetValue(PermanentUpgradeType)로 조회 → 각 시스템(포탑 수·체력·골드·경험치 등)이 적용.
+    /// GetBonus·GetValue는 레벨이 없어 항상 0이다.
     /// </summary>
     public class PermanentUpgradeManager : Singleton<PermanentUpgradeManager>
     {
@@ -24,6 +23,19 @@ namespace TrainDefense.Game
         // 이번 판에 번 합계의 디스크 사본. 런 세이브(EliteCoinSection)는 역 도착 때만 쓰이므로, 그 뒤 앱이 꺼졌을 때
         // "세이브 이후에 번 만큼"을 이어하기에서 되돌리려면 지갑과 같은 시점에 기록된 값이 필요하다.
         private const string RUN_ELITE_COIN_EARNED_KEY = "PermanentUpgradeRunEliteCoinEarned";
+        // 옛 영구 강화 환급 상한. 11-03 스킬 트리 총비용과 같은 값으로 정했고, 트리 비용이 바뀌어도 따라가지 않는다.
+        private const int LEGACY_REFUND_CAP = 4782;
+
+        // 스킬 트리 이전 영구 강화 비용표 (develop 1.0.4 DB 값). 지금 DB는 같은 id에 다른 값이 들어 있어 환급 계산에 쓸 수 없다
+        private static readonly (string id, int baseCost, float growthRate, int maxLevel)[] LegacyUpgradeCosts =
+        {
+            ("120001", 10, 1.5f, 10),
+            ("120002", 10, 1.5f, 10),
+            ("120003", 10, 1.5f, 10),
+            ("120004", 30, 2f, 5),
+            ("120005", 100, 5f, 3),
+            ("120006", 150, 3.5f, 2),
+        };
 
         [SerializeField]
         [Tooltip("엘리트 몬스터 1마리 처치 시 획득하는 기본 엘리트 코인량")]
@@ -117,7 +129,7 @@ namespace TrainDefense.Game
             PlayerPrefs.SetInt(RUN_ELITE_COIN_EARNED_KEY, RunEliteCoinEarned);
         }
 
-        // 엘리트 처치/구매마다 PlayerPrefs.Save()(디스크 flush)를 부르지 않고, 백그라운드 전환·종료 시 한 번에 기록한다.
+        // 엘리트 처치마다 PlayerPrefs.Save()(디스크 flush)를 부르지 않고, 백그라운드 전환·종료 시 한 번에 기록한다.
         private void OnApplicationPause(bool pause)
         {
             if (pause) PlayerPrefs.Save();
@@ -131,12 +143,28 @@ namespace TrainDefense.Game
         // 엘리트 몬스터 처치 시 영구 재화 획득.
         private void _OnMonsterDead(MonsterDeadEvent monsterDeadEvent)
         {
+            _TryGrantKillCoin();
+
             if (!monsterDeadEvent.IsElite) return;
 
             // 맵별 엘리트 재화 배율 (빠른·약한 몹 맵은 낮게, 느린·강한 몹 맵은 높게 → 맵별 재화 획득률 균등)
             float mapMultiplier = StageManager.Instance != null ? StageManager.Instance.CurrentStageData.EliteRewardMultiplier : 1f;
             int reward = Mathf.Max(1, Mathf.RoundToInt(_eliteCoinPerElite * mapMultiplier));
+            // 스킬 트리 '엘리트 코인' 노드 — 처치당 고정 +n (판당 보상이 2~6이라 %는 반올림에 묻혀 고정값으로)
+            if (SkillTreeManager.Instance != null)
+                reward += Mathf.RoundToInt(SkillTreeManager.Instance.GetValue(SkillTreePassiveType.EliteCoinPerKill));
             AddEliteCoin(reward);
+        }
+
+        // 스킬 트리 노드 — 적 처치 시 확률로 재화 1개. 로비 배경 연출의 처치로는 쌓이지 않게 판 안에서만 굴린다.
+        private void _TryGrantKillCoin()
+        {
+            if (InGameSequence.Instance == null || SkillTreeManager.Instance == null) return;
+
+            float chancePercent = SkillTreeManager.Instance.GetValue(SkillTreePassiveType.KillEliteCoinChance);
+
+            if (chancePercent > 0f && Random.value * 100f < chancePercent)
+                AddEliteCoin(1);
         }
 
         // 역 도달 시 영구 재화 획득. 사고 영역인 초반 역은 0이고, 뒤로 갈수록 완만하게 오른다.
@@ -175,68 +203,15 @@ namespace TrainDefense.Game
             GameEventSystem.Publish(new EliteCoinChangedEvent(_eliteCoin));
             return true;
         }
-
-        /// <summary>현재 재화로 구매 가능한(최대 레벨이 아니고 비용을 충족하는) 영구 업그레이드가 하나라도 있는지. (로비 버튼 레드닷 판정용)</summary>
-        public bool HasAffordableUpgrade()
-        {
-            if (DatabaseManager.Instance == null) return false;
-
-            foreach (var data in DatabaseManager.Instance.GetPermanentUpgradeDatas())
-            {
-                if (data == null) continue;
-                if (IsAffordable(data.Id)) return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>해당 영구 업그레이드를 현재 재화로 구매 가능한지(최대 레벨이 아니고 비용 충족). (슬롯 레드닷 판정용)</summary>
-        public bool IsAffordable(string upgradeId)
-        {
-            if (DatabaseManager.Instance == null) return false;
-
-            var data = DatabaseManager.Instance.GetPermanentUpgradeData(upgradeId);
-            if (data == null) return false;
-            if (IsMaxLevel(upgradeId)) return false;
-
-            return data.GetCostAtLevel(GetLevel(upgradeId)) <= _eliteCoin;
-        }
         #endregion
 
-        #region Level / Purchase
+        #region Level
         public int GetLevel(string upgradeId)
             => _levels.TryGetValue(upgradeId, out int level) ? level : 0;
-
-        public bool IsMaxLevel(string upgradeId)
-        {
-            var data = DatabaseManager.Instance.GetPermanentUpgradeData(upgradeId);
-            if (data == null || data.MaxUpgradeCount <= 0) return false;
-            return GetLevel(upgradeId) >= data.MaxUpgradeCount;
-        }
-
-        /// <summary>현재 재화로 해당 업그레이드를 1레벨 구매 시도. 성공 시 true.</summary>
-        public bool TryPurchase(string upgradeId)
-        {
-            var data = DatabaseManager.Instance.GetPermanentUpgradeData(upgradeId);
-            if (data == null) return false;
-            if (IsMaxLevel(upgradeId)) return false;
-
-            int cost = data.GetCostAtLevel(GetLevel(upgradeId));
-            if (!SpendEliteCoin(cost)) return false;
-
-            _levels[upgradeId] = GetLevel(upgradeId) + 1;
-            _SaveLevels();
-            // 구매는 의식적 행동이라 강제 종료에도 잃지 않도록 즉시 디스크 flush (재화 차감 + 레벨을 함께 확정)
-            PlayerPrefs.Save();
-            _InvalidateCache();
-            GameEventSystem.Publish<PermanentUpgradePurchasedEvent>(new PermanentUpgradePurchasedEvent(upgradeId, cost, GetLevel(upgradeId)));
-
-            return true;
-        }
         #endregion
 
         #region Bonus / Value
-        // 레벨은 구매 시에만 바뀌므로 누적값을 캐시하고, 구매/초기화 때만 재계산한다 (매 호출 순회·할당 제거).
+        // 누적값을 캐시하고 초기화 때만 재계산한다 (매 호출 순회·할당 제거).
         private Dictionary<StatType, float> _bonusCache;
         private Dictionary<PermanentUpgradeType, float> _valueCache;
 
@@ -284,7 +259,7 @@ namespace TrainDefense.Game
             }
         }
 
-        // 레벨이 바뀌면(구매/초기화) 캐시를 버려 다음 조회 때 재계산하게 한다.
+        // 레벨이 바뀌면(초기화) 캐시를 버려 다음 조회 때 재계산하게 한다.
         private void _InvalidateCache()
         {
             _bonusCache = null;
@@ -310,20 +285,42 @@ namespace TrainDefense.Game
                         _levels[pair[0]] = level;
                 }
             }
+
+            _RefundLegacyUpgrades();
+        }
+
+        // 옛 영구 강화 레벨이 남은 세이브는 쓴 코인을 돌려주고 레벨을 지운다. 강화는 이제 스킬 트리로 대체됐다.
+        // 레벨 키를 지우므로 다음 실행에서 다시 환급되지 않는다.
+        private void _RefundLegacyUpgrades()
+        {
+            if (_levels.Count == 0) return;
+
+            int refund = 0;
+            int refundedUpgradeCount = 0;
+            foreach (var upgrade in LegacyUpgradeCosts)
+            {
+                if (!_levels.TryGetValue(upgrade.id, out int level)) continue;
+
+                refundedUpgradeCount++;
+                int boughtLevels = Mathf.Min(level, upgrade.maxLevel);
+                for (int current = 0; current < boughtLevels; current++)
+                    refund += Mathf.RoundToInt(upgrade.baseCost * Mathf.Pow(upgrade.growthRate, current));
+            }
+
+            if (refundedUpgradeCount < _levels.Count)
+                Debug.LogWarning($"[PermanentUpgradeManager] 비용표에 없는 영구 강화 {_levels.Count - refundedUpgradeCount}개는 환급 없이 삭제됩니다: {PlayerPrefs.GetString(LEVELS_KEY, "")}");
+
+            _eliteCoin += Mathf.Min(refund, LEGACY_REFUND_CAP);
+            _levels.Clear();
+            _SaveEliteCoin();
+            PlayerPrefs.DeleteKey(LEVELS_KEY);
+            PlayerPrefs.Save();
         }
 
         private void _SaveEliteCoin()
         {
             // 디스크 flush(PlayerPrefs.Save)는 OnApplicationPause/Quit에서 일괄 — 엘리트 처치마다 디스크 쓰기 방지
             PlayerPrefs.SetInt(ELITE_COIN_KEY, _eliteCoin);
-        }
-
-        private void _SaveLevels()
-        {
-            var entries = new List<string>();
-            foreach (var kv in _levels)
-                entries.Add($"{kv.Key}:{kv.Value}");
-            PlayerPrefs.SetString(LEVELS_KEY, string.Join(",", entries));
         }
 
         [Sirenix.OdinInspector.Button("테스트 엘리트 코인 +100")]

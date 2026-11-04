@@ -77,7 +77,6 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Subscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
             GameEventSystem.Subscribe<StatUpgradeSelectEvent>(_OnStatUpgradeSelect);
             GameEventSystem.Subscribe<ShopOfferPurchasedEvent>(_OnShopOfferPurchased);
-            GameEventSystem.Subscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
             GameEventSystem.Subscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Subscribe<TutorialStartEvent>(_OnTutorialStart);
             GameEventSystem.Subscribe<TutorialCompleteEvent>(_OnTutorialComplete);
@@ -98,7 +97,6 @@ namespace TrainDefense.Game.Manager
             GameEventSystem.Unsubscribe<TriChoiceSelectEvent>(_OnTriChoiceSelect);
             GameEventSystem.Unsubscribe<StatUpgradeSelectEvent>(_OnStatUpgradeSelect);
             GameEventSystem.Unsubscribe<ShopOfferPurchasedEvent>(_OnShopOfferPurchased);
-            GameEventSystem.Unsubscribe<PermanentUpgradePurchasedEvent>(_OnPermanentUpgrade);
             GameEventSystem.Unsubscribe<TrainSpawnedEvent>(_OnTrainSpawned);
             GameEventSystem.Unsubscribe<TutorialStartEvent>(_OnTutorialStart);
             GameEventSystem.Unsubscribe<TutorialCompleteEvent>(_OnTutorialComplete);
@@ -282,14 +280,6 @@ namespace TrainDefense.Game.Manager
                 ("cost", shopOfferPurchasedEvent.Cost),
                 ("stage", _CurrentStage()),
                 ("play_time_sec", _PlayTimeSec()));
-        }
-
-        private void _OnPermanentUpgrade(PermanentUpgradePurchasedEvent permanentUpgradePurchasedEvent)
-        {
-            _Log("permanent_upgrade_purchase",
-                ("upgrade_id", permanentUpgradePurchasedEvent.UpgradeId),
-                ("cost", permanentUpgradePurchasedEvent.Cost),
-                ("new_level", permanentUpgradePurchasedEvent.NewLevel));
         }
 
         private void _OnTrainSpawned(TrainSpawnedEvent trainSpawnedEvent)

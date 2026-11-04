@@ -34,5 +34,7 @@ namespace TrainDefense.Game.Datas
         BombardDamage,     // 5 — 개입 포격 피해 증가 (+고정값)
         BombardCooldown,   // 6 — 개입 포격 대기시간 감소 (%)
         BombardArea,       // 7 — 개입 포격 범위 증가 (%)
+        EliteCoinPerKill,  // 8 — 엘리트 처치당 영구강화 재화 추가 획득 (+개수, 역 도착·만렙 보상엔 적용 안 됨)
+        KillEliteCoinChance, // 9 — 적 처치 시 영구강화 재화 1개를 얻을 확률 (%)
     }
 }

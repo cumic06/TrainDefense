@@ -382,13 +382,13 @@ namespace TrainDefense.Editor
             string detail = node.Category switch
             {
                 SkillNodeCategory.TurretStat => $"{categoryName} {(node.Stats?.Length ?? 0)}개",
-                SkillNodeCategory.Passive => $"{categoryName} · {node.PassiveType} +{node.PassiveValuePerLevel}",
+                SkillNodeCategory.Passive => $"{categoryName} · {node.PassiveType} +{node.GetTotalValue(node.MaxLevel)}",
                 SkillNodeCategory.TurretUnlock => $"{categoryName} · {node.UnlockTrainId}",
                 _ => categoryName,
             };
             GUI.Label(new Rect(rect.x + 10f, rect.y + 37f, rect.width - 20f, 14f), detail, _infoStyle);
 
-            string cost = node.MaxLevel > 1 ? $"비용 {node.NeedPoint} · 최대 Lv {node.MaxLevel}" : $"비용 {node.NeedPoint}";
+            string cost = $"티어 {node.TierCount} · 최대 Lv {node.MaxLevel}";
             GUI.Label(new Rect(rect.x + 10f, rect.y + 53f, rect.width - 20f, 13f), cost, _costStyle);
 
             GUI.color = previousColor;
@@ -627,13 +627,15 @@ namespace TrainDefense.Editor
             element.FindPropertyRelative("lane").enumValueIndex = lane;
             element.FindPropertyRelative("row").intValue = row;
             element.FindPropertyRelative("col").intValue = col;
-            element.FindPropertyRelative("needPoint").intValue = 1;
-            element.FindPropertyRelative("maxLevel").intValue = 1;
-            element.FindPropertyRelative("growthRate").floatValue = 1.5f;
+            SerializedProperty tiers = element.FindPropertyRelative("tiers");
+            tiers.arraySize = 1;
+            SerializedProperty firstTier = tiers.GetArrayElementAtIndex(0);
+            firstTier.FindPropertyRelative("valuePerLevel").floatValue = 0f;
+            firstTier.FindPropertyRelative("maxLevel").intValue = 1;
+            firstTier.FindPropertyRelative("costPerLevel").intValue = 1;
             element.FindPropertyRelative("category").enumValueIndex = (int)SkillNodeCategory.TurretStat;
             element.FindPropertyRelative("stats").arraySize = 0;
             element.FindPropertyRelative("passiveType").enumValueIndex = (int)SkillTreePassiveType.MaxHp;
-            element.FindPropertyRelative("passiveValuePerLevel").floatValue = 0f;
             element.FindPropertyRelative("unlockTrainId").stringValue = "";
 
             SerializedProperty prerequisites = element.FindPropertyRelative("prerequisites");
@@ -768,10 +770,8 @@ namespace TrainDefense.Editor
             EditorGUILayout.PropertyField(element.FindPropertyRelative("prerequisites"), true);
 
             EditorGUILayout.Space(6f);
-            EditorGUILayout.LabelField("비용", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(element.FindPropertyRelative("needPoint"));
-            EditorGUILayout.PropertyField(element.FindPropertyRelative("maxLevel"));
-            EditorGUILayout.PropertyField(element.FindPropertyRelative("growthRate"));
+            EditorGUILayout.LabelField("티어", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(element.FindPropertyRelative("tiers"), true);
 
             EditorGUILayout.Space(6f);
             EditorGUILayout.LabelField("효과", EditorStyles.boldLabel);
@@ -786,7 +786,6 @@ namespace TrainDefense.Editor
 
                 case SkillNodeCategory.Passive:
                     EditorGUILayout.PropertyField(element.FindPropertyRelative("passiveType"));
-                    EditorGUILayout.PropertyField(element.FindPropertyRelative("passiveValuePerLevel"));
                     break;
 
                 case SkillNodeCategory.TurretUnlock:

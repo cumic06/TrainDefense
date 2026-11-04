@@ -8,19 +8,45 @@ namespace TrainDefense.Game.Datas
     /// <summary>
     /// 스킬트리 노드 정의. 스킬 포인트로 습득하며 런 사이에 유지된다 (영구강화와 완전 별도 시스템).
     /// 배치는 데이터 주도 — (lane, row, col)로 런타임 그리드 생성, prerequisites 간선으로 레일이 이어진다.
-    /// TurretStat: 포탑·레인지 스탯 강화 (SimpleStat[], 레벨당 값). 공격력·사거리·범위·간격은 기본값 대비 % → GetMultiplier(StatType),
+    /// 노드 하나는 티어 칸 사슬이다. 티어마다 레벨당 효과·최대 레벨·레벨당 비용을 따로 가진다 (tiers).
+    /// 앞 티어를 만렙해야 다음 티어가 열리고, 효과는 전부 더해진다. 세이브는 노드 전체 레벨 하나 (티어 구분 없음).
+    /// TurretStat: 포탑·레인지 스탯 강화 (stats는 스탯 종류만, 값은 tiers). 공격력·사거리·범위·간격은 기본값 대비 % → GetMultiplier(StatType),
     ///             치명타 확률·피해는 퍼센트 포인트 가산 → GetBonus(StatType).
-    /// Passive: 게임 전반 상시 효과 (SkillTreePassiveType + 레벨당 값 → GetValue(type)).
+    /// Passive: 게임 전반 상시 효과 (SkillTreePassiveType → GetValue(type)).
     /// TurretUnlock: 신규 포탑 해금 (unlockTrainId → IsTrainUnlocked, 삼중택일 Add 풀 게이트).
     /// </summary>
     [Serializable]
+    public class SkillNodeTier
+    {
+        [SerializeField]
+        [Tooltip("레벨당 효과. 공격력·사거리·공격 범위는 기본값 대비 %(5 = +5%), 공격 간격은 공격 속도 증가 %를 음수로(-3 = 공격 속도 +3%), 치명타 확률·피해는 퍼센트 포인트, 패시브는 그 패시브의 단위")]
+        private float valuePerLevel;
+        [SerializeField]
+        private int maxLevel = 1;
+        [SerializeField]
+        [Tooltip("이 티어에서 1레벨 올리는 비용")]
+        private int costPerLevel = 1;
+
+        public float ValuePerLevel => valuePerLevel;
+        public int MaxLevel => maxLevel;
+        public int CostPerLevel => costPerLevel;
+    }
+
+    [Serializable]
     public class SkillNodeData : IDescribableData, IIconData
     {
+        // 번역문의 % 표기 — 언어마다 자리와 띄어쓰기가 다르다. 전후 값 양쪽에 같은 표기를 붙이려고 찾는다
+        private static readonly string[] PercentValuePatterns = { "{0} %", "{0}%", "%{0}" };
+        private const string NextValueArrow = " → ";   // 줄바꿈 안 되는 공백 — 전후 값이 두 줄로 갈라지지 않게
+
         #region Fields
         [SerializeField]
         private string id;
         [SerializeField]
         private string iconId;
+        [SerializeField]
+        [Tooltip("칸 안 아이콘 크기 배율. 그림이 틀을 꽉 채워 다른 칸보다 커 보이는 노드만 줄인다")]
+        private float iconScale = 1f;
         private Sprite icon;
         [SerializeField]
         private string name;
@@ -38,15 +64,11 @@ namespace TrainDefense.Game.Datas
         private int col;
 
         [SerializeField]
-        [Tooltip("스킬 포인트 기준 기본 비용 (레벨 0 → 1)")]
-        private int needPoint = 1;
-        [SerializeField]
-        private int maxLevel = 1;
-        [SerializeField]
-        private float growthRate = 1.5f;
+        [Tooltip("티어 칸 사슬 (I부터 순서대로)")]
+        private SkillNodeTier[] tiers;
 
         [SerializeField]
-        [Tooltip("선행 노드 id 목록 — 전부 1레벨 이상이어야 습득 가능")]
+        [Tooltip("선행 노드 id 목록 — 전부 첫 티어를 만렙해야 습득 가능")]
         private string[] prerequisites;
 
         [SerializeField]
@@ -54,16 +76,12 @@ namespace TrainDefense.Game.Datas
 
         [SerializeField]
         [ShowIf("category", SkillNodeCategory.TurretStat)]
-        [Tooltip("포탑·레인지 스탯 강화 (레벨당 값). 공격력·사거리·공격 범위·공격 간격은 기본값 대비 %(5 = +5%, 간격은 -3 = -3%), 치명타 확률·피해는 퍼센트 포인트 가산")]
+        [Tooltip("강화할 포탑·레인지 스탯 종류. 값은 쓰지 않는다 — 효과는 tiers의 레벨당 값")]
         private SimpleStat[] stats;
 
         [SerializeField]
         [ShowIf("category", SkillNodeCategory.Passive)]
         private SkillTreePassiveType passiveType;
-        [SerializeField]
-        [ShowIf("category", SkillNodeCategory.Passive)]
-        [Tooltip("패시브 효과 레벨당 값 (예: +1 개수, +10%)")]
-        private float passiveValuePerLevel;
 
         [SerializeField]
         [ShowIf("category", SkillNodeCategory.TurretUnlock)]
@@ -100,51 +118,114 @@ namespace TrainDefense.Game.Datas
         }
         #endregion
 
+        public float IconScale => iconScale;
         public SkillTreeLane Lane => lane;
         public int Row => row;
         public int Col => col;
-        public int NeedPoint => needPoint;
-        public int MaxLevel => maxLevel;
-        public float GrowthRate => growthRate > 0f ? growthRate : 1.5f;
+        public int TierCount => tiers?.Length ?? 0;
         public string[] Prerequisites => prerequisites;
 
         public SkillNodeCategory Category => category;
         public IStat[] Stats => stats;
         public SkillTreePassiveType PassiveType => passiveType;
-        public float PassiveValuePerLevel => passiveValuePerLevel;
         public string UnlockTrainId => unlockTrainId;
 
-        /// <summary>
-        /// 현재 레벨 기준 다음 습득 비용: needPoint * GrowthRate^currentLevel
-        /// </summary>
+        /// <summary>노드 전체 최대 레벨 = 티어별 최대 레벨의 합.</summary>
+        public int MaxLevel => GetLevelsBeforeTier(TierCount + 1);
+
+        /// <summary>티어(1부터) 정의.</summary>
+        public SkillNodeTier GetTier(int tier) => tiers[tier - 1];
+
+        /// <summary>이 티어 앞 티어들의 최대 레벨 합 = 이 티어에 들어서는 노드 레벨.</summary>
+        public int GetLevelsBeforeTier(int tier)
+        {
+            int levels = 0;
+            for (int index = 0; index < tier - 1 && index < TierCount; index++)
+                levels += tiers[index].MaxLevel;
+
+            return levels;
+        }
+
+        /// <summary>노드 레벨 중 이 티어에 들어간 레벨 (0 ~ 티어 최대 레벨).</summary>
+        public int GetLevelInTier(int nodeLevel, int tier)
+            => Mathf.Clamp(nodeLevel - GetLevelsBeforeTier(tier), 0, GetTier(tier).MaxLevel);
+
+        /// <summary>이 티어를 만렙했는지.</summary>
+        public bool IsTierMastered(int nodeLevel, int tier)
+            => nodeLevel >= GetLevelsBeforeTier(tier + 1);
+
+        /// <summary>지금 레벨을 올릴 차례인 티어인지 (앞 티어 만렙 + 이 티어 미만렙).</summary>
+        public bool IsTierInProgress(int nodeLevel, int tier)
+            => nodeLevel >= GetLevelsBeforeTier(tier) && !IsTierMastered(nodeLevel, tier);
+
+        /// <summary>지금 레벨을 올릴 차례인 티어. 전부 만렙이면 마지막 티어.</summary>
+        public int GetCurrentTier(int nodeLevel)
+        {
+            for (int tier = 1; tier < TierCount; tier++)
+            {
+                if (!IsTierMastered(nodeLevel, tier)) return tier;
+            }
+
+            return Mathf.Max(TierCount, 1);
+        }
+
+        /// <summary>현재 노드 레벨에서 다음 1레벨의 비용. 만렙이면 0.</summary>
         public int GetCostAtLevel(int currentLevel)
         {
-            if (currentLevel <= 0) return needPoint;
+            int remaining = currentLevel;
+            for (int index = 0; index < TierCount; index++)
+            {
+                if (remaining < tiers[index].MaxLevel) return tiers[index].CostPerLevel;
 
-            return Mathf.RoundToInt(needPoint * Mathf.Pow(GrowthRate, currentLevel));
+                remaining -= tiers[index].MaxLevel;
+            }
+
+            return 0;
+        }
+
+        /// <summary>노드 레벨까지의 효과 합계 (티어별 레벨당 값 × 그 티어에 들어간 레벨).</summary>
+        public float GetTotalValue(int nodeLevel)
+        {
+            float total = 0f;
+            int remaining = nodeLevel;
+            for (int index = 0; index < TierCount && remaining > 0; index++)
+            {
+                int levelInTier = Mathf.Min(remaining, tiers[index].MaxLevel);
+                total += tiers[index].ValuePerLevel * levelInTier;
+                remaining -= levelInTier;
+            }
+
+            return total;
         }
 
         /// <summary>
-        /// 해당 레벨의 효과 문구. 설명 템플릿의 {0}에 (레벨당 값 × 레벨)의 크기를 넣는다 — 부호·단위는 템플릿이 가진다 ("공격력 +{0}", "공격 간격 -{0}초").
-        /// 템플릿에 {0}이 없으면(해금 노드 등) 원문 그대로.
+        /// 효과 문구. 설명 템플릿의 {0}에 이 칸이 주는 값의 크기를 넣는다 — 앞 칸에서 쌓인 값은 넣지 않는다 (합계로 쓰면 칸 효과로 오해한다, 11-03 사용자 결정).
+        /// 부호·단위는 템플릿이 가진다 ("공격력 +{0}", "공격 간격 -{0}초").
+        /// includesNextLevel이면 다음 레벨 값까지 "0.5% → 1%"로 넣는다. 아직 0레벨이면 첫 레벨 값만 넣는다 ("0.5%"). 템플릿에 {0}이 없으면(해금 노드 등) 원문 그대로.
         /// </summary>
-        public string GetDescriptionAtLevel(int level)
+        public string GetTierDescription(int nodeLevel, int tier, bool includesNextLevel)
         {
             string template = Description;
             if (!template.Contains("{0}")) return template;
 
-            float magnitude = Mathf.Abs(_GetValuePerLevel() * level);
+            SkillNodeTier tierData = GetTier(tier);
+            int levelInTier = GetLevelInTier(nodeLevel, tier);
+            string current = _FormatValue(tierData.ValuePerLevel * levelInTier);
+            if (!includesNextLevel) return template.Replace("{0}", current);
 
-            return template.Replace("{0}", magnitude.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
+            string next = _FormatValue(tierData.ValuePerLevel * (levelInTier + 1));
+            if (levelInTier == 0) return template.Replace("{0}", next);
+
+            foreach (string valueWithUnit in PercentValuePatterns)
+            {
+                if (template.Contains(valueWithUnit))
+                    return template.Replace(valueWithUnit, valueWithUnit.Replace("{0}", current) + NextValueArrow + valueWithUnit.Replace("{0}", next));
+            }
+
+            return template.Replace("{0}", current + NextValueArrow + next);
         }
 
-        // 레벨당 효과 값 — TurretStat은 첫 스탯, Passive는 passiveValuePerLevel (둘 다 레벨에 비례해 가산된다)
-        private float _GetValuePerLevel()
-        {
-            if (category == SkillNodeCategory.Passive) return passiveValuePerLevel;
-            if (stats != null && stats.Length > 0 && stats[0] != null) return stats[0].Value;
-
-            return 0f;
-        }
+        private static string _FormatValue(float value)
+            => Mathf.Abs(value).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
     }
 }

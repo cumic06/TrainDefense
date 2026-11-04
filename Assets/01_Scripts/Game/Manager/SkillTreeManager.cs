@@ -214,7 +214,7 @@ namespace TrainDefense.Game
         private Dictionary<StatType, float> _bonusCache;
         private Dictionary<SkillTreePassiveType, float> _valueCache;
 
-        /// <summary>TurretStat 노드들의 해당 StatType 누적 보너스 (레벨 × 레벨당 증가량). 치명타 확률·피해처럼 '퍼센트 포인트'로 가산하는 스탯용.</summary>
+        /// <summary>TurretStat 노드들의 해당 StatType 누적 보너스 (티어별 레벨당 값 합계). 치명타 확률·피해처럼 '퍼센트 포인트'로 가산하는 스탯용.</summary>
         public float GetBonus(StatType statType)
         {
             if (!_EnsureCore()) return 0f;
@@ -226,11 +226,16 @@ namespace TrainDefense.Game
         /// <summary>
         /// 누적 보너스를 곱셈 배율로 (1 + 합계%/100). 공격력·사거리·공격 범위·공격 간격처럼 포탑마다 기본값이 크게 다른 스탯은
         /// 정수 가산이 아니라 기본값에 곱한다 — 09-13 사용자 결정 ("정수 가산이면 화염·기관총만 사기").
-        /// 노드 데이터의 레벨당 값은 이 스탯들에선 %다 (예: 5 = 레벨당 +5%, 공격 간격은 -3 = 레벨당 -3%).
+        /// 티어의 레벨당 값은 이 스탯들에선 %다 (예: 5 = 레벨당 +5%). 공격 간격의 값은 공격 속도 증가 %를 음수로 적는다 (-10 = 공격 속도 +10% = 간격 ÷ 1.1).
         /// </summary>
-        public float GetMultiplier(StatType statType) => 1f + GetBonus(statType) * 0.01f;
+        public float GetMultiplier(StatType statType)
+        {
+            float bonus = GetBonus(statType) * 0.01f;
 
-        /// <summary>Passive 노드들의 해당 효과 누적값 (레벨 × 레벨당 값). 각 시스템이 조회해 적용한다.</summary>
+            return statType == StatType.AttackInterval ? 1f / (1f - bonus) : 1f + bonus;
+        }
+
+        /// <summary>Passive 노드들의 해당 효과 누적값 (티어별 레벨당 값 합계). 각 시스템이 조회해 적용한다.</summary>
         public float GetValue(SkillTreePassiveType type)
         {
             if (!_EnsureCore()) return 0f;
@@ -260,13 +265,13 @@ namespace TrainDefense.Game
                         if (stat == null) continue;
 
                         _bonusCache.TryGetValue(stat.Type, out float cur);
-                        _bonusCache[stat.Type] = cur + stat.Value * level;
+                        _bonusCache[stat.Type] = cur + node.GetTotalValue(level);
                     }
                 }
                 else if (node.Category == SkillNodeCategory.Passive)
                 {
                     _valueCache.TryGetValue(node.PassiveType, out float cur);
-                    _valueCache[node.PassiveType] = cur + node.PassiveValuePerLevel * level;
+                    _valueCache[node.PassiveType] = cur + node.GetTotalValue(level);
                 }
                 // TurretUnlock은 캐시 불필요 — IsTrainUnlocked가 코어 레벨을 직접 판정
             }

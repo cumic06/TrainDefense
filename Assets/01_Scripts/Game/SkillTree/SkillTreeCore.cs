@@ -46,12 +46,12 @@ namespace TrainDefense.Game.SkillTree
         public bool IsMaxLevel(string nodeId)
         {
             var node = GetNode(nodeId);
-            if (node == null || node.MaxLevel <= 0) return false;
+            if (node == null) return false;
 
             return GetLevel(nodeId) >= node.MaxLevel;
         }
 
-        /// <summary>선행 노드가 전부 1레벨 이상인지. 선행 목록이 비어 있으면 통과, 정의에 없는 선행 id가 있으면 불통.</summary>
+        /// <summary>선행 노드가 전부 첫 티어를 만렙했는지. 선행 목록이 비어 있으면 통과, 정의에 없는 선행 id가 있으면 불통.</summary>
         public bool ArePrerequisitesMet(string nodeId)
         {
             var node = GetNode(nodeId);
@@ -61,8 +61,9 @@ namespace TrainDefense.Game.SkillTree
             foreach (string prerequisiteId in node.Prerequisites)
             {
                 if (string.IsNullOrEmpty(prerequisiteId)) continue;
-                if (GetNode(prerequisiteId) == null) return false;
-                if (GetLevel(prerequisiteId) <= 0) return false;
+                var prerequisite = GetNode(prerequisiteId);
+                if (prerequisite == null) return false;
+                if (!prerequisite.IsTierMastered(GetLevel(prerequisiteId), 1)) return false;
             }
 
             return true;
