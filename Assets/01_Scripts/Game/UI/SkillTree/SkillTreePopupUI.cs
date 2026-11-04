@@ -20,8 +20,8 @@ namespace TrainDefense.Game.UI.SkillTree
     /// </summary>
     public class SkillTreePopupUI : MonoBehaviour
     {
-        // 트리 판 1170×588, 허브·방향별 첫 칸 76, 일반 칸 60. 칸 사이 틈은 어디서나 30이 되게 중심 거리를 잡는다.
-        private const float HubToFirstTier = 106f;   // 38 + 30 + 38
+        // 트리 판 1170×588, 허브 108, 방향별 첫 칸 76, 일반 칸 60. 칸 사이 틈은 어디서나 30이 되게 중심 거리를 잡는다.
+        private const float HubToFirstTier = 122f;   // 54 + 30 + 38
         private const float FirstTierToNextTier = 98f;   // 38 + 30 + 30
         private const float NodeHalfSize = 30f;      // 노드 프리팹 60의 절반 — 범위 계산용
         // 11-02 사용자 "너무 따닥따닥" → 칸 간격 75→90(칸 사이 30). 판(588)보다 세로가 길어지는 건 줌·드래그(SkillTreeZoomPanUI + ScrollRect)로 본다
@@ -370,7 +370,7 @@ namespace TrainDefense.Game.UI.SkillTree
             bool arePrerequisitesMet = manager.ArePrerequisitesMet(_selectedData.Id);
             bool isChainMastered = isAcquired && _selectedTier == _selectedData.TierCount;
             SkillNodeTier tierData = _selectedData.GetTier(_selectedTier);
-            int cost = tierData.CostPerLevel;
+            int cost = tierData.GetCost(_selectedData.GetLevelInTier(level, _selectedTier));
             bool isAffordable = cost <= manager.AvailableCoin;
 
             if (detailLevelText != null)

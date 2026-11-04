@@ -26,10 +26,17 @@ namespace TrainDefense.Game.Datas
         [SerializeField]
         [Tooltip("이 티어에서 1레벨 올리는 비용")]
         private int costPerLevel = 1;
+        [SerializeField]
+        [Tooltip("이 티어에서 레벨을 하나 올릴 때마다 비용이 첫 레벨 비용의 몇 %씩 늘어나는지 (25 = 둘째 레벨 ×1.25, 셋째 ×1.5). 0이면 전 레벨 같은 비용")]
+        private float costGrowthPercent;
 
         public float ValuePerLevel => valuePerLevel;
         public int MaxLevel => maxLevel;
         public int CostPerLevel => costPerLevel;
+
+        /// <summary>이 티어에서 levelInTier(0 = 첫 레벨)를 올리는 데 드는 비용. 첫 레벨 비용에 레벨마다 costGrowthPercent%를 선형으로 더한다.</summary>
+        public int GetCost(int levelInTier)
+            => Mathf.RoundToInt(costPerLevel * (1f + costGrowthPercent * 0.01f * Mathf.Max(0, levelInTier)));
     }
 
     [Serializable]
@@ -175,7 +182,7 @@ namespace TrainDefense.Game.Datas
             int remaining = currentLevel;
             for (int index = 0; index < TierCount; index++)
             {
-                if (remaining < tiers[index].MaxLevel) return tiers[index].CostPerLevel;
+                if (remaining < tiers[index].MaxLevel) return tiers[index].GetCost(remaining);
 
                 remaining -= tiers[index].MaxLevel;
             }
