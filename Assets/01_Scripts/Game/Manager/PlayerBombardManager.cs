@@ -14,7 +14,7 @@ namespace TrainDefense.Game
     /// <summary>
     /// 플레이어 개입 포격. 화면을 탭하면 그 지점에 포탄 한 발을 떨어뜨린다.
     /// 어떤 유닛에도 속하지 않으므로 발사 시 owner를 넘기지 않는다(플레이어 = 화면 밖 사령관).
-    /// 기본 스탯은 PlayerBombardConfig에서 오고, 레벨업 강화(포격 피해·대기시간·범위)가 발사 시점에 배율로 얹힌다.
+    /// 기본 스탯은 PlayerBombardConfig에서 오고, 레벨업 강화(대기시간·범위)가 발사 시점에 배율로 얹힌다.
     /// </summary>
     public class PlayerBombardManager : Singleton<PlayerBombardManager>
     {
@@ -22,7 +22,6 @@ namespace TrainDefense.Game
         private const string ProjectilePrefabPath = "Prefabs/Projectiles/TrainProjectile/";
 
         // 레벨업 강화 UpgradeData id (UpgradeValue = 레벨당 퍼센트, 대기시간은 음수 = 감소)
-        private const string DAMAGE_UPGRADE_ID = "110008";
         private const string COOLDOWN_UPGRADE_ID = "110009";
         private const string AREA_UPGRADE_ID = "110010";
 
@@ -95,7 +94,7 @@ namespace TrainDefense.Game
 
         /// <summary>
         /// 쿨다운·전투 상태·탭 입력과 무관하게 지정 위치에 포탄 한 발을 떨어뜨린다. 쿨다운을 소모하지도, MainTrainFiredEvent를 발행하지도 않는다.
-        /// 선로 이벤트(지원 폭격)처럼 시스템이 대신 쏘는 용도. 피해량은 플레이어 포격과 같은 기준(역 체력 배율·강화 포함)에 damageMultiplier를 곱한다.
+        /// 선로 이벤트(지원 폭격)처럼 시스템이 대신 쏘는 용도. 피해량은 플레이어 포격과 같은 기준(역 체력 배율·스킬 트리 포함)에 damageMultiplier를 곱한다.
         /// </summary>
         public bool FireAt(Vector2 worldPosition, float damageMultiplier = 1f)
         {
@@ -115,12 +114,12 @@ namespace TrainDefense.Game
             projectile.transform.position = new Vector3(worldPosition.x, worldPosition.y, 0f);
 
             // 몬스터 체력이 역마다 오르므로 포격 피해도 같은 배율을 따라가야 판 내내 "약한 몹 한 방" 역할이 유지된다.
-            // 스킬 트리 포격 피해는 고정값(+N). 기본 피해에 더한 뒤 적 체력 배율·레벨업 강화를 곱한다 (기본값과 같은 취급).
+            // 스킬 트리 포격 피해는 고정값(+N). 기본 피해에 더한 뒤 적 체력 배율을 곱한다 (기본값과 같은 취급).
             float baseDamage = _config.Damage;
             if (SkillTreeManager.Instance != null)
                 baseDamage += SkillTreeManager.Instance.GetValue(SkillTreePassiveType.BombardDamage);
 
-            _status.AttackDamage = baseDamage * _GetEnemyHpScale() * _GetUpgradeMultiplier(DAMAGE_UPGRADE_ID) * damageMultiplier;
+            _status.AttackDamage = baseDamage * _GetEnemyHpScale() * damageMultiplier;
 
             _status.AttackArea = _config.AttackArea * _GetUpgradeMultiplier(AREA_UPGRADE_ID);
             if (SkillTreeManager.Instance != null)

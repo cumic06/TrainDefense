@@ -1739,18 +1739,6 @@ MonoBehaviour:
     upgradeValue: 5
     stats: []
     growthRate: 1.13
-  - id: 110008
-    iconId: Upgrade/Upgrade_110008
-    name: Upgrade_110008_Name
-    description: Upgrade_110008_Desc
-    needMoney: 120
-    maxUpgradeCount: 20
-    upgradeDataType: 1
-    upgradePool: 0
-    grade: 0
-    upgradeValue: 10
-    stats: []
-    growthRate: 1.13
   - id: 110009
     iconId: Upgrade/Upgrade_110009
     name: Upgrade_110009_Name
@@ -2158,21 +2146,17 @@ MonoBehaviour:
     row: 0
     col: 1
     tiers:
-    - valuePerLevel: 0.15
+    - valuePerLevel: 1
       maxLevel: 5
-      costPerLevel: 3
+      costPerLevel: 6
       costGrowthPercent: 17
-    - valuePerLevel: 0.4
+    - valuePerLevel: 2
       maxLevel: 5
-      costPerLevel: 5
+      costPerLevel: 13
       costGrowthPercent: 17
-    - valuePerLevel: 0.75
-      maxLevel: 7
-      costPerLevel: 10
-      costGrowthPercent: 17
-    - valuePerLevel: 1.7
-      maxLevel: 10
-      costPerLevel: 22
+    - valuePerLevel: 3
+      maxLevel: 5
+      costPerLevel: 23
       costGrowthPercent: 17
     prerequisites: []
     category: 1
@@ -2188,16 +2172,16 @@ MonoBehaviour:
     col: 0
     tiers:
     - valuePerLevel: 0.5
-      maxLevel: 6
-      costPerLevel: 8
+      maxLevel: 5
+      costPerLevel: 6
       costGrowthPercent: 17
     - valuePerLevel: 1
-      maxLevel: 6
-      costPerLevel: 16
-      costGrowthPercent: 17
-    - valuePerLevel: 3
       maxLevel: 5
-      costPerLevel: 50
+      costPerLevel: 13
+      costGrowthPercent: 17
+    - valuePerLevel: 2.5
+      maxLevel: 7
+      costPerLevel: 39
       costGrowthPercent: 17
     prerequisites:
     - skill_bombard_damage
@@ -2214,16 +2198,16 @@ MonoBehaviour:
     col: -1
     tiers:
     - valuePerLevel: 1
-      maxLevel: 6
-      costPerLevel: 14
+      maxLevel: 5
+      costPerLevel: 6
       costGrowthPercent: 17
-    - valuePerLevel: 2
-      maxLevel: 6
-      costPerLevel: 26
+    - valuePerLevel: 1.5
+      maxLevel: 5
+      costPerLevel: 18
       costGrowthPercent: 17
-    - valuePerLevel: 4
-      maxLevel: 3
-      costPerLevel: 54
+    - valuePerLevel: 2.5
+      maxLevel: 7
+      costPerLevel: 35
       costGrowthPercent: 17
     prerequisites:
     - skill_bombard_damage
