@@ -21,9 +21,15 @@ namespace TrainDefense.Game.TrackEvent.Effects
         private bool _isKilled;
         private int _coinSnapshot;
 
+        /// <summary>실제 적용되는 보상 배율. 배너 문구도 이 값을 표시한다.</summary>
+        public static float GetRewardMultiplier(TrackEventData data)
+        {
+            return data != null && data.Magnitude > 1f ? data.Magnitude : DEFAULT_REWARD_MULTIPLIER;
+        }
+
         public void Begin(TrackEventData data)
         {
-            _rewardMultiplier = data != null && data.Magnitude > 1f ? data.Magnitude : DEFAULT_REWARD_MULTIPLIER;
+            _rewardMultiplier = GetRewardMultiplier(data);
             _isKilled = false;
             _ambushElite = MonsterSpawner.Instance != null ? MonsterSpawner.Instance.SpawnEliteNow() : null;
 

@@ -9,22 +9,23 @@ using UnityEngine;
 namespace TrainDefense.Game.TrackEvent.Effects
 {
     /// <summary>
-    /// 보급 투하 — 기차 주변에 보급 상자 1~3개를 놓고, 터치하면 골드를 준다.
-    /// 지급 골드 = BASE_GOLD × StageManager.GetGoldScale() × magnitude (상자 하나당).
-    /// 데이터 duration(0 이하면 DEFAULT_LIFETIME) 뒤 미획득 상자는 사라지고, End(역 도착 포함)에서 남은 상자를 모두 정리한다.
-    /// 상자는 런타임 생성(SupplyCrate.Create). 프리팹으로 바꾸려면 _SpawnCrate의 Create 호출만 교체한다.
+    /// 보급 투하 — 반짝이 1개가 천천히 떠가고, 터치하면 골드를 준다.
+    /// 지급 골드 = TrackEventGoldReward(BASE_GOLD × magnitude).
+    /// 데이터 duration(0 이하면 DEFAULT_LIFETIME) 뒤 미획득 반짝이는 사라지고, End(역 도착 포함)에서 모두 정리한다.
     /// </summary>
     public class SupplyDropTrackEventEffect : ITrackEventEffect
     {
-        private const int MIN_CRATE_COUNT = 1;
-        private const int MAX_CRATE_COUNT = 3;
         private const float DEFAULT_LIFETIME = 8f;
         private const float BASE_GOLD = 30f;
         private const float DEFAULT_MAGNITUDE = 1f;
-        private const float VIEWPORT_MIN = 0.15f;
-        private const float VIEWPORT_MAX = 0.85f;
-        private const float TRAIN_SPREAD_X = 6f;
-        private const float TRAIN_SPREAD_Y = 3f;
+        private const float MOVE_SPEED = 2.6f;
+        // 오른쪽으로 떠가도 화면 안에 남도록 왼쪽 절반에서 시작한다. 세로는 기차 줄, 위아래 HUD, 이벤트 배너(화면 높이 0.68~0.78)를 피한다.
+        private const float VIEWPORT_X_MIN = 0.12f;
+        private const float VIEWPORT_X_MAX = 0.55f;
+        private const float UPPER_VIEWPORT_Y_MIN = 0.58f;
+        private const float UPPER_VIEWPORT_Y_MAX = 0.64f;
+        private const float LOWER_VIEWPORT_Y_MIN = 0.22f;
+        private const float LOWER_VIEWPORT_Y_MAX = 0.38f;
 
         private readonly List<SupplyCrate> _crates = new List<SupplyCrate>();
         private float _magnitude = DEFAULT_MAGNITUDE;
@@ -37,11 +38,7 @@ namespace TrainDefense.Game.TrackEvent.Effects
             _remainingTime = data != null && data.Duration > 0f ? data.Duration : DEFAULT_LIFETIME;
             _isActive = true;
 
-            int count = Random.Range(MIN_CRATE_COUNT, MAX_CRATE_COUNT + 1);
-            for (int i = 0; i < count; i++)
-            {
-                _SpawnCrate();
-            }
+            _SpawnCrate();
         }
 
         public void Tick(float deltaTime)
@@ -67,7 +64,7 @@ namespace TrainDefense.Game.TrackEvent.Effects
 
         private void _SpawnCrate()
         {
-            SupplyCrate crate = SupplyCrate.Create(_PickSpawnPosition());
+            SupplyCrate crate = SupplyCrate.Create(_PickSpawnPosition(), Vector3.right * MOVE_SPEED, _remainingTime);
             crate.Collected += _OnCrateCollected;
             _crates.Add(crate);
         }
@@ -80,38 +77,24 @@ namespace TrainDefense.Game.TrackEvent.Effects
                 return Vector3.zero;
             }
 
-            Vector3 center = cam.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0f));
-            MainTrain train = Object.FindFirstObjectByType<MainTrain>();
-            if (train != null)
-            {
-                center = train.transform.position;
-            }
+            bool isUpper = Random.value < 0.5f;
+            float viewportY = isUpper
+                ? Random.Range(UPPER_VIEWPORT_Y_MIN, UPPER_VIEWPORT_Y_MAX)
+                : Random.Range(LOWER_VIEWPORT_Y_MIN, LOWER_VIEWPORT_Y_MAX);
+            float depth = Mathf.Abs(cam.transform.position.z);
 
-            Vector3 candidate = center + new Vector3(
-                Random.Range(-TRAIN_SPREAD_X, TRAIN_SPREAD_X),
-                Random.Range(-TRAIN_SPREAD_Y, TRAIN_SPREAD_Y),
-                0f);
-
-            // 화면 안(가장자리 여백 유지)으로 클램프
-            Vector3 viewport = cam.WorldToViewportPoint(candidate);
-            viewport.x = Mathf.Clamp(viewport.x, VIEWPORT_MIN, VIEWPORT_MAX);
-            viewport.y = Mathf.Clamp(viewport.y, VIEWPORT_MIN, VIEWPORT_MAX);
-
-            Vector3 world = cam.ViewportToWorldPoint(viewport);
+            Vector3 world = cam.ViewportToWorldPoint(new Vector3(Random.Range(VIEWPORT_X_MIN, VIEWPORT_X_MAX), viewportY, depth));
             world.z = 0f;
 
             return world;
         }
 
+        // 지운 뒤 터지는 연출은 반짝이가 스스로 하고 사라진다.
         private void _OnCrateCollected(SupplyCrate crate)
         {
+            crate.Collected -= _OnCrateCollected;
             _crates.Remove(crate);
             _GrantGold();
-
-            if (crate != null)
-            {
-                Object.Destroy(crate.gameObject);
-            }
         }
 
         private void _GrantGold()
@@ -122,8 +105,7 @@ namespace TrainDefense.Game.TrackEvent.Effects
                 return;
             }
 
-            float goldScale = StageManager.Instance != null ? StageManager.Instance.GetGoldScale() : 1f;
-            int amount = Mathf.Max(1, Mathf.RoundToInt(BASE_GOLD * goldScale * _magnitude));
+            int amount = TrackEventGoldReward.Get(BASE_GOLD * _magnitude);
 
             int before = userData.Coin;
             GameEventSystem.Publish(new ChangeCoinUIEvent(before, before + amount));

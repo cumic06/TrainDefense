@@ -20,7 +20,7 @@ namespace TrainDefense.Game.UI
     /// "첫 삼중택일이 끝나야" InGameSequence가 EngageStartEvent를 발행하므로 선택지를 가리지 않는다.
     /// 튜토리얼 등 오버레이가 떠 있으면 걷힐 때까지 대기 후 표시한다.
     /// EngageStartEvent는 상점 퇴장마다 발행되므로 "직전에 보여준 스테이지와 다른 경우"에만 표시한다.
-    /// 선로 이벤트 날씨가 바뀌면(TrackEventStartEvent, Weather 분류) 날씨 이름 + 효과도 같은 배너로 차례로 알린다.
+    /// 날씨와 무작위 선로 이벤트가 시작되면(TrackEventStartEvent) 이름 + 효과도 같은 배너로 차례로 알린다.
     /// 시각 요소는 코드에서 직접 생성해 Inspector wiring 없이 동작한다(GameBootstrapper가 전역 캔버스에 부착).
     /// </summary>
     public class MapNameBannerUI : MonoBehaviour
@@ -35,7 +35,7 @@ namespace TrainDefense.Game.UI
         #region Variables
         private const string WEATHER_EFFECT_SEPARATOR = "  /  ";
 
-        private readonly Queue<(string message, TrackEventData weatherData)> _pendingMessages = new Queue<(string, TrackEventData)>();
+        private readonly Queue<(string message, TrackEventData eventData)> _pendingMessages = new Queue<(string, TrackEventData)>();
         private CanvasGroup _canvasGroup;
         private TextMeshProUGUI _nameText;
         private Coroutine _playRoutine;
@@ -125,10 +125,11 @@ namespace TrainDefense.Game.UI
             _Enqueue(mapName, null);
         }
 
-        // 날씨가 바뀌면(선로 이벤트 날씨 분류) 이름 + 효과 줄을 맵 이름 다음 차례로 보여 준다.
+        // 날씨와 무작위 선로 이벤트가 시작되면 이름 + 효과 줄을 맵 이름 다음 차례로 보여 준다.
+        // 선택 이벤트는 카드에 이미 문구가 있고, 보너스 강화는 레벨업 창이 바로 떠서 알릴 필요가 없다.
         private void _OnTrackEventStart(TrackEventStartEvent e)
         {
-            if (e == null || e.Data == null || e.Data.Category != TrackEventCategory.Weather)
+            if (e == null || e.Data == null || e.Data.Category == TrackEventCategory.Choice || e.Data.EventType == TrackEventType.FreeUpgrade)
                 return;
 
             string effectText = TrackEventText.GetEffectText(e.Data, WEATHER_EFFECT_SEPARATOR);
@@ -140,9 +141,9 @@ namespace TrainDefense.Game.UI
         }
 
         // 맵 이름과 날씨는 같은 EngageStartEvent에서 함께 오므로 겹쳐 지우지 않고 차례로 보여 준다.
-        private void _Enqueue(string message, TrackEventData weatherData)
+        private void _Enqueue(string message, TrackEventData eventData)
         {
-            _pendingMessages.Enqueue((message, weatherData));
+            _pendingMessages.Enqueue((message, eventData));
 
             if (_playRoutine == null)
                 _playRoutine = StartCoroutine(_PlayQueueRoutine());
@@ -152,14 +153,14 @@ namespace TrainDefense.Game.UI
         {
             while (_pendingMessages.Count > 0)
             {
-                (string message, TrackEventData weatherData) = _pendingMessages.Dequeue();
-                yield return _PlayRoutine(message, weatherData);
+                (string message, TrackEventData eventData) = _pendingMessages.Dequeue();
+                yield return _PlayRoutine(message, eventData);
             }
 
             _playRoutine = null;
         }
 
-        private IEnumerator _PlayRoutine(string message, TrackEventData weatherData)
+        private IEnumerator _PlayRoutine(string message, TrackEventData eventData)
         {
             // 튜토리얼/삼중택일(레벨업) 오버레이가 떠 있는 동안은 대기해 연출을 가리지 않는다.
             // 걷힌 뒤에도 overlayClearSettle만큼 연속으로 비어 있어야 표시한다.
@@ -170,8 +171,8 @@ namespace TrainDefense.Game.UI
                 yield return null;
             }
 
-            // 기다리는 사이 역에 도착해 날씨가 이미 끝났으면 알리지 않는다.
-            if (weatherData != null && !_IsWeatherActive(weatherData))
+            // 기다리는 사이 역에 도착해 이벤트가 이미 끝났으면 알리지 않는다.
+            if (eventData != null && !_IsEventActive(eventData))
                 yield break;
 
             if (_nameText != null)
@@ -182,11 +183,11 @@ namespace TrainDefense.Game.UI
             yield return _Fade(1f, 0f, fadeDuration);
         }
 
-        private static bool _IsWeatherActive(TrackEventData weatherData)
+        private static bool _IsEventActive(TrackEventData eventData)
         {
             var trackEventManager = TrackEventManager.Instance;
 
-            return trackEventManager != null && trackEventManager.ActiveWeatherData == weatherData;
+            return trackEventManager != null && (trackEventManager.ActiveWeatherData == eventData || trackEventManager.ActiveData == eventData);
         }
 
         // 배너 표시를 막아야 하는 화면이 떠 있는지. 오버레이 스택(튜토리얼/삼중택일/일시정지/옵션) +

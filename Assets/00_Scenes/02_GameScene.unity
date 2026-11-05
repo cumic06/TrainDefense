@@ -10755,7 +10755,7 @@ MonoBehaviour:
     weight: 1
     minStationCount: 2
     duration: 0
-    magnitude: 10
+    magnitude: 25
     nameKey: TrackEvent_GoldenMonster_Name
     descriptionKey: TrackEvent_GoldenMonster_Desc
     icon: {fileID: 0}
@@ -10776,15 +10776,6 @@ MonoBehaviour:
     magnitude: 1
     nameKey: TrackEvent_SupportBombard_Name
     descriptionKey: TrackEvent_SupportBombard_Desc
-    icon: {fileID: 0}
-  - id: GoldRush
-    eventType: 14
-    weight: 1
-    minStationCount: 2
-    duration: 15
-    magnitude: 2
-    nameKey: TrackEvent_GoldRush_Name
-    descriptionKey: TrackEvent_GoldRush_Desc
     icon: {fileID: 0}
   - id: ExpBoost
     eventType: 15

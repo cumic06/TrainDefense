@@ -18,6 +18,12 @@ namespace TrainDefense.Game.TrackEvent
         private const string STAT_KEY_ATTACK_SPEED = "TrackEvent_Stat_AttackSpeed";
         private const string STAT_KEY_RANGE = "TrackEvent_Stat_Range";
         private const string STAT_KEY_REPAIR = "TrackEvent_Stat_Repair";
+        private const string STAT_KEY_REMAINING_TIME = "TrackEvent_Stat_RemainingTime";
+        private const string EFFECT_KEY_MONSTER_RUSH = "TrackEvent_Effect_MonsterRush";
+        private const string EFFECT_KEY_ELITE_AMBUSH = "TrackEvent_Effect_EliteAmbush";
+        private const string EFFECT_KEY_SUPPLY_DROP = "TrackEvent_Effect_SupplyDrop";
+        private const string EFFECT_KEY_GOLDEN_MONSTER = "TrackEvent_Effect_GoldenMonster";
+        private const string EFFECT_KEY_SUPPORT_BOMBARD = "TrackEvent_Effect_SupportBombard";
 
         private static readonly StringBuilder _builder = new StringBuilder();
 
@@ -63,7 +69,6 @@ namespace TrainDefense.Game.TrackEvent
                 case TrackEventType.ChoiceAttackSpeed:
                     _AppendMultiplier(STAT_KEY_ATTACK_SPEED, "포탑 공격 속도", data.Magnitude, separator);
                     break;
-                case TrackEventType.GoldRush:
                 case TrackEventType.ChoiceGoldBonus:
                     _AppendMultiplier(STAT_KEY_KILL_GOLD, "처치 골드", data.Magnitude, separator);
                     break;
@@ -76,9 +81,34 @@ namespace TrainDefense.Game.TrackEvent
                     // magnitude = 최대 체력 대비 회복 비율 (0.1 → +10%)
                     _AppendPercent(STAT_KEY_REPAIR, "기차 체력 회복", Mathf.RoundToInt(data.Magnitude * 100f), separator);
                     break;
+                case TrackEventType.MonsterRush:
+                    // magnitude = 스폰 간격 배율 (0.5 → 등장 2배)
+                    _AppendFormatted(EFFECT_KEY_MONSTER_RUSH, "몬스터 등장 {0}배", data.Magnitude > 0f ? 1f / data.Magnitude : 1f);
+                    break;
+                case TrackEventType.EliteAmbush:
+                    _AppendFormatted(EFFECT_KEY_ELITE_AMBUSH, "처치 시 <sprite name=\"EliteCoin\"> {0}배", Effects.EliteAmbushTrackEventEffect.GetRewardMultiplier(data));
+                    break;
+                case TrackEventType.SupplyDrop:
+                    _builder.Append(LocalizeHelper.GetByKey(EFFECT_KEY_SUPPLY_DROP, "눌러서 골드 획득"));
+                    break;
+                case TrackEventType.GoldenMonster:
+                    _builder.Append(LocalizeHelper.GetByKey(EFFECT_KEY_GOLDEN_MONSTER, "처치 시 많은 골드"));
+                    break;
+                case TrackEventType.SupportBombard:
+                    _builder.Append(LocalizeHelper.GetByKey(EFFECT_KEY_SUPPORT_BOMBARD, "화면 곳곳에 포격"));
+                    break;
+                case TrackEventType.Tailwind:
+                    // magnitude = 남은 시간 단축 비율 (0.2 → -20%)
+                    _AppendPercent(STAT_KEY_REMAINING_TIME, "남은 구간 시간", -Mathf.RoundToInt(data.Magnitude * 100f), separator);
+                    break;
             }
 
             return _builder.ToString();
+        }
+
+        private static void _AppendFormatted(string effectKey, string fallback, float value)
+        {
+            _builder.Append(string.Format(LocalizeHelper.GetByKey(effectKey, fallback), value.ToString("0.#")));
         }
 
         private static void _AppendMultiplier(string statKey, string fallback, float multiplier, string separator)

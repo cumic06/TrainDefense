@@ -89,12 +89,12 @@ namespace TrainDefense.Game
       // 엘리트 CC 저항(0~1). 슬로우 감속량·스턴 시간·넉백을 (1-저항)배로 줄이고, 1이면 완전 면역.
       private float _ccResistance;
 
-      // 황금 몬스터(선로 이벤트) 도망 모드: 기차를 공격하지 않고 지정 방향으로 달아난다. 화면 밖으로 나가면 보상 없이 사라지고, 처치하면 골드 배율이 붙는다.
-      private bool _isEscaping;
-      private Vector3 _escapeDirection;
-      private float _escapeGoldMultiplier = 1f;
-      private static readonly Color ESCAPE_TINT_COLOR = new Color(1f, 0.84f, 0.1f, 1f);
-      private const float ESCAPE_OFFSCREEN_MARGIN = 0.1f;
+      // 황금 몬스터(선로 이벤트): 엘리트가 아니라서 엘리트 코인·점수·추가 피해 대상이 아니다. 0보다 크면 처치 골드 기본값을 이 값으로 쓴다.
+      private int _goldenGoldReward;
+      private GoldenTwinkleEffect _goldenTwinkleEffect;
+      private static Material _sharedGoldenMaterial;
+      // 원래 색과 무관하게 같은 금색이 되도록 밝기에 입히는 색. 1을 넘겨야 어두운 몬스터도 탁해지지 않는다.
+      private static readonly Color GOLDEN_TINT = new Color(2.1f, 1.62f, 0.42f, 1f);
 
       private const string MoneyPrefabPath = "Prefabs/Money";
       private const string StunPrefabPath = "Prefabs/StunPaticle";
@@ -163,8 +163,8 @@ namespace TrainDefense.Game
          if (model != null) model.transform.localScale = _prefabScale;
          if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = _originalColor;
          _isFrosted = false;
-         _isEscaping = false;
-         _escapeGoldMultiplier = 1f;
+         _goldenGoldReward = 0;
+         if (_goldenTwinkleEffect != null) _goldenTwinkleEffect.gameObject.SetActive(false);
          _markDamageMultiplier = 1f;
          _markEndTime = 0f;
          _weakenDamageMultiplier = 1f;
@@ -318,13 +318,6 @@ namespace TrainDefense.Game
          if (Time.time - _spawnTime < spawnMoveDelay)
             return;
 
-         if (_isEscaping)
-         {
-            _EscapeHandler();
-
-            return;
-         }
-
          if (_isShoved)
             return;
          if (_isStunned)
@@ -359,62 +352,48 @@ namespace TrainDefense.Game
          transform.Translate(moveSpeed * Time.deltaTime * _MoveDirection().normalized);
       }
 
-      #region Escape (황금 몬스터)
-      // 도망 모드 진입. direction은 월드 이동 방향(자동 정규화), goldMultiplier는 처치 골드 배율.
-      public void BeginEscape(Vector3 direction, float goldMultiplier)
+      #region Golden (황금 몬스터)
+      // 선로 이벤트 황금 몬스터로 바꾼다. 몸 전체가 금색이 되고 별빛이 깜박이며, 처치 골드 기본값이 goldReward가 된다.
+      public void ApplyGolden(float hpMultiplier, float moveSpeedMultiplier, float sizeMultiplier, int goldReward)
       {
-         _isEscaping = true;
-         _escapeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector3.right;
-         _escapeGoldMultiplier = Mathf.Max(1f, goldMultiplier);
-         _facingSign = _escapeDirection.x > 0 ? 1 : -1;
+         if (_isDead) return;
+
+         _goldenGoldReward = goldReward;
+
+         _currentMonsterStatus.MaxHp *= hpMultiplier;
+         _currentMonsterStatus.MoveSpeed *= moveSpeedMultiplier;
+         _currentHp = _currentMonsterStatus.MaxHp;
+
+         _startScale *= sizeMultiplier;
          _ApplyModelScale();
 
-         if (_modelSpriteRenderer != null) _modelSpriteRenderer.color = ESCAPE_TINT_COLOR;
-      }
+         _RestoreHitFlashMaterial();
+         _SpawnEliteHealthBar();
 
-      public bool IsEscaping => _isEscaping;
-
-      // 도망 중인 채로 효과가 끝났을 때(역 도착 등) 보상 없이 즉시 정리한다.
-      public void CancelEscape()
-      {
-         if (!_isEscaping || _isDead)
-            return;
-
-         _DespawnWithoutReward();
-      }
-
-      private void _EscapeHandler()
-      {
-         transform.Translate(_currentMonsterStatus.MoveSpeed * _auraSpeedMultiplier * _slowMultiplier * Time.deltaTime * _escapeDirection, Space.World);
-
-         if (_IsOffScreen())
-            _DespawnWithoutReward();
-      }
-
-      private bool _IsOffScreen()
-      {
-         Camera mainCamera = Camera.main;
-         if (mainCamera == null)
-            return false;
-
-         Vector3 viewport = mainCamera.WorldToViewportPoint(transform.position);
-
-         return viewport.x < -ESCAPE_OFFSCREEN_MARGIN || viewport.x > 1f + ESCAPE_OFFSCREEN_MARGIN
-            || viewport.y < -ESCAPE_OFFSCREEN_MARGIN || viewport.y > 1f + ESCAPE_OFFSCREEN_MARGIN;
-      }
-
-      // 처치가 아니므로 MonsterDeadEvent·경험치·골드 없이 풀로 반환한다.
-      private void _DespawnWithoutReward()
-      {
-         _isDead = true;
-         _isEscaping = false;
-
-         if (transform.parent != null && transform.parent.TryGetComponent<MonsterSpawner>(out var spawner))
+         if (_goldenTwinkleEffect == null)
          {
-            spawner.RemoveMonster(this);
+            _goldenTwinkleEffect = GoldenTwinkleEffect.Create(transform, _modelSpriteRenderer);
          }
 
-         ResourceManager.Instance.Destroy(gameObject);
+         _goldenTwinkleEffect.gameObject.SetActive(true);
+      }
+
+      private Material _GetGoldenMaterial()
+      {
+         if (_sharedGoldenMaterial == null)
+         {
+            Shader shader = Shader.Find(HitFlashShaderName);
+            if (shader == null)
+               return null;
+
+            _sharedGoldenMaterial = new Material(shader);
+            _sharedGoldenMaterial.SetColor("_RedTint", GOLDEN_TINT);
+            _sharedGoldenMaterial.SetFloat("_RedAmount", 1f);
+            _sharedGoldenMaterial.SetFloat("_EmissionIntensity", 0f);
+            _sharedGoldenMaterial.SetFloat("_Opacity", 1f);
+         }
+
+         return _sharedGoldenMaterial;
       }
       #endregion
 
@@ -632,12 +611,12 @@ namespace TrainDefense.Game
 
       #region Pull
       // 블랙홀 장판이 FixedUpdate마다 호출한다. offset만큼 위치를 옮기되(넉백 코루틴과 달리 힘을 남기지 않음),
-      // CC 저항만큼 줄이고 도망 중(황금 몬스터)·사망 상태는 무시한다. 걷기 이동과 합쳐져 "빨려 들어가는" 느낌을 낸다.
+      // CC 저항만큼 줄이고 사망 상태는 무시한다. 걷기 이동과 합쳐져 "빨려 들어가는" 느낌을 낸다.
       public void Pull(Vector2 offset)
       {
          if (!gameObject.activeInHierarchy)
             return;
-         if (_isDead || _isEscaping)
+         if (_isDead)
             return;
          if (_ccResistance >= 1f)
             return;
@@ -938,13 +917,13 @@ namespace TrainDefense.Game
          return _sharedHitFlashMaterial;
       }
 
-      // 원래 머티리얼로 복원한다(둔화 중이면 서리 머티리얼). 풀 재사용/사망 시 흰색이 잔존하지 않도록 보장.
+      // 원래 머티리얼로 복원한다(둔화 중이면 서리, 황금 몬스터면 금색 머티리얼). 풀 재사용/사망 시 흰색이 잔존하지 않도록 보장.
       private void _RestoreHitFlashMaterial()
       {
          if (_modelSpriteRenderer != null && _originalMaterial != null)
          {
-            Material frostMaterial = _isFrosted ? _GetFrostMaterial() : null;
-            _modelSpriteRenderer.sharedMaterial = frostMaterial != null ? frostMaterial : _originalMaterial;
+            Material stateMaterial = _isFrosted ? _GetFrostMaterial() : _goldenGoldReward > 0 ? _GetGoldenMaterial() : null;
+            _modelSpriteRenderer.sharedMaterial = stateMaterial != null ? stateMaterial : _originalMaterial;
          }
       }
 
@@ -1018,7 +997,7 @@ namespace TrainDefense.Game
          int dropMoneyMin = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMin * goldScale);
          int dropMoneyMax = Mathf.RoundToInt(_currentMonsterStatus.DropMoneyMax * goldScale);
 
-         int dropMoney = Random.Range(dropMoneyMin, dropMoneyMax);
+         int dropMoney = _goldenGoldReward > 0 ? _goldenGoldReward : Random.Range(dropMoneyMin, dropMoneyMax);
 
          // 골드 획득 업그레이드 보너스 — GoldGain 타입(레벨업 골드 카드·상점 연료통) 전부 합산 (레벨당 UpgradeValue %, 덧셈).
          // 처치마다 도는 코드라 DB 전체 배열(GetUpgradeDatas = ToArray) 대신 구매한 id만 돈다.
@@ -1039,8 +1018,8 @@ namespace TrainDefense.Game
             dropMoney = Mathf.RoundToInt(dropMoney * (1f + goldBonusPercent / 100f));
          }
 
-         // 선로 이벤트(골드 러시) 배율 + 황금 몬스터 처치 배율
-         dropMoney = Mathf.RoundToInt(dropMoney * TrackEventModifiers.KillGoldMultiplier * _escapeGoldMultiplier);
+         // 선로 이벤트(금광 선로) 배율
+         dropMoney = Mathf.RoundToInt(dropMoney * TrackEventModifiers.KillGoldMultiplier);
 
          ResourceManager.Instance.Spawn(Resources.Load<GameObject>(MoneyPrefabPath), transform.position);
 

@@ -345,6 +345,23 @@ namespace TrainDefense.Game
          if (selectedData == null)
             return null;
 
+         return _SpawnMonsterNow(selectedData, true);
+      }
+
+      /// <summary>
+      /// 현재 맵에서 등장 레벨이 가장 낮은(제일 약한) 몬스터를 즉시 스폰한다(선로 이벤트 황금 몬스터용).
+      /// 스폰풀이 없으면 null.
+      /// </summary>
+      public Monster SpawnWeakestMonsterNow()
+      {
+         if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0 || DatabaseManager.Instance == null)
+            return null;
+
+         return _SpawnMonsterNow(_GetLowestSpawnLevelData(), false);
+      }
+
+      private Monster _SpawnMonsterNow(StageSpawnData selectedData, bool isElite)
+      {
          MonsterData monsterData = DatabaseManager.Instance.GetMonsterData(selectedData.MonsterId);
          if (monsterData == null)
             return null;
@@ -359,12 +376,15 @@ namespace TrainDefense.Game
          Monster spawnMonster = ResourceManager.Instance.Spawn(monsterData.Prefab, spawnPos, parent: transform).GetComponent<Monster>();
          spawnMonster.Initialize(monsterData);
 
-         EliteVariant eliteVariant = _eliteData.SelectVariant();
-         spawnMonster.ApplyElite(_eliteData, eliteVariant, _GetEliteStrengthScale());
+         if (isElite)
+         {
+            EliteVariant eliteVariant = _eliteData.SelectVariant();
+            spawnMonster.ApplyElite(_eliteData, eliteVariant, _GetEliteStrengthScale());
+         }
 
          _spawnedMonsters.Add(spawnMonster);
 
-         GameEventSystem.Publish(new MonsterSpawnedEvent(selectedData.MonsterId, true));
+         GameEventSystem.Publish(new MonsterSpawnedEvent(selectedData.MonsterId, isElite));
 
          return spawnMonster;
       }

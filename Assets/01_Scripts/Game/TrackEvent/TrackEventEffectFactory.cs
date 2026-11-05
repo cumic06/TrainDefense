@@ -16,7 +16,6 @@ namespace TrainDefense.Game.TrackEvent
                 TrackEventType.MonsterRush => new MonsterRushTrackEventEffect(),
                 TrackEventType.Overdrive => new OverdriveTrackEventEffect(),
                 TrackEventType.Sandstorm => new SandstormTrackEventEffect(),
-                TrackEventType.GoldRush => new GoldRushTrackEventEffect(),
                 TrackEventType.ExpBoost => new ExpBoostTrackEventEffect(),
                 TrackEventType.ColdSnap => new ColdSnapTrackEventEffect(),
                 TrackEventType.GoldenMonster => new GoldenMonsterTrackEventEffect(),
