@@ -151,18 +151,37 @@ namespace TrainDefense.Game
             float mapMultiplier = StageManager.Instance != null ? StageManager.Instance.CurrentStageData.EliteRewardMultiplier : 1f;
             int reward = Mathf.Max(1, Mathf.RoundToInt(_eliteCoinPerElite * mapMultiplier));
             reward += _RollEliteCoinBonus(reward);
-            AddEliteCoin(reward);
+            AddEliteCoin(_RollDifficultyCoin(reward));
         }
 
-        // 스킬 트리 '엘리트 코인' 노드의 추가 재화. 보상이 2~6이라 반올림하면 낮은 %가 묻히므로 소수 부분은 확률로 지급해 기댓값을 맞춘다.
+        private static float _GetDifficultyCoinMultiplier()
+        {
+            return StageManager.Instance != null ? StageManager.Instance.DifficultyValues.eliteCoinMultiplier : 1f;
+        }
+
+        // 처치로 버는 코인에 난이도 배율을 곱한다.
+        private static int _RollDifficultyCoin(int amount)
+        {
+            return _RollFractionalAmount(amount * _GetDifficultyCoinMultiplier());
+        }
+
+        // 스킬 트리 '엘리트 코인' 노드의 추가 재화. 보상이 2~6이라 반올림하면 낮은 %가 묻힌다.
         private static int _RollEliteCoinBonus(int reward)
         {
             if (SkillTreeManager.Instance == null) return 0;
 
-            float bonus = reward * SkillTreeManager.Instance.GetValue(SkillTreePassiveType.EliteCoinBonusPercent) / 100f;
-            int wholeBonus = Mathf.FloorToInt(bonus);
+            return _RollFractionalAmount(reward * SkillTreeManager.Instance.GetValue(SkillTreePassiveType.EliteCoinBonusPercent) / 100f);
+        }
 
-            return Random.value < bonus - wholeBonus ? wholeBonus + 1 : wholeBonus;
+        // 소수 부분은 확률로 지급해 기댓값을 맞춘다. 소수 부분이 없으면 난수를 쓰지 않는다.
+        private static int _RollFractionalAmount(float amount)
+        {
+            int wholeAmount = Mathf.FloorToInt(amount);
+            float fraction = amount - wholeAmount;
+
+            if (fraction <= 0f) return wholeAmount;
+
+            return Random.value < fraction ? wholeAmount + 1 : wholeAmount;
         }
 
         // 스킬 트리 노드 — 적 처치 시 확률로 재화 1개. 로비 배경 연출의 처치로는 쌓이지 않게 판 안에서만 굴린다.
@@ -173,7 +192,7 @@ namespace TrainDefense.Game
             float chancePercent = SkillTreeManager.Instance.GetValue(SkillTreePassiveType.KillEliteCoinChance);
 
             if (chancePercent > 0f && Random.value * 100f < chancePercent)
-                AddEliteCoin(1);
+                AddEliteCoin(_RollDifficultyCoin(1));
         }
 
         // 역 도달 시 영구 재화 획득. 사고 영역인 초반 역은 0이고, 뒤로 갈수록 완만하게 오른다.
@@ -191,9 +210,8 @@ namespace TrainDefense.Game
             if (stationsOverOffset <= 0) return 0;
 
             int baseReward = Mathf.CeilToInt(stationsOverOffset / (float)_stationRewardStep);
-            float difficultyMultiplier = StageManager.Instance != null ? StageManager.Instance.DifficultyValues.stationRewardMultiplier : 1f;
 
-            return Mathf.CeilToInt(baseReward * difficultyMultiplier);
+            return Mathf.CeilToInt(baseReward * _GetDifficultyCoinMultiplier());
         }
 
         #region EliteCoin
