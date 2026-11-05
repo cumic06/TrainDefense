@@ -1962,21 +1962,21 @@ MonoBehaviour:
     row: 1
     col: 1
     tiers:
-    - valuePerLevel: -0.15
-      maxLevel: 5
-      costPerLevel: 4
-      costGrowthPercent: 17
     - valuePerLevel: -0.2
       maxLevel: 5
-      costPerLevel: 9
+      costPerLevel: 3
       costGrowthPercent: 17
     - valuePerLevel: -0.25
-      maxLevel: 7
-      costPerLevel: 16
+      maxLevel: 5
+      costPerLevel: 5
       costGrowthPercent: 17
-    - valuePerLevel: -0.65
-      maxLevel: 10
-      costPerLevel: 32
+    - valuePerLevel: -0.35
+      maxLevel: 8
+      costPerLevel: 10
+      costGrowthPercent: 17
+    - valuePerLevel: -0.55
+      maxLevel: 9
+      costPerLevel: 24
       costGrowthPercent: 17
     prerequisites:
     - skill_fire_damage
@@ -1995,16 +1995,16 @@ MonoBehaviour:
     col: -1
     tiers:
     - valuePerLevel: 0.5
-      maxLevel: 6
-      costPerLevel: 14
+      maxLevel: 5
+      costPerLevel: 6
       costGrowthPercent: 17
-    - valuePerLevel: 1
-      maxLevel: 6
-      costPerLevel: 26
+    - valuePerLevel: 0.75
+      maxLevel: 5
+      costPerLevel: 18
       costGrowthPercent: 17
-    - valuePerLevel: 2
-      maxLevel: 3
-      costPerLevel: 54
+    - valuePerLevel: 1.25
+      maxLevel: 7
+      costPerLevel: 35
       costGrowthPercent: 17
     prerequisites:
     - skill_fire_damage
@@ -2052,16 +2052,16 @@ MonoBehaviour:
     col: 1
     tiers:
     - valuePerLevel: 0.1
-      maxLevel: 6
-      costPerLevel: 10
+      maxLevel: 5
+      costPerLevel: 6
       costGrowthPercent: 17
-    - valuePerLevel: 0.2
-      maxLevel: 6
-      costPerLevel: 22
+    - valuePerLevel: 0.15
+      maxLevel: 5
+      costPerLevel: 14
       costGrowthPercent: 17
-    - valuePerLevel: 0.4
-      maxLevel: 3
-      costPerLevel: 42
+    - valuePerLevel: 0.25
+      maxLevel: 7
+      costPerLevel: 27
       costGrowthPercent: 17
     prerequisites:
     - skill_def_hp
@@ -2078,17 +2078,17 @@ MonoBehaviour:
     row: 2
     col: -1
     tiers:
-    - valuePerLevel: 0.25
+    - valuePerLevel: 0.35
+      maxLevel: 5
+      costPerLevel: 5
+      costGrowthPercent: 17
+    - valuePerLevel: 0.5
       maxLevel: 6
-      costPerLevel: 16
+      costPerLevel: 9
       costGrowthPercent: 17
     - valuePerLevel: 0.75
-      maxLevel: 6
-      costPerLevel: 32
-      costGrowthPercent: 17
-    - valuePerLevel: 2
-      maxLevel: 2
-      costPerLevel: 64
+      maxLevel: 7
+      costPerLevel: 27
       costGrowthPercent: 17
     prerequisites:
     - skill_def_hp
@@ -2124,13 +2124,13 @@ MonoBehaviour:
     row: 2
     col: -1
     tiers:
-    - valuePerLevel: 1
-      maxLevel: 1
-      costPerLevel: 50
+    - valuePerLevel: 10
+      maxLevel: 5
+      costPerLevel: 5
       costGrowthPercent: 17
-    - valuePerLevel: 1
-      maxLevel: 1
-      costPerLevel: 76
+    - valuePerLevel: 10
+      maxLevel: 5
+      costPerLevel: 10
       costGrowthPercent: 17
     prerequisites:
     - skill_util_elite_coin
@@ -2224,17 +2224,17 @@ MonoBehaviour:
     row: 0
     col: 0
     tiers:
-    - valuePerLevel: 1
-      maxLevel: 1
-      costPerLevel: 42
+    - valuePerLevel: 5
+      maxLevel: 2
+      costPerLevel: 15
       costGrowthPercent: 17
-    - valuePerLevel: 1
-      maxLevel: 1
-      costPerLevel: 63
+    - valuePerLevel: 5
+      maxLevel: 3
+      costPerLevel: 30
       costGrowthPercent: 17
-    - valuePerLevel: 1
-      maxLevel: 1
-      costPerLevel: 95
+    - valuePerLevel: 5
+      maxLevel: 3
+      costPerLevel: 46
       costGrowthPercent: 17
     prerequisites: []
     category: 1
@@ -2249,17 +2249,17 @@ MonoBehaviour:
     row: 3
     col: 2
     tiers:
-    - valuePerLevel: 0.1
-      maxLevel: 1
+    - valuePerLevel: 0.05
+      maxLevel: 2
+      costPerLevel: 10
+      costGrowthPercent: 17
+    - valuePerLevel: 0.05
+      maxLevel: 3
+      costPerLevel: 18
+      costGrowthPercent: 17
+    - valuePerLevel: 0.05
+      maxLevel: 3
       costPerLevel: 30
-      costGrowthPercent: 17
-    - valuePerLevel: 0.15
-      maxLevel: 1
-      costPerLevel: 60
-      costGrowthPercent: 17
-    - valuePerLevel: 0.25
-      maxLevel: 1
-      costPerLevel: 100
       costGrowthPercent: 17
     prerequisites:
     - skill_def_turret

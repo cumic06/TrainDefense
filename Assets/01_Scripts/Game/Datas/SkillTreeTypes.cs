@@ -29,12 +29,12 @@ namespace TrainDefense.Game.Datas
         MaxTurretCount,    // 0 — 최대 포탑 수 증가 (+개수)
         MaxHp,             // 1 — 포탑 최대 체력 증가 (%)
         HealthRegen,       // 2 — 5초마다 체력 회복 (%)
-        FreeReroll,        // 3 — 레벨업 시 무료 리롤 횟수
+        FirstRerollDiscount, // 3 — 상점마다 첫 새로고침 비용 감소 (%)
         DamageReduction,   // 4 — 포탑이 받는 피해 감소 (%)
         BombardDamage,     // 5 — 개입 포격 피해 증가 (+고정값)
         BombardCooldown,   // 6 — 개입 포격 대기시간 감소 (%)
         BombardArea,       // 7 — 개입 포격 범위 증가 (%)
-        EliteCoinPerKill,  // 8 — 엘리트 처치당 영구강화 재화 추가 획득 (+개수, 역 도착·만렙 보상엔 적용 안 됨)
+        EliteCoinBonusPercent, // 8 — 엘리트 처치 영구강화 재화 증가 (%, 역 도착·만렙 보상엔 적용 안 됨)
         KillEliteCoinChance, // 9 — 적 처치 시 영구강화 재화 1개를 얻을 확률 (%)
     }
 }

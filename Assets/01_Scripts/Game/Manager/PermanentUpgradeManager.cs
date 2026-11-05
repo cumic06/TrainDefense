@@ -150,10 +150,19 @@ namespace TrainDefense.Game
             // 맵별 엘리트 재화 배율 (빠른·약한 몹 맵은 낮게, 느린·강한 몹 맵은 높게 → 맵별 재화 획득률 균등)
             float mapMultiplier = StageManager.Instance != null ? StageManager.Instance.CurrentStageData.EliteRewardMultiplier : 1f;
             int reward = Mathf.Max(1, Mathf.RoundToInt(_eliteCoinPerElite * mapMultiplier));
-            // 스킬 트리 '엘리트 코인' 노드 — 처치당 고정 +n (판당 보상이 2~6이라 %는 반올림에 묻혀 고정값으로)
-            if (SkillTreeManager.Instance != null)
-                reward += Mathf.RoundToInt(SkillTreeManager.Instance.GetValue(SkillTreePassiveType.EliteCoinPerKill));
+            reward += _RollEliteCoinBonus(reward);
             AddEliteCoin(reward);
+        }
+
+        // 스킬 트리 '엘리트 코인' 노드의 추가 재화. 보상이 2~6이라 반올림하면 낮은 %가 묻히므로 소수 부분은 확률로 지급해 기댓값을 맞춘다.
+        private static int _RollEliteCoinBonus(int reward)
+        {
+            if (SkillTreeManager.Instance == null) return 0;
+
+            float bonus = reward * SkillTreeManager.Instance.GetValue(SkillTreePassiveType.EliteCoinBonusPercent) / 100f;
+            int wholeBonus = Mathf.FloorToInt(bonus);
+
+            return Random.value < bonus - wholeBonus ? wholeBonus + 1 : wholeBonus;
         }
 
         // 스킬 트리 노드 — 적 처치 시 확률로 재화 1개. 로비 배경 연출의 처치로는 쌓이지 않게 판 안에서만 굴린다.

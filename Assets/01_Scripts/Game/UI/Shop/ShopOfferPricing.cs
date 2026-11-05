@@ -33,7 +33,7 @@ namespace TrainDefense.Game.UI
         [SerializeField]
         private int rerollCostPerShopVisit = 20;
 
-        [Tooltip("리롤할 때마다 더해지는 증가분 = 이번 상점 첫 비용 × 이 배율. 상점을 새로 열면 첫 비용으로 초기화")]
+        [Tooltip("리롤할 때마다 더해지는 증가분 = 이번 상점의 할인 전 첫 비용 × 이 배율. 상점을 새로 열면 첫 비용으로 초기화")]
         [SerializeField]
         private float rerollCostIncreaseRatio = 0.5f;
 
@@ -76,22 +76,25 @@ namespace TrainDefense.Game.UI
         // 이번 상점의 첫 리롤 비용. 방문할수록 올라 후반에도 리롤이 공짜처럼 되지 않는다.
         public int GetFirstRerollCost() => rerollBaseCost + rerollCostPerShopVisit * _GetShopVisitCount();
 
-        // 리롤할 때마다 더해지는 증가분(이번 상점 첫 비용 × 배율).
-        public int GetRerollCostIncrease(int firstRerollCost) => Mathf.RoundToInt(firstRerollCost * rerollCostIncreaseRatio);
-
-        // 스킬 트리 노드와 영구 강화의 무료 새로고침 횟수 합. 둘 다 "레벨당 +1회"라 정수로 쓴다.
-        public int GetFreeRerollCount()
+        // 스킬 트리 할인을 적용한 첫 리롤 실제 비용.
+        public int GetDiscountedFirstRerollCost(int firstRerollCost)
         {
-            int count = 0;
+            float discountPercent = SkillTreeManager.Instance != null
+                ? SkillTreeManager.Instance.GetValue(SkillTreePassiveType.FirstRerollDiscount)
+                : 0f;
 
-            if (SkillTreeManager.Instance != null)
-                count += Mathf.RoundToInt(SkillTreeManager.Instance.GetValue(SkillTreePassiveType.FreeReroll));
-
-            if (PermanentUpgradeManager.Instance != null)
-                count += Mathf.RoundToInt(PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.FreeReroll));
-
-            return count;
+            return Mathf.RoundToInt(firstRerollCost * (1f - discountPercent / 100f));
         }
+
+        // 리롤 후 다음 비용. 할인은 첫 리롤에만 적용되므로 할인가를 냈어도 할인 전 첫 비용을 기준으로 오른다.
+        public int GetNextRerollCost(int paidCost, int firstRerollCost)
+            => Mathf.Max(paidCost, firstRerollCost) + Mathf.RoundToInt(firstRerollCost * rerollCostIncreaseRatio);
+
+        // 영구 강화의 무료 새로고침 횟수. "레벨당 +1회"라 정수로 쓴다.
+        public int GetFreeRerollCount()
+            => PermanentUpgradeManager.Instance != null
+                ? Mathf.RoundToInt(PermanentUpgradeManager.Instance.GetValue(PermanentUpgradeType.FreeReroll))
+                : 0;
 
         // 가격은 상품 등급만으로 정해진다 — 대상 포탑의 레벨과 무관해야 같은 포탑의 다른 스탯 카드를
         // 하나 샀다고 나머지 카드 가격이 따라 오르지 않는다(슬롯 간 간섭 제거).

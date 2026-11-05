@@ -105,8 +105,9 @@ namespace TrainDefense.Game.UI
         private readonly List<ShopOfferSlotUI> _offerSlotUIs = new();
 
         private int _currentRerollCost;
-        private int _currentRerollCostIncrease;
-        // 스킬 트리·영구 강화의 무료 새로고침 횟수. 상점이 열릴 때마다 채워지고, 남아 있는 동안은 코인 차감·비용 인상 없이 리롤한다.
+        // 이번 상점의 할인 전 첫 리롤 비용. 상점이 열릴 때 고정되고, 리롤 비용 인상의 기준이 된다.
+        private int _firstRerollCost;
+        // 영구 강화의 무료 새로고침 횟수. 상점이 열릴 때마다 채워지고, 남아 있는 동안은 코인 차감·비용 인상 없이 리롤한다.
         private int _freeRerollsLeft;
         // 이어하기로 되살릴 리롤 상태(저장 당시 비용·남은 무료 횟수). 다음 상점 열기가 한 번 소비한다.
         private int? _pendingRerollCost;
@@ -218,11 +219,10 @@ namespace TrainDefense.Game.UI
         private void _OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
             // 역 도착 시점에 새로 추첨. (상점은 역당 1회 — 닫으면 바로 출발이라 재오픈은 없다)
-            // 리롤 비용은 상점이 열릴 때마다(맵 선택 상점 포함) 이번 방문의 첫 비용으로 초기화된다.
-            int firstRerollCost = offerPricing.GetFirstRerollCost();
-            _currentRerollCostIncrease = offerPricing.GetRerollCostIncrease(firstRerollCost);
+            // 리롤 비용은 상점이 열릴 때마다(맵 선택 상점 포함) 이번 방문의 할인된 첫 비용으로 초기화된다.
+            _firstRerollCost = offerPricing.GetFirstRerollCost();
             // 이어하기 직후 첫 열기는 저장 당시 리롤 상태를 이어받는다 — 떠나던 상점 그대로.
-            _currentRerollCost = _pendingRerollCost ?? firstRerollCost;
+            _currentRerollCost = _pendingRerollCost ?? offerPricing.GetDiscountedFirstRerollCost(_firstRerollCost);
             _freeRerollsLeft = _pendingFreeRerollsLeft ?? offerPricing.GetFreeRerollCount();
             _pendingRerollCost = null;
             _pendingFreeRerollsLeft = null;
@@ -744,7 +744,7 @@ namespace TrainDefense.Game.UI
                     return;
 
                 spentCoin = _currentRerollCost;
-                _currentRerollCost += _currentRerollCostIncrease;
+                _currentRerollCost = offerPricing.GetNextRerollCost(spentCoin, _firstRerollCost);
             }
 
             _RebuildOfferSlots();
