@@ -132,7 +132,7 @@ namespace TrainDefense.Game.UI
             if (e == null || e.Data == null || e.Data.Category == TrackEventCategory.Choice || e.Data.EventType == TrackEventType.FreeUpgrade)
                 return;
 
-            string effectText = TrackEventText.GetEffectText(e.Data, WEATHER_EFFECT_SEPARATOR);
+            string effectText = TrackEventText.GetEffectText(e.Data, WEATHER_EFFECT_SEPARATOR, true);
             string message = string.IsNullOrEmpty(effectText)
                 ? TrackEventText.GetName(e.Data)
                 : $"{TrackEventText.GetName(e.Data)}\n<size=65%>{effectText}</size>";
