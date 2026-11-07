@@ -26,6 +26,15 @@ namespace TrainDefense.Game.TrackEvent
         /// <summary>포탑 사거리 배율 (모래폭풍).</summary>
         public static float TurretRangeMultiplier { get; set; } = 1f;
 
+        /// <summary>포탑이 몬스터에게 주는 피해 배율 (정밀 조준). Train.ModifyOutgoingDamage에서 곱한다.</summary>
+        public static float TurretDamageMultiplier { get; set; } = 1f;
+
+        /// <summary>몬스터 공격력 배율 (더위 먹은 무리). 몬스터가 나올 때 Monster._InitStats에서 곱한다.</summary>
+        public static float MonsterAttackMultiplier { get; set; } = 1f;
+
+        /// <summary>몬스터 최대 체력 배율 (더위 먹은 무리). 몬스터가 나올 때 Monster._InitStats에서 곱한다.</summary>
+        public static float MonsterHealthMultiplier { get; set; } = 1f;
+
         #endregion
 
         /// <summary>배율에 factor를 곱한다. 0 이하는 무시한다(Divide로 되돌릴 수 없으므로).</summary>
@@ -54,6 +63,9 @@ namespace TrainDefense.Game.TrackEvent
             MonsterMoveSpeedMultiplier = 1f;
             TurretAttackSpeedMultiplier = 1f;
             TurretRangeMultiplier = 1f;
+            TurretDamageMultiplier = 1f;
+            MonsterAttackMultiplier = 1f;
+            MonsterHealthMultiplier = 1f;
         }
 
         private static float _Get(TrackEventModifierType type)
@@ -65,6 +77,9 @@ namespace TrainDefense.Game.TrackEvent
                 TrackEventModifierType.MonsterMoveSpeed => MonsterMoveSpeedMultiplier,
                 TrackEventModifierType.TurretAttackSpeed => TurretAttackSpeedMultiplier,
                 TrackEventModifierType.TurretRange => TurretRangeMultiplier,
+                TrackEventModifierType.TurretDamage => TurretDamageMultiplier,
+                TrackEventModifierType.MonsterAttack => MonsterAttackMultiplier,
+                TrackEventModifierType.MonsterHealth => MonsterHealthMultiplier,
                 _ => 1f,
             };
         }
@@ -87,6 +102,15 @@ namespace TrainDefense.Game.TrackEvent
                     break;
                 case TrackEventModifierType.TurretRange:
                     TurretRangeMultiplier = value;
+                    break;
+                case TrackEventModifierType.TurretDamage:
+                    TurretDamageMultiplier = value;
+                    break;
+                case TrackEventModifierType.MonsterAttack:
+                    MonsterAttackMultiplier = value;
+                    break;
+                case TrackEventModifierType.MonsterHealth:
+                    MonsterHealthMultiplier = value;
                     break;
             }
         }

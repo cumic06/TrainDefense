@@ -510,7 +510,9 @@ namespace TrainDefense.Game.Manager
             if (remainingTime <= 0f)
                 return;
 
-            _currentStageTime += remainingTime * Mathf.Min(ratio, MAX_SHORTEN_RATIO);
+            float appliedRatio = Mathf.Min(ratio, MAX_SHORTEN_RATIO);
+            _currentStageTime += remainingTime * appliedRatio;
+            GameEventSystem.Publish(new SegmentTimeShortenedEvent(appliedRatio));
         }
 
         private float _GetCurrentSegmentDuration()

@@ -236,6 +236,10 @@ namespace TrainDefense.Game
             _currentMonsterStatus.Damage = _currentMonsterStatus.Damage * attackScale;
          }
 
+         // 선로 이벤트 배율(더위 먹은 무리 등). 나올 때 한 번 곱하므로 이미 나와 있는 몬스터에는 걸리지 않는다.
+         _currentMonsterStatus.MaxHp *= TrackEventModifiers.MonsterHealthMultiplier;
+         _currentMonsterStatus.Damage *= TrackEventModifiers.MonsterAttackMultiplier;
+
          _currentHp = _currentMonsterStatus.MaxHp;
       }
 

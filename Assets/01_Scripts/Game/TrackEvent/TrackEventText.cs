@@ -17,15 +17,23 @@ namespace TrainDefense.Game.TrackEvent
         private const string STAT_KEY_MONSTER_SPEED = "TrackEvent_Stat_MonsterSpeed";
         private const string STAT_KEY_ATTACK_SPEED = "TrackEvent_Stat_AttackSpeed";
         private const string STAT_KEY_RANGE = "TrackEvent_Stat_Range";
+        private const string STAT_KEY_TURRET_DAMAGE = "TrackEvent_Stat_TurretDamage";
         private const string STAT_KEY_REPAIR = "TrackEvent_Stat_Repair";
         private const string STAT_KEY_REMAINING_TIME = "TrackEvent_Stat_RemainingTime";
+        private const string STAT_KEY_MONSTER_ATTACK = "TrackEvent_Stat_MonsterAttack";
+        private const string STAT_KEY_MONSTER_HEALTH = "TrackEvent_Stat_MonsterHealth";
+        private const string EFFECT_KEY_ELITE_SPAWN = "TrackEvent_Effect_EliteSpawn";
         private const string EFFECT_KEY_MONSTER_RUSH = "TrackEvent_Effect_MonsterRush";
         private const string EFFECT_KEY_ELITE_AMBUSH = "TrackEvent_Effect_EliteAmbush";
         private const string EFFECT_KEY_SUPPLY_DROP = "TrackEvent_Effect_SupplyDrop";
         private const string EFFECT_KEY_GOLDEN_MONSTER = "TrackEvent_Effect_GoldenMonster";
         private const string EFFECT_KEY_SUPPORT_BOMBARD = "TrackEvent_Effect_SupportBombard";
+        private const string EFFECT_KEY_SAFE_PASS = "TrackEvent_Effect_SafePass";
+        private const string DIRECTION_KEY_INCREASE = "TrackEvent_Direction_Increase";
+        private const string DIRECTION_KEY_DECREASE = "TrackEvent_Direction_Decrease";
 
         private static readonly StringBuilder _builder = new StringBuilder();
+        private static bool _isDirectionOnly;
 
         public static string GetName(TrackEventData data)
         {
@@ -42,6 +50,8 @@ namespace TrainDefense.Game.TrackEvent
                 return string.Empty;
 
             _builder.Clear();
+            // 날씨는 다른 이벤트와 겹쳐 쓰이므로 세기를 숫자로 보여 주지 않고 증가/감소만 알린다.
+            _isDirectionOnly = data.Category == TrackEventCategory.Weather;
 
             switch (data.EventType)
             {
@@ -54,7 +64,7 @@ namespace TrainDefense.Game.TrackEvent
                     _AppendMultiplier(STAT_KEY_KILL_EXP, "처치 경험치", data.SubMagnitude, separator);
                     break;
                 case TrackEventType.Heatwave:
-                    _AppendMultiplier(STAT_KEY_ATTACK_SPEED, "포탑 공격 속도", data.Magnitude, separator);
+                    _AppendMultiplier(STAT_KEY_TURRET_DAMAGE, "포탑 피해", data.Magnitude, separator);
                     _AppendMultiplier(STAT_KEY_MONSTER_SPEED, "몬스터 이동 속도", data.SubMagnitude, separator);
                     break;
                 case TrackEventType.Sandstorm:
@@ -69,6 +79,9 @@ namespace TrainDefense.Game.TrackEvent
                 case TrackEventType.ChoiceAttackSpeed:
                     _AppendMultiplier(STAT_KEY_ATTACK_SPEED, "포탑 공격 속도", data.Magnitude, separator);
                     break;
+                case TrackEventType.ChoiceTurretDamage:
+                    _AppendMultiplier(STAT_KEY_TURRET_DAMAGE, "포탑 피해", data.Magnitude, separator);
+                    break;
                 case TrackEventType.ChoiceGoldBonus:
                     _AppendMultiplier(STAT_KEY_KILL_GOLD, "처치 골드", data.Magnitude, separator);
                     break;
@@ -82,8 +95,62 @@ namespace TrainDefense.Game.TrackEvent
                     _AppendPercent(STAT_KEY_REPAIR, "기차 체력 회복", Mathf.RoundToInt(data.Magnitude * 100f), separator);
                     break;
                 case TrackEventType.MonsterRush:
-                    // magnitude = 스폰 간격 배율 (0.5 → 등장 2배)
-                    _AppendFormatted(EFFECT_KEY_MONSTER_RUSH, "몬스터 등장 {0}배", data.Magnitude > 0f ? 1f / data.Magnitude : 1f);
+                    // magnitude = 러시 동안의 전체 등장 배율 (2.5 → 등장 2.5배)
+                    _AppendFormatted(EFFECT_KEY_MONSTER_RUSH, "몬스터 등장 {0}배", Effects.MonsterRushTrackEventEffect.GetSpawnMultiplier(data));
+                    break;
+                case TrackEventType.DetourChoice:
+                case TrackEventType.EngineOverload:
+                    _AppendFormatted(EFFECT_KEY_MONSTER_RUSH, "몬스터 등장 {0}배", Effects.DetourTrackEventEffect.GetSpawnMultiplier(data));
+                    float rewardMultiplier = Effects.DetourTrackEventEffect.GetRewardMultiplier(data);
+                    _AppendMultiplier(STAT_KEY_KILL_GOLD, "처치 골드", rewardMultiplier, separator);
+                    _AppendMultiplier(STAT_KEY_KILL_EXP, "처치 경험치", rewardMultiplier, separator);
+
+                    if (data.EventType == TrackEventType.EngineOverload)
+                        _AppendPercent(STAT_KEY_REMAINING_TIME, "남은 구간 시간", -Mathf.RoundToInt(Effects.EngineOverloadTrackEventEffect.SHORTEN_RATIO * 100f), separator);
+                    break;
+                // 날씨 갈림길 — 줄 순서는 TrackEventEffectFactory의 첫 배율(magnitude)·두 번째 배율(subMagnitude) 순서와 같다
+                case TrackEventType.SandstormClearView:
+                    _AppendMultiplier(STAT_KEY_RANGE, "포탑 사거리", data.Magnitude, separator);
+                    break;
+                case TrackEventType.SandstormPushThrough:
+                    _AppendMultiplier(STAT_KEY_MONSTER_SPEED, "몬스터 이동 속도", data.Magnitude, separator);
+                    _AppendMultiplier(STAT_KEY_KILL_GOLD, "처치 골드", data.SubMagnitude, separator);
+                    break;
+                case TrackEventType.RainCover:
+                    _AppendMultiplier(STAT_KEY_RANGE, "포탑 사거리", data.Magnitude, separator);
+                    _AppendMultiplier(STAT_KEY_ATTACK_SPEED, "포탑 공격 속도", data.SubMagnitude, separator);
+                    break;
+                case TrackEventType.RainCooling:
+                    _AppendMultiplier(STAT_KEY_ATTACK_SPEED, "포탑 공격 속도", data.Magnitude, separator);
+                    _AppendMultiplier(STAT_KEY_RANGE, "포탑 사거리", data.SubMagnitude, separator);
+                    break;
+                case TrackEventType.FogMarch:
+                    _AppendMultiplier(STAT_KEY_RANGE, "포탑 사거리", data.Magnitude, separator);
+                    _AppendMultiplier(STAT_KEY_KILL_EXP, "처치 경험치", data.SubMagnitude, separator);
+                    break;
+                case TrackEventType.FogSearch:
+                case TrackEventType.ColdSnapBlizzardPush:
+                    _AppendMultiplier(STAT_KEY_RANGE, "포탑 사거리", data.Magnitude, separator);
+                    _AppendMultiplier(STAT_KEY_KILL_GOLD, "처치 골드", data.SubMagnitude, separator);
+                    break;
+                case TrackEventType.HeatwaveOverheat:
+                    _AppendMultiplier(STAT_KEY_TURRET_DAMAGE, "포탑 피해", data.Magnitude, separator);
+                    _AppendMultiplier(STAT_KEY_MONSTER_SPEED, "몬스터 이동 속도", data.SubMagnitude, separator);
+                    break;
+                case TrackEventType.HeatwaveExhausted:
+                    _AppendMultiplier(STAT_KEY_MONSTER_ATTACK, "몬스터 공격력", data.Magnitude, separator);
+                    _AppendMultiplier(STAT_KEY_MONSTER_HEALTH, "몬스터 체력", data.SubMagnitude, separator);
+                    break;
+                case TrackEventType.HeatwaveElites:
+                    _AppendFormatted(EFFECT_KEY_ELITE_SPAWN, "엘리트 등장 {0}배", Effects.HeatedEliteTrackEventEffect.GetEliteMultiplier(data));
+                    _AppendMultiplier(STAT_KEY_ATTACK_SPEED, "포탑 공격 속도", data.SubMagnitude, separator);
+                    break;
+                case TrackEventType.ColdSnapIceSlide:
+                    _AppendFormatted(EFFECT_KEY_MONSTER_RUSH, "몬스터 등장 {0}배", Effects.DetourTrackEventEffect.GetSpawnMultiplier(data));
+                    _AppendMultiplier(STAT_KEY_KILL_GOLD, "처치 골드", Effects.DetourTrackEventEffect.GetRewardMultiplier(data), separator);
+                    break;
+                case TrackEventType.SafePass:
+                    _builder.Append(LocalizeHelper.GetByKey(EFFECT_KEY_SAFE_PASS, "변화 없음"));
                     break;
                 case TrackEventType.EliteAmbush:
                     _AppendFormatted(EFFECT_KEY_ELITE_AMBUSH, "처치 시 <sprite name=\"EliteCoin\"> {0}배", Effects.EliteAmbushTrackEventEffect.GetRewardMultiplier(data));
@@ -108,7 +175,7 @@ namespace TrainDefense.Game.TrackEvent
 
         private static void _AppendFormatted(string effectKey, string fallback, float value)
         {
-            _builder.Append(string.Format(LocalizeHelper.GetByKey(effectKey, fallback), value.ToString("0.#")));
+            _builder.Append(string.Format(LocalizeHelper.GetByKey(effectKey, fallback), value.ToString("0.##")));
         }
 
         private static void _AppendMultiplier(string statKey, string fallback, float multiplier, string separator)
@@ -127,7 +194,18 @@ namespace TrainDefense.Game.TrackEvent
             if (_builder.Length > 0)
                 _builder.Append(separator);
 
-            _builder.Append(LocalizeHelper.GetByKey(statKey, fallback));
+            string statName = LocalizeHelper.GetByKey(statKey, fallback);
+
+            if (_isDirectionOnly)
+            {
+                _builder.Append(percent > 0
+                    ? string.Format(LocalizeHelper.GetByKey(DIRECTION_KEY_INCREASE, "{0} 증가"), statName)
+                    : string.Format(LocalizeHelper.GetByKey(DIRECTION_KEY_DECREASE, "{0} 감소"), statName));
+
+                return;
+            }
+
+            _builder.Append(statName);
             _builder.Append(' ');
             _builder.Append(percent > 0 ? "+" : "-");
             _builder.Append(Mathf.Abs(percent));

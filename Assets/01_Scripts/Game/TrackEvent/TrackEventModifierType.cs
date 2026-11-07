@@ -8,5 +8,8 @@ namespace TrainDefense.Game.TrackEvent
         MonsterMoveSpeed = 2,
         TurretAttackSpeed = 3,
         TurretRange = 4,
+        TurretDamage = 5,
+        MonsterAttack = 6,
+        MonsterHealth = 7,
     }
 }

@@ -10718,14 +10718,14 @@ MonoBehaviour:
     eventType: 1
     weight: 1
     minStationCount: 5
-    duration: 0
-    magnitude: 0.5
+    duration: 12
+    magnitude: 2.5
     nameKey: TrackEvent_MonsterRush_Name
     descriptionKey: TrackEvent_MonsterRush_Desc
     icon: {fileID: 0}
   - id: EliteAmbush
     eventType: 2
-    weight: 1
+    weight: 0
     minStationCount: 8
     duration: 0
     magnitude: 2
@@ -10737,7 +10737,7 @@ MonoBehaviour:
     weight: 1
     minStationCount: 5
     duration: 15
-    magnitude: 0.7
+    magnitude: 0.8
     nameKey: TrackEvent_Sandstorm_Name
     descriptionKey: TrackEvent_Sandstorm_Desc
     icon: {fileID: 0}
@@ -10755,7 +10755,7 @@ MonoBehaviour:
     weight: 1
     minStationCount: 2
     duration: 0
-    magnitude: 25
+    magnitude: 10
     nameKey: TrackEvent_GoldenMonster_Name
     descriptionKey: TrackEvent_GoldenMonster_Desc
     icon: {fileID: 0}
@@ -10772,8 +10772,8 @@ MonoBehaviour:
     eventType: 13
     weight: 1
     minStationCount: 2
-    duration: 0
-    magnitude: 1
+    duration: 8
+    magnitude: 0.5
     nameKey: TrackEvent_SupportBombard_Name
     descriptionKey: TrackEvent_SupportBombard_Desc
     icon: {fileID: 0}
@@ -10800,7 +10800,7 @@ MonoBehaviour:
     weight: 1
     minStationCount: 2
     duration: 0
-    magnitude: 0.3
+    magnitude: 0.15
     nameKey: TrackEvent_RepairStop_Name
     descriptionKey: TrackEvent_RepairStop_Desc
     icon: {fileID: 0}
@@ -10809,7 +10809,7 @@ MonoBehaviour:
     weight: 1
     minStationCount: 2
     duration: 10
-    magnitude: 0.7
+    magnitude: 0.85
     nameKey: TrackEvent_ColdSnap_Name
     descriptionKey: TrackEvent_ColdSnap_Desc
     icon: {fileID: 0}

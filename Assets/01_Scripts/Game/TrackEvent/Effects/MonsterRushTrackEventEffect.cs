@@ -1,31 +1,37 @@
-using Cumic.Events;
 using TrainDefense.Game.Datas;
-using TrainDefense.Game.Events;
 
 namespace TrainDefense.Game.TrackEvent.Effects
 {
     /// <summary>
-    /// 몬스터 러시 — 기존 MonsterRushEvent(스폰 간격 배율 + WarningUI 경고)를 그대로 재사용하는 예시 구현.
-    /// MonsterSpawner가 역 도착(InspectionStartEvent) 때 스폰 간격을 다시 계산하므로 러시는 역까지 유지된다.
-    /// 그래서 데이터 duration은 0(역까지)으로 두는 것을 전제로 하고, End에서 되돌릴 상태가 없다.
-    /// (중간에 끝내려고 MonsterRushEvent(1f)를 다시 쏘면 WarningUI가 한 번 더 뜬다.)
+    /// 몬스터 러시 — 지속 시간 동안 현재 맵에서 제일 약한 몬스터를 평소 소환 위에 더 소환한다.
+    /// magnitude = 러시 동안의 전체 등장 배율(2.5면 평소 소환 1 + 약한 몬스터 1.5). 화면은 붐비지만 체력이 낮은 몬스터라
+    /// 걸린 판과 안 걸린 판의 압박 차이가 작다. 소환기 주기는 건드리지 않으므로 End에서 되돌릴 것이 없다.
     /// </summary>
     public class MonsterRushTrackEventEffect : ITrackEventEffect
     {
-        private const float DEFAULT_SPAWN_TIME_MULTIPLIER = 0.5f;
+        private const float DEFAULT_SPAWN_MULTIPLIER = 2.5f;
+
+        private TrackEventExtraSpawner _extraSpawner;
+
+        /// <summary>러시 동안의 전체 등장 배율. 배너 문구도 이 값을 표시한다.</summary>
+        public static float GetSpawnMultiplier(TrackEventData data)
+        {
+            return data != null && data.Magnitude > 1f ? data.Magnitude : DEFAULT_SPAWN_MULTIPLIER;
+        }
 
         public void Begin(TrackEventData data)
         {
-            float multiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_SPAWN_TIME_MULTIPLIER;
-            GameEventSystem.Publish(new MonsterRushEvent(multiplier));
+            _extraSpawner = new TrackEventExtraSpawner(GetSpawnMultiplier(data) - 1f, spawner => spawner.SpawnWeakestMonsterNow());
         }
 
         public void Tick(float deltaTime)
         {
+            _extraSpawner?.Tick(deltaTime);
         }
 
         public void End(bool isInterrupted)
         {
+            _extraSpawner = null;
         }
     }
 }

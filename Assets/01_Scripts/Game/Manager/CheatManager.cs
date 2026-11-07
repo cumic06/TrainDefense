@@ -159,7 +159,7 @@ namespace TrainDefense.Game.Manager
 
             GUI.enabled = !trackEventManager.IsChoicePopupOpen;
 
-            if (GUI.Button(_NextRow(ref y), "선택 이벤트 띄우기 (2지선다)", _buttonStyle))
+            if (GUI.Button(_NextRow(ref y), "갈림길 띄우기 (날씨 구간이면 날씨 짝)", _buttonStyle))
                 trackEventManager.ForceOpenChoice();
 
             GUI.enabled = true;

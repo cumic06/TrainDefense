@@ -83,13 +83,13 @@ namespace TrainDefense.Game
             if (modifier != null) _outgoingDamageModifiers.Remove(modifier);
         }
 
-        // TrainCombatRecorder가 피해를 넣기 직전에 부른다. 등록된 개조가 없으면 그대로 돌려준다.
+        // TrainCombatRecorder가 피해를 넣기 직전에 부른다. 등록된 개조가 없으면 선로 이벤트 피해 배율만 곱해 돌려준다.
         public float ModifyOutgoingDamage(Monster target, float damage)
         {
             for (int i = 0; i < _outgoingDamageModifiers.Count; i++)
                 damage = _outgoingDamageModifiers[i](target, damage);
 
-            return damage;
+            return damage * TrackEvent.TrackEventModifiers.TurretDamageMultiplier;
         }
 
         // TrainCombatRecorder가 이 포탑의 피해로 적이 죽은 직후 부른다.

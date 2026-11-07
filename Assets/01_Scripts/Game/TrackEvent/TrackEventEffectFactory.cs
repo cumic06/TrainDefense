@@ -26,10 +26,28 @@ namespace TrainDefense.Game.TrackEvent
                 TrackEventType.FreeUpgrade => new FreeUpgradeTrackEventEffect(),
                 TrackEventType.Tailwind => new TailwindTrackEventEffect(),
 
+                // 위험/안전 선택
+                TrackEventType.DetourChoice => new DetourTrackEventEffect(),
+                TrackEventType.SafePass => new SafePassTrackEventEffect(),
+                TrackEventType.EngineOverload => new EngineOverloadTrackEventEffect(),
+
                 // 날씨 전용
                 TrackEventType.Rain => new ModifierTrackEventEffect(TrackEventModifierType.MonsterMoveSpeed, TrackEventModifierType.TurretRange, TrackEventWeatherStyles.RAIN),
                 TrackEventType.Fog => new ModifierTrackEventEffect(TrackEventModifierType.TurretRange, TrackEventModifierType.KillExp, TrackEventWeatherStyles.FOG),
-                TrackEventType.Heatwave => new ModifierTrackEventEffect(TrackEventModifierType.TurretAttackSpeed, TrackEventModifierType.MonsterMoveSpeed, TrackEventWeatherStyles.HEATWAVE),
+                TrackEventType.Heatwave => new ModifierTrackEventEffect(TrackEventModifierType.TurretDamage, TrackEventModifierType.MonsterMoveSpeed, TrackEventWeatherStyles.HEATWAVE),
+
+                // 날씨 갈림길 — 배율 두 개짜리는 날씨와 같은 범용 효과를 쓴다 (첫 배율 magnitude, 두 번째 subMagnitude)
+                TrackEventType.SandstormClearView => new ModifierTrackEventEffect(TrackEventModifierType.TurretRange),
+                TrackEventType.SandstormPushThrough => new ModifierTrackEventEffect(TrackEventModifierType.MonsterMoveSpeed, TrackEventModifierType.KillGold),
+                TrackEventType.RainCover => new ModifierTrackEventEffect(TrackEventModifierType.TurretRange, TrackEventModifierType.TurretAttackSpeed),
+                TrackEventType.RainCooling => new ModifierTrackEventEffect(TrackEventModifierType.TurretAttackSpeed, TrackEventModifierType.TurretRange),
+                TrackEventType.FogMarch => new ModifierTrackEventEffect(TrackEventModifierType.TurretRange, TrackEventModifierType.KillExp),
+                TrackEventType.FogSearch => new ModifierTrackEventEffect(TrackEventModifierType.TurretRange, TrackEventModifierType.KillGold),
+                TrackEventType.HeatwaveOverheat => new ModifierTrackEventEffect(TrackEventModifierType.TurretDamage, TrackEventModifierType.MonsterMoveSpeed),
+                TrackEventType.HeatwaveExhausted => new ModifierTrackEventEffect(TrackEventModifierType.MonsterAttack, TrackEventModifierType.MonsterHealth),
+                TrackEventType.HeatwaveElites => new HeatedEliteTrackEventEffect(),
+                TrackEventType.ColdSnapIceSlide => new DetourTrackEventEffect(false),
+                TrackEventType.ColdSnapBlizzardPush => new ModifierTrackEventEffect(TrackEventModifierType.TurretRange, TrackEventModifierType.KillGold),
 
                 // 선택지
                 TrackEventType.ChoiceGoldBonus => new ModifierTrackEventEffect(TrackEventModifierType.KillGold),
@@ -38,6 +56,7 @@ namespace TrainDefense.Game.TrackEvent
                 TrackEventType.ChoiceRange => new ModifierTrackEventEffect(TrackEventModifierType.TurretRange),
                 TrackEventType.ChoiceMonsterSlow => new ModifierTrackEventEffect(TrackEventModifierType.MonsterMoveSpeed),
                 TrackEventType.ChoiceRepair => new RepairStopTrackEventEffect(),
+                TrackEventType.ChoiceTurretDamage => new ModifierTrackEventEffect(TrackEventModifierType.TurretDamage),
                 // TODO: 구현 순서는 plans/선로이벤트_구현계획.md "4. 이벤트 아이디어" 우선순위를 따른다.
                 _ => null,
             };

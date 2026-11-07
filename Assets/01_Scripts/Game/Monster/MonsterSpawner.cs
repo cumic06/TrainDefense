@@ -143,6 +143,7 @@ namespace TrainDefense.Game
          GameEventSystem.Subscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
          GameEventSystem.Subscribe<ChangeStageTimeEvent>(OnChangeStageTime);
+         GameEventSystem.Subscribe<SegmentTimeShortenedEvent>(OnSegmentTimeShortened);
       }
 
       private void OnDestroy()
@@ -152,6 +153,7 @@ namespace TrainDefense.Game
          GameEventSystem.Unsubscribe<InspectionStartEvent>(OnInspectionStart);
          GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
          GameEventSystem.Unsubscribe<ChangeStageTimeEvent>(OnChangeStageTime);
+         GameEventSystem.Unsubscribe<SegmentTimeShortenedEvent>(OnSegmentTimeShortened);
       }
       #endregion
 
@@ -182,6 +184,23 @@ namespace TrainDefense.Game
       private void OnChangeStageTime(ChangeStageTimeEvent changeStageTimeEvent)
       {
          _currentSegmentElapsed = _currentSegmentDuration - changeStageTimeEvent.StageTime;
+      }
+
+      // 남은 시간이 줄면 경과 시각이 앞으로 건너뛰므로, 그대로 두면 건너뛴 구간의 엘리트가 한꺼번에 몰려 나온다.
+      // 남은 예약을 같은 비율로 당겨(구간 끝은 그대로 끝) 같은 수가 줄어든 시간 안에 고르게 나오게 한다.
+      private void OnSegmentTimeShortened(SegmentTimeShortenedEvent segmentTimeShortenedEvent)
+      {
+         float elapsedBefore = _currentSegmentElapsed;
+         float elapsedAfter = elapsedBefore + (_currentSegmentDuration - elapsedBefore) * segmentTimeShortenedEvent.Ratio;
+         float remainingScale = 1f - segmentTimeShortenedEvent.Ratio;
+
+         for (int i = 0; i < _eliteSpawnSchedule.Count; i++)
+         {
+            float scheduledTime = _eliteSpawnSchedule[i];
+
+            if (scheduledTime > elapsedBefore)
+               _eliteSpawnSchedule[i] = elapsedAfter + (scheduledTime - elapsedBefore) * remainingScale;
+         }
       }
 
       // 검문(역 도착) 누적 횟수로 spawnCount를 결정한다.
@@ -231,6 +250,15 @@ namespace TrainDefense.Game
       {
          _stopSpawnMonster = true;
       }
+
+      /// <summary>평소 소환 주기(초). 역마다 짧아지는 가속은 반영하고, 일시적인 러시 배율은 뺀 값이다.</summary>
+      public float BaseSpawnInterval => _GetAcceleratedInterval();
+
+      /// <summary>한 소환 주기에 나오는 몬스터 수.</summary>
+      public int SpawnCount => Mathf.Max(1, spawnCount);
+
+      /// <summary>지금 살아 있는 몬스터 목록(읽기 전용).</summary>
+      public IReadOnlyList<Monster> SpawnedMonsters => _spawnedMonsters;
 
       private void OnMonsterRush(MonsterRushEvent monsterRushEvent)
       {
@@ -360,6 +388,22 @@ namespace TrainDefense.Game
          return _SpawnMonsterNow(_GetLowestSpawnLevelData(), false);
       }
 
+      /// <summary>
+      /// 현재 맵 출현 목록에서 평소 확률대로 일반 몬스터 1마리를 즉시 스폰한다(선로 이벤트 추가 소환용).
+      /// 스폰풀이 없으면 null.
+      /// </summary>
+      public Monster SpawnRandomMonsterNow()
+      {
+         if (_currentSpawnDatas == null || _currentSpawnDatas.Length == 0 || DatabaseManager.Instance == null)
+            return null;
+
+         StageSpawnData selectedData = SelectMonsterData();
+         if (selectedData == null)
+            return null;
+
+         return _SpawnMonsterNow(selectedData, false);
+      }
+
       private Monster _SpawnMonsterNow(StageSpawnData selectedData, bool isElite)
       {
          MonsterData monsterData = DatabaseManager.Instance.GetMonsterData(selectedData.MonsterId);
@@ -392,7 +436,7 @@ namespace TrainDefense.Game
       // 엘리트는 검문(역 도착)을 이만큼 지난 뒤부터 등장한다. 검문 카운트는 스테이지당 5회(역 4개 + 맵 변경 1회).
       // 판을 20역으로 늘릴 때도 이 값은 옮기지 않았다 — 플레이어가 강해지는 속도는 흐른 시간이 아니라 상점 방문 수를
       // 따라가므로, 같은 경과 시간으로 미루면 그만큼 쉬워진다.
-      private const int ELITE_START_STATION_COUNT = 6;
+      public const int ELITE_START_STATION_COUNT = 6;
 
       // 엘리트 강도 기준 스폰 간격(가장 빠른 맵 = 사막 0.38초). 이보다 느린 맵은 엘리트가 드문 대신
       // 그 비율의 제곱근만큼 체력·공격력·보상이 커진다 — "느린 맵 = 드문 탱커"를 마리 수만이 아니라 강도로도 만든다.

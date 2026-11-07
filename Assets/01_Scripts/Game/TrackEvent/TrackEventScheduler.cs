@@ -117,6 +117,15 @@ namespace TrainDefense.Game.TrackEvent
             return result.Count;
         }
 
+        /// <summary>구간 남은 시간이 ratio만큼 줄었을 때 아직 안 터진 예약 시각도 같은 비율로 당긴다(구간이 먼저 끝나 예약이 사라지지 않게).</summary>
+        public void CompressRemaining(float ratio)
+        {
+            if (_scheduledData == null || ratio <= 0f || _triggerTime <= _elapsedTime)
+                return;
+
+            _triggerTime = _elapsedTime + (_triggerTime - _elapsedTime) * (1f - ratio);
+        }
+
         public void Clear()
         {
             _scheduledData = null;
