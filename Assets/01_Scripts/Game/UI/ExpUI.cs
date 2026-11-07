@@ -5,6 +5,7 @@ using Cumic;
 using Cumic.Events;
 using TrainDefense.Game.Events;
 using TMPro;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI
 {
@@ -52,7 +53,7 @@ namespace TrainDefense.Game.UI
             if (expText != null && UserDataManager.Instance != null)
                 expText.text = $"0 / {((int)UserDataManager.Instance.GetNextLevelUpExp(1)).ToCommaString()}";
             if (levelText != null)
-                levelText.text = "Lv 1";
+                levelText.text = _FormatLevel(1);
         }
 
         private void OnDestroy()
@@ -74,7 +75,7 @@ namespace TrainDefense.Game.UI
 
             // 복원은 LevelUpEvent 없이 레벨을 바로 바꾸므로 레벨 글자도 여기서 맞춘다.
             if (levelText != null)
-                levelText.text = $"Lv {UserDataManager.Instance.CurrentLevel}";
+                levelText.text = _FormatLevel(UserDataManager.Instance.CurrentLevel);
         }
 
         // 게임 진입 시 0부터 시작. UserDataManager의 _currentExp=0 리셋(OnGameEnter)이 이 콜백보다
@@ -99,7 +100,13 @@ namespace TrainDefense.Game.UI
         {
             if (levelText == null || UserDataManager.Instance == null) return;
 
-            levelText.text = $"Lv {UserDataManager.Instance.CurrentLevel}";
+            levelText.text = _FormatLevel(UserDataManager.Instance.CurrentLevel);
+        }
+
+        // "Lv 3" 형식. 언어마다 레벨 약어가 달라(Nv/Ур./Stufe…) 키에서 서식을 받는다.
+        private static string _FormatLevel(int level)
+        {
+            return string.Format(LocalizeHelper.GetByKey("UI_Level_Format", "Lv {0}"), level);
         }
 
         private void UpdateExpText()

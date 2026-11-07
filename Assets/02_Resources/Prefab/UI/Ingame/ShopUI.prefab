@@ -752,6 +752,7 @@ GameObject:
   - component: {fileID: 6823258966753964863}
   - component: {fileID: 8464512619429105115}
   - component: {fileID: 3686762110967470154}
+  - component: {fileID: 6546871018654440870}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -878,6 +879,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6546871018654440870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6581079010180989807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeText
+  _key: 0
+  _keyName: UI_Shop
+  _autoSizeForLongText: 1
 --- !u!1 &7710000000000000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1166,6 +1182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeText
   _key: 15
+  _keyName: 
   _autoSizeForLongText: 1
 --- !u!1 &7710000000000000021
 GameObject:
@@ -1469,6 +1486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeText
   _key: 18
+  _keyName: 
   _autoSizeForLongText: 1
 --- !u!1 &7710000000000000041
 GameObject:
@@ -1714,6 +1732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeText
   _key: 14
+  _keyName: 
   _autoSizeForLongText: 1
 --- !u!1 &7710000000000000071
 GameObject:

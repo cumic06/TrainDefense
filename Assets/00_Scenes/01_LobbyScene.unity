@@ -833,6 +833,7 @@ GameObject:
   - component: {fileID: 210000043}
   - component: {fileID: 210000042}
   - component: {fileID: 673818526733106}
+  - component: {fileID: 673818526733107}
   m_Layer: 5
   m_Name: SpeakerNameText
   m_TagString: Untagged
@@ -971,6 +972,7 @@ GameObject:
   - component: {fileID: 210000053}
   - component: {fileID: 210000052}
   - component: {fileID: 920289248981534}
+  - component: {fileID: 920289248981535}
   m_Layer: 5
   m_Name: DialogueText
   m_TagString: Untagged
@@ -2708,6 +2710,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _key: 18
+  _keyName: 
   _autoSizeForLongText: 1
 --- !u!114 &999990003
 MonoBehaviour:
@@ -2722,6 +2725,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _key: 19
+  _keyName: 
   _autoSizeForLongText: 1
 --- !u!114 &999990005
 MonoBehaviour:
@@ -2736,6 +2740,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _key: 6
+  _keyName: 
   _autoSizeForLongText: 1
 --- !u!1001 &1142119250
 PrefabInstance:
@@ -3087,6 +3092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _key: 117
+  _keyName: 
   _autoSizeForLongText: 1
 --- !u!114 &1342347520
 MonoBehaviour:
@@ -4336,6 +4342,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &673818526733107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210000040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeText
+  _key: 0
+  _keyName: UI_Admin_Name
+  _autoSizeForLongText: 1
 --- !u!114 &920289248981534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4348,6 +4369,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acdf5aeb5ac1d0146949d585dfac4cc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &920289248981535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 210000050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeText
+  _key: 0
+  _keyName: UI_Welcome
+  _autoSizeForLongText: 1
 --- !u!1001 &4420362823813284957
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -791,7 +791,7 @@ namespace TrainDefense.Game.UI
 
                 // 무료 횟수가 남아 있으면 비용 대신 "무료 ×N"을 보여준다.
                 string costLine = hasFreeReroll
-                    ? $"{LocalizeHelper.GetByKey("UI_Reroll_Free", "Free")} ×{_freeRerollsLeft}"
+                    ? $"{LocalizeHelper.GetByKey("UI_Reroll_Free", "무료")} ×{_freeRerollsLeft}"
                     : $"<size={coinIconSizePercent}%><sprite name=\"Coin\"></size> {costText}";
 
                 rerollLabelText.text = $"{rerollLabel}\n<size={costSizePercent}%>{costLine}</size>";

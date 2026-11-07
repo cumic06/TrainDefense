@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using DG.Tweening;
 using TrainDefense;
+using TrainDefense.Localize;
 
 namespace TrainDefense.Game.UI
 {
@@ -24,7 +25,7 @@ namespace TrainDefense.Game.UI
 
         private void OnEnable()
         {
-            luckyText.text = "Lucky!";
+            luckyText.text = LocalizeHelper.GetByKey("UI_Lucky", "Lucky!");
             luckyText.color = LuckyColor;
             luckyText.alpha = 1f;
             StartCoroutine(FadeOut());

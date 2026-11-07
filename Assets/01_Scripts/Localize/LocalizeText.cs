@@ -8,6 +8,9 @@ namespace TrainDefense.Localize
     {
         #region Fields
         [SerializeField] private LocalizeKey _key;
+        // 비어 있지 않으면 _key 대신 이 문자열 키로 조회한다. enum은 Bake 때 번호가 밀려
+        // 정수로 직렬화된 _key가 다른 문구를 가리킬 수 있고, Bake 전 신규 키는 enum에 없기 때문.
+        [SerializeField] private string _keyName;
         [SerializeField] private bool _autoSizeForLongText = true;
         #endregion
 
@@ -64,7 +67,8 @@ namespace TrainDefense.Localize
 
             // 리터럴 "\n"을 실제 줄바꿈으로 변환(TSV 셀에 직접 개행을 못 넣어 \n 문자열로 저장됨).
             // 한글 단어 중간 줄바꿈은 TMP_Settings의 Modern Hangul Line Breaking Rules로 처리한다.
-            string localized = Localization.Get(_key)?.Replace("\\n", "\n");
+            string raw = string.IsNullOrEmpty(_keyName) ? Localization.Get(_key) : Localization.GetByKey(_keyName);
+            string localized = raw?.Replace("\\n", "\n");
             if (!string.IsNullOrEmpty(localized))
                 _text.text = localized;
         }

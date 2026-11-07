@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using TMPro;
+using TrainDefense.Localize;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TrainDefense.Game.Datas;
@@ -114,7 +115,9 @@ namespace TrainDefense.Game.UI
          tr.DOScale(1f, popInDuration).SetEase(Ease.OutBack).SetUpdate(true);
 
          // 등장 효과 + 지속 효과 태그를 입혀 글자별로 타이핑한다.
-         string decorated = $"{effectTags}{_baseText}";
+         // 언어를 바꿀 수 있으니 재생할 때마다 키에서 다시 읽는다. 키가 없으면 씬에 적힌 문구를 쓴다.
+         string baseText = LocalizeHelper.GetByKey("UI_LevelUp_Banner", _baseText);
+         string decorated = $"{effectTags}{baseText}";
 
          var typingDone = new UniTaskCompletionSource();
          void OnShowed() => typingDone.TrySetResult();
@@ -125,7 +128,7 @@ namespace TrainDefense.Game.UI
 
          // 타이핑 완료 대기. 이벤트 누락에 대비해 타임아웃 폴백을 둔다.
          float perChar = typingTimings != null ? typingTimings.waitForNormalChars : 0.06f;
-         int timeoutMs = (int)(Mathf.Max(_baseText.Length, 1) * perChar * 1000) + 3000;
+         int timeoutMs = (int)(Mathf.Max(baseText.Length, 1) * perChar * 1000) + 3000;
          await UniTask.WhenAny(typingDone.Task, UniTask.Delay(timeoutMs, ignoreTimeScale: true));
          _typewriter.onTextShowed.RemoveListener(OnShowed);
 

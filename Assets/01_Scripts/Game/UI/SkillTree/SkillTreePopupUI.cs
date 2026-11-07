@@ -376,7 +376,8 @@ namespace TrainDefense.Game.UI.SkillTree
             if (detailLevelText != null)
             {
                 // "LV. 2 / 5" — 이 칸의 레벨. 대문자: DNF 폰트에서 소문자 v가 u처럼 보인다. 이름 아래 부제라 평소엔 흐린 INK2. 사슬 끝 칸은 진한 INK (금색은 크림 바탕에서 안 읽혀 09-13 반려)
-                detailLevelText.text = $"LV. {_selectedData.GetLevelInTier(level, _selectedTier)} / {tierData.MaxLevel}";
+                detailLevelText.text = string.Format(LocalizeHelper.GetByKey("UI_SkillTree_LevelProgress", "LV. {0} / {1}"),
+                    _selectedData.GetLevelInTier(level, _selectedTier), tierData.MaxLevel);
                 detailLevelText.color = isChainMastered ? SkillTreePalette.OnSurface : SkillTreePalette.OnSurfaceMuted;
             }
 
@@ -400,7 +401,7 @@ namespace TrainDefense.Game.UI.SkillTree
             // 버튼 문구가 곧 상태다: 레벨업 / MAX(이미 산 칸) / 잠김(앞 티어나 선행 노드 미습득). 0→1도 "레벨업"으로 통일 (09-13 사용자 결정)
             if (acquireText != null)
             {
-                acquireText.text = isAcquired ? "MAX"
+                acquireText.text = isAcquired ? LocalizeHelper.GetByKey("UI_Max", "MAX")
                     : !(isNext && arePrerequisitesMet) ? LocalizeHelper.GetByKey("UI_SkillTree_NeedPrerequisite", "잠김")
                     : LocalizeHelper.GetByKey("UI_SkillTree_LevelUp", "레벨업");
             }

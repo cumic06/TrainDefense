@@ -1273,6 +1273,7 @@ GameObject:
   - component: {fileID: 2507747471545002693}
   - component: {fileID: 4143940371096325351}
   - component: {fileID: 1577778683448205793}
+  - component: {fileID: 8393826977814144914}
   m_Layer: 5
   m_Name: Txt_New
   m_TagString: Untagged
@@ -1399,6 +1400,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8393826977814144914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7779755867893313158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b5f13bbe6393794098b58aa3af0c0eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Localize.LocalizeText
+  _key: 0
+  _keyName: UI_New_Badge
+  _autoSizeForLongText: 1
 --- !u!1 &9161935980419079869
 GameObject:
   m_ObjectHideFlags: 0
