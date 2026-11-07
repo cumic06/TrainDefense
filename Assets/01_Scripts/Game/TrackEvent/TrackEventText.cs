@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using TrainDefense.Game.Datas;
 using TrainDefense.Localize;
@@ -33,6 +35,13 @@ namespace TrainDefense.Game.TrackEvent
         private const string EFFECT_KEY_SAFE_PASS = "TrackEvent_Effect_SafePass";
         private const string DIRECTION_KEY_INCREASE = "TrackEvent_Direction_Increase";
         private const string DIRECTION_KEY_DECREASE = "TrackEvent_Direction_Decrease";
+        // 수치가 항목 이름과 다른 줄로 떨어지지 않게 묶는 태그 (_AppendWithValueBound)
+        private const string NO_BREAK_OPEN_TAG = "<nobr>";
+        private const string NO_BREAK_CLOSE_TAG = "</nobr>";
+        // 번역 문장 틀의 {0} 자리를 먼저 채워 값 위치를 찾는 표시(문구에 나오지 않는 제어 문자)
+        private const string VALUE_MARKER = "\u0001";
+        // 엘리트 코인 아이콘은 그림 아래쪽에 그림자가 있어 글자 줄 가운데에 두면 내려가 보인다 — 글자 크기 비례로 살짝 올린다.
+        private const string ELITE_COIN_ICON_FORMAT = "<size={0}%><voffset=0.12em><sprite name=\"EliteCoin\"></voffset></size>";
 
         private static readonly StringBuilder _builder = new StringBuilder();
         private static bool _isDirectionOnly;
@@ -55,8 +64,9 @@ namespace TrainDefense.Game.TrackEvent
         }
 
         /// <summary>효과 줄. 효과가 둘이면 separator로 잇는다. 표기 규칙이 없는 타입은 빈 문자열.
+        /// iconSizePercent는 문구 속 아이콘(엘리트 코인) 크기 — TMP의 % 크기는 겉의 size 태그를 따르지 않아 화면마다 따로 정한다.
         /// withSubject면 포탑 항목 앞에 주체(포탑)를 붙인다 — 카드는 짧게, 배너는 누가 바뀌는지 보이게.</summary>
-        public static string GetEffectText(TrackEventData data, string separator, bool withSubject = false)
+        public static string GetEffectText(TrackEventData data, string separator, int iconSizePercent, bool withSubject = false)
         {
             if (data == null)
                 return string.Empty;
@@ -165,7 +175,9 @@ namespace TrainDefense.Game.TrackEvent
                     _builder.Append(LocalizeHelper.GetByKey(EFFECT_KEY_SAFE_PASS, "변화 없음"));
                     break;
                 case TrackEventType.EliteAmbush:
-                    _AppendFormatted(EFFECT_KEY_ELITE_AMBUSH, "처치 시 <sprite name=\"EliteCoin\"> {0}배", Effects.EliteAmbushTrackEventEffect.GetRewardMultiplier(data));
+                    // {1} = 엘리트 코인 아이콘
+                    _AppendFormatted(EFFECT_KEY_ELITE_AMBUSH, "처치 시 {1} {0}배", Effects.EliteAmbushTrackEventEffect.GetRewardMultiplier(data),
+                        string.Format(ELITE_COIN_ICON_FORMAT, iconSizePercent));
                     break;
                 case TrackEventType.SupplyDrop:
                     _builder.Append(LocalizeHelper.GetByKey(EFFECT_KEY_SUPPLY_DROP, "눌러서 골드 획득"));
@@ -185,9 +197,90 @@ namespace TrainDefense.Game.TrackEvent
             return _builder.ToString();
         }
 
-        private static void _AppendFormatted(string effectKey, string fallback, float value)
+        private static void _AppendFormatted(string effectKey, string fallback, float value, string icon = "")
         {
-            _builder.Append(string.Format(LocalizeHelper.GetByKey(effectKey, fallback), value.ToString("0.##")));
+            // {0} = 값, {1} = 아이콘. 값 자리를 표시로 먼저 채워 위치를 찾은 뒤 값으로 바꾼다.
+            string formatted = string.Format(LocalizeHelper.GetByKey(effectKey, fallback), VALUE_MARKER, icon);
+            int valueIndex = formatted.IndexOf(VALUE_MARKER, StringComparison.Ordinal);
+
+            if (valueIndex < 0)
+            {
+                _builder.Append(formatted);
+                return;
+            }
+
+            // 기기 지역 설정과 상관없이 소수점은 '.' (다른 수치 표기와 같게)
+            string valueText = value.ToString("0.##", CultureInfo.InvariantCulture);
+            string text = formatted.Replace(VALUE_MARKER, valueText);
+            int valueEnd = valueIndex + valueText.Length;
+
+            // 값 덩어리 끝: "1.3배"·"1.5倍"처럼 뒤에 붙은 단위까지
+            while (valueEnd < text.Length && !char.IsWhiteSpace(text[valueEnd]) && text[valueEnd] != '<')
+                valueEnd++;
+
+            _AppendWithValueBound(text, valueIndex, valueEnd);
+        }
+
+        /// <summary>
+        /// 값(valueIndex~valueEnd)이 앞 낱말과 다른 줄로 떨어지지 않게(예: "Enemy spawns / x1.3", "속도 / +5%") 앞 글자부터 nobr로 묶어 붙인다.
+        /// 공백과 '-' 뒤가 모두 TMP의 줄바꿈 자리라 NBSP로는 못 막는다. 한중일 글자는 글자 사이마다 줄이 바뀔 수 있어
+        /// 공백이 아니라 앞 낱말의 마지막 글자부터 묶는다. 앞이 태그(아이콘)면 태그 덩어리째 묶어 아이콘과 값도 붙어 다닌다.
+        /// </summary>
+        private static void _AppendWithValueBound(string text, int valueIndex, int valueEnd)
+        {
+            // 값 낱말의 시작: 값 앞에 붙은 "x"·"+" 같은 글자까지 (공백이나 태그 끝에서 멈춤)
+            int wordStart = valueIndex;
+            while (wordStart > 0 && !char.IsWhiteSpace(text[wordStart - 1]) && text[wordStart - 1] != '>')
+                wordStart--;
+
+            int bindStart;
+
+            if (wordStart == 0)
+                // 공백 없는 한중일 문장("敵出現1.3倍")이나 값이 맨 앞 — 값 바로 앞 글자 하나만 묶는다
+                bindStart = valueIndex > 0 ? _PreviousElementStart(text, valueIndex) : 0;
+            else if (text[wordStart - 1] == '>')
+                bindStart = _TagRunStart(text, wordStart - 1);
+            else
+            {
+                int beforeSpace = wordStart - 1;
+                bindStart = beforeSpace > 0 && text[beforeSpace - 1] == '>'
+                    ? _TagRunStart(text, beforeSpace - 1)
+                    : beforeSpace > 0 ? _PreviousElementStart(text, beforeSpace) : beforeSpace;
+            }
+
+            _builder.Append(text, 0, bindStart);
+            _builder.Append(NO_BREAK_OPEN_TAG);
+            _builder.Append(text, bindStart, valueEnd - bindStart);
+            _builder.Append(NO_BREAK_CLOSE_TAG);
+            _builder.Append(text, valueEnd, text.Length - valueEnd);
+        }
+
+        // index 바로 앞 글자(태국어 결합 모음·서로게이트 쌍은 한 글자로)의 시작 위치
+        private static int _PreviousElementStart(string text, int index)
+        {
+            int[] starts = StringInfo.ParseCombiningCharacters(text.Substring(0, index));
+
+            return starts.Length > 0 ? starts[starts.Length - 1] : 0;
+        }
+
+        // tagEnd('>')에서 왼쪽으로 붙어 있는 태그들("<size><voffset><sprite></voffset></size>")의 첫 '<' 위치
+        private static int _TagRunStart(string text, int tagEnd)
+        {
+            int start = tagEnd + 1;
+            int position = tagEnd;
+
+            while (position >= 0 && text[position] == '>')
+            {
+                int open = text.LastIndexOf('<', position);
+
+                if (open < 0)
+                    break;
+
+                start = open;
+                position = open - 1;
+            }
+
+            return start;
         }
 
         private static void _AppendMultiplier(string statKey, string fallback, float multiplier, string separator)
@@ -219,11 +312,9 @@ namespace TrainDefense.Game.TrackEvent
                 return;
             }
 
-            _builder.Append(statName);
-            _builder.Append(' ');
-            _builder.Append(percent > 0 ? "+" : "-");
-            _builder.Append(Mathf.Abs(percent));
-            _builder.Append('%');
+            string text = $"{statName} {(percent > 0 ? "+" : "-")}{Mathf.Abs(percent)}%";
+
+            _AppendWithValueBound(text, statName.Length + 1, text.Length);
         }
     }
 }

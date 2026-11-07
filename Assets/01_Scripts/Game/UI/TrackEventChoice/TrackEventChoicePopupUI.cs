@@ -32,6 +32,8 @@ namespace TrainDefense.Game.UI.TrackEventChoice
         private const string TITLE_KEY = "TrackEvent_Choice_Title";
         private const string TITLE_FALLBACK = "갈림길";
         private const string EFFECT_SEPARATOR = "\n";
+        // 효과 줄 속 엘리트 코인 아이콘 크기(기본 글자 크기 대비 %)
+        private const int EFFECT_ICON_SIZE_PERCENT = 60;
 
         #endregion
 
@@ -45,6 +47,9 @@ namespace TrainDefense.Game.UI.TrackEventChoice
         private readonly List<TrackEventData> _options = new List<TrackEventData>();
         private Action<TrackEventData> _onSelected;
         private bool _isSelected;
+        // 프리팹에 잡힌 카드 높이(가장 긴 문구 기준)와 효과 칸 최소 높이. 문구가 짧으면 카드를 이보다 줄인다.
+        private float _maxCardHeight;
+        private float _effectReservedHeight;
 
         #endregion
 
@@ -75,6 +80,14 @@ namespace TrainDefense.Game.UI.TrackEventChoice
             {
                 LocalizeFontSwitcher.Register(card.nameText);
                 LocalizeFontSwitcher.Register(card.effectText);
+            }
+
+            if (optionCards.Length > 0)
+            {
+                _maxCardHeight = ((RectTransform)optionCards[0].button.transform).rect.height;
+
+                if (optionCards[0].effectText.TryGetComponent(out LayoutElement effectLayout))
+                    _effectReservedHeight = effectLayout.minHeight;
             }
         }
 
@@ -148,10 +161,78 @@ namespace TrainDefense.Game.UI.TrackEventChoice
                 Sprite icon = data.Icon;
 
                 card.nameText.text = TrackEventText.GetName(data);
-                card.effectText.text = TrackEventText.GetEffectText(data, EFFECT_SEPARATOR);
+                card.effectText.text = TrackEventText.GetEffectText(data, EFFECT_SEPARATOR, EFFECT_ICON_SIZE_PERCENT);
                 card.iconImage.sprite = icon;
                 card.iconImage.gameObject.SetActive(icon != null);
             }
+
+            _FitCardHeight();
+        }
+
+        // 두 카드 중 긴 문구에 맞춰 카드와 창 높이를 줄인다(짧은 문구 아래가 비어 보이지 않게). 프리팹 배치(카드 300, 효과 칸 확보,
+        // 긴 이름은 글자가 줄어듦)를 먼저 그대로 계산해 이름이 실제로 차지하는 높이를 읽고, 그 높이 + 효과 문구 높이로 줄인다.
+        // 프리팹 카드 높이가 상한이고 카드 중심은 그대로 둔다. TMP.GetPreferredValues는 자동 크기 글자를 최소 크기로 재는 경우가 있어 쓰지 않는다.
+        private void _FitCardHeight()
+        {
+            float contentHeight = 0f;
+            // 프리팹 배치에서 효과 문구가 실제로 차지한 높이(카드마다). 줄어든 카드의 효과 칸 높이로 쓴다.
+            var effectHeights = new float[optionCards.Length];
+
+            for (int i = 0; i < optionCards.Length; i++)
+            {
+                OptionCard card = optionCards[i];
+
+                if (!card.button.gameObject.activeSelf || !card.button.TryGetComponent(out VerticalLayoutGroup layout))
+                    continue;
+
+                var cardRect = (RectTransform)card.button.transform;
+                // 프리팹 배치로 글자 칸을 잡고, 그 칸에서 글자 자동 크기와 줄 수를 확정한다
+                // (TMP의 preferredHeight는 폭이 아슬아슬한 줄을 실제 그리기와 다르게 접는 경우가 있어 그려진 줄로 잰다)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(cardRect);
+                card.nameText.ForceMeshUpdate();
+                card.effectText.ForceMeshUpdate();
+
+                effectHeights[i] = _RenderedTextHeight(card.effectText);
+                float height = layout.padding.vertical + _RenderedTextHeight(card.nameText) + layout.spacing + effectHeights[i];
+
+                if (card.iconImage.gameObject.activeSelf)
+                    height += LayoutUtility.GetPreferredHeight((RectTransform)card.iconImage.transform) + layout.spacing;
+
+                contentHeight = Mathf.Max(contentHeight, height);
+            }
+
+            if (contentHeight <= 0f)
+                return;
+
+            float cardHeight = Mathf.Min(Mathf.Ceil(contentHeight), _maxCardHeight);
+            bool isShrunk = cardHeight < _maxCardHeight;
+
+            for (int i = 0; i < optionCards.Length; i++)
+            {
+                OptionCard card = optionCards[i];
+                ((RectTransform)card.button.transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, cardHeight);
+
+                // 줄어든 카드에선 효과 칸을 확보 높이 대신 문구 높이만큼만 잡는다. 이름이 길면 레이아웃이 이름 쪽을 줄인다.
+                if (card.effectText.TryGetComponent(out LayoutElement effectLayout))
+                    effectLayout.minHeight = isShrunk ? effectHeights[i] : _effectReservedHeight;
+            }
+
+            if (optionCards.Length > 0 && optionCards[0].button.transform.parent is RectTransform panel)
+                panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, panel.rect.height - (_maxCardHeight - cardHeight));
+        }
+
+        // 자동 크기가 확정된 글자가 실제로 차지하는 세로 높이(첫 줄 위선 ~ 마지막 줄 아래선 + 위아래 여백)
+        private static float _RenderedTextHeight(TMP_Text text)
+        {
+            TMP_TextInfo info = text.textInfo;
+
+            if (info == null || info.lineCount == 0)
+                return 0f;
+
+            float blockHeight = info.lineInfo[0].ascender - info.lineInfo[info.lineCount - 1].descender;
+
+            // TMP 자동 크기는 칸 높이가 글자 높이와 딱 같으면 오차로 한 단계 줄이기도 한다 — 1px 여유
+            return Mathf.Ceil(blockHeight + text.margin.y + text.margin.w) + 1f;
         }
 
         private void _OnCardClicked(int index)

@@ -34,6 +34,13 @@ namespace TrainDefense.Game.UI
 
         #region Variables
         private const string WEATHER_EFFECT_SEPARATOR = "  /  ";
+        // 줄 첫 글자의 획이 글자 칸 왼쪽 끝을 1px 미만 벗어나는 언어가 있어(스페인어 등) 좌우에 여유를 둔다.
+        private const float TEXT_SIDE_MARGIN = 2f;
+        // 효과 줄 속 엘리트 코인 아이콘 크기(기본 글자 크기 대비 %). 효과 줄이 65%라 카드보다 작게 둔다.
+        private const int EFFECT_ICON_SIZE_PERCENT = 32;
+        // 바 높이: 맵 이름 한 줄은 원래대로, 이름 + 효과 두 줄은 글자가 바 위·아래에 붙지 않게 높게
+        private const float BAR_HEIGHT_NAME_ONLY = 110f;
+        private const float BAR_HEIGHT_WITH_EFFECT = 140f;
 
         private readonly Queue<(string message, TrackEventData eventData)> _pendingMessages = new Queue<(string, TrackEventData)>();
         private CanvasGroup _canvasGroup;
@@ -132,7 +139,7 @@ namespace TrainDefense.Game.UI
             if (e == null || e.Data == null || e.Data.Category == TrackEventCategory.Choice || e.Data.EventType == TrackEventType.FreeUpgrade)
                 return;
 
-            string effectText = TrackEventText.GetEffectText(e.Data, WEATHER_EFFECT_SEPARATOR, true);
+            string effectText = TrackEventText.GetEffectText(e.Data, WEATHER_EFFECT_SEPARATOR, EFFECT_ICON_SIZE_PERCENT, true);
             string message = string.IsNullOrEmpty(effectText)
                 ? TrackEventText.GetName(e.Data)
                 : $"{TrackEventText.GetName(e.Data)}\n<size=65%>{effectText}</size>";
@@ -177,6 +184,9 @@ namespace TrainDefense.Game.UI
 
             if (_nameText != null)
                 _nameText.text = message;
+
+            ((RectTransform)transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+                message.IndexOf('\n') >= 0 ? BAR_HEIGHT_WITH_EFFECT : BAR_HEIGHT_NAME_ONLY);
 
             yield return _Fade(0f, 1f, fadeDuration);
             yield return new WaitForSecondsRealtime(holdDuration);
@@ -235,7 +245,7 @@ namespace TrainDefense.Game.UI
             root.pivot = new Vector2(0.5f, 1f);
             // 업적 토스트(y -140, 높이 96) 바로 아래에 배치해 서로 겹치지 않게 한다.
             root.anchoredPosition = new Vector2(0f, -240f);
-            root.sizeDelta = new Vector2(820f, 110f);
+            root.sizeDelta = new Vector2(820f, BAR_HEIGHT_NAME_ONLY);
 
             var background = gameObject.AddComponent<Image>();
             background.color = new Color(0.05f, 0.05f, 0.08f, 0.78f);
@@ -263,6 +273,7 @@ namespace TrainDefense.Game.UI
             _nameText.fontWeight = FontWeight.Bold;
             _nameText.color = Color.white;
             _nameText.alignment = TextAlignmentOptions.Center;
+            _nameText.margin = new Vector4(TEXT_SIDE_MARGIN, 0f, TEXT_SIDE_MARGIN, 0f);
             _nameText.raycastTarget = false;
 
             // 언어별 폰트(라틴/아랍/태국 등) 교체 + RTL 방향 처리. 한국어는 기본 폰트(DNFBitBitv2) 유지.
