@@ -2639,10 +2639,6 @@ MonoBehaviour:
     trainDataId: 30008
     statType: 2
     increaseRate: 0.2
-  - id: stat_upgrade_30008_attack_interval
-    trainDataId: 30008
-    statType: 4
-    increaseRate: 0.15
   - id: stat_upgrade_30008_attack_area
     trainDataId: 30008
     statType: 8
