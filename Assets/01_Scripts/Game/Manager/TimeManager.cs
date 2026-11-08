@@ -168,7 +168,8 @@ namespace TrainDefense.Game
             Time.fixedDeltaTime = 0.02f;
             _isGameOverSlowing = false;
 
-            GameEventSystem.Publish(new GameEndEvent(false));
+            // 무한모드는 이미 종착역을 클리어한 판이라 기차가 부서져도 클리어 결과로 끝낸다.
+            GameEventSystem.Publish(new GameEndEvent(Manager.StageManager.IsInfiniteModeRunning));
         }
     }
 }

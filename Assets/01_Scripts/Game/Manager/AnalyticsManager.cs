@@ -314,8 +314,10 @@ namespace TrainDefense.Game.Manager
                 ("station_in_map", _StationInMap()),
                 // 맵 마지막 역 뒤에 들르는 맵 선택 전 상점인지. 일반 역 도착과 구분해서 본다.
                 ("is_map_end_shop", stageManager != null && stageManager.IsStageSelectionPending),
+                // 무한모드에선 종착역 뒤에도 역이 이어지므로 종착역 그 한 번만 표시한다.
                 ("is_final_station", stageManager != null && stageManager.FinalStationCount > 0
-                                     && stationPassedEvent.PassedStationCount >= stageManager.FinalStationCount),
+                                     && stationPassedEvent.PassedStationCount == stageManager.FinalStationCount),
+                ("is_infinite_mode", stageManager != null && stageManager.IsInfiniteMode),
                 ("play_time_sec", _PlayTimeSec()),
                 ("coin", _Coin()));
         }

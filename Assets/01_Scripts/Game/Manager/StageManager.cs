@@ -6,6 +6,7 @@ using Cumic.Events;
 using TrainDefense.Game.Events;
 using TrainDefense.Game.Datas;
 using TrainDefense.Game.Difficulty;
+using TrainDefense.Game.UI;
 using TrainDefense;
 
 namespace TrainDefense.Game.Manager
@@ -67,6 +68,9 @@ namespace TrainDefense.Game.Manager
         private bool _shouldShowStageSelectionOnStageEnd;
         private bool _pendingStageSelectionAfterShop;
         private bool _isGameOver;
+        // 종착역에서 "계속 달리기"를 고른 판. 켜지면 종착역 판정을 건너뛰고 맵을 순환하며 끝없이 달린다.
+        private bool _isInfiniteMode;
+        private InfiniteModePopupUI _infiniteModePopup;
 
         // 맵별 점수 결산 기록(게임오버 슬라이드쇼용). 맵 진입 시 점수/처치 수를 스냅샷(_mapStart*)하고,
         // 다음 맵으로 넘어가거나(_OnStageSelected) 게임이 끝날 때(_OnGameEnd) 차이를 StageRunRecord로 확정한다.
@@ -110,6 +114,12 @@ namespace TrainDefense.Game.Manager
         /// <summary>종착역(이 도착에서 판이 끝난다). 0이면 끝 없이 계속 달린다.</summary>
         public int FinalStationCount => finalStationCount;
 
+        /// <summary>종착역을 지나 무한모드로 달리는 중인가.</summary>
+        public bool IsInfiniteMode => _isInfiniteMode;
+
+        /// <summary>무한모드 중인가(매니저가 없으면 false). 무한모드는 이미 종착역을 클리어한 판이라 판 종료를 클리어로 친다.</summary>
+        public static bool IsInfiniteModeRunning => Instance != null && Instance._isInfiniteMode;
+
         /// <summary>역 도착 때 포탑을 회복·부활시키는가. 아니면 상점 수리(ShopRepairButtonUI)로만 회복한다. 매니저가 없으면 회복한다.</summary>
         public static bool HasStationArrivalRecovery => Instance == null || Instance.stationArrivalRecovery;
 
@@ -138,6 +148,10 @@ namespace TrainDefense.Game.Manager
         private void OnDestroy()
         {
             _UnsubscribeEvents();
+
+            // 팝업이 떠 있는 채로 씬을 떠나면(포기·앱 종료) 자체 캔버스 팝업이 남지 않게 닫는다.
+            if (_infiniteModePopup != null)
+                _infiniteModePopup.Close();
         }
 
         private const string DIFFICULTY_CONFIG_RESOURCE_PATH = "Data/DifficultyStageConfig";
@@ -227,6 +241,7 @@ namespace TrainDefense.Game.Manager
         {
             // 새 게임 시작 시에만 누적 난이도 카운터 초기화 (스테이지 변경 시에는 유지)
             _totalInspectionPassedCount = 0;
+            _isInfiniteMode = false;
             _difficultyStage = DifficultyStageSelection.SelectedStage;
             _UpdateSpawnRules();
 
@@ -350,9 +365,9 @@ namespace TrainDefense.Game.Manager
         /// </summary>
         private void _StartInspectionWithTimeline()
         {
-            if (finalStationCount > 0 && _totalInspectionPassedCount + 1 >= finalStationCount)
+            if (!_isInfiniteMode && finalStationCount > 0 && _totalInspectionPassedCount + 1 >= finalStationCount)
             {
-                _ArriveAtFinalStation();
+                _AskInfiniteMode();
                 return;
             }
 
@@ -382,15 +397,66 @@ namespace TrainDefense.Game.Manager
                 GameEventSystem.Publish(new InspectionStartEvent());
         }
 
-        // 종착역 도착. 결산·세이브 삭제·통계는 패배와 같은 GameEndEvent 경로를 타고,
+        // 종착역 도착 — 판을 끝낼지 무한모드로 계속 달릴지 묻는다. 묻는 동안은 오버레이로 전투를 멈춘다.
+        // 종착역에 닿은 것 자체가 클리어라서 어느 쪽을 골라도 다음 난이도 단계가 열린다
+        // (디버그 클리어 발행과 분리된 실제 도착 경로에서만).
+        private void _AskInfiniteMode()
+        {
+            DifficultyStageSelection.MarkCleared(_difficultyStage);
+
+            if (_infiniteModePopup != null)
+                return;
+
+            _infiniteModePopup = InfiniteModePopupUI.Open(_OnInfiniteModeContinue, _OnInfiniteModeFinish);
+
+            // 팝업을 못 띄우면 예전처럼 바로 판을 끝낸다.
+            if (_infiniteModePopup == null)
+            {
+                _ArriveAtFinalStation();
+
+                return;
+            }
+
+            _SetInfiniteModeChoiceOverlay(true);
+        }
+
+        // "계속 달리기" — 무한모드를 켜고 이 도착을 평소 역 도착처럼(레벨업 → 상점) 이어 간다.
+        private void _OnInfiniteModeContinue()
+        {
+            _infiniteModePopup = null;
+            _isInfiniteMode = true;
+            _SetInfiniteModeChoiceOverlay(false);
+            _StartInspectionWithTimeline();
+        }
+
+        // "결과 보기" — 결과창(GameEndEvent)으로 먼저 넘긴 뒤 오버레이를 걷는다. 순서를 바꾸면 그 사이 전투가 한 번 재개된다.
+        private void _OnInfiniteModeFinish()
+        {
+            _infiniteModePopup = null;
+            _ArriveAtFinalStation();
+            _SetInfiniteModeChoiceOverlay(false);
+        }
+
+        private static void _SetInfiniteModeChoiceOverlay(bool isOpen)
+        {
+            var sequence = Cumic.Sequence.InGameSequence.Instance;
+
+            if (sequence == null)
+                return;
+
+            if (isOpen)
+                sequence.PushOverlay(Cumic.Sequence.OverlayPhase.InfiniteModeChoice);
+            else
+                sequence.PopOverlay(Cumic.Sequence.OverlayPhase.InfiniteModeChoice);
+        }
+
+        // 종착역에서 판을 끝낸다. 결산·세이브 삭제·통계는 패배와 같은 GameEndEvent 경로를 타고,
         // 시간은 InGameSequence가 GameOver 단계로 넘어가며 멈춘다.
         private void _ArriveAtFinalStation()
         {
             _totalInspectionPassedCount++;
             GameEventSystem.Publish(new StationPassedEvent(_totalInspectionPassedCount));
             _isGameOver = true;
-            // 종착역 클리어가 다음 난이도 단계를 연다(디버그 클리어 발행과 분리된 실제 도착 경로에서만).
-            DifficultyStageSelection.MarkCleared(_difficultyStage);
             GameEventSystem.Publish(new GameEndEvent(true));
         }
 
@@ -610,6 +676,7 @@ namespace TrainDefense.Game.Manager
             public int DifficultyStage;
             public bool ShouldShowStageSelectionOnStageEnd;
             public bool PendingStageSelectionAfterShop;
+            public bool IsInfiniteMode;
             public int MapStartScore;
             public int MapStartNormalKill;
             public int MapStartEliteKill;
@@ -636,6 +703,7 @@ namespace TrainDefense.Game.Manager
                 DifficultyStage = _difficultyStage,
                 ShouldShowStageSelectionOnStageEnd = _shouldShowStageSelectionOnStageEnd,
                 PendingStageSelectionAfterShop = _pendingStageSelectionAfterShop,
+                IsInfiniteMode = _isInfiniteMode,
                 MapStartScore = _mapStartScore,
                 MapStartNormalKill = _mapStartNormalKill,
                 MapStartEliteKill = _mapStartEliteKill,
@@ -679,6 +747,8 @@ namespace TrainDefense.Game.Manager
             _difficultyStage = Mathf.Clamp(state.DifficultyStage, DifficultyStageSelection.MIN_STAGE, DifficultyStageSelection.MAX_STAGE);
             _shouldShowStageSelectionOnStageEnd = state.ShouldShowStageSelectionOnStageEnd;
             _pendingStageSelectionAfterShop = state.PendingStageSelectionAfterShop;
+            // 무한모드 전 세이브는 false로 들어온다. 무한모드 중 세이브를 이어하면 종착역을 다시 묻지 않는다.
+            _isInfiniteMode = state.IsInfiniteMode;
             _mapStartScore = state.MapStartScore;
             _mapStartNormalKill = state.MapStartNormalKill;
             _mapStartEliteKill = state.MapStartEliteKill;

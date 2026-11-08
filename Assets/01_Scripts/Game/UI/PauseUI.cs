@@ -123,7 +123,8 @@ namespace TrainDefense.Game.UI
         private void _OnClickGiveUp()
         {
             // 결과 화면(BasePhase.GameOver)으로 먼저 넘긴다 — 메뉴 오버레이를 먼저 걷으면 그 사이 게임이 한 번 재개된다.
-            GameEventSystem.Publish(new GameEndEvent(false));
+            // 무한모드 중 포기는 이미 종착역을 클리어한 판을 마치는 것이라 클리어 결과로 끝낸다.
+            GameEventSystem.Publish(new GameEndEvent(StageManager.IsInfiniteModeRunning));
 
             HidePauseUI();
         }

@@ -24,6 +24,8 @@ namespace TrainDefense.Game.RunSave.Sections
             public int difficultyStage;
             public bool shouldShowStageSelectionOnStageEnd;
             public bool pendingStageSelectionAfterShop;
+            // 무한모드 기능 전 세이브에는 없는 필드 → false(종착역에서 다시 묻는다).
+            public bool isInfiniteMode;
             public int mapStartScore;
             public int mapStartNormalKill;
             public int mapStartEliteKill;
@@ -56,6 +58,7 @@ namespace TrainDefense.Game.RunSave.Sections
                 difficultyStage = state.DifficultyStage,
                 shouldShowStageSelectionOnStageEnd = state.ShouldShowStageSelectionOnStageEnd,
                 pendingStageSelectionAfterShop = state.PendingStageSelectionAfterShop,
+                isInfiniteMode = state.IsInfiniteMode,
                 mapStartScore = state.MapStartScore,
                 mapStartNormalKill = state.MapStartNormalKill,
                 mapStartEliteKill = state.MapStartEliteKill,
@@ -104,6 +107,7 @@ namespace TrainDefense.Game.RunSave.Sections
                 DifficultyStage = payload.difficultyStage,
                 ShouldShowStageSelectionOnStageEnd = payload.shouldShowStageSelectionOnStageEnd,
                 PendingStageSelectionAfterShop = payload.pendingStageSelectionAfterShop,
+                IsInfiniteMode = payload.isInfiniteMode,
                 MapStartScore = payload.mapStartScore,
                 MapStartNormalKill = payload.mapStartNormalKill,
                 MapStartEliteKill = payload.mapStartEliteKill,
