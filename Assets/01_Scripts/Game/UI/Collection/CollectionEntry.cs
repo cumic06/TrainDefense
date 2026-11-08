@@ -55,10 +55,8 @@ namespace TrainDefense.Game.UI.Collection
 
         public static CollectionEntry FromTrain(TrainData data, bool isDiscovered)
         {
-            var statLines = new List<CollectionStatLine>
-            {
-                new CollectionStatLine(_Loc("Detail_HP", "체력"), _Format(data.TrainStatusData.MaxHp)),
-            };
+            // 체력은 포탑마다 같아 구분 정보가 없으므로 도감에 표시하지 않는다. (몬스터는 체력이 제각각이라 유지)
+            var statLines = new List<CollectionStatLine>();
 
             if (data is RangeTrainData rangeData)
             {
@@ -117,6 +115,9 @@ namespace TrainDefense.Game.UI.Collection
         {
             statLines.Add(new CollectionStatLine(_Loc("Detail_Damage", "공격력"), _Format(status.AttackDamage)));
             statLines.Add(new CollectionStatLine(_Loc("Detail_Speed", "공격 속도"), _FormatSeconds(status.AttackInterval)));
+            // 레인지 포탑도 반경을 AttackArea에서 AttackRange로 통일했으므로 포탑과 같은 '사거리'로 표시한다.
+            statLines.Add(new CollectionStatLine(_Loc("Detail_Range", "사거리"), _Format(status.AttackRange)));
+
             if (status.AttackCount > 1)
                 statLines.Add(new CollectionStatLine(_Loc("Collection_AttackCount", "공격 횟수"), _Format(status.AttackCount)));
 
