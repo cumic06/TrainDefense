@@ -98,6 +98,53 @@ namespace TrainDefense.Game.TrackEvent
                 TrackEventType.ColdSnap),
         };
 
+        // 맵(StageData.Id)별로 어울리는 날씨. 바다(해안)에 모래폭풍이 부는 식의 어색한 조합을 막는다.
+        // 표에 없는 맵은 모든 날씨를 허용한다(새 맵을 추가해도 날씨가 끊기지 않게).
+        private const string STAGE_DESERT_ID = "50001";
+        private const string STAGE_COAST_ID = "50002";
+        private const string STAGE_FOREST_ID = "50003";
+        private const string STAGE_MINE_ID = "50004";
+        private const string STAGE_GOBLIN_FOREST_ID = "50005";
+
+        // 날씨로 취급하는 타입. 무작위 이벤트의 모래폭풍·한파도 여기에 들어 있어 맵 제한을 같이 받는다.
+        private static readonly HashSet<TrackEventType> WEATHER_LIKE_TYPES = new()
+        {
+            TrackEventType.Rain,
+            TrackEventType.Fog,
+            TrackEventType.Heatwave,
+            TrackEventType.Sandstorm,
+            TrackEventType.ColdSnap,
+        };
+
+        private static readonly Dictionary<string, HashSet<TrackEventType>> STAGE_ALLOWED_WEATHERS = new()
+        {
+            // 사막: 모래폭풍·폭염
+            { STAGE_DESERT_ID, new HashSet<TrackEventType> { TrackEventType.Sandstorm, TrackEventType.Heatwave } },
+            // 해안: 비·안개·폭염
+            { STAGE_COAST_ID, new HashSet<TrackEventType> { TrackEventType.Rain, TrackEventType.Fog, TrackEventType.Heatwave } },
+            // 숲: 비·안개·한파
+            { STAGE_FOREST_ID, new HashSet<TrackEventType> { TrackEventType.Rain, TrackEventType.Fog, TrackEventType.ColdSnap } },
+            // 광산: 비·안개·한파·폭염
+            { STAGE_MINE_ID, new HashSet<TrackEventType> { TrackEventType.Rain, TrackEventType.Fog, TrackEventType.ColdSnap, TrackEventType.Heatwave } },
+            // 고블린 숲: 숲과 같다
+            { STAGE_GOBLIN_FOREST_ID, new HashSet<TrackEventType> { TrackEventType.Rain, TrackEventType.Fog, TrackEventType.ColdSnap } },
+        };
+
+        /// <summary>
+        /// 이 맵에서 해당 이벤트가 나와도 되는지. 날씨류(비·안개·폭염·모래폭풍·한파)만 맵 표로 거르고,
+        /// 그 외 이벤트와 표에 없는 맵은 항상 허용한다.
+        /// </summary>
+        public static bool IsAllowedOnStage(string stageId, TrackEventType type)
+        {
+            if (!WEATHER_LIKE_TYPES.Contains(type))
+                return true;
+
+            if (string.IsNullOrEmpty(stageId) || !STAGE_ALLOWED_WEATHERS.TryGetValue(stageId, out HashSet<TrackEventType> allowed))
+                return true;
+
+            return allowed.Contains(type);
+        }
+
         private static TrackEventData _Create(string id, TrackEventType type, TrackEventCategory category,
                                               float magnitude, float subMagnitude, string iconId, string nameKey = null,
                                               int minStationCount = 0)

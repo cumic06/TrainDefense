@@ -16,7 +16,8 @@ namespace TrainDefense.Game.Manager
     /// 예약 시각이 되면 효과를 실행하며, 역 도착·게임 종료 때 진행 중인 효과를 강제로 끝낸다.
     /// 분류(TrackEventCategory)마다 칸이 따로 있어 한 구간에 동시에 걸릴 수 있다.
     ///   - 무작위: 구간마다 eventChancePerSegment 확률, 구간 도중 무작위 시각 (기존 방식)
-    ///   - 날씨:   누적 상점 수가 weatherStationInterval의 배수인 구간 — 출발과 동시에 확정, 역 도착까지
+    ///   - 날씨:   누적 상점 수가 weatherStationInterval의 배수인 구간 — 출발과 동시에 확정, 역 도착까지.
+    ///             지금 맵에 어울리는 날씨만 뽑는다(TrackEventDefaults.IsAllowedOnStage). 무작위 모래폭풍·한파도 같은 표로 거른다
     ///   - 갈림길: 날씨가 바뀐 구간과 누적 상점 수가 choiceStationInterval의 배수인 구간 — choiceTriggerTimeRatio 시점에 2지선다 팝업.
     ///             날씨 구간이면 그 날씨 짝(TrackEventDefaults.WeatherChoicePairs), 아니면 위험/안전 짝(RiskChoicePairs). 고른 효과는 역 도착까지
     /// 추첨 규칙은 TrackEventScheduler, 효과 내용은 ITrackEventEffect 구현체가 가진다.
@@ -103,6 +104,7 @@ namespace TrainDefense.Game.Manager
         private readonly List<TrackEventData> _riskDatas = new();
         private readonly List<ChoicePair> _weatherPairs = new();
         private readonly List<TrackEventData> _randomRollDatas = new();
+        private readonly List<TrackEventData> _stageWeatherDatas = new();
 
         private readonly TrackEventSlot _randomSlot = new(false);
         private readonly TrackEventSlot _weatherSlot = new(true);
@@ -287,16 +289,46 @@ namespace TrainDefense.Game.Manager
         }
 
         // 날씨와 같은 종류의 무작위 이벤트(모래폭풍·한파)는 그 구간에 뽑지 않는다 — 같은 효과가 겹쳐 커지는 것을 막는다.
+        // 맵에 어울리지 않는 날씨류 이벤트(해안의 모래폭풍 등)도 뺀다.
         private void _CollectRandomRollDatas()
         {
             _randomRollDatas.Clear();
             TrackEventType weatherType = _weatherSlot.IsActive ? _weatherSlot.Data.EventType : TrackEventType.None;
+            string stageId = _GetCurrentStageId();
 
             foreach (TrackEventData data in _availableDatas)
             {
-                if (data.EventType != weatherType)
-                    _randomRollDatas.Add(data);
+                if (data.EventType == weatherType)
+                    continue;
+
+                if (!TrackEventDefaults.IsAllowedOnStage(stageId, data.EventType))
+                    continue;
+
+                _randomRollDatas.Add(data);
             }
+        }
+
+        // 지금 달리는 맵의 날씨 후보만 모은다. 맵에 맞는 날씨가 하나도 없으면 비어 있고, 그 구간은 날씨 없이 지나간다.
+        private void _CollectStageWeatherDatas()
+        {
+            _stageWeatherDatas.Clear();
+            string stageId = _GetCurrentStageId();
+
+            foreach (TrackEventData data in _weatherDatas)
+            {
+                if (TrackEventDefaults.IsAllowedOnStage(stageId, data.EventType))
+                    _stageWeatherDatas.Add(data);
+            }
+        }
+
+        private static string _GetCurrentStageId()
+        {
+            StageManager stageManager = StageManager.Instance;
+
+            if (stageManager == null)
+                return null;
+
+            return stageManager.CurrentStageData?.Id;
         }
 
         private void _OnInspectionStart(InspectionStartEvent _)
@@ -335,7 +367,8 @@ namespace TrainDefense.Game.Manager
 
         private void _StartWeather(int stationCount)
         {
-            TrackEventData weather = _weatherScheduler.PickOne(_weatherDatas, stationCount);
+            _CollectStageWeatherDatas();
+            TrackEventData weather = _weatherScheduler.PickOne(_stageWeatherDatas, stationCount);
 
             if (weather == null)
                 return;
