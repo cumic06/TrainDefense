@@ -62,7 +62,22 @@ namespace TrainDefense.Game.Tutorial
 
             if (!string.IsNullOrEmpty(json))
             {
-                var data = JsonUtility.FromJson<SerializableData>(json);
+                // 세이브 로드는 외부 경계 — 업데이트로 형식이 바뀌었거나 손상된 세이브가 예외를 던지면
+                // UserDataManager.Start()가 중간에 끊겨 TutorialSaveData가 null로 남고, 그걸 기다리는
+                // IntroManager(WaitUntil)가 영영 진행하지 못해 게임이 멈춘다. 읽지 못하면 빈 진행으로 시작한다.
+                SerializableData data = null;
+                try
+                {
+                    data = JsonUtility.FromJson<SerializableData>(json);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"[TutorialSaveData] 세이브를 읽지 못해 튜토리얼 진행을 초기 상태로 시작합니다: {json}");
+                    Debug.LogException(e);
+                }
+
+                if (data == null)
+                    return saveData;
 
                 if (data.completedSequenceIds != null)
                     saveData._completedSequenceIds = new HashSet<string>(data.completedSequenceIds);
