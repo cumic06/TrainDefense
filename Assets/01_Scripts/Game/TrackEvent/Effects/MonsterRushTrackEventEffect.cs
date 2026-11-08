@@ -4,12 +4,12 @@ namespace TrainDefense.Game.TrackEvent.Effects
 {
     /// <summary>
     /// 몬스터 러시 — 지속 시간 동안 현재 맵에서 제일 약한 몬스터를 평소 소환 위에 더 소환한다.
-    /// magnitude = 러시 동안의 전체 등장 배율(2.5면 평소 소환 1 + 약한 몬스터 1.5). 화면은 붐비지만 체력이 낮은 몬스터라
+    /// magnitude = 러시 동안의 전체 등장 배율(1.4면 평소 소환 1 + 약한 몬스터 0.4). 화면은 붐비지만 체력이 낮은 몬스터라
     /// 걸린 판과 안 걸린 판의 압박 차이가 작다. 소환기 주기는 건드리지 않으므로 End에서 되돌릴 것이 없다.
     /// </summary>
     public class MonsterRushTrackEventEffect : ITrackEventEffect
     {
-        private const float DEFAULT_SPAWN_MULTIPLIER = 2.5f;
+        private const float DEFAULT_SPAWN_MULTIPLIER = 1.4f;
 
         private TrackEventExtraSpawner _extraSpawner;
 

@@ -50,12 +50,12 @@ namespace TrainDefense.Game.Manager
         [BoxGroup("Roll")]
         [Range(0f, 1f)]
         [Tooltip("전투 구간 하나에서 무작위 이벤트가 터질 확률.")]
-        private float eventChancePerSegment = 0.35f;
+        private float eventChancePerSegment = 0.25f;
 
         [SerializeField]
         [BoxGroup("Roll")]
         [Tooltip("이 누적 상점 수 전에는 이벤트를 아예 뽑지 않는다(튜토리얼·첫 역 보호). 날씨·선택에도 적용된다.")]
-        private int firstEventStationCount = 2;
+        private int firstEventStationCount = 5;
 
         [SerializeField]
         [BoxGroup("Roll")]
@@ -73,13 +73,13 @@ namespace TrainDefense.Game.Manager
         [BoxGroup("Weather")]
         [Min(0)]
         [Tooltip("누적 상점 수가 이 값의 배수인 구간마다 날씨가 확정으로 바뀐다. 0이면 날씨 없음.")]
-        private int weatherStationInterval = 3;
+        private int weatherStationInterval = 4;
 
         [SerializeField]
         [BoxGroup("Choice")]
         [Min(0)]
         [Tooltip("누적 상점 수가 이 값의 배수인 구간마다 갈림길(위험/안전 짝)이 확정으로 뜬다. 날씨가 바뀐 구간은 이 값과 무관하게 날씨 짝이 뜬다. 0이면 날씨 없는 갈림길 없음.")]
-        private int choiceStationInterval = 2;
+        private int choiceStationInterval = 3;
 
         [SerializeField]
         [BoxGroup("Choice")]

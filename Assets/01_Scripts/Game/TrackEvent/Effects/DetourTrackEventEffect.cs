@@ -4,12 +4,12 @@ namespace TrainDefense.Game.TrackEvent.Effects
 {
     /// <summary>
     /// 험한 길(위험 카드) — 역 도착까지 평소 확률의 몬스터를 더 소환하고, 그동안 처치 골드·경험치를 올린다.
-    /// magnitude = 몬스터 등장 배율(1.3이면 평소의 30%를 더 소환), subMagnitude = 처치 골드·경험치 배율.
+    /// magnitude = 몬스터 등장 배율(1.15면 평소의 15%를 더 소환), subMagnitude = 처치 골드·경험치 배율.
     /// 빙판 미끄럼(한파 갈림길)은 같은 효과에서 경험치를 빼고 골드만 올린다.
     /// </summary>
     public class DetourTrackEventEffect : ITrackEventEffect
     {
-        private const float DEFAULT_SPAWN_MULTIPLIER = 1.3f;
+        private const float DEFAULT_SPAWN_MULTIPLIER = 1.15f;
         private const float DEFAULT_REWARD_MULTIPLIER = 1.5f;
 
         private readonly bool _isExpRewarded;

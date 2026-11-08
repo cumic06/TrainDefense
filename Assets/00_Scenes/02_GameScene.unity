@@ -10709,119 +10709,158 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Manager.TrackEventManager
   dontDestroyOnLoad: 0
   isEnabled: 1
-  eventChancePerSegment: 0.35
-  firstEventStationCount: 2
+  eventChancePerSegment: 0.25
+  firstEventStationCount: 5
   minTriggerTimeRatio: 0.2
   maxTriggerTimeRatio: 0.6
+  weatherStationInterval: 4
+  choiceStationInterval: 3
+  choiceTriggerTimeRatio: 0.3
   eventDatas:
   - id: MonsterRush
     eventType: 1
+    category: 0
     weight: 1
     minStationCount: 5
     duration: 12
-    magnitude: 2.5
+    magnitude: 1.4
+    subMagnitude: 1
     nameKey: TrackEvent_MonsterRush_Name
     descriptionKey: TrackEvent_MonsterRush_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: EliteAmbush
     eventType: 2
+    category: 0
     weight: 0
     minStationCount: 8
     duration: 0
     magnitude: 2
+    subMagnitude: 1
     nameKey: TrackEvent_EliteAmbush_Name
     descriptionKey: TrackEvent_EliteAmbush_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: Sandstorm
     eventType: 3
+    category: 0
     weight: 1
     minStationCount: 5
     duration: 15
     magnitude: 0.8
+    subMagnitude: 1
     nameKey: TrackEvent_Sandstorm_Name
     descriptionKey: TrackEvent_Sandstorm_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: SupplyDrop
     eventType: 10
+    category: 0
     weight: 1
     minStationCount: 2
     duration: 8
     magnitude: 1
+    subMagnitude: 1
     nameKey: TrackEvent_SupplyDrop_Name
     descriptionKey: TrackEvent_SupplyDrop_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: GoldenMonster
     eventType: 11
+    category: 0
     weight: 1
     minStationCount: 2
     duration: 0
     magnitude: 10
+    subMagnitude: 1
     nameKey: TrackEvent_GoldenMonster_Name
     descriptionKey: TrackEvent_GoldenMonster_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: Overdrive
     eventType: 12
+    category: 0
     weight: 1
     minStationCount: 2
     duration: 10
     magnitude: 1.5
+    subMagnitude: 1
     nameKey: TrackEvent_Overdrive_Name
     descriptionKey: TrackEvent_Overdrive_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: SupportBombard
     eventType: 13
+    category: 0
     weight: 1
     minStationCount: 2
     duration: 8
     magnitude: 0.5
+    subMagnitude: 1
     nameKey: TrackEvent_SupportBombard_Name
     descriptionKey: TrackEvent_SupportBombard_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: ExpBoost
     eventType: 15
+    category: 0
     weight: 1
     minStationCount: 2
     duration: 15
     magnitude: 1.5
+    subMagnitude: 1
     nameKey: TrackEvent_ExpBoost_Name
     descriptionKey: TrackEvent_ExpBoost_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: Tailwind
     eventType: 16
+    category: 0
     weight: 1
     minStationCount: 2
     duration: 0
     magnitude: 0.2
+    subMagnitude: 1
     nameKey: TrackEvent_Tailwind_Name
     descriptionKey: TrackEvent_Tailwind_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: RepairStop
     eventType: 17
+    category: 0
     weight: 1
     minStationCount: 2
     duration: 0
     magnitude: 0.15
+    subMagnitude: 1
     nameKey: TrackEvent_RepairStop_Name
     descriptionKey: TrackEvent_RepairStop_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: ColdSnap
     eventType: 18
+    category: 0
     weight: 1
     minStationCount: 2
     duration: 10
     magnitude: 0.85
+    subMagnitude: 1
     nameKey: TrackEvent_ColdSnap_Name
     descriptionKey: TrackEvent_ColdSnap_Desc
     icon: {fileID: 0}
+    iconId: 
   - id: FreeUpgrade
     eventType: 19
+    category: 0
     weight: 1
     minStationCount: 2
     duration: 0
     magnitude: 1
+    subMagnitude: 1
     nameKey: TrackEvent_FreeUpgrade_Name
     descriptionKey: TrackEvent_FreeUpgrade_Desc
     icon: {fileID: 0}
+    iconId: 
 --- !u!1 &505118148
 GameObject:
   m_ObjectHideFlags: 0
@@ -13337,6 +13376,7 @@ MonoBehaviour:
   attackScale: 0.05
   goldScale: 0.02
   stationInspectionTimeIncrement: 0.7
+  stationArrivalRecovery: 0
 --- !u!1 &1398835984
 GameObject:
   m_ObjectHideFlags: 0

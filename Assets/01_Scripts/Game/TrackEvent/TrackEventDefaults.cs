@@ -45,13 +45,13 @@ namespace TrainDefense.Game.TrackEvent
             new ChoicePair(
                 _Create("risk_elite_ambush", TrackEventType.EliteAmbush, TrackEventCategory.Choice, 2f, 1f, null, ELITE_AMBUSH_NAME_KEY, ELITE_AMBUSH_FIRST_STATION_COUNT),
                 _Create("safe_elite_ambush", TrackEventType.SafePass, TrackEventCategory.Choice, 1f, 1f, null)),
-            // 역 도착까지 몬스터 +30%, 처치 골드·경험치 +50% / 안전한 길
+            // 역 도착까지 몬스터 +15%, 처치 골드·경험치 +50% / 안전한 길
             new ChoicePair(
-                _Create("risk_detour", TrackEventType.DetourChoice, TrackEventCategory.Choice, 1.3f, 1.5f, null),
+                _Create("risk_detour", TrackEventType.DetourChoice, TrackEventCategory.Choice, 1.15f, 1.5f, null),
                 _Create("safe_detour", TrackEventType.SafePass, TrackEventCategory.Choice, 1f, 1f, null)),
-            // 남은 구간 시간 -30%(EngineOverloadTrackEventEffect.SHORTEN_RATIO), 역 도착까지 몬스터 +50%, 처치 골드·경험치 ×1.8 / 정속 운행
+            // 남은 구간 시간 -30%(EngineOverloadTrackEventEffect.SHORTEN_RATIO), 역 도착까지 몬스터 +25%, 처치 골드·경험치 ×1.8 / 정속 운행
             new ChoicePair(
-                _Create("risk_engine_overload", TrackEventType.EngineOverload, TrackEventCategory.Choice, 1.5f, 1.8f, null),
+                _Create("risk_engine_overload", TrackEventType.EngineOverload, TrackEventCategory.Choice, 1.25f, 1.8f, null),
                 _Create("safe_engine_overload", TrackEventType.SafePass, TrackEventCategory.Choice, 1f, 1f, null)),
         };
 
@@ -91,9 +91,9 @@ namespace TrainDefense.Game.TrackEvent
                 _heatwaveOverheat,
                 _Create("weather_heatwave_elites", TrackEventType.HeatwaveElites, TrackEventCategory.Choice, 2f, 1.08f, null, null, HEATWAVE_ELITE_FIRST_STATION_COUNT),
                 TrackEventType.Heatwave),
-            // 한파(위험 고르기): 둘 다 처치 골드 +20%, 몬스터 +25% / 포탑 사거리 -8%
+            // 한파(위험 고르기): 둘 다 처치 골드 +20%, 몬스터 +10% / 포탑 사거리 -8%
             new ChoicePair(
-                _Create("weather_coldsnap_ice_slide", TrackEventType.ColdSnapIceSlide, TrackEventCategory.Choice, 1.25f, 1.2f, null),
+                _Create("weather_coldsnap_ice_slide", TrackEventType.ColdSnapIceSlide, TrackEventCategory.Choice, 1.1f, 1.2f, null),
                 _Create("weather_coldsnap_blizzard_push", TrackEventType.ColdSnapBlizzardPush, TrackEventCategory.Choice, 0.92f, 1.2f, null),
                 TrackEventType.ColdSnap),
         };
