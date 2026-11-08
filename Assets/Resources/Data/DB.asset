@@ -2124,11 +2124,11 @@ MonoBehaviour:
     row: 2
     col: -1
     tiers:
-    - valuePerLevel: 10
+    - valuePerLevel: 5
       maxLevel: 5
       costPerLevel: 5
       costGrowthPercent: 17
-    - valuePerLevel: 10
+    - valuePerLevel: 5
       maxLevel: 5
       costPerLevel: 10
       costGrowthPercent: 17
@@ -2224,17 +2224,9 @@ MonoBehaviour:
     row: 0
     col: 0
     tiers:
-    - valuePerLevel: 5
-      maxLevel: 2
-      costPerLevel: 15
-      costGrowthPercent: 17
-    - valuePerLevel: 5
-      maxLevel: 3
+    - valuePerLevel: 1
+      maxLevel: 1
       costPerLevel: 30
-      costGrowthPercent: 17
-    - valuePerLevel: 5
-      maxLevel: 3
-      costPerLevel: 46
       costGrowthPercent: 17
     prerequisites: []
     category: 1

@@ -76,19 +76,19 @@ namespace TrainDefense.Game.UI
         // 이번 상점의 첫 리롤 비용. 방문할수록 올라 후반에도 리롤이 공짜처럼 되지 않는다.
         public int GetFirstRerollCost() => rerollBaseCost + rerollCostPerShopVisit * _GetShopVisitCount();
 
-        // 스킬 트리 할인을 적용한 첫 리롤 실제 비용.
-        public int GetDiscountedFirstRerollCost(int firstRerollCost)
+        // 스킬 트리 '새로고침 할인'을 적용한 실제 비용. 이번 상점의 모든 리롤에 같은 비율로 적용된다.
+        public int ApplyRerollDiscount(int baseCost)
         {
             float discountPercent = SkillTreeManager.Instance != null
-                ? SkillTreeManager.Instance.GetValue(SkillTreePassiveType.FirstRerollDiscount)
+                ? SkillTreeManager.Instance.GetValue(SkillTreePassiveType.RerollDiscount)
                 : 0f;
 
-            return Mathf.RoundToInt(firstRerollCost * (1f - discountPercent / 100f));
+            return Mathf.Max(0, Mathf.RoundToInt(baseCost * (1f - Mathf.Clamp(discountPercent, 0f, 100f) / 100f)));
         }
 
-        // 리롤 후 다음 비용. 할인은 첫 리롤에만 적용되므로 할인가를 냈어도 할인 전 첫 비용을 기준으로 오른다.
-        public int GetNextRerollCost(int paidCost, int firstRerollCost)
-            => Mathf.Max(paidCost, firstRerollCost) + Mathf.RoundToInt(firstRerollCost * rerollCostIncreaseRatio);
+        // 리롤 후 다음 할인 전 비용. 할인은 표시·차감 때 따로 적용하므로 오르는 폭은 할인과 무관하다.
+        public int GetNextRerollBaseCost(int currentBaseCost, int firstRerollCost)
+            => currentBaseCost + Mathf.RoundToInt(firstRerollCost * rerollCostIncreaseRatio);
 
         // 영구 강화의 무료 새로고침 횟수. "레벨당 +1회"라 정수로 쓴다.
         public int GetFreeRerollCount()

@@ -150,8 +150,8 @@ namespace TrainDefense.Game
             // 맵별 엘리트 재화 배율 (빠른·약한 몹 맵은 낮게, 느린·강한 몹 맵은 높게 → 맵별 재화 획득률 균등)
             float mapMultiplier = StageManager.Instance != null ? StageManager.Instance.CurrentStageData.EliteRewardMultiplier : 1f;
             int reward = Mathf.Max(1, Mathf.RoundToInt(_eliteCoinPerElite * mapMultiplier));
-            reward += _RollEliteCoinBonus(reward);
-            AddEliteCoin(_RollDifficultyCoin(reward));
+            // 스킬 트리 '엘리트 코인' 칸의 추가분은 맵·난이도 배율과 무관하게 정확히 +N개다.
+            AddEliteCoin(_RollDifficultyCoin(reward) + _GetEliteCoinFlatBonus());
         }
 
         private static float _GetDifficultyCoinMultiplier()
@@ -165,12 +165,12 @@ namespace TrainDefense.Game
             return _RollFractionalAmount(amount * _GetDifficultyCoinMultiplier());
         }
 
-        // 스킬 트리 '엘리트 코인' 노드의 추가 재화. 보상이 2~6이라 반올림하면 낮은 %가 묻힌다.
-        private static int _RollEliteCoinBonus(int reward)
+        // 스킬 트리 '엘리트 코인' 노드의 추가 재화(엘리트 처치마다 +N개).
+        private static int _GetEliteCoinFlatBonus()
         {
             if (SkillTreeManager.Instance == null) return 0;
 
-            return _RollFractionalAmount(reward * SkillTreeManager.Instance.GetValue(SkillTreePassiveType.EliteCoinBonusPercent) / 100f);
+            return Mathf.Max(0, Mathf.RoundToInt(SkillTreeManager.Instance.GetValue(SkillTreePassiveType.EliteCoinBonusFlat)));
         }
 
         // 소수 부분은 확률로 지급해 기댓값을 맞춘다. 소수 부분이 없으면 난수를 쓰지 않는다.

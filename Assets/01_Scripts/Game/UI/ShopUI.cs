@@ -219,10 +219,11 @@ namespace TrainDefense.Game.UI
         private void _OnInspectionStart(InspectionStartEvent inspectionStartEvent)
         {
             // 역 도착 시점에 새로 추첨. (상점은 역당 1회 — 닫으면 바로 출발이라 재오픈은 없다)
-            // 리롤 비용은 상점이 열릴 때마다(맵 선택 상점 포함) 이번 방문의 할인된 첫 비용으로 초기화된다.
+            // 리롤 비용은 상점이 열릴 때마다(맵 선택 상점 포함) 이번 방문의 첫 비용으로 초기화된다.
+            // _currentRerollCost는 할인 전 기준값이고, 스킬 트리 할인은 표시·차감할 때 _GetDiscountedRerollCost로 적용한다.
             _firstRerollCost = offerPricing.GetFirstRerollCost();
             // 이어하기 직후 첫 열기는 저장 당시 리롤 상태를 이어받는다 — 떠나던 상점 그대로.
-            _currentRerollCost = _pendingRerollCost ?? offerPricing.GetDiscountedFirstRerollCost(_firstRerollCost);
+            _currentRerollCost = _pendingRerollCost ?? _firstRerollCost;
             _freeRerollsLeft = _pendingFreeRerollsLeft ?? offerPricing.GetFreeRerollCount();
             _pendingRerollCost = null;
             _pendingFreeRerollsLeft = null;
@@ -740,11 +741,13 @@ namespace TrainDefense.Game.UI
             {
                 // 코인 부족 시엔 버튼 interactable이 이미 꺼져 있지만, 방어적으로 다시 확인한다.
                 // 차감·검증 = UserDataManager 단일 경로 (상점 슬롯 구매와 동일).
-                if (UserDataManager.Instance == null || !UserDataManager.Instance.TrySpendCoin(_currentRerollCost))
+                int discountedCost = _GetDiscountedRerollCost();
+
+                if (UserDataManager.Instance == null || !UserDataManager.Instance.TrySpendCoin(discountedCost))
                     return;
 
-                spentCoin = _currentRerollCost;
-                _currentRerollCost = offerPricing.GetNextRerollCost(spentCoin, _firstRerollCost);
+                spentCoin = discountedCost;
+                _currentRerollCost = offerPricing.GetNextRerollBaseCost(_currentRerollCost, _firstRerollCost);
             }
 
             _RebuildOfferSlots();
@@ -763,6 +766,9 @@ namespace TrainDefense.Game.UI
             _ApplyRerollUI(changeCoinEvent.AfterCoin);
         }
 
+        // 스킬 트리 '새로고침 할인'을 적용한 지금 리롤 비용.
+        private int _GetDiscountedRerollCost() => offerPricing.ApplyRerollDiscount(_currentRerollCost);
+
         private void _RefreshRerollUI()
         {
             _ApplyRerollUI(UserDataManager.Instance != null ? UserDataManager.Instance.Coin : 0);
@@ -772,7 +778,8 @@ namespace TrainDefense.Game.UI
         private void _ApplyRerollUI(int coin)
         {
             bool hasFreeReroll = _freeRerollsLeft > 0;
-            bool canReroll = hasFreeReroll || coin >= _currentRerollCost;
+            int rerollCost = _GetDiscountedRerollCost();
+            bool canReroll = hasFreeReroll || coin >= rerollCost;
 
             if (rerollLabelText != null)
             {
@@ -784,7 +791,7 @@ namespace TrainDefense.Game.UI
                 string rerollLabel = LocalizeHelper.GetByKey("UI_Reroll", _rerollLabelPrefix);
 
                 // 코인 부족은 상점 카드처럼 금액만 빨갛게 — 버튼 이름까지 물들이지 않는다.
-                string costText = $"{_currentRerollCost.ToCommaString()}$";
+                string costText = $"{rerollCost.ToCommaString()}$";
 
                 if (!canReroll)
                     costText = $"<color=#{ColorUtility.ToHtmlStringRGBA(rerollInsufficientColor)}>{costText}</color>";
