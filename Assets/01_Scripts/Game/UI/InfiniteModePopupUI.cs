@@ -20,7 +20,7 @@ namespace TrainDefense.Game.UI
         private const string TITLE_KEY = "InfiniteMode_Title";
         private const string TITLE_FALLBACK = "종착역에 도착했습니다";
         private const string DESCRIPTION_KEY = "InfiniteMode_Desc";
-        private const string DESCRIPTION_FALLBACK = "그만두면 클리어로 기록됩니다. 계속하면 적이 점점 더 강해집니다.";
+        private const string DESCRIPTION_FALLBACK = "무한모드로 계속할까요? 적이 점점 더 강해집니다.";
         private const string CONTINUE_KEY = "InfiniteMode_Continue";
         private const string CONTINUE_FALLBACK = "계속하기";
         private const string FINISH_KEY = "InfiniteMode_Finish";
