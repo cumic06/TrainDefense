@@ -4,9 +4,9 @@ using UnityEngine;
 namespace TrainDefense.Game
 {
     /// <summary>
-    /// 블랙홀 반복음. 블랙홀 총알이 날아가는 동안과 착탄 장판이 남아 있는 동안 계속 들리고, 마지막 하나가 사라지면 멈춘다.
+    /// 블랙홀 반복음. 착탄 장판이 생성된 뒤 남아 있는 동안 계속 들리고, 마지막 하나가 사라지면 멈춘다.
     /// SoundManager는 같은 클립을 소스 하나로 다루므로, 블랙홀 여러 개가 겹쳐도 먼저 사라진 쪽이 소리를 끊지 않게 개수를 센다.
-    /// 총알(BlackHoleProjectileSkin)과 장판(BlackHoleField)이 각자 Acquire/Release를 한 번씩 짝지어 부른다.
+    /// 장판(BlackHoleField)이 Init에서 Acquire, 붕괴·비활성 때 Release를 한 번씩 짝지어 부른다.
     /// </summary>
     public static class BlackHoleSoundLoop
     {

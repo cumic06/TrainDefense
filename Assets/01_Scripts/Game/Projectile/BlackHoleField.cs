@@ -42,6 +42,12 @@ namespace TrainDefense.Game
         [Tooltip("한 번 커졌다 작아지는 데 걸리는 시간(초).")]
         private float pulseDuration = 0.8f;
         [SerializeField]
+        [Tooltip("착탄 직후 그림이 이 비율(기본 크기 대비)의 작은 점에서 시작해 커지며 소환된다.")]
+        private float growStartScale = 0.15f;
+        [SerializeField]
+        [Tooltip("작은 점에서 기본 크기까지 커지는 데 걸리는 시간(초). 0이면 바로 기본 크기로 나타난다.")]
+        private float growDuration = 0.35f;
+        [SerializeField]
         [Tooltip("개조 없는 기본 블랙홀 장판 그림.")]
         private Sprite blackHoleSprite;
         [SerializeField]
@@ -56,6 +62,7 @@ namespace TrainDefense.Game
         private SpriteRenderer _visualRenderer;
         private Vector3 _visualBaseScale = Vector3.one;
         private float _pulseElapsedTime;
+        private float _growElapsedTime;
         private TurretTrain _owner;
         private BlackHoleModifier _modifier;
         private Vector2 _driftDirection;
@@ -75,10 +82,11 @@ namespace TrainDefense.Game
             _modifier = null;
             _elapsedTime = 0f;
             _pulseElapsedTime = 0f;
+            _growElapsedTime = 0f;
 
-            // 풀 재사용 시 이전 맥동 크기가 남지 않게 원래 크기로 되돌린다.
+            // 풀 재사용 시 이전 맥동 크기가 남지 않게 소환 시작 크기로 되돌린다.
             if (visual != null)
-                visual.localScale = _visualBaseScale;
+                visual.localScale = _visualBaseScale * _GetGrowScale();
         }
 
         // 수명 전에 풀로 돌아가는 경우(판 종료 등)에도 반복음 몫을 내려놓는다.
@@ -124,6 +132,7 @@ namespace TrainDefense.Game
                 return;
 
             visual.Rotate(0f, 0f, visualSpinSpeed * Time.deltaTime);
+            _growElapsedTime += Time.deltaTime;
             _UpdatePulse();
         }
         #endregion
@@ -138,10 +147,11 @@ namespace TrainDefense.Game
             _driftDirection = flightDirection.sqrMagnitude > 0f ? flightDirection.normalized : Vector2.right;
             _lifetime = _modifier.LifetimeOverride > 0f ? _modifier.LifetimeOverride : duration;
             _elapsedTime = 0f;
+            _growElapsedTime = 0f;
             _isActive = true;
             _ApplyVisualSprite();
 
-            // 날아오던 총알의 반복음을 장판이 이어받는다(총알은 이 직후 풀로 돌아가며 자기 몫을 내려놓는다).
+            // 블랙홀 반복음은 장판이 생성된 이 시점부터 난다(날아가는 총알은 소리를 내지 않는다).
             if (!_isHoldingSound)
             {
                 _isHoldingSound = true;
@@ -174,14 +184,30 @@ namespace TrainDefense.Game
 
         // 장판이 깔린 동안 그림이 사인 곡선으로 커졌다 작아진다. 콜라이더(당기는 범위)는 그대로 두고 그림만 움직인다.
         // 스케일드 시간이라 일시정지·상점(timeScale 0) 동안에는 맥동도 멈춘다.
+        // 소환 직후엔 작은 점에서 커지는 배율(_GetGrowScale)이 곱해진다.
         private void _UpdatePulse()
         {
-            if (pulseScaleAmount <= 0f || pulseDuration <= 0f)
-                return;
+            float pulse = 1f;
 
-            _pulseElapsedTime += Time.deltaTime;
-            float wave = Mathf.Sin(_pulseElapsedTime / pulseDuration * Mathf.PI * 2f);
-            visual.localScale = _visualBaseScale * (1f + wave * pulseScaleAmount);
+            if (pulseScaleAmount > 0f && pulseDuration > 0f)
+            {
+                _pulseElapsedTime += Time.deltaTime;
+                pulse += Mathf.Sin(_pulseElapsedTime / pulseDuration * Mathf.PI * 2f) * pulseScaleAmount;
+            }
+
+            visual.localScale = _visualBaseScale * (_GetGrowScale() * pulse);
+        }
+
+        // 작은 점(growStartScale) → 기본 크기(1). 끝에서 감속(ease-out)해 '빨려 들어가듯 펼쳐지는' 느낌을 낸다.
+        private float _GetGrowScale()
+        {
+            if (growDuration <= 0f)
+                return 1f;
+
+            float progress = Mathf.Clamp01(_growElapsedTime / growDuration);
+            float eased = 1f - (1f - progress) * (1f - progress) * (1f - progress);
+
+            return Mathf.Lerp(growStartScale, 1f, eased);
         }
 
         private float _GetWorldRadius() => _area.radius * Mathf.Abs(transform.lossyScale.x);

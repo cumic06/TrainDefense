@@ -22,6 +22,9 @@ namespace TrainDefense.Game.Manager
         private const float ROW_SPACING = 4f;
         private const int FONT_SIZE = 22;
 
+        // 테스트용 블랙홀 포탑(DB.asset Train 30008)
+        private const string BLACK_HOLE_TURRET_TRAIN_ID = "30008";
+
         #endregion
 
         #region Fields
@@ -66,6 +69,10 @@ namespace TrainDefense.Game.Manager
             // 난이도 전체 해금 (다음에 로비 난이도 팝업을 열 때 반영된다)
             if (Input.GetKeyDown(KeyCode.U))
                 DifficultyStageSelection.UnlockAllForCheat();
+
+            // 테스트용 블랙홀 포탑 한 칸 추가
+            if (Input.GetKeyDown(KeyCode.B))
+                _SpawnBlackHoleTurret();
         }
 
         private void OnDisable()
@@ -102,6 +109,41 @@ namespace TrainDefense.Game.Manager
         public static bool IsPointerOverPanel(Vector2 screenPosition)
         {
             return _isPanelVisible && _panelScreenRect.Contains(screenPosition);
+        }
+
+        private void _SpawnBlackHoleTurret()
+        {
+            MainTrain mainTrain = _GetSceneMainTrain();
+
+            if (mainTrain == null || DatabaseManager.Instance == null)
+            {
+                Debug.LogWarning("[Cheat] 블랙홀 포탑 추가 실패: MainTrain/DatabaseManager 없음");
+
+                return;
+            }
+
+            TrainData trainData = DatabaseManager.Instance.GetTrainData(BLACK_HOLE_TURRET_TRAIN_ID);
+
+            if (trainData == null)
+            {
+                Debug.LogWarning($"[Cheat] 블랙홀 포탑 추가 실패: TrainData {BLACK_HOLE_TURRET_TRAIN_ID} 없음");
+
+                return;
+            }
+
+            mainTrain.SpawnTrain(trainData);
+            Debug.Log("[Cheat] 블랙홀 포탑 추가");
+        }
+
+        // TrainManager.MainTrain은 스폰 전엔 프리팹 에셋을 가리키므로 씬 인스턴스인지까지 본다.
+        private static MainTrain _GetSceneMainTrain()
+        {
+            if (TrainManager.Instance == null)
+                return null;
+
+            MainTrain mainTrain = TrainManager.Instance.MainTrain;
+
+            return mainTrain != null && mainTrain.gameObject.scene.IsValid() ? mainTrain : null;
         }
 
         private void _ToggleStationArrivalRecovery()
