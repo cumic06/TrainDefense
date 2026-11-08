@@ -3,7 +3,7 @@
 (아직 등록된 프로젝트 규칙이 없습니다 — rules\ 폴더에 .md 파일을 추가하세요.)
 
 
-## 프로젝트 지도 (앱 자동 생성 2026-11-08 23:34 · 파일 3402개 · 폴더 381개)
+## 프로젝트 지도 (앱 자동 생성 2026-11-08 23:52 · 파일 3403개 · 폴더 381개)
 
 구조 파악은 이 지도로 끝내고, 지도에 없는 부분만 열어 본다. 폴더를 처음부터 다시 훑거나 파일을 전수로 읽지 않는다.
 지도의 각 줄은 파일 앞부분의 첫 주석·선언 한 줄일 뿐이다 — 세부 동작이 필요한 파일만 골라 연다.
@@ -149,14 +149,12 @@
 - AnalyticsConsent.cs — enum AnalyticsConsentState — Analytics 데이터 수집 동의 상태를 PlayerPrefs에 영속화한다.
 - PrivacyPolicyAgreement.cs — class PrivacyPolicyAgreement — 개인정보처리방침 필수 확인("읽고 이해했습니다") 여부를 PlayerPrefs에 영속화한다.
 
-### Assets/01_Scripts/Game/Analytics/Editor (코드 1)
+### Assets/01_Scripts/Game/Analytics/Editor (코드 2)
 - AnalyticsConsentDebugMenu.cs — class AnalyticsConsentDebugMenu — Analytics 동의 상태 디버그 메뉴. 동의 팝업을 다시 띄워 테스트할 때 사용한다.
+- AndroidAdIdPermissionRemover.cs — class AndroidAdIdPermissionRemover : IPostGenerateGradleAndroidProject — 게임은 광고를 쓰지 않지만 Firebase Analytics(play-services-measurement-api)가
 
 ### Assets/01_Scripts/Game/Controller (코드 2)
 - CameraController.cs — class CameraController : MonoBehaviour
-- MapController.cs — class MapController : MonoBehaviour — 배경 타일 2장을 왼쪽으로 흘려보내며 무한 스크롤을 만든다.
-
-### Assets/01_Scripts/Game/Datas (코드 23)
 
 (지도 12KB 상한으로 이하 생략 — 나머지는 필요할 때 직접 ls 한다)
 <!-- GGD:END -->
