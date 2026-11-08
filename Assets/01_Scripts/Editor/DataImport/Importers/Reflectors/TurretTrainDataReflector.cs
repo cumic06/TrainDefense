@@ -54,8 +54,8 @@ namespace TrainDefense.Editor.DataImport.Importers.Reflectors
 				"CannonProjectile"      => SoundType.CannonTurretTrainAttack,
 				"CannonShellProjectile" => SoundType.CannonTurretTrainAttack,
 				"SniperProjectile"      => SoundType.SniperTurretTrainAttack,
-				// 블랙홀 전용 소리가 아직 없어 같은 곡사 발사음인 박격포 소리를 쓴다.
-				"BlackHoleProjectile"   => SoundType.CannonTurretTrainAttack,
+				// 블랙홀은 발사음 대신 투사체·장판이 살아 있는 동안 반복음(BlackHoleSoundLoop)을 낸다.
+				"BlackHoleProjectile"   => SoundType.None,
 				_                       => SoundType.None
 			};
 			SetPrivateField(t, target, "attackSoundType", soundType);

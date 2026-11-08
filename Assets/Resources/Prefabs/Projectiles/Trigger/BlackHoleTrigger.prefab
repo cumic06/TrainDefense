@@ -113,7 +113,11 @@ MonoBehaviour:
   pullSpeed: 5
   duration: 2.5
   visual: {fileID: 7157917675778808700}
-  visualSpinSpeed: -240
+  visualSpinSpeed: -480
+  pulseScaleAmount: 0.15
+  pulseDuration: 0.8
+  blackHoleSprite: {fileID: 21300000, guid: c5c86966d8687444b91a0151c695404c, type: 3}
+  whiteHoleSprite: {fileID: -2384450623947643008, guid: 4467db96946e8d4478e597173cd4fd7a, type: 3}
   collapseTriggerPrefab: {fileID: 2703112127298443543, guid: 47ca7141d3cd2a344a5e6421d53813be, type: 3}
 --- !u!1 &5393208518082042983
 GameObject:

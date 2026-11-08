@@ -32,6 +32,8 @@ namespace TrainDefense.Game.Datas
         SFX_Game_NewMonster = 310,
         SFX_Game_Heal = 311,
         SFX_Game_LightningStrike = 312,
+        // 블랙홀이 날아가서 장판이 사라질 때까지 반복 재생된다(BlackHoleSoundLoop).
+        BlackHoleLoop = 313,
 
         CannonTriggerSound = 401,
         MissleTriggerSound = 402,

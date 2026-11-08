@@ -795,7 +795,7 @@ MonoBehaviour:
     iconId: Weapon_IMT_03_UI
     icon: {fileID: 6502246173176074006, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 0
-    attackSoundType: 306
+    attackSoundType: 0
     description: Train_30008_Desc
     trainStatusData:
       MaxHp: 200
@@ -819,7 +819,7 @@ MonoBehaviour:
     iconId: Weapon_IMT_03_UI
     icon: {fileID: 6502246173176074006, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 0
-    attackSoundType: 306
+    attackSoundType: 0
     description: 
     trainStatusData:
       MaxHp: 200

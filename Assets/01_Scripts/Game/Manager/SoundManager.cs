@@ -421,6 +421,17 @@ namespace TrainDefense.Game
             }
         }
 
+        public bool IsSFXPlaying(SoundType type)
+        {
+            var db = _GetSoundDB();
+            if (db == null)
+                return false;
+
+            var data = db.GetSoundData(type);
+
+            return data != null && FindActiveSfxSourceByClip(data.Clip) != null;
+        }
+
         private void ApplySfxSettings(AudioSource source, SoundData data, bool ignoreSuppress = false)
         {
             ConfigureSfxSourceDefaults(source);

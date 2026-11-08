@@ -125,6 +125,10 @@ namespace TrainDefense.Game
             _criticalChance = criticalChance;
             _criticalDamage = criticalDamage;
 
+            // 블랙홀 총알: 소유 포탑의 화이트홀 개조 여부에 맞춰 그림을 고른다.
+            if (TryGetComponent(out BlackHoleProjectileSkin blackHoleSkin))
+                blackHoleSkin.Apply(owner);
+
             if (data != null)
             {
                 InitializeWithConfig(scaleRadius, scaleRange);

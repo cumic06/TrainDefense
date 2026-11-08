@@ -34,19 +34,35 @@ namespace TrainDefense.Game
         [Tooltip("회전시킬 그림(자식).")]
         private Transform visual;
         [SerializeField]
-        private float visualSpinSpeed = -240f;
+        private float visualSpinSpeed = -480f;
+        [SerializeField]
+        [Tooltip("장판이 깔린 동안 그림이 커졌다 작아지는 폭(기본 크기 대비 비율). 0이면 맥동하지 않는다.")]
+        private float pulseScaleAmount = 0.15f;
+        [SerializeField]
+        [Tooltip("한 번 커졌다 작아지는 데 걸리는 시간(초).")]
+        private float pulseDuration = 0.8f;
+        [SerializeField]
+        [Tooltip("개조 없는 기본 블랙홀 장판 그림.")]
+        private Sprite blackHoleSprite;
+        [SerializeField]
+        [Tooltip("화이트홀 개조 시 장판 그림.")]
+        private Sprite whiteHoleSprite;
         [SerializeField]
         [Tooltip("붕괴 개조가 사라질 때 터뜨릴 폭발 장판(공격력 피해형).")]
         private TriggerHandle collapseTriggerPrefab;
 
         private TriggerHandle _triggerHandle;
         private CircleCollider2D _area;
+        private SpriteRenderer _visualRenderer;
+        private Vector3 _visualBaseScale = Vector3.one;
+        private float _pulseElapsedTime;
         private TurretTrain _owner;
         private BlackHoleModifier _modifier;
         private Vector2 _driftDirection;
         private float _lifetime;
         private float _elapsedTime;
         private bool _isActive;
+        private bool _isHoldingSound;
         private readonly List<Collider2D> _overlapResults = new();
         private ContactFilter2D _contactFilter;
         #endregion
@@ -58,12 +74,30 @@ namespace TrainDefense.Game
             _owner = null;
             _modifier = null;
             _elapsedTime = 0f;
+            _pulseElapsedTime = 0f;
+
+            // 풀 재사용 시 이전 맥동 크기가 남지 않게 원래 크기로 되돌린다.
+            if (visual != null)
+                visual.localScale = _visualBaseScale;
+        }
+
+        // 수명 전에 풀로 돌아가는 경우(판 종료 등)에도 반복음 몫을 내려놓는다.
+        private void OnDisable()
+        {
+            _ReleaseSound();
         }
 
         private void Awake()
         {
             _triggerHandle = GetComponent<TriggerHandle>();
             _area = GetComponent<CircleCollider2D>();
+
+            if (visual != null)
+            {
+                _visualRenderer = visual.GetComponent<SpriteRenderer>();
+                _visualBaseScale = visual.localScale;
+            }
+
             _contactFilter = ContactFilter2D.noFilter;
         }
 
@@ -86,8 +120,11 @@ namespace TrainDefense.Game
 
         private void Update()
         {
-            if (visual != null)
-                visual.Rotate(0f, 0f, visualSpinSpeed * Time.deltaTime);
+            if (visual == null)
+                return;
+
+            visual.Rotate(0f, 0f, visualSpinSpeed * Time.deltaTime);
+            _UpdatePulse();
         }
         #endregion
 
@@ -102,8 +139,49 @@ namespace TrainDefense.Game
             _lifetime = _modifier.LifetimeOverride > 0f ? _modifier.LifetimeOverride : duration;
             _elapsedTime = 0f;
             _isActive = true;
+            _ApplyVisualSprite();
+
+            // 날아오던 총알의 반복음을 장판이 이어받는다(총알은 이 직후 풀로 돌아가며 자기 몫을 내려놓는다).
+            if (!_isHoldingSound)
+            {
+                _isHoldingSound = true;
+                BlackHoleSoundLoop.Acquire();
+            }
 
             _triggerHandle.OverrideLifetime(_lifetime + DESPAWN_MARGIN);
+        }
+
+        private void _ReleaseSound()
+        {
+            if (!_isHoldingSound)
+                return;
+
+            _isHoldingSound = false;
+            BlackHoleSoundLoop.Release();
+        }
+
+        // 화이트홀 개조면 화이트홀 그림, 아니면 블랙홀 그림. 풀 재사용 때마다 Init에서 다시 고른다.
+        private void _ApplyVisualSprite()
+        {
+            if (_visualRenderer == null)
+                return;
+
+            Sprite sprite = _modifier.IsRepulse ? whiteHoleSprite : blackHoleSprite;
+
+            if (sprite != null)
+                _visualRenderer.sprite = sprite;
+        }
+
+        // 장판이 깔린 동안 그림이 사인 곡선으로 커졌다 작아진다. 콜라이더(당기는 범위)는 그대로 두고 그림만 움직인다.
+        // 스케일드 시간이라 일시정지·상점(timeScale 0) 동안에는 맥동도 멈춘다.
+        private void _UpdatePulse()
+        {
+            if (pulseScaleAmount <= 0f || pulseDuration <= 0f)
+                return;
+
+            _pulseElapsedTime += Time.deltaTime;
+            float wave = Mathf.Sin(_pulseElapsedTime / pulseDuration * Mathf.PI * 2f);
+            visual.localScale = _visualBaseScale * (1f + wave * pulseScaleAmount);
         }
 
         private float _GetWorldRadius() => _area.radius * Mathf.Abs(transform.lossyScale.x);
@@ -154,6 +232,7 @@ namespace TrainDefense.Game
         private void _Collapse()
         {
             _isActive = false;
+            _ReleaseSound();
 
             if (_modifier.CollapseDamageMultiplier <= 0f || collapseTriggerPrefab == null)
                 return;
