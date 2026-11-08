@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace TrainDefense.Game.UI
 {
     /// <summary>
-    /// 종착역에 도착하면 무한모드로 계속 달릴지 묻는 팝업. "계속 달리기"/"결과 보기" 중 하나를 골라야 닫힌다.
+    /// 종착역에 도착하면 무한모드로 계속할지 묻는 팝업. "계속하기"/"그만두기" 중 하나를 골라야 닫힌다.
     /// 고른 뒤 무엇을 할지는 StageManager가 콜백으로 정한다 — 이 팝업은 묻고 답을 돌려주는 일만 한다.
     /// 버튼 이름에 close/cancel이 없어 뒤로가기(BackButtonHandler)로 실수로 판이 끝나지 않는다.
     /// 자체 Screen Space Overlay 캔버스를 가진 Resources 프리팹이라 부모 없이 띄운다.
@@ -18,13 +18,13 @@ namespace TrainDefense.Game.UI
 
         private const string POPUP_RESOURCE_NAME = "Popup_InfiniteMode";
         private const string TITLE_KEY = "InfiniteMode_Title";
-        private const string TITLE_FALLBACK = "종착역 도착!";
+        private const string TITLE_FALLBACK = "종착역에 도착했습니다";
         private const string DESCRIPTION_KEY = "InfiniteMode_Desc";
-        private const string DESCRIPTION_FALLBACK = "무한모드로 계속 달릴까요? 적은 점점 더 강해집니다.";
+        private const string DESCRIPTION_FALLBACK = "무한모드로 계속할까요? 적이 점점 더 강해집니다.";
         private const string CONTINUE_KEY = "InfiniteMode_Continue";
-        private const string CONTINUE_FALLBACK = "계속 달리기";
+        private const string CONTINUE_FALLBACK = "계속하기";
         private const string FINISH_KEY = "InfiniteMode_Finish";
-        private const string FINISH_FALLBACK = "결과 보기";
+        private const string FINISH_FALLBACK = "그만두기";
 
         #endregion
 
