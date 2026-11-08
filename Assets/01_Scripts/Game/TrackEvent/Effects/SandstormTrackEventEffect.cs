@@ -12,18 +12,6 @@ namespace TrainDefense.Game.TrackEvent.Effects
     {
         private const float DEFAULT_MULTIPLIER = 0.7f;
 
-        private static readonly TrackEventWeatherEffect.WeatherStyle WEATHER_STYLE = new TrackEventWeatherEffect.WeatherStyle
-        {
-            TintColor = new Color(0.9f, 0.74f, 0.5f, 0.4f),
-            ParticleColor = new Color(1f, 0.92f, 0.72f, 0.8f),
-            ParticleCount = 160,
-            Velocity = new Vector2(-14f, -1.5f),
-            VelocityJitter = 0.35f,
-            ParticleSize = new Vector2(1.4f, 0.4f),
-            SwayAmplitude = 0.15f,
-            SwayFrequency = 6f,
-        };
-
         private TrackEventWeatherEffect _weatherEffect;
         private float _appliedMultiplier = 1f;
 
@@ -31,7 +19,7 @@ namespace TrainDefense.Game.TrackEvent.Effects
         {
             _appliedMultiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
             TrackEventModifiers.Multiply(TrackEventModifierType.TurretRange, _appliedMultiplier);
-            _weatherEffect = TrackEventWeatherEffect.Create(WEATHER_STYLE);
+            _weatherEffect = TrackEventWeatherEffect.Create(TrackEventWeatherStyles.SANDSTORM);
         }
 
         public void Tick(float deltaTime)

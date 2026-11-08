@@ -11,18 +11,6 @@ namespace TrainDefense.Game.TrackEvent.Effects
     {
         private const float DEFAULT_MULTIPLIER = 0.7f;
 
-        private static readonly TrackEventWeatherEffect.WeatherStyle WEATHER_STYLE = new TrackEventWeatherEffect.WeatherStyle
-        {
-            TintColor = new Color(0.55f, 0.78f, 1f, 0.22f),
-            ParticleColor = new Color(1f, 1f, 1f, 0.9f),
-            ParticleCount = 90,
-            Velocity = new Vector2(-0.8f, -2.2f),
-            VelocityJitter = 0.4f,
-            ParticleSize = new Vector2(0.7f, 0.7f),
-            SwayAmplitude = 0.35f,
-            SwayFrequency = 1.6f,
-        };
-
         private TrackEventWeatherEffect _weatherEffect;
         private float _appliedMultiplier = 1f;
 
@@ -30,7 +18,7 @@ namespace TrainDefense.Game.TrackEvent.Effects
         {
             _appliedMultiplier = data != null && data.Magnitude > 0f ? data.Magnitude : DEFAULT_MULTIPLIER;
             TrackEventModifiers.Multiply(TrackEventModifierType.MonsterMoveSpeed, _appliedMultiplier);
-            _weatherEffect = TrackEventWeatherEffect.Create(WEATHER_STYLE);
+            _weatherEffect = TrackEventWeatherEffect.Create(TrackEventWeatherStyles.COLD_SNAP);
         }
 
         public void Tick(float deltaTime)

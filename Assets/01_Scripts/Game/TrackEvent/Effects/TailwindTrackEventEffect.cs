@@ -13,24 +13,11 @@ namespace TrainDefense.Game.TrackEvent.Effects
     {
         private const float DEFAULT_SHORTEN_RATIO = 0.2f;
 
-        private static readonly TrackEventWeatherEffect.WeatherStyle WEATHER_STYLE = new TrackEventWeatherEffect.WeatherStyle
-        {
-            TintColor = Color.clear,
-            ParticleColor = new Color(1f, 1f, 1f, 0.55f),
-            ParticleCount = 45,
-            Velocity = new Vector2(22f, 0f),
-            VelocityJitter = 0.3f,
-            ParticleSize = new Vector2(4f, 0.22f),
-            SwayAmplitude = 0.1f,
-            SwayFrequency = 3f,
-            AutoFadeDelay = 3f,
-        };
-
         private TrackEventWeatherEffect _weatherEffect;
 
         public void Begin(TrackEventData data)
         {
-            _weatherEffect = TrackEventWeatherEffect.Create(WEATHER_STYLE);
+            _weatherEffect = TrackEventWeatherEffect.Create(TrackEventWeatherStyles.TAILWIND);
 
             var stageManager = StageManager.Instance;
 
