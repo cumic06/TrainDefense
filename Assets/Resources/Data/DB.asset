@@ -793,7 +793,7 @@ MonoBehaviour:
   - id: 30008
     name: Train_30008_Name
     iconId: Weapon_IMT_03_UI
-    icon: {fileID: 4205723860130912642, guid: 04298871a0da3b447900493c08f2ef5d, type: 3}
+    icon: {fileID: 6502246173176074006, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 0
     attackSoundType: 306
     description: Train_30008_Desc
@@ -817,7 +817,7 @@ MonoBehaviour:
   - id: 31008
     name: Train_30008_Name
     iconId: Weapon_IMT_03_UI
-    icon: {fileID: 4205723860130912642, guid: 04298871a0da3b447900493c08f2ef5d, type: 3}
+    icon: {fileID: 6502246173176074006, guid: c067849d5fe69284fa67a3b188a93a6b, type: 3}
     damageType: 0
     attackSoundType: 306
     description: 

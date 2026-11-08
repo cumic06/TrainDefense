@@ -71,6 +71,9 @@ TextureImporter:
   - first:
       213: -8405932249511943596
     second: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13_22"
+  - first:
+      213: 6502246173176074006
+    second: "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13_23"
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -694,7 +697,29 @@ TextureImporter:
       spriteID: 45227d5d721285b80800000000000000
       internalID: -8405932249511943596
       vertices: []
-      indices: 
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: "절대무적_요새_288버켓_23"
+      rect:
+        serializedVersion: 2
+        x: 521
+        y: 169
+        width: 68
+        height: 77
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61f8d42b17e9c3a50800000000000000
+      internalID: 6502246173176074006
+      vertices: []
+      indices:
       edges: []
       weights: []
     outline: []
@@ -727,6 +752,7 @@ TextureImporter:
       "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13_20": -8086712969286250175
       "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13_21": 4686164790142666360
       "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13_22": -8405932249511943596
+      "절대무적_요새_288버켓_23": 6502246173176074006
       "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13_3": 2778412367209265861
       "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13_4": -8176891487388338421
       "\uC808\uB300\uBB34\uC801_\uC694\uC0C8_288\uBC84\uCF13_5": 8103220799889651878
