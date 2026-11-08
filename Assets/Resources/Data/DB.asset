@@ -2124,11 +2124,11 @@ MonoBehaviour:
     row: 2
     col: -1
     tiers:
-    - valuePerLevel: 5
+    - valuePerLevel: 3
       maxLevel: 5
       costPerLevel: 5
       costGrowthPercent: 17
-    - valuePerLevel: 5
+    - valuePerLevel: 3
       maxLevel: 5
       costPerLevel: 10
       costGrowthPercent: 17
