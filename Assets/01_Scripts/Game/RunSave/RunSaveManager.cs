@@ -144,6 +144,8 @@ namespace TrainDefense.Game.RunSave
             // 상점 진열은 복원된 편성·강화 레벨로 만든 후보 풀에서 되찾으므로 그 둘 뒤에 둔다.
             RegisterSection(new ShopOfferSection());
             RegisterSection(new EliteCoinSection());
+            // 로비에서 포기할 때 쓸 개조 해금 판정. 복원된 편성을 보지 않으므로 순서는 상관없다.
+            RegisterSection(new RemodelUnlockSection());
         }
 
         #endregion

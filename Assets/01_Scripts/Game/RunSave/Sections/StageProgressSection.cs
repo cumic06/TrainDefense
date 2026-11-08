@@ -41,6 +41,26 @@ namespace TrainDefense.Game.RunSave.Sections
             public int eliteKill;
         }
 
+        /// <summary>섹션 JSON에서 무한모드 여부를 읽는다(로비 포기 결과창의 클리어/패배 제목용). 없거나 깨졌으면 false.</summary>
+        public static bool ReadIsInfiniteMode(string json)
+        {
+            if (string.IsNullOrEmpty(json))
+                return false;
+
+            try
+            {
+                var payload = JsonUtility.FromJson<Payload>(json);
+
+                return payload != null && payload.isInfiniteMode;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+
+                return false;
+            }
+        }
+
         public string Capture()
         {
             var stageManager = StageManager.Instance;

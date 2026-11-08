@@ -16,6 +16,21 @@ namespace TrainDefense.Game.UI
     /// </summary>
     public class StageResultSlideUI : MonoBehaviour
     {
+        /// <summary>
+        /// 결과창에 적을 값 묶음. 인게임에서는 살아 있는 매니저에서, 로비 포기에서는 세이브에서 만든다.
+        /// </summary>
+        public struct ResultSnapshot
+        {
+            public bool IsClear;
+            public int StationCount;
+            public int Level;
+            public int NormalKill;
+            public int EliteKill;
+            public int EliteCoinEarned;
+            public int TotalScore;
+            public IReadOnlyList<string> UnlockedRemodelIds;
+        }
+
         #region Fields
         [Header("Refs")]
         [Tooltip("전체화면 딤.")]
@@ -85,19 +100,30 @@ namespace TrainDefense.Game.UI
         // 해금 이름을 줄일 때 되돌아갈 프리팹 글자 크기.
         private float _unlockedValueFontSize;
 
+        // 로비 포기 결과창처럼 인게임 이벤트와 무관하게 띄운 인스턴스. 전투 이벤트로 숨기거나 다시 켜지 않는다.
+        private bool _isStandalone;
+
         #region LifeCycle
-        private void Start()
+        private void Awake()
         {
             if (unlockedValueText != null)
                 _unlockedValueFontSize = unlockedValueText.fontSize;
 
-            _SubscribeEvents();
+            // Start()에서 숨기면 생성 직후 ShowResult로 켠 로비 결과창이 다음 프레임에 다시 꺼진다.
             _Hide();
+        }
+
+        private void Start()
+        {
+            if (!_isStandalone)
+                _SubscribeEvents();
         }
 
         private void OnDestroy()
         {
-            _UnsubscribeEvents();
+            if (!_isStandalone)
+                _UnsubscribeEvents();
+
             _countUpTween?.Kill();
         }
         #endregion
@@ -136,7 +162,55 @@ namespace TrainDefense.Game.UI
                 lobbyButton.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// 인게임 이벤트와 무관하게 프리팹을 띄워 주어진 값으로 결과창을 채운다(로비에서 판을 포기할 때).
+        /// 인스턴스는 전투 이벤트를 구독하지 않으므로 호출자가 부모 캔버스째 정리한다.
+        /// </summary>
+        public static StageResultSlideUI ShowStandalone(GameObject resultPrefab, Transform parent, in ResultSnapshot snapshot)
+        {
+            if (resultPrefab == null || parent == null)
+                return null;
+
+            // Start 전에 플래그를 세워야 전투 이벤트를 구독하지 않는다. 프리팹 에셋을 끄는 대신 부모를 잠시 꺼서 생성한다.
+            bool parentWasActive = parent.gameObject.activeSelf;
+            parent.gameObject.SetActive(false);
+            var instance = Instantiate(resultPrefab, parent, false);
+
+            if (!instance.TryGetComponent(out StageResultSlideUI resultUI))
+            {
+                Debug.LogError("[StageResult] 결과창 프리팹에 StageResultSlideUI가 없습니다.");
+                Destroy(instance);
+                parent.gameObject.SetActive(parentWasActive);
+
+                return null;
+            }
+
+            resultUI._isStandalone = true;
+            parent.gameObject.SetActive(parentWasActive);
+            resultUI.ShowResult(snapshot);
+
+            return resultUI;
+        }
+
+        /// <summary>인게임 종료 — 살아 있는 매니저에서 값을 모아 보여 준다.</summary>
         public void ShowResult(bool isClear)
+        {
+            var snapshot = new ResultSnapshot
+            {
+                IsClear = isClear,
+                StationCount = StageManager.Instance != null ? StageManager.Instance.TotalInspectionPassedCount : 0,
+                Level = UserDataManager.Instance != null ? UserDataManager.Instance.CurrentLevel : 0,
+                NormalKill = ScoreManager.Instance != null ? ScoreManager.Instance.NormalKillCount : 0,
+                EliteKill = ScoreManager.Instance != null ? ScoreManager.Instance.EliteKillCount : 0,
+                EliteCoinEarned = PermanentUpgradeManager.Instance != null ? PermanentUpgradeManager.Instance.RunEliteCoinEarned : 0,
+                TotalScore = ScoreManager.Instance != null ? ScoreManager.Instance.CurrentScore : 0,
+                UnlockedRemodelIds = UserDataManager.Instance != null ? UserDataManager.Instance.LastRunUnlockedRemodelIds : null,
+            };
+
+            ShowResult(snapshot);
+        }
+
+        public void ShowResult(in ResultSnapshot snapshot)
         {
             if (background != null)
                 background.SetActive(true);
@@ -154,43 +228,37 @@ namespace TrainDefense.Game.UI
 
             _scoreSuffix = LocalizeHelper.GetByKey("result_score_suffix", "점");
 
+            bool isClear = snapshot.IsClear;
             _SetText(titleText, LocalizeHelper.GetByKey(isClear ? "result_title_clear" : "result_title_defeat", isClear ? "클리어" : "패배"));
-            _FillStats();
-            _PlayTotalCountUp();
+            _FillStats(snapshot);
+            _PlayTotalCountUp(snapshot.TotalScore);
         }
 
-        private void _FillStats()
+        private void _FillStats(in ResultSnapshot snapshot)
         {
-            int stationCount = StageManager.Instance != null ? StageManager.Instance.TotalInspectionPassedCount : 0;
-            int level = UserDataManager.Instance != null ? UserDataManager.Instance.CurrentLevel : 0;
-            int normalKill = ScoreManager.Instance != null ? ScoreManager.Instance.NormalKillCount : 0;
-            int eliteKill = ScoreManager.Instance != null ? ScoreManager.Instance.EliteKillCount : 0;
-            int earned = PermanentUpgradeManager.Instance != null ? PermanentUpgradeManager.Instance.RunEliteCoinEarned : 0;
-
             _SetText(stationLabelText, LocalizeHelper.GetByKey("result_stat_station", "도달 역"));
-            _SetText(stationValueText, stationCount.ToCommaString());
+            _SetText(stationValueText, snapshot.StationCount.ToCommaString());
             _SetText(levelLabelText, LocalizeHelper.GetByKey("result_stat_level", "레벨"));
-            _SetText(levelValueText, level.ToCommaString());
+            _SetText(levelValueText, snapshot.Level.ToCommaString());
             _SetText(normalKillLabelText, LocalizeHelper.GetByKey("result_kill_normal", "일반 몬스터"));
-            _SetText(normalKillValueText, normalKill.ToCommaString());
+            _SetText(normalKillValueText, snapshot.NormalKill.ToCommaString());
             _SetText(eliteKillLabelText, LocalizeHelper.GetByKey("result_kill_elite", "엘리트 몬스터"));
-            _SetText(eliteKillValueText, eliteKill.ToCommaString());
+            _SetText(eliteKillValueText, snapshot.EliteKill.ToCommaString());
             _SetText(earnedLabelText, LocalizeHelper.GetByKey("result_stat_earned", "획득"));
-            _SetText(earnedValueText, $"+{earned.ToCommaString()}");
+            _SetText(earnedValueText, $"+{snapshot.EliteCoinEarned.ToCommaString()}");
 
-            _FillUnlocked();
+            _FillUnlocked(snapshot.UnlockedRemodelIds);
         }
 
-        // 이번 판에 새로 해금된 개조 이름을 한 줄로. 없으면 줄 자체를 숨긴다(UserDataManager가 GameEndEvent에서 먼저 판정해 둔다).
-        private void _FillUnlocked()
+        // 이번 판에 새로 해금된 개조 이름을 한 줄로. 없으면 줄 자체를 숨긴다(UserDataManager가 먼저 판정해 둔 목록을 받는다).
+        private void _FillUnlocked(IReadOnlyList<string> unlockedRemodelIds)
         {
             var unlockedNames = new List<string>();
-            var userDataManager = UserDataManager.Instance;
             var skillDataDB = DatabaseManager.Instance != null ? DatabaseManager.Instance.GetTrainSkillDataDB() : null;
 
-            if (userDataManager != null && skillDataDB != null)
+            if (unlockedRemodelIds != null && skillDataDB != null)
             {
-                foreach (string remodelId in userDataManager.LastRunUnlockedRemodelIds)
+                foreach (string remodelId in unlockedRemodelIds)
                 {
                     foreach (var remodel in skillDataDB.TrainPassiveSkillDataList)
                     {
@@ -270,11 +338,10 @@ namespace TrainDefense.Game.UI
         }
 
         // 총점을 0부터 한 번 카운트업하고, 끝나면 로비 버튼을 켠다.
-        private void _PlayTotalCountUp()
+        private void _PlayTotalCountUp(int total)
         {
             _countUpTween?.Kill();
 
-            int total = ScoreManager.Instance != null ? ScoreManager.Instance.CurrentScore : 0;
             int display = 0;
             _SetTotalScore(0);
 

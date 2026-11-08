@@ -17,6 +17,26 @@ namespace TrainDefense.Game.RunSave.Sections
             public int runEliteCoinEarned;
         }
 
+        /// <summary>섹션 JSON에서 이번 판 획득 엘리트 코인을 읽는다(로비 포기 결과창용). 없거나 깨졌으면 0.</summary>
+        public static int ReadRunEliteCoinEarned(string json)
+        {
+            if (string.IsNullOrEmpty(json))
+                return 0;
+
+            try
+            {
+                var payload = JsonUtility.FromJson<Payload>(json);
+
+                return payload != null ? Mathf.Max(0, payload.runEliteCoinEarned) : 0;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+
+                return 0;
+            }
+        }
+
         public string Capture()
         {
             var permanentUpgradeManager = PermanentUpgradeManager.Instance;

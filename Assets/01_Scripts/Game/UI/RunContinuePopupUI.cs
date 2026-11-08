@@ -7,7 +7,8 @@ using UnityEngine.UI;
 namespace TrainDefense.Game.UI
 {
     /// <summary>
-    /// 판 도중 앱을 껐다가 다시 켜서 로비에 들어오면 "이어서 할지 / 처음부터 할지"를 묻는 팝업.
+    /// 판 도중 앱을 껐다가 다시 켜서 로비에 들어오면 "이어서 할지 / 포기할지"를 묻는 팝업.
+    /// 포기하면 로비에서 바로 결과창(<see cref="StageResultSlideUI"/>)을 띄우므로 그 프리팹 참조를 들고 있다.
     /// 둘 중 하나를 골라야 닫힌다 — 고르기 전에 로비(영구 강화 등)를 만질 수 없게 화면 전체를 딤으로 막는다.
     /// 고른 뒤 무엇을 할지는 RunContinueAutoEntry가 콜백으로 정한다 — 이 팝업은 묻고 답을 돌려주는 일만 한다.
     /// 버튼 이름에 close/cancel이 없어 뒤로가기(BackButtonHandler)로 닫히지 않는다.
@@ -26,8 +27,8 @@ namespace TrainDefense.Game.UI
         private const string PROGRESS_FALLBACK = "{0}번째 역 · Lv.{1}";
         private const string CONTINUE_KEY = "RunContinue_Continue";
         private const string CONTINUE_FALLBACK = "이어하기";
-        private const string RESTART_KEY = "RunContinue_Restart";
-        private const string RESTART_FALLBACK = "처음부터 하기";
+        private const string RESTART_KEY = "RunContinue_GiveUp";
+        private const string RESTART_FALLBACK = "포기하기";
 
         #endregion
 
@@ -39,6 +40,11 @@ namespace TrainDefense.Game.UI
         [SerializeField] private Button restartButton;
         [SerializeField] private TextMeshProUGUI continueText;
         [SerializeField] private TextMeshProUGUI restartText;
+        [Tooltip("포기 시 로비에서 띄울 결과창 프리팹(StageResultSlideUI).")]
+        [SerializeField] private GameObject resultPrefab;
+
+        /// <summary>포기 시 로비에서 띄울 결과창 프리팹. 비어 있으면 결과창 없이 세이브만 지운다.</summary>
+        public GameObject ResultPrefab => resultPrefab;
 
         private Action _onContinue;
         private Action _onRestart;

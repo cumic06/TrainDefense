@@ -97,6 +97,7 @@ MonoBehaviour:
   restartButton: {fileID: 1600179}
   continueText: {fileID: 1600174}
   restartText: {fileID: 1600183}
+  resultPrefab: {fileID: 5000000000000000001, guid: 3e7d9a1f5c2b48069d4a7f1e3c8b5026, type: 3}
 --- !u!223 &1600006
 Canvas:
   m_ObjectHideFlags: 0

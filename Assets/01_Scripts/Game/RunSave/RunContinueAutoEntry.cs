@@ -8,9 +8,10 @@ namespace TrainDefense.Game.RunSave
 {
     /// <summary>
     /// 판 도중 앱을 껐다가 다시 켜서 로비 씬이 로드될 때 저장된 런이 남아 있으면
-    /// "이어하기 / 처음부터 하기" 선택 팝업(<see cref="RunContinuePopupUI"/>)을 띄운다.
+    /// "이어하기 / 포기하기" 선택 팝업(<see cref="RunContinuePopupUI"/>)을 띄운다.
     /// - 이어하기: 세이브를 싣고 곧바로 그 판으로 되돌아간다.
-    /// - 처음부터 하기: 세이브를 지우고 로비에 남는다(새 판은 평소처럼 시작 버튼으로).
+    /// - 포기하기: 세이브를 지우고 로비에서 바로 결과창을 띄운다(<see cref="RunGiveUpResultPresenter"/>).
+    ///   게임 씬을 거치지 않으므로 결과·개조 해금은 세이브에 적힌 값으로 처리한다.
     ///
     /// 팝업은 화면 전체를 딤으로 막아, 고르기 전에는 로비를 만질 수 없다.
     /// <b>판이 살아 있는 동안 영구 강화를 사서 그 판에 반영시키는 구멍</b>을 막기 위해서다.
@@ -64,7 +65,8 @@ namespace TrainDefense.Game.RunSave
                 return;
             }
 
-            var popup = RunContinuePopupUI.Open(summary.stationPassedCount, summary.playerLevel, _Continue, _Restart);
+            RunContinuePopupUI popup = null;
+            popup = RunContinuePopupUI.Open(summary.stationPassedCount, summary.playerLevel, _Continue, () => _GiveUp(popup));
 
             // 팝업 프리팹을 못 찾으면 묻지 못한다. 로비에 그대로 두면 위의 강화 구멍이 열리므로 예전처럼 바로 이어간다.
             if (popup == null)
@@ -86,10 +88,16 @@ namespace TrainDefense.Game.RunSave
             SceneController.LoadScene(GAME_SCENE_INDEX, USE_LOADING_SCENE);
         }
 
-        private static void _Restart()
+        private static void _GiveUp(RunContinuePopupUI popup)
         {
-            // 처음부터 하기로 했으면 이전 판은 버린다. 다음 실행부터는 평소대로 로비에 들어온다.
+            // 세이브를 먼저 디스크에서 지운다 — 결과창을 띄우다 실패해도 다음 실행이 다시 묻는 루프에 빠지지 않는다.
+            var data = RunSaveStore.Load();
             RunSaveStore.Delete();
+
+            if (data == null)
+                return;
+
+            RunGiveUpResultPresenter.Show(data, popup != null ? popup.ResultPrefab : null);
         }
     }
 }

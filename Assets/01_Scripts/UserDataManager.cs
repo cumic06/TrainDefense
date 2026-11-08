@@ -209,11 +209,22 @@ namespace TrainDefense
 
             if (mainTrain == null) return;
 
+            GrantRemodelUnlocks(RemodelUnlockEvaluator.FindSatisfiedRemodels(mainTrain.CurrentTrains));
+        }
+
+        /// <summary>
+        /// 조건을 만족한 개조를 해금하고 "이번 판에 새로 해금된 목록"(결과창 표기용)에 올린다.
+        /// 판 종료(GameEndEvent)와 로비 포기(RunContinueAutoEntry) 두 경로가 함께 쓴다.
+        /// </summary>
+        public void GrantRemodelUnlocks(IEnumerable<string> satisfiedRemodelIds)
+        {
+            if (satisfiedRemodelIds == null) return;
+
             bool changed = false;
 
-            foreach (string remodelId in RemodelUnlockEvaluator.FindSatisfiedRemodels(mainTrain.CurrentTrains))
+            foreach (string remodelId in satisfiedRemodelIds)
             {
-                if (!_unlockedRemodelIds.Add(remodelId))
+                if (string.IsNullOrEmpty(remodelId) || !_unlockedRemodelIds.Add(remodelId))
                     continue;
 
                 _lastRunUnlockedRemodelIds.Add(remodelId);
