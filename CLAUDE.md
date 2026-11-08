@@ -1,9 +1,9 @@
-<!-- 이 파일은 앱이 자동 생성합니다(Claude Code용). 직접 고치지 말고 rules\ 폴더의 .md 파일을 수정한 뒤 다시 내보내세요. -->
-
+<!-- GGD:BEGIN -->
+<!-- 이 블록은 앱이 카드 실행마다 다시 씁니다(Claude Code용). 고치려면 앱의 규칙 화면(rules\ 폴더)을 수정하세요. 블록 바깥은 자유롭게 써도 보존됩니다. -->
 (아직 등록된 프로젝트 규칙이 없습니다 — rules\ 폴더에 .md 파일을 추가하세요.)
 
 
-## 프로젝트 지도 (앱 자동 생성 2026-11-03 00:53 · 파일 3359개 · 폴더 381개)
+## 프로젝트 지도 (앱 자동 생성 2026-11-08 15:47 · 파일 3385개 · 폴더 380개)
 
 구조 파악은 이 지도로 끝내고, 지도에 없는 부분만 열어 본다. 폴더를 처음부터 다시 훑거나 파일을 전수로 읽지 않는다.
 지도의 각 줄은 파일 앞부분의 첫 주석·선언 한 줄일 뿐이다 — 세부 동작이 필요한 파일만 골라 연다.
@@ -11,9 +11,9 @@
 - 종류: Unity 프로젝트 (에디터 6000.3.11f1 · 패키지 23개: com.antigravity.editor, com.boxqkrtm.ide.cursor, com.cysharp.unitask, com.nosuchstudio.rtltmpro, com.redeyestemplate.core, com.unity.2d.animation, com.unity.2d.aseprite, com.unity.2d.psdimporter, com.unity.2d.sprite, com.unity.2d.spriteshape, com.unity.2d.tilemap, com.unity.2d.tilemap.extras …)
 - 씬: Assets/00_Scenes/00_AuthScene.unity, Assets/00_Scenes/01_LobbyScene.unity, Assets/00_Scenes/02_GameScene.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenAnimation_Advanced.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenAnimation_Basics.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenPath.unity, Assets/Settings/Scenes/URP2DSceneTemplate.unity
 
-### (루트) (코드 4 · 기타 15)
+### (루트) (코드 4 · 기타 16)
 - .mcp.json
-- DESIGN.md — ============================================================
+- DESIGN.md — TrainDefense UI 기준
 - README.md — TrainDefense
 - StoreDescription.md — TrainDefense — 앱스토어 / 구글플레이 스토어 설명
 
@@ -160,5 +160,7 @@
 - EliteVariant.cs — class EliteVariant — 엘리트 타입별 변형 정의. 스탯 배율 + 불 이펙트 색 + 타입 고유 능력 파라미터를 담는다.
 - IData.cs — interface IData
 - IDescribableData.cs — interface IDescribableData : IData
+- IIconData.cs — interface IIconData : IData
 
 (지도 12KB 상한으로 이하 생략 — 나머지는 필요할 때 직접 ls 한다)
+<!-- GGD:END -->
