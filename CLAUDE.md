@@ -3,13 +3,13 @@
 (아직 등록된 프로젝트 규칙이 없습니다 — rules\ 폴더에 .md 파일을 추가하세요.)
 
 
-## 프로젝트 지도 (앱 자동 생성 2026-11-08 16:42 · 파일 3385개 · 폴더 380개)
+## 프로젝트 지도 (앱 자동 생성 2026-11-08 22:10 · 파일 3401개 · 폴더 382개)
 
 구조 파악은 이 지도로 끝내고, 지도에 없는 부분만 열어 본다. 폴더를 처음부터 다시 훑거나 파일을 전수로 읽지 않는다.
 지도의 각 줄은 파일 앞부분의 첫 주석·선언 한 줄일 뿐이다 — 세부 동작이 필요한 파일만 골라 연다.
 
 - 종류: Unity 프로젝트 (에디터 6000.3.11f1 · 패키지 23개: com.antigravity.editor, com.boxqkrtm.ide.cursor, com.cysharp.unitask, com.nosuchstudio.rtltmpro, com.redeyestemplate.core, com.unity.2d.animation, com.unity.2d.aseprite, com.unity.2d.psdimporter, com.unity.2d.sprite, com.unity.2d.spriteshape, com.unity.2d.tilemap, com.unity.2d.tilemap.extras …)
-- 씬: Assets/00_Scenes/00_AuthScene.unity, Assets/00_Scenes/01_LobbyScene.unity, Assets/00_Scenes/02_GameScene.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenAnimation_Advanced.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenAnimation_Basics.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenPath.unity, Assets/Settings/Scenes/URP2DSceneTemplate.unity
+- 씬: Assets/00_Scenes/00_OAuthScene.unity, Assets/00_Scenes/01_LobbyScene.unity, Assets/00_Scenes/02_GameScene.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenAnimation_Advanced.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenAnimation_Basics.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenPath.unity, Assets/Settings/Scenes/URP2DSceneTemplate.unity
 
 ### (루트) (코드 4 · 기타 16)
 - .mcp.json
@@ -21,7 +21,7 @@
 - google-services.json
 
 ### Assets/00_Scenes (코드 3)
-- 00_AuthScene.unity
+- 00_OAuthScene.unity
 - 01_LobbyScene.unity
 - 02_GameScene.unity
 
@@ -35,13 +35,13 @@
 - UserOptionDataParser.cs — class UserOptionDataParser — 사운드/햅틱 옵션 PlayerPrefs 키를 모두 삭제한다. 다음 Load 시 기본값으로 복원된다.
 
 ### Assets/01_Scripts/Cumic (코드 15)
-- AuthSceneSequencer.cs — class AuthSceneSequencer : ISceneSequencer — 로그인 팝업UI 표시
 - GameEventSystem.cs — class GameEventSystem — 핸들러 내부에서 같은 이벤트를 구독/해제해도 순회가 깨지지 않도록 스냅샷을 순회하고,
 - GameSceneSequence.cs — class GameSceneSequence : MonoBehaviour
 - InGameSequence.cs — class InGameSequence : MonoBehaviour — TriChoiceUI 등 다른 컴포넌트의 Start()보다 먼저 이벤트를 구독해야
 - LoadingSceneController.cs — class LoadingSceneController : MonoBehaviour — 최소한 한 프레임 대기하여 LoadingScene이 완전히 로드되도록 함
 - LobbySceneSequencer.cs — class LobbySceneSequencer : ISceneSequencer — 대충 유저 정보 불러오는 코드
 - NumberExtension.cs — class NumberExtension
+- OAuthSceneSequencer.cs — class OAuthSceneSequencer : ISceneSequencer — 개인정보처리방침 필수 동의 전에는 다음 단계(로그인 → 로비)로 넘어가지 않는다.
 - SceneController.cs — class SceneController — LoadingScene은 빌드 목록에서 꺼져 있을 수 있다. 그 상태로 이름 로드를 하면
 - SequenceInvokor.cs — class SequenceInvokor : MonoBehaviour
 - Singleton.cs — class Singleton
@@ -59,8 +59,9 @@
 - AchievementState.cs — class AchievementState
 - AchievementUnlockedEvent.cs — class AchievementUnlockedEvent
 
-### Assets/01_Scripts/Cumic/Checker (코드 2)
+### Assets/01_Scripts/Cumic/Checker (코드 3)
 - AuthChecker.cs — class AuthChecker : IAuthable
+- PrivacyAgreementChecker.cs — class PrivacyAgreementChecker : IAgreeable — OAuthScene에서 개인정보처리방침 필수 동의를 받을 때까지 진행을 멈춘다.
 - VersionChecker.cs — class VersionChecker : IVersionable — 최신 버전 문자열이 저장된 URL (redeyeshq.github.io)
 
 ### Assets/01_Scripts/Cumic/Events (코드 7)
@@ -72,10 +73,11 @@
 - LobbyEnterEvent.cs — class LobbyEnterEvent
 - StageEndEvent.cs — class StageEndEvent
 
-### Assets/01_Scripts/Cumic/Interface (코드 6)
+### Assets/01_Scripts/Cumic/Interface (코드 7)
 - IAchievementCondition.cs — interface IAchievementCondition
 - IAchievementData.cs — interface IAchievementData
 - IAchievementTracker.cs — interface IAchievementTracker
+- IAgreeable.cs — interface IAgreeable — 필수 동의가 끝날 때까지 기다린다. 이미 동의했으면 바로 끝난다.
 - IAuthable.cs — interface IAuthable
 - ISceneSequencer.cs — interface ISceneSequencer : IDisposable //인터페이스 쓰는 이유 : 간단하게 만들 게임은 특정 씬 시퀀서가 필요 없어서
 - IVersionable.cs — interface IVersionable
@@ -143,8 +145,9 @@
 - UpgradeRow.cs — class UpgradeRow : IExcelRow — 선택지 풀(LevelUp/ShopItem). 비어 있으면 LevelUp.
 - UpgradeTrainChoiceRow.cs — class UpgradeTrainChoiceRow : IExcelRow
 
-### Assets/01_Scripts/Game/Analytics (코드 1)
+### Assets/01_Scripts/Game/Analytics (코드 2)
 - AnalyticsConsent.cs — enum AnalyticsConsentState — Analytics 데이터 수집 동의 상태를 PlayerPrefs에 영속화한다.
+- PrivacyPolicyAgreement.cs — class PrivacyPolicyAgreement — 개인정보처리방침 필수 확인("읽고 이해했습니다") 여부를 PlayerPrefs에 영속화한다.
 
 ### Assets/01_Scripts/Game/Analytics/Editor (코드 1)
 - AnalyticsConsentDebugMenu.cs — class AnalyticsConsentDebugMenu — Analytics 동의 상태 디버그 메뉴. 동의 팝업을 다시 띄워 테스트할 때 사용한다.
@@ -154,13 +157,6 @@
 - MapController.cs — class MapController : MonoBehaviour — 배경 타일 2장을 왼쪽으로 흘려보내며 무한 스크롤을 만든다.
 
 ### Assets/01_Scripts/Game/Datas (코드 23)
-- DB.cs — class DB : ScriptableObject, ISerializationCallbackReceiver — 게임 내 모든 데이터를 통합 관리하는 중앙 데이터베이스
-- EliteData.cs — class EliteData — variants 가 비어있으면 코드 기본 4종을 생성해 돌려준다.
-- EliteType.cs — enum EliteType — 적 엘리트 4종 타입. 색(불 이펙트) + 고유 능력으로 구분한다.
-- EliteVariant.cs — class EliteVariant — 엘리트 타입별 변형 정의. 스탯 배율 + 불 이펙트 색 + 타입 고유 능력 파라미터를 담는다.
-- IData.cs — interface IData
-- IDescribableData.cs — interface IDescribableData : IData
-- IIconData.cs — interface IIconData : IData
 
 (지도 12KB 상한으로 이하 생략 — 나머지는 필요할 때 직접 ls 한다)
 <!-- GGD:END -->

@@ -7,6 +7,7 @@ using TrainDefense.Game.Analytics;
 using TrainDefense.Game.Intro;
 using TrainDefense.Game.Manager;
 using TrainDefense.Game.UI;
+using TrainDefense.Game.UI.Consent;
 using TrainDefense.Localize;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,7 +16,7 @@ using UnityEngine.UI;
 namespace TrainDefense
 {
    // 옵션 창의 개인정보(Analytics 동의·개인정보처리방침) 컨트롤을 담당한다.
-   // 동의 토글/정책 버튼이 들어 있는 오브젝트(Panel_Sound 등)에 부착하고, 관련 SerializeField만 연결한다.
+   // 옵션 창 개인정보 탭(Panel_Privacy)에 부착하고, 관련 SerializeField만 연결한다.
    public class PrivacyOptionUI : MonoBehaviour
    {
       #region Fields
@@ -82,7 +83,7 @@ namespace TrainDefense
       private void _OnPrivacyPolicyClick()
       {
          SoundManager.Instance?.PlaySFX(SoundType.SFX_UI_ButtonClick, ignoreSuppress: true);
-         Application.OpenURL(AnalyticsConsent.PrivacyPolicyUrl);
+         PrivacyPolicyPopupUI.Open();
       }
    }
 }

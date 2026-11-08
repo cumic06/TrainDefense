@@ -21,25 +21,25 @@ namespace Cumic.Sequence
          Application.targetFrameRate = 60;
 #endif
 
-         AuthSceneSequence();
+         OAuthSceneSequence();
       }
 
-      #region AuthSceneSequence
-      private void AuthSceneSequence()
+      #region OAuthSceneSequence
+      private void OAuthSceneSequence()
       {
-         _currentSceneSequencer = new AuthSceneSequencer(this, new VersionChecker(), new AuthChecker());
-         _currentSceneSequencer.OnCompleted += OnAuthSceneCompleted;
+         _currentSceneSequencer = new OAuthSceneSequencer(this, new VersionChecker(), new PrivacyAgreementChecker(), new AuthChecker());
+         _currentSceneSequencer.OnCompleted += OnOAuthSceneCompleted;
          _currentSceneSequencer.Run().Forget();
       }
 
-      private void OnAuthSceneCompleted(bool isCompleted)
+      private void OnOAuthSceneCompleted(bool isCompleted)
       {
-         _currentSceneSequencer.OnCompleted -= OnAuthSceneCompleted;
+         _currentSceneSequencer.OnCompleted -= OnOAuthSceneCompleted;
          _currentSceneSequencer.Dispose();
 
          if (isCompleted)
          {
-            Debug.Log("AuthSceneCompleted");
+            Debug.Log("OAuthSceneCompleted");
 
             SceneController.NextScene(false);
 

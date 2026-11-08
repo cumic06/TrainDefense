@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cumic;
 using Cumic.Achievement;
@@ -68,7 +69,6 @@ namespace TrainDefense.Game.Manager
         #region Sub/UnSub
         private void _SubscribeEvents()
         {
-            GameEventSystem.Subscribe<LobbyEnterEvent>(_OnLobbyEnter);
             GameEventSystem.Subscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Subscribe<GameOverStartEvent>(_OnGameOver);
             GameEventSystem.Subscribe<GameEndEvent>(_OnGameEnd);
@@ -88,7 +88,6 @@ namespace TrainDefense.Game.Manager
 
         private void _UnsubscribeEvents()
         {
-            GameEventSystem.Unsubscribe<LobbyEnterEvent>(_OnLobbyEnter);
             GameEventSystem.Unsubscribe<GameEnterEvent>(_OnGameEnter);
             GameEventSystem.Unsubscribe<GameOverStartEvent>(_OnGameOver);
             GameEventSystem.Unsubscribe<GameEndEvent>(_OnGameEnd);
@@ -136,12 +135,39 @@ namespace TrainDefense.Game.Manager
 #endif
         }
 
-        private void _OnLobbyEnter(LobbyEnterEvent lobbyEnterEvent)
+        /// <summary>
+        /// OAuthScene 진입 게이트. 개인정보처리방침 필수 확인이 끝나 있으면 바로 onCompleted를 부르고,
+        /// 아니면 동의 팝업을 띄워 [필수] 체크 후 [확인]을 누를 때 onCompleted를 부른다.
+        /// [선택] 분석 수집 체크 여부는 그때 SetConsent로 저장·반영한다.
+        /// </summary>
+        public void RequestPrivacyAgreement(Action onCompleted)
         {
-            if (AnalyticsConsent.IsDecided)
-                return;
+            if (PrivacyPolicyAgreement.IsAccepted)
+            {
+                onCompleted?.Invoke();
 
-            _ShowConsentPopup();
+                return;
+            }
+
+            if (_consentInstance == null)
+                _PrepareConsentPopup();
+
+            // 프리팹 연결이 빠진 빌드에서 영원히 못 넘어가는 일을 막는다(설정 오류라 에러로 남긴다).
+            if (_consentInstance == null)
+            {
+                Debug.LogError("[Analytics] 동의 팝업 prefab(_consentPopup)이 연결되지 않아 필수 동의 없이 진행합니다.");
+                onCompleted?.Invoke();
+
+                return;
+            }
+
+            // 미리 만들어 둔 인스턴스를 켠다(Show 내부 SetActive(true)). [확인] 시 스스로 SetActive(false).
+            _consentInstance.Show(AnalyticsConsent.IsGranted, isAnalyticsGranted =>
+            {
+                PrivacyPolicyAgreement.Accept();
+                SetConsent(isAnalyticsGranted);
+                onCompleted?.Invoke();
+            });
         }
 
         // ConsentCanvas(AnalyticsManager 자식 Canvas) 아래에 동의 팝업을 미리 1회 소환해 두고 비활성으로 둔다.
@@ -155,22 +181,6 @@ namespace TrainDefense.Game.Manager
             Transform parent = canvas != null ? canvas.transform : transform;
             _consentInstance = Instantiate(_consentPopup, parent, worldPositionStays: false);
             _consentInstance.gameObject.SetActive(false);
-        }
-
-        private void _ShowConsentPopup()
-        {
-            if (_consentInstance == null)
-                _PrepareConsentPopup();
-
-            if (_consentInstance == null)
-            {
-                Debug.LogWarning("[Analytics] 동의 팝업 prefab(_consentPopup)이 연결되지 않아 표시를 건너뜁니다.");
-
-                return;
-            }
-
-            // 미리 만들어 둔 인스턴스를 켠다(Show 내부 SetActive(true)). 동의/거부 시 스스로 SetActive(false).
-            _consentInstance.Show(SetConsent);
         }
         #endregion
 

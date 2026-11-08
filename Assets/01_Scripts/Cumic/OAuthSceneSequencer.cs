@@ -5,10 +5,11 @@ using Cumic.Checker;
 
 namespace Cumic.Sequence
 {
-    public class AuthSceneSequencer : ISceneSequencer
+    public class OAuthSceneSequencer : ISceneSequencer
     {
         private readonly IAuthable _authChecker;
         private readonly IVersionable _versionChecker;
+        private readonly IAgreeable _agreementChecker;
 
         private bool _isVersionMatched = false;
         private bool _isLoggedIn = false;
@@ -17,10 +18,11 @@ namespace Cumic.Sequence
 
         public event Action<bool> OnCompleted;
 
-        public AuthSceneSequencer(GameSceneSequence gameSceneSequence, IVersionable versionChecker, IAuthable authChecker)
+        public OAuthSceneSequencer(GameSceneSequence gameSceneSequence, IVersionable versionChecker, IAgreeable agreementChecker, IAuthable authChecker)
         {
             _gameSceneSequence = gameSceneSequence;
             _versionChecker = versionChecker;
+            _agreementChecker = agreementChecker;
             _authChecker = authChecker;
         }
 
@@ -30,6 +32,9 @@ namespace Cumic.Sequence
             _isVersionMatched = await VersionCheck();
 
             if (!_isVersionMatched) return;
+
+            // 개인정보처리방침 필수 동의 전에는 다음 단계(로그인 → 로비)로 넘어가지 않는다.
+            await _agreementChecker.WaitForAgreement();
 
             _isLoggedIn = await AuthCheck();
 
