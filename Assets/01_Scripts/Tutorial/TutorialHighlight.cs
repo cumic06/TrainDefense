@@ -25,6 +25,8 @@ namespace TrainDefense.Game.Tutorial
 
         // 외부 접근용
         public RectTransform CutoutRect => _cutoutRect;
+        // 대상 둘레에 더해지는 여백. 말풍선·화살표를 구멍 바깥에 놓을 때 쓴다.
+        public float Padding => _padding;
 
         private void Awake()
         {
@@ -223,6 +225,17 @@ namespace TrainDefense.Game.Tutorial
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 canvasRect, screenPoint, cam, out var localPoint);
+
+            SetTargetCanvasRect(localPoint, size);
+        }
+
+        /// <summary>
+        /// 캔버스 로컬 좌표의 사각형(중심·크기)에 하이라이트를 표시합니다. 크기에 여백(_padding)이 더해집니다.
+        /// </summary>
+        public void SetTargetCanvasRect(Vector2 localPoint, Vector2 size)
+        {
+            gameObject.SetActive(true);
+            _hasTarget = true;
 
             var totalSize = size + Vector2.one * _padding * 2f;
 

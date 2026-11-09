@@ -23,6 +23,10 @@ namespace TrainDefense.Game.Tutorial
         [Header("Settings")]
         [SerializeField] private float _dimmingAlpha = 0.7f;
 
+        // 대상·화살표·말풍선 사이 간격(캔버스 단위)
+        private const float CLEAR_GAP = 12f;
+        private static readonly Vector2 DEFAULT_WORLD_TARGET_SIZE = new Vector2(100f, 100f);
+
         private Canvas _rootCanvas;
         private RectTransform _canvasRect;
         private TutorialRaycastBlocker _screenTapBlocker;
@@ -93,6 +97,12 @@ namespace TrainDefense.Game.Tutorial
             // 게임 입력 통과 모드 (메인 트레인 발사 등 실제 조작 체험용). SetDimming 이후에 호출해야 한다.
             SetInputPassThrough(step.AllowGameInput);
 
+            if (step.KeepTargetClear && target != null)
+            {
+                ShowStepKeepingTargetClear(step, target);
+                return;
+            }
+
             // 하이라이트
             if (step.UseHighlight && target != null)
             {
@@ -142,6 +152,126 @@ namespace TrainDefense.Game.Tutorial
             {
                 _messageBubble.Hide();
             }
+        }
+
+        /// <summary>
+        /// 대상을 가리지 않는 배치. 대상의 화면 크기를 구해 위/아래 중 빈 공간이 넓은 쪽에
+        /// 화살표(대상 가장자리 바로 바깥) → 말풍선(화살표 바깥) 순으로 쌓는다.
+        /// </summary>
+        private void ShowStepKeepingTargetClear(TutorialStepData step, GameObject target)
+        {
+            Rect targetRect = GetCanvasRect(target);
+            float padding = 0f;
+
+            if (step.UseHighlight)
+            {
+                _highlight.SetTargetCanvasRect(targetRect.center, targetRect.size);
+                padding = _highlight.Padding;
+            }
+            else
+            {
+                _highlight.ClearTarget();
+            }
+
+            // 대상을 눌러도 넘어가야 하므로 구멍 안쪽도 막아 화면 어디를 눌러도 탭으로 처리한다.
+            _screenTapBlocker?.SetBlockAll(true);
+
+            Rect canvas = _canvasRect != null ? _canvasRect.rect : new Rect(-960f, -540f, 1920f, 1080f);
+            float spaceAbove = canvas.yMax - (targetRect.yMax + padding);
+            float spaceBelow = (targetRect.yMin - padding) - canvas.yMin;
+            bool placeAbove = spaceAbove >= spaceBelow;
+            var edge = new Vector2(targetRect.center.x, placeAbove ? targetRect.yMax + padding : targetRect.yMin - padding);
+            float clearance = CLEAR_GAP;
+
+            if (step.ArrowDirection != TutorialArrowDirection.None)
+            {
+                var arrowDirection = placeAbove ? TutorialArrowDirection.Up : TutorialArrowDirection.Down;
+                clearance += _arrowGuide.ShowOutside(arrowDirection, edge, CLEAR_GAP);
+            }
+            else
+            {
+                _arrowGuide.Hide();
+            }
+
+            if (!string.IsNullOrEmpty(step.Message))
+                _messageBubble.ShowClearOf(step.Message, edge + step.MessageOffset, clearance, placeAbove, step.NpcSprite);
+            else
+                _messageBubble.Hide();
+        }
+
+        /// <summary>
+        /// 대상이 화면에서 차지하는 사각형을 캔버스 로컬 좌표로 구한다.
+        /// UI는 RectTransform 모서리, 월드 오브젝트는 켜진 렌더러(몸·불꽃·체력바)를 모두 합친 범위를 쓴다.
+        /// </summary>
+        private Rect GetCanvasRect(GameObject target)
+        {
+            var corners = new Vector3[4];
+            Camera worldCamera = Camera.main;
+
+            if (target.TryGetComponent(out RectTransform rectTransform))
+            {
+                rectTransform.GetWorldCorners(corners);
+                worldCamera = _rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _rootCanvas.worldCamera;
+            }
+            else
+            {
+                bool hasBounds = false;
+                Bounds bounds = default;
+
+                foreach (Renderer targetRenderer in target.GetComponentsInChildren<Renderer>())
+                {
+                    if (!targetRenderer.enabled || targetRenderer is ParticleSystemRenderer)
+                        continue;
+
+                    if (!hasBounds)
+                    {
+                        bounds = targetRenderer.bounds;
+                        hasBounds = true;
+                    }
+                    else
+                    {
+                        bounds.Encapsulate(targetRenderer.bounds);
+                    }
+                }
+
+                if (!hasBounds)
+                {
+                    Vector2 point = GetCanvasPosition(target);
+
+                    return new Rect(point - DEFAULT_WORLD_TARGET_SIZE * 0.5f, DEFAULT_WORLD_TARGET_SIZE);
+                }
+
+                corners[0] = new Vector3(bounds.min.x, bounds.min.y, bounds.center.z);
+                corners[1] = new Vector3(bounds.min.x, bounds.max.y, bounds.center.z);
+                corners[2] = new Vector3(bounds.max.x, bounds.max.y, bounds.center.z);
+                corners[3] = new Vector3(bounds.max.x, bounds.min.y, bounds.center.z);
+            }
+
+            Camera canvasCamera = _rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _rootCanvas.worldCamera;
+            var min = new Vector2(float.MaxValue, float.MaxValue);
+            var max = new Vector2(float.MinValue, float.MinValue);
+
+            foreach (Vector3 corner in corners)
+            {
+                Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(worldCamera, corner);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvasRect, screenPoint, canvasCamera, out Vector2 localPoint);
+                min = Vector2.Min(min, localPoint);
+                max = Vector2.Max(max, localPoint);
+            }
+
+            return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+        }
+
+        /// <summary>
+        /// 튜토리얼이 잠시 띄우는 UI(예: 엘리트 종류 카드)를 오버레이에 붙인다.
+        /// 어둡게 덮는 패널보다 아래에 두어, 하이라이트 구멍에 든 것만 밝게 보이고 나머지는 같이 어두워진다.
+        /// </summary>
+        public void AttachBehindDimming(RectTransform content)
+        {
+            content.SetParent(transform, false);
+
+            if (_dimmingOverlay != null)
+                content.SetSiblingIndex(_dimmingOverlay.transform.GetSiblingIndex());
         }
 
         public void HideStep()

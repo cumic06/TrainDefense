@@ -1,0 +1,165 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 887768309d325914b820c47a021cd2b0, type: 3}
+  m_Name: EliteMonsterTutorialSequence
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.TutorialSequenceData
+  _sequenceId: eliteMonsterTutorial
+  _displayName: "엘리트 적 튜토리얼"
+  _displayNameKey: 0
+  _steps:
+  - _id: 22000
+    _targetObject: {fileID: 0}
+    _targetObjectName: 
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "엘리트 적이 나타났어요! 불꽃을 두른 적은 일반 적보다 훨씬 강해요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_EliteMonster_Msg1
+    _arrowDirection: 1
+    _arrowLookDirection: 0
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _keepTargetClear: 1
+    _delayBefore: 0.3
+    _sfxKey: 
+    _messageOffset: {x: 0, y: 0}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId: 
+  - _id: 22001
+    _targetObject: {fileID: 0}
+    _targetObjectName: 
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "엘리트 적은 모두 {0}종류예요. 같은 적이라도 불꽃 색에 따라 특징이 달라요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_EliteMonster_Msg2
+    _arrowDirection: 0
+    _arrowLookDirection: 0
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _keepTargetClear: 1
+    _delayBefore: 0.3
+    _sfxKey: 
+    _messageOffset: {x: 0, y: 0}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId: 
+  - _id: 22100
+    _targetObject: {fileID: 0}
+    _targetObjectName: 
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "빨간 불꽃 엘리트는 체력·공격력·속도가 모두 강해요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_EliteMonster_Red
+    _arrowDirection: 1
+    _arrowLookDirection: 0
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _keepTargetClear: 1
+    _delayBefore: 0
+    _sfxKey: 
+    _messageOffset: {x: 0, y: 0}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId: 
+  - _id: 22101
+    _targetObject: {fileID: 0}
+    _targetObjectName: 
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "초록 불꽃 엘리트는 엄청 튼튼해요! 느리지만 기절·둔화가 잘 안 통해요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_EliteMonster_Green
+    _arrowDirection: 1
+    _arrowLookDirection: 0
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _keepTargetClear: 1
+    _delayBefore: 0
+    _sfxKey: 
+    _messageOffset: {x: 0, y: 0}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId: 
+  - _id: 22102
+    _targetObject: {fileID: 0}
+    _targetObjectName: 
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "파란 불꽃 엘리트는 멀리서 주기적으로 기차를 공격해요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_EliteMonster_Blue
+    _arrowDirection: 1
+    _arrowLookDirection: 0
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _keepTargetClear: 1
+    _delayBefore: 0
+    _sfxKey: 
+    _messageOffset: {x: 0, y: 0}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId: 
+  - _id: 22103
+    _targetObject: {fileID: 0}
+    _targetObjectName: 
+    _skipCondition: 0
+    _timeoutDuration: 3
+    _customSkipEvent:
+      m_PersistentCalls:
+        m_Calls: []
+    _message: "노란 불꽃 엘리트는 주변 적들을 빠르게 만들어요."
+    _messageKey: 0
+    _messageKeyName: Tutorial_EliteMonster_Yellow
+    _arrowDirection: 1
+    _arrowLookDirection: 0
+    _useDimming: 1
+    _useHighlight: 1
+    _allowGameInput: 0
+    _keepTargetClear: 1
+    _delayBefore: 0
+    _sfxKey: 
+    _messageOffset: {x: 0, y: 0}
+    _npcSprite: {fileID: 21300000, guid: d71d4e77dfe1d4474acad9d613932ec8, type: 3}
+    _npcPosition: {x: 0, y: 0}
+    _npcFlipX: 0
+    _prerequisiteStepId: 
+  _canSkip: 1
+  _priority: 10
+  _shouldPauseTime: 1

@@ -170,6 +170,34 @@ namespace TrainDefense.Game.Tutorial
         }
 
         /// <summary>
+        /// 대상 가장자리(edgeCanvasPosition)에서 clearance만큼 떨어진 바깥쪽에 말풍선 전체가 오도록 표시합니다.
+        /// 말풍선 높이는 문구에 따라 달라지므로 크기를 맞춘 뒤에 위치를 정하고, 화면 밖으로 나가지 않게 가둡니다.
+        /// </summary>
+        public void ShowClearOf(string message, Vector2 edgeCanvasPosition, float clearance, bool placeAbove, Sprite npcSprite = null)
+        {
+            Show(message, edgeCanvasPosition, npcSprite);
+
+            if (!gameObject.activeSelf)
+                return;
+
+            Rect bubble = _bubbleRect.rect;
+            Vector2 pivot = _bubbleRect.pivot;
+            float y = placeAbove
+                ? edgeCanvasPosition.y + clearance + bubble.height * pivot.y
+                : edgeCanvasPosition.y - clearance - bubble.height * (1f - pivot.y);
+            float x = edgeCanvasPosition.x;
+
+            if (_parentCanvasRect != null)
+            {
+                Rect canvas = _parentCanvasRect.rect;
+                x = Mathf.Clamp(x, canvas.xMin + bubble.width * pivot.x, canvas.xMax - bubble.width * (1f - pivot.x));
+                y = Mathf.Clamp(y, canvas.yMin + bubble.height * pivot.y, canvas.yMax - bubble.height * (1f - pivot.y));
+            }
+
+            _bubbleRect.anchoredPosition = new Vector2(x, y);
+        }
+
+        /// <summary>
         /// 타이핑을 즉시 완료합니다.
         /// </summary>
         public void SkipTyping()
