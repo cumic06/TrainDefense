@@ -22,6 +22,8 @@ namespace TrainDefense
       [SerializeField]
       private Toggle hapticToggle;
       [SerializeField]
+      private TMP_Text hapticLabel;
+      [SerializeField]
       private Toggle cameraShakeToggle;
       [SerializeField]
       private TMP_Text cameraShakeLabel;
@@ -133,9 +135,14 @@ namespace TrainDefense
          cameraShakeToggle.SetIsOnWithoutNotify(isEnabled);
       }
 
-      // 카메라 흔들림 라벨·색약 보정 라벨을 현재 언어로 갱신한다.
+      // 진동·카메라 흔들림 라벨·색약 보정 라벨을 현재 언어로 갱신한다.
       private void _RefreshTexts()
       {
+         if (hapticLabel != null)
+         {
+            hapticLabel.text = LocalizeHelper.GetByKey("UI_Option_Haptic", "진동");
+         }
+
          if (cameraShakeLabel != null)
          {
             cameraShakeLabel.text = LocalizeHelper.GetByKey("UI_Option_CameraShake", "카메라 흔들림");
