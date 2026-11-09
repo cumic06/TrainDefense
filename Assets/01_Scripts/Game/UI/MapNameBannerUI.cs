@@ -21,6 +21,7 @@ namespace TrainDefense.Game.UI
     /// 튜토리얼 등 오버레이가 떠 있으면 걷힐 때까지 대기 후 표시한다.
     /// EngageStartEvent는 상점 퇴장마다 발행되므로 "직전에 보여준 스테이지와 다른 경우"에만 표시한다.
     /// 날씨와 무작위 선로 이벤트가 시작되면(TrackEventStartEvent) 이름 + 효과도 같은 배너로 차례로 알린다.
+    /// 날씨 이벤트는 이름 왼쪽에 날씨 아이콘(TrackEventWeatherIcons)을 함께 띄운다.
     /// 시각 요소는 코드에서 직접 생성해 Inspector wiring 없이 동작한다(GameBootstrapper가 전역 캔버스에 부착).
     /// </summary>
     public class MapNameBannerUI : MonoBehaviour
@@ -41,10 +42,14 @@ namespace TrainDefense.Game.UI
         // 바 높이: 맵 이름 한 줄은 원래대로, 이름 + 효과 두 줄은 글자가 바 위·아래에 붙지 않게 높게
         private const float BAR_HEIGHT_NAME_ONLY = 110f;
         private const float BAR_HEIGHT_WITH_EFFECT = 140f;
+        // 이벤트 이름 왼쪽에 붙는 날씨 아이콘 크기와 이름과의 간격. 이름 글자(46)와 비슷한 높이로 둔다.
+        private const float EVENT_ICON_SIZE = 48f;
+        private const float EVENT_ICON_GAP = 12f;
 
         private readonly Queue<(string message, TrackEventData eventData)> _pendingMessages = new Queue<(string, TrackEventData)>();
         private CanvasGroup _canvasGroup;
         private TextMeshProUGUI _nameText;
+        private Image _eventIcon;
         private Coroutine _playRoutine;
         // EngageStartEvent가 역 정차(상점 퇴장)마다 발행되므로, 같은 맵에서의 중복 표시를 막는 가드.
         private string _lastShownStageId;
@@ -182,15 +187,50 @@ namespace TrainDefense.Game.UI
             if (eventData != null && !_IsEventActive(eventData))
                 yield break;
 
+            ((RectTransform)transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
+                message.IndexOf('\n') >= 0 ? BAR_HEIGHT_WITH_EFFECT : BAR_HEIGHT_NAME_ONLY);
+
             if (_nameText != null)
                 _nameText.text = message;
 
-            ((RectTransform)transform).SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
-                message.IndexOf('\n') >= 0 ? BAR_HEIGHT_WITH_EFFECT : BAR_HEIGHT_NAME_ONLY);
+            _ApplyEventIcon(eventData);
 
             yield return _Fade(0f, 1f, fadeDuration);
             yield return new WaitForSecondsRealtime(holdDuration);
             yield return _Fade(1f, 0f, fadeDuration);
+        }
+
+        // 날씨 이벤트면 이름(첫 줄) 바로 왼쪽에 아이콘을 붙인다. 아이콘 + 간격만큼 왼쪽 여백을 줘서
+        // 아이콘과 이름 묶음이 바 가운데에 오게 한다. 맵 이름이나 아이콘 없는 이벤트는 여백을 원래대로 돌린다.
+        private void _ApplyEventIcon(TrackEventData eventData)
+        {
+            if (_eventIcon == null || _nameText == null)
+                return;
+
+            Sprite icon = TrackEventWeatherIcons.GetIcon(eventData);
+            bool hasIcon = icon != null;
+            float leftMargin = hasIcon ? TEXT_SIDE_MARGIN + EVENT_ICON_SIZE + EVENT_ICON_GAP : TEXT_SIDE_MARGIN;
+
+            _nameText.margin = new Vector4(leftMargin, 0f, TEXT_SIDE_MARGIN, 0f);
+            _eventIcon.sprite = icon;
+            _eventIcon.gameObject.SetActive(false);
+
+            if (!hasIcon)
+                return;
+
+            // 자동 크기 조정이 끝난 실제 글자 배치를 읽어 첫 줄 왼쪽 끝에 맞춘다.
+            _nameText.ForceMeshUpdate();
+            TMP_TextInfo textInfo = _nameText.textInfo;
+
+            if (textInfo == null || textInfo.lineCount == 0)
+                return;
+
+            TMP_LineInfo firstLine = textInfo.lineInfo[0];
+            float lineCenterY = (firstLine.ascender + firstLine.descender) * 0.5f;
+
+            _eventIcon.rectTransform.anchoredPosition =
+                new Vector2(firstLine.lineExtents.min.x - EVENT_ICON_GAP - EVENT_ICON_SIZE * 0.5f, lineCenterY);
+            _eventIcon.gameObject.SetActive(true);
         }
 
         private static bool _IsEventActive(TrackEventData eventData)
@@ -275,6 +315,20 @@ namespace TrainDefense.Game.UI
             _nameText.alignment = TextAlignmentOptions.Center;
             _nameText.margin = new Vector4(TEXT_SIDE_MARGIN, 0f, TEXT_SIDE_MARGIN, 0f);
             _nameText.raycastTarget = false;
+
+            // 날씨 아이콘 — 글자와 같은 좌표계를 쓰도록 텍스트 아래에 두고, 위치는 표시할 때 첫 줄에 맞춘다(_ApplyEventIcon).
+            var iconGo = new GameObject("EventIcon", typeof(RectTransform));
+            iconGo.layer = gameObject.layer;
+            var iconRect = (RectTransform)iconGo.transform;
+            iconRect.SetParent(textRect, false);
+            iconRect.anchorMin = new Vector2(0.5f, 0.5f);
+            iconRect.anchorMax = new Vector2(0.5f, 0.5f);
+            iconRect.sizeDelta = new Vector2(EVENT_ICON_SIZE, EVENT_ICON_SIZE);
+
+            _eventIcon = iconGo.AddComponent<Image>();
+            _eventIcon.preserveAspect = true;
+            _eventIcon.raycastTarget = false;
+            iconGo.SetActive(false);
 
             // 언어별 폰트(라틴/아랍/태국 등) 교체 + RTL 방향 처리. 한국어는 기본 폰트(DNFBitBitv2) 유지.
             LocalizeFontSwitcher.Register(_nameText);
