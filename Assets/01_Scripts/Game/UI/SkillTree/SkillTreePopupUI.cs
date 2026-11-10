@@ -194,7 +194,9 @@ namespace TrainDefense.Game.UI.SkillTree
                 {
                     foreach (string fromId in data.Prerequisites)
                     {
-                        if (!positions.TryGetValue((fromId, 1), out Vector2 fromPosition)) continue;
+                        SkillNodeData fromData = manager.GetNode(fromId);
+                        int fromTier = data.IsContinuationOf(fromData) ? fromData.TierCount : 1;
+                        if (!positions.TryGetValue((fromId, fromTier), out Vector2 fromPosition)) continue;
 
                         _CreateRail(fromId, data.Id, 1, fromPosition, firstTierPosition);
                     }
@@ -221,6 +223,7 @@ namespace TrainDefense.Game.UI.SkillTree
         // 허브 기준 칸 위치. row 0 노드의 I는 레인 방향으로 허브 바로 옆. 그 뒤 칸(k = 1, 2, …)은 col이 정한 슬롯을 따라간다:
         //   col 0  → 레인 방향으로 직진
         //   col ±1 → 첫 티어에서 대각으로 한 칸 벌어진 뒤 레인 방향으로 이어진다
+        // 선행 노드와 같은 줄에 놓인 노드는 선행의 마지막 칸 뒤로 이어진다.
         private static Vector2 _GetTierPosition(SkillNodeData data, int tier)
         {
             var (direction, branchSide) = LaneLayouts[data.Lane];
@@ -233,9 +236,27 @@ namespace TrainDefense.Game.UI.SkillTree
             float alongPitch = isHorizontalLane ? TierPitchHorizontal : TierPitchVertical;   // 레인 방향으로 한 칸
             float sidePitch = isHorizontalLane ? TierPitchVertical : TierPitchHorizontal;    // 레인과 직각으로 한 칸
 
-            int step = isLaneRoot ? tier - 1 : tier;
+            int step = _GetStepAlongLane(data, tier);
             float distance = HubToFirstTier + FirstTierToNextTier + (step - 1) * alongPitch;
             return direction * distance + branchSide * (data.Col * sidePitch);
+        }
+
+        // 레인 방향으로 몇 번째 칸인지. 뿌리 노드의 I는 0, 가지의 I는 1부터 센다.
+        private static int _GetStepAlongLane(SkillNodeData data, int tier)
+        {
+            if (data.Row == 0) return tier - 1;
+
+            if (data.Prerequisites != null)
+            {
+                foreach (string prerequisiteId in data.Prerequisites)
+                {
+                    SkillNodeData prerequisite = SkillTreeManager.Instance.GetNode(prerequisiteId);
+                    if (data.IsContinuationOf(prerequisite))
+                        return _GetStepAlongLane(prerequisite, prerequisite.TierCount) + tier;
+                }
+            }
+
+            return tier;
         }
         #endregion
 

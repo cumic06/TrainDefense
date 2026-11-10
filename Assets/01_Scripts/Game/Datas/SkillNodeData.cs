@@ -137,6 +137,10 @@ namespace TrainDefense.Game.Datas
         public SkillTreePassiveType PassiveType => passiveType;
         public string UnlockTrainId => unlockTrainId;
 
+        /// <summary>선행 노드와 같은 줄(같은 레인·같은 col)에 놓여 그 마지막 칸 뒤로 이어지는 노드인지. 이어지는 노드는 선행을 전부 만렙해야 열린다.</summary>
+        public bool IsContinuationOf(SkillNodeData prerequisite)
+            => prerequisite != null && lane == prerequisite.lane && col == prerequisite.col;
+
         /// <summary>노드 전체 최대 레벨 = 티어별 최대 레벨의 합.</summary>
         public int MaxLevel => GetLevelsBeforeTier(TierCount + 1);
 

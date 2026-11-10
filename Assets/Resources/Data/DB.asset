@@ -2102,15 +2102,15 @@ MonoBehaviour:
     name: SkillTree_skill_def_turret_Name
     description: SkillTree_skill_def_turret_Desc
     lane: 2
-    row: 1
-    col: 1
+    row: 3
+    col: -1
     tiers:
     - valuePerLevel: 1
       maxLevel: 1
       costPerLevel: 340
       costGrowthPercent: 17
     prerequisites:
-    - skill_util_elite_coin
+    - skill_util_reroll
     category: 1
     stats: []
     passiveType: 0
@@ -2224,9 +2224,17 @@ MonoBehaviour:
     row: 0
     col: 0
     tiers:
-    - valuePerLevel: 1
-      maxLevel: 1
-      costPerLevel: 30
+    - valuePerLevel: 3
+      maxLevel: 5
+      costPerLevel: 8
+      costGrowthPercent: 17
+    - valuePerLevel: 3
+      maxLevel: 5
+      costPerLevel: 14
+      costGrowthPercent: 17
+    - valuePerLevel: 3
+      maxLevel: 5
+      costPerLevel: 24
       costGrowthPercent: 17
     prerequisites: []
     category: 1
@@ -2238,8 +2246,8 @@ MonoBehaviour:
     name: SkillTree_skill_util_kill_coin_Name
     description: SkillTree_skill_util_kill_coin_Desc
     lane: 2
-    row: 3
-    col: 2
+    row: 1
+    col: 1
     tiers:
     - valuePerLevel: 0.05
       maxLevel: 2
@@ -2254,7 +2262,7 @@ MonoBehaviour:
       costPerLevel: 30
       costGrowthPercent: 17
     prerequisites:
-    - skill_def_turret
+    - skill_util_elite_coin
     category: 1
     stats: []
     passiveType: 9
