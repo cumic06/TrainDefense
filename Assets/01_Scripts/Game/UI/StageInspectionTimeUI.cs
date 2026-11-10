@@ -51,6 +51,7 @@ namespace TrainDefense.Game.UI
          GameEventSystem.Subscribe<StageSelectEvent>(OnStageSelected);
          GameEventSystem.Subscribe<EngageStartEvent>(OnEngageStart);
          GameEventSystem.Subscribe<StationPassedEvent>(_OnStationPassed);
+         GameEventSystem.Subscribe<InspectionEndEvent>(_OnInspectionEnd);
          GameEventSystem.Subscribe<RunRestoredEvent>(_OnRunRestored);
       }
 
@@ -63,6 +64,7 @@ namespace TrainDefense.Game.UI
          GameEventSystem.Unsubscribe<StageSelectEvent>(OnStageSelected);
          GameEventSystem.Unsubscribe<EngageStartEvent>(OnEngageStart);
          GameEventSystem.Unsubscribe<StationPassedEvent>(_OnStationPassed);
+         GameEventSystem.Unsubscribe<InspectionEndEvent>(_OnInspectionEnd);
          GameEventSystem.Unsubscribe<RunRestoredEvent>(_OnRunRestored);
       }
 
@@ -76,10 +78,37 @@ namespace TrainDefense.Game.UI
          _SetStationText(1, false);
       }
 
-      private void _OnStationPassed(StationPassedEvent _) => _RefreshStationText();
+      // 역 도착(상점 진입) 시점엔 배지를 그대로 둔다 — 상점에 있는 동안은 "도착한 역"을 보여주고,
+      // 상점을 나가 다음 역으로 출발할 때(InspectionEndEvent) 번호가 올라간다.
+      private void _OnStationPassed(StationPassedEvent _) => _ShowArrivedTime();
+
+      // 상점을 닫고 나가는 순간 다음 역 번호로 올린다.
+      private void _OnInspectionEnd(InspectionEndEvent _) => _RefreshStationText();
+
+      // 역 도착(상점 진입) 순간 남은 시간을 00:00으로 고정한다.
+      // StageManager는 시간을 더하기 전에 남은 시간을 발행하므로 마지막 값이 0.0x초로 남아 올림하면 00:01로 보이기 때문.
+      // 상점이 실제로 열리면(InspectionStartEvent) 다시 활성화된다.
+      private void _ShowArrivedTime()
+      {
+         _isActive = false;
+         _slider.value = 0f;
+
+         if (nextInspectionTimeText == null) return;
+
+         nextInspectionTimeText.text = "00:00";
+         // 다음 _SetRemainingTimeText(0f) 호출이 같은 값으로 보고 건너뛰지 않게 캐시를 비운다.
+         _lastShownRemainingSeconds = -1;
+      }
 
       // 이어하기 복원은 StationPassedEvent 없이 지나온 역 수를 바로 바꾸므로 여기서 다시 맞춘다.
-      private void _OnRunRestored(RunRestoredEvent _) => _RefreshStationText();
+      // 복원은 항상 상점(역 도착 시점)에서 재개되므로, 아직 출발 전인 "도착한 역" 번호를 보여준다.
+      private void _OnRunRestored(RunRestoredEvent _)
+      {
+         var stageManager = StageManager.Instance;
+         if (stageManager == null) return;
+
+         _SetStationText(Mathf.Max(1, stageManager.TotalInspectionPassedCount), stageManager.IsInfiniteMode);
+      }
 
       // 지나온 역 수와 무한 모드는 StageManager 한 곳에서만 읽는다(이벤트 값과 복원 값이 어긋나지 않게).
       private void _RefreshStationText()

@@ -3,7 +3,7 @@
 (아직 등록된 프로젝트 규칙이 없습니다 — rules\ 폴더에 .md 파일을 추가하세요.)
 
 
-## 프로젝트 지도 (앱 자동 생성 2026-11-10 13:37 · 파일 3416개 · 폴더 382개)
+## 프로젝트 지도 (앱 자동 생성 2026-11-11 00:54 · 파일 3399개 · 폴더 382개)
 
 구조 파악은 이 지도로 끝내고, 지도에 없는 부분만 열어 본다. 폴더를 처음부터 다시 훑거나 파일을 전수로 읽지 않는다.
 지도의 각 줄은 파일 앞부분의 첫 주석·선언 한 줄일 뿐이다 — 세부 동작이 필요한 파일만 골라 연다.
@@ -11,7 +11,7 @@
 - 종류: Unity 프로젝트 (에디터 6000.3.11f1 · 패키지 23개: com.antigravity.editor, com.boxqkrtm.ide.cursor, com.cysharp.unitask, com.nosuchstudio.rtltmpro, com.redeyestemplate.core, com.unity.2d.animation, com.unity.2d.aseprite, com.unity.2d.psdimporter, com.unity.2d.sprite, com.unity.2d.spriteshape, com.unity.2d.tilemap, com.unity.2d.tilemap.extras …)
 - 씬: Assets/00_Scenes/00_OAuthScene.unity, Assets/00_Scenes/01_LobbyScene.unity, Assets/00_Scenes/02_GameScene.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenAnimation_Advanced.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenAnimation_Basics.unity, Assets/Plugins/Demigiant/DOTweenPro Examples/DOTweenPath.unity, Assets/Settings/Scenes/URP2DSceneTemplate.unity
 
-### (루트) (코드 4 · 기타 16)
+### (루트) (코드 4 · 기타 15)
 - .mcp.json
 - DESIGN.md — TrainDefense UI 기준
 - README.md — TrainDefense
