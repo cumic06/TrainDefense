@@ -62,6 +62,10 @@ namespace TrainDefense.Game.UI
 
         private void OnNewMonsterDiscovered(NewMonsterDiscoveredEvent evt)
         {
+            // 엘리트로 처음 나온 몬스터는 엘리트 튜토리얼이 설명하므로 알림을 띄우지 않는다.
+            if (evt.IsElite)
+                return;
+
             _viewModel = new NewMonsterViewModel(evt.MonsterId);
 
             if (_viewModel.IsValid)

@@ -34,6 +34,8 @@ namespace TrainDefense.Game.Datas
         SFX_Game_LightningStrike = 312,
         // 블랙홀이 날아가서 장판이 사라질 때까지 반복 재생된다(BlackHoleSoundLoop).
         BlackHoleLoop = 313,
+        // 플레이어 개입 포격 발사음. 박격포 포탑(306)과 같은 클립을 쓰면 서로 끊기고 구분도 안 돼 따로 둔다.
+        PlayerBombardAttack = 314,
 
         CannonTriggerSound = 401,
         MissleTriggerSound = 402,

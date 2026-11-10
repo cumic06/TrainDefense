@@ -297,6 +297,11 @@ namespace TrainDefense.Game.Manager
             // 이어하기 복원은 저장된 편성을 평소 생성 경로로 다시 세운다. 그 스폰은 새 획득이 아니다.
             if (RunSave.RunSaveManager.Instance != null && RunSave.RunSaveManager.Instance.IsRestoring) return;
 
+            // 로비 배경 연출(LobbyGameSimulation)도 장식용 기차를 같은 경로로 세운다. 판 밖의 스폰은 획득이 아니라서
+            // 남기면 stage가 "none"인 train_spawned가 쌓인다. StageManager는 게임 씬에만 있으므로 그것으로 판 안인지 가린다.
+            if (StageManager.Instance == null)
+                return;
+
             _Log("train_spawned",
                 ("train_id", trainSpawnedEvent.TrainId),
                 ("stage", _CurrentStage()));

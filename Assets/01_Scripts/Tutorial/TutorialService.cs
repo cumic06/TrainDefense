@@ -97,8 +97,15 @@ namespace TrainDefense.Game.Tutorial
                 return;
             }
 
-            // 선행 조건 확인 - 충족되지 않으면 건너뛰기
+            // 이번 실행에서 제외된 스텝(예: 등장하지 않는 엘리트 종류 설명)은 건너뛰기
             var nextStep = CurrentStep;
+            if (nextStep != null && nextStep.IsRuntimeExcluded)
+            {
+                AdvanceStep();
+                return;
+            }
+
+            // 선행 조건 확인 - 충족되지 않으면 건너뛰기
             if (nextStep != null && !string.IsNullOrEmpty(nextStep.PrerequisiteStepId))
             {
                 if (!_saveData.IsStepCompleted(nextStep.PrerequisiteStepId))

@@ -11337,6 +11337,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 301c02ae47e44b64b1ff64616ded9d2a, type: 2}
   - {fileID: 11400000, guid: d7f25f4ecaef4d9c8b65fd88452bd4f9, type: 2}
   - {fileID: 11400000, guid: 885dc3b6a4fb4511a9804f6630579a2e, type: 2}
+  - {fileID: 11400000, guid: 906899d8a83742259e91321d9d138f09, type: 2}
   _overlayView: {fileID: 1696234804}
   _skipPopup: {fileID: 1696234803}
 --- !u!1 &693134063
@@ -14198,6 +14199,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1670328831}
   - component: {fileID: 1670328832}
+  - component: {fileID: 1670328833}
   m_Layer: 0
   m_Name: MonsterSpawner
   m_TagString: Untagged
@@ -14249,6 +14251,21 @@ MonoBehaviour:
     Size: {x: 35, y: 1}
   - Offset: {x: -0, y: -10}
     Size: {x: 35, y: 1}
+--- !u!114 &1670328833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670328830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eec7c88dcefe4d998df76f142f6afe0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrainDefense.Game.Tutorial.EliteMonsterTutorial
+  screenEnterMargin: 0.12
+  cardBackground: {fileID: 21300000, guid: 98a7b1a4da3c4fec9e31ff5e1c7a7733, type: 3}
+  cardRowPosition: {x: 0, y: 170}
 --- !u!1 &1671764542
 GameObject:
   m_ObjectHideFlags: 0
@@ -16277,7 +16294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4701399315867174204, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 353.28
+      value: 281.136
       objectReference: {fileID: 0}
     - target: {fileID: 4701399315867174204, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_SizeDelta.y
@@ -16325,7 +16342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4701399315867174204, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 20
+      value: 92.14398
       objectReference: {fileID: 0}
     - target: {fileID: 4701399315867174204, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -16357,7 +16374,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7621946414749050982, guid: 770a74d901d727f4786fbb3b6847f38c, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 337.92
+      value: 265.776
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

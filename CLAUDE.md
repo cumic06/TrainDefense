@@ -3,7 +3,7 @@
 (아직 등록된 프로젝트 규칙이 없습니다 — rules\ 폴더에 .md 파일을 추가하세요.)
 
 
-## 프로젝트 지도 (앱 자동 생성 2026-11-08 23:52 · 파일 3403개 · 폴더 381개)
+## 프로젝트 지도 (앱 자동 생성 2026-11-10 13:37 · 파일 3416개 · 폴더 382개)
 
 구조 파악은 이 지도로 끝내고, 지도에 없는 부분만 열어 본다. 폴더를 처음부터 다시 훑거나 파일을 전수로 읽지 않는다.
 지도의 각 줄은 파일 앞부분의 첫 주석·선언 한 줄일 뿐이다 — 세부 동작이 필요한 파일만 골라 연다.
@@ -86,9 +86,11 @@
 - BasePhase.cs — enum BasePhase
 - OverlayPhase.cs — enum OverlayPhase
 
-### Assets/01_Scripts/Cumic/UI (코드 3)
+### Assets/01_Scripts/Cumic/UI (코드 5)
 - ChangeSceneButton.cs — class ChangeSceneButton : MonoBehaviour
+- LoadingText.cs — class LoadingText : MonoBehaviour — 로딩 문구 끝의 점(...)을 하나씩 늘렸다 줄이며 진행 중임을 보여준다.
 - UIManager.cs — class UIManager : Singleton<UIManager>
+- VersionText.cs — class VersionText : MonoBehaviour — 붙은 텍스트에 현재 앱 버전(Application.version)을 표시한다. 타이틀 화면 구석 버전 표기용.
 - VersionUpdatePopup.cs — class VersionUpdatePopup : MonoBehaviour — 버전 불일치 시 뜨는 강제 업데이트 팝업. 업데이트 버튼을 누르면 스토어로 이동한다.
 
 ### Assets/01_Scripts/Editor (코드 6)
@@ -151,10 +153,6 @@
 
 ### Assets/01_Scripts/Game/Analytics/Editor (코드 2)
 - AnalyticsConsentDebugMenu.cs — class AnalyticsConsentDebugMenu — Analytics 동의 상태 디버그 메뉴. 동의 팝업을 다시 띄워 테스트할 때 사용한다.
-- AndroidAdIdPermissionRemover.cs — class AndroidAdIdPermissionRemover : IPostGenerateGradleAndroidProject — 게임은 광고를 쓰지 않지만 Firebase Analytics(play-services-measurement-api)가
-
-### Assets/01_Scripts/Game/Controller (코드 2)
-- CameraController.cs — class CameraController : MonoBehaviour
 
 (지도 12KB 상한으로 이하 생략 — 나머지는 필요할 때 직접 ls 한다)
 <!-- GGD:END -->

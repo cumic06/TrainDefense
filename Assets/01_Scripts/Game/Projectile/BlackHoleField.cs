@@ -122,6 +122,10 @@ namespace TrainDefense.Game
 
             _PullMonsters(deltaTime);
 
+            // 반복음은 장판이 사라질 때 함께 끝난다(클릭 방지 램프 길이만큼만 앞서 놓는다). 다음 장판까지 쉼이 생겨 공격 주기와 소리가 붙지 않는다.
+            if (_isHoldingSound && _elapsedTime >= _lifetime - BlackHoleSoundLoop.STOP_FADE_SECONDS)
+                _ReleaseSound();
+
             if (_elapsedTime >= _lifetime)
                 _Collapse();
         }

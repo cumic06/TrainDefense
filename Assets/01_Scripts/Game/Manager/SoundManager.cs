@@ -62,10 +62,14 @@ namespace TrainDefense.Game
         private readonly Dictionary<AudioSource, float> _sfxBaseVolumes = new();
         // ignoreSuppress로 재생된 SFX(UI 사운드 등) — 일시 억제(Pause)에도 음소거되지 않는다.
         private readonly HashSet<AudioSource> _suppressImmuneSources = new();
+        // StopSFX(fade)로 볼륨을 줄이며 꺼지는 중인 SFX. 재생 중으로 치지 않고, 같은 소리를 다시 틀면 처음부터가 아니라 볼륨만 되살린다.
+        private readonly HashSet<AudioSource> _fadingOutSources = new();
         private SoundDB _soundDB;
         private float _currentBgmBaseVolume = 1f;
 
         private const float _normalCutoff = 22000f;
+        // 같은 원샷 클립이 동시에 울릴 수 있는 수. 그 위로는 가장 오래된 소리를 다시 시작한다(RestartExisting).
+        private const int MAX_ONE_SHOT_VOICES_PER_CLIP = 2;
         private AudioLowPassFilter _bgmLowPass;
         private Tween _bgmMuffleTween;
 
@@ -372,13 +376,26 @@ namespace TrainDefense.Game
             if (silenced)
                 return;
 
-            var existing = FindActiveSfxSourceByClip(data.Clip);
+            // 루프는 StopSFX·IsSFXPlaying이 클립으로 소스를 찾으므로 항상 하나만 둔다.
+            // 원샷은 MAX_ONE_SHOT_VOICES_PER_CLIP개까지 겹쳐 울리고 그 위로만 가장 오래된 것을 다시 시작한다
+            // (박격포 발사음을 포탑 여러 대와 플레이어 포격이 같이 쓰면서 서로 끊던 문제).
+            var existing = FindOldestActiveSfxSourceByClip(data.Clip, out int voiceCount);
             if (existing != null)
             {
+                // 페이드아웃으로 꺼지던 소리를 다시 잡으면 중복 정책과 무관하게 처음부터 틀지 않고 볼륨만 되살려 이어 간다.
+                if (_fadingOutSources.Contains(existing))
+                {
+                    existing.DOKill();
+                    _fadingOutSources.Remove(existing);
+                    ApplySfxSettings(existing, data, ignoreSuppress);
+                    existing.loop = isLoop;
+                    return;
+                }
+
                 if (sfxDuplicatePolicy == SfxDuplicatePolicy.IgnoreNew)
                     return;
 
-                if (sfxDuplicatePolicy == SfxDuplicatePolicy.RestartExisting)
+                if (sfxDuplicatePolicy == SfxDuplicatePolicy.RestartExisting && (isLoop || voiceCount >= MAX_ONE_SHOT_VOICES_PER_CLIP))
                 {
                     // ApplySfxSettings → ConfigureSfxSourceDefaults가 loop=false로 덮어쓰므로
                     // 재생 직전에 loop 플래그를 복원해야 한다. 누락 시 루프 SFX(냉기포탑 등)가
@@ -411,14 +428,43 @@ namespace TrainDefense.Game
 
         public void StopSFX(SoundData data)
         {
+            StopSFX(data, 0f);
+        }
+
+        public void StopSFX(SoundType type, float fadeSeconds)
+        {
+            var db = _GetSoundDB();
+            if (db == null)
+                return;
+            var data = db.GetSoundData(type);
+            if (data != null)
+                StopSFX(data, fadeSeconds);
+        }
+
+        // fadeSeconds 동안 볼륨을 0까지 내린 뒤 멈춘다. 상점·일시정지(timeScale 0) 중에도 끝까지 내려가게 unscaled로 돈다.
+        public void StopSFX(SoundData data, float fadeSeconds)
+        {
             if (data == null || data.Clip == null)
                 return;
 
             var existing = FindActiveSfxSourceByClip(data.Clip);
-            if (existing != null)
+            if (existing == null)
+                return;
+
+            if (fadeSeconds <= 0f)
             {
                 existing.Stop();
+                return;
             }
+
+            existing.DOKill();
+            _fadingOutSources.Add(existing);
+            // 기본 곡선(OutQuad)은 절반 지점에 이미 -12dB라 짧은 페이드가 뚝 끊기는 것처럼 들린다. 직선으로 고르게 줄인다.
+            existing.DOFade(0f, fadeSeconds).SetEase(Ease.Linear).SetUpdate(true).OnComplete(() =>
+            {
+                _fadingOutSources.Remove(existing);
+                existing.Stop();
+            });
         }
 
         public bool IsSFXPlaying(SoundType type)
@@ -428,8 +474,10 @@ namespace TrainDefense.Game
                 return false;
 
             var data = db.GetSoundData(type);
+            var existing = data != null ? FindActiveSfxSourceByClip(data.Clip) : null;
 
-            return data != null && FindActiveSfxSourceByClip(data.Clip) != null;
+            // 페이드아웃으로 꺼지는 중인 소리는 재생 중으로 치지 않는다 — 다시 잡는 쪽이 PlaySFX를 불러 이어 가게.
+            return existing != null && !_fadingOutSources.Contains(existing);
         }
 
         private void ApplySfxSettings(AudioSource source, SoundData data, bool ignoreSuppress = false)
@@ -466,6 +514,34 @@ namespace TrainDefense.Game
             }
 
             return null;
+        }
+
+        // 같은 클립을 재생 중인 소스 수를 세고, 그중 재생이 가장 많이 진행된(곧 끝날) 소스를 돌려준다. 겹침 상한에 걸리면 이것을 다시 시작한다.
+        private AudioSource FindOldestActiveSfxSourceByClip(AudioClip clip, out int voiceCount)
+        {
+            voiceCount = 0;
+            if (clip == null)
+                return null;
+
+            AudioSource oldest = null;
+            for (int i = _activeSfxSources.Count - 1; i >= 0; i--)
+            {
+                var source = _activeSfxSources[i];
+                if (source == null)
+                {
+                    _activeSfxSources.RemoveAt(i);
+                    continue;
+                }
+
+                if (!source.isPlaying || source.clip != clip)
+                    continue;
+
+                voiceCount++;
+                if (oldest == null || source.time > oldest.time)
+                    oldest = source;
+            }
+
+            return oldest;
         }
 
         private AudioSource GetSfxSource()
@@ -599,6 +675,9 @@ namespace TrainDefense.Game
             if (source == null)
                 return;
 
+            // 페이드아웃 도중 풀로 돌아가면(StopAllSFX 등) 트윈이 남아 재사용된 소스를 끄지 않게 먼저 죽인다.
+            source.DOKill();
+            _fadingOutSources.Remove(source);
             ResetSfxSource(source);
             ConfigureSfxSourceDefaults(source);
             source.gameObject.SetActive(false);
@@ -639,6 +718,10 @@ namespace TrainDefense.Game
         {
             foreach (var source in _activeSfxSources)
             {
+                // 씬 언로드 중 소스 오브젝트가 먼저 파괴됐을 수 있다. 하나가 죽었다고 나머지 정리를 건너뛰지 않는다.
+                if (source == null)
+                    continue;
+
                 source.Stop();
                 ReturnSfxSource(source);
             }

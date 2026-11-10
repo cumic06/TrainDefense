@@ -29,11 +29,55 @@ namespace TrainDefense.Game.Tutorial
                 return;
             }
 
+            // 배치 방향에 따른 위치 오프셋
+            Place(direction, targetCanvasPosition + GetPositionOffset(direction), lookDirection);
+        }
+
+        /// <summary>
+        /// 대상 가장자리(edgeCanvasPosition)에서 direction 쪽 바깥으로 gap만큼 띄워 화살표를 놓습니다.
+        /// 바운스도 바깥쪽으로만 움직이므로 대상을 가리지 않습니다. 화살표가 차지하는 길이(gap 포함)를 반환합니다.
+        /// </summary>
+        public float ShowOutside(TutorialArrowDirection direction, Vector2 edgeCanvasPosition, float gap)
+        {
+            if (direction == TutorialArrowDirection.None)
+            {
+                Hide();
+
+                return 0f;
+            }
+
+            Vector2 unit = GetPositionOffset(direction).normalized;
+            float arrowLength = Mathf.Max(_arrowTransform.rect.width, _arrowTransform.rect.height);
+
+            Place(direction, edgeCanvasPosition + unit * (gap + arrowLength * 0.5f), GetLookTowardTarget(direction));
+
+            return gap + arrowLength + _bounceDistance;
+        }
+
+        // 손가락 스프라이트는 0°에서 위를 가리켜서 Auto 회전(Up 배치 → 0°)을 쓰면 대상 반대쪽을 가리킨다.
+        // 기존 튜토리얼 데이터(배치 Up + 바라봄 Up → 180°)와 같은 규칙으로, 배치와 같은 이름의 바라봄 값을 써서 대상을 가리키게 한다.
+        private static TutorialArrowLookDirection GetLookTowardTarget(TutorialArrowDirection direction)
+        {
+            return direction switch
+            {
+                TutorialArrowDirection.Up => TutorialArrowLookDirection.Up,
+                TutorialArrowDirection.Down => TutorialArrowLookDirection.Down,
+                TutorialArrowDirection.Left => TutorialArrowLookDirection.Left,
+                TutorialArrowDirection.Right => TutorialArrowLookDirection.Right,
+                TutorialArrowDirection.UpLeft => TutorialArrowLookDirection.UpLeft,
+                TutorialArrowDirection.UpRight => TutorialArrowLookDirection.UpRight,
+                TutorialArrowDirection.DownLeft => TutorialArrowLookDirection.DownLeft,
+                TutorialArrowDirection.DownRight => TutorialArrowLookDirection.DownRight,
+                _ => TutorialArrowLookDirection.Auto
+            };
+        }
+
+        private void Place(TutorialArrowDirection direction, Vector2 arrowCanvasPosition,
+            TutorialArrowLookDirection lookDirection)
+        {
             gameObject.SetActive(true);
 
-            // 배치 방향에 따른 위치 오프셋
-            Vector2 posOffset = GetPositionOffset(direction);
-            _arrowTransform.anchoredPosition = targetCanvasPosition + posOffset;
+            _arrowTransform.anchoredPosition = arrowCanvasPosition;
 
             // 바라보는 방향 회전 적용
             float rotation = lookDirection == TutorialArrowLookDirection.Auto

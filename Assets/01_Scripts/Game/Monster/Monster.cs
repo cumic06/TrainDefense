@@ -111,6 +111,9 @@ namespace TrainDefense.Game
       public bool IsActive => gameObject.activeInHierarchy;
       public Transform TargetTransform => transform;
       public bool IsElite => _isElite;
+      // 엘리트 튜토리얼이 이 몬스터의 지금 모습(몸·불꽃)을 UI 카드로 옮겨 그릴 때 쓴다.
+      public SpriteRenderer ModelRenderer => _modelSpriteRenderer;
+      public SpriteRenderer EliteEffectRenderer => eliteEffect != null ? eliteEffect.GetComponentInChildren<SpriteRenderer>(true) : null;
       // 포탑 전투 기록(TrainCombatRecorder)이 처치·새 기절·새 둔화를 가려내는 데 쓴다.
       public bool IsDead => _isDead;
       public bool IsStunned => _isStunned;

@@ -170,6 +170,24 @@ namespace TrainDefense.Game.Tutorial
         }
 
         /// <summary>
+        /// 등록된 시퀀스 데이터를 찾습니다. 시작 전에 스텝별 실행 중 대상(SetRuntimeContext)을 채울 때 씁니다.
+        /// </summary>
+        public bool TryGetSequence(string sequenceId, out TutorialSequenceData sequence)
+        {
+            foreach (var seq in _sequences)
+            {
+                if (seq != null && seq.SequenceId == sequenceId)
+                {
+                    sequence = seq;
+                    return true;
+                }
+            }
+
+            sequence = null;
+            return false;
+        }
+
+        /// <summary>
         /// 현재 진행 중인 튜토리얼을 강제 종료(완료 처리)합니다.
         /// </summary>
         public void SkipCurrent()

@@ -46,7 +46,7 @@ namespace TrainDefense.Game.Datas
         [BoxGroup("Projectile")]
         [SerializeField]
         [LabelText("발사음")]
-        private SoundType attackSoundType = SoundType.CannonTurretTrainAttack;
+        private SoundType attackSoundType = SoundType.PlayerBombardAttack;
 
         #region Properties
 
