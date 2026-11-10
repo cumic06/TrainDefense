@@ -430,13 +430,14 @@ namespace TrainDefense.Game.UI
             }
         }
 
+        // 패널 바로 아래에 놓인 버튼 전부(시작·새로고침·수리·일시정지). 카드는 Group_ShopItemButton 안이라 해당하지 않는다.
         private IEnumerable<Transform> _GetPanelButtons()
         {
-            if (shopButtonUI != null)
-                yield return shopButtonUI.transform;
-
-            if (rerollButton != null)
-                yield return rerollButton.transform;
+            foreach (Transform child in transform)
+            {
+                if (child.TryGetComponent<Button>(out _))
+                    yield return child;
+            }
         }
 
         /// <summary>
