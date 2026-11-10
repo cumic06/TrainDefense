@@ -9,7 +9,7 @@ namespace TrainDefense.Game.UI
 {
     /// <summary>
     /// 안드로이드 뒤로가기(= Escape 키) 처리.
-    /// 열린 팝업이 있으면 맨 위 팝업의 닫기 버튼을 누른 것과 같게, 전투 중이면 일시정지를 열고, 로비에서는 종료 버튼과 같게 끝낸다.
+    /// 열린 팝업이 있으면 맨 위 팝업의 닫기 버튼을 누른 것과 같게, 전투 중이거나 상점이면 일시정지를 열고, 로비에서는 종료 버튼과 같게 끝낸다.
     /// 튜토리얼·인트로 중에는 아무것도 하지 않는다(인트로는 Escape 길게 누르기로 스스로 스킵한다).
     /// 씬에 배치하지 않고 실행 시 스스로 생긴다.
     /// </summary>
@@ -54,7 +54,7 @@ namespace TrainDefense.Game.UI
             }
 
             if (sceneName == GAME_SCENE_NAME)
-                _OpenPauseIfInBattle();
+                _OpenPauseIfInBattleOrShop();
         }
 
         // 맨 위 팝업의 닫기(또는 취소) 버튼을 누른 것과 같게 닫는다. 닫기 버튼이 없는 팝업은 건드리지 않는다.
@@ -82,12 +82,18 @@ namespace TrainDefense.Game.UI
             return false;
         }
 
-        private static void _OpenPauseIfInBattle()
+        // 화면의 일시정지 버튼이 눌리는 곳(전투·상점)과 같게 맞춘다. 상점 진입·퇴장 연출 중에는 PauseUI가 스스로 막는다.
+        private static void _OpenPauseIfInBattleOrShop()
         {
             if (InGameSequence.Instance == null)
                 return;
 
-            if (InGameSequence.Instance.CurrentBase != BasePhase.Engage || InGameSequence.Instance.CurrentOverlays != OverlayPhase.None)
+            BasePhase basePhase = InGameSequence.Instance.CurrentBase;
+
+            if (basePhase != BasePhase.Engage && basePhase != BasePhase.Inspection)
+                return;
+
+            if (InGameSequence.Instance.CurrentOverlays != OverlayPhase.None)
                 return;
 
             var pauseUI = FindFirstObjectByType<PauseUI>(FindObjectsInactive.Include);
